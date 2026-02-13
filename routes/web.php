@@ -9,3 +9,7 @@ Route::get('/', function () {
  Route::get('/dashboard-tambah-properti', function () {
     return view('properti.tambah_properti');
 });
+
+ Route::get('/properti/verifikasi-legal', function () {
+    return view('properti.verifikasi_legal');
+});
