@@ -13,3 +13,13 @@ Route::get('/', function () {
  Route::get('/properti/verifikasi-legal', function () {
     return view('properti.verifikasi_legal');
 });
+
+ Route::get('/properti/verifikasi-legal', function () {
+    return view('properti.verifikasi_legal');
+});
+
+ Route::get('/properti-buat-kavling', function () {
+    return view('properti.addkavling');
+});
+
+
