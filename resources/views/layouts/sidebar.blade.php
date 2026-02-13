@@ -24,27 +24,35 @@
 
     <!-- MENU PROPERTI DENGAN SUB-MENU -->
     <li class="nav-item">
-      <a class="nav-link" data-bs-toggle="collapse" href="#properti" aria-expanded="false" aria-controls="properti">
+    <a class="nav-link" data-bs-toggle="collapse" href="#properti" aria-expanded="false" aria-controls="properti">
         <span class="menu-title">Properti</span>
         <i class="menu-arrow"></i>
         <i class="mdi mdi-office-building menu-icon"></i>
-      </a>
-      <div class="collapse" id="properti">
+    </a>
+    <div class="collapse" id="properti">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link" href="#">Semua Properti</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Tambah Properti</a>
-          </li>
-          <li class="nav-item">
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-tambah-properti">Tambah Properti</a>
+        </li>
+        <!-- TAMBAHAN MENU BARU SESUAI FLOWCHART -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">Verifikasi Legal</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Buat Kavling</a>
+        </li>
+        <!-- END TAMBAHAN MENU -->
+        <li class="nav-item">
             <a class="nav-link" href="#">Kategori</a>
-          </li>
-          <li class="nav-item">
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="#">Lokasi</a>
-          </li>
+        </li>
         </ul>
-      </div>
+    </div>
     </li>
 
     <!-- MENU CUSTOMER -->
