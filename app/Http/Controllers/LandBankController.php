@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LandBank;
+use App\Models\LandBankDocument;
 use Illuminate\Support\Facades\DB;
 
 class LandBankController extends Controller
@@ -13,116 +14,6 @@ class LandBankController extends Controller
         return view('properti.tambah_properti');
     }
 
-//     public function store(Request $request)
-// {
-//     // ===== VALIDATION =====
-//     $validated = $request->validate([
-//         'namaTanah' => 'required|string|max:255',
-//         'statusKepemilikan' => 'required|string|max:50',
-//         'noSertifikat' => 'required|string|max:100',
-//         'atasNama' => 'required|string|max:255',
-
-//         'luasTanah' => 'required|numeric',
-//         'hargaPerolehan' => 'required',
-//         'tanggalPerolehan' => 'required|date',
-
-//         'lokasi' => 'required|string',
-//         'kelurahan' => 'nullable|string|max:100',
-//         'kecamatan' => 'nullable|string|max:100',
-//         'kota' => 'nullable|string|max:100',
-//         'provinsi' => 'nullable|string|max:100',
-//         'kodePos' => 'nullable|string|max:10',
-
-//         'noIMB' => 'nullable|string|max:100',
-//         'noPBB' => 'nullable|string|max:100',
-
-//         'zonasi' => 'nullable|string|max:100',
-//         'lebarJalan' => 'nullable|numeric',
-//         'jenisJalan' => 'nullable|string|max:50',
-
-//         'statusLegal' => 'required|string|max:50',
-//         'statusKavling' => 'required|string|max:50',
-//         'prioritas' => 'nullable|string|max:50',
-
-//         'latitude' => 'nullable|string',
-//         'longitude' => 'nullable|string',
-
-//         'uploadSertifikat' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-//         'uploadIMB' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-//         'uploadPBB' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-
-//         'deskripsi' => 'nullable|string'
-//     ]);
-
-//     // ===== FORMAT HARGA (hapus titik koma Rp) =====
-//     $harga = str_replace('.', '', $request->hargaPerolehan);
-//     $harga = str_replace(',', '', $harga);
-
-//     // ===== UPLOAD FILE =====
-//     $fileSertifikat = null;
-//     if ($request->hasFile('uploadSertifikat')) {
-//         $fileSertifikat = $request->file('uploadSertifikat')->store('sertifikat', 'public');
-//     }
-
-//     $fileIMB = null;
-//     if ($request->hasFile('uploadIMB')) {
-//         $fileIMB = $request->file('uploadIMB')->store('imb', 'public');
-//     }
-
-//     $filePBB = null;
-//     if ($request->hasFile('uploadPBB')) {
-//         $filePBB = $request->file('uploadPBB')->store('pbb', 'public');
-//     }
-
-//     // ===== INSERT =====
-//     LandBank::create([
-//         'name' => $request->namaTanah,
-//         'ownership_status' => $request->statusKepemilikan,
-//         'certificate_no' => $request->noSertifikat,
-//         'certificate_owner' => $request->atasNama,
-
-//         'area' => $request->luasTanah,
-//         'acquisition_price' => $harga,
-//         'acquisition_date' => $request->tanggalPerolehan,
-
-//         'imb_no' => $request->noIMB,
-//         'pbb_no' => $request->noPBB,
-
-//         'address' => $request->lokasi,
-//         'village' => $request->kelurahan,
-//         'district' => $request->kecamatan,
-//         'city' => $request->kota,
-//         'province' => $request->provinsi,
-//         'postal_code' => $request->kodePos,
-
-//         'zoning' => $request->zonasi,
-//         'road_width' => $request->lebarJalan,
-//         'road_type' => $request->jenisJalan,
-
-//         'facility_school' => $request->has('fasSekolah'),
-//         'facility_hospital' => $request->has('fasRumahSakit'),
-//         'facility_mall' => $request->has('fasMall'),
-//         'facility_transport' => $request->has('fasTransportasi'),
-
-//         'legal_status' => $request->statusLegal,
-//         'development_status' => $request->statusKavling,
-//         'priority' => $request->prioritas,
-
-//         'lat' => $request->latitude,
-//         'lng' => $request->longitude,
-
-//         'file_certificate' => $fileSertifikat,
-//         'file_imb' => $fileIMB,
-//         'file_pbb' => $filePBB,
-
-//         'description' => $request->deskripsi,
-//         'status' => 'draft'
-//     ]);
-
-//     dd($request->all());
-//     return redirect()->route('properti')
-//         ->with('success', 'Data Properti Berhasil Ditambahkan');
-// }
 public function store(Request $request)
 {
     $request->validate([
@@ -138,86 +29,135 @@ public function store(Request $request)
         'statusKavling' => 'required|string',
     ]);
 
-    // ===== format rupiah =====
-    $harga = preg_replace('/[^0-9]/', '', $request->hargaPerolehan);
+    DB::beginTransaction();
 
-    // ===== upload =====
-    $sertifikat = null;
-    $imb = null;
-    $pbb = null;
+    try {
 
-    if ($request->hasFile('uploadSertifikat')) {
-        $sertifikat = $request->file('uploadSertifikat')->store('sertifikat','public');
+        // ===== format rupiah =====
+        $harga = preg_replace('/[^0-9]/', '', $request->hargaPerolehan);
+
+        // ===== INSERT LAND BANK =====
+        $land = LandBank::create([
+            'name' => $request->namaTanah,
+            'ownership_status' => $request->statusKepemilikan,
+            'certificate_no' => $request->noSertifikat,
+            'certificate_owner' => $request->atasNama,
+
+            'area' => $request->luasTanah,
+            'acquisition_price' => $harga,
+            'acquisition_date' => $request->tanggalPerolehan,
+
+            'imb_no' => $request->noIMB,
+            'pbb_no' => $request->noPBB,
+
+            'address' => $request->lokasi,
+            'village' => $request->kelurahan,
+            'district' => $request->kecamatan,
+            'city' => $request->kota,
+            'province' => $request->provinsi,
+            'postal_code' => $request->kodePos,
+
+            'zoning' => $request->zonasi,
+            'road_width' => $request->lebarJalan,
+            'road_type' => $request->jenisJalan,
+
+            'facility_school' => $request->has('fasSekolah'),
+            'facility_hospital' => $request->has('fasRumahSakit'),
+            'facility_mall' => $request->has('fasMall'),
+            'facility_transport' => $request->has('fasTransportasi'),
+
+            'legal_status' => $request->statusLegal,
+            'development_status' => $request->statusKavling,
+            'priority' => $request->prioritas,
+
+            'lat' => $request->latitude,
+            'lng' => $request->longitude,
+
+            'description' => $request->deskripsi,
+            'status' => 'draft'
+        ]);
+
+        // ===== HANDLE DOCUMENTS =====
+        $documents = [
+            'uploadSertifikat' => [
+                'type' => 'sertifikat',
+                'number' => $request->noSertifikat
+            ],
+            'uploadIMB' => [
+                'type' => 'imb',
+                'number' => $request->noIMB
+            ],
+            'uploadPBB' => [
+                'type' => 'pbb',
+                'number' => $request->noPBB
+            ],
+        ];
+
+        foreach ($documents as $field => $doc) {
+
+            if ($request->hasFile($field)) {
+
+                $path = $request->file($field)
+                    ->store('landbank/'.$doc['type'], 'public');
+
+                LandBankDocument::create([
+                    'land_bank_id' => $land->id,
+                    'type' => $doc['type'],
+                    'file_path' => $path,
+                    'document_number' => $doc['number'],
+                    'status' => 'pending',
+                    'revisi_ke' => 0
+                ]);
+            }
+        }
+
+        DB::commit();
+
+        if ($request->redirect == 'verifikasi') {
+            return redirect('/properti/verifikasi-legal/'.$land->id)
+                ->with('success','Data tersimpan, lanjut verifikasi');
+        }
+
+        return redirect()->route('properti')
+            ->with('success','Data properti berhasil disimpan');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+        return back()->with('error','Terjadi kesalahan: '.$e->getMessage());
     }
-
-    if ($request->hasFile('uploadIMB')) {
-        $imb = $request->file('uploadIMB')->store('imb','public');
-    }
-
-    if ($request->hasFile('uploadPBB')) {
-        $pbb = $request->file('uploadPBB')->store('pbb','public');
-    }
-
-    // ===== INSERT SESUAI MIGRATION =====
-    $id = DB::table('land_banks')->insertGetId([
-        'name' => $request->namaTanah,
-        'ownership_status' => $request->statusKepemilikan,
-        'certificate_no' => $request->noSertifikat,
-        'certificate_owner' => $request->atasNama,
-
-        'area' => $request->luasTanah,
-        'acquisition_price' => $harga,
-        'acquisition_date' => $request->tanggalPerolehan,
-
-        'imb_no' => $request->noIMB,
-        'pbb_no' => $request->noPBB,
-
-        'address' => $request->lokasi,
-        'village' => $request->kelurahan,
-        'district' => $request->kecamatan,
-        'city' => $request->kota,
-        'province' => $request->provinsi,
-        'postal_code' => $request->kodePos,
-
-        'zoning' => $request->zonasi,
-        'road_width' => $request->lebarJalan,
-        'road_type' => $request->jenisJalan,
-
-        'facility_school' => $request->has('fasSekolah'),
-        'facility_hospital' => $request->has('fasRumahSakit'),
-        'facility_mall' => $request->has('fasMall'),
-        'facility_transport' => $request->has('fasTransportasi'),
-
-        'legal_status' => $request->statusLegal,
-        'development_status' => $request->statusKavling,
-        'priority' => $request->prioritas,
-
-        'lat' => $request->latitude,
-        'lng' => $request->longitude,
-
-        'file_certificate' => $sertifikat,
-        'file_imb' => $imb,
-        'file_pbb' => $pbb,
-
-        'description' => $request->deskripsi,
-        'status' => 'draft',
-
-        'created_at' => now(),
-        'updated_at' => now()
-    ]);
-
-    // ===== tombol lanjut =====
-    if ($request->redirect == 'verifikasi') {
-        return redirect('/properti/verifikasi-legal/'.$id)
-            ->with('success','Data tersimpan, lanjut verifikasi');
-    }
-
-    return redirect()->route('properti')
-        ->with('success','Data properti berhasil disimpan');
 }
 
 
 
+public function verifikasiLegal($id)
+{
+    $land = LandBank::with('documents')->findOrFail($id);
 
+    return view('properti.verifikasi_legal', compact('land'));
+}
+
+public function approveDocument($id)
+{
+    $doc = LandBankDocument::findOrFail($id);
+
+    $doc->update([
+        'status' => 'terverifikasi'
+    ]);
+
+    return back()->with('success', 'Dokumen berhasil diverifikasi');
+}
+
+public function rejectDocument($id)
+{
+    $doc = LandBankDocument::findOrFail($id);
+
+    $doc->update([
+        'status' => 'ditolak',
+        'revisi_ke' => $doc->revisi_ke + 1
+    ]);
+
+    return back()->with('success', 'Dokumen ditolak');
+}
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\LandBankDocument;
 use Illuminate\Database\Eloquent\Model;
 
 class LandBank extends Model
@@ -42,4 +43,9 @@ class LandBank extends Model
         'description',
         'status'
     ];
+    public function documents()
+{
+    return $this->hasMany(LandBankDocument::class);
+}
+
 }
