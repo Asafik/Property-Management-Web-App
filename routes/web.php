@@ -25,9 +25,17 @@ Route::get('/properti', [LandBankController::class, 'index'])->name('properti');
 Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
 
 
-Route::get('/properti/verifikasi-legal', function () {
-    return view('properti.verifikasi_legal');
-});
+Route::get('/properti/verifikasi-legal/{id}', 
+    [LandBankController::class, 'verifikasiLegal']
+)->name('properti.verifikasi');
+Route::post('/dokumen/{id}/approve', 
+    [LandBankController::class, 'approveDocument']
+)->name('dokumen.approve');
+
+Route::post('/dokumen/{id}/reject', 
+    [LandBankController::class, 'rejectDocument']
+)->name('dokumen.reject');
+
 
 Route::get('/properti-buat-kavling', function () {
     return view('properti.addkavling');
