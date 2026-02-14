@@ -1,5 +1,7 @@
+
 <?php
 
+use App\Http\Controllers\LandBankController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,9 +18,12 @@ Route::get('/dashboard-tambah-customer', function () {
 });
 
 // properti
-Route::get('/dashboard-tambah-properti', function () {
-    return view('properti.tambah_properti');
-});
+// Route::get('/dashboard-tambah-properti', function () {
+//     return view('properti.tambah_properti');
+// });
+Route::get('/properti', [LandBankController::class, 'index'])->name('properti');
+Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
+
 
 Route::get('/properti/verifikasi-legal', function () {
     return view('properti.verifikasi_legal');
