@@ -33,8 +33,29 @@
         <ul class="nav flex-column sub-menu">
         <li class="nav-item">
             <a class="nav-link" href="dashboard-jual-unit">Jual Unit</a>
-            <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link" href="dashboard-tambah-customer">Tambah Customer</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard-list-pengajuan">list Pengajuan</a>
+        <li class="nav-item">
+         <li class="nav-item">
+            <a class="nav-link" href="dashboard-approved">Approved</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-cash">Cash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-approved">Akad</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard-survey">Survey</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-kpr">KPR</a>
+        </li>
+         <li class="nav-item">
+            <a class="nav-link" href="dashboard-pengajuan">Pengajuan</a>
         </li>
         </li>
         </ul>
