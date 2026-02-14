@@ -32,3 +32,8 @@ Route::get('/properti/verifikasi-legal', function () {
 Route::get('/properti-buat-kavling', function () {
     return view('properti.addkavling');
 });
+
+
+Route::get('/properti-revisi', function () {
+    return view('properti.revisi');
+});

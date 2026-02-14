@@ -71,6 +71,9 @@
         <li class="nav-item">
             <a class="nav-link" href="#">Lokasi</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Revisi Data</a>
+        </li>
         </ul>
     </div>
     </li>
