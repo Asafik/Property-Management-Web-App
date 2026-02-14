@@ -22,6 +22,26 @@
       </a>
     </li>
 
+    <!-- MENU MARKETING DENGAN SUB-MENU -->
+    <li class="nav-item">
+    <a class="nav-link" data-bs-toggle="collapse" href="#marketing" aria-expanded="false" aria-controls="marketing">
+        <span class="menu-title">Marketing</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-bullhorn menu-icon"></i>
+    </a>
+    <div class="collapse" id="marketing">
+        <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-jual-unit">Jual Unit</a>
+            <li class="nav-item">
+            <a class="nav-link" href="dashboard-tambah-customer">Tambah Customer</a>
+        </li>
+        </li>
+        </ul>
+    </div>
+    </li>
+
+
     <!-- MENU PROPERTI DENGAN SUB-MENU -->
     <li class="nav-item">
     <a class="nav-link" data-bs-toggle="collapse" href="#properti" aria-expanded="false" aria-controls="properti">
