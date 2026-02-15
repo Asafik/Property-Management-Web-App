@@ -13,6 +13,7 @@
     <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 </head>
 
@@ -44,6 +45,7 @@
 <script src="{{ asset('admin/assets/js/settings.js') }}"></script>
 <script src="{{ asset('admin/assets/js/todolist.js') }}"></script>
 <script src="{{ asset('admin/assets/js/jquery.cookie.js') }}"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 @stack('scripts')
 

@@ -16,7 +16,7 @@
 
     <!-- MENU SIDEBAR - PROPERTI REAL ESTATE -->
     <li class="nav-item">
-      <a class="nav-link" href="#">
+      <a class="nav-link" href="{{route('dashboard')}}">
         <span class="menu-title">Dashboard</span>
         <i class="mdi mdi-home menu-icon"></i>
       </a>

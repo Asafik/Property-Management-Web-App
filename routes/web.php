@@ -1,13 +1,13 @@
 
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandBankController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('dashboard');
-});
 
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 // marketing
 Route::get('/dashboard-jual-unit', function () {
     return view('marketing.jual_unit');
@@ -35,6 +35,13 @@ Route::post('/dokumen/{id}/approve',
 Route::post('/dokumen/{id}/reject', 
     [LandBankController::class, 'rejectDocument']
 )->name('dokumen.reject');
+Route::post('/properti/{id}/update-revisi', 
+    [LandBankController::class, 'updateRevisi']
+)->name('properti.updateRevisi');
+
+Route::post('/dokumen/{id}/update',
+    [LandBankController::class, 'updateDocument']
+)->name('dokumen.update');
 
 
 Route::get('/properti-buat-kavling', function () {
@@ -42,6 +49,6 @@ Route::get('/properti-buat-kavling', function () {
 });
 
 
-Route::get('/properti-revisi', function () {
-    return view('properti.revisi');
-});
+Route::get('/properti-revisi/{id}', 
+    [LandBankController::class, 'revisi']
+)->name('properti.revisi');

@@ -12,7 +12,7 @@ class LandBank extends Model
         'name',
         'ceritificate_no',
         'ownership_status',
-        'cerificate_owner',
+        'certificate_owner',
         'area',
         'acquisition_price',
         'acquisition_date',
@@ -44,8 +44,19 @@ class LandBank extends Model
         'status'
     ];
     public function documents()
+    {
+        return $this->hasMany(LandBankDocument::class);
+    }
+    public function revisis()
+    {
+        return $this->hasMany(LandBankDocument::class)
+            ->whereNotNull('revisi_ke')
+            ->orderBy('revisi_ke');
+    }
+    public function getCertificateNumberAttribute()
 {
-    return $this->hasMany(LandBankDocument::class);
+    $doc = $this->documents->where('type','sertifikat')->first();
+    return $doc ? $doc->document_number : null;
 }
 
 }

@@ -164,6 +164,13 @@
             <button class="btn btn-success">Setujui Semua</button>
         </div>
     </div>
+    @if($land->documents->where('status','ditolak')->count() > 0)
+    <a href="{{ route('properti.revisi',$land->id) }}"
+       class="btn btn-warning">
+        Revisi Dokumen
+    </a>
+@endif
+
 
 </div>
 @endsection
