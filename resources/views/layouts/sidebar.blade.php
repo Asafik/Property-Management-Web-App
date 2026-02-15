@@ -73,10 +73,10 @@
     <div class="collapse" id="properti">
         <ul class="nav flex-column sub-menu">
         <li class="nav-item">
-            <a class="nav-link" href="#">Semua Properti</a>
+            <a class="nav-link" href="{{route('properti-all')}}">Semua Properti</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-tambah-properti">Tambah Properti</a>
+            <a class="nav-link" href="{{route('properti')}}">Tambah Properti</a>
         </li>
         <!-- TAMBAHAN MENU BARU SESUAI FLOWCHART -->
         <li class="nav-item">

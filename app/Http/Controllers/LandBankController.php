@@ -152,17 +152,25 @@ class LandBankController extends Controller
         return back()->with('success', 'Dokumen berhasil diverifikasi');
     }
 
-    public function rejectDocument($id)
-    {
-        $doc = LandBankDocument::findOrFail($id);
+    public function rejectDocument(Request $request, $id)
+{
+    $request->validate([
+        'catatan_admin' => 'required|string|max:1000'
+    ], [
+        'catatan_admin.required' => 'Catatan penolakan wajib diisi.'
+    ]);
 
-        $doc->update([
-            'status' => 'ditolak',
-            'revisi_ke' => $doc->revisi_ke + 1
-        ]);
+    $doc = LandBankDocument::findOrFail($id);
 
-        return back()->with('success', 'Dokumen ditolak & menunggu revisi');
-    }
+    $doc->update([
+        'status' => 'ditolak',
+        'catatan_admin' => $request->catatan_admin,
+        'revisi_ke' => $doc->revisi_ke + 1
+    ]);
+
+    return back()->with('success', 'Dokumen ditolak & menunggu revisi.');
+}
+
 
     // ===============================
     // REVISI DATA
@@ -231,4 +239,54 @@ public function revisi($id)
             ->route('properti.verifikasi', $doc->land_bank_id)
             ->with('success','Dokumen berhasil direvisi, menunggu verifikasi ulang');
     }
+    // ===============================
+// MASS APPROVE & REJECT
+// ===============================
+
+public function approveAllDocuments($id)
+{
+    $land = LandBank::with('documents')->findOrFail($id);
+
+    foreach ($land->documents as $doc) {
+        $doc->update([
+            'status' => 'terverifikasi'
+        ]);
+    }
+
+    // Cek apakah semua dokumen sudah terverifikasi
+    $allVerified = $land->documents->every(function($doc) {
+        return $doc->status === 'terverifikasi';
+    });
+
+    if ($allVerified) {
+        $land->update([
+            'legal_status' => 'terverifikasi'
+        ]);
+    }
+
+    return back()->with('success', 'Semua dokumen berhasil disetujui');
+}
+
+
+public function rejectAllDocuments(Request $request, $id)
+{
+    $request->validate([
+        'catatan_admin' => 'required|string|max:1000'
+    ], [
+        'catatan_admin.required' => 'Catatan penolakan wajib diisi.'
+    ]);
+
+    $land = LandBank::with('documents')->findOrFail($id);
+
+    foreach ($land->documents as $doc) {
+        $doc->update([
+            'status' => 'ditolak',
+            'catatan_admin' => $request->catatan_admin,
+            'revisi_ke' => $doc->revisi_ke + 1
+        ]);
+    }
+
+    return back()->with('success', 'Semua dokumen ditolak & menunggu revisi.');
+}
+
 }

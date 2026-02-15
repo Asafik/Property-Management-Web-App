@@ -1,6 +1,7 @@
 
 <?php
 
+use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandBankController;
 use Illuminate\Support\Facades\Route;
@@ -49,8 +50,10 @@ Route::get('/dashboard-tambah-customer', function () {
 // Route::get('/dashboard-tambah-properti', function () {
 //     return view('properti.tambah_properti');
 // });
-Route::get('/properti', [LandBankController::class, 'index'])->name('properti');
+Route::get('/properti', [PropertyController::class, 'index'])->name('properti-all');
+Route::get('/properti-create', [LandBankController::class, 'index'])->name('properti');
 Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
+
 
 
 Route::get('/properti/verifikasi-legal/{id}',
@@ -63,6 +66,12 @@ Route::post('/dokumen/{id}/approve',
 Route::post('/dokumen/{id}/reject',
     [LandBankController::class, 'rejectDocument']
 )->name('dokumen.reject');
+Route::post('/properti/{id}/approve-all', [LandBankController::class, 'approveAllDocuments'])
+    ->name('properti.approveAll');
+
+Route::post('/properti/{id}/reject-all', [LandBankController::class, 'rejectAllDocuments'])
+    ->name('properti.rejectAll');
+
 Route::post('/properti/{id}/update-revisi', 
     [LandBankController::class, 'updateRevisi']
 )->name('properti.updateRevisi');
