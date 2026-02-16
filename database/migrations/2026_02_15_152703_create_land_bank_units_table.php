@@ -16,20 +16,23 @@ return new class extends Migration
 
             // relasi ke tanah induk
             $table->foreignId('land_bank_id')
-                  ->constrained('land_banks')
-                  ->onDelete('cascade');
+                ->constrained('land_banks')
+                ->onDelete('cascade');
 
             // ===== IDENTITAS UNIT =====
             $table->string('block')->nullable(); // A
             $table->string('unit_number')->nullable(); // 1
             $table->string('unit_code')->unique(); // A.1
+            $table->string('type')->nullable();
 
             // ===== DATA KAVLING =====
             $table->float('area'); // luas kavling
+            $table->float('building_area')->nullable(); // luas bangunan (m²)
             $table->bigInteger('price')->nullable();
 
-            $table->enum('facing', ['Utara','Selatan','Timur','Barat'])->nullable();
-            $table->enum('position', ['Hook','Tengah','Sudut'])->nullable();
+
+            $table->enum('facing', ['Utara', 'Selatan', 'Timur', 'Barat'])->nullable();
+            $table->enum('position', ['Hook', 'Tengah', 'Sudut'])->nullable();
 
             $table->text('description')->nullable();
 
@@ -43,12 +46,12 @@ return new class extends Migration
 
             // ===== PROGRESS PEMBANGUNAN =====
             $table->enum('construction_progress', [
-                'belum_mulai',    
-                'pondasi',        
-                'dinding',       
-                'atap',           
-                'finishing',      
-                'selesai'         
+                'belum_mulai',
+                'pondasi',
+                'dinding',
+                'atap',
+                'finishing',
+                'selesai'
             ])->default('belum_mulai');
 
             // ===== POSISI DENAH (opsional siteplan grid) =====

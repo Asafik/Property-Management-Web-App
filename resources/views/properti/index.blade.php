@@ -181,7 +181,7 @@
                                         <td>
                                              @if ($item->development_status== 'Selesai')
                                                 <label class="badge badge-gradient-success badge-sm"> Selesai </label>
-                                            @elseif ($item->development_status == 'onprogress')
+                                            @elseif ($item->development_status == 'progress')
                                                 <label class="badge badge-gradient-warning badge-sm"> On Progress </label>
                                             @else
                                                 <label class="badge badge-gradient-danger badge-sm"> Belum </label>

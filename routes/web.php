@@ -1,6 +1,7 @@
 
 <?php
 
+use App\Http\Controllers\Admin\DevelopmentProgressController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\VerifikasiLegalController;
 use App\Http\Controllers\DashboardController;
@@ -125,9 +126,16 @@ Route::get('/properti-proses-pembangunan', function () {
     return view('properti.proses_pembangunan');
 });
 
-Route::get('/properti-daftar-pembangunan', function () {
-    return view('properti.daftar_pembangunan');
-});
+// Route::get('/properti-daftar-pembangunan', function () {
+//     return view('properti.daftar_pembangunan');
+// });
+Route::get('/properti/progress/{land_bank_id}', 
+    [DevelopmentProgressController::class, 'index']
+)->name('properti.progress');
+
+Route::post('/properti/progress/store', 
+    [DevelopmentProgressController::class, 'store']
+)->name('properti.progress.store');
 
 
 Route::get('/properti-revisi/{id}',

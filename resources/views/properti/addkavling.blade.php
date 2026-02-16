@@ -14,74 +14,77 @@
         </div>
 
         <!-- Info Tanah Induk -->
-      <div class="row">
-    <div class="col-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header bg-white">
-                <h5 class="card-title mb-0">
-                    <i class="mdi mdi-office-building text-primary me-2"></i>
-                    Informasi Tanah Induk
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    {{-- Nama Tanah / Proyek --}}
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label class="text-muted small">Nama Tanah / Proyek</label>
-                            <p class="fw-bold">{{ $land->name ?? '-' }}</p>
-                        </div>
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-office-building text-primary me-2"></i>
+                            Informasi Tanah Induk
+                        </h5>
                     </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {{-- Nama Tanah / Proyek --}}
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="text-muted small">Nama Tanah / Proyek</label>
+                                    <p class="fw-bold">{{ $land->name ?? '-' }}</p>
+                                </div>
+                            </div>
 
-                    {{-- Luas Total Tanah --}}
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label class="text-muted small">Luas Total Tanah</label>
-                            <p class="fw-bold">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</p>
+                            {{-- Luas Total Tanah --}}
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="text-muted small">Luas Total Tanah</label>
+                                    <p class="fw-bold">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</p>
+                                </div>
+                            </div>
+
+                            {{-- Sisa Luas Belum Dikavling --}}
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="text-muted small">Sisa Luas Belum Dikavling</label>
+                                    <p class="fw-bold text-primary">
+                                        {{ number_format($land->remaining_area ?? ($land->area ?? 0), 0, ',', '.') }} m²</p>
+                                </div>
+                            </div>
+
+                            {{-- Status Legal --}}
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="text-muted small">Status Legal</label>
+                                    @if ($land->legal_status == 'terverifikasi')
+                                        <p class="fw-bold"><span class="badge badge-success">Terverifikasi</span></p>
+                                    @else
+                                        <p class="fw-bold"><span
+                                                class="badge badge-warning">{{ ucfirst($land->legal_status) ?? '-' }}</span>
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Sisa Luas Belum Dikavling --}}
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label class="text-muted small">Sisa Luas Belum Dikavling</label>
-                            <p class="fw-bold text-primary">{{ number_format($land->remaining_area ?? $land->area ?? 0, 0, ',', '.') }} m²</p>
-                        </div>
-                    </div>
-
-                    {{-- Status Legal --}}
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label class="text-muted small">Status Legal</label>
-                            @if($land->legal_status == 'terverifikasi')
-                                <p class="fw-bold"><span class="badge badge-success">Terverifikasi</span></p>
-                            @else
-                                <p class="fw-bold"><span class="badge badge-warning">{{ ucfirst($land->legal_status) ?? '-' }}</span></p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Lokasi --}}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-2">
-                            <label class="text-muted small">Lokasi</label>
-                            <p class="fw-bold">
-                                {{ $land->address ?? '-' }}, 
-                                Kel. {{ $land->village ?? '-' }}, 
-                                Kec. {{ $land->district ?? '-' }}, 
-                                {{ $land->city ?? '-' }}, 
-                                {{ $land->province ?? '-' }} 
-                                {{ $land->postal_code ?? '' }}
-                            </p>
+                        {{-- Lokasi --}}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-2">
+                                    <label class="text-muted small">Lokasi</label>
+                                    <p class="fw-bold">
+                                        {{ $land->address ?? '-' }},
+                                        Kel. {{ $land->village ?? '-' }},
+                                        Kec. {{ $land->district ?? '-' }},
+                                        {{ $land->city ?? '-' }},
+                                        {{ $land->province ?? '-' }}
+                                        {{ $land->postal_code ?? '' }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
         <!-- Progress Steps -->
@@ -160,8 +163,22 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
+                                                <label>Type Unit</label>
+                                                <input type="text" name="type" class="form-control"
+                                                    placeholder="Cluster Ijen">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
                                                 <label>Luas (m²)</label>
                                                 <input type="number" name="area" class="form-control"
+                                                    placeholder="200">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Luas Bangunan(m²)</label>
+                                                <input type="number" name="building_area" class="form-control"
                                                     placeholder="200">
                                             </div>
                                         </div>
@@ -331,159 +348,184 @@
         </div>
 
         <!-- Daftar Unit yang Akan Dibuat -->
-      <div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                    Daftar Unit Kavling
-                </h5>
-                <span class="badge badge-primary">{{ $land->units->count() }} unit</span>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Blok / No</th>
-                                <th>Luas (m²)</th>
-                                <th>Harga (Rp)</th>
-                                <th>Hadap</th>
-                                <th>Posisi</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($land->units as $i => $unit)
-                                <tr>
-                                    <td>{{ $i + 1 }}</td>
-                                    <td><strong>{{ $unit->unit_code }}</strong></td>
-                                    <td>{{ number_format($unit->area, 0, ',', '.') }}</td>
-                                    <td>{{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
-                                    <td>{{ $unit->facing ?? '-' }}</td>
-                                    <td>{{ $unit->position ?? '-' }}</td>
-                                    <td>
-                                        <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}" 
-                                           class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="mdi mdi-pencil"></i>
-                                        </a>
-                                        <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}" 
-                                              method="POST" style="display:inline-block;"
-                                              onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted">
-                                        Belum ada unit kavling
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+        <div class="row">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
+                            Daftar Unit Kavling
+                        </h5>
+                        <span class="badge badge-primary">{{ $land->units->count() }} unit</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Blok / No</th>
+                                        <th>Luas (m²)</th>
+                                        <th>Harga (Rp)</th>
+                                        <th>Hadap</th>
+                                        <th>Posisi</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($land->units as $i => $unit)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td><strong>{{ $unit->unit_code }}</strong></td>
+                                            <td>{{ number_format($unit->area, 0, ',', '.') }}</td>
+                                            <td>{{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
+                                            <td>{{ $unit->facing ?? '-' }}</td>
+                                            <td>{{ $unit->position ?? '-' }}</td>
+                                            <td>
+                                                {{-- Edit --}}
+                                                <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
+                                                    class="btn btn-sm btn-outline-primary me-1">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+
+                                                {{-- Update Progress --}}
+                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
+                                                    class="btn btn-sm btn-outline-info me-1">
+                                                    <i class="mdi mdi-progress-clock"></i>
+                                                </a>
+
+
+                                                {{-- Delete --}}
+                                                <form
+                                                    action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
+                                                    method="POST" style="display:inline-block;"
+                                                    onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-sm btn-outline-danger">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted">
+                                                Belum ada unit kavling
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
         <!-- Ringkasan -->
-       <div class="row">
-   <!-- Ringkasan Kavling -->
-<div class="col-md-6 grid-margin stretch-card">
-    <div class="card bg-light">
-        <div class="card-body">
-            <h5 class="card-title">Ringkasan Kavling</h5>
-            @php
-                $totalUnits = $land->units->count();
-                $totalArea  = $land->units->sum('area');
-                $sisaLuas   = max(0, $land->remaining_area ?? ($land->area - $totalArea));
-                $totalNilai = $land->units->sum('price');
-
-                // Progress pembangunan berdasarkan luas yang sudah terpakai
-                $progressPercent = $land->area > 0 ? ($totalArea / $land->area) * 100 : 0;
-            @endphp
-
-            <div class="row">
-                <div class="col-6">
-                    <p class="text-muted mb-1">Total Unit</p>
-                    <h4>{{ $totalUnits }} unit</h4>
-                </div>
-                <div class="col-6">
-                    <p class="text-muted mb-1">Total Luas</p>
-                    <h4>{{ number_format($totalArea, 0, ',', '.') }} m²</h4>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-6">
-                    <p class="text-muted mb-1">Sisa Luas Tanah</p>
-                    <h4>{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
-                </div>
-                <div class="col-6">
-                    <p class="text-muted mb-1">Nilai Total</p>
-                    <h4>Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
-                </div>
-            </div>
-
-            <!-- Progress Pembangunan -->
-            <div class="mt-4">
-                <p class="text-muted mb-1">Progress Pembangunan</p>
-                <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progressPercent }}%;" aria-valuenow="{{ $progressPercent }}" aria-valuemin="0" aria-valuemax="100">
-                        {{ number_format($progressPercent, 0) }}%
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-    <!-- Denah Sederhana -->
-    <div class="col-md-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-header bg-white">
-                <h5 class="card-title mb-0">
-                    <i class="mdi mdi-map me-2 text-primary"></i>
-                    Denah Kavling
-                </h5>
-            </div>
-            <div class="card-body text-center">
-                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
-                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+        <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Ringkasan Kavling</h5>
                         @php
-                            // Misal kavling dari A.1 sampai A.6
-                            $allKavlings = [];
-                            for ($i = 1; $i <= 6; $i++) {
-                                $allKavlings[] = 'A.' . $i;
-                            }
-                            $createdKavlings = $land->units->pluck('unit_code')->toArray();
+                            $totalUnits = $land->units->count();
+                            $totalArea = $land->units->sum('area');
+                            $sisaLuas = max(0, $land->remaining_area ?? $land->area - $totalArea);
+                            $totalNilai = $land->units->sum('price');
+
+                            // Progress pembangunan berdasarkan luas yang sudah terpakai
+                            $progressPercent = $land->area > 0 ? ($totalArea / $land->area) * 100 : 0;
                         @endphp
 
-                        @foreach ($allKavlings as $kav)
-                            <span style="background-color: {{ in_array($kav, $createdKavlings) ? '#28a745' : '#6c757d' }}; color: white; padding: 5px 10px; border-radius: 4px;">
-                                {{ $kav }}
-                            </span>
-                        @endforeach
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-muted mb-1">Total Unit</p>
+                                <h4>{{ $totalUnits }} unit</h4>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-muted mb-1">Total Luas</p>
+                                <h4>{{ number_format($totalArea, 0, ',', '.') }} m²</h4>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <p class="text-muted mb-1">Sisa Luas Tanah</p>
+                                <h4>{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-muted mb-1">Nilai Total</p>
+                                <h4>Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
+                            </div>
+                        </div>
+
+                        <!-- Progress Pembangunan -->
+                        @php
+                            $progressPercent = $unit->construction_progress ?? 0;
+                        @endphp
+
+                        <div class="mt-4">
+                            <p class="text-muted mb-1">Progress Pembangunan</p>
+     <div class="progress">
+    <div class="progress-bar bg-success"
+         role="progressbar"
+         style="width: {{ $unit->progress_percentage }}%;"
+         aria-valuenow="{{ $unit->progress_percentage }}"
+         aria-valuemin="0"
+         aria-valuemax="100">
+        {{ $unit->construction_progress }} ({{ $unit->progress_percentage }}%)
+    </div>
+</div>
+
+
+
+                        </div>
+
+
                     </div>
-                    <p class="text-muted mt-3 mb-0">Preview sederhana posisi kavling</p>
-                    <small class="text-muted">(Hijau = sudah dibuat, Abu = belum dibuat)</small>
+                </div>
+            </div>
+
+
+            <!-- Denah Sederhana -->
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-map me-2 text-primary"></i>
+                            Denah Kavling
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                                @php
+                                    // Misal kavling dari A.1 sampai A.6
+                                    $allKavlings = [];
+                                    for ($i = 1; $i <= 6; $i++) {
+                                        $allKavlings[] = 'A.' . $i;
+                                    }
+                                    $createdKavlings = $land->units->pluck('unit_code')->toArray();
+                                @endphp
+
+                                @foreach ($allKavlings as $kav)
+                                    <span
+                                        style="background-color: {{ in_array($kav, $createdKavlings) ? '#28a745' : '#6c757d' }}; color: white; padding: 5px 10px; border-radius: 4px;">
+                                        {{ $kav }}
+                                    </span>
+                                @endforeach
+                            </div>
+                            <p class="text-muted mt-3 mb-0">Preview sederhana posisi kavling</p>
+                            <small class="text-muted">(Hijau = sudah dibuat, Abu = belum dibuat)</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
         <!-- Tombol Aksi -->
         <div class="row">
