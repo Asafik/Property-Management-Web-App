@@ -2465,8 +2465,11 @@
                         <button class="btn btn-success me-2">
                             <i class="mdi mdi-check-circle me-1"></i>Setujui RAB
                         </button>
-                        <button class="btn btn-primary">
-                            <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                        <button
+                            onclick="window.open('/dashboard-cetak-rab', '_blank')"
+                            class="btn btn-primary btn-block mb-2">
+                            <i class="mdi mdi-printer me-2"></i>
+                            Cetak RAB
                         </button>
                     </div>
                 </div>

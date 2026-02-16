@@ -95,10 +95,6 @@
         <li class="nav-item">
             <a class="nav-link" href="#">Revisi Data</a>
         </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="properti-daftar-pembangunan">Daftar Pembangunan</a>
-        </li>
           <li class="nav-item">
             <a class="nav-link" href="properti-proses-pembangunan">Proses Pembangunan</a>
         </li>

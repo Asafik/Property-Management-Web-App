@@ -55,6 +55,10 @@ Route::get('/dashboard-cetak-invoice-cash', function () {
     return view('cetak.invoice_cash');
 });
 
+Route::get('/dashboard-cetak-rab', function () {
+    return view('cetak.rab');
+});
+
 
 
 // properti
@@ -101,9 +105,7 @@ Route::get('/properti-proses-pembangunan', function () {
     return view('properti.proses_pembangunan');
 });
 
-Route::get('/properti-daftar-pembangunan', function () {
-    return view('properti.daftar_pembangunan');
-});
+
 
 
 Route::get('/properti-revisi/{id}',
