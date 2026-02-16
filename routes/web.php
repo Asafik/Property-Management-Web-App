@@ -46,6 +46,17 @@ Route::get('/dashboard-tambah-customer', function () {
     return view('marketing.tambah_customer');
 });
 
+//cetak
+Route::get('/dashboard-cetak-laporan', function () {
+    return view('cetak.laporan');
+});
+
+Route::get('/dashboard-cetak-invoice-cash', function () {
+    return view('cetak.invoice_cash');
+});
+
+
+
 // properti
 // Route::get('/dashboard-tambah-properti', function () {
 //     return view('properti.tambah_properti');

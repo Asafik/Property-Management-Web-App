@@ -485,10 +485,13 @@
                     Konfirmasi Dana Cair
                 </button>
 
-                <button class="btn btn-primary btn-block mb-2">
-                    <i class="mdi mdi-file-pdf me-2"></i>
+               <button
+                    onclick="window.open('/dashboard-cetak-laporan', '_blank')"
+                    class="btn btn-primary btn-block mb-2">
+                    <i class="mdi mdi-printer me-2"></i>
                     Cetak Laporan
                 </button>
+
 
                 <button class="btn btn-info btn-block mb-2">
                     <i class="mdi mdi-whatsapp me-2"></i>
