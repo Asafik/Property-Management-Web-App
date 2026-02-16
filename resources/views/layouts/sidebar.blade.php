@@ -46,7 +46,7 @@
             <a class="nav-link" href="dashboard-cash">Cash</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-approved">Akad</a>
+            <a class="nav-link" href="dashboard-akad">Akad</a>
         </li>
           <li class="nav-item">
             <a class="nav-link" href="dashboard-survey">Survey</a>
@@ -90,6 +90,13 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">Revisi Data</a>
+        </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="properti-daftar-pembangunan">Daftar Pembangunan</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="properti-proses-pembangunan">Proses Pembangunan</a>
         </li>
         </ul>
     </div>

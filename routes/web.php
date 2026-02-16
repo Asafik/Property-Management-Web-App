@@ -48,6 +48,17 @@ Route::get('/dashboard-tambah-customer', function () {
     return view('marketing.tambah_customer');
 });
 
+//cetak
+Route::get('/dashboard-cetak-laporan', function () {
+    return view('cetak.laporan');
+});
+
+Route::get('/dashboard-cetak-invoice-cash', function () {
+    return view('cetak.invoice_cash');
+});
+
+
+
 // properti
 // Route::get('/dashboard-tambah-properti', function () {
 //     return view('properti.tambah_properti');
@@ -74,7 +85,7 @@ Route::post('/properti/{id}/approve-all', [LandBankController::class, 'approveAl
 Route::post('/properti/{id}/reject-all', [LandBankController::class, 'rejectAllDocuments'])
     ->name('properti.rejectAll');
 
-Route::post('/properti/{id}/update-revisi', 
+Route::post('/properti/{id}/update-revisi',
     [LandBankController::class, 'updateRevisi']
 )->name('properti.updateRevisi');
 
@@ -110,6 +121,15 @@ Route::delete('/properti/kavling/{unit}', [LandBankUnitController::class, 'destr
 // web.php
 Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
 
-Route::get('/properti-revisi/{id}', 
+Route::get('/properti-proses-pembangunan', function () {
+    return view('properti.proses_pembangunan');
+});
+
+Route::get('/properti-daftar-pembangunan', function () {
+    return view('properti.daftar_pembangunan');
+});
+
+
+Route::get('/properti-revisi/{id}',
     [LandBankController::class, 'revisi']
 )->name('properti.revisi');
