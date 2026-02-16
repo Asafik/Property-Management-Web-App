@@ -83,7 +83,7 @@ Route::post('/properti/{id}/approve-all', [LandBankController::class, 'approveAl
 Route::post('/properti/{id}/reject-all', [LandBankController::class, 'rejectAllDocuments'])
     ->name('properti.rejectAll');
 
-Route::post('/properti/{id}/update-revisi', 
+Route::post('/properti/{id}/update-revisi',
     [LandBankController::class, 'updateRevisi']
 )->name('properti.updateRevisi');
 
@@ -97,6 +97,15 @@ Route::get('/properti-buat-kavling', function () {
 });
 
 
-Route::get('/properti-revisi/{id}', 
+Route::get('/properti-proses-pembangunan', function () {
+    return view('properti.proses_pembangunan');
+});
+
+Route::get('/properti-daftar-pembangunan', function () {
+    return view('properti.daftar_pembangunan');
+});
+
+
+Route::get('/properti-revisi/{id}',
     [LandBankController::class, 'revisi']
 )->name('properti.revisi');
