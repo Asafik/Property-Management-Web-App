@@ -223,10 +223,35 @@
                     Tolak Pengajuan
                 </button>
 
-                <form id="formSetujuiSemua" method="POST" action="{{ route('properti.approveAll', $land->id) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-success">Setujui Semua</button>
-                </form>
+    <form id="formSetujuiSemua" method="POST" action="{{ route('properti.approveAll', $land->id) }}">
+    @csrf
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">
+        Setujui Semua
+    </button>
+</form>
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Konfirmasi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+     <div class="modal-body">
+    Apakah Anda yakin ingin menyetujui semua? <br>
+    <small class="text-muted">Silakan dicek kembali dokumennya sebelum menyetujui.</small>
+</div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-success" id="confirmSubmit">Ya, Setujui</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 
             </div>
@@ -261,3 +286,12 @@
 
     </div>
 @endsection
+@push('scripts')
+    
+<script>
+    document.getElementById('confirmSubmit').addEventListener('click', function() {
+        document.getElementById('formSetujuiSemua').submit();
+    });
+</script>
+
+@endpush

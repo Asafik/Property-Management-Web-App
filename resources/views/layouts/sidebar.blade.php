@@ -78,12 +78,8 @@
         <li class="nav-item">
             <a class="nav-link" href="{{route('properti')}}">Tambah Properti</a>
         </li>
-        <!-- TAMBAHAN MENU BARU SESUAI FLOWCHART -->
         <li class="nav-item">
-            <a class="nav-link" href="#">Verifikasi Legal</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Buat Kavling</a>
+            <a class="nav-link" href="{{route('kavling.index')}}">Tambah Kavling</a>
         </li>
         <!-- END TAMBAHAN MENU -->
         <li class="nav-item">

@@ -14,6 +14,7 @@ class LandBank extends Model
         'ownership_status',
         'certificate_owner',
         'area',
+        'remaining_area',
         'acquisition_price',
         'acquisition_date',
         'imb_no',
@@ -52,6 +53,10 @@ class LandBank extends Model
         return $this->hasMany(LandBankDocument::class)
             ->whereNotNull('revisi_ke')
             ->orderBy('revisi_ke');
+    }
+      public function units()
+    {
+        return $this->hasMany(LandBankUnit::class);
     }
     public function getCertificateNumberAttribute()
 {

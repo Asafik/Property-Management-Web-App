@@ -2,8 +2,10 @@
 <?php
 
 use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\Admin\VerifikasiLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandBankController;
+use App\Http\Controllers\Admin\LandBankUnitController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -80,11 +82,33 @@ Route::post('/dokumen/{id}/update',
     [LandBankController::class, 'updateDocument']
 )->name('dokumen.update');
 
+Route::get('/kavling', [PropertyController::class, 'kavlingindex'])
+    ->name('kavling.index');
 
-Route::get('/properti-buat-kavling', function () {
-    return view('properti.addkavling');
-});
+// Route::get('/properti-buat-kavling', function () {
+//     return view('properti.addkavling');
+// });
+Route::get('/properti-buat-kavling/{land_bank_id}', [LandBankUnitController::class, 'create'])
+    ->name('properti.buatKavling');
+// Simpan Manual
+Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
 
+// Generate Otomatis
+Route::post('/properti-buat-kavling/{land_bank_id}/generate', [LandBankUnitController::class, 'generate'])->name('properti.generateKavling');
+// Edit unit kavling
+Route::get('/properti/kavling/{unit}/edit', [LandBankUnitController::class, 'edit'])
+     ->name('properti.kavling.edit');
+
+// Update unit kavling
+Route::put('/properti/kavling/{unit}', [LandBankUnitController::class, 'update'])
+     ->name('properti.kavling.update');
+
+// Delete unit kavling
+Route::delete('/properti/kavling/{unit}', [LandBankUnitController::class, 'destroy'])
+     ->name('properti.kavling.destroy');
+
+// web.php
+Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
 
 Route::get('/properti-revisi/{id}', 
     [LandBankController::class, 'revisi']
