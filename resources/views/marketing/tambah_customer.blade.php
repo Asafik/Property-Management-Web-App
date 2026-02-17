@@ -3,30 +3,33 @@
 @section('title', 'Tambah Customer - Property Management App')
 
 @section('content')
-<!-- KONTEN TAMBAH CUSTOMER -->
-<div class="container-fluid p-4">
+<link rel="stylesheet" href="{{ asset('assets/css/marketing/add-customer.css') }}">
+
+
+<div class="container-fluid p-3 p-md-4">
     <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h3 class="text-dark">Tambah Customer Baru</h3>
-            <p class="text-muted">Input data lengkap customer untuk keperluan booking, KPR, dan transaksi properti</p>
+    <div class="add-row mb-3 mb-md-4">
+        <div class="add-col-12">
+            <h3 class="text-dark fw-bold fs-4 fs-md-3" style="color: #2c2e3f; margin-bottom: 0.25rem;">Tambah Customer Baru</h3>
+            <p class="add-text-muted small" style="margin-bottom: 0;">Input data lengkap customer untuk keperluan booking, KPR, dan transaksi properti</p>
         </div>
     </div>
 
     <!-- Progress Status -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card bg-light">
-                <div class="card-body py-3">
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <span class="badge badge-primary">ID: CUST-20250214-001</span>
-                        </div>
+    <div class="add-row mb-3">
+        <div class="add-col-12">
+            <div class="add-card add-bg-light border-0">
+                <div class="add-card-body py-3">
+                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
                         <div>
-                            <span class="text-muted">Tanggal: 14 Februari 2026</span>
+                            <span class="add-badge add-badge-primary">ID: CUST-20250214-001</span>
                         </div>
-                        <div class="ms-auto">
-                            <span class="badge badge-success">New Customer</span>
+                        <div class="add-text-muted small d-flex align-items-center">
+                            <i class="mdi mdi-calendar me-1 add-text-primary"></i>
+                            <span>Tanggal: 14 Februari 2026</span>
+                        </div>
+                        <div class="ms-sm-auto mt-2 mt-sm-0">
+                            <span class="add-badge add-badge-success">New Customer</span>
                         </div>
                     </div>
                 </div>
@@ -35,153 +38,158 @@
     </div>
 
     <!-- Form Tambah Customer -->
-    <div class="row">
-        <div class="col-12 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">
-                        <i class="mdi mdi-account-plus me-2 text-primary"></i>
-                        Form Input Data Customer Lengkap
+    <div class="add-row">
+        <div class="add-col-12">
+            <div class="add-card">
+                <div class="add-card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                    <h4 class="mb-0 d-flex align-items-center">
+                        <i class="mdi mdi-account-plus me-2 add-text-primary"></i>
+                        Form Input Data Customer
                     </h4>
-                    <div>
-                        <span class="badge badge-danger me-2">* Wajib diisi</span>
-                        <span class="badge badge-secondary">Opsional</span>
+                    <div class="d-flex gap-2">
+                        <span class="add-badge add-badge-danger">* Wajib</span>
+                        <span class="add-badge add-badge-secondary">Opsional</span>
                     </div>
                 </div>
-                <div class="card-body">
-                    <form class="forms-sample">
+                <div class="add-card-body">
+                    <form class="add-forms-sample">
                         <!-- Alert Info -->
-                        <div class="alert alert-info" role="alert">
-                            <i class="mdi mdi-information-outline me-2"></i>
-                            Data customer akan digunakan untuk booking unit, pengajuan KPR, dan dokumen legal. Pastikan data sesuai dengan dokumen resmi.
+                        <div class="add-alert add-alert-info d-flex align-items-start gap-2 mb-4" role="alert">
+                            <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
+                            <span>Data customer akan digunakan untuk booking unit, pengajuan KPR, dan dokumen legal. Pastikan data sesuai dengan dokumen resmi.</span>
                         </div>
 
-                        <!-- Nav tabs untuk kategori data - Bootstrap 4 -->
-                        <ul class="nav nav-tabs" id="customerTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pribadi-tab" data-toggle="tab" href="#pribadi" role="tab" aria-controls="pribadi" aria-selected="true">
-                                    <i class="mdi mdi-account me-1"></i>Data Pribadi
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="alamat-tab" data-toggle="tab" href="#alamat" role="tab" aria-controls="alamat" aria-selected="false">
-                                    <i class="mdi mdi-map-marker me-1"></i>Alamat Lengkap
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="kontak-tab" data-toggle="tab" href="#kontak" role="tab" aria-controls="kontak" aria-selected="false">
-                                    <i class="mdi mdi-phone me-1"></i>Kontak & Media Sosial
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pekerjaan-tab" data-toggle="tab" href="#pekerjaan" role="tab" aria-controls="pekerjaan" aria-selected="false">
-                                    <i class="mdi mdi-briefcase me-1"></i>Pekerjaan & Keuangan
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="keluarga-tab" data-toggle="tab" href="#keluarga" role="tab" aria-controls="keluarga" aria-selected="false">
-                                    <i class="mdi mdi-account-group me-1"></i>Data Keluarga
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="dokumen-tab" data-toggle="tab" href="#dokumen" role="tab" aria-controls="dokumen" aria-selected="false">
-                                    <i class="mdi mdi-file-document me-1"></i>Dokumen
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="kpr-tab" data-toggle="tab" href="#kpr" role="tab" aria-controls="kpr" aria-selected="false">
-                                    <i class="mdi mdi-bank me-1"></i>Data KPR
-                                </a>
-                            </li>
-                        </ul>
+                        <!-- Custom Tabs - Responsif dengan scroll -->
+                        <div class="add-custom-tabs-wrapper overflow-auto mb-3">
+                            <ul class="add-custom-tabs" id="customerTab" role="tablist">
+                                <li class="add-custom-tab-item">
+                                    <a class="add-custom-tab-link active" id="pribadi-tab" data-toggle="tab" href="#pribadi" role="tab" aria-controls="pribadi" aria-selected="true">
+                                        <i class="mdi mdi-account"></i>
+                                        <span>Pribadi</span>
+                                    </a>
+                                </li>
+                                <li class="add-custom-tab-item">
+                                    <a class="add-custom-tab-link" id="alamat-tab" data-toggle="tab" href="#alamat" role="tab" aria-controls="alamat" aria-selected="false">
+                                        <i class="mdi mdi-map-marker"></i>
+                                        <span>Alamat</span>
+                                    </a>
+                                </li>
+                                <li class="add-custom-tab-item">
+                                    <a class="add-custom-tab-link" id="kontak-tab" data-toggle="tab" href="#kontak" role="tab" aria-controls="kontak" aria-selected="false">
+                                        <i class="mdi mdi-phone"></i>
+                                        <span>Kontak</span>
+                                    </a>
+                                </li>
+                                <li class="add-custom-tab-item">
+                                    <a class="add-custom-tab-link" id="pekerjaan-tab" data-toggle="tab" href="#pekerjaan" role="tab" aria-controls="pekerjaan" aria-selected="false">
+                                        <i class="mdi mdi-briefcase"></i>
+                                        <span>Pekerjaan</span>
+                                    </a>
+                                </li>
+                                <li class="add-custom-tab-item">
+                                    <a class="add-custom-tab-link" id="keluarga-tab" data-toggle="tab" href="#keluarga" role="tab" aria-controls="keluarga" aria-selected="false">
+                                        <i class="mdi mdi-account-group"></i>
+                                        <span>Keluarga</span>
+                                    </a>
+                                </li>
+                                <li class="add-custom-tab-item">
+                                    <a class="add-custom-tab-link" id="dokumen-tab" data-toggle="tab" href="#dokumen" role="tab" aria-controls="dokumen" aria-selected="false">
+                                        <i class="mdi mdi-file-document"></i>
+                                        <span>Dokumen</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
                         <!-- Tab Content -->
-                        <div class="tab-content mt-4" id="customerTabContent">
+                        <div class="tab-content mt-3 mt-md-4" id="customerTabContent">
                             <!-- TAB 1: DATA PRIBADI -->
-                            <div class="tab-pane fade show active" id="pribadi" role="tabpanel" aria-labelledby="pribadi-tab">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Sesuai KTP" required>
-                                            <small class="text-muted">Tanpa gelar, sesuai KTP</small>
+                            <div class="add-custom-tab-pane active" id="pribadi" role="tabpanel" aria-labelledby="pribadi-tab">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Nama Lengkap <span class="add-text-danger">*</span></label>
+                                            <input type="text" class="add-form-control" name="nama" placeholder="Sesuai KTP">
+                                            <small class="add-text-muted">Tanpa gelar, sesuai KTP</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="namaAlias">Nama Panggilan</label>
-                                            <input type="text" class="form-control" id="namaAlias" name="namaAlias" placeholder="Contoh: John">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="nik">NIK <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="nik" name="nik" placeholder="16 digit" maxlength="16" required>
-                                            <small class="text-muted">16 digit angka, sesuai KTP</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="noKK">Nomor Kartu Keluarga</label>
-                                            <input type="text" class="form-control" id="noKK" name="noKK" placeholder="16 digit" maxlength="16">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Nama Panggilan</label>
+                                            <input type="text" class="add-form-control" name="namaAlias" placeholder="Contoh: John">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="tempatLahir">Tempat Lahir</label>
-                                            <input type="text" class="form-control" id="tempatLahir" name="tempatLahir" placeholder="Jakarta">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>NIK <span class="add-text-danger">*</span></label>
+                                            <input type="text" class="add-form-control" name="nik" placeholder="16 digit" maxlength="16">
+                                            <small class="add-text-muted">16 digit angka, sesuai KTP</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="tanggalLahir">Tanggal Lahir</label>
-                                            <input type="date" class="form-control" id="tanggalLahir" name="tanggalLahir">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="usia">Usia (Tahun)</label>
-                                            <input type="number" class="form-control" id="usia" name="usia" placeholder="30" readonly>
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Nomor Kartu Keluarga</label>
+                                            <input type="text" class="add-form-control" name="noKK" placeholder="16 digit" maxlength="16">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="jenisKelamin">Jenis Kelamin</label>
-                                            <select class="form-control" id="jenisKelamin" name="jenisKelamin">
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Tempat Lahir</label>
+                                            <input type="text" class="add-form-control" name="tempatLahir" placeholder="Jakarta">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Tanggal Lahir</label>
+                                            <div class="add-date-input">
+                                                <i class="mdi mdi-calendar"></i>
+                                                <input type="date" class="add-form-control" name="tanggalLahir">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Usia (Tahun)</label>
+                                            <input type="number" class="add-form-control" name="usia" placeholder="30" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Jenis Kelamin</label>
+                                            <select class="add-form-control" name="jenisKelamin">
                                                 <option value="">-- Pilih --</option>
                                                 <option value="L">Laki-laki</option>
                                                 <option value="P">Perempuan</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="agama">Agama</label>
-                                            <select class="form-control" id="agama" name="agama">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Agama</label>
+                                            <select class="add-form-control" name="agama">
                                                 <option value="">-- Pilih --</option>
                                                 <option>Islam</option>
-                                                <option>Kristen Protestan</option>
+                                                <option>Kristen</option>
                                                 <option>Katolik</option>
                                                 <option>Hindu</option>
                                                 <option>Buddha</option>
-                                                <option>Konghucu</option>
                                                 <option>Lainnya</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kewarganegaraan">Kewarganegaraan</label>
-                                            <select class="form-control" id="kewarganegaraan" name="kewarganegaraan">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kewarganegaraan</label>
+                                            <select class="add-form-control" name="kewarganegaraan">
                                                 <option>WNI</option>
                                                 <option>WNA</option>
                                             </select>
@@ -189,405 +197,421 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="statusNikah">Status Pernikahan</label>
-                                            <select class="form-control" id="statusNikah" name="statusNikah">
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Status Pernikahan</label>
+                                            <select class="add-form-control" name="statusNikah">
                                                 <option value="">-- Pilih --</option>
-                                                <option value="Belum Menikah">Belum Menikah</option>
-                                                <option value="Menikah">Menikah</option>
-                                                <option value="Cerai">Cerai</option>
-                                                <option value="Cerai Mati">Cerai Mati</option>
+                                                <option>Belum Menikah</option>
+                                                <option>Menikah</option>
+                                                <option>Cerai</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="tanggalPernikahan">Tanggal Pernikahan</label>
-                                            <input type="date" class="form-control" id="tanggalPernikahan" name="tanggalPernikahan">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Tanggal Pernikahan</label>
+                                            <div class="add-date-input">
+                                                <i class="mdi mdi-calendar"></i>
+                                                <input type="date" class="add-form-control" name="tanggalPernikahan">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="jumlahAnak">Jumlah Anak</label>
-                                            <input type="number" class="form-control" id="jumlahAnak" name="jumlahAnak" value="0" min="0">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Jumlah Anak</label>
+                                            <input type="number" class="add-form-control" name="jumlahAnak" value="0" min="0">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- TAB 2: ALAMAT LENGKAP -->
-                            <div class="tab-pane fade" id="alamat" role="tabpanel" aria-labelledby="alamat-tab">
-                                <div class="card bg-light mb-3">
-                                    <div class="card-body py-2">
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="alamatSamaKTP">
-                                            <label class="form-check-label" for="alamatSamaKTP">Alamat domisili sama dengan alamat KTP</label>
-                                        </div>
-                                    </div>
+                            <div class="add-custom-tab-pane" id="alamat" role="tabpanel" aria-labelledby="alamat-tab">
+                                <!-- Modern Checkbox -->
+                                <div class="add-checkbox-wrapper mb-4">
+                                    <input type="checkbox" class="add-checkbox-input" id="alamatSamaKTP">
+                                    <label class="add-checkbox-label" for="alamatSamaKTP">
+                                        <i class="mdi mdi-check-circle add-check-icon"></i>
+                                        <span class="add-check-text">Alamat domisili sama dengan alamat KTP</span>
+                                    </label>
                                 </div>
 
-                                <h6 class="text-primary mb-3">Alamat Sesuai KTP</h6>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="provinsiKTP">Provinsi</label>
-                                            <select class="form-control" id="provinsiKTP" name="provinsiKTP">
-                                                <option value="">-- Pilih Provinsi --</option>
-                                                <option value="DKI Jakarta">DKI Jakarta</option>
-                                                <option value="Jawa Barat">Jawa Barat</option>
-                                                <option value="Jawa Tengah">Jawa Tengah</option>
-                                                <option value="Jawa Timur">Jawa Timur</option>
-                                                <option value="Banten">Banten</option>
+                                <div class="add-section-title">
+                                    <i class="mdi mdi-card-account-details"></i>
+                                    Alamat Sesuai KTP
+                                </div>
+
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Provinsi</label>
+                                            <select class="add-form-control" id="provinsiKTP" name="provinsiKTP">
+                                                <option value="">-- Pilih --</option>
+                                                <option>DKI Jakarta</option>
+                                                <option>Jawa Barat</option>
+                                                <option>Jawa Tengah</option>
+                                                <option>Jawa Timur</option>
+                                                <option>Banten</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kotaKTP">Kota/Kabupaten</label>
-                                            <input type="text" class="form-control" id="kotaKTP" name="kotaKTP" placeholder="Jakarta Selatan">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kota/Kabupaten</label>
+                                            <input type="text" class="add-form-control" id="kotaKTP" name="kotaKTP" placeholder="Jakarta Selatan">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kecamatanKTP">Kecamatan</label>
-                                            <input type="text" class="form-control" id="kecamatanKTP" name="kecamatanKTP" placeholder="Kebayoran Baru">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kelurahanKTP">Kelurahan/Desa</label>
-                                            <input type="text" class="form-control" id="kelurahanKTP" name="kelurahanKTP" placeholder="Cipete">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label for="rtKTP">RT</label>
-                                            <input type="text" class="form-control" id="rtKTP" name="rtKTP" placeholder="001">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label for="rwKTP">RW</label>
-                                            <input type="text" class="form-control" id="rwKTP" name="rwKTP" placeholder="002">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kodePosKTP">Kode Pos</label>
-                                            <input type="text" class="form-control" id="kodePosKTP" name="kodePosKTP" placeholder="12345">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kecamatan</label>
+                                            <input type="text" class="add-form-control" id="kecamatanKTP" name="kecamatanKTP" placeholder="Kebayoran Baru">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="alamatKTP">Alamat Lengkap KTP</label>
-                                    <textarea class="form-control" id="alamatKTP" name="alamatKTP" rows="2" placeholder="Jl. Contoh No. 123"></textarea>
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kelurahan/Desa</label>
+                                            <input type="text" class="add-form-control" id="kelurahanKTP" name="kelurahanKTP" placeholder="Cipete">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-6 add-col-md-2">
+                                        <div class="add-form-group">
+                                            <label>RT</label>
+                                            <input type="text" class="add-form-control" id="rtKTP" name="rtKTP" placeholder="001">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-6 add-col-md-2">
+                                        <div class="add-form-group">
+                                            <label>RW</label>
+                                            <input type="text" class="add-form-control" id="rwKTP" name="rwKTP" placeholder="002">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kode Pos</label>
+                                            <input type="text" class="add-form-control" id="kodePosKTP" name="kodePosKTP" placeholder="12345">
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <hr>
-                                <h6 class="text-primary mb-3">Alamat Domisili Saat Ini</h6>
+                                <div class="add-form-group">
+                                    <label>Alamat Lengkap KTP</label>
+                                    <textarea class="add-form-control" id="alamatKTP" name="alamatKTP" rows="2" placeholder="Jl. Contoh No. 123"></textarea>
+                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="provinsiDomisili">Provinsi</label>
-                                            <select class="form-control" id="provinsiDomisili" name="provinsiDomisili">
-                                                <option value="">-- Pilih Provinsi --</option>
-                                                <option value="DKI Jakarta">DKI Jakarta</option>
-                                                <option value="Jawa Barat">Jawa Barat</option>
-                                                <option value="Jawa Tengah">Jawa Tengah</option>
-                                                <option value="Jawa Timur">Jawa Timur</option>
-                                                <option value="Banten">Banten</option>
+                                <hr class="add-hr">
+
+                                <div class="add-section-title">
+                                    <i class="mdi mdi-home"></i>
+                                    Alamat Domisili Saat Ini
+                                </div>
+
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Provinsi</label>
+                                            <select class="add-form-control" id="provinsiDomisili" name="provinsiDomisili">
+                                                <option value="">-- Pilih --</option>
+                                                <option>DKI Jakarta</option>
+                                                <option>Jawa Barat</option>
+                                                <option>Jawa Tengah</option>
+                                                <option>Jawa Timur</option>
+                                                <option>Banten</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kotaDomisili">Kota/Kabupaten</label>
-                                            <input type="text" class="form-control" id="kotaDomisili" name="kotaDomisili" placeholder="Jakarta Selatan">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kota/Kabupaten</label>
+                                            <input type="text" class="add-form-control" id="kotaDomisili" name="kotaDomisili" placeholder="Jakarta Selatan">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kecamatanDomisili">Kecamatan</label>
-                                            <input type="text" class="form-control" id="kecamatanDomisili" name="kecamatanDomisili" placeholder="Kebayoran Baru">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kelurahanDomisili">Kelurahan/Desa</label>
-                                            <input type="text" class="form-control" id="kelurahanDomisili" name="kelurahanDomisili" placeholder="Cipete">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label for="rtDomisili">RT</label>
-                                            <input type="text" class="form-control" id="rtDomisili" name="rtDomisili" placeholder="001">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label for="rwDomisili">RW</label>
-                                            <input type="text" class="form-control" id="rwDomisili" name="rwDomisili" placeholder="002">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="kodePosDomisili">Kode Pos</label>
-                                            <input type="text" class="form-control" id="kodePosDomisili" name="kodePosDomisili" placeholder="12345">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kecamatan</label>
+                                            <input type="text" class="add-form-control" id="kecamatanDomisili" name="kecamatanDomisili" placeholder="Kebayoran Baru">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="alamatDomisili">Alamat Lengkap Domisili</label>
-                                    <textarea class="form-control" id="alamatDomisili" name="alamatDomisili" rows="2" placeholder="Jl. Contoh No. 123"></textarea>
+                                <div class="add-row">
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kelurahan/Desa</label>
+                                            <input type="text" class="add-form-control" id="kelurahanDomisili" name="kelurahanDomisili" placeholder="Cipete">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-6 add-col-md-2">
+                                        <div class="add-form-group">
+                                            <label>RT</label>
+                                            <input type="text" class="add-form-control" id="rtDomisili" name="rtDomisili" placeholder="001">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-6 add-col-md-2">
+                                        <div class="add-form-group">
+                                            <label>RW</label>
+                                            <input type="text" class="add-form-control" id="rwDomisili" name="rwDomisili" placeholder="002">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-md-4">
+                                        <div class="add-form-group">
+                                            <label>Kode Pos</label>
+                                            <input type="text" class="add-form-control" id="kodePosDomisili" name="kodePosDomisili" placeholder="12345">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="add-form-group">
+                                    <label>Alamat Lengkap Domisili</label>
+                                    <textarea class="add-form-control" id="alamatDomisili" name="alamatDomisili" rows="2" placeholder="Jl. Contoh No. 123"></textarea>
                                 </div>
                             </div>
 
                             <!-- TAB 3: KONTAK & MEDIA SOSIAL -->
-                            <div class="tab-pane fade" id="kontak" role="tabpanel" aria-labelledby="kontak-tab">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="noHp">Nomor HP / WhatsApp <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="noHp" name="noHp" placeholder="081234567890" required>
+                            <div class="add-custom-tab-pane" id="kontak" role="tabpanel" aria-labelledby="kontak-tab">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>No. HP / WA <span class="add-text-danger">*</span></label>
+                                            <input type="text" class="add-form-control" name="noHp" placeholder="081234567890">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="noTelp">Nomor Telepon Rumah</label>
-                                            <input type="text" class="form-control" id="noTelp" name="noTelp" placeholder="021-1234567">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="email">Email Pribadi</label>
-                                            <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="emailKantor">Email Kantor</label>
-                                            <input type="email" class="form-control" id="emailKantor" name="emailKantor" placeholder="john@company.com">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>No. Telepon Rumah</label>
+                                            <input type="text" class="add-form-control" name="noTelp" placeholder="021-1234567">
                                         </div>
                                     </div>
                                 </div>
 
-                                <h6 class="text-primary mt-3 mb-3">Media Sosial</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="instagram">Instagram</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">@</span>
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Email Pribadi</label>
+                                            <input type="email" class="add-form-control" name="email" placeholder="john@example.com">
+                                        </div>
+                                    </div>
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Email Kantor</label>
+                                            <input type="email" class="add-form-control" name="emailKantor" placeholder="john@company.com">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="add-section-title mt-3">
+                                    <i class="mdi mdi-share-variant"></i>
+                                    Media Sosial
+                                    <span class="add-badge add-badge-secondary ms-2" style="font-size: 0.6rem;">Opsional</span>
+                                </div>
+
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Instagram</label>
+                                            <div class="add-input-group">
+                                                <div class="add-input-group-prepend">
+                                                    <span class="add-input-group-text">@</span>
                                                 </div>
-                                                <input type="text" class="form-control" id="instagram" name="instagram" placeholder="username">
+                                                <input type="text" class="add-form-control" name="instagram" placeholder="username">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="facebook">Facebook</label>
-                                            <input type="text" class="form-control" id="facebook" name="facebook" placeholder="nama.profil">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Facebook</label>
+                                            <input type="text" class="add-form-control" name="facebook" placeholder="nama.profil">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- TAB 4: PEKERJAAN & KEUANGAN -->
-                            <div class="tab-pane fade" id="pekerjaan" role="tabpanel" aria-labelledby="pekerjaan-tab">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="pekerjaan">Status Pekerjaan</label>
-                                            <select class="form-control" id="pekerjaan" name="pekerjaan">
+                            <div class="add-custom-tab-pane" id="pekerjaan" role="tabpanel" aria-labelledby="pekerjaan-tab">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Status Pekerjaan</label>
+                                            <select class="add-form-control" name="pekerjaan">
                                                 <option value="">-- Pilih --</option>
                                                 <option>Karyawan Swasta</option>
                                                 <option>PNS</option>
-                                                <option>TNI/Polri</option>
                                                 <option>Wiraswasta</option>
                                                 <option>Ibu Rumah Tangga</option>
                                                 <option>Pensiunan</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="bidangUsaha">Bidang Usaha/Perusahaan</label>
-                                            <input type="text" class="form-control" id="bidangUsaha" name="bidangUsaha" placeholder="PT. Contoh Abadi">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Perusahaan</label>
+                                            <input type="text" class="add-form-control" name="bidangUsaha" placeholder="PT. Contoh Abadi">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="penghasilanPokok">Penghasilan Pokok (Rp)</label>
-                                            <input type="text" class="form-control" id="penghasilanPokok" name="penghasilanPokok" placeholder="10.000.000">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Penghasilan Pokok (Rp)</label>
+                                            <input type="text" class="add-form-control" name="penghasilanPokok" placeholder="10.000.000">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="penghasilanTambahan">Penghasilan Tambahan (Rp)</label>
-                                            <input type="text" class="form-control" id="penghasilanTambahan" name="penghasilanTambahan" placeholder="2.000.000">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Penghasilan Tambahan (Rp)</label>
+                                            <input type="text" class="add-form-control" name="penghasilanTambahan" placeholder="2.000.000">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="penghasilanTotal">Total Penghasilan (Rp)</label>
-                                            <input type="text" class="form-control" id="penghasilanTotal" name="penghasilanTotal" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="npwp">NPWP</label>
-                                            <input type="text" class="form-control" id="npwp" name="npwp" placeholder="XX.XXX.XXX.X-XXX.XXX">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>NPWP</label>
+                                            <input type="text" class="add-form-control" name="npwp" placeholder="XX.XXX.XXX.X-XXX.XXX">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- TAB 5: DATA KELUARGA -->
-                            <div class="tab-pane fade" id="keluarga" role="tabpanel" aria-labelledby="keluarga-tab">
-                                <h6 class="text-primary mb-3">Data Pasangan</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="namaPasangan">Nama Lengkap Pasangan</label>
-                                            <input type="text" class="form-control" id="namaPasangan" name="namaPasangan" placeholder="Jane Doe">
+                            <!-- TAB 5: DATA KELUARGA - Margin sudah dikurangi -->
+                            <div class="add-custom-tab-pane" id="keluarga" role="tabpanel" aria-labelledby="keluarga-tab">
+                                <!-- Data Pasangan - Tanpa margin top berlebih -->
+                                <div class="add-section-title">
+                                    <i class="mdi mdi-account-heart"></i>
+                                    Data Pasangan
+                                </div>
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Nama Lengkap Pasangan</label>
+                                            <input type="text" class="add-form-control" name="namaPasangan" placeholder="Jane Doe">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="nikPasangan">NIK Pasangan</label>
-                                            <input type="text" class="form-control" id="nikPasangan" name="nikPasangan" placeholder="16 digit">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>NIK Pasangan</label>
+                                            <input type="text" class="add-form-control" name="nikPasangan" placeholder="16 digit">
                                         </div>
                                     </div>
                                 </div>
 
-                                <hr>
-                                <h6 class="text-primary mb-3">Data Orang Tua</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="namaAyah">Nama Ayah</label>
-                                            <input type="text" class="form-control" id="namaAyah" name="namaAyah" placeholder="John Doe Sr.">
+                                <!-- Divider dengan margin minimal -->
+                                <hr class="add-hr">
+
+                                <!-- Data Orang Tua - Margin sudah dikurangi -->
+                                <div class="add-section-title">
+                                    <i class="mdi mdi-account-multiple"></i>
+                                    Data Orang Tua
+                                </div>
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Nama Ayah</label>
+                                            <input type="text" class="add-form-control" name="namaAyah" placeholder="John Doe Sr.">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="namaIbu">Nama Ibu</label>
-                                            <input type="text" class="form-control" id="namaIbu" name="namaIbu" placeholder="Jane Doe Sr.">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Nama Ibu</label>
+                                            <input type="text" class="add-form-control" name="namaIbu" placeholder="Jane Doe Sr.">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- TAB 6: DOKUMEN -->
-                            <div class="tab-pane fade" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="uploadKtp">Upload KTP <span class="text-danger">*</span></label>
-                                            <input type="file" class="form-control" id="uploadKtp" name="uploadKtp" required>
-                                            <small class="text-muted">Format: JPG, PNG, PDF (Max 2MB)</small>
+                            <div class="add-custom-tab-pane" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Upload KTP <span class="add-text-danger">*</span></label>
+                                            <div class="add-file-upload">
+                                                <input type="file" id="uploadKtp" name="uploadKtp" accept=".jpg,.jpeg,.png,.pdf">
+                                                <div class="add-file-label">
+                                                    <i class="mdi mdi-cloud-upload"></i>
+                                                    <div class="add-file-info">
+                                                        <span>Klik untuk upload KTP</span>
+                                                        <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                    </div>
+                                                    <span class="add-file-size"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="uploadKk">Upload Kartu Keluarga</label>
-                                            <input type="file" class="form-control" id="uploadKk" name="uploadKk">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="uploadNpwp">Upload NPWP</label>
-                                            <input type="file" class="form-control" id="uploadNpwp" name="uploadNpwp">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="uploadPasangan">Upload KTP Pasangan</label>
-                                            <input type="file" class="form-control" id="uploadPasangan" name="uploadPasangan">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- TAB 7: DATA KPR -->
-                            <div class="tab-pane fade" id="kpr" role="tabpanel" aria-labelledby="kpr-tab">
-                                <div class="alert alert-light border">
-                                    <i class="mdi mdi-information-outline me-2"></i>
-                                    Data ini diperlukan jika customer akan mengajukan KPR
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="plafonKpr">Plafon KPR (Rp)</label>
-                                            <input type="text" class="form-control" id="plafonKpr" name="plafonKpr" placeholder="500.000.000">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="tenorKpr">Tenor (Tahun)</label>
-                                            <select class="form-control" id="tenorKpr" name="tenorKpr">
-                                                <option>5 Tahun</option>
-                                                <option>10 Tahun</option>
-                                                <option>15 Tahun</option>
-                                                <option>20 Tahun</option>
-                                            </select>
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Upload Kartu Keluarga</label>
+                                            <div class="add-file-upload">
+                                                <input type="file" id="uploadKk" name="uploadKk" accept=".jpg,.jpeg,.png,.pdf">
+                                                <div class="add-file-label">
+                                                    <i class="mdi mdi-cloud-upload"></i>
+                                                    <div class="add-file-info">
+                                                        <span>Klik untuk upload KK</span>
+                                                        <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                    </div>
+                                                    <span class="add-file-size"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="dpKpr">Uang Muka (Rp)</label>
-                                            <input type="text" class="form-control" id="dpKpr" name="dpKpr" placeholder="50.000.000">
+                                <div class="add-row">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Upload NPWP</label>
+                                            <div class="add-file-upload">
+                                                <input type="file" id="uploadNpwp" name="uploadNpwp" accept=".jpg,.jpeg,.png,.pdf">
+                                                <div class="add-file-label">
+                                                    <i class="mdi mdi-cloud-upload"></i>
+                                                    <div class="add-file-info">
+                                                        <span>Klik untuk upload NPWP</span>
+                                                        <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                    </div>
+                                                    <span class="add-file-size"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="bungaKpr">Bunga (%)</label>
-                                            <input type="text" class="form-control" id="bungaKpr" name="bungaKpr" placeholder="7.5">
+                                    <div class="add-col-md-6">
+                                        <div class="add-form-group">
+                                            <label>Upload KTP Pasangan</label>
+                                            <div class="add-file-upload">
+                                                <input type="file" id="uploadPasangan" name="uploadPasangan" accept=".jpg,.jpeg,.png,.pdf">
+                                                <div class="add-file-label">
+                                                    <i class="mdi mdi-cloud-upload"></i>
+                                                    <div class="add-file-info">
+                                                        <span>Klik untuk upload KTP Pasangan</span>
+                                                        <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                    </div>
+                                                    <span class="add-file-size"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <hr>
+                        <hr class="add-hr">
 
-                        <!-- Tombol Aksi -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <div>
-                                <a href="{{ url('/customer') }}" class="btn btn-light me-2">
+                        <!-- Tombol Aksi - Responsif -->
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
+                            <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
+                                <a href="{{ url('/customer') }}" class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0">
                                     <i class="mdi mdi-arrow-left me-1"></i>Kembali
                                 </a>
-                                <button type="reset" class="btn btn-secondary">
+                                <button type="reset" class="add-btn add-btn-secondary flex-grow-1 flex-sm-grow-0">
                                     <i class="mdi mdi-refresh me-1"></i>Reset
                                 </button>
                             </div>
-                            <div>
-                                <button type="submit" class="btn btn-primary me-2">
+                            <div class="w-100 w-sm-auto">
+                                <button type="submit" class="add-btn add-btn-primary w-100">
                                     <i class="mdi mdi-content-save me-1"></i>Simpan Customer
                                 </button>
                             </div>
@@ -598,41 +622,25 @@
         </div>
     </div>
 </div>
-<!-- AKHIR KONTEN TAMBAH CUSTOMER -->
 @endsection
 
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Inisialisasi tab Bootstrap 4
-    $('#customerTab a').on('click', function(e) {
+    // Simple Tab Functionality
+    $('.add-custom-tab-link').on('click', function(e) {
         e.preventDefault();
-        $(this).tab('show');
-    });
 
-    // Aktifkan tab pertama secara default
-    $('#customerTab a:first').tab('show');
+        // Remove active class from all tabs and panes
+        $('.add-custom-tab-link').removeClass('active');
+        $('.add-custom-tab-pane').removeClass('active');
 
-    // Format Rupiah sederhana
-    $('input[placeholder*="000"]').on('keyup', function() {
-        let nilai = this.value.replace(/\D/g, '');
-        if (nilai) {
-            this.value = new Intl.NumberFormat('id-ID').format(nilai);
-        }
-    });
+        // Add active class to current tab
+        $(this).addClass('active');
 
-    // Copy alamat
-    $('#alamatSamaKTP').change(function() {
-        if(this.checked) {
-            $('#provinsiDomisili').val($('#provinsiKTP').val());
-            $('#kotaDomisili').val($('#kotaKTP').val());
-            $('#kecamatanDomisili').val($('#kecamatanKTP').val());
-            $('#kelurahanDomisili').val($('#kelurahanKTP').val());
-            $('#rtDomisili').val($('#rtKTP').val());
-            $('#rwDomisili').val($('#rwKTP').val());
-            $('#kodePosDomisili').val($('#kodePosKTP').val());
-            $('#alamatDomisili').val($('#alamatKTP').val());
-        }
+        // Show corresponding pane
+        var target = $(this).attr('href');
+        $(target).addClass('active');
     });
 });
 </script>

@@ -3,6 +3,9 @@
 @section('title', 'Cash Keras - Properti Management')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('assets/css/marketing/cash.css') }}">
+
+
 <div class="row">
     <div class="col-12">
         <!-- Header Info Customer -->
@@ -43,19 +46,19 @@
 <!-- Row untuk Pilihan Skenario (DEMO PURPOSES) -->
 <div class="row mt-3">
     <div class="col-12">
-        <div class="card bg-light">
+        <div class="cash-card bg-light">
             <div class="card-body py-3">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center flex-wrap gap-2">
                     <span class="me-3 fw-medium">Demo Mode:</span>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-success active" id="btnCashAwal">
+                    <div class="cash-btn-group">
+                        <button type="button" class="cash-btn cash-btn-sm cash-btn-success active" id="btnCashAwal">
                             <i class="mdi mdi-cash me-1"></i>Cash Awal
                         </button>
-                        <button type="button" class="btn btn-sm btn-warning" id="btnKonversi">
+                        <button type="button" class="cash-btn cash-btn-sm cash-btn-warning" id="btnKonversi">
                             <i class="mdi mdi-bank-off me-1"></i>Konversi dari KPR
                         </button>
                     </div>
-                    <small class="text-muted ms-3">Klik untuk lihat perbedaan tampilan</small>
+                    <small class="cash-text-muted ms-3">Klik untuk lihat perbedaan tampilan</small>
                 </div>
             </div>
         </div>
@@ -74,7 +77,7 @@
                 </h5>
 
                 <!-- ALERT SKENARIO 1: CASH AWAL -->
-                <div class="alert alert-success" id="alertCashAwal">
+                <div class="cash-alert cash-alert-success" id="alertCashAwal">
                     <div class="d-flex align-items-center">
                         <i class="mdi mdi-check-circle me-3" style="font-size: 24px;"></i>
                         <div>
@@ -84,7 +87,7 @@
                 </div>
 
                 <!-- ALERT SKENARIO 2: KONVERSI DARI KPR -->
-                <div class="alert alert-warning" id="alertKonversi" style="display: none;">
+                <div class="cash-alert cash-alert-warning" id="alertKonversi" style="display: none;">
                     <div class="d-flex">
                         <i class="mdi mdi-information-outline me-3" style="font-size: 24px;"></i>
                         <div>
@@ -93,7 +96,7 @@
                                 <small class="d-block"><span class="fw-medium">Alasan Penolakan:</span> BI Checking / SLIK bermasalah (Rating kurang)</small>
                                 <small class="d-block"><span class="fw-medium">Bank:</span> Bank ABC Syariah</small>
                                 <small class="d-block"><span class="fw-medium">Tanggal Penolakan:</span> 25 Februari 2025</small>
-                                <button class="btn btn-sm btn-outline-primary mt-2">
+                                <button class="cash-btn cash-btn-outline-primary mt-2" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                     <i class="mdi mdi-file-pdf me-1"></i>Lihat Surat Penolakan
                                 </button>
                             </div>
@@ -102,67 +105,67 @@
                 </div>
 
                 <!-- FORM NEGO HARGA -->
-                <div class="card bg-light mb-4">
+                <div class="cash-card bg-light mb-4">
                     <div class="card-body">
-                        <h6 class="text-primary mb-3">
+                        <h6 class="cash-text-primary mb-3">
                             <i class="mdi mdi-tag-multiple me-2"></i>
                             Informasi Harga & Negosiasi
                         </h6>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="cash-form-group">
                                     <label>Harga Unit</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                                    <div class="cash-input-group">
+                                        <div class="cash-input-group-prepend">
+                                            <span class="cash-input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" class="form-control" id="hargaUnit" value="450.000.000" readonly>
+                                        <input type="text" class="cash-form-control" id="hargaUnit" value="450.000.000" readonly>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="cash-form-group">
                                     <label>Harga Nego / Kesepakatan</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                                    <div class="cash-input-group">
+                                        <div class="cash-input-group-prepend">
+                                            <span class="cash-input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" class="form-control" id="hargaNego" value="435.000.000">
+                                        <input type="text" class="cash-form-control" id="hargaNego" value="435.000.000">
                                     </div>
-                                    <small class="text-muted">Masukkan harga final setelah negosiasi</small>
+                                    <small class="cash-text-muted">Masukkan harga final setelah negosiasi</small>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-md-4">
-                                <div class="card border-success">
+                                <div class="cash-card border-success">
                                     <div class="card-body p-2">
-                                        <small class="text-muted d-block">Diskon</small>
-                                        <span class="fw-bold text-success" id="diskonValue">Rp 15.000.000</span>
+                                        <small class="cash-text-muted d-block">Diskon</small>
+                                        <span class="fw-bold cash-text-success" id="diskonValue">Rp 15.000.000</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card border-primary">
+                                <div class="cash-card border-primary">
                                     <div class="card-body p-2">
-                                        <small class="text-muted d-block">Persentase Diskon</small>
-                                        <span class="fw-bold text-primary" id="diskonPersen">3.33%</span>
+                                        <small class="cash-text-muted d-block">Persentase Diskon</small>
+                                        <span class="fw-bold cash-text-primary" id="diskonPersen">3.33%</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card border-danger">
+                                <div class="cash-card border-danger">
                                     <div class="card-body p-2">
-                                        <small class="text-muted d-block">Total Bayar</small>
-                                        <span class="fw-bold text-danger" id="totalBayar">Rp 435.000.000</span>
+                                        <small class="cash-text-muted d-block">Total Bayar</small>
+                                        <span class="fw-bold cash-text-danger" id="totalBayar">Rp 435.000.000</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="alert alert-info mt-3 mb-0">
+                        <div class="cash-alert cash-alert-info mt-3 mb-0">
                             <i class="mdi mdi-information-outline me-2"></i>
                             <strong>Cash Keras:</strong> Customer akan membayar lunas <strong>Rp 435.000.000</strong> (setelah nego)
                         </div>
@@ -170,7 +173,7 @@
                 </div>
 
                 <!-- SECTION KHUSUS SKENARIO 2: BIAYA HANGUS -->
-                <div class="card border-warning bg-warning-subtle mt-3" id="biayaHangus" style="display: none;">
+                <div class="cash-card bg-warning-subtle mt-3" id="biayaHangus" style="display: none;">
                     <div class="card-body">
                         <h6 class="text-warning mb-2">
                             <i class="mdi mdi-alert-circle me-1"></i>
@@ -178,49 +181,49 @@
                         </h6>
                         <div class="row">
                             <div class="col-md-4">
-                                <small class="text-muted d-block">Biaya Survey</small>
+                                <small class="cash-text-muted d-block">Biaya Survey</small>
                                 <span class="fw-medium">Rp 500.000</span>
                             </div>
                             <div class="col-md-4">
-                                <small class="text-muted d-block">Biaya Provisi</small>
+                                <small class="cash-text-muted d-block">Biaya Provisi</small>
                                 <span class="fw-medium">Rp 3.600.000</span>
                             </div>
                             <div class="col-md-4">
-                                <small class="text-muted d-block">Total Hangus</small>
-                                <span class="fw-bold text-danger">Rp 4.100.000</span>
+                                <small class="cash-text-muted d-block">Total Hangus</small>
+                                <span class="fw-bold cash-text-danger">Rp 4.100.000</span>
                             </div>
                         </div>
-                        <small class="text-muted d-block mt-2">*Biaya ini sudah dikeluarkan dan tidak dapat dikembalikan</small>
+                        <small class="cash-text-muted d-block mt-2">*Biaya ini sudah dikeluarkan dan tidak dapat dikembalikan</small>
                     </div>
                 </div>
 
-                <hr>
+                <hr class="cash-hr">
 
                 <!-- Form Input Pembayaran Lunas -->
-                <h6 class="mb-3">Form Pembayaran Lunas</h6>
+                <h6 class="cash-text-primary mb-3">Form Pembayaran Lunas</h6>
 
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="cash-form-group">
                             <label>Tanggal Pembayaran</label>
-                            <input type="date" class="form-control" value="2025-03-25">
+                            <input type="date" class="cash-form-control" value="2025-03-25">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="cash-form-group">
                             <label>Jumlah Dibayar</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
+                            <div class="cash-input-group">
+                                <div class="cash-input-group-prepend">
+                                    <span class="cash-input-group-text">Rp</span>
                                 </div>
-                                <input type="text" class="form-control" id="jumlahBayar" value="435.000.000" readonly>
+                                <input type="text" class="cash-form-control" id="jumlahBayar" value="435.000.000" readonly>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="cash-form-group">
                             <label>Metode Pembayaran</label>
-                            <select class="form-control">
+                            <select class="cash-form-control">
                                 <option>Transfer Bank</option>
                                 <option>Tunai</option>
                                 <option>Kartu Kredit</option>
@@ -232,22 +235,32 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="cash-form-group">
                             <label>Keterangan</label>
-                            <input type="text" class="form-control" value="Pelunasan Cash Keras - Nego Rp 435jt">
+                            <input type="text" class="cash-form-control" value="Pelunasan Cash Keras - Nego Rp 435jt">
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="cash-form-group">
                             <label>Upload Bukti Transfer</label>
-                            <input type="file" class="form-control">
+                            <div class="cash-file-upload-modern">
+                                <input type="file" id="uploadBukti" name="uploadBukti" accept=".jpg,.jpeg,.png,.pdf">
+                                <div class="cash-file-label-modern">
+                                    <i class="mdi mdi-cloud-upload"></i>
+                                    <div class="cash-file-info-modern">
+                                        <span>Upload Bukti Transfer</span>
+                                        <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                    </div>
+                                    <span class="cash-file-size"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row mt-3">
                     <div class="col-md-12">
-                        <div class="alert alert-success">
+                        <div class="cash-alert cash-alert-success">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <i class="mdi mdi-check-circle me-2"></i>
@@ -259,7 +272,7 @@
                     </div>
                 </div>
 
-                <button class="btn btn-success btn-lg mt-3">
+                <button class="cash-btn cash-btn-success btn-lg mt-3 w-100">
                     <i class="mdi mdi-check-circle me-2"></i>
                     Proses Pembayaran Lunas
                 </button>
@@ -278,88 +291,88 @@
 
                 <!-- Status Badge - Berubah sesuai skenario -->
                 <div class="text-center mb-4" id="badgeCashAwal">
-                    <span class="badge badge-success p-2" style="font-size: 14px;">
+                    <span class="cash-badge cash-badge-success" style="font-size: 14px;">
                         <i class="mdi mdi-check-circle me-1"></i>
                         Cash Keras - Belum Lunas
                     </span>
                 </div>
                 <div class="text-center mb-4" id="badgeKonversi" style="display: none;">
-                    <span class="badge badge-warning p-2" style="font-size: 14px;">
+                    <span class="cash-badge cash-badge-warning" style="font-size: 14px;">
                         <i class="mdi mdi-bank-off me-1"></i>
                         Konversi KPR - Cash Keras
                     </span>
                 </div>
 
                 <!-- Ringkasan Transaksi -->
-                <div class="mb-4">
-                    <table class="table table-sm table-borderless">
+                <div class="mb-4 cash-summary-card">
+                    <table class="cash-table">
                         <tr>
                             <td>Harga Unit</td>
                             <td class="text-end">Rp 450.000.000</td>
                         </tr>
                         <tr>
                             <td>Harga Nego</td>
-                            <td class="text-end text-primary">Rp 435.000.000</td>
+                            <td class="text-end cash-text-primary">Rp 435.000.000</td>
                         </tr>
                         <tr>
                             <td>Diskon</td>
-                            <td class="text-end text-success">- Rp 15.000.000</td>
+                            <td class="text-end cash-text-success">- Rp 15.000.000</td>
                         </tr>
                         <tr class="fw-bold">
                             <td>TOTAL LUNAS</td>
-                            <td class="text-end text-danger">Rp 435.000.000</td>
+                            <td class="text-end cash-text-danger">Rp 435.000.000</td>
                         </tr>
                     </table>
                 </div>
 
-                <hr>
+                <hr class="cash-hr">
 
                 <!-- Timeline Transaksi -->
-                <h6 class="mb-3">Timeline Transaksi</h6>
-                <div class="timeline">
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
+                <h6 class="cash-text-primary mb-3">Timeline Transaksi</h6>
+                <div class="cash-timeline">
+                    <div class="cash-timeline-item">
+                        <div class="cash-timeline-icon">
                             <i class="mdi mdi-check-circle text-success"></i>
                         </div>
-                        <div>
-                            <span class="d-block fw-medium">Booking Unit</span>
-                            <small class="text-muted">12 Feb 2025</small>
+                        <div class="cash-timeline-content">
+                            <span class="cash-timeline-title">Booking Unit</span>
+                            <span class="cash-timeline-date">12 Feb 2025</span>
                         </div>
                     </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
+                    <div class="cash-timeline-item">
+                        <div class="cash-timeline-icon">
                             <i class="mdi mdi-check-circle text-success"></i>
                         </div>
-                        <div>
-                            <span class="d-block fw-medium">Negosiasi Harga</span>
-                            <small class="text-muted">20 Feb 2025 - Diskon Rp 15jt</small>
+                        <div class="cash-timeline-content">
+                            <span class="cash-timeline-title">Negosiasi Harga</span>
+                            <span class="cash-timeline-date">20 Feb 2025 - Diskon Rp 15jt</span>
                         </div>
                     </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3">
+                    <div class="cash-timeline-item">
+                        <div class="cash-timeline-icon">
                             <i class="mdi mdi-clock-outline text-warning"></i>
                         </div>
-                        <div>
-                            <span class="d-block fw-medium">Pembayaran Lunas</span>
-                            <small class="text-muted">Menunggu pembayaran</small>
+                        <div class="cash-timeline-content">
+                            <span class="cash-timeline-title">Pembayaran Lunas</span>
+                            <span class="cash-timeline-date">Menunggu pembayaran</span>
                         </div>
                     </div>
                 </div>
 
-                <hr>
+                <hr class="cash-hr">
 
                 <!-- Dokumen Penting -->
-                <h6 class="mb-3">Dokumen</h6>
+                <h6 class="cash-text-primary mb-3">Dokumen</h6>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>Surat Perjanjian Cash</span>
-                        <button class="btn btn-sm btn-outline-primary">
+                        <button class="cash-btn cash-btn-outline-primary" style="width: auto; padding: 0.25rem 0.75rem;">
                             <i class="mdi mdi-download"></i>
                         </button>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>Bukti Negosiasi Harga</span>
-                        <button class="btn btn-sm btn-outline-primary">
+                        <button class="cash-btn cash-btn-outline-primary" style="width: auto; padding: 0.25rem 0.75rem;">
                             <i class="mdi mdi-download"></i>
                         </button>
                     </div>
@@ -369,35 +382,31 @@
                             <i class="mdi mdi-file-pdf text-danger me-1"></i>
                             Surat Penolakan KPR
                         </span>
-                        <button class="btn btn-sm btn-outline-danger">
+                        <button class="cash-btn cash-btn-outline-danger" style="width: auto; padding: 0.25rem 0.75rem;">
                             <i class="mdi mdi-download"></i>
                         </button>
                     </div>
                 </div>
 
-                <hr>
+                <hr class="cash-hr">
 
                 <!-- Tombol Aksi -->
-                <button
-                    onclick="window.open('/dashboard-cetak-invoice-cash', '_blank')"
-                    class="btn btn-primary btn-block mb-2">
+                <button onclick="window.open('/dashboard-cetak-invoice-cash', '_blank')" class="cash-btn cash-btn-primary w-100 mb-2">
                     <i class="mdi mdi-printer me-2"></i>
                     Cetak Invoice
                 </button>
 
-
-
-                <button class="btn btn-info btn-block mb-2">
+                <button class="cash-btn cash-btn-info w-100 mb-2">
                     <i class="mdi mdi-whatsapp me-2"></i>
                     Kirim Invoice
                 </button>
 
-                <button class="btn btn-outline-warning btn-block mb-2">
+                <button class="cash-btn cash-btn-outline-warning w-100 mb-2">
                     <i class="mdi mdi-key me-2"></i>
                     Serah Terima Kunci
                 </button>
 
-                <button class="btn btn-outline-secondary btn-block">
+                <button class="cash-btn cash-btn-outline-secondary w-100">
                     <i class="mdi mdi-arrow-left me-2"></i>
                     Kembali
                 </button>
@@ -415,20 +424,11 @@
     .bg-warning-subtle {
         background-color: #fff3cd !important;
     }
-    .btn-block {
-        width: 100%;
-    }
     .badge {
         padding: 5px 10px;
     }
     hr {
         border-top: 1px solid rgba(0,0,0,.1);
-    }
-    .timeline .d-flex {
-        align-items: flex-start;
-    }
-    .timeline i {
-        font-size: 18px;
     }
     .table-borderless td {
         padding: 0.3rem 0;
@@ -467,6 +467,25 @@ $(document).ready(function() {
             this.value = formatRupiah(nilai).replace('Rp ', '');
         }
         hitungDiskon();
+    });
+
+    // File upload modern preview
+    $('.cash-file-upload-modern input[type="file"]').change(function(e) {
+        const fileName = e.target.files[0]?.name;
+        const fileSize = e.target.files[0]?.size;
+        const label = $(this).closest('.cash-file-upload-modern').find('.cash-file-info-modern span');
+        const sizeSpan = $(this).closest('.cash-file-upload-modern').find('.cash-file-size');
+
+        if (fileName) {
+            label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+            if (fileSize) {
+                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                sizeSpan.text(sizeInMB + ' MB');
+            }
+        } else {
+            label.text('Upload Bukti Transfer');
+            sizeSpan.text('');
+        }
     });
 
     // Toggle untuk demo 2 skenario

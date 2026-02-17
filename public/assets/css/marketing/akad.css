@@ -1,0 +1,494 @@
+/* ===== STYLE CSS KHUSUS UNTUK HALAMAN KONFIRMASI ===== */
+/* Form Styling */
+.konfirmasi-form-group {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .konfirmasi-form-group {
+        margin-bottom: 1.2rem;
+    }
+}
+
+.konfirmasi-form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .konfirmasi-form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
+.konfirmasi-form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    width: 100%;
+    font-family: 'Nunito', sans-serif;
+}
+
+@media (min-width: 768px) {
+    .konfirmasi-form-control {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+}
+
+.konfirmasi-form-control:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+
+/* Input Group */
+.konfirmasi-input-group {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.konfirmasi-input-group-prepend {
+    display: flex;
+}
+
+.konfirmasi-input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #6c7383;
+    text-align: center;
+    white-space: nowrap;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 1px solid #e9ecef;
+    border-radius: 10px 0 0 10px;
+    border-right: none;
+}
+
+.konfirmasi-input-group .konfirmasi-form-control {
+    border-radius: 0 10px 10px 0;
+}
+
+/* Button Styling */
+.konfirmasi-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    text-align: center;
+}
+
+@media (min-width: 576px) {
+    .konfirmasi-btn {
+        width: auto;
+        padding: 0.5rem 1.2rem;
+    }
+}
+
+.konfirmasi-btn-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.konfirmasi-btn-primary:hover {
+    background: linear-gradient(to right, #c77cff, #8a45e6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+}
+
+.konfirmasi-btn-outline-secondary {
+    background: transparent;
+    border: 1px solid #e9ecef;
+    color: #6c7383;
+}
+
+.konfirmasi-btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #2c2e3f;
+    border-color: #9a55ff;
+    transform: translateY(-2px);
+}
+
+/* Text colors */
+.konfirmasi-text-muted {
+    color: #a5b3cb !important;
+    font-size: 0.7rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.konfirmasi-text-primary {
+    color: #9a55ff !important;
+}
+
+/* Divider */
+.konfirmasi-hr {
+    border-top: 1px solid #e9ecef;
+    margin: 0.8rem 0;
+}
+
+/* Card Option Styling */
+.konfirmasi-card-option {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.konfirmasi-card-option:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.konfirmasi-card-option.bg-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+}
+
+.konfirmasi-card-option.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+}
+
+.konfirmasi-card-option i {
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+/* Timeline Styling */
+.konfirmasi-timeline {
+    margin-top: 1rem;
+}
+
+.konfirmasi-timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.konfirmasi-timeline-icon {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.konfirmasi-timeline-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.konfirmasi-timeline-text {
+    font-weight: 500;
+}
+
+.konfirmasi-timeline-date {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Alert Styling */
+.konfirmasi-alert {
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    border-left: 4px solid;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .konfirmasi-alert {
+        padding: 0.9rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+.konfirmasi-alert-warning {
+    background: linear-gradient(135deg, #fff9e6, #fff3d6);
+    color: #2c2e3f;
+    border-left-color: #ffc107;
+}
+
+.konfirmasi-alert-warning i {
+    color: #ffc107;
+}
+
+.konfirmasi-alert-success {
+    background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+    color: #2c2e3f;
+    border-left-color: #28a745;
+}
+
+.konfirmasi-alert-success i {
+    color: #28a745;
+}
+
+.konfirmasi-alert-danger {
+    background: linear-gradient(135deg, #fff0f0, #ffe6e6);
+    color: #2c2e3f;
+    border-left-color: #dc3545;
+}
+
+.konfirmasi-alert-danger i {
+    color: #dc3545;
+}
+
+/* ===== MODERN FILE UPLOAD STYLING - SAMA DENGAN HALAMAN SURVEY ===== */
+.konfirmasi-file-upload-modern {
+    position: relative;
+    width: 100%;
+}
+
+.konfirmasi-file-upload-modern input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.konfirmasi-file-upload-modern .konfirmasi-file-label-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    padding: 1rem 0.6rem;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 2px dashed #d0d4db;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+}
+
+@media (min-width: 576px) {
+    .konfirmasi-file-upload-modern .konfirmasi-file-label-modern {
+        flex-direction: row;
+        text-align: left;
+        gap: 8px;
+        padding: 0.75rem 1rem;
+        min-height: auto;
+    }
+}
+
+.konfirmasi-file-upload-modern:hover .konfirmasi-file-label-modern {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+}
+
+.konfirmasi-file-upload-modern .konfirmasi-file-label-modern i {
+    font-size: 1.6rem;
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.konfirmasi-file-upload-modern .konfirmasi-file-label-modern .konfirmasi-file-info-modern {
+    flex: 1;
+    width: 100%;
+}
+
+.konfirmasi-file-upload-modern .konfirmasi-file-label-modern .konfirmasi-file-info-modern span {
+    display: block;
+    font-weight: 600;
+    color: #2c2e3f;
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+
+.konfirmasi-file-upload-modern .konfirmasi-file-label-modern .konfirmasi-file-info-modern small {
+    color: #6c7383;
+    font-size: 0.65rem;
+    display: block;
+    margin-top: 2px;
+}
+
+.konfirmasi-file-upload-modern .konfirmasi-file-label-modern .konfirmasi-file-size {
+    font-size: 0.7rem;
+    color: #9a55ff;
+    font-weight: 600;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 5px;
+}
+
+@media (min-width: 576px) {
+    .konfirmasi-file-upload-modern .konfirmasi-file-label-modern .konfirmasi-file-size {
+        margin-top: 0;
+    }
+}
+
+/* ===== TINDAKAN SELANJUTNYA - MODERN CARD STYLE (TOUCH-FRIENDLY) ===== */
+.konfirmasi-tindakan-card {
+    position: relative;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.konfirmasi-tindakan-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.konfirmasi-tindakan-label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 1.2rem 1rem;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 2px solid #e9ecef;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 85px;
+}
+
+/* Hover effect */
+.konfirmasi-tindakan-label:hover {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
+}
+
+/* Selected state */
+.konfirmasi-tindakan-card input[type="radio"]:checked + .konfirmasi-tindakan-label {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
+}
+
+/* Icon styling */
+.konfirmasi-tindakan-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.konfirmasi-tindakan-icon i {
+    font-size: 28px;
+    color: #9a55ff;
+}
+
+/* Content styling */
+.konfirmasi-tindakan-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.konfirmasi-tindakan-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    line-height: 1.3;
+}
+
+.konfirmasi-tindakan-desc {
+    font-size: 0.8rem;
+    color: #6c7383;
+    line-height: 1.3;
+}
+
+/* Check icon (hidden by default) */
+.konfirmasi-tindakan-check {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.konfirmasi-tindakan-check i {
+    font-size: 24px;
+    color: #d0d4db;
+    transition: all 0.2s ease;
+}
+
+/* Show check icon when selected */
+.konfirmasi-tindakan-card input[type="radio"]:checked + .konfirmasi-tindakan-label .konfirmasi-tindakan-check i {
+    color: #9a55ff;
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(154, 85, 255, 0.3));
+}
+
+/* Touch-friendly sizing */
+@media (max-width: 768px) {
+    .konfirmasi-tindakan-label {
+        padding: 1rem;
+        min-height: 90px;
+    }
+
+    .konfirmasi-tindakan-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .konfirmasi-tindakan-icon i {
+        font-size: 24px;
+    }
+
+    .konfirmasi-tindakan-title {
+        font-size: 0.95rem;
+    }
+
+    .konfirmasi-tindakan-desc {
+        font-size: 0.75rem;
+    }
+}
+
+/* Animasi pulse saat selected */
+@keyframes konfirmasiTindakanPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.konfirmasi-tindakan-card input[type="radio"]:checked + .konfirmasi-tindakan-label .konfirmasi-tindakan-icon {
+    animation: konfirmasiTindakanPulse 0.3s ease;
+}

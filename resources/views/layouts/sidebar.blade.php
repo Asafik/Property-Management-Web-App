@@ -52,7 +52,7 @@
             <a class="nav-link" href="dashboard-survey">Survey</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-kpr">KPR</a>
+            <a class="nav-link" href="dashboard-vertifikasi-kpr">Vertifikasi KPR</a>
         </li>
          <li class="nav-item">
             <a class="nav-link" href="dashboard-pengajuan">Pengajuan</a>

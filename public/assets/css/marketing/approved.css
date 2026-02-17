@@ -1,0 +1,483 @@
+/* ===== STYLE CSS KHUSUS UNTUK HALAMAN PENCAIRAN DANA ===== */
+/* Form Styling */
+.cair-form-group {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .cair-form-group {
+        margin-bottom: 1.2rem;
+    }
+}
+
+.cair-form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .cair-form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
+.cair-form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    width: 100%;
+    font-family: 'Nunito', sans-serif;
+}
+
+@media (min-width: 768px) {
+    .cair-form-control {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+}
+
+.cair-form-control:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+
+.cair-form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Input Group */
+.cair-input-group {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.cair-input-group-prepend {
+    display: flex;
+}
+
+.cair-input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #6c7383;
+    text-align: center;
+    white-space: nowrap;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 1px solid #e9ecef;
+    border-radius: 10px 0 0 10px;
+    border-right: none;
+}
+
+.cair-input-group .cair-form-control {
+    border-radius: 0 10px 10px 0;
+}
+
+/* Button Styling */
+.cair-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    text-align: center;
+}
+
+@media (min-width: 576px) {
+    .cair-btn {
+        width: auto;
+        padding: 0.5rem 1.2rem;
+    }
+}
+
+.cair-btn-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.cair-btn-success:hover {
+    background: linear-gradient(135deg, #218838, #4cae4c);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+.cair-btn-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.cair-btn-primary:hover {
+    background: linear-gradient(to right, #c77cff, #8a45e6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+}
+
+.cair-btn-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.cair-btn-info:hover {
+    background: linear-gradient(135deg, #138496, #31b0d5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(23, 162, 184, 0.4);
+}
+
+.cair-btn-outline-warning {
+    background: transparent;
+    border: 1px solid #ffc107;
+    color: #ffc107;
+}
+
+.cair-btn-outline-warning:hover {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.cair-btn-outline-secondary {
+    background: transparent;
+    border: 1px solid #e9ecef;
+    color: #6c7383;
+}
+
+.cair-btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #2c2e3f;
+    border-color: #9a55ff;
+    transform: translateY(-2px);
+}
+
+/* Text colors */
+.cair-text-muted {
+    color: #a5b3cb !important;
+    font-size: 0.7rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.cair-text-primary {
+    color: #9a55ff !important;
+}
+
+.cair-text-success {
+    color: #28a745 !important;
+}
+
+/* Divider */
+.cair-hr {
+    border-top: 1px solid #e9ecef;
+    margin: 0.8rem 0;
+}
+
+/* Card Styling */
+.cair-card {
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    background: #ffffff;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.cair-card.bg-light {
+    background: #f8f9fa !important;
+}
+
+.cair-card.bg-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+    color: white;
+}
+
+/* Alert Styling */
+.cair-alert {
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    border-left: 4px solid;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .cair-alert {
+        padding: 0.9rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+.cair-alert-info {
+    background: linear-gradient(135deg, #f6f9ff, #f0f4ff);
+    color: #2c2e3f;
+    border-left-color: #9a55ff;
+}
+
+.cair-alert-info i {
+    color: #9a55ff;
+}
+
+/* Badge Styling */
+.cair-badge {
+    padding: 0.35rem 0.7rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .cair-badge {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.75rem;
+    }
+}
+
+.cair-badge-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+.cair-badge-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.cair-badge-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.3);
+}
+
+.cair-badge-danger {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Timeline Styling */
+.cair-timeline {
+    margin-top: 1rem;
+}
+
+.cair-timeline-item {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.cair-timeline-icon {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.cair-timeline-content {
+    flex: 1;
+}
+
+.cair-timeline-title {
+    font-weight: 600;
+    display: block;
+    color: #2c2e3f;
+}
+
+.cair-timeline-date {
+    color: #6c7383;
+    font-size: 0.8rem;
+}
+
+/* Table Styling */
+.cair-table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.cair-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cair-table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    padding: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #9a55ff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.cair-table tbody td {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    color: #2c2e3f;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cair-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.cair-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Border Card */
+.cair-border-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.cair-border-card:hover {
+    border-color: #9a55ff;
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+}
+
+/* Status Card */
+.cair-status-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.cair-status-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(154, 85, 255, 0.1);
+    border-radius: 50%;
+}
+
+.cair-status-icon i {
+    font-size: 24px;
+    color: #9a55ff;
+}
+
+/* File Upload Modern */
+.cair-file-upload-modern {
+    position: relative;
+    width: 100%;
+}
+
+.cair-file-upload-modern input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.cair-file-upload-modern .cair-file-label-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    padding: 1rem 0.6rem;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 2px dashed #d0d4db;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+}
+
+@media (min-width: 576px) {
+    .cair-file-upload-modern .cair-file-label-modern {
+        flex-direction: row;
+        text-align: left;
+        gap: 8px;
+        padding: 0.75rem 1rem;
+        min-height: auto;
+    }
+}
+
+.cair-file-upload-modern:hover .cair-file-label-modern {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+}
+
+.cair-file-upload-modern .cair-file-label-modern i {
+    font-size: 1.6rem;
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.cair-file-upload-modern .cair-file-label-modern .cair-file-info-modern {
+    flex: 1;
+    width: 100%;
+}
+
+.cair-file-upload-modern .cair-file-label-modern .cair-file-info-modern span {
+    display: block;
+    font-weight: 600;
+    color: #2c2e3f;
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+
+.cair-file-upload-modern .cair-file-label-modern .cair-file-info-modern small {
+    color: #6c7383;
+    font-size: 0.65rem;
+    display: block;
+    margin-top: 2px;
+}
+
+.cair-file-upload-modern .cair-file-label-modern .cair-file-size {
+    font-size: 0.7rem;
+    color: #9a55ff;
+    font-weight: 600;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 5px;
+}
+
+@media (min-width: 576px) {
+    .cair-file-upload-modern .cair-file-label-modern .cair-file-size {
+        margin-top: 0;
+    }
+}

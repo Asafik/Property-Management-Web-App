@@ -3,6 +3,12 @@
 @section('title', 'Survey KPR - Properti Management')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('assets/css/marketing/survey.css') }}">
+
+<style>
+
+</style>
+
 <div class="row">
     <div class="col-12">
         <!-- Header Info Customer -->
@@ -48,13 +54,13 @@
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-timeline-text me-2 text-primary"></i>
-                    Tahapan Pengajuan KPR
+                    Tahapan Survey KPR
                 </h5>
 
                 <!-- Progress Bar -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Progress Pengajuan</span>
+                        <span class="text-muted">Progress Survey</span>
                         <span class="text-primary">Tahap 3 dari 5</span>
                     </div>
                     <div class="progress">
@@ -132,7 +138,7 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
                 <div class="mt-3">
                     <small class="text-muted d-block mb-2">Ditangani oleh:</small>
@@ -171,21 +177,21 @@
                 <!-- Info Jadwal Survey -->
                 <div class="row mb-4">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Tanggal Survey</label>
-                            <input type="date" class="form-control" value="2025-02-20">
+                            <input type="date" class="survey-form-control" value="2025-02-20">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Jam Survey</label>
-                            <input type="time" class="form-control" value="10:00">
+                            <input type="time" class="survey-form-control" value="10:00">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Surveyor</label>
-                            <select class="form-control">
+                            <select class="survey-form-control">
                                 <option>Pilih Surveyor</option>
                                 <option selected>Hendra Wijaya (Tim Bank)</option>
                                 <option>Bambang Supriadi (Tim Bank)</option>
@@ -195,64 +201,64 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
-                <h6 class="mb-3">Hasil Penilaian Unit</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Hasil Penilaian Unit</h6>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Nilai Pasar Unit <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
+                            <div class="survey-input-group">
+                                <div class="survey-input-group-prepend">
+                                    <span class="survey-input-group-text">Rp</span>
                                 </div>
-                                <input type="text" class="form-control" value="450.000.000">
+                                <input type="text" class="survey-form-control" value="450.000.000">
                             </div>
-                            <small class="text-muted">Sesuai harga jual unit</small>
+                            <small class="survey-text-muted">Sesuai harga jual unit</small>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Nilai Appraisal <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
+                            <div class="survey-input-group">
+                                <div class="survey-input-group-prepend">
+                                    <span class="survey-input-group-text">Rp</span>
                                 </div>
-                                <input type="text" class="form-control" value="445.000.000">
+                                <input type="text" class="survey-form-control" value="445.000.000">
                             </div>
-                            <small class="text-muted">Penilaian dari surveyor</small>
+                            <small class="survey-text-muted">Penilaian dari surveyor</small>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Luas Tanah</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="90">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">m²</span>
+                            <div class="survey-input-group">
+                                <input type="text" class="survey-form-control" value="90">
+                                <div class="survey-input-group-prepend">
+                                    <span class="survey-input-group-text">m²</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Luas Bangunan</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="45">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">m²</span>
+                            <div class="survey-input-group">
+                                <input type="text" class="survey-form-control" value="45">
+                                <div class="survey-input-group-prepend">
+                                    <span class="survey-input-group-text">m²</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Kondisi Bangunan</label>
-                            <select class="form-control">
+                            <select class="survey-form-control">
                                 <option>Pilih Kondisi</option>
                                 <option selected>Baru (0-2 tahun)</option>
                                 <option>Baik (2-5 tahun)</option>
@@ -263,91 +269,140 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
-                <h6 class="mb-3">Checklist Kondisi Unit</h6>
+                <!-- ===== CHECKLIST MODERN DENGAN PREFIX SURVEY ===== -->
+                <div class="survey-section-title">
+                    <i class="mdi mdi-checkbox-marked-outline"></i>
+                    Checklist Kondisi Unit
+                </div>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="listrik" checked>
-                            <label class="form-check-label" for="listrik">Instalasi Listrik</label>
+                <div class="survey-row">
+                    <div class="survey-col-12 survey-col-md-4">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="listrik" checked>
+                            <label class="survey-checkbox-label" for="listrik">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">Instalasi Listrik</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="air" checked>
-                            <label class="form-check-label" for="air">PDAM / Air Bersih</label>
+                    <div class="survey-col-12 survey-col-md-4">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="air" checked>
+                            <label class="survey-checkbox-label" for="air">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">PDAM / Air Bersih</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="akses" checked>
-                            <label class="form-check-label" for="akses">Akses Jalan</label>
+                    <div class="survey-col-12 survey-col-md-4">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="akses" checked>
+                            <label class="survey-checkbox-label" for="akses">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">Akses Jalan</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="sertifikat" checked>
-                            <label class="form-check-label" for="sertifikat">Sertifikat Sesuai</label>
+                    <div class="survey-col-12 survey-col-md-4">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="sertifikat" checked>
+                            <label class="survey-checkbox-label" for="sertifikat">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">Sertifikat Sesuai</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="shm" checked>
-                            <label class="form-check-label" for="shm">SHM / SHGB</label>
+                    <div class="survey-col-12 survey-col-md-4">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="shm" checked>
+                            <label class="survey-checkbox-label" for="shm">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">SHM / SHGB</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="imb" checked>
-                            <label class="form-check-label" for="imb">IMB</label>
+                    <div class="survey-col-12 survey-col-md-4">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="imb" checked>
+                            <label class="survey-checkbox-label" for="imb">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">IMB</span>
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
-                <h6 class="mb-3">Dokumentasi Survey</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Dokumentasi Survey</h6>
 
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Foto Tampak Depan</label>
-                            <input type="file" class="form-control">
+                            <div class="survey-file-upload">
+                                <input type="file" id="fotoDepan" name="fotoDepan" accept=".jpg,.jpeg,.png">
+                                <div class="survey-file-label">
+                                    <i class="mdi mdi-camera"></i>
+                                    <div class="survey-file-info">
+                                        <span>Upload Foto</span>
+                                        <small>Max 5MB</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Foto Interior</label>
-                            <input type="file" class="form-control">
+                            <div class="survey-file-upload">
+                                <input type="file" id="fotoInterior" name="fotoInterior" accept=".jpg,.jpeg,.png">
+                                <div class="survey-file-label">
+                                    <i class="mdi mdi-camera"></i>
+                                    <div class="survey-file-info">
+                                        <span>Upload Foto</span>
+                                        <small>Max 5MB</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Foto Lingkungan</label>
-                            <input type="file" class="form-control">
+                            <div class="survey-file-upload">
+                                <input type="file" id="fotoLingkungan" name="fotoLingkungan" accept=".jpg,.jpeg,.png">
+                                <div class="survey-file-label">
+                                    <i class="mdi mdi-camera"></i>
+                                    <div class="survey-file-info">
+                                        <span>Upload Foto</span>
+                                        <small>Max 5MB</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
-                <h6 class="mb-3">Catatan Survey</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Catatan Survey</h6>
 
-                <div class="form-group">
-                    <textarea class="form-control" rows="3" placeholder="Contoh: Lokasi strategis dekat jalan raya, lingkungan aman, akses mudah">Lokasi strategis dekat jalan raya, lingkungan aman, akses mudah ke fasilitas umum. Kondisi bangunan baru dan terawat.</textarea>
+                <div class="survey-form-group">
+                    <textarea class="survey-form-control" rows="3" placeholder="Contoh: Lokasi strategis dekat jalan raya, lingkungan aman, akses mudah">Lokasi strategis dekat jalan raya, lingkungan aman, akses mudah ke fasilitas umum. Kondisi bangunan baru dan terawat.</textarea>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
-                <h6 class="mb-3">Rekomendasi</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Rekomendasi</h6>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Status Rekomendasi</label>
-                            <select class="form-control">
+                            <select class="survey-form-control">
                                 <option>Pilih Rekomendasi</option>
                                 <option selected>Layak - Sesuai Harga</option>
                                 <option>Layak - Dengan Penyesuaian Harga</option>
@@ -357,12 +412,12 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="survey-form-group">
                             <label>Persentase Kelayakan</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="95">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">%</span>
+                            <div class="survey-input-group">
+                                <input type="text" class="survey-form-control" value="95">
+                                <div class="survey-input-group-prepend">
+                                    <span class="survey-input-group-text">%</span>
                                 </div>
                             </div>
                         </div>
@@ -383,7 +438,7 @@
 
                 <!-- Status Badge -->
                 <div class="text-center mb-4">
-                    <span class="badge badge-warning p-2" style="font-size: 14px;">
+                    <span class="badge badge-warning p-2" style="font-size: 14px; background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f;">
                         <i class="mdi mdi-progress-clock me-1"></i>
                         Menunggu Hasil Survey
                     </span>
@@ -409,10 +464,10 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
                 <!-- Ringkasan Hasil -->
-                <h6 class="mb-3">Ringkasan Hasil</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Ringkasan Hasil</h6>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Nilai Appraisal</span>
@@ -425,7 +480,7 @@
                 </div>
 
                 <!-- Progress Checklist -->
-                <h6 class="mb-3">Progress Checklist</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Progress Checklist</h6>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-1">
                         <span class="text-muted">Checklist Kondisi</span>
@@ -452,10 +507,10 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
                 <!-- Timeline Survey -->
-                <h6 class="mb-3">Timeline Survey</h6>
+                <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Timeline Survey</h6>
                 <div class="timeline">
                     <div class="d-flex mb-3">
                         <div class="me-3">
@@ -486,25 +541,25 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="survey-hr">
 
                 <!-- Tombol Aksi -->
-                <button class="btn btn-success btn-block mb-2">
+                <button class="survey-btn survey-btn-success w-100 mb-2">
                     <i class="mdi mdi-content-save me-2"></i>
                     Simpan Hasil Survey
                 </button>
 
-                <button class="btn btn-primary btn-block mb-2">
+                <button class="survey-btn survey-btn-primary w-100 mb-2">
                     <i class="mdi mdi-check-circle me-2"></i>
                     Selesaikan Survey
                 </button>
 
-                <button class="btn btn-outline-warning btn-block mb-2">
+                <button class="survey-btn survey-btn-outline-warning w-100 mb-2">
                     <i class="mdi mdi-calendar-refresh me-2"></i>
                     Reschedule Survey
                 </button>
 
-                <button class="btn btn-outline-secondary btn-block">
+                <button class="survey-btn survey-btn-outline-secondary w-100">
                     <i class="mdi mdi-arrow-left me-2"></i>
                     Kembali ke Proses KPR
                 </button>
@@ -519,9 +574,6 @@
     .bg-light {
         background-color: #f8f9fc !important;
     }
-    .btn-block {
-        width: 100%;
-    }
     .badge {
         padding: 5px 10px;
     }
@@ -535,5 +587,19 @@
 @endpush
 
 @push('scripts')
-<!-- Script kosong, fokus UI -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handler untuk file upload - menampilkan nama file
+        const fileInputs = document.querySelectorAll('.survey-file-upload input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                const label = this.closest('.survey-file-upload').querySelector('.survey-file-info span');
+                if (fileName && label) {
+                    label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
+                }
+            });
+        });
+    });
+</script>
 @endpush

@@ -30,8 +30,8 @@ Route::get('/dashboard-akad', function () {
     return view('marketing.akad');
 });
 
-Route::get('/dashboard-kpr', function () {
-    return view('marketing.kpr');
+Route::get('/dashboard-vertifikasi-kpr', function () {
+    return view('marketing.vertifikasi_kpr');
 });
 
 Route::get('/dashboard-survey', function () {

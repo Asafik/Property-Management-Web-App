@@ -3,6 +3,8 @@
 @section('title', 'Konfirmasi Persetujuan KPR - Properti Management')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('assets/css/marketing/akad.css') }}">
+
 <div class="row">
     <div class="col-12">
         <!-- Header Info Customer -->
@@ -48,13 +50,13 @@
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-timeline-text me-2 text-primary"></i>
-                    Tahapan Pengajuan KPR
+                    Tahapan Konfirmasi KPR
                 </h5>
 
                 <!-- Progress Bar -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Progress Pengajuan</span>
+                        <span class="text-muted">Progress Konfirmasi</span>
                         <span class="text-primary">Menunggu Persetujuan Bank</span>
                     </div>
                     <div class="progress">
@@ -132,7 +134,7 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="konfirmasi-hr">
 
                 <div class="mt-3">
                     <small class="text-muted d-block mb-2">Ditangani oleh:</small>
@@ -163,7 +165,7 @@
                 </h5>
 
                 <!-- Alert Info -->
-                <div class="alert alert-warning" role="alert">
+                <div class="konfirmasi-alert konfirmasi-alert-warning" role="alert">
                     <i class="mdi mdi-information-outline me-2"></i>
                     Pilih status persetujuan dari bank. Keputusan ini akan menentukan langkah selanjutnya.
                 </div>
@@ -171,7 +173,7 @@
                 <!-- Pilihan Status Persetujuan -->
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <div class="card bg-success text-white cursor-pointer" id="pilihSetuju" style="cursor: pointer;">
+                        <div class="card konfirmasi-card-option bg-success text-white" id="pilihSetuju">
                             <div class="card-body text-center py-4">
                                 <i class="mdi mdi-check-decagram" style="font-size: 48px;"></i>
                                 <h5 class="mt-3 text-white">KPR DISETUJUI</h5>
@@ -180,7 +182,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card bg-danger text-white cursor-pointer" id="pilihTolak" style="cursor: pointer;">
+                        <div class="card konfirmasi-card-option bg-danger text-white" id="pilihTolak">
                             <div class="card-body text-center py-4">
                                 <i class="mdi mdi-close-octagon" style="font-size: 48px;"></i>
                                 <h5 class="mt-3 text-white">KPR DITOLAK</h5>
@@ -192,31 +194,31 @@
 
                 <!-- FORM KPR DISETUJUI (muncul jika pilih setuju) -->
                 <div id="formSetuju" style="display: none;">
-                    <hr>
-                    <h6 class="mb-3">Form Persetujuan KPR</h6>
+                    <hr class="konfirmasi-hr">
+                    <h6 class="mb-3 konfirmasi-text-primary">Form Persetujuan KPR</h6>
 
-                    <div class="alert alert-success" role="alert">
+                    <div class="konfirmasi-alert konfirmasi-alert-success" role="alert">
                         <i class="mdi mdi-check-circle me-2"></i>
                         <strong>KPR DISETUJUI</strong> - Silakan lengkapi data persetujuan dari bank
                     </div>
 
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="form-group">
+                            <div class="konfirmasi-form-group">
                                 <label>Nilai Disetujui</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                                <div class="konfirmasi-input-group">
+                                    <div class="konfirmasi-input-group-prepend">
+                                        <span class="konfirmasi-input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" class="form-control" value="360.000.000">
+                                    <input type="text" class="konfirmasi-form-control" value="360.000.000">
                                 </div>
-                                <small class="text-muted">Bisa berbeda dari pengajuan</small>
+                                <small class="konfirmasi-text-muted">Bisa berbeda dari pengajuan</small>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
+                            <div class="konfirmasi-form-group">
                                 <label>Tenor Disetujui</label>
-                                <select class="form-control">
+                                <select class="konfirmasi-form-control">
                                     <option value="5">5 Tahun</option>
                                     <option value="10">10 Tahun</option>
                                     <option value="15" selected>15 Tahun</option>
@@ -225,12 +227,12 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
+                            <div class="konfirmasi-form-group">
                                 <label>Bunga Final</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" value="7.25">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">%</span>
+                                <div class="konfirmasi-input-group">
+                                    <input type="text" class="konfirmasi-form-control" value="7.25">
+                                    <div class="konfirmasi-input-group-prepend">
+                                        <span class="konfirmasi-input-group-text">%</span>
                                     </div>
                                 </div>
                             </div>
@@ -239,44 +241,54 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="konfirmasi-form-group">
                                 <label>No. Surat Persetujuan (SP3K)</label>
-                                <input type="text" class="form-control" value="SP3K/2025/021/ABC">
+                                <input type="text" class="konfirmasi-form-control" value="SP3K/2025/021/ABC">
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="konfirmasi-form-group">
                                 <label>Tanggal Persetujuan</label>
-                                <input type="date" class="form-control" value="2025-02-25">
+                                <input type="date" class="konfirmasi-form-control" value="2025-02-25">
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- UPLOAD SURAT PERSETUJUAN PRINSIP - MODERN STYLE -->
+                    <div class="konfirmasi-form-group">
                         <label>Upload Surat Persetujuan Prinsip</label>
-                        <input type="file" class="form-control">
-                        <small class="text-muted">Format: PDF, Max 5MB</small>
+                        <div class="konfirmasi-file-upload-modern">
+                            <input type="file" id="uploadSP3K" name="uploadSP3K" accept=".jpg,.jpeg,.png,.pdf">
+                            <div class="konfirmasi-file-label-modern">
+                                <i class="mdi mdi-cloud-upload"></i>
+                                <div class="konfirmasi-file-info-modern">
+                                    <span>Upload Surat Persetujuan Prinsip</span>
+                                    <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                </div>
+                                <span class="konfirmasi-file-size"></span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="konfirmasi-form-group">
                         <label>Catatan Persetujuan</label>
-                        <textarea class="form-control" rows="2" placeholder="Contoh: Disetujui dengan nilai 360jt, bunga 7.25%">Disetujui dengan nilai 360jt, bunga 7.25%</textarea>
+                        <textarea class="konfirmasi-form-control" rows="2" placeholder="Contoh: Disetujui dengan nilai 360jt, bunga 7.25%">Disetujui dengan nilai 360jt, bunga 7.25%</textarea>
                     </div>
                 </div>
 
                 <!-- FORM KPR DITOLAK (muncul jika pilih tolak) -->
                 <div id="formTolak" style="display: none;">
-                    <hr>
-                    <h6 class="mb-3">Form Penolakan KPR</h6>
+                    <hr class="konfirmasi-hr">
+                    <h6 class="mb-3 konfirmasi-text-primary">Form Penolakan KPR</h6>
 
-                    <div class="alert alert-danger" role="alert">
+                    <div class="konfirmasi-alert konfirmasi-alert-danger" role="alert">
                         <i class="mdi mdi-close-circle me-2"></i>
                         <strong>KPR DITOLAK</strong> - Pilih tindakan selanjutnya untuk customer
                     </div>
 
-                    <div class="form-group">
+                    <div class="konfirmasi-form-group">
                         <label>Alasan Penolakan dari Bank</label>
-                        <select class="form-control" id="alasanTolak">
+                        <select class="konfirmasi-form-control" id="alasanTolak">
                             <option value="">-- Pilih Alasan --</option>
                             <option value="BI Checking">BI Checking / SLIK Bermasalah</option>
                             <option value="Kemampuan Bayar">Kemampuan Bayar Kurang</option>
@@ -287,71 +299,88 @@
                         </select>
                     </div>
 
-                    <div class="form-group" id="alasanLainnya" style="display: none;">
+                    <div class="konfirmasi-form-group" id="alasanLainnya" style="display: none;">
                         <label>Tulis Alasan Lainnya</label>
-                        <input type="text" class="form-control" placeholder="Contoh: Kebijakan bank baru">
+                        <input type="text" class="konfirmasi-form-control" placeholder="Contoh: Kebijakan bank baru">
                     </div>
 
-                    <div class="form-group">
+                    <div class="konfirmasi-form-group">
                         <label>Catatan Penolakan</label>
-                        <textarea class="form-control" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
+                        <textarea class="konfirmasi-form-control" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
                     </div>
 
-                    <hr>
+                    <hr class="konfirmasi-hr">
 
-                    <h6 class="mb-3">Tindakan Selanjutnya</h6>
+                    <!-- TINDAKAN SELANJUTNYA - MODERN CARD STYLE -->
+                    <h6 class="mb-3 konfirmasi-text-primary">Tindakan Selanjutnya</h6>
 
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="card border mb-2">
-                                <div class="card-body p-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="tindakan" id="tindakanCash" checked>
-                                        <label class="form-check-label" for="tindakanCash">
-                                            <strong>Pindah ke Cash</strong><br>
-                                            <small class="text-muted">Customer akan membayar tunai</small>
-                                        </label>
+                            <div class="konfirmasi-tindakan-card">
+                                <input type="radio" name="tindakan" id="tindakanCash" checked>
+                                <label class="konfirmasi-tindakan-label" for="tindakanCash">
+                                    <div class="konfirmasi-tindakan-icon">
+                                        <i class="mdi mdi-cash-multiple"></i>
                                     </div>
-                                </div>
+                                    <div class="konfirmasi-tindakan-content">
+                                        <span class="konfirmasi-tindakan-title">Pindah ke Cash</span>
+                                        <span class="konfirmasi-tindakan-desc">Customer akan membayar tunai</span>
+                                    </div>
+                                    <div class="konfirmasi-tindakan-check">
+                                        <i class="mdi mdi-check-circle"></i>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card border mb-2">
-                                <div class="card-body p-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="tindakan" id="tindakanUlang">
-                                        <label class="form-check-label" for="tindakanUlang">
-                                            <strong>Ajukan ke Bank Lain</strong><br>
-                                            <small class="text-muted">Pengajuan ulang KPR</small>
-                                        </label>
+                            <div class="konfirmasi-tindakan-card">
+                                <input type="radio" name="tindakan" id="tindakanUlang">
+                                <label class="konfirmasi-tindakan-label" for="tindakanUlang">
+                                    <div class="konfirmasi-tindakan-icon">
+                                        <i class="mdi mdi-bank-transfer"></i>
                                     </div>
-                                </div>
+                                    <div class="konfirmasi-tindakan-content">
+                                        <span class="konfirmasi-tindakan-title">Ajukan ke Bank Lain</span>
+                                        <span class="konfirmasi-tindakan-desc">Pengajuan ulang KPR</span>
+                                    </div>
+                                    <div class="konfirmasi-tindakan-check">
+                                        <i class="mdi mdi-check-circle"></i>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card border mb-2">
-                                <div class="card-body p-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="tindakan" id="tindakanBatal">
-                                        <label class="form-check-label" for="tindakanBatal">
-                                            <strong>Batalkan Transaksi</strong><br>
-                                            <small class="text-muted">Customer batal beli (refund)</small>
-                                        </label>
+                            <div class="konfirmasi-tindakan-card">
+                                <input type="radio" name="tindakan" id="tindakanBatal">
+                                <label class="konfirmasi-tindakan-label" for="tindakanBatal">
+                                    <div class="konfirmasi-tindakan-icon">
+                                        <i class="mdi mdi-cancel"></i>
                                     </div>
-                                </div>
+                                    <div class="konfirmasi-tindakan-content">
+                                        <span class="konfirmasi-tindakan-title">Batalkan Transaksi</span>
+                                        <span class="konfirmasi-tindakan-desc">Customer batal beli (refund)</span>
+                                    </div>
+                                    <div class="konfirmasi-tindakan-check">
+                                        <i class="mdi mdi-check-circle"></i>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card border mb-2">
-                                <div class="card-body p-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="tindakan" id="tindakanRevisi">
-                                        <label class="form-check-label" for="tindakanRevisi">
-                                            <strong>Revisi Dokumen</strong><br>
-                                            <small class="text-muted">Lengkapi dokumen & ajukan ulang</small>
-                                        </label>
+                            <div class="konfirmasi-tindakan-card">
+                                <input type="radio" name="tindakan" id="tindakanRevisi">
+                                <label class="konfirmasi-tindakan-label" for="tindakanRevisi">
+                                    <div class="konfirmasi-tindakan-icon">
+                                        <i class="mdi mdi-file-document-edit"></i>
                                     </div>
-                                </div>
+                                    <div class="konfirmasi-tindakan-content">
+                                        <span class="konfirmasi-tindakan-title">Revisi Dokumen</span>
+                                        <span class="konfirmasi-tindakan-desc">Lengkapi dokumen</span>
+                                    </div>
+                                    <div class="konfirmasi-tindakan-check">
+                                        <i class="mdi mdi-check-circle"></i>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -366,7 +395,7 @@
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-information me-2 text-primary"></i>
-                    Informasi Pengajuan
+                    Informasi Konfirmasi
                 </h5>
 
                 <!-- Status Card -->
@@ -378,7 +407,7 @@
                 </div>
 
                 <!-- Ringkasan Survey -->
-                <h6 class="mb-3">Hasil Survey</h6>
+                <h6 class="mb-3 konfirmasi-text-primary">Hasil Survey</h6>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Nilai Appraisal</span>
@@ -398,61 +427,61 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr class="konfirmasi-hr">
 
                 <!-- Rekomendasi -->
-                <h6 class="mb-3">Rekomendasi Survey</h6>
-                <div class="alert alert-success py-2">
+                <h6 class="mb-3 konfirmasi-text-primary">Rekomendasi Survey</h6>
+                <div class="konfirmasi-alert konfirmasi-alert-success py-2">
                     <i class="mdi mdi-thumb-up me-2"></i>
                     Layak - Sesuai Harga
                 </div>
 
-                <hr>
+                <hr class="konfirmasi-hr">
 
                 <!-- Timeline -->
-                <h6 class="mb-3">Timeline Pengajuan</h6>
-                <div class="timeline">
-                    <div class="d-flex mb-2">
-                        <div class="me-3">
+                <h6 class="mb-3 konfirmasi-text-primary">Timeline Pengajuan</h6>
+                <div class="konfirmasi-timeline">
+                    <div class="konfirmasi-timeline-item">
+                        <div class="konfirmasi-timeline-icon">
                             <i class="mdi mdi-check-circle text-success"></i>
                         </div>
-                        <div class="flex-grow-1">
-                            <span>Pengajuan KPR</span>
-                            <small class="text-muted float-end">12 Feb 2025</small>
+                        <div class="konfirmasi-timeline-content">
+                            <span class="konfirmasi-timeline-text">Pengajuan KPR</span>
+                            <small class="konfirmasi-timeline-date">12 Feb 2025</small>
                         </div>
                     </div>
-                    <div class="d-flex mb-2">
-                        <div class="me-3">
+                    <div class="konfirmasi-timeline-item">
+                        <div class="konfirmasi-timeline-icon">
                             <i class="mdi mdi-check-circle text-success"></i>
                         </div>
-                        <div class="flex-grow-1">
-                            <span>Verifikasi Dokumen</span>
-                            <small class="text-muted float-end">14 Feb 2025</small>
+                        <div class="konfirmasi-timeline-content">
+                            <span class="konfirmasi-timeline-text">Verifikasi Dokumen</span>
+                            <small class="konfirmasi-timeline-date">14 Feb 2025</small>
                         </div>
                     </div>
-                    <div class="d-flex mb-2">
-                        <div class="me-3">
+                    <div class="konfirmasi-timeline-item">
+                        <div class="konfirmasi-timeline-icon">
                             <i class="mdi mdi-check-circle text-success"></i>
                         </div>
-                        <div class="flex-grow-1">
-                            <span>Survey</span>
-                            <small class="text-muted float-end">20 Feb 2025</small>
+                        <div class="konfirmasi-timeline-content">
+                            <span class="konfirmasi-timeline-text">Survey</span>
+                            <small class="konfirmasi-timeline-date">20 Feb 2025</small>
                         </div>
                     </div>
                 </div>
 
-                <hr>
+                <hr class="konfirmasi-hr">
 
                 <!-- Tombol Aksi -->
-                <button class="btn btn-primary btn-block mb-2" id="btnSimpan">
+                <button class="konfirmasi-btn konfirmasi-btn-primary w-100 mb-2" id="btnSimpan">
                     <i class="mdi mdi-content-save me-2"></i>
                     Simpan Konfirmasi
                 </button>
 
-                <button class="btn btn-outline-secondary btn-block">
+                <a href="{{ url('/marketing/kpr') }}" class="konfirmasi-btn konfirmasi-btn-outline-secondary w-100">
                     <i class="mdi mdi-arrow-left me-2"></i>
                     Kembali
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -464,26 +493,11 @@
     .bg-light {
         background-color: #f8f9fc !important;
     }
-    .btn-block {
-        width: 100%;
-    }
     .badge {
         padding: 5px 10px;
     }
     .cursor-pointer {
         cursor: pointer;
-    }
-    .card.bg-success, .card.bg-danger {
-        transition: transform 0.2s;
-    }
-    .card.bg-success:hover, .card.bg-danger:hover {
-        transform: scale(1.02);
-    }
-    hr {
-        border-top: 1px solid rgba(0,0,0,.1);
-    }
-    .timeline .d-flex {
-        align-items: center;
     }
 </style>
 @endpush
@@ -513,6 +527,29 @@ $(document).ready(function() {
             $('#alasanLainnya').slideDown();
         } else {
             $('#alasanLainnya').slideUp();
+        }
+    });
+
+    // MODERN FILE UPLOAD - Menampilkan nama file dan ukuran
+    $('.konfirmasi-file-upload-modern input[type="file"]').change(function(e) {
+        const fileName = e.target.files[0]?.name;
+        const fileSize = e.target.files[0]?.size;
+        const label = $(this).closest('.konfirmasi-file-upload-modern').find('.konfirmasi-file-info-modern span');
+        const sizeSpan = $(this).closest('.konfirmasi-file-upload-modern').find('.konfirmasi-file-size');
+
+        if (fileName) {
+            // Tampilkan nama file (potong jika terlalu panjang)
+            label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+
+            // Hitung dan tampilkan ukuran file dalam MB
+            if (fileSize) {
+                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                sizeSpan.text(sizeInMB + ' MB');
+            }
+        } else {
+            // Reset ke teks awal jika tidak ada file
+            label.text('Upload Surat Persetujuan Prinsip');
+            sizeSpan.text('');
         }
     });
 });
