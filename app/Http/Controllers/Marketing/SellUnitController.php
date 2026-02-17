@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LandBankUnit; // pastikan model sudah ada
 use App\Models\LandBank;
+use App\Models\Customer;
+use App\Models\Employee;
 
 class SellUnitController extends Controller
 {
@@ -29,7 +31,8 @@ class SellUnitController extends Controller
 
     // Hitung total nilai unit
     $totalNilai = $units->sum('price');
-
+  $customers = Customer::latest()->get();
+  $agencies = Employee::latest()->get();
     return view('marketing.jual_unit', compact(
         'units',
         'totalUnits',
@@ -38,8 +41,21 @@ class SellUnitController extends Controller
         'totalNilai',
         'totalTersedia',
         'totalBooking',
-        'totalSold'
+        'totalSold',
+        'customers',
+        'agencies'
     ));
 }
+public function setCustomer(Request $request, $unitId)
+{
+    $unit = LandBankUnit::findOrFail($unitId);
+
+    $unit->customer_id = $request->customer_id;
+    $unit->status = 'booked'; // atau Sold
+    $unit->save();
+
+    return back()->with('success','Customer berhasil dipasang ke unit');
+}
+
 
 }

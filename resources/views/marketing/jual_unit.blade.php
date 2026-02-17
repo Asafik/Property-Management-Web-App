@@ -24,7 +24,7 @@
                             Total Unit
                             <i class="mdi mdi-home-group float-end"></i>
                         </h4>
-                        <h2 class="mb-1 fs-3 fs-md-1">{{ $totalUnits}}</h2>
+                        <h2 class="mb-1 fs-3 fs-md-1">{{ $totalUnits }}</h2>
                         <h6 class="card-text small">Semua unit</h6>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                             Tersedia
                             <i class="mdi mdi-check-circle float-end"></i>
                         </h4>
-                        <h2 class="mb-1 fs-3 fs-md-1">{{$totalTersedia}}</h2>
+                        <h2 class="mb-1 fs-3 fs-md-1">{{ $totalTersedia }}</h2>
                         <h6 class="card-text small">Siap dijual</h6>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                             Booking
                             <i class="mdi mdi-clock float-end"></i>
                         </h4>
-                        <h2 class="mb-1 fs-3 fs-md-1">{{$totalBooking}}</h2>
+                        <h2 class="mb-1 fs-3 fs-md-1">{{ $totalBooking }}</h2>
                         <h6 class="card-text small">Dalam proses</h6>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                             Terjual
                             <i class="mdi mdi-cash-check float-end"></i>
                         </h4>
-                        <h2 class="mb-1 fs-3 fs-md-1">{{$totalSold}}</h2>
+                        <h2 class="mb-1 fs-3 fs-md-1">{{ $totalSold }}</h2>
                         <h6 class="card-text small">Sudah laku</h6>
                     </div>
                 </div>
@@ -221,23 +221,36 @@
                                                 @endif
                                             </td>
                                             <td>{{ $unit->agent_name ?? '-' }}</td>
-                                            <td>{{ $unit->customer_name ?? '-' }}</td>
+                                            <td>{{ $unit->customer->full_name ?? '-' }}
+                                            </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
+
                                                     <button class="btn btn-outline-primary" data-toggle="tooltip"
                                                         title="Detail">
                                                         <i class="mdi mdi-eye"></i>
                                                     </button>
+
                                                     <button class="btn btn-outline-warning" data-toggle="tooltip"
                                                         title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </button>
-                                                    <button class="btn btn-outline-info" data-toggle="tooltip"
-                                                        title="Assign Agent">
+
+                                                    <!-- MODAL CUSTOMER -->
+                                                    <button onclick="$('#modalCustomer').modal('show')"
+                                                        class="btn btn-danger" title="Tambah Customer">
                                                         <i class="mdi mdi-account-plus"></i>
                                                     </button>
+
+                                                    <!-- MODAL AGENCY -->
+                                                    <button onclick="$('#modalAgency').modal('show')" class="btn btn-info"
+                                                        title="Tambah Agency">
+                                                        <i class="mdi mdi-office-building"></i>
+                                                    </button>
+
                                                 </div>
                                             </td>
+
                                         </tr>
                                     @empty
                                         <tr>
@@ -306,7 +319,7 @@
                         <div
                             class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-2">
                             <div>
-                                <a href="{{ url('/properti/buat-kavling') }}" class="btn btn-light w-100 w-sm-auto">
+                                <a href="{{ route('properti-all') }}" class="btn btn-light w-100 w-sm-auto">
                                     <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Kavling
                                 </a>
                             </div>
@@ -377,6 +390,117 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalCustomer" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Data Customer</h5>
+                    <button type="button" class="close text-white" style="background: transparent;"
+                        onclick="$('#modalCustomer').modal('hide')">
+                        <span>&times;</span>
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="tableCustomer">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>ID Customer</th>
+                                    <th>Nama</th>
+                                    <th>No HP</th>
+                                    <th>Pekerjaan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($customers as $c)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $c->customer_id ?? 'Masih Kosong' }}</td>
+                                        <td>{{ $c->full_name ?? 'Masih Kosong' }}</td>
+                                        <td>{{ $c->phone ?? 'Masih Kosong' }}</td>
+                                        <td>{{ $c->job_status ?? 'Masih Kosong' }}</td>
+                                        <td>
+
+                                            <form action="{{ route('set.customer', $unit->id) }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="customer_id" value="{{ $c->id }}">
+
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    Pilih
+                                                </button>
+                                            </form>
+
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- ================= MODAL AGENCY (DIPINDAH KELUAR) ================= -->
+    <div class="modal fade" id="modalAgency" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Pilih Agency</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="tableAgency">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Agency</th>
+                                    <th>No HP</th>
+                                    <th>Alamat</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($agencies as $a)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $a->name }}</td>
+                                        <td>{{ $a->phone }}</td>
+                                        <td>{{ $a->address }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success pilihAgency"
+                                                data-id="{{ $a->id }}" data-nama="{{ $a->name }}">
+                                                Pilih
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- END MODAL AGENCY -->
     <!-- AKHIR KONTEN MARKETING JUAL UNIT -->
 @endsection
 
@@ -651,6 +775,23 @@
                 maximumFractionDigits: 0
             }).format(angka);
         }
+    </script>
+    <script>
+        $(document).on('click', '.pilihCustomer', function() {
+            let id = $(this).data('id');
+            let nama = $(this).data('nama');
+
+            // contoh isi ke input
+            $('#customer_id').val(id);
+            $('#customer_nama').val(nama);
+
+            $('#modalCustomer').modal('hide');
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#tableCustomer').DataTable();
+        });
     </script>
 
     <!-- Optional: SweetAlert2 untuk notifikasi yang lebih baik -->

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('land_bank_id')
                 ->constrained('land_banks')
                 ->onDelete('cascade');
-
+            $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
             // ===== IDENTITAS UNIT =====
             $table->string('block')->nullable(); // A
             $table->string('unit_number')->nullable(); // 1

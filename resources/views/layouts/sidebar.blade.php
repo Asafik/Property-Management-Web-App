@@ -34,7 +34,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{route('marketing.jual-unit')}}">Jual Unit</a>
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-tambah-customer">Tambah Customer</a>
+            <a class="nav-link" href="{{route('marketing.tambah_customer')}}">Tambah Customer</a>
         </li>
           <li class="nav-item">
             <a class="nav-link" href="dashboard-list-pengajuan">list Pengajuan</a>
