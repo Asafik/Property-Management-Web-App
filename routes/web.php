@@ -139,11 +139,11 @@ Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::c
 // Route::get('/properti-daftar-pembangunan', function () {
 //     return view('properti.daftar_pembangunan');
 // });
-Route::get('/properti/progress/{land_bank_id}', 
+Route::get('/properti/progress/{land_bank_id}',
     [DevelopmentProgressController::class, 'index']
 )->name('properti.progress');
 
-Route::post('/properti/progress/store', 
+Route::post('/properti/progress/store',
     [DevelopmentProgressController::class, 'store']
 )->name('properti.progress.store');
 
@@ -152,3 +152,9 @@ Route::post('/properti/progress/store',
 Route::get('/properti-revisi/{id}',
     [LandBankController::class, 'revisi']
 )->name('properti.revisi');
+
+
+// Sales
+Route::get('/dashboard-sales', function () {
+    return view('sales.sales_agent');
+});
