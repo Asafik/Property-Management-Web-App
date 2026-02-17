@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
+            $table->string('username')->nullable();
+            $table->string('password')->nullable();
+            $table->string('address')->nullable();
+            $table->enum('role', ['admin', 'superadmin','agency'])->default('agency');
+            $table->string('phone')->nullable();
             $table->timestamps();
         });
     }

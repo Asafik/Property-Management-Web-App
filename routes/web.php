@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\VerifikasiLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandBankController;
 use App\Http\Controllers\Admin\LandBankUnitController;
+use App\Http\Controllers\AgencyPropertyController;
 use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
 use Illuminate\Support\Facades\Route;
@@ -162,6 +163,9 @@ Route::get('/properti-revisi/{id}',
 
 
 // Sales
-Route::get('/dashboard-sales', function () {
-    return view('sales.sales_agent');
-});
+// Route::get('/dashboard-sales', function () {
+//     return view('sales.sales_agent');
+// });
+Route::get('/Agency-Create', [AgencyPropertyController::class, 'index'])
+    ->name('agency');
+Route::post('/agency/store',[AgencyPropertyController::class,'store'])->name('agency.store');

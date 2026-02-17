@@ -138,7 +138,7 @@
 
     <!-- MENU SALES / AGENT -->
     <li class="nav-item">
-      <a class="nav-link" href="dashboard-sales">
+      <a class="nav-link" href="{{route('agency')}}">
         <span class="menu-title">Sales / Agent</span>
         <i class="mdi mdi-account-tie menu-icon"></i>
       </a>

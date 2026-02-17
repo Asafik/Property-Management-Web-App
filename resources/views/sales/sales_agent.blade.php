@@ -352,66 +352,89 @@ input, select, textarea, button {
                     <span class="sales-badge sales-badge-secondary">* Wajib</span>
                 </div>
                 <div class="sales-card-body">
-                    <form action="" method="POST">
-                        @csrf
+                  <form action="{{ route('agency.store') }}" method="POST">
+@csrf
 
-                        <!-- Alert Info -->
-                        <div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4" role="alert">
-                            <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
-                            <span>Data sales akan digunakan untuk penugasan unit dan komisi penjualan.</span>
-                        </div>
+<!-- Alert -->
+<div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4">
+    <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
+    <span>Data sales akan digunakan untuk penugasan unit dan komisi penjualan.</span>
+</div>
 
-                        <!-- Input Form -->
-                        <div class="sales-row">
-                            <!-- Nama Lengkap -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Nama Lengkap <span class="text-danger">*</span></label>
-                                    <input type="text" name="nama" class="sales-form-control" placeholder="Masukkan nama lengkap" required>
-                                    <small class="sales-text-muted">Contoh: Ahmad Rizki</small>
-                                </div>
-                            </div>
+<div class="sales-row">
 
-                            <!-- Nomor HP -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Nomor HP <span class="text-danger">*</span></label>
-                                    <input type="text" name="no_hp" class="sales-form-control" placeholder="081234567890" required>
-                                    <small class="sales-text-muted">Nomor WhatsApp aktif</small>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Nama -->
+    <div class="sales-col-md-6">
+        <div class="sales-form-group">
+            <label>Nama Lengkap *</label>
+            <input type="text" name="name" class="sales-form-control" required>
+        </div>
+    </div>
 
-                        <!-- Alamat -->
-                        <div class="sales-row">
-                            <div class="sales-col-12">
-                                <div class="sales-form-group">
-                                    <label>Alamat <span class="text-danger">*</span></label>
-                                    <textarea name="alamat" class="sales-form-control" placeholder="Masukkan alamat lengkap" required></textarea>
-                                    <small class="sales-text-muted">Contoh: Jl. Contoh No. 123, Jakarta Selatan</small>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Username -->
+    <div class="sales-col-md-6">
+        <div class="sales-form-group">
+            <label>Username *</label>
+            <input type="text" name="username" class="sales-form-control" required>
+        </div>
+    </div>
 
-                        <hr class="sales-hr">
+</div>
 
-                        <!-- Tombol Aksi -->
-                        <div class="sales-btn-group mt-4">
-                            <a href="{{ url('/sales') }}" class="sales-btn sales-btn-secondary">
-                                <i class="mdi mdi-arrow-left me-2"></i>Kembali
-                            </a>
+<div class="sales-row">
 
-                            <div style="margin-left: auto;">
-                                <button type="reset" class="sales-btn sales-btn-outline-secondary me-2">
-                                    <i class="mdi mdi-refresh me-1"></i>Reset
-                                </button>
+    <!-- Password -->
+    <div class="sales-col-md-6">
+        <div class="sales-form-group">
+            <label>Password *</label>
+            <input type="password" name="password" class="sales-form-control" required>
+        </div>
+    </div>
 
-                                <button type="submit" class="sales-btn sales-btn-primary">
-                                    <i class="mdi mdi-content-save me-2"></i>Simpan Sales
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+    <!-- Nomor HP -->
+    <div class="sales-col-md-6">
+        <div class="sales-form-group">
+            <label>Nomor HP *</label>
+            <input type="text" name="phone" class="sales-form-control" required>
+        </div>
+    </div>
+
+</div>
+
+<!-- Role hidden (agency) -->
+<input type="hidden" name="role" value="agency">
+
+<!-- Alamat -->
+<div class="sales-row">
+    <div class="sales-col-12">
+        <div class="sales-form-group">
+            <label>Alamat *</label>
+            <textarea name="address" class="sales-form-control" required></textarea>
+        </div>
+    </div>
+</div>
+
+<hr class="sales-hr">
+
+<!-- Tombol -->
+<div class="sales-btn-group mt-4">
+    <a href="{{ url('/agency') }}" class="sales-btn sales-btn-secondary">
+        <i class="mdi mdi-arrow-left me-2"></i>Kembali
+    </a>
+
+    <div style="margin-left:auto;">
+        <button type="reset" class="sales-btn sales-btn-outline-secondary me-2">
+            Reset
+        </button>
+
+        <button type="submit" class="sales-btn sales-btn-primary">
+            Simpan Sales
+        </button>
+    </div>
+</div>
+
+</form>
+
                 </div>
             </div>
         </div>
