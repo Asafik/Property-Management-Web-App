@@ -150,64 +150,155 @@
                 </div>
             @endforeach
 
-            <!-- Biaya RAB -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-primary">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Ringkasan Biaya RAB</h5>
-            </div>
-            <div class="card-body">
-                <div class="row g-2">
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Persiapan</small>
-                        <input type="text" id="summary-persiapan" class="form-control form-control-sm text-end" readonly>
+            {{-- RINCIAN RAB --}}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-3 align-items-center">
+                                <h5 class="text-center text-primary mb-0">RINCIAN RAB</h5>
+
+                                <div>
+                                    {{-- Tombol Print --}}
+                                    <a href="{{ url('/dashboard-cetak-rab') }}" target="_blank"
+                                        class="btn btn-sm btn-success">
+                                        <i class="mdi mdi-printer"></i> Print
+                                    </a>
+
+                                    <button type="button" class="btn btn-sm btn-primary acc-btn"
+                                        data-id="{{ $selectedUnit->id }}">
+                                        <i class="mdi mdi-check"></i> ACC RAB
+                                    </button>
+
+
+
+
+
+
+                                </div>
+                            </div>
+
+
+                            {{-- Tabel Rincian Item RAB --}}
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-primary text-center">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Item Pekerjaan / Material</th>
+                                            <th>Kuantitas</th>
+                                            <th>Harga Satuan (Rp)</th>
+                                            <th>Total (Rp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $subtotal = 0;
+                                        @endphp
+                                        @foreach ($items as $i => $item)
+                                            @php
+                                                $itemTotal = $item->volume * $item->harga_satuan;
+                                                $subtotal += $itemTotal;
+                                            @endphp
+                                            <tr>
+                                                <td class="text-center">{{ $i + 1 }}</td>
+                                                <td>{{ $item->uraian }}</td>
+                                                <td class="text-center">{{ $item->volume }}</td>
+                                                <td class="text-end">{{ number_format($item->harga_satuan, 0, ',', '.') }}
+                                                </td>
+                                                <td class="text-end">{{ number_format($itemTotal, 0, ',', '.') }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+@php
+    $ppn = $subtotal * 0.1;
+    $totalRAB = $subtotal + $ppn;
+
+    // Ambil harga jual unit dari database
+    $unitPrice = $unit->price ?? 0; // $unit dari controller, LandBankUnit
+    $finalPrice = $totalRAB + $unitPrice;
+@endphp
+
+<form action="{{ route('properti.progress.store') }}" method="POST">
+    @csrf
+
+    {{-- Hidden input untuk unit ID --}}
+    <input type="hidden" name="land_bank_unit_id" value="{{ $unit->id }}">
+
+    {{-- Hidden input untuk final price --}}
+    <input type="hidden" name="price" value="{{ $finalPrice }}">
+
+    <div class="mt-3 row g-3">
+        {{-- Card Ringkasan RAB --}}
+        <div class="col-12 col-md-6">
+            <div class="card border-primary shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title text-primary mb-3">Ringkasan RAB</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <input type="text" class="form-control text-end fw-bold" readonly
+                            value="{{ number_format($subtotal, 0, ',', '.') }}">
                     </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Pondasi</small>
-                        <input type="text" id="summary-pondasi" class="form-control form-control-sm text-end" readonly>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>PPN (10%)</span>
+                        <input type="text" class="form-control text-end fw-bold" readonly
+                            value="{{ number_format($ppn, 0, ',', '.') }}">
                     </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Struktur</small>
-                        <input type="text" id="summary-struktur" class="form-control form-control-sm text-end" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Dinding</small>
-                        <input type="text" id="summary-dinding" class="form-control form-control-sm text-end" readonly>
-                    </div>
-                </div>
-                <div class="row g-2 mt-2">
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Atap</small>
-                        <input type="text" id="summary-atap" class="form-control form-control-sm text-end" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Finishing</small>
-                        <input type="text" id="summary-finishing" class="form-control form-control-sm text-end" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Subtotal Lainnya</small>
-                        <input type="text" id="summary-lainnya" class="form-control form-control-sm text-end" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Grand Total</small>
-                        <input type="text" id="summary-grand" class="form-control form-control-sm text-end fw-bold" readonly>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">Total RAB</span>
+                        <input type="text" class="form-control text-end fw-bold" readonly
+                            value="{{ number_format($totalRAB, 0, ',', '.') }}">
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-            <div class="text-end mt-3">
-                <button type="submit" class="btn btn-primary">
-                    Simpan Progress
-                </button>
+        {{-- Card Harga Jual Final --}}
+        <div class="col-12 col-md-6">
+            <div class="card border-success shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="card-title text-success mb-3">Harga Jual Final</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total RAB</span>
+                        <input type="text" class="form-control text-end fw-bold" readonly
+                            value="{{ number_format($totalRAB, 0, ',', '.') }}">
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Harga Jual Unit</span>
+                        <input type="text" class="form-control text-end fw-bold" readonly
+                            value="{{ number_format($unitPrice, 0, ',', '.') }}">
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fw-bold">Harga Jual Final</span>
+                        <input type="text" class="form-control text-end fw-bold" readonly
+                            value="{{ number_format($finalPrice, 0, ',', '.') }}">
+                    </div>
+
+                    {{-- Tombol Simpan --}}
+                    <button type="submit" class="btn btn-success w-100">
+                        Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
+
+            
+
         </form>
-
-
 
     </div>
 @endsection
@@ -458,36 +549,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             hitungSemua();
         });
-        function updateSummaryCard() {
-    Object.keys(kategoriMap).forEach(function(kategori) {
-        let config = kategoriMap[kategori];
-        let subtotal = document.getElementById(config.subtotal)?.value || '0';
-        let summaryInput = document.getElementById('summary-' + kategori);
-        if(summaryInput){
-            summaryInput.value = subtotal;
-        }
-    });
-
-    let grandTotal = document.getElementById('grand-total')?.value || '0';
-    let grandSummary = document.getElementById('summary-grand');
-    if(grandSummary){
-        grandSummary.value = grandTotal;
-    }
-}
-
-// Panggil setelah hitungSemua
-document.addEventListener("input", function(e) {
-    if (e.target.classList.contains("volume") || e.target.classList.contains("harga-satuan")) {
-        hitungSemua();
-        updateSummaryCard();
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function() {
-    hitungSemua();
-    updateSummaryCard();
-});
-
     </script>
     <script>
         document.getElementById("unitSelect").addEventListener("change", function() {
@@ -497,6 +558,40 @@ document.addEventListener("DOMContentLoaded", function() {
             url.searchParams.set('unit_id', unitId);
 
             window.location.href = url.toString();
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.acc-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                let unitId = this.dataset.id;
+
+                if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
+
+                fetch(`/properti/progress/acc-ajax/${unitId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+
+                            // Update teks/progress di halaman tanpa reload
+                            const progressText = document.querySelector(`#progress-text-${unitId}`);
+                            if (progressText) progressText.textContent = data.construction_progress;
+                        } else {
+                            alert('Gagal: ' + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Terjadi error pada request AJAX.');
+                    });
+            });
         });
     </script>
 @endpush

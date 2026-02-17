@@ -32,7 +32,7 @@
     <div class="collapse" id="marketing">
         <ul class="nav flex-column sub-menu">
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-jual-unit">Jual Unit</a>
+            <a class="nav-link" href="{{route('marketing.jual-unit')}}">Jual Unit</a>
         <li class="nav-item">
             <a class="nav-link" href="dashboard-tambah-customer">Tambah Customer</a>
         </li>
@@ -90,10 +90,6 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">Revisi Data</a>
-        </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="properti-daftar-pembangunan">Daftar Pembangunan</a>
         </li>
           <li class="nav-item">
             <a class="nav-link" href="properti-proses-pembangunan">Proses Pembangunan</a>

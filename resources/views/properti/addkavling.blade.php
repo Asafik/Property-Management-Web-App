@@ -462,69 +462,108 @@
                                 <h4>Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
                             </div>
                         </div>
+@php
+    $map = [
+        'belum_mulai' => 0,
+        'pondasi'     => 20,
+        'dinding'     => 40,
+        'atap'        => 60,
+        'finishing'   => 80,
+        'selesai'     => 100
+    ];
 
-                        <!-- Progress Pembangunan -->
-                        @php
-                            $progressPercent = $unit->construction_progress ?? 0;
-                        @endphp
+    $unitProgress = $land->units->map(function($unit) use ($map) {
+        $status = strtolower($unit->construction_progress ?? 'belum_mulai');
+        return $map[$status] ?? 0;
+    });
 
-                        <div class="mt-4">
-                            <p class="text-muted mb-1">Progress Pembangunan</p>
-     <div class="progress">
-    <div class="progress-bar bg-success"
-         role="progressbar"
-         style="width: {{ $unit->progress_percentage }}%;"
-         aria-valuenow="{{ $unit->progress_percentage }}"
-         aria-valuemin="0"
-         aria-valuemax="100">
-        {{ $unit->construction_progress }} ({{ $unit->progress_percentage }}%)
+    $progressPercent = $unitProgress->count() > 0 ? $unitProgress->avg() : 0;
+@endphp
+
+<div class="mt-4">
+    <p class="text-muted mb-1">Progress Pembangunan</p>
+    <div class="progress">
+        <div class="progress-bar bg-success"
+             role="progressbar"
+             style="width: {{ $progressPercent }}%;"
+             aria-valuenow="{{ $progressPercent }}"
+             aria-valuemin="0"
+             aria-valuemax="100">
+            {{ number_format($progressPercent, 0) }}%
+        </div>
     </div>
 </div>
 
 
 
-                        </div>
-
 
                     </div>
                 </div>
             </div>
 
 
-            <!-- Denah Sederhana -->
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-map me-2 text-primary"></i>
-                            Denah Kavling
-                        </h5>
-                    </div>
-                    <div class="card-body text-center">
-                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
-                            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+          <!-- Denah Sederhana Dinamis -->
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">
+                <i class="mdi mdi-map me-2 text-primary"></i>
+                Denah Kavling
+            </h5>
+        </div>
+        <div class="card-body text-center">
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                    @php
+                        // Ambil semua unit dari $land
+                        $allUnits = $land->units;
+                        
+                        // Buat array blok => list kavling
+                        $blokKavlings = [];
+                        foreach ($allUnits as $unit) {
+                            $blok = explode('.', $unit->unit_code)[0]; // misal 'A.1' -> 'A'
+                            $blokKavlings[$blok][] = $unit->unit_code;
+                        }
+
+                        // Ambil semua blok yang ada
+                        $allBloks = array_keys($blokKavlings);
+                    @endphp
+
+                    @foreach ($allBloks as $blok)
+                        <div style="margin-bottom: 10px; width: 100%;">
+                            <strong>{{ $blok }}</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 5px;">
                                 @php
-                                    // Misal kavling dari A.1 sampai A.6
-                                    $allKavlings = [];
-                                    for ($i = 1; $i <= 6; $i++) {
-                                        $allKavlings[] = 'A.' . $i;
+                                    // Tentukan range nomor maksimal di blok ini
+                                    $numbers = [];
+                                    foreach ($blokKavlings[$blok] as $kav) {
+                                        $num = (int)explode('.', $kav)[1];
+                                        $numbers[] = $num;
                                     }
-                                    $createdKavlings = $land->units->pluck('unit_code')->toArray();
+                                    $maxNum = max($numbers);
                                 @endphp
 
-                                @foreach ($allKavlings as $kav)
+                                @for ($i = 1; $i <= $maxNum; $i++)
+                                    @php
+                                        $kavCode = $blok . '.' . $i;
+                                        $exists = in_array($kavCode, $blokKavlings[$blok]);
+                                    @endphp
                                     <span
-                                        style="background-color: {{ in_array($kav, $createdKavlings) ? '#28a745' : '#6c757d' }}; color: white; padding: 5px 10px; border-radius: 4px;">
-                                        {{ $kav }}
+                                        style="background-color: {{ $exists ? '#28a745' : '#6c757d' }}; color: white; padding: 5px 10px; border-radius: 4px;">
+                                        {{ $kavCode }}
                                     </span>
-                                @endforeach
+                                @endfor
                             </div>
-                            <p class="text-muted mt-3 mb-0">Preview sederhana posisi kavling</p>
-                            <small class="text-muted">(Hijau = sudah dibuat, Abu = belum dibuat)</small>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
+                <p class="text-muted mt-3 mb-0">Preview posisi kavling </p>
+                <small class="text-muted">(Hijau = sudah dibuat, Abu = belum dibuat)</small>
             </div>
+        </div>
+    </div>
+</div>
+
         </div>
 
         <!-- Tombol Aksi -->

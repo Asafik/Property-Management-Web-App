@@ -200,6 +200,8 @@
             <th class="text-nowrap">Tipe</th>
             <th class="text-nowrap d-none d-md-table-cell">Lokasi</th>
             <th class="text-nowrap">Harga Awal Beli</th>
+            <th class="text-nowrap">Luas Tanah</th>
+            <th class="text-nowrap">Sisa Tanah</th>
             <th class="text-nowrap">Status</th>
             <th class="text-nowrap">Aksi</th>
         </tr>
@@ -238,6 +240,20 @@
                         Rp {{ number_format($land->acquisition_price ?? 0, 0, ',', '.') }}
                     </span>
                 </td>
+               <td>
+    <span class="small text-nowrap">
+        {{ number_format($land->area ?? 0, 0, ',', '.') }} m²
+    </span>
+</td>
+<td>
+    <span class="small text-nowrap">
+        @php
+            $totalUnitArea = $land->units->sum('area');
+            $remainingArea = $land->area - $totalUnitArea;
+        @endphp
+        {{ number_format($remainingArea, 0, ',', '.') }} m²
+    </span>
+</td>
 
                 {{-- STATUS --}}
                 <td>
