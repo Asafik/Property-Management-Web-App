@@ -22,11 +22,12 @@
                 <div class="add-card-body py-3">
                     <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
                         <div>
-                            <span class="add-badge add-badge-primary">ID: CUST-20250214-001</span>
+                            <span class="add-badge add-badge-primary">{{ $customerId }}</span>
                         </div>
                         <div class="add-text-muted small d-flex align-items-center">
                             <i class="mdi mdi-calendar me-1 add-text-primary"></i>
-                            <span>Tanggal: 14 Februari 2026</span>
+                          <span>Tanggal: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</span>
+
                         </div>
                         <div class="ms-sm-auto mt-2 mt-sm-0">
                             <span class="add-badge add-badge-success">New Customer</span>
@@ -38,9 +39,14 @@
     </div>
 
     <!-- Form Tambah Customer -->
+     <form action="{{ route('customer.store') }}" method="POST">
+                @csrf
     <div class="add-row">
         <div class="add-col-12">
             <div class="add-card">
+                <form action="{{ route('customer.store') }}" method="POST">
+                @csrf
+
                 <div class="add-card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
                     <h4 class="mb-0 d-flex align-items-center">
                         <i class="mdi mdi-account-plus me-2 add-text-primary"></i>
@@ -109,14 +115,14 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Nama Lengkap <span class="add-text-danger">*</span></label>
-                                            <input type="text" class="add-form-control" name="nama" placeholder="Sesuai KTP">
+                                            <input type="text" class="add-form-control" name="full_name" placeholder="Sesuai KTP">
                                             <small class="add-text-muted">Tanpa gelar, sesuai KTP</small>
                                         </div>
                                     </div>
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Nama Panggilan</label>
-                                            <input type="text" class="add-form-control" name="namaAlias" placeholder="Contoh: John">
+                                            <input type="text" class="add-form-control" name="nickname" placeholder="Contoh: John">
                                         </div>
                                     </div>
                                 </div>
@@ -132,7 +138,7 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Nomor Kartu Keluarga</label>
-                                            <input type="text" class="add-form-control" name="noKK" placeholder="16 digit" maxlength="16">
+                                            <input type="text" class="add-form-control" name="no_kk" placeholder="16 digit" maxlength="16">
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +147,7 @@
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Tempat Lahir</label>
-                                            <input type="text" class="add-form-control" name="tempatLahir" placeholder="Jakarta">
+                                            <input type="text" class="add-form-control" name="birthplace" placeholder="Jakarta">
                                         </div>
                                     </div>
                                     <div class="add-col-md-4">
@@ -149,14 +155,14 @@
                                             <label>Tanggal Lahir</label>
                                             <div class="add-date-input">
                                                 <i class="mdi mdi-calendar"></i>
-                                                <input type="date" class="add-form-control" name="tanggalLahir">
+                                                <input type="date" class="add-form-control" name="date_birth">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Usia (Tahun)</label>
-                                            <input type="number" class="add-form-control" name="usia" placeholder="30" readonly>
+                                            <input type="number" class="add-form-control" name="age" placeholder="30" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +171,7 @@
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Jenis Kelamin</label>
-                                            <select class="add-form-control" name="jenisKelamin">
+                                            <select class="add-form-control" name="gender">
                                                 <option value="">-- Pilih --</option>
                                                 <option value="L">Laki-laki</option>
                                                 <option value="P">Perempuan</option>
@@ -175,7 +181,7 @@
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Agama</label>
-                                            <select class="add-form-control" name="agama">
+                                            <select class="add-form-control" name="religion">
                                                 <option value="">-- Pilih --</option>
                                                 <option>Islam</option>
                                                 <option>Kristen</option>
@@ -189,7 +195,7 @@
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Kewarganegaraan</label>
-                                            <select class="add-form-control" name="kewarganegaraan">
+                                            <select class="add-form-control" name="nationality">
                                                 <option>WNI</option>
                                                 <option>WNA</option>
                                             </select>
@@ -201,7 +207,7 @@
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Status Pernikahan</label>
-                                            <select class="add-form-control" name="statusNikah">
+                                            <select class="add-form-control" name="marital_status">
                                                 <option value="">-- Pilih --</option>
                                                 <option>Belum Menikah</option>
                                                 <option>Menikah</option>
@@ -214,14 +220,14 @@
                                             <label>Tanggal Pernikahan</label>
                                             <div class="add-date-input">
                                                 <i class="mdi mdi-calendar"></i>
-                                                <input type="date" class="add-form-control" name="tanggalPernikahan">
+                                                <input type="date" class="add-form-control" name="marital_date">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="add-col-md-4">
                                         <div class="add-form-group">
                                             <label>Jumlah Anak</label>
-                                            <input type="number" class="add-form-control" name="jumlahAnak" value="0" min="0">
+                                            <input type="number" class="add-form-control" name="child_count" value="0" min="0">
                                         </div>
                                     </div>
                                 </div>
@@ -377,13 +383,13 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>No. HP / WA <span class="add-text-danger">*</span></label>
-                                            <input type="text" class="add-form-control" name="noHp" placeholder="081234567890">
+                                            <input type="text" class="add-form-control" name="phone" placeholder="081234567890">
                                         </div>
                                     </div>
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>No. Telepon Rumah</label>
-                                            <input type="text" class="add-form-control" name="noTelp" placeholder="021-1234567">
+                                            <input type="text" class="add-form-control" name="home_phone" placeholder="021-1234567">
                                         </div>
                                     </div>
                                 </div>
@@ -398,7 +404,7 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Email Kantor</label>
-                                            <input type="email" class="add-form-control" name="emailKantor" placeholder="john@company.com">
+                                            <input type="email" class="add-form-control" name="office_email" placeholder="john@company.com">
                                         </div>
                                     </div>
                                 </div>
@@ -436,7 +442,7 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Status Pekerjaan</label>
-                                            <select class="add-form-control" name="pekerjaan">
+                                            <select class="add-form-control" name="job_status">
                                                 <option value="">-- Pilih --</option>
                                                 <option>Karyawan Swasta</option>
                                                 <option>PNS</option>
@@ -449,7 +455,7 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Perusahaan</label>
-                                            <input type="text" class="add-form-control" name="bidangUsaha" placeholder="PT. Contoh Abadi">
+                                            <input type="text" class="add-form-control" name="company_name" placeholder="PT. Contoh Abadi">
                                         </div>
                                     </div>
                                 </div>
@@ -458,13 +464,13 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Penghasilan Pokok (Rp)</label>
-                                            <input type="text" class="add-form-control" name="penghasilanPokok" placeholder="10.000.000">
+                                            <input type="text" class="add-form-control" name="main_income" placeholder="10.000.000">
                                         </div>
                                     </div>
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Penghasilan Tambahan (Rp)</label>
-                                            <input type="text" class="add-form-control" name="penghasilanTambahan" placeholder="2.000.000">
+                                            <input type="text" class="add-form-control" name="side_income" placeholder="2.000.000">
                                         </div>
                                     </div>
                                 </div>
@@ -490,13 +496,13 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Nama Lengkap Pasangan</label>
-                                            <input type="text" class="add-form-control" name="namaPasangan" placeholder="Jane Doe">
+                                            <input type="text" class="add-form-control" name="spouse_name" placeholder="Jane Doe">
                                         </div>
                                     </div>
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>NIK Pasangan</label>
-                                            <input type="text" class="add-form-control" name="nikPasangan" placeholder="16 digit">
+                                            <input type="text" class="add-form-control" name="spouse_nik" placeholder="16 digit">
                                         </div>
                                     </div>
                                 </div>
@@ -513,13 +519,13 @@
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Nama Ayah</label>
-                                            <input type="text" class="add-form-control" name="namaAyah" placeholder="John Doe Sr.">
+                                            <input type="text" class="add-form-control" name="father_name" placeholder="John Doe Sr.">
                                         </div>
                                     </div>
                                     <div class="add-col-md-6">
                                         <div class="add-form-group">
                                             <label>Nama Ibu</label>
-                                            <input type="text" class="add-form-control" name="namaIbu" placeholder="Jane Doe Sr.">
+                                            <input type="text" class="add-form-control" name="mother_name" placeholder="Jane Doe Sr.">
                                         </div>
                                     </div>
                                 </div>
@@ -621,6 +627,7 @@
             </div>
         </div>
     </div>
+     </form>
 </div>
 @endsection
 

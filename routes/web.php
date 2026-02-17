@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\VerifikasiLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandBankController;
 use App\Http\Controllers\Admin\LandBankUnitController;
+use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 //     return view('marketing.jual_unit');
 // });
 Route::get('/marketing/sell-unit',[SellUnitController::class, 'index'])->name('marketing.jual-unit');
+
 Route::get('/dashboard-list-pengajuan', function () {
     return view('marketing.list_pengajuan');
 });
@@ -47,9 +49,14 @@ Route::get('/dashboard-pengajuan', function () {
     return view('marketing.pengajuan');
 });
 
-Route::get('/dashboard-tambah-customer', function () {
-    return view('marketing.tambah_customer');
-});
+// Route::get('/dashboard-tambah-customer', function () {
+//     return view('marketing.tambah_customer');
+// });
+
+Route::get('/marketing/create-customer', [CustomerController::class, 'index'])->name('marketing.tambah_customer');
+Route::post('/marketing/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
+Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])
+    ->name('set.customer');
 
 //cetak
 Route::get('/dashboard-cetak-laporan', function () {

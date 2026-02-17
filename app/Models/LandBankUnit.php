@@ -26,7 +26,7 @@ class LandBankUnit extends Model
         'construction_progress', // jika ada kolom progress
     ];
 
-      public function getConstructionProgressPercentageAttribute()
+    public function getConstructionProgressPercentageAttribute()
     {
         $map = [
             'belum_mulai' => 0,
@@ -64,5 +64,9 @@ class LandBankUnit extends Model
     public function progress()
     {
         return $this->hasOne(DevelopmentProgress::class, 'land_bank_unit_id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }
