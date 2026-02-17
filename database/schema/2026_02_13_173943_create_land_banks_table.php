@@ -63,8 +63,6 @@ return new class extends Migration
 
     // ===== NOTES =====
     $table->text('description')->nullable();
-    $table->string('status')->default('draft'); // draft/active
-
     $table->timestamps();
 });
 

@@ -20,6 +20,7 @@ return new class extends Migration
     $table->string('ownership_status')->nullable();
     $table->string('certificate_owner')->nullable(); // atas nama sertifikat
     $table->float('area')->nullable();
+    $table->integer('remaining_area')->nullable();
     $table->bigInteger('acquisition_price')->nullable();
     $table->date('acquisition_date')->nullable();
 

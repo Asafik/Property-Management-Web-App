@@ -45,6 +45,7 @@ class LandBankController extends Controller
                 'certificate_owner' => $request->atasNama,
 
                 'area' => $request->luasTanah,
+                'remaining_area' => $request->luasTanah,
                 'acquisition_price' => $harga,
                 'acquisition_date' => $request->tanggalPerolehan,
 

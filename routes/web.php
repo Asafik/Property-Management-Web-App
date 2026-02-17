@@ -1,19 +1,24 @@
 
 <?php
 
+use App\Http\Controllers\Admin\DevelopmentProgressController;
 use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\RABController;
+use App\Http\Controllers\Admin\VerifikasiLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandBankController;
+use App\Http\Controllers\Admin\LandBankUnitController;
+use App\Http\Controllers\Marketing\SellUnitController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 // marketing
-Route::get('/dashboard-jual-unit', function () {
-    return view('marketing.jual_unit');
-});
-
+// Route::get('/dashboard-jual-unit', function () {
+//     return view('marketing.jual_unit');
+// });
+Route::get('/marketing/sell-unit',[SellUnitController::class, 'index'])->name('marketing.jual-unit');
 Route::get('/dashboard-list-pengajuan', function () {
     return view('marketing.list_pengajuan');
 });
@@ -95,16 +100,52 @@ Route::post('/dokumen/{id}/update',
     [LandBankController::class, 'updateDocument']
 )->name('dokumen.update');
 
+Route::get('/kavling', [PropertyController::class, 'kavlingindex'])
+    ->name('kavling.index');
 
-Route::get('/properti-buat-kavling', function () {
-    return view('properti.addkavling');
-});
+// Route::get('/properti-buat-kavling', function () {
+//     return view('properti.addkavling');
+// });
+Route::get('/properti-buat-kavling/{land_bank_id}', [LandBankUnitController::class, 'create'])
+    ->name('properti.buatKavling');
+// Simpan Manual
+Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
+
+// Generate Otomatis
+Route::post('/properti-buat-kavling/{land_bank_id}/generate', [LandBankUnitController::class, 'generate'])->name('properti.generateKavling');
+// Edit unit kavling
+Route::get('/properti/kavling/{unit}/edit', [LandBankUnitController::class, 'edit'])
+     ->name('properti.kavling.edit');
+
+// Update unit kavling
+Route::put('/properti/kavling/{unit}', [LandBankUnitController::class, 'update'])
+     ->name('properti.kavling.update');
+
+// Delete unit kavling
+Route::delete('/properti/kavling/{unit}', [LandBankUnitController::class, 'destroy'])
+     ->name('properti.kavling.destroy');
 
 
-Route::get('/properti-proses-pembangunan', function () {
-    return view('properti.proses_pembangunan');
-});
+Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
 
+    Route::post('/properti/progress/acc-ajax/{unit}', [\App\Http\Controllers\Admin\DevelopmentProgressController::class, 'accAjax'])
+    ->name('properti.progress.acc.ajax');
+
+
+
+
+
+
+// Route::get('/properti-daftar-pembangunan', function () {
+//     return view('properti.daftar_pembangunan');
+// });
+Route::get('/properti/progress/{land_bank_id}', 
+    [DevelopmentProgressController::class, 'index']
+)->name('properti.progress');
+
+Route::post('/properti/progress/store', 
+    [DevelopmentProgressController::class, 'store']
+)->name('properti.progress.store');
 
 
 

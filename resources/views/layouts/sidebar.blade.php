@@ -32,7 +32,7 @@
     <div class="collapse" id="marketing">
         <ul class="nav flex-column sub-menu">
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-jual-unit">Jual Unit</a>
+            <a class="nav-link" href="{{route('marketing.jual-unit')}}">Jual Unit</a>
         <li class="nav-item">
             <a class="nav-link" href="dashboard-tambah-customer">Tambah Customer</a>
         </li>
@@ -78,12 +78,8 @@
         <li class="nav-item">
             <a class="nav-link" href="{{route('properti')}}">Tambah Properti</a>
         </li>
-        <!-- TAMBAHAN MENU BARU SESUAI FLOWCHART -->
         <li class="nav-item">
-            <a class="nav-link" href="#">Verifikasi Legal</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Buat Kavling</a>
+            <a class="nav-link" href="{{route('kavling.index')}}">Tambah Kavling</a>
         </li>
         <!-- END TAMBAHAN MENU -->
         <li class="nav-item">
