@@ -573,6 +573,33 @@ select.kavling-form-control {
         font-size: 0.6rem;
     }
 }
+
+/* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
+.dataTables_filter {
+    display: none !important;
+}
+
+.dataTables_length {
+    display: none !important;
+}
+
+.dataTables_paginate {
+    display: none !important;
+}
+
+.dataTables_info {
+    display: none !important;
+}
+
+/* Tetap tampilkan sorting indicator */
+.sorting, .sorting_asc, .sorting_desc {
+    cursor: pointer;
+}
+
+/* Icon styling */
+.mdi {
+    vertical-align: middle;
+}
 </style>
 
 <div class="container-fluid p-4">
@@ -581,8 +608,14 @@ select.kavling-form-control {
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h3 class="text-dark fw-bold mb-1" style="color: #2c2e3f;">Buat Kavling / Master Unit</h3>
-                    <p class="text-muted mb-0">Buat unit-unit kavling dari tanah yang sudah diverifikasi</p>
+                    <h3 class="text-dark fw-bold mb-1">
+                        <i class="mdi mdi-pencil-ruler me-2" style="color: #9a55ff;"></i>
+                        Buat Kavling / Master Unit
+                    </h3>
+                    <p class="text-muted mb-0">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Buat unit-unit kavling dari tanah yang sudah diverifikasi
+                    </p>
                 </div>
             </div>
         </div>
@@ -603,7 +636,9 @@ select.kavling-form-control {
                         {{-- Nama Tanah / Proyek --}}
                         <div class="col-md-3">
                             <div class="mb-3">
-                                <label class="text-muted small">Nama Tanah / Proyek</label>
+                                <label class="text-muted small">
+                                    <i class="mdi mdi-home me-1"></i>Nama Tanah / Proyek
+                                </label>
                                 <p class="fw-bold">{{ $land->name ?? '-' }}</p>
                             </div>
                         </div>
@@ -611,7 +646,9 @@ select.kavling-form-control {
                         {{-- Luas Total Tanah --}}
                         <div class="col-md-3">
                             <div class="mb-3">
-                                <label class="text-muted small">Luas Total Tanah</label>
+                                <label class="text-muted small">
+                                    <i class="mdi mdi-ruler-square me-1"></i>Luas Total Tanah
+                                </label>
                                 <p class="fw-bold">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</p>
                             </div>
                         </div>
@@ -619,7 +656,9 @@ select.kavling-form-control {
                         {{-- Sisa Luas Belum Dikavling --}}
                         <div class="col-md-3">
                             <div class="mb-3">
-                                <label class="text-muted small">Sisa Luas Belum Dikavling</label>
+                                <label class="text-muted small">
+                                    <i class="mdi mdi-chart-arc me-1"></i>Sisa Luas Belum Dikavling
+                                </label>
                                 <p class="fw-bold text-primary">
                                     {{ number_format($land->remaining_area ?? ($land->area ?? 0), 0, ',', '.') }} m²
                                 </p>
@@ -629,13 +668,13 @@ select.kavling-form-control {
                         {{-- Status Legal --}}
                         <div class="col-md-3">
                             <div class="mb-3">
-                                <label class="text-muted small">Status Legal</label>
+                                <label class="text-muted small">
+                                    <i class="mdi mdi-gavel me-1"></i>Status Legal
+                                </label>
                                 @if ($land->legal_status == 'terverifikasi')
-                                    <p class="fw-bold"><span class="badge badge-success">Terverifikasi</span></p>
+                                    <p class="fw-bold"><span class="badge badge-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span></p>
                                 @else
-                                    <p class="fw-bold"><span
-                                            class="badge badge-warning">{{ ucfirst($land->legal_status) ?? '-' }}</span>
-                                    </p>
+                                    <p class="fw-bold"><span class="badge badge-warning"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($land->legal_status) ?? '-' }}</span></p>
                                 @endif
                             </div>
                         </div>
@@ -645,8 +684,11 @@ select.kavling-form-control {
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-2">
-                                <label class="text-muted small">Lokasi</label>
+                                <label class="text-muted small">
+                                    <i class="mdi mdi-map-marker me-1"></i>Lokasi
+                                </label>
                                 <p class="fw-bold">
+                                    <i class="mdi mdi-map-marker text-danger me-1"></i>
                                     {{ $land->address ?? '-' }},
                                     Kel. {{ $land->village ?? '-' }},
                                     Kec. {{ $land->district ?? '-' }},
@@ -677,7 +719,10 @@ select.kavling-form-control {
                         <div class="progress-bar bg-success" style="width: 50%"></div>
                         <div class="progress-bar bg-primary" style="width: 25%"></div>
                     </div>
-                    <p class="text-muted small mt-2">Tahap 3 dari 4: Buat Kavling / Master Unit</p>
+                    <p class="text-muted small mt-2">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Tahap 3 dari 4: Buat Kavling / Master Unit
+                    </p>
                 </div>
             </div>
         </div>
@@ -880,7 +925,10 @@ select.kavling-form-control {
                             <div class="text-center py-4">
                                 <i class="mdi mdi-file-excel text-success" style="font-size: 48px;"></i>
                                 <h5 class="mt-3">Import Data Kavling dari Excel</h5>
-                                <p class="text-muted">Download template Excel, isi data unit, lalu upload kembali</p>
+                                <p class="text-muted">
+                                    <i class="mdi mdi-information-outline me-1"></i>
+                                    Download template Excel, isi data unit, lalu upload kembali
+                                </p>
 
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
@@ -930,11 +978,11 @@ select.kavling-form-control {
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                         Daftar Unit Kavling
                     </h5>
-                    <span class="badge badge-primary">{{ $land->units->count() }} unit</span>
+                    <span class="badge badge-primary"><i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit</span>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table id="tableKavling" class="table table-hover" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
@@ -947,14 +995,16 @@ select.kavling-form-control {
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($land->units as $i => $unit)
+                                @foreach($land->units as $i => $unit)
                                     <tr>
-                                        <td class="text-center fw-bold">{{ $i + 1 }}</td>
+                                        <td class="text-center fw-bold">
+                                            <span class="badge bg-light text-dark">{{ $i + 1 }}</span>
+                                        </td>
 
                                         {{-- BLOK / NO --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
+                                                <i class="mdi mdi-home-variant text-primary me-1" style="font-size: 0.9rem;"></i>
                                                 <span class="fw-bold">{{ $unit->unit_code }}</span>
                                             </div>
                                         </td>
@@ -1016,14 +1066,7 @@ select.kavling-form-control {
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i>
-                                            Belum ada unit kavling
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -1037,7 +1080,10 @@ select.kavling-form-control {
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card bg-light">
                 <div class="card-body">
-                    <h5 class="card-title">Ringkasan Kavling</h5>
+                    <h5 class="card-title">
+                        <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>
+                        Ringkasan Kavling
+                    </h5>
                     @php
                         $totalUnits = $land->units->count();
                         $totalArea = $land->units->sum('area');
@@ -1063,28 +1109,28 @@ select.kavling-form-control {
 
                     <div class="row">
                         <div class="col-6">
-                            <p class="text-muted mb-1">Total Unit</p>
+                            <p class="text-muted mb-1"><i class="mdi mdi-counter me-1"></i>Total Unit</p>
                             <h4>{{ $totalUnits }} unit</h4>
                         </div>
                         <div class="col-6">
-                            <p class="text-muted mb-1">Total Luas</p>
+                            <p class="text-muted mb-1"><i class="mdi mdi-ruler-square me-1"></i>Total Luas</p>
                             <h4>{{ number_format($totalArea, 0, ',', '.') }} m²</h4>
                         </div>
                     </div>
 
                     <div class="row mt-3">
                         <div class="col-6">
-                            <p class="text-muted mb-1">Sisa Luas Tanah</p>
+                            <p class="text-muted mb-1"><i class="mdi mdi-chart-arc me-1"></i>Sisa Luas Tanah</p>
                             <h4>{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
                         </div>
                         <div class="col-6">
-                            <p class="text-muted mb-1">Nilai Total</p>
+                            <p class="text-muted mb-1"><i class="mdi mdi-currency-usd me-1"></i>Nilai Total</p>
                             <h4>Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
                         </div>
                     </div>
 
                     <div class="mt-4">
-                        <p class="text-muted mb-1">Progress Pembangunan</p>
+                        <p class="text-muted mb-1"><i class="mdi mdi-progress-clock me-1"></i>Progress Pembangunan</p>
                         <div class="progress">
                             <div class="progress-bar bg-success"
                                 role="progressbar"
@@ -1124,7 +1170,7 @@ select.kavling-form-control {
 
                             @foreach ($allBloks as $blok)
                                 <div style="margin-bottom: 10px; width: 100%;">
-                                    <strong>{{ $blok }}</strong>
+                                    <strong><i class="mdi mdi-format-columns me-1"></i>{{ $blok }}</strong>
                                     <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 5px;">
                                         @php
                                             $numbers = [];
@@ -1142,6 +1188,7 @@ select.kavling-form-control {
                                             @endphp
                                             <span
                                                 style="background-color: {{ $exists ? '#28a745' : '#6c757d' }}; color: white; padding: 5px 10px; border-radius: 4px;">
+                                                <i class="mdi mdi-{{ $exists ? 'check' : 'close' }} me-1"></i>
                                                 {{ $kavCode }}
                                             </span>
                                         @endfor
@@ -1149,8 +1196,14 @@ select.kavling-form-control {
                                 </div>
                             @endforeach
                         </div>
-                        <p class="text-muted mt-3 mb-0">Preview posisi kavling</p>
-                        <small class="text-muted">(Hijau = sudah dibuat, Abu = belum dibuat)</small>
+                        <p class="text-muted mt-3 mb-0">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Preview posisi kavling
+                        </p>
+                        <small class="text-muted">
+                            <span class="badge badge-success me-1"><i class="mdi mdi-check"></i> Hijau</span> = sudah dibuat,
+                            <span class="badge bg-secondary me-1"><i class="mdi mdi-close"></i> Abu</span> = belum dibuat
+                        </small>
                     </div>
                 </div>
             </div>
@@ -1172,12 +1225,8 @@ select.kavling-form-control {
                     </div>
                     <div class="d-flex flex-wrap gap-2">
                         <button class="kavling-btn kavling-btn-success"
-                            onclick="alert('Kavling berhasil disimpan. Lanjut ke marketing?')">
+                            onclick="alert('Kavling berhasil disimpan.')">
                             <i class="mdi mdi-check-circle me-1"></i>Simpan Kavling
-                        </button>
-                        <button class="kavling-btn kavling-btn-primary"
-                            onclick="alert('Kavling disimpan dan lanjut ke halaman marketing')">
-                            <i class="mdi mdi-arrow-right me-1"></i>Simpan & Lanjut Jual
                         </button>
                     </div>
                 </div>
@@ -1200,6 +1249,31 @@ $(document).ready(function() {
         $(this).addClass('active');
         var target = $(this).attr('href');
         $(target).addClass('active');
+    });
+
+    // Inisialisasi DataTables - hanya untuk sorting
+    $('#tableKavling').DataTable({
+        responsive: true,
+        paging: false,
+        info: false,
+        searching: false,
+        lengthChange: false,
+        ordering: true,
+        language: {
+            emptyTable: `
+                <div class="text-center text-muted py-5">
+                    <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <p class="mt-3">
+                        <i class="mdi mdi-information-outline me-2"></i>
+                        Belum ada unit kavling
+                    </p>
+                </div>
+            `,
+            zeroRecords: "Data tidak ditemukan",
+        },
+        columnDefs: [
+            { orderable: false, targets: [0, 6] }
+        ]
     });
 
     // Format Rupiah untuk input harga

@@ -1,12 +1,10 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Dashboard - Property Management App')
+@section('title', 'Semua Kavling - Property Management App')
 
 @section('content')
 <style>
-/* ===== MODERN STYLING UNTUK HALAMAN DASHBOARD ===== */
 
-/* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
@@ -423,6 +421,33 @@ h3.text-dark {
         min-height: 26px;
     }
 }
+
+/* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
+.dataTables_filter {
+    display: none !important;
+}
+
+.dataTables_length {
+    display: none !important;
+}
+
+.dataTables_paginate {
+    display: none !important;
+}
+
+.dataTables_info {
+    display: none !important;
+}
+
+/* Tetap tampilkan sorting indicator */
+.sorting, .sorting_asc, .sorting_desc {
+    cursor: pointer;
+}
+
+/* Icon styling */
+.mdi {
+    vertical-align: middle;
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -431,8 +456,14 @@ h3.text-dark {
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h3 class="text-dark mb-1">Semua Tanah / LandBank Terverifikasi Dokument</h3>
-                    <p class="text-muted mb-0">Daftar tanah yang sudah terverifikasi dokumen legalnya</p>
+                    <h3 class="text-dark mb-1">
+                        <i class="mdi mdi-terrain me-2" style="color: #9a55ff;"></i>
+                        Semua Tanah / LandBank Terverifikasi Dokument
+                    </h3>
+                    <p class="text-muted mb-0">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Daftar tanah yang sudah terverifikasi dokumen legalnya
+                    </p>
                 </div>
             </div>
         </div>
@@ -443,7 +474,10 @@ h3.text-dark {
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-white d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
-                    <h4 class="card-title">Daftar Tanah / LandBank Terverifikasi Terbaru</h4>
+                    <h4 class="card-title">
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>
+                        Daftar Tanah / LandBank Terverifikasi Terbaru
+                    </h4>
                 </div>
                 <div class="card-body">
                     <!-- Filter Section - DIPERKECIL -->
@@ -458,14 +492,18 @@ h3.text-dark {
                                     <!-- FILTER UNTUK MOBILE -->
                                     <div class="d-block d-md-none">
                                         <div class="mb-2">
-                                            <label class="form-label">Pencarian</label>
-                                            <input type="text" class="form-control" placeholder="Cari...">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                            </label>
+                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari...">
                                         </div>
 
                                         <div class="row g-1">
                                             <div class="col-6">
-                                                <label class="form-label">Kategori</label>
-                                                <select class="form-control">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                </label>
+                                                <select id="filterKategoriMobile" class="form-control">
                                                     <option value="">Semua</option>
                                                     <option value="Rumah">Rumah</option>
                                                     <option value="Apartemen">Apartemen</option>
@@ -474,8 +512,10 @@ h3.text-dark {
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label class="form-label">Lokasi</label>
-                                                <select class="form-control">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-map-marker me-1"></i>Lokasi
+                                                </label>
+                                                <select id="filterLokasiMobile" class="form-control">
                                                     <option value="">Semua</option>
                                                     <option value="Jakarta">Jakarta</option>
                                                 </select>
@@ -484,15 +524,19 @@ h3.text-dark {
 
                                         <div class="row g-1 mt-1">
                                             <div class="col-6">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showDataMobile" class="form-control">
                                                     <option value="10">10</option>
                                                     <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
                                                 </select>
                                             </div>
                                             <div class="col-6 d-flex align-items-end">
-                                                <button type="button" class="btn btn-gradient-secondary w-100">
-                                                    <i class="mdi mdi-refresh"></i> Reset
+                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
+                                                    <i class="mdi mdi-refresh me-1"></i> Reset
                                                 </button>
                                             </div>
                                         </div>
@@ -502,31 +546,45 @@ h3.text-dark {
                                     <div class="d-none d-md-block">
                                         <div class="row g-1">
                                             <div class="col-md-4">
-                                                <label class="form-label">Pencarian</label>
-                                                <input type="text" class="form-control" placeholder="Cari nama properti...">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" id="searchInput" class="form-control" placeholder="Cari nama properti...">
                                             </div>
                                             <div class="col-md-2">
-                                                <label class="form-label">Kategori</label>
-                                                <select class="form-control">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                </label>
+                                                <select id="filterKategori" class="form-control">
                                                     <option value="">Semua</option>
                                                     <option value="Rumah">Rumah</option>
+                                                    <option value="Apartemen">Apartemen</option>
+                                                    <option value="Ruko">Ruko</option>
+                                                    <option value="Tanah">Tanah</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="form-label">Lokasi</label>
-                                                <select class="form-control">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-map-marker me-1"></i>Lokasi
+                                                </label>
+                                                <select id="filterLokasi" class="form-control">
                                                     <option value="">Semua</option>
                                                     <option value="Jakarta">Jakarta</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showData" class="form-control">
                                                     <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-1 d-flex align-items-end">
-                                                <button type="button" class="btn btn-gradient-secondary w-100">
+                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100" title="Reset Filter">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </button>
                                             </div>
@@ -539,10 +597,10 @@ h3.text-dark {
 
                     <!-- Tabel Data -->
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table id="tableKavling" class="table table-hover" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
+                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
                                     <th><i class="mdi mdi-home me-1"></i>Nama Properti</th>
                                     <th><i class="mdi mdi-shape-outline me-1"></i>Tipe</th>
                                     <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker me-1"></i>Lokasi</th>
@@ -559,20 +617,35 @@ h3.text-dark {
                                         $remainingArea = $land->area - $totalUnitArea;
                                     @endphp
                                     <tr>
-                                        <td class="text-center fw-bold">{{ $i + $lands->firstItem() }}</td>
+                                        <td class="text-center fw-bold">
+                                            <span class="badge bg-light text-dark">{{ $i + $lands->firstItem() }}</span>
+                                        </td>
 
                                         {{-- NAMA PROPERTI (rapat dengan nomor) --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
+                                                <i class="mdi mdi-home-variant text-primary me-1" style="font-size: 0.9rem;"></i>
                                                 <span class="fw-bold">{{ Str::limit($land->name ?? '-', 20) }}</span>
                                             </div>
+                                            <small class="text-muted d-block d-md-none">
+                                                <i class="mdi mdi-map-marker me-1"></i>{{ Str::limit($land->address ?? '-', 15) }}
+                                            </small>
                                         </td>
 
                                         {{-- TIPE --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-shape-outline text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @if(($land->zoning ?? 'Tanah') == 'Rumah')
+                                                    <i class="mdi mdi-home-city text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @elseif(($land->zoning ?? 'Tanah') == 'Apartemen')
+                                                    <i class="mdi mdi-office-building text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @elseif(($land->zoning ?? 'Tanah') == 'Ruko')
+                                                    <i class="mdi mdi-store text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @elseif(($land->zoning ?? 'Tanah') == 'Tanah')
+                                                    <i class="mdi mdi-terrain text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @else
+                                                    <i class="mdi mdi-shape-outline text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @endif
                                                 <span>{{ $land->zoning ?? 'Tanah' }}</span>
                                             </div>
                                         </td>
@@ -589,7 +662,7 @@ h3.text-dark {
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
-                                                <span class="text-nowrap">Rp {{ number_format($land->acquisition_price ?? 0, 0, ',', '.') }}</span>
+                                                <span class="text-nowrap fw-bold text-success">Rp {{ number_format($land->acquisition_price ?? 0, 0, ',', '.') }}</span>
                                             </div>
                                         </td>
 
@@ -599,7 +672,10 @@ h3.text-dark {
                                                 <i class="mdi mdi-ruler-square text-warning me-1" style="font-size: 0.9rem;"></i>
                                                 <div>
                                                     <span class="text-nowrap">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</span>
-                                                    <small class="text-muted d-block">Sisa: {{ number_format($remainingArea, 0, ',', '.') }} m²</small>
+                                                    <small class="text-muted d-block">
+                                                        <i class="mdi mdi-information-outline me-1"></i>
+                                                        Sisa: {{ number_format($remainingArea, 0, ',', '.') }} m²
+                                                    </small>
                                                 </div>
                                             </div>
                                         </td>
@@ -621,7 +697,7 @@ h3.text-dark {
                                             @endif
                                         </td>
 
-                                        {{-- AKSI (Icon saja) --}}
+                                        {{-- AKSI (Hanya Buat Kavling) --}}
                                         <td class="text-center">
                                             <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
                                                class="btn btn-outline-primary btn-sm"
@@ -633,9 +709,12 @@ h3.text-dark {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i>
-                                            Belum ada properti terverifikasi
+                                        <td colspan="8" class="text-center text-muted py-5">
+                                            <i class="mdi mdi-terrain" style="font-size: 3rem; opacity: 0.3;"></i>
+                                            <p class="mt-3">
+                                                <i class="mdi mdi-information-outline me-2"></i>
+                                                Belum ada properti terverifikasi
+                                            </p>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -643,7 +722,7 @@ h3.text-dark {
                         </table>
                     </div>
 
-                    <!-- Pagination -->
+                    <!-- Pagination Laravel -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="text-muted small mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
@@ -662,12 +741,29 @@ h3.text-dark {
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        // Inisialisasi tooltip
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
+$(document).ready(function() {
+    // Inisialisasi DataTables - hanya untuk sorting
+    let table = $('#tableKavling').DataTable({
+        responsive: true,
+        paging: false,        // MATIKAN pagination DataTables
+        info: false,          // MATIKAN info DataTables
+        searching: false,     // MATIKAN search bawaan
+        lengthChange: false,  // MATIKAN length change
+        ordering: true,       // AKTIFKAN sorting saja
+        language: {
+            emptyTable: "Data kosong",
+            zeroRecords: "Data tidak ditemukan",
+        },
+        columnDefs: [
+            { orderable: false, targets: [0, 7] } // Non-aktifkan sorting untuk kolom No dan Aksi
+        ]
     });
+
+    // Inisialisasi tooltip Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
 </script>
 @endpush

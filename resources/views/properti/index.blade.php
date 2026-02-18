@@ -68,38 +68,6 @@
     }
 }
 
-/* ===== FILTER SECTION - COMPACT ===== */
-.filter-card {
-    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-    border-radius: 10px;
-    padding: 0.5rem;
-    margin-bottom: 0.75rem;
-}
-
-.filter-card .card-body {
-    padding: 0.5rem !important;
-}
-
-.filter-card .form-label {
-    font-size: 0.65rem;
-    margin-bottom: 0.1rem;
-}
-
-.filter-card .form-control,
-.filter-card .form-select {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.7rem;
-    border-radius: 6px;
-    height: auto;
-    min-height: 28px;
-}
-
-.filter-card .btn {
-    padding: 0.2rem 0.4rem;
-    font-size: 0.65rem;
-    min-height: 28px;
-}
-
 /* Form Controls */
 .form-control, .form-select {
     border: 1px solid #e9ecef;
@@ -164,19 +132,6 @@
     padding: 0.2rem 0.4rem;
     font-size: 0.65rem;
     border-radius: 4px;
-}
-
-/* BUTTON FILTER RESET - WARNA ABU-ABU */
-.btn-filter-reset {
-    background: #6c757d !important;
-    color: #ffffff !important;
-    border: none;
-}
-
-.btn-filter-reset:hover {
-    background: #5a6268 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 /* Gradient Buttons */
@@ -509,29 +464,6 @@ input, select, textarea, button {
     font-size: 16px !important;
 }
 
-/* Grid spacing */
-.row.g-2 {
-    margin-right: -0.15rem;
-    margin-left: -0.15rem;
-}
-
-.row.g-2 > [class*="col-"] {
-    padding-right: 0.15rem;
-    padding-left: 0.15rem;
-}
-
-@media (min-width: 576px) {
-    .row.g-2 {
-        margin-right: -0.25rem;
-        margin-left: -0.25rem;
-    }
-
-    .row.g-2 > [class*="col-"] {
-        padding-right: 0.25rem;
-        padding-left: 0.25rem;
-    }
-}
-
 /* Responsive untuk mobile */
 @media (max-width: 576px) {
     .table thead th {
@@ -542,17 +474,6 @@ input, select, textarea, button {
     .table tbody td {
         font-size: 0.7rem;
         padding: 0.5rem 0.2rem;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.6rem;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select,
-    .filter-card .btn {
-        font-size: 0.6rem;
-        min-height: 26px;
     }
 }
 
@@ -607,94 +528,73 @@ input, select, textarea, button {
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
+/* DataTables Custom Styling - Sembunyikan search dan pagination bawaan */
+.dataTables_filter {
+    display: none !important;
+}
+
+.dataTables_length {
+    display: none !important;
+}
+
+.dataTables_paginate {
+    display: none !important;
+}
+
+.dataTables_info {
+    display: none !important;
+}
+
+/* Tetap tampilkan sorting indicator */
+.sorting, .sorting_asc, .sorting_desc {
+    cursor: pointer;
+}
+
+/* Icon styling */
+.mdi {
+    vertical-align: middle;
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Card Terpisah -->
+    <!-- Header Card -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="mb-1 fw-bold text-dark">
+                            <i class="mdi mdi-home-group me-2" style="color: #9a55ff;"></i>
                             Semua Properti
                         </h4>
                         <p class="mb-0 text-muted small">
+                            <i class="mdi mdi-information-outline me-1"></i>
                             Daftar seluruh properti yang terdaftar dalam sistem
                         </p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-home-city" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabel dengan Filter UI -->
+    <!-- Tabel -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h4 class="card-title">Daftar Semua Properti</h4>
+                    <h4 class="card-title">
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>
+                        Daftar Semua Properti
+                    </h4>
                 </div>
                 <div class="card-body">
-                    <!-- Filter Section - COMPACT -->
-                   <div class="row">
-    <div class="col-md-12">
-        <div class="filter-card">
-            <div class="card-body">
-                <h6 class="card-title mb-2" style="font-size: 0.8rem;">
-                    <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                </h6>
-
-                <div class="row g-1">
-                    <div class="col-md-4">
-                        <label class="form-label">Pencarian</label>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Cari nama properti...">
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label">Kategori</label>
-                        <select id="filterKategori" class="form-control">
-                            <option value="">Semua</option>
-                            <option value="Rumah">Rumah</option>
-                            <option value="Apartemen">Apartemen</option>
-                            <option value="Ruko">Ruko</option>
-                            <option value="Tanah">Tanah</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Lokasi</label>
-                        <select id="filterLokasi" class="form-control">
-                            <option value="">Semua</option>
-                            <option value="Jakarta">Jakarta</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label">Tampil</label>
-                        <select id="showData" class="form-control">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-1 d-flex align-items-end">
-                        <button type="button" id="resetFilter" class="btn btn-danger w-100">
-                            <i class="mdi mdi-refresh"></i>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-
                     <!-- Tabel Data -->
                     <div class="table-responsive">
-                       <table id="tableProperti" class="table table-hover">
+                        <table id="tableProperti" class="table table-hover" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
@@ -711,20 +611,35 @@ input, select, textarea, button {
                             <tbody>
                                 @forelse ($landBanks as $index => $item)
                                     <tr>
-                                        <td class="text-center fw-bold">{{ $landBanks->firstItem() + $index }}</td>
+                                        <td class="text-center fw-bold">
+                                            <span class="badge bg-light text-dark">{{ $landBanks->firstItem() + $index }}</span>
+                                        </td>
 
                                         {{-- NAMA PROPERTI --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
+                                                <i class="mdi mdi-home-variant text-primary me-1" style="font-size: 0.9rem;"></i>
                                                 <span class="fw-bold">{{ Str::limit($item->name, 25) }}</span>
                                             </div>
+                                            <small class="text-muted d-block d-md-none">
+                                                <i class="mdi mdi-map-marker me-1"></i>{{ Str::limit($item->address ?? '-', 15) }}
+                                            </small>
                                         </td>
 
                                         {{-- KATEGORI --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-shape-outline text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @if(($item->zoning ?? 'Tanah') == 'Rumah')
+                                                    <i class="mdi mdi-home-city text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @elseif(($item->zoning ?? 'Tanah') == 'Apartemen')
+                                                    <i class="mdi mdi-office-building text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @elseif(($item->zoning ?? 'Tanah') == 'Ruko')
+                                                    <i class="mdi mdi-store text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @elseif(($item->zoning ?? 'Tanah') == 'Tanah')
+                                                    <i class="mdi mdi-terrain text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @else
+                                                    <i class="mdi mdi-shape-outline text-info me-1" style="font-size: 0.9rem;"></i>
+                                                @endif
                                                 <span>{{ $item->zoning ?? 'Tanah' }}</span>
                                             </div>
                                         </td>
@@ -741,7 +656,7 @@ input, select, textarea, button {
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
-                                                <span class="text-nowrap">Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}</span>
+                                                <span class="text-nowrap fw-bold text-success">Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}</span>
                                             </div>
                                         </td>
 
@@ -753,11 +668,11 @@ input, select, textarea, button {
                                                 </span>
                                             @elseif ($item->legal_status == 'Pending')
                                                 <span class="badge badge-gradient-warning">
-                                                    <i class="mdi mdi-clock me-1"></i>Pending
+                                                    <i class="mdi mdi-clock-outline me-1"></i>Pending
                                                 </span>
                                             @else
                                                 <span class="badge badge-gradient-danger">
-                                                    <i class="mdi mdi-close-circle me-1"></i>Revisi
+                                                    <i class="mdi mdi-alert-circle me-1"></i>Revisi
                                                 </span>
                                             @endif
                                         </td>
@@ -783,7 +698,7 @@ input, select, textarea, button {
                                         <td class="text-center">
                                             <button type="button" class="btn btn-gradient-info btn-sm" data-bs-toggle="modal" data-bs-target="#documentModal{{ $item->id }}" title="Lihat Dokumen">
                                                 <i class="mdi mdi-file-document"></i>
-                                                <span class="badge bg-light text-dark ms-1">{{ $item->documents->count() }}</span>
+                                                <span class="badge bg-white text-dark ms-1">{{ $item->documents->count() }}</span>
                                             </button>
 
                                             <!-- Modal Dokumen -->
@@ -792,6 +707,7 @@ input, select, textarea, button {
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="documentModalLabel{{ $item->id }}">
+                                                                <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>
                                                                 Dokumen - {{ $item->name }}
                                                             </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -802,31 +718,52 @@ input, select, textarea, button {
                                                                     <table class="table table-bordered table-sm align-middle">
                                                                         <thead class="table-light">
                                                                             <tr>
-                                                                                <th>Nomer Dokumen</th>
-                                                                                <th>Tipe</th>
-                                                                                <th>Status</th>
-                                                                                <th width="100">Aksi</th>
+                                                                                <th><i class="mdi mdi-format-list-numbered me-1"></i>Nomer Dokumen</th>
+                                                                                <th><i class="mdi mdi-file-outline me-1"></i>Tipe</th>
+                                                                                <th><i class="mdi mdi-information me-1"></i>Status</th>
+                                                                                <th width="100"><i class="mdi mdi-eye me-1"></i>Aksi</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                             @foreach ($item->documents as $doc)
                                                                                 <tr>
-                                                                                    <td>{{ $doc->document_number }} -- {{ $doc->landbank->ownership_status ?? '-' }} / {{ $doc->landbank->certificate_owner ?? '-' }}</td>
-                                                                                    <td>{{ $doc->type }}</td>
+                                                                                    <td>
+                                                                                        <i class="mdi mdi-file-document text-primary me-1"></i>
+                                                                                        {{ $doc->document_number }}
+                                                                                        <small class="text-muted d-block">
+                                                                                            {{ $doc->landbank->ownership_status ?? '-' }} / {{ $doc->landbank->certificate_owner ?? '-' }}
+                                                                                        </small>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        @if($doc->type == 'sertifikat')
+                                                                                            <i class="mdi mdi-certificate text-primary me-1"></i>
+                                                                                        @elseif($doc->type == 'imb')
+                                                                                            <i class="mdi mdi-domain text-info me-1"></i>
+                                                                                        @else
+                                                                                            <i class="mdi mdi-file text-secondary me-1"></i>
+                                                                                        @endif
+                                                                                        {{ ucfirst($doc->type) }}
+                                                                                    </td>
                                                                                     <td>
                                                                                         @if ($doc->status == 'pending')
-                                                                                            <span class="badge badge-gradient-warning">Pending</span>
+                                                                                            <span class="badge badge-gradient-warning">
+                                                                                                <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                                                                            </span>
                                                                                         @elseif($doc->status == 'ditolak')
-                                                                                            <span class="badge badge-gradient-danger">Ditolak</span>
+                                                                                            <span class="badge badge-gradient-danger">
+                                                                                                <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                                                            </span>
                                                                                         @elseif($doc->status == 'terverifikasi')
-                                                                                            <span class="badge badge-gradient-success">Terverifikasi</span>
+                                                                                            <span class="badge badge-gradient-success">
+                                                                                                <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                                                                            </span>
                                                                                         @else
                                                                                             <span class="badge bg-secondary">{{ ucfirst($doc->status) }}</span>
                                                                                         @endif
                                                                                     </td>
                                                                                     <td>
-                                                                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="btn btn-gradient-primary btn-sm">
-                                                                                            Lihat
+                                                                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="btn btn-gradient-primary btn-sm" title="Lihat Dokumen">
+                                                                                            <i class="mdi mdi-eye"></i> Lihat
                                                                                         </a>
                                                                                     </td>
                                                                                 </tr>
@@ -834,6 +771,7 @@ input, select, textarea, button {
                                                                                     <tr>
                                                                                         <td colspan="4">
                                                                                             <div class="border-start border-4 border-danger ps-3 py-2 bg-light text-danger small">
+                                                                                                <i class="mdi mdi-alert-circle me-1"></i>
                                                                                                 <strong>Alasan Ditolak:</strong> {{ $doc->catatan_admin }}
                                                                                             </div>
                                                                                         </td>
@@ -844,15 +782,18 @@ input, select, textarea, button {
                                                                     </table>
                                                                 </div>
                                                             @else
-                                                                <div class="text-center text-muted py-3">
-                                                                    <i class="mdi mdi-information-outline me-2"></i>
-                                                                    Tidak ada dokumen.
+                                                                <div class="text-center text-muted py-4">
+                                                                    <i class="mdi mdi-file-document-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                                                    <p class="mt-2">
+                                                                        <i class="mdi mdi-information-outline me-2"></i>
+                                                                        Tidak ada dokumen.
+                                                                    </p>
                                                                 </div>
                                                             @endif
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                                                                Tutup
+                                                                <i class="mdi mdi-close me-1"></i> Tutup
                                                             </button>
                                                         </div>
                                                     </div>
@@ -883,9 +824,12 @@ input, select, textarea, button {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i>
-                                            Data belum tersedia
+                                        <td colspan="9" class="text-center text-muted py-5">
+                                            <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                            <p class="mt-3">
+                                                <i class="mdi mdi-information-outline me-2"></i>
+                                                Data belum tersedia
+                                            </p>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -893,7 +837,7 @@ input, select, textarea, button {
                         </table>
                     </div>
 
-                    <!-- Pagination -->
+                    <!-- Pagination Laravel -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="text-muted small mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
@@ -912,60 +856,43 @@ input, select, textarea, button {
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi tooltip
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-    });
-</script>
-<script>
 $(document).ready(function () {
-
+    // Inisialisasi DataTables - hanya untuk sorting
     let table = $('#tableProperti').DataTable({
         responsive: true,
-        pageLength: 10,
-        lengthChange: false,
-        ordering: false,
+        paging: false,        // MATIKAN pagination DataTables
+        info: false,          // MATIKAN info DataTables
+        searching: false,     // MATIKAN search bawaan
+        lengthChange: false,  // MATIKAN length change
+        ordering: true,       // AKTIFKAN sorting saja
         language: {
             emptyTable: "Data kosong",
-            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-            paginate: { previous: "‹", next: "›" }
+            zeroRecords: "Data tidak ditemukan",
+        },
+        columnDefs: [
+            { orderable: false, targets: [0, 7, 8] } // Non-aktifkan sorting untuk kolom No, Dokumen, Aksi
+        ],
+        drawCallback: function(settings) {
+            // Re-inisialisasi tooltip Bootstrap
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
         }
     });
 
-    // SEARCH
-    $('#searchInput').on('keyup', function () {
-        table.search(this.value).draw();
+    // Inisialisasi tooltip Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
     });
 
-    // FILTER KATEGORI (kolom ke-2)
-    $('#filterKategori').on('change', function () {
-        table.column(2).search(this.value).draw();
+    // Konfirmasi sebelum verifikasi
+    $('.action-text-verify').on('click', function(e) {
+        if (!confirm('Apakah Anda yakin ingin memverifikasi properti ini?')) {
+            e.preventDefault();
+        }
     });
-
-    // FILTER LOKASI (kolom ke-3)
-    $('#filterLokasi').on('change', function () {
-        table.column(3).search(this.value).draw();
-    });
-
-    // TAMPIL DATA
-    $('#showData').on('change', function () {
-        table.page.len(this.value).draw();
-    });
-
-    // RESET
-    $('#resetFilter').on('click', function () {
-        $('#searchInput').val('');
-        $('#filterKategori').val('');
-        $('#filterLokasi').val('');
-        $('#showData').val('10');
-
-        table.search('').columns().search('').page.len(10).draw();
-    });
-
 });
 </script>
-
 @endpush
