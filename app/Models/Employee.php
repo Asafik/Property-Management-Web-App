@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\LandBankUnit;
 
 class Employee extends Model
 {
@@ -14,4 +15,8 @@ class Employee extends Model
         'address',
         'role'
     ];
+
+    public function landbankunits(){
+        return $this->hasMany(LandBankUnit::class);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\UnitMaterial; // pastikan nama kelas sesuai
 use App\Models\DevelopmentProgress;
+use App\Models\Employee;
 
 class LandBankUnit extends Model
 {
@@ -68,5 +69,9 @@ class LandBankUnit extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+    public function agency()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 }

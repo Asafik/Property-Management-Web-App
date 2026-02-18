@@ -21,6 +21,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 //     return view('marketing.jual_unit');
 // });
 Route::get('/marketing/sell-unit',[SellUnitController::class, 'index'])->name('marketing.jual-unit');
+Route::post('/marketing/set-agency/{unitId}',
+    [SellUnitController::class, 'setAgency']
+)->name('marketing.setAgency');
 
 Route::get('/dashboard-list-pengajuan', function () {
     return view('marketing.list_pengajuan');
