@@ -12,7 +12,7 @@ use App\Models\Employee;
 class SellUnitController extends Controller
 {
   public function index()
-{
+  {
     // Ambil semua unit beserta relasi landBank
     $units = LandBankUnit::with('landBank')->get();
 
@@ -20,7 +20,7 @@ class SellUnitController extends Controller
     $totalUnits = $units->count();
     $totalTersedia = $units->where('status', 'ready')->count();
     $totalBooking = $units->where('status', 'booked')->count();
-    $totalSold = $units->where('status', 'sold')->count();    
+    $totalSold = $units->where('status', 'sold')->count();
     // Hitung total luas semua unit
     $totalArea = $units->sum('area');
 
@@ -31,30 +31,51 @@ class SellUnitController extends Controller
 
     // Hitung total nilai unit
     $totalNilai = $units->sum('price');
-  $customers = Customer::latest()->get();
-  $agencies = Employee::latest()->get();
+    $customers = Customer::latest()->get();
+    $agencies = Employee::where('role', 'agency')
+      ->latest()
+      ->get();
+
     return view('marketing.jual_unit', compact(
-        'units',
-        'totalUnits',
-        'totalArea',
-        'sisaLuas',
-        'totalNilai',
-        'totalTersedia',
-        'totalBooking',
-        'totalSold',
-        'customers',
-        'agencies'
+      'units',
+      'totalUnits',
+      'totalArea',
+      'sisaLuas',
+      'totalNilai',
+      'totalTersedia',
+      'totalBooking',
+      'totalSold',
+      'customers',
+      'agencies'
     ));
-}
-public function setCustomer(Request $request, $unitId)
-{
+  }
+  public function setCustomer(Request $request, $unitId)
+  {
     $unit = LandBankUnit::findOrFail($unitId);
 
     $unit->customer_id = $request->customer_id;
     $unit->status = 'booked'; // atau Sold
     $unit->save();
 
-    return back()->with('success','Customer berhasil dipasang ke unit');
+    return back()->with('success', 'Customer berhasil dipasang ke unit');
+  }
+  // public function setAgency(Request $request, $unitId)
+  // {
+  //   $unit = LandBankUnit::findOrFail($unitId);
+
+  //   $unit->employee_id = $request->employee_id;
+  //   $unit->save();
+
+  //   return back()->with('success', 'Agency berhasil dipasang ke unit');
+  // }
+public function setAgency(Request $request, $unitId)
+{
+    $unit = LandBankUnit::findOrFail($unitId);
+
+    $unit->employee_id = $request->employee_id;
+    $unit->save();
+
+    return back()->with('success','Agency berhasil dipilih');
 }
 
 

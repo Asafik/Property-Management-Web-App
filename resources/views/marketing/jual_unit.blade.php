@@ -220,7 +220,8 @@
                                                     <span class="badge badge-warning">{{ ucfirst($unit->status) }}</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $unit->agent_name ?? '-' }}</td>
+                                            <td>{{ $unit->agency->name ?? '-' }}</td>
+
                                             <td>{{ $unit->customer->full_name ?? '-' }}
                                             </td>
                                             <td>
@@ -243,10 +244,13 @@
                                                     </button>
 
                                                     <!-- MODAL AGENCY -->
-                                                    <button onclick="$('#modalAgency').modal('show')" class="btn btn-info"
-                                                        title="Tambah Agency">
+                                                    <button class="btn btn-info bukaModal"
+                                                        data-unit="{{ $unit->id }}" data-toggle="modal"
+                                                        data-target="#modalAgency">
                                                         <i class="mdi mdi-office-building"></i>
                                                     </button>
+
+
 
                                                 </div>
                                             </td>
@@ -260,6 +264,64 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                            <div class="modal fade" id="modalAgency" tabindex="-1">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header bg-info text-white">
+                                            <h5 class="modal-title">Pilih Agency</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal">
+                                                <span>&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                            <form id="formAgency" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="employee_id" id="employee_id">
+                                                {{-- <button type="submit" class="btn btn-primary">Set Agency</button> --}}
+                                            </form>
+
+
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Nama Agency</th>
+                                                            <th>No HP</th>
+                                                            <th>Alamat</th>
+                                                            <th>Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($agencies as $a)
+                                                            <tr>
+                                                                <td>{{ $loop->iteration }}</td>
+                                                                <td>{{ $a->name }}</td>
+                                                                <td>{{ $a->phone }}</td>
+                                                                <td>{{ $a->address }}</td>
+                                                                <td>
+                                                                    <button type="button"
+                                                                        class="btn btn-success pilihAgency"
+                                                                        data-id="{{ $a->id }}">
+                                                                        Pilih
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -446,55 +508,6 @@
 
                 </div>
 
-
-            </div>
-        </div>
-    </div>
-    <!-- ================= MODAL AGENCY (DIPINDAH KELUAR) ================= -->
-    <div class="modal fade" id="modalAgency" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title">Pilih Agency</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped" id="tableAgency">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Agency</th>
-                                    <th>No HP</th>
-                                    <th>Alamat</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($agencies as $a)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $a->name }}</td>
-                                        <td>{{ $a->phone }}</td>
-                                        <td>{{ $a->address }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-success pilihAgency"
-                                                data-id="{{ $a->id }}" data-nama="{{ $a->name }}">
-                                                Pilih
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
 
             </div>
         </div>
@@ -793,6 +806,56 @@
             $('#tableCustomer').DataTable();
         });
     </script>
+    {{-- <script>
+        let currentUnit = null;
+
+        $(document).on('click', '.bukaModal', function() {
+            currentUnit = $(this).data('unit');
+
+            let url = "{{ url('marketing/setAgency') }}/" + currentUnit;
+            $('#formAgency').attr('action', url);
+        });
+
+        $(document).on('click', '.pilihAgency', function() {
+
+            let id = $(this).data('id');
+            $('#employee_id').val(id);
+
+            $('#formAgency').submit();
+        });
+    </script> --}}
+    <script>
+        let selectedUnit = null;
+
+        // buka modal agency
+        $(document).on('click', '.bukaModal', function() {
+
+            let unitId = $(this).data('unit');
+
+            let url = "{{ url('marketing/set-agency') }}/" + unitId;
+            $('#formAgency').attr('action', url);
+
+            $('#modalAgency').modal('show');
+        });
+
+
+
+        // pilih agency (employee)
+        $(document).on('click', '.pilihAgency', function() {
+
+            let employeeId = $(this).data('id');
+
+            // isi hidden employee_id
+            $('#employee_id').val(employeeId);
+
+            // submit ke controller
+            $('#formAgency').submit();
+        });
+    </script>
+
+
+
+
 
     <!-- Optional: SweetAlert2 untuk notifikasi yang lebih baik -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
