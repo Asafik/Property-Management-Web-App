@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\LandBankUnit;
 
-class Employee extends Model
+class Employee extends Authenticatable
 {
-    //
+    protected $table = 'employees';
+
     protected $fillable = [
         'name',
         'username',
@@ -16,6 +17,12 @@ class Employee extends Model
         'role'
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
+
+    // relasi
     public function landbankunits(){
         return $this->hasMany(LandBankUnit::class);
     }

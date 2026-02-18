@@ -158,86 +158,48 @@
                         </div>
 
                         <!-- Form Login -->
-                        <form action="#" method="POST">
+                       <form action="{{ route('login.proses') }}" method="POST">
+@csrf
 
-                            <!-- Email / Username -->
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold text-muted small text-uppercase">Email / Username</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0" style="border-radius: 10px 0 0 10px;">
-                                        <i class="mdi mdi-account text-muted"></i>
-                                    </span>
-                                    <input type="email" class="form-control bg-light border-start-0 ps-0"
-                                           placeholder="Masukkan email atau username"
-                                           value="admin@example.com"
-                                           style="border-radius: 0 10px 10px 0;">
-                                </div>
-                            </div>
+<!-- USERNAME -->
+<div class="mb-4">
+    <label class="form-label fw-semibold text-muted small text-uppercase">Username</label>
+    <div class="input-group">
+        <span class="input-group-text bg-light border-end-0">
+            <i class="mdi mdi-account text-muted"></i>
+        </span>
+        <input type="text" name="username" class="form-control bg-light border-start-0 ps-0"
+               placeholder="Masukkan username"
+               required>
+    </div>
+</div>
 
-                            <!-- Password -->
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold text-muted small text-uppercase">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0" style="border-radius: 10px 0 0 10px;">
-                                        <i class="mdi mdi-lock text-muted"></i>
-                                    </span>
-                                    <input type="password" class="form-control bg-light border-start-0 ps-0"
-                                           id="password"
-                                           placeholder="Masukkan password"
-                                           value="admin123"
-                                           style="border-radius: 0 10px 10px 0;">
-                                    <span class="input-group-text bg-light border-start-0" style="border-radius: 0 10px 10px 0;">
-                                        <i class="mdi mdi-eye text-muted"></i>
-                                    </span>
-                                </div>
-                            </div>
+<!-- PASSWORD -->
+<div class="mb-4">
+    <label class="form-label fw-semibold text-muted small text-uppercase">Password</label>
+    <div class="input-group">
+        <span class="input-group-text bg-light border-end-0">
+            <i class="mdi mdi-lock text-muted"></i>
+        </span>
+        <input type="password" name="password" class="form-control bg-light border-start-0 ps-0"
+               placeholder="Masukkan password"
+               required>
+    </div>
+</div>
 
-                            <!-- Remember Me & Forgot Password -->
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember" checked>
-                                    <label class="form-check-label small text-muted" for="remember">
-                                        Ingat saya
-                                    </label>
-                                </div>
-                                <a href="#" class="small text-decoration-none" style="color: #9a55ff;">Lupa password?</a>
-                            </div>
+<button type="submit" class="btn btn-lg w-100 text-white fw-semibold py-3 mb-4"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border:none;">
+    <i class="mdi mdi-login me-2"></i> Login
+</button>
 
-                            <!-- Button Login -->
-                            <button type="submit" class="btn btn-lg w-100 text-white fw-semibold py-3 mb-4"
-                                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 10px;">
-                                <i class="mdi mdi-login me-2"></i>
-                                Login
-                            </button>
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
 
-                            <!-- Divider -->
-                            <div class="d-flex align-items-center mb-4">
-                                <hr class="flex-grow-1">
-                                <span class="mx-3 text-muted small">atau login dengan</span>
-                                <hr class="flex-grow-1">
-                            </div>
+</form>
 
-                            <!-- Social Login -->
-                            <div class="d-flex justify-content-center gap-3">
-                                <a href="#" class="btn btn-outline-secondary rounded-circle p-3 d-flex align-items-center justify-content-center"
-                                   style="width: 50px; height: 50px;">
-                                    <i class="mdi mdi-google"></i>
-                                </a>
-                                <a href="#" class="btn btn-outline-secondary rounded-circle p-3 d-flex align-items-center justify-content-center"
-                                   style="width: 50px; height: 50px;">
-                                    <i class="mdi mdi-facebook"></i>
-                                </a>
-                                <a href="#" class="btn btn-outline-secondary rounded-circle p-3 d-flex align-items-center justify-content-center"
-                                   style="width: 50px; height: 50px;">
-                                    <i class="mdi mdi-twitter"></i>
-                                </a>
-                                <a href="#" class="btn btn-outline-secondary rounded-circle p-3 d-flex align-items-center justify-content-center"
-                                   style="width: 50px; height: 50px;">
-                                    <i class="mdi mdi-github"></i>
-                                </a>
-                            </div>
-
-                        </form>
 
                         <!-- Footer -->
                         <div class="text-center mt-4">
