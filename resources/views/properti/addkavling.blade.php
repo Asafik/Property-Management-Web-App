@@ -334,14 +334,257 @@ select.kavling-form-control {
     display: block;
     margin-top: 0.2rem;
 }
+
+/* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
+.card {
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-header {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-header {
+        padding: 1.2rem;
+    }
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-body {
+        padding: 1.2rem;
+    }
+}
+
+/* ===== TABLE STYLING ===== */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.6rem 0.25rem;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 0.7rem 0.4rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .table thead th {
+        font-size: 0.8rem;
+        padding: 0.8rem 0.5rem;
+    }
+}
+
+/* Kolom No - lebih rapat */
+.table thead th:first-child {
+    padding-left: 0.5rem;
+    width: 45px;
+}
+
+.table tbody td:first-child {
+    padding-left: 0.5rem;
+    font-weight: 500;
+    width: 45px;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    font-size: 0.75rem;
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #2c2e3f;
+}
+
+@media (min-width: 576px) {
+    .table tbody td {
+        font-size: 0.8rem;
+        padding: 0.7rem 0.4rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .table tbody td {
+        font-size: 0.85rem;
+        padding: 0.8rem 0.5rem;
+    }
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Icon dalam tabel */
+.table tbody td i {
+    font-size: 0.9rem;
+}
+
+/* Text colors */
+.text-primary { color: #9a55ff !important; }
+.text-info { color: #17a2b8 !important; }
+.text-danger { color: #dc3545 !important; }
+.text-success { color: #28a745 !important; }
+.text-warning { color: #ffc107 !important; }
+.fw-bold { font-weight: 600 !important; }
+.text-muted { color: #a5b3cb !important; }
+
+/* Badge Styling */
+.badge {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.6rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .badge {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.65rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .badge {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+.badge.badge-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+    color: #ffffff;
+}
+
+.badge.badge-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+    color: #2c2e3f;
+}
+
+.badge.badge-primary {
+    background: linear-gradient(135deg, #9a55ff, #da8cff) !important;
+    color: #ffffff;
+}
+
+.badge.badge-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
+    color: #ffffff;
+}
+
+/* Action buttons styling */
+.btn-outline-primary,
+.btn-outline-info,
+.btn-outline-danger {
+    border: 1px solid;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+}
+
+.btn-outline-primary {
+    border-color: #9a55ff;
+    color: #9a55ff;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    color: white;
+}
+
+.btn-outline-info {
+    border-color: #17a2b8;
+    color: #17a2b8;
+}
+
+.btn-outline-info:hover {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de);
+    color: white;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
+    color: white;
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 576px) {
+    .table thead th {
+        font-size: 0.65rem;
+        padding: 0.5rem 0.2rem;
+    }
+
+    .table tbody td {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.2rem;
+    }
+
+    .btn-outline-primary,
+    .btn-outline-info,
+    .btn-outline-danger {
+        padding: 0.2rem 0.3rem;
+        font-size: 0.6rem;
+    }
+}
 </style>
 
 <div class="container-fluid p-4">
-    <!-- Header -->
+    <!-- Header - CARD TERPISAH -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="text-dark fw-bold" style="color: #2c2e3f;">Buat Kavling / Master Unit</h3>
-            <p class="text-muted">Buat unit-unit kavling dari tanah yang sudah diverifikasi</p>
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h3 class="text-dark fw-bold mb-1" style="color: #2c2e3f;">Buat Kavling / Master Unit</h3>
+                    <p class="text-muted mb-0">Buat unit-unit kavling dari tanah yang sudah diverifikasi</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -349,7 +592,7 @@ select.kavling-form-control {
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header bg-white py-3">
+                <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
                         <i class="mdi mdi-office-building text-primary me-2"></i>
                         Informasi Tanah Induk
@@ -440,18 +683,18 @@ select.kavling-form-control {
         </div>
     </div>
 
-    <!-- Pilihan Metode Pembuatan Kavling - DENGAN TAB STYLING DARI TAMBAH CUSTOMER -->
+    <!-- Pilihan Metode Pembuatan Kavling -->
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header bg-white py-3">
+                <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
                         <i class="mdi mdi-tools me-2 text-primary"></i>
                         Metode Pembuatan Kavling
                     </h5>
                 </div>
                 <div class="card-body">
-                    <!-- Custom Tabs - Mengikuti styling dari Tambah Customer -->
+                    <!-- Custom Tabs -->
                     <div class="add-custom-tabs-wrapper overflow-auto mb-3">
                         <ul class="add-custom-tabs" id="myTab" role="tablist">
                             <li class="add-custom-tab-item">
@@ -477,7 +720,7 @@ select.kavling-form-control {
 
                     <!-- Tab Content -->
                     <div class="tab-content mt-3 mt-md-4" id="myTabContent">
-                        <!-- TAB MANUAL - DENGAN STYLING MODERN -->
+                        <!-- TAB MANUAL -->
                         <div class="add-custom-tab-pane active" id="manual" role="tabpanel" aria-labelledby="manual-tab">
                             <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST">
                                 @csrf
@@ -485,43 +728,37 @@ select.kavling-form-control {
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Blok / No. Unit</label>
-                                            <input type="text" name="block" class="kavling-form-control"
-                                                placeholder="Contoh: A">
+                                            <input type="text" name="block" class="kavling-form-control" placeholder="Contoh: A">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="kavling-form-group">
                                             <label>Nomor Unit</label>
-                                            <input type="text" name="unit_number" class="kavling-form-control"
-                                                placeholder="1">
+                                            <input type="text" name="unit_number" class="kavling-form-control" placeholder="1">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="kavling-form-group">
                                             <label>Type Unit</label>
-                                            <input type="text" name="type" class="kavling-form-control"
-                                                placeholder="Cluster Ijen">
+                                            <input type="text" name="type" class="kavling-form-control" placeholder="Cluster Ijen">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="kavling-form-group">
                                             <label>Luas (m²)</label>
-                                            <input type="number" name="area" class="kavling-form-control"
-                                                placeholder="200">
+                                            <input type="number" name="area" class="kavling-form-control" placeholder="200">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="kavling-form-group">
                                             <label>Luas Bangunan(m²)</label>
-                                            <input type="number" name="building_area" class="kavling-form-control"
-                                                placeholder="200">
+                                            <input type="number" name="building_area" class="kavling-form-control" placeholder="200">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Harga (Rp)</label>
-                                            <input type="text" name="price" class="kavling-form-control"
-                                                placeholder="500.000.000">
+                                            <input type="text" name="price" class="kavling-form-control" placeholder="500.000.000">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -550,14 +787,12 @@ select.kavling-form-control {
                                     <div class="col-md-12">
                                         <div class="kavling-form-group">
                                             <label>Keterangan</label>
-                                            <input type="text" name="description" class="kavling-form-control"
-                                                placeholder="Opsional">
+                                            <input type="text" name="description" class="kavling-form-control" placeholder="Opsional">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-md-12">
-                                        <!-- BUTTON MODERN -->
                                         <button type="submit" class="kavling-btn kavling-btn-primary">
                                             <i class="mdi mdi-plus me-1"></i>Tambah Unit ke Daftar
                                         </button>
@@ -566,7 +801,7 @@ select.kavling-form-control {
                             </form>
                         </div>
 
-                        <!-- TAB GENERATE OTOMATIS - DENGAN STYLING MODERN -->
+                        <!-- TAB GENERATE OTOMATIS -->
                         <div class="add-custom-tab-pane" id="generate" role="tabpanel" aria-labelledby="generate-tab">
                             <form action="{{ route('properti.generateKavling', $land->id) }}" method="POST">
                                 @csrf
@@ -574,29 +809,25 @@ select.kavling-form-control {
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Jumlah Unit</label>
-                                            <input type="number" name="jumlah_unit" class="kavling-form-control"
-                                                value="10">
+                                            <input type="number" name="jumlah_unit" class="kavling-form-control" value="10">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Luas per Unit (m²)</label>
-                                            <input type="number" name="area_per_unit" class="kavling-form-control"
-                                                value="200">
+                                            <input type="number" name="area_per_unit" class="kavling-form-control" value="200">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Harga per Unit (Rp)</label>
-                                            <input type="text" name="price_per_unit" class="kavling-form-control"
-                                                value="500.000.000">
+                                            <input type="text" name="price_per_unit" class="kavling-form-control" value="500.000.000">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Prefix Blok</label>
-                                            <input type="text" name="prefix_block" class="kavling-form-control"
-                                                value="A">
+                                            <input type="text" name="prefix_block" class="kavling-form-control" value="A">
                                         </div>
                                     </div>
                                 </div>
@@ -604,8 +835,7 @@ select.kavling-form-control {
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Nomor Awal</label>
-                                            <input type="number" name="start_number" class="kavling-form-control"
-                                                value="1">
+                                            <input type="number" name="start_number" class="kavling-form-control" value="1">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -631,7 +861,6 @@ select.kavling-form-control {
                                     </div>
                                     <div class="col-md-3 d-flex align-items-end">
                                         <div class="kavling-form-group w-100">
-                                            <!-- BUTTON MODERN -->
                                             <button type="submit" class="kavling-btn kavling-btn-primary w-100">
                                                 <i class="mdi mdi-auto-fix me-1"></i>Generate Unit
                                             </button>
@@ -646,7 +875,7 @@ select.kavling-form-control {
                             </div>
                         </div>
 
-                        <!-- TAB IMPORT EXCEL - DENGAN STYLING MODERN -->
+                        <!-- TAB IMPORT EXCEL -->
                         <div class="add-custom-tab-pane" id="import" role="tabpanel" aria-labelledby="import-tab">
                             <div class="text-center py-4">
                                 <i class="mdi mdi-file-excel text-success" style="font-size: 48px;"></i>
@@ -655,7 +884,6 @@ select.kavling-form-control {
 
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
-                                        <!-- Download Template - MODERN BUTTON -->
                                         <div class="kavling-form-group">
                                             <label>Download Template</label>
                                             <div>
@@ -665,7 +893,6 @@ select.kavling-form-control {
                                             </div>
                                         </div>
 
-                                        <!-- Upload File Excel - MODERN FILE UPLOAD -->
                                         <div class="kavling-form-group">
                                             <label>Upload File Excel</label>
                                             <div class="kavling-file-upload-modern">
@@ -681,7 +908,6 @@ select.kavling-form-control {
                                             </div>
                                         </div>
 
-                                        <!-- Import Button - MODERN BUTTON -->
                                         <button class="kavling-btn kavling-btn-primary" onclick="alert('Data berhasil diimport')">
                                             <i class="mdi mdi-import me-1"></i>Import Data
                                         </button>
@@ -711,53 +937,89 @@ select.kavling-form-control {
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Blok / No</th>
-                                    <th>Luas (m²)</th>
-                                    <th>Harga (Rp)</th>
-                                    <th>Hadap</th>
-                                    <th>Posisi</th>
-                                    <th>Aksi</th>
+                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
+                                    <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
+                                    <th><i class="mdi mdi-ruler-square me-1"></i>Luas</th>
+                                    <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
+                                    <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
+                                    <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
+                                    <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($land->units as $i => $unit)
                                     <tr>
-                                        <td>{{ $i + 1 }}</td>
-                                        <td><strong>{{ $unit->unit_code }}</strong></td>
-                                        <td>{{ number_format($unit->area, 0, ',', '.') }}</td>
-                                        <td>{{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
-                                        <td>{{ $unit->facing ?? '-' }}</td>
-                                        <td>{{ $unit->position ?? '-' }}</td>
+                                        <td class="text-center fw-bold">{{ $i + 1 }}</td>
+
+                                        {{-- BLOK / NO --}}
                                         <td>
-                                            {{-- Edit --}}
-                                            <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
-                                                class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </a>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="fw-bold">{{ $unit->unit_code }}</span>
+                                            </div>
+                                        </td>
 
-                                            {{-- Update Progress --}}
-                                            <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
-                                                class="btn btn-sm btn-outline-info me-1">
-                                                <i class="mdi mdi-progress-clock"></i>
-                                            </a>
+                                        {{-- LUAS --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-ruler-square text-warning me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }} m²</span>
+                                            </div>
+                                        </td>
 
-                                            {{-- Delete --}}
-                                            <form
-                                                action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
-                                                method="POST" style="display:inline-block;"
-                                                onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm btn-outline-danger">
-                                                    <i class="mdi mdi-delete"></i>
-                                                </button>
-                                            </form>
+                                        {{-- HARGA --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="text-nowrap">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- HADAP --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-compass text-info me-1" style="font-size: 0.9rem;"></i>
+                                                <span>{{ $unit->facing ?? '-' }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- POSISI --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-map-marker text-danger me-1" style="font-size: 0.9rem;"></i>
+                                                <span>{{ $unit->position ?? '-' }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- AKSI --}}
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
+                                                   class="btn btn-outline-primary btn-sm" title="Edit">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+
+                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
+                                                   class="btn btn-outline-info btn-sm" title="Update Progress">
+                                                    <i class="mdi mdi-progress-clock"></i>
+                                                </a>
+
+                                                <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
+                                                      method="POST" style="display:inline-block;"
+                                                      onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-information-outline me-2"></i>
                                             Belum ada unit kavling
                                         </td>
                                     </tr>
@@ -851,17 +1113,12 @@ select.kavling-form-control {
                     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
                         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
                             @php
-                                // Ambil semua unit dari $land
                                 $allUnits = $land->units;
-
-                                // Buat array blok => list kavling
                                 $blokKavlings = [];
                                 foreach ($allUnits as $unit) {
                                     $blok = explode('.', $unit->unit_code)[0];
                                     $blokKavlings[$blok][] = $unit->unit_code;
                                 }
-
-                                // Ambil semua blok yang ada
                                 $allBloks = array_keys($blokKavlings);
                             @endphp
 
@@ -870,7 +1127,6 @@ select.kavling-form-control {
                                     <strong>{{ $blok }}</strong>
                                     <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 5px;">
                                         @php
-                                            // Tentukan range nomor maksimal di blok ini
                                             $numbers = [];
                                             foreach ($blokKavlings[$blok] as $kav) {
                                                 $num = (int)explode('.', $kav)[1];
@@ -901,7 +1157,7 @@ select.kavling-form-control {
         </div>
     </div>
 
-    <!-- Tombol Aksi - DENGAN BUTTON MODERN -->
+    <!-- Tombol Aksi -->
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -934,18 +1190,14 @@ select.kavling-form-control {
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Simple Tab Functionality - Mengikuti cara dari Tambah Customer
+    // Simple Tab Functionality
     $('.add-custom-tab-link').on('click', function(e) {
         e.preventDefault();
 
-        // Remove active class from all tabs and panes
         $('.add-custom-tab-link').removeClass('active');
         $('.add-custom-tab-pane').removeClass('active');
 
-        // Add active class to current tab
         $(this).addClass('active');
-
-        // Show corresponding pane
         var target = $(this).attr('href');
         $(target).addClass('active');
     });

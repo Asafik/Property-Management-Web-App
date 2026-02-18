@@ -9,6 +9,12 @@
     margin-bottom: 1rem;
 }
 
+@media (min-width: 768px) {
+    .rab-form-group {
+        margin-bottom: 1.2rem;
+    }
+}
+
 .rab-form-group label {
     font-size: 0.8rem;
     font-weight: 600;
@@ -19,16 +25,38 @@
     display: block;
 }
 
+@media (min-width: 768px) {
+    .rab-form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
 .rab-form-control {
     border: 1px solid #e9ecef;
-    border-radius: 10px;
-    padding: 0.7rem 0.8rem;
-    font-size: 0.85rem;
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.8rem;
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
     width: 100%;
     font-family: 'Nunito', sans-serif;
+}
+
+@media (min-width: 576px) {
+    .rab-form-control {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+}
+
+@media (min-width: 768px) {
+    .rab-form-control {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
+    }
 }
 
 .rab-form-control:focus {
@@ -51,11 +79,27 @@ select.rab-form-control {
     padding-right: 2rem;
 }
 
+.rab-form-control-sm {
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    border-radius: 6px;
+}
+
+@media (min-width: 576px) {
+    .rab-form-control-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
+    }
+}
+
 /* ===== MODERN BUTTON STYLING UNTUK RAB ===== */
 .rab-btn {
-    font-size: 0.8rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
     font-weight: 600;
     transition: all 0.3s ease;
     font-family: 'Nunito', sans-serif;
@@ -63,14 +107,44 @@ select.rab-form-control {
     text-decoration: none;
     cursor: pointer;
     border: none;
-    width: 100%;
     text-align: center;
 }
 
 @media (min-width: 576px) {
     .rab-btn {
-        width: auto;
-        padding: 0.5rem 1.2rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+    }
+}
+
+@media (min-width: 768px) {
+    .rab-btn {
+        padding: 0.56rem 1.5rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+}
+
+.rab-btn-sm {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.65rem;
+    border-radius: 4px;
+}
+
+@media (min-width: 576px) {
+    .rab-btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.7rem;
+        border-radius: 6px;
+    }
+}
+
+@media (min-width: 768px) {
+    .rab-btn-sm {
+        padding: 0.3rem 0.9rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
     }
 }
 
@@ -84,6 +158,7 @@ select.rab-form-control {
     background: linear-gradient(to right, #c77cff, #8a45e6);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+    color: white;
 }
 
 .rab-btn-success {
@@ -96,6 +171,7 @@ select.rab-form-control {
     background: linear-gradient(135deg, #218838, #4cae4c);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+    color: white;
 }
 
 .rab-btn-light {
@@ -123,106 +199,425 @@ select.rab-form-control {
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
-.rab-btn-sm {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-}
-
-/* Text muted */
+/* Text colors */
 .rab-text-muted {
     color: #a5b3cb !important;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     display: block;
-    margin-top: 0.2rem;
+    margin-top: 0.15rem;
 }
 
-/* Card styling */
-.rab-card {
-    border: 1px solid #e9ecef;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-    background: #ffffff;
+@media (min-width: 576px) {
+    .rab-text-muted {
+        font-size: 0.7rem;
+        margin-top: 0.2rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .rab-text-muted {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+}
+
+/* Container Padding - Responsif */
+.container-fluid {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+@media (min-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .container-fluid {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+/* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
+/* Hanya mengatur shadow dan hover, border biarkan default Bootstrap */
+
+.card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
 }
 
-.rab-card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem 1.2rem;
-    border-radius: 16px 16px 0 0 !important;
+.card:hover {
+    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
 }
 
-.rab-card-body {
-    padding: 1.2rem;
+.card-header {
+    padding: 0.6rem 0.75rem;
 }
 
-/* Input group styling */
-.rab-input-group {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
+@media (min-width: 576px) {
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
 }
 
-.rab-input-group-prepend {
-    display: flex;
+@media (min-width: 768px) {
+    .card-header {
+        padding: 1rem 1.2rem;
+    }
 }
 
-.rab-input-group-text {
-    display: flex;
-    align-items: center;
-    padding: 0.6rem 0.8rem;
+.card-header.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #939ba3) !important;
+}
+
+.card-header.bg-secondary h5 {
+    color: white;
     font-size: 0.9rem;
-    font-weight: 400;
-    line-height: 1;
-    color: #6c7383;
-    text-align: center;
-    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .card-header.bg-secondary h5 {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-header.bg-secondary h5 {
+        font-size: 1.1rem;
+    }
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-body {
+        padding: 1.2rem;
+    }
+}
+
+/* Table styling - Responsif */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.table {
+    min-width: 700px;
+}
+
+@media (min-width: 992px) {
+    .table {
+        min-width: 100%;
+    }
+}
+
+.table thead th {
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    border: 1px solid #e9ecef;
-    border-radius: 10px 0 0 10px;
-    border-right: none;
-}
-
-.rab-input-group .rab-form-control {
-    border-radius: 0 10px 10px 0;
-}
-
-/* Table styling */
-.rab-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.rab-table th {
-    padding: 0.75rem;
-    font-size: 0.8rem;
+    color: #9a55ff;
     font-weight: 600;
-    color: #495057;
-    background: #f8f9fc;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.4rem 0.25rem;
+    white-space: nowrap;
 }
 
-.rab-table td {
-    padding: 0.75rem;
-    font-size: 0.85rem;
+@media (min-width: 576px) {
+    .table thead th {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.4rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .table thead th {
+        font-size: 0.8rem;
+        padding: 0.75rem;
+    }
+}
+
+.table tbody td {
+    vertical-align: middle;
+    font-size: 0.65rem;
+    padding: 0.4rem 0.25rem;
+}
+
+@media (min-width: 576px) {
+    .table tbody td {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.4rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .table tbody td {
+        font-size: 0.85rem;
+        padding: 0.75rem;
+    }
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Table bordered */
+.table-bordered {
+    border: 1px solid #e9ecef;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #e9ecef;
+}
+
+/* Table primary */
+.table-primary {
+    background: linear-gradient(135deg, #f6f9ff, #f0f4ff) !important;
     color: #2c2e3f;
 }
 
-.rab-table-bordered {
-    border: 1px solid #e9ecef;
+.table-primary th {
+    color: #9a55ff;
 }
 
-.rab-table-bordered th,
-.rab-table-bordered td {
-    border: 1px solid #e9ecef;
+/* Input readonly styling */
+input[readonly].form-control,
+input[readonly].rab-form-control {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Card shadow */
+.shadow-sm {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+}
+
+@media (min-width: 768px) {
+    .shadow-sm {
+        box-shadow: 0 4px 20px rgba(0,0,0,0.02) !important;
+    }
+}
+
+/* Text muted */
+.text-muted {
+    color: #a5b3cb !important;
+    font-size: 0.65rem;
+}
+
+@media (min-width: 576px) {
+    .text-muted {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .text-muted {
+        font-size: 0.75rem;
+    }
+}
+
+/* Badge styling */
+.badge {
+    padding: 3px 6px;
+    font-weight: 500;
+    font-size: 0.6rem;
+}
+
+@media (min-width: 576px) {
+    .badge {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .badge {
+        padding: 5px 10px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Border colors untuk card tertentu */
+.border-primary {
+    border-color: #9a55ff !important;
+}
+
+.border-success {
+    border-color: #28a745 !important;
+}
+
+/* Typography */
+h3.text-dark {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.25rem !important;
+}
+
+@media (min-width: 576px) {
+    h3.text-dark {
+        font-size: 1.2rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    h3.text-dark {
+        font-size: 1.3rem !important;
+    }
+}
+
+@media (min-width: 992px) {
+    h3.text-dark {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Row spacing */
+.row {
+    margin-right: -0.25rem;
+    margin-left: -0.25rem;
+}
+
+@media (min-width: 576px) {
+    .row {
+        margin-right: -0.5rem;
+        margin-left: -0.5rem;
+    }
+}
+
+/* Column padding */
+[class*="col-"] {
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    [class*="col-"] {
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+        margin-bottom: 0;
+    }
+}
+
+/* Margin utilities */
+.mb-4 {
+    margin-bottom: 1rem !important;
+}
+
+@media (min-width: 576px) {
+    .mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .mb-4 {
+        margin-bottom: 2rem !important;
+    }
+}
+
+/* Gap utility */
+.gap-3 {
+    gap: 0.5rem !important;
+}
+
+@media (min-width: 576px) {
+    .gap-3 {
+        gap: 0.8rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .gap-3 {
+        gap: 1rem !important;
+    }
+}
+
+/* Card header button group */
+.card-header.d-flex {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start !important;
+}
+
+@media (min-width: 576px) {
+    .card-header.d-flex {
+        flex-direction: row;
+        gap: 1rem;
+        align-items: center !important;
+    }
+}
+
+/* Info unit row */
+.row .col-md-2,
+.row .col-md-3 {
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    .row .col-md-2,
+    .row .col-md-3 {
+        margin-bottom: 0;
+    }
+}
+
+/* Card title */
+.card-title {
+    font-size: 0.9rem;
+}
+
+@media (min-width: 576px) {
+    .card-title {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Text end input */
+.text-end input {
+    text-align: right;
+}
+
+/* Better touch targets for mobile */
+input, select, textarea, button {
+    font-size: 16px !important;
+}
+
+/* Max width untuk input di card */
+.max-width-200 {
+    max-width: 200px;
+}
+
+@media (max-width: 576px) {
+    .max-width-200 {
+        max-width: 100%;
+    }
 }
 </style>
 
-<div class="container-fluid p-4">
+<div class="container-fluid">
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="text-dark">Rencana Anggaran Biaya (RAB) Pembangunan</h3>
+            <h3 class="text-dark fw-bold">Rencana Anggaran Biaya (RAB) Pembangunan</h3>
             <p class="text-muted">Rincian biaya pembangunan unit dari awal hingga selesai</p>
         </div>
     </div>
@@ -235,9 +630,9 @@ select.rab-form-control {
                     <div class="row">
 
                         {{-- UNIT --}}
-                        <div class="col-md-2">
+                        <div class="col-12 col-sm-6 col-md-2">
                             <small class="text-muted d-block">Unit</small>
-                            <select class="rab-form-control rab-form-control-sm" id="unitSelect">
+                            <select class="rab-form-control" id="unitSelect">
                                 @foreach ($land->units as $unit)
                                     <option value="{{ $unit->id }}"
                                         {{ $unit->id == $selectedUnit->id ? 'selected' : '' }}
@@ -250,27 +645,27 @@ select.rab-form-control {
                         </div>
 
                         {{-- TIPE / NAMA --}}
-                        <div class="col-md-3">
+                        <div class="col-12 col-sm-6 col-md-3">
                             <small class="text-muted d-block">Tipe / Nama</small>
-                            <input type="text" id="unitType" class="rab-form-control rab-form-control-sm" readonly>
+                            <input type="text" id="unitType" class="rab-form-control" readonly>
                         </div>
 
                         {{-- LUAS TANAH --}}
-                        <div class="col-md-2">
+                        <div class="col-6 col-sm-4 col-md-2">
                             <small class="text-muted d-block">Luas Tanah</small>
-                            <input type="text" id="unitArea" class="rab-form-control rab-form-control-sm" readonly>
+                            <input type="text" id="unitArea" class="rab-form-control" readonly>
                         </div>
 
                         {{-- LUAS BANGUNAN --}}
-                        <div class="col-md-2">
+                        <div class="col-6 col-sm-4 col-md-2">
                             <small class="text-muted d-block">Luas Bangunan</small>
-                            <input type="text" id="unitBuilding" class="rab-form-control rab-form-control-sm" readonly>
+                            <input type="text" id="unitBuilding" class="rab-form-control" readonly>
                         </div>
 
                         {{-- HARGA --}}
-                        <div class="col-md-3">
+                        <div class="col-12 col-sm-4 col-md-3">
                             <small class="text-muted d-block">Harga Jual Unit</small>
-                            <input type="text" id="unitPrice" class="rab-form-control rab-form-control-sm" readonly>
+                            <input type="text" id="unitPrice" class="rab-form-control" readonly>
                         </div>
 
                     </div>
@@ -311,54 +706,56 @@ select.rab-form-control {
                         </div>
 
                         <div class="card-body p-0">
-                            <table class="table table-bordered mb-0">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th width="5%">No</th>
-                                        <th width="30%">Uraian</th>
-                                        <th width="8%">Volume</th>
-                                        <th width="8%">Satuan</th>
-                                        <th width="12%">Harga</th>
-                                        <th width="12%">Total</th>
-                                        <th width="15%">Keterangan</th>
-                                        <th width="10%">Aksi</th>
-                                    </tr>
-                                </thead>
+                            <div class="table-responsive">
+                                <table class="table table-bordered mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th width="30%">Uraian</th>
+                                            <th width="8%">Volume</th>
+                                            <th width="8%">Satuan</th>
+                                            <th width="12%">Harga</th>
+                                            <th width="12%">Total</th>
+                                            <th width="15%">Keterangan</th>
+                                            <th width="10%">Aksi</th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody id="body-{{ $key }}">
+                                    <tbody id="body-{{ $key }}">
 
-                                    {{-- DATA DARI DB --}}
-                                    @if ($selectedUnit->progress)
-                                        @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
-                                            <tr>
-                                                <td>{{ $item->kode }}</td>
-                                                <td>{{ $item->uraian }}</td>
-                                                <td>{{ $item->volume }}</td>
-                                                <td>{{ $item->satuan }}</td>
-                                                <td>{{ number_format($item->harga_satuan) }}</td>
-                                                <td>{{ number_format($item->total) }}</td>
-                                                <td>{{ $item->keterangan }}</td>
-                                                <td>-</td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                        {{-- DATA DARI DB --}}
+                                        @if ($selectedUnit->progress)
+                                            @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
+                                                <tr>
+                                                    <td>{{ $item->kode }}</td>
+                                                    <td>{{ $item->uraian }}</td>
+                                                    <td>{{ $item->volume }}</td>
+                                                    <td>{{ $item->satuan }}</td>
+                                                    <td class="text-end">{{ number_format($item->harga_satuan) }}</td>
+                                                    <td class="text-end">{{ number_format($item->total) }}</td>
+                                                    <td>{{ $item->keterangan }}</td>
+                                                    <td class="text-center">-</td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
 
-                                </tbody>
+                                    </tbody>
 
-                                <tfoot class="bg-light">
-                                    <tr>
-                                        <th colspan="5" class="text-end">
-                                            SUB TOTAL {{ strtoupper($key) }}
-                                        </th>
-                                        <th>
-                                            <input type="text" id="subtotal-{{ $key }}"
-                                                class="rab-form-control rab-form-control-sm text-end" readonly>
-                                        </th>
-                                        <th colspan="2"></th>
-                                    </tr>
-                                </tfoot>
+                                    <tfoot class="bg-light">
+                                        <tr>
+                                            <th colspan="5" class="text-end">
+                                                SUB TOTAL {{ strtoupper($key) }}
+                                            </th>
+                                            <th>
+                                                <input type="text" id="subtotal-{{ $key }}"
+                                                    class="rab-form-control rab-form-control-sm text-end" readonly>
+                                            </th>
+                                            <th colspan="2"></th>
+                                        </tr>
+                                    </tfoot>
 
-                            </table>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -370,14 +767,14 @@ select.rab-form-control {
             <div class="col-12">
                 <div class="card border-primary">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3 align-items-center">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between mb-3 align-items-center gap-3">
                             <h5 class="text-center text-primary mb-0">RINCIAN RAB</h5>
 
-                            <div>
+                            <div class="d-flex flex-wrap gap-2">
                                 {{-- Tombol Print --}}
                                 <a href="{{ url('/dashboard-cetak-rab') }}" target="_blank"
                                     class="rab-btn rab-btn-success rab-btn-sm">
-                                    <i class="mdi mdi-printer"></i> Print
+                                    <i class="mdi mdi-printer"></i> Cetak RAB
                                 </a>
 
                                 <button type="button" class="rab-btn rab-btn-primary rab-btn-sm acc-btn"
@@ -446,20 +843,20 @@ select.rab-form-control {
             <div class="card border-primary shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="card-title text-primary mb-3">Ringkasan RAB</h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal</span>
-                        <input type="text" class="rab-form-control text-end fw-bold" readonly
+                    <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
+                        <span class="mb-1 mb-sm-0">Subtotal</span>
+                        <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
                             value="{{ number_format($subtotal, 0, ',', '.') }}">
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>PPN (10%)</span>
-                        <input type="text" class="rab-form-control text-end fw-bold" readonly
+                    <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
+                        <span class="mb-1 mb-sm-0">PPN (10%)</span>
+                        <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
                             value="{{ number_format($ppn, 0, ',', '.') }}">
                     </div>
                     <hr>
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">Total RAB</span>
-                        <input type="text" class="rab-form-control text-end fw-bold" readonly
+                    <div class="d-flex flex-column flex-sm-row justify-content-between">
+                        <span class="fw-bold mb-1 mb-sm-0">Total RAB</span>
+                        <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
                             value="{{ number_format($totalRAB, 0, ',', '.') }}">
                     </div>
                 </div>
@@ -471,20 +868,20 @@ select.rab-form-control {
             <div class="card border-success shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="card-title text-success mb-3">Harga Jual Final</h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Total RAB</span>
-                        <input type="text" class="rab-form-control text-end fw-bold" readonly
+                    <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
+                        <span class="mb-1 mb-sm-0">Total RAB</span>
+                        <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
                             value="{{ number_format($totalRAB, 0, ',', '.') }}">
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Harga Jual Unit</span>
-                        <input type="text" class="rab-form-control text-end fw-bold" readonly
+                    <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
+                        <span class="mb-1 mb-sm-0">Harga Jual Unit</span>
+                        <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
                             value="{{ number_format($unitPrice, 0, ',', '.') }}">
                     </div>
                     <hr>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="fw-bold">Harga Jual Final</span>
-                        <input type="text" class="rab-form-control text-end fw-bold" readonly
+                    <div class="d-flex flex-column flex-sm-row justify-content-between mb-3">
+                        <span class="fw-bold mb-1 mb-sm-0">Harga Jual Final</span>
+                        <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
                             value="{{ number_format($finalPrice, 0, ',', '.') }}">
                     </div>
 
@@ -511,31 +908,6 @@ select.rab-form-control {
 
 </div>
 @endsection
-
-@push('styles')
-<style>
-    /* Tambahan styling untuk badge dan lainnya */
-    .badge {
-        padding: 5px 10px;
-    }
-    .bg-secondary {
-        background: linear-gradient(135deg, #6c757d, #939ba3) !important;
-    }
-    .table-primary {
-        background: linear-gradient(135deg, #f6f9ff, #f0f4ff) !important;
-        color: #2c2e3f;
-    }
-    .border-primary {
-        border-color: #9a55ff !important;
-    }
-    .border-success {
-        border-color: #28a745 !important;
-    }
-    .text-primary {
-        color: #9a55ff !important;
-    }
-</style>
-@endpush
 
 @push('scripts')
     <script>
@@ -829,3 +1201,4 @@ select.rab-form-control {
         });
     </script>
 @endpush
+
