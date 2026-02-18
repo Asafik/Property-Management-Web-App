@@ -932,102 +932,122 @@ select.kavling-form-control {
                     </h5>
                     <span class="badge badge-primary">{{ $land->units->count() }} unit</span>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                    <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
-                                    <th><i class="mdi mdi-ruler-square me-1"></i>Luas</th>
-                                    <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
-                                    <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
-                                    <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
-                                    <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($land->units as $i => $unit)
-                                    <tr>
-                                        <td class="text-center fw-bold">{{ $i + 1 }}</td>
+             <div class="card-body">
+   <div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
+                <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
+                <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
+                <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
+                <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th> <!-- Tambahan -->
+                <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
+                <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
+                <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
+                <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($land->units as $i => $unit)
+                <tr>
+                    <td class="text-center fw-bold">{{ $i + 1 }}</td>
 
-                                        {{-- BLOK / NO --}}
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
-                                                <span class="fw-bold">{{ $unit->unit_code }}</span>
-                                            </div>
-                                        </td>
+                    {{-- BLOK / NO --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
+                            <span class="fw-bold">{{ $unit->unit_code }}</span>
+                        </div>
+                    </td>
 
-                                        {{-- LUAS --}}
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-ruler-square text-warning me-1" style="font-size: 0.9rem;"></i>
-                                                <span class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }} m²</span>
-                                            </div>
-                                        </td>
+                    {{-- LUAS TANAH --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-ruler-square text-warning me-1" style="font-size: 0.9rem;"></i>
+                            <span class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }} m²</span>
+                        </div>
+                    </td>
 
-                                        {{-- HARGA --}}
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
-                                                <span class="text-nowrap">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
-                                            </div>
-                                        </td>
+                    {{-- LUAS BANGUNAN --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-domain text-secondary me-1" style="font-size: 0.9rem;"></i>
+                            <span class="text-nowrap">{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²</span>
+                        </div>
+                    </td>
 
-                                        {{-- HADAP --}}
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-compass text-info me-1" style="font-size: 0.9rem;"></i>
-                                                <span>{{ $unit->facing ?? '-' }}</span>
-                                            </div>
-                                        </td>
+                    {{-- TYPE --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-format-list-bulleted text-info me-1" style="font-size: 0.9rem;"></i>
+                            <span>{{ $unit->type ?? '-' }}</span>
+                        </div>
+                    </td>
 
-                                        {{-- POSISI --}}
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-map-marker text-danger me-1" style="font-size: 0.9rem;"></i>
-                                                <span>{{ $unit->position ?? '-' }}</span>
-                                            </div>
-                                        </td>
+                    {{-- HARGA --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
+                            <span class="text-nowrap">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
 
-                                        {{-- AKSI --}}
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
-                                                   class="btn btn-outline-primary btn-sm" title="Edit">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </a>
+                    {{-- HADAP --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-compass text-info me-1" style="font-size: 0.9rem;"></i>
+                            <span>{{ $unit->facing ?? '-' }}</span>
+                        </div>
+                    </td>
 
-                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
-                                                   class="btn btn-outline-info btn-sm" title="Update Progress">
-                                                    <i class="mdi mdi-progress-clock"></i>
-                                                </a>
+                    {{-- POSISI --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-map-marker text-danger me-1" style="font-size: 0.9rem;"></i>
+                            <span>{{ $unit->position ?? '-' }}</span>
+                        </div>
+                    </td>
 
-                                                <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
-                                                      method="POST" style="display:inline-block;"
-                                                      onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i>
-                                            Belum ada unit kavling
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    {{-- AKSI --}}
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-1">
+                            <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
+                               class="btn btn-outline-primary btn-sm" title="Edit">
+                                <i class="mdi mdi-pencil"></i>
+                            </a>
+
+                            <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
+                               class="btn btn-outline-info btn-sm" title="Update Progress">
+                                <i class="mdi mdi-progress-clock"></i>
+                            </a>
+
+                            <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
+                                  method="POST" style="display:inline-block;"
+                                  onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                    <i class="mdi mdi-delete"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">
+                        <i class="mdi mdi-information-outline me-2"></i>
+                        Belum ada unit kavling
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+</div>
+
             </div>
         </div>
     </div>
