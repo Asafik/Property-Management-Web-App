@@ -609,7 +609,7 @@ input, select, textarea, button {
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($landBanks as $index => $item)
+                                @foreach ($landBanks as $index => $item)
                                     <tr>
                                         <td class="text-center fw-bold">
                                             <span class="badge bg-light text-dark">{{ $landBanks->firstItem() + $index }}</span>
@@ -822,17 +822,7 @@ input, select, textarea, button {
                                             @endif
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted py-5">
-                                            <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                                            <p class="mt-3">
-                                                <i class="mdi mdi-information-outline me-2"></i>
-                                                Data belum tersedia
-                                            </p>
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -866,7 +856,15 @@ $(document).ready(function () {
         lengthChange: false,  // MATIKAN length change
         ordering: true,       // AKTIFKAN sorting saja
         language: {
-            emptyTable: "Data kosong",
+            emptyTable: `
+                <div class="text-center text-muted py-5">
+                    <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <p class="mt-3">
+                        <i class="mdi mdi-information-outline me-2"></i>
+                        Data belum tersedia
+                    </p>
+                </div>
+            `,
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
