@@ -133,6 +133,22 @@ public function accAjax($unitId)
 }
 
 
+public function uploadDocumentation(Request $request, $itemId)
+{
+    $request->validate([
+        'dokumentasi' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+    ]);
+
+    $item = DevelopmentProgressItem::findOrFail($itemId);
+
+    if ($request->file('dokumentasi')) {
+        $path = $request->file('dokumentasi')->store('dokumentasi', 'public');
+        $item->dokumentasi = $path;
+        $item->save();
+    }
+
+    return back()->with('success', 'File berhasil diupload!');
+}
 
 
 

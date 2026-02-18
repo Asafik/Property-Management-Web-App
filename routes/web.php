@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\LandBankUnitController;
 use App\Http\Controllers\AgencyPropertyController;
 use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
+use App\Models\DevelopmentProgress;
 use Illuminate\Support\Facades\Route;
 
 
@@ -142,6 +143,7 @@ Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::c
     Route::post('/properti/progress/acc-ajax/{unit}', [\App\Http\Controllers\Admin\DevelopmentProgressController::class, 'accAjax'])
     ->name('properti.progress.acc.ajax');
 
+Route::post('/progress/{item}/upload', [DevelopmentProgressController::class, 'uploadDocumentation'])->name('progress.uploadDocumentation');
 
 
 
