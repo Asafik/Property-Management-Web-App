@@ -6,26 +6,6 @@
 <style>
 /* ===== MODERN STYLING UNTUK HALAMAN SEMUA PROPERTI ===== */
 
-/* Container Padding - Responsif */
-.container-fluid {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-}
-
-@media (min-width: 576px) {
-    .container-fluid {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-}
-
-@media (min-width: 768px) {
-    .container-fluid {
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
-    }
-}
-
 /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
 .card {
     transition: all 0.3s ease;

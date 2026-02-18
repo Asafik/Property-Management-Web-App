@@ -6,26 +6,6 @@
 <style>
 /* ===== MODERN STYLING UNTUK HALAMAN DASHBOARD ===== */
 
-/* Container Padding - Responsif */
-.container-fluid {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-}
-
-@media (min-width: 576px) {
-    .container-fluid {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-}
-
-@media (min-width: 768px) {
-    .container-fluid {
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
-    }
-}
-
 /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
 .card {
     transition: all 0.3s ease;
@@ -445,7 +425,7 @@ h3.text-dark {
 }
 </style>
 
-<div class="container-fluid p-2 p-sm-3 p-md-4 p-lg-4">
+<div class="container-fluid p-2 p-sm-3 p-md-4">
     <!-- Header Dashboard - CARD TERPISAH -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">

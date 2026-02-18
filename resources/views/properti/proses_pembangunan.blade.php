@@ -221,29 +221,7 @@ select.rab-form-control {
     }
 }
 
-/* Container Padding - Responsif */
-.container-fluid {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-}
-
-@media (min-width: 576px) {
-    .container-fluid {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-}
-
-@media (min-width: 768px) {
-    .container-fluid {
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
-    }
-}
-
 /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
-/* Hanya mengatur shadow dan hover, border biarkan default Bootstrap */
-
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
@@ -613,12 +591,16 @@ input, select, textarea, button {
 }
 </style>
 
-<div class="container-fluid">
-    <!-- Header -->
+<div class="container-fluid p-4">
+    <!-- Header - HARUS DIPISAH JADI CARD SENDIRI -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="text-dark fw-bold">Rencana Anggaran Biaya (RAB) Pembangunan</h3>
-            <p class="text-muted">Rincian biaya pembangunan unit dari awal hingga selesai</p>
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h3 class="text-dark fw-bold mb-1">Rencana Anggaran Biaya (RAB) Pembangunan</h3>
+                    <p class="text-muted mb-0">Rincian biaya pembangunan unit dari awal hingga selesai</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1201,4 +1183,3 @@ input, select, textarea, button {
         });
     </script>
 @endpush
-

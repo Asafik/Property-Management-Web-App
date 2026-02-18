@@ -123,24 +123,23 @@ textarea.sales-form-control {
     transform: translateY(-2px);
 }
 
-/* Card Styling */
-.sales-card {
-    border: 1px solid #e9ecef;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-    background: #ffffff;
+/* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
+.card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
 }
 
-.sales-card-header {
+.card:hover {
+    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+}
+
+.card-header {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border-bottom: 1px solid #e9ecef;
     padding: 1rem 1.2rem;
-    border-radius: 16px 16px 0 0 !important;
 }
 
-.sales-card-header h4 {
+.card-header h4 {
     font-size: 1rem;
     font-weight: 700;
     color: #2c2e3f;
@@ -148,17 +147,17 @@ textarea.sales-form-control {
 }
 
 @media (min-width: 768px) {
-    .sales-card-header h4 {
+    .card-header h4 {
         font-size: 1.125rem;
     }
 }
 
-.sales-card-body {
+.card-body {
     padding: 1.2rem;
 }
 
 @media (min-width: 768px) {
-    .sales-card-body {
+    .card-body {
         padding: 1.5rem;
     }
 }
@@ -283,19 +282,6 @@ textarea.sales-form-control {
     }
 }
 
-/* Container */
-.container-fluid {
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-
-@media (min-width: 768px) {
-    .container-fluid {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-}
-
 /* Button Group */
 .sales-btn-group {
     display: flex;
@@ -315,7 +301,7 @@ textarea.sales-form-control {
 
 /* Responsive */
 @media (max-width: 576px) {
-    .sales-card-body {
+    .card-body {
         padding: 1rem !important;
     }
 
@@ -331,27 +317,31 @@ input, select, textarea, button {
 }
 </style>
 
-<div class="container-fluid p-3 p-md-4">
-    <!-- Header -->
-    <div class="sales-row mb-3 mb-md-4">
-        <div class="sales-col-12">
-            <h3 class="text-dark fw-bold" style="color: #2c2e3f; margin-bottom: 0.25rem;">Tambah Sales / Agent</h3>
-            <p class="sales-text-muted small" style="margin-bottom: 0;">Input data sales/agent marketing properti</p>
+<div class="container-fluid p-4">
+    <!-- Header Card Terpisah -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h3 class="text-dark fw-bold mb-1">Tambah Sales / Agent</h3>
+                    <p class="text-muted mb-0">Input data sales/agent marketing properti</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Form Tambah Sales -->
-    <div class="sales-row">
-        <div class="sales-col-12">
-            <div class="sales-card">
-                <div class="sales-card-header d-flex justify-content-between align-items-center">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 d-flex align-items-center">
                         <i class="mdi mdi-account-tie me-2 sales-text-primary"></i>
                         Form Input Data Sales
                     </h4>
                     <span class="sales-badge sales-badge-secondary">* Wajib</span>
                 </div>
-                <div class="sales-card-body">
+                <div class="card-body">
                   <form action="{{ route('agency.store') }}" method="POST">
 @csrf
 
