@@ -174,3 +174,12 @@ Route::get('/properti-revisi/{id}',
 Route::get('/Agency-Create', [AgencyPropertyController::class, 'index'])
     ->name('agency');
 Route::post('/agency/store',[AgencyPropertyController::class,'store'])->name('agency.store');
+
+
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
+Route::get('/register', function () {
+    return view('auth.register');
+});

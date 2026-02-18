@@ -637,99 +637,64 @@ input, select, textarea, button {
                 </div>
                 <div class="card-body">
                     <!-- Filter Section - COMPACT -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="filter-card">
-                                <div class="card-body">
-                                    <h6 class="card-title mb-2" style="font-size: 0.8rem;">
-                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                    </h6>
+                   <div class="row">
+    <div class="col-md-12">
+        <div class="filter-card">
+            <div class="card-body">
+                <h6 class="card-title mb-2" style="font-size: 0.8rem;">
+                    <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                </h6>
 
-                                    <!-- FILTER UNTUK MOBILE -->
-                                    <div class="d-block d-md-none">
-                                        <div class="mb-2">
-                                            <label class="form-label">Pencarian</label>
-                                            <input type="text" class="form-control" placeholder="Cari...">
-                                        </div>
-
-                                        <div class="row g-1">
-                                            <div class="col-6">
-                                                <label class="form-label">Kategori</label>
-                                                <select class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Rumah">Rumah</option>
-                                                    <option value="Apartemen">Apartemen</option>
-                                                    <option value="Ruko">Ruko</option>
-                                                    <option value="Tanah">Tanah</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Lokasi</label>
-                                                <select class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Jakarta">Jakarta</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-1 mt-1">
-                                            <div class="col-6">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control">
-                                                    <option value="10">10</option>
-                                                    <option value="25">25</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6 d-flex align-items-end">
-                                                <button type="button" class="btn btn-filter-reset w-100">
-                                                    <i class="mdi mdi-refresh"></i> Reset
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                    <div class="d-none d-md-block">
-                                        <div class="row g-1">
-                                            <div class="col-md-4">
-                                                <label class="form-label">Pencarian</label>
-                                                <input type="text" class="form-control" placeholder="Cari nama properti...">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">Kategori</label>
-                                                <select class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Rumah">Rumah</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Lokasi</label>
-                                                <select class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Jakarta">Jakarta</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control">
-                                                    <option value="10">10</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1 d-flex align-items-end">
-                                                <button type="button" class="btn btn-filter-reset w-100">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="row g-1">
+                    <div class="col-md-4">
+                        <label class="form-label">Pencarian</label>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Cari nama properti...">
                     </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Kategori</label>
+                        <select id="filterKategori" class="form-control">
+                            <option value="">Semua</option>
+                            <option value="Rumah">Rumah</option>
+                            <option value="Apartemen">Apartemen</option>
+                            <option value="Ruko">Ruko</option>
+                            <option value="Tanah">Tanah</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Lokasi</label>
+                        <select id="filterLokasi" class="form-control">
+                            <option value="">Semua</option>
+                            <option value="Jakarta">Jakarta</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Tampil</label>
+                        <select id="showData" class="form-control">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" id="resetFilter" class="btn btn-danger w-100">
+                            <i class="mdi mdi-refresh"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
                     <!-- Tabel Data -->
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                       <table id="tableProperti" class="table table-hover">
                             <thead>
                                 <tr>
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
@@ -955,4 +920,52 @@ input, select, textarea, button {
         });
     });
 </script>
+<script>
+$(document).ready(function () {
+
+    let table = $('#tableProperti').DataTable({
+        responsive: true,
+        pageLength: 10,
+        lengthChange: false,
+        ordering: false,
+        language: {
+            emptyTable: "Data kosong",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: { previous: "‹", next: "›" }
+        }
+    });
+
+    // SEARCH
+    $('#searchInput').on('keyup', function () {
+        table.search(this.value).draw();
+    });
+
+    // FILTER KATEGORI (kolom ke-2)
+    $('#filterKategori').on('change', function () {
+        table.column(2).search(this.value).draw();
+    });
+
+    // FILTER LOKASI (kolom ke-3)
+    $('#filterLokasi').on('change', function () {
+        table.column(3).search(this.value).draw();
+    });
+
+    // TAMPIL DATA
+    $('#showData').on('change', function () {
+        table.page.len(this.value).draw();
+    });
+
+    // RESET
+    $('#resetFilter').on('click', function () {
+        $('#searchInput').val('');
+        $('#filterKategori').val('');
+        $('#filterLokasi').val('');
+        $('#showData').val('10');
+
+        table.search('').columns().search('').page.len(10).draw();
+    });
+
+});
+</script>
+
 @endpush
