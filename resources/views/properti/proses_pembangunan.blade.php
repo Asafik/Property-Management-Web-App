@@ -687,58 +687,72 @@ input, select, textarea, button {
                             </button>
                         </div>
 
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-bordered mb-0">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th width="5%">No</th>
-                                            <th width="30%">Uraian</th>
-                                            <th width="8%">Volume</th>
-                                            <th width="8%">Satuan</th>
-                                            <th width="12%">Harga</th>
-                                            <th width="12%">Total</th>
-                                            <th width="15%">Keterangan</th>
-                                            <th width="10%">Aksi</th>
-                                        </tr>
-                                    </thead>
+                      <div class="card-body p-0">
+    <div class="table-responsive">
+        <table class="table table-bordered mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="25%">Uraian</th>
+                    <th width="8%">Volume</th>
+                    <th width="8%">Satuan</th>
+                    <th width="10%">Harga</th>
+                    <th width="10%">Total</th>
+                    <th width="15%">Keterangan</th>
+                    <th width="10%">Dokumentasi</th>
+                    <th width="9%">Aksi</th>
+                </tr>
+            </thead>
 
-                                    <tbody id="body-{{ $key }}">
+            <tbody id="body-{{ $key }}">
+                {{-- DATA DARI DB --}}
+                @if ($selectedUnit->progress)
+                    @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
+                        <tr>
+                            <td>{{ $item->kode }}</td>
+                            <td>{{ $item->uraian }}</td>
+                            <td>{{ $item->volume }}</td>
+                            <td>{{ $item->satuan }}</td>
+                            <td class="text-end">{{ number_format($item->harga_satuan) }}</td>
+                            <td class="text-end">{{ number_format($item->total) }}</td>
+                            <td>{{ $item->keterangan }}</td>
+                            <td>
+                                {{-- Form upload dokumentasi --}}
+                                <form action="{{ route('progress.uploadDocumentation', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" name="dokumentasi" class="form-control form-control-sm mb-1">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">Upload</button>
+                                </form>
 
-                                        {{-- DATA DARI DB --}}
-                                        @if ($selectedUnit->progress)
-                                            @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
-                                                <tr>
-                                                    <td>{{ $item->kode }}</td>
-                                                    <td>{{ $item->uraian }}</td>
-                                                    <td>{{ $item->volume }}</td>
-                                                    <td>{{ $item->satuan }}</td>
-                                                    <td class="text-end">{{ number_format($item->harga_satuan) }}</td>
-                                                    <td class="text-end">{{ number_format($item->total) }}</td>
-                                                    <td>{{ $item->keterangan }}</td>
-                                                    <td class="text-center">-</td>
-                                                </tr>
-                                            @endforeach
-                                        @endif
+                                {{-- Jika sudah ada file, tampilkan link --}}
+                                @if($item->dokumentasi)
+                                    <a href="{{ asset('storage/' . $item->dokumentasi) }}" target="_blank" class="btn btn-success btn-sm mt-1 w-100">
+                                        Lihat File
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="text-center">-</td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
 
-                                    </tbody>
+            <tfoot class="bg-light">
+                <tr>
+                    <th colspan="6" class="text-end">
+                        SUB TOTAL {{ strtoupper($key) }}
+                    </th>
+                    <th>
+                        <input type="text" id="subtotal-{{ $key }}"
+                            class="rab-form-control rab-form-control-sm text-end" readonly>
+                    </th>
+                    <th colspan="2"></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
 
-                                    <tfoot class="bg-light">
-                                        <tr>
-                                            <th colspan="5" class="text-end">
-                                                SUB TOTAL {{ strtoupper($key) }}
-                                            </th>
-                                            <th>
-                                                <input type="text" id="subtotal-{{ $key }}"
-                                                    class="rab-form-control rab-form-control-sm text-end" readonly>
-                                            </th>
-                                            <th colspan="2"></th>
-                                        </tr>
-                                    </tfoot>
-
-                                </table>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -916,227 +930,192 @@ input, select, textarea, button {
     <script>
         let indexItem = 0;
 
-        const kategoriMap = {
-            persiapan: {
-                prefix: "1",
-                body: "body-persiapan",
-                subtotal: "subtotal-persiapan"
-            },
-            pondasi: {
-                prefix: "2",
-                body: "body-pondasi",
-                subtotal: "subtotal-pondasi"
-            },
-            struktur: {
-                prefix: "3",
-                body: "body-struktur",
-                subtotal: "subtotal-struktur"
-            },
-            dinding: {
-                prefix: "4",
-                body: "body-dinding",
-                subtotal: "subtotal-dinding"
-            },
-            atap: {
-                prefix: "5",
-                body: "body-atap",
-                subtotal: "subtotal-atap"
-            },
-            finishing: {
-                prefix: "6",
-                body: "body-finishing",
-                subtotal: "subtotal-finishing"
-            },
-            lainnya: {
-                prefix: "7",
-                body: "body-lainnya",
-                subtotal: "subtotal-lainnya"
-            },
-        };
+const kategoriMap = {
+    persiapan: { prefix: "1", body: "body-persiapan", subtotal: "subtotal-persiapan" },
+    pondasi: { prefix: "2", body: "body-pondasi", subtotal: "subtotal-pondasi" },
+    struktur: { prefix: "3", body: "body-struktur", subtotal: "subtotal-struktur" },
+    dinding: { prefix: "4", body: "body-dinding", subtotal: "subtotal-dinding" },
+    atap: { prefix: "5", body: "body-atap", subtotal: "subtotal-atap" },
+    finishing: { prefix: "6", body: "body-finishing", subtotal: "subtotal-finishing" },
+    lainnya: { prefix: "7", body: "body-lainnya", subtotal: "subtotal-lainnya" },
+};
 
-        /* ============================= */
-        /* TAMBAH ITEM */
-        /* ============================= */
-        function tambahItem(kategori) {
+/* ============================= */
+/* TAMBAH ITEM */
+/* ============================= */
+function tambahItem(kategori) {
+    let config = kategoriMap[kategori];
+    let tbody = document.getElementById(config.body);
 
-            let config = kategoriMap[kategori];
-            let tbody = document.getElementById(config.body);
+    let nomor = tbody.querySelectorAll("tr").length + 1;
+    let kode = config.prefix + "." + nomor;
 
-            let nomor = tbody.querySelectorAll("tr").length + 1;
-            let kode = config.prefix + "." + nomor;
+    let row = `
+<tr>
+    <td>${kode}</td>
+    <td>
+        <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
+        <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
+        <input type="text"
+            name="items[${indexItem}][uraian]"
+            class="rab-form-control rab-form-control-sm"
+            required>
+    </td>
+    <td>
+        <input type="number"
+            name="items[${indexItem}][volume]"
+            class="rab-form-control rab-form-control-sm volume"
+            value="1" min="0">
+    </td>
+    <td>
+        <select name="items[${indexItem}][satuan]"
+            class="rab-form-control rab-form-control-sm">
+            <option value="ls">ls</option>
+            <option value="m2">m2</option>
+            <option value="m3">m3</option>
+            <option value="unit">unit</option>
+            <option value="zak">zak</option>
+            <option value="buah">buah</option>
+            <option value="kg">kg</option>
+            <option value="hari">hari</option>
+        </select>
+    </td>
+    <td>
+        <input type="number"
+            name="items[${indexItem}][harga_satuan]"
+            class="rab-form-control rab-form-control-sm harga-satuan"
+            value="0" min="0">
+    </td>
+    <td>
+        <input type="text"
+            class="rab-form-control rab-form-control-sm total-item text-end"
+            readonly>
+    </td>
+    <td>
+        <input type="text"
+            name="items[${indexItem}][keterangan]"
+            class="rab-form-control rab-form-control-sm">
+    </td>
+    <td>
+        <input type="file"
+            name="items[${indexItem}][dokumentasi]"
+            class="rab-form-control rab-form-control-sm dokumentasi">
+    </td>
+    <td class="text-center">
+        <button type="button"
+            class="rab-btn rab-btn-outline-danger rab-btn-sm"
+            onclick="hapusItem(this, '${kategori}')">
+            Hapus
+        </button>
+    </td>
+</tr>
+`;
 
-            let row = `
-    <tr>
-        <td>${kode}</td>
+    tbody.insertAdjacentHTML('beforeend', row);
+    indexItem++;
+    hitungSemua();
+}
 
-        <td>
-            <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
-            <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
-            <input type="text"
-                name="items[${indexItem}][uraian]"
-                class="rab-form-control rab-form-control-sm"
-                required>
-        </td>
+/* ============================= */
+/* HAPUS ITEM */
+/* ============================= */
+function hapusItem(button, kategori) {
+    button.closest('tr').remove();
+    updateNomor(kategori);
+    hitungSemua();
+}
 
-        <td>
-            <input type="number"
-                name="items[${indexItem}][volume]"
-                class="rab-form-control rab-form-control-sm volume"
-                value="1" min="0">
-        </td>
+/* ============================= */
+/* UPDATE NOMOR */
+/* ============================= */
+function updateNomor(kategori) {
+    let config = kategoriMap[kategori];
+    let rows = document.querySelectorAll("#" + config.body + " tr");
 
-        <td>
-            <select name="items[${indexItem}][satuan]"
-                class="rab-form-control rab-form-control-sm">
-                <option value="ls">ls</option>
-                <option value="m2">m2</option>
-                <option value="m3">m3</option>
-                <option value="unit">unit</option>
-                <option value="zak">zak</option>
-                <option value="buah">buah</option>
-                <option value="kg">kg</option>
-                <option value="hari">hari</option>
-            </select>
-        </td>
+    rows.forEach((row, i) => {
+        let kode = config.prefix + "." + (i + 1);
+        row.cells[0].innerText = kode;
 
-        <td>
-            <input type="number"
-                name="items[${indexItem}][harga_satuan]"
-                class="rab-form-control rab-form-control-sm harga-satuan"
-                value="0" min="0">
-        </td>
-
-        <td>
-            <input type="text"
-                class="rab-form-control rab-form-control-sm total-item text-end"
-                readonly>
-        </td>
-
-        <td>
-            <input type="text"
-                name="items[${indexItem}][keterangan]"
-                class="rab-form-control rab-form-control-sm">
-        </td>
-
-        <td class="text-center">
-            <button type="button"
-                class="rab-btn rab-btn-outline-danger rab-btn-sm"
-                onclick="hapusItem(this, '${kategori}')">
-                Hapus
-            </button>
-        </td>
-    </tr>
-    `;
-
-            tbody.insertAdjacentHTML('beforeend', row);
-            indexItem++;
-            hitungSemua();
+        let kodeInput = row.querySelector("input[name*='[kode]']");
+        if (kodeInput) {
+            kodeInput.value = kode;
         }
+    });
+}
 
-        /* ============================= */
-        /* HAPUS ITEM */
-        /* ============================= */
-        function hapusItem(button, kategori) {
-            button.closest('tr').remove();
-            updateNomor(kategori);
-            hitungSemua();
-        }
+/* ============================= */
+/* AMBIL ANGKA DARI TEXT */
+/* ============================= */
+function ambilAngka(text) {
+    if (!text) return 0;
+    return parseInt(text.replace(/[^0-9]/g, '')) || 0;
+}
 
-        /* ============================= */
-        /* UPDATE NOMOR */
-        /* ============================= */
-        function updateNomor(kategori) {
-            let config = kategoriMap[kategori];
-            let rows = document.querySelectorAll("#" + config.body + " tr");
+/* ============================= */
+/* HITUNG SEMUA */
+/* ============================= */
+function hitungSemua() {
+    let grandTotal = 0;
 
-            rows.forEach((row, i) => {
-                let kode = config.prefix + "." + (i + 1);
-                row.cells[0].innerText = kode;
+    Object.keys(kategoriMap).forEach(function(kategori) {
+        let config = kategoriMap[kategori];
+        let subtotal = 0;
 
-                let kodeInput = row.querySelector("input[name*='[kode]']");
-                if (kodeInput) {
-                    kodeInput.value = kode;
+        document.querySelectorAll("#" + config.body + " tr").forEach(function(row) {
+            let total = 0;
+
+            /* ROW INPUT BARU */
+            if (row.querySelector(".volume")) {
+                let volume = parseFloat(row.querySelector(".volume").value) || 0;
+                let harga = parseFloat(row.querySelector(".harga-satuan").value) || 0;
+
+                total = volume * harga;
+
+                let totalInput = row.querySelector(".total-item");
+                if (totalInput) {
+                    totalInput.value = total.toLocaleString('id-ID');
                 }
-            });
-        }
-
-        /* ============================= */
-        /* AMBIL ANGKA DARI TEXT */
-        /* ============================= */
-        function ambilAngka(text) {
-            if (!text) return 0;
-            return parseInt(text.replace(/[^0-9]/g, '')) || 0;
-        }
-
-        /* ============================= */
-        /* HITUNG SEMUA */
-        /* ============================= */
-        function hitungSemua() {
-
-            let grandTotal = 0;
-
-            Object.keys(kategoriMap).forEach(function(kategori) {
-
-                let config = kategoriMap[kategori];
-                let subtotal = 0;
-
-                document.querySelectorAll("#" + config.body + " tr").forEach(function(row) {
-
-                    let total = 0;
-
-                    /* ROW INPUT BARU */
-                    if (row.querySelector(".volume")) {
-
-                        let volume = parseFloat(row.querySelector(".volume").value) || 0;
-                        let harga = parseFloat(row.querySelector(".harga-satuan").value) || 0;
-
-                        total = volume * harga;
-
-                        let totalInput = row.querySelector(".total-item");
-                        if (totalInput) {
-                            totalInput.value = total.toLocaleString('id-ID');
-                        }
-
-                    }
-                    /* ROW DARI DATABASE */
-                    else {
-                        let totalText = row.cells[5]?.innerText || "0";
-                        total = ambilAngka(totalText);
-                    }
-
-                    subtotal += total;
-                });
-
-                let subtotalInput = document.getElementById(config.subtotal);
-                if (subtotalInput) {
-                    subtotalInput.value = subtotal.toLocaleString('id-ID');
-                }
-
-                grandTotal += subtotal;
-            });
-
-            let grandInput = document.getElementById("grand-total");
-            if (grandInput) {
-                grandInput.value = grandTotal.toLocaleString('id-ID');
             }
-        }
-
-        /* ============================= */
-        /* REALTIME HITUNG */
-        /* ============================= */
-        document.addEventListener("input", function(e) {
-            if (e.target.classList.contains("volume") ||
-                e.target.classList.contains("harga-satuan")) {
-                hitungSemua();
+            /* ROW DARI DATABASE */
+            else {
+                let totalText = row.cells[5]?.innerText || "0";
+                total = ambilAngka(totalText);
             }
+
+            subtotal += total;
         });
 
-        /* ============================= */
-        /* HITUNG SAAT LOAD */
-        /* ============================= */
-        document.addEventListener("DOMContentLoaded", function() {
-            hitungSemua();
-        });
+        let subtotalInput = document.getElementById(config.subtotal);
+        if (subtotalInput) {
+            subtotalInput.value = subtotal.toLocaleString('id-ID');
+        }
+
+        grandTotal += subtotal;
+    });
+
+    let grandInput = document.getElementById("grand-total");
+    if (grandInput) {
+        grandInput.value = grandTotal.toLocaleString('id-ID');
+    }
+}
+
+/* ============================= */
+/* REALTIME HITUNG */
+/* ============================= */
+document.addEventListener("input", function(e) {
+    if (e.target.classList.contains("volume") ||
+        e.target.classList.contains("harga-satuan")) {
+        hitungSemua();
+    }
+});
+
+/* ============================= */
+/* HITUNG SAAT LOAD */
+/* ============================= */
+document.addEventListener("DOMContentLoaded", function() {
+    hitungSemua();
+});
+
     </script>
     <script>
         document.getElementById("unitSelect").addEventListener("change", function() {
