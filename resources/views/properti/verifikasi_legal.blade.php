@@ -382,6 +382,28 @@
     background-color: #f8f9fa;
 }
 
+/* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
+.dataTables_filter {
+    display: none !important;
+}
+
+.dataTables_length {
+    display: none !important;
+}
+
+.dataTables_paginate {
+    display: none !important;
+}
+
+.dataTables_info {
+    display: none !important;
+}
+
+/* Tetap tampilkan sorting indicator */
+.sorting, .sorting_asc, .sorting_desc {
+    cursor: pointer;
+}
+
 /* Modal Styling Modern */
 .modal-content {
     border: none;
@@ -540,6 +562,11 @@ textarea.form-control {
         font-size: 0.7rem !important;
     }
 }
+
+/* Icon styling */
+.mdi {
+    vertical-align: middle;
+}
 </style>
 
 <div class="container-fluid p-4">
@@ -548,8 +575,14 @@ textarea.form-control {
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h3 class="text-dark mb-1">Verifikasi Legal Properti</h3>
-                    <p class="text-muted mb-0">Periksa dan verifikasi kelengkapan dokumen legal tanah</p>
+                    <h3 class="text-dark mb-1">
+                        <i class="mdi mdi-gavel me-2" style="color: #9a55ff;"></i>
+                        Verifikasi Legal Properti
+                    </h3>
+                    <p class="text-muted mb-0">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Periksa dan verifikasi kelengkapan dokumen legal tanah
+                    </p>
                 </div>
             </div>
         </div>
@@ -558,32 +591,45 @@ textarea.form-control {
     {{-- ================= INFO PROPERTI ================= --}}
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="mb-3">Informasi Properti</h5>
+            <h5 class="mb-3">
+                <i class="mdi mdi-home-city me-2" style="color: #9a55ff;"></i>
+                Informasi Properti
+            </h5>
 
             <div class="row">
                 <div class="col-md-3">
-                    <small class="text-muted">Nama Tanah</small>
+                    <small class="text-muted">
+                        <i class="mdi mdi-home me-1"></i> Nama Tanah
+                    </small>
                     <p class="fw-bold">{{ $land->name }}</p>
                 </div>
 
                 <div class="col-md-3">
-                    <small class="text-muted">Status Kepemilikan</small>
+                    <small class="text-muted">
+                        <i class="mdi mdi-certificate me-1"></i> Status Kepemilikan
+                    </small>
                     <p class="fw-bold">{{ $land->ownership_status }}</p>
                 </div>
 
                 <div class="col-md-3">
-                    <small class="text-muted">Luas</small>
+                    <small class="text-muted">
+                        <i class="mdi mdi-arrow-expand-all me-1"></i> Luas
+                    </small>
                     <p class="fw-bold">{{ number_format($land->area, 0, ',', '.') }} m²</p>
                 </div>
 
                 <div class="col-md-3">
-                    <small class="text-muted">Tanggal Pengajuan</small>
+                    <small class="text-muted">
+                        <i class="mdi mdi-calendar me-1"></i> Tanggal Pengajuan
+                    </small>
                     <p class="fw-bold">{{ $land->created_at->format('d M Y') }}</p>
                 </div>
             </div>
 
             <div class="mt-3">
-                <small class="text-muted">Alamat</small>
+                <small class="text-muted">
+                    <i class="mdi mdi-map-marker me-1"></i> Alamat
+                </small>
                 <p class="fw-bold">
                     {{ $land->address }},
                     {{ $land->village }},
@@ -605,8 +651,11 @@ textarea.form-control {
     <div class="card bg-light mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between">
-                <strong>Progress Verifikasi</strong>
+                <strong>
+                    <i class="mdi mdi-progress-check me-1"></i> Progress Verifikasi
+                </strong>
                 <span class="badge bg-primary">
+                    <i class="mdi mdi-file-document me-1"></i>
                     {{ $verified }} dari {{ $total }} terverifikasi
                 </span>
             </div>
@@ -616,46 +665,70 @@ textarea.form-control {
                 </div>
             </div>
 
-            <small class="text-muted">{{ round($percent) }}% selesai</small>
+            <small class="text-muted">
+                <i class="mdi mdi-chart-line me-1"></i>
+                {{ round($percent) }}% selesai
+            </small>
         </div>
     </div>
 
     {{-- ================= TABEL DOKUMEN ================= --}}
     <div class="card">
         <div class="card-body">
-            <h5 class="mb-3">Daftar Dokumen</h5>
+            <h5 class="mb-3">
+                <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>
+                Daftar Dokumen
+            </h5>
 
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table id="tableDokumen" class="table table-hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Jenis</th>
-                            <th>Nomor</th>
-                            <th>Tanggal Upload</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
+                            <th><i class="mdi mdi-counter me-1"></i>No</th>
+                            <th><i class="mdi mdi-file-outline me-1"></i>Jenis</th>
+                            <th><i class="mdi mdi-format-list-numbered me-1"></i>Nomor</th>
+                            <th><i class="mdi mdi-calendar-upload me-1"></i>Tanggal Upload</th>
+                            <th><i class="mdi mdi-information me-1"></i>Status</th>
+                            <th><i class="mdi mdi-cog me-1"></i>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($land->documents as $doc)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ ucfirst($doc->type) }}</td>
+                                <td>
+                                    @if($doc->type == 'sertifikat')
+                                        <i class="mdi mdi-certificate text-primary me-1"></i>
+                                    @elseif($doc->type == 'imb')
+                                        <i class="mdi mdi-domain text-info me-1"></i>
+                                    @else
+                                        <i class="mdi mdi-file text-secondary me-1"></i>
+                                    @endif
+                                    {{ ucfirst($doc->type) }}
+                                </td>
                                 <td>{{ $doc->document_number ?? '-' }}</td>
-                                <td>{{ $doc->created_at->format('d M Y') }}</td>
+                                <td>
+                                    <i class="mdi mdi-calendar me-1 text-muted"></i>
+                                    {{ $doc->created_at->format('d M Y') }}
+                                </td>
                                 <td>
                                     @if ($doc->status == 'pending')
-                                        <span class="badge bg-warning">Pending</span>
+                                        <span class="badge bg-warning">
+                                            <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                        </span>
                                     @elseif($doc->status == 'terverifikasi')
-                                        <span class="badge bg-success">Terverifikasi</span>
+                                        <span class="badge bg-success">
+                                            <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                        </span>
                                     @else
-                                        <span class="badge bg-danger">Ditolak</span>
+                                        <span class="badge bg-danger">
+                                            <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                        </span>
                                     @endif
                                 </td>
                                 <td>
                                     <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
-                                        class="btn btn-sm btn-gradient-primary">
+                                        class="btn btn-sm btn-gradient-primary" title="Lihat Dokumen">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
 
@@ -663,7 +736,7 @@ textarea.form-control {
                                         <form action="{{ route('dokumen.approve', $doc->id) }}" method="POST"
                                             class="d-inline">
                                             @csrf
-                                            <button class="btn btn-sm btn-gradient-success">
+                                            <button class="btn btn-sm btn-gradient-success" title="Setujui">
                                                 <i class="mdi mdi-check"></i>
                                             </button>
                                         </form>
@@ -673,7 +746,7 @@ textarea.form-control {
                                             @csrf
                                             <button type="button" class="btn btn-sm btn-gradient-danger"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#rejectModal{{ $doc->id }}">
+                                                data-bs-target="#rejectModal{{ $doc->id }}" title="Tolak">
                                                 <i class="mdi mdi-close"></i>
                                             </button>
                                         </form>
@@ -689,6 +762,7 @@ textarea.form-control {
                                             @csrf
                                             <div class="modal-header">
                                                 <h5 class="modal-title">
+                                                    <i class="mdi mdi-alert-circle text-danger me-2"></i>
                                                     Tolak Dokumen
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -698,10 +772,12 @@ textarea.form-control {
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label class="form-label">
+                                                        <i class="mdi mdi-note-text me-1"></i>
                                                         Catatan Penolakan <span class="text-danger">*</span>
                                                     </label>
-                                                    <textarea name="catatan_admin" class="form-control" rows="4" required></textarea>
+                                                    <textarea name="catatan_admin" class="form-control" rows="4" placeholder="Masukkan alasan penolakan..." required></textarea>
                                                     <small class="text-muted">
+                                                        <i class="mdi mdi-information-outline me-1"></i>
                                                         Wajib diisi sebelum dokumen ditolak.
                                                     </small>
                                                 </div>
@@ -709,10 +785,10 @@ textarea.form-control {
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Batal
+                                                    <i class="mdi mdi-close me-1"></i> Batal
                                                 </button>
                                                 <button type="submit" class="btn btn-danger">
-                                                    Tolak Dokumen
+                                                    <i class="mdi mdi-delete-forever me-1"></i> Tolak Dokumen
                                                 </button>
                                             </div>
                                         </form>
@@ -721,7 +797,8 @@ textarea.form-control {
                             </div>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted">
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="mdi mdi-information-outline me-2" style="font-size: 1.2rem;"></i>
                                     Belum ada dokumen
                                 </td>
                             </tr>
@@ -747,18 +824,18 @@ textarea.form-control {
                         <div class="d-flex gap-2 flex-wrap">
                             @if ($land->documents->where('status', 'ditolak')->count() > 0)
                                 <a href="{{ route('properti.revisi', $land->id) }}" class="btn btn-warning">
-                                    Revisi Dokumen
+                                    <i class="mdi mdi-file-replace me-1"></i> Revisi Dokumen
                                 </a>
                             @endif
 
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalTolak">
-                                Tolak Pengajuan
+                                <i class="mdi mdi-close-circle me-1"></i> Tolak Pengajuan
                             </button>
 
                             <form id="formSetujuiSemua" method="POST" action="{{ route('properti.approveAll', $land->id) }}">
                                 @csrf
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">
-                                    Setujui Semua
+                                    <i class="mdi mdi-check-all me-1"></i> Setujui Semua
                                 </button>
                             </form>
                         </div>
@@ -773,16 +850,29 @@ textarea.form-control {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Konfirmasi</h5>
+                    <h5 class="modal-title" id="confirmModalLabel">
+                        <i class="mdi mdi-check-circle text-success me-2"></i>
+                        Konfirmasi
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
-                    Apakah Anda yakin ingin menyetujui semua? <br>
-                    <small class="text-muted">Silakan dicek kembali dokumennya sebelum menyetujui.</small>
+                    <p>
+                        <i class="mdi mdi-help-circle text-warning me-2" style="font-size: 1.2rem;"></i>
+                        Apakah Anda yakin ingin menyetujui semua?
+                    </p>
+                    <small class="text-muted">
+                        <i class="mdi mdi-alert me-1"></i>
+                        Silakan dicek kembali dokumennya sebelum menyetujui.
+                    </small>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" id="confirmSubmit">Ya, Setujui</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i> Batal
+                    </button>
+                    <button type="button" class="btn btn-success" id="confirmSubmit">
+                        <i class="mdi mdi-check me-1"></i> Ya, Setujui
+                    </button>
                 </div>
             </div>
         </div>
@@ -795,18 +885,33 @@ textarea.form-control {
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTolakLabel">Tolak Semua Dokumen</h5>
+                        <h5 class="modal-title" id="modalTolakLabel">
+                            <i class="mdi mdi-alert-circle text-danger me-2"></i>
+                            Tolak Semua Dokumen
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="catatan_admin" class="form-label">Catatan Penolakan</label>
-                            <textarea class="form-control" name="catatan_admin" id="catatan_admin" rows="3" placeholder="Masukkan catatan..." required></textarea>
+                            <label for="catatan_admin" class="form-label">
+                                <i class="mdi mdi-note-text me-1"></i>
+                                Catatan Penolakan
+                            </label>
+                            <textarea class="form-control" name="catatan_admin" id="catatan_admin" rows="3"
+                                placeholder="Masukkan catatan penolakan..." required></textarea>
+                            <small class="text-muted">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Catatan ini akan dikirimkan ke pengaju.
+                            </small>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger">Tolak Semua</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i> Batal
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="mdi mdi-delete-forever me-1"></i> Tolak Semua
+                        </button>
                     </div>
                 </div>
             </form>
@@ -818,8 +923,27 @@ textarea.form-control {
 
 @push('scripts')
 <script>
-    document.getElementById('confirmSubmit').addEventListener('click', function() {
-        document.getElementById('formSetujuiSemua').submit();
+$(document).ready(function () {
+    // Inisialisasi DataTables - hanya untuk sorting
+    $('#tableDokumen').DataTable({
+        responsive: true,
+        paging: false,        // MATIKAN pagination
+        info: false,          // MATIKAN info
+        searching: false,     // MATIKAN search
+        lengthChange: false,  // MATIKAN length change
+        ordering: true,       // AKTIFKAN sorting saja
+        language: {
+            emptyTable: "Tidak ada data",
+            zeroRecords: "Data tidak ditemukan",
+        },
+        columnDefs: [
+            { orderable: false, targets: [5] } // Non-aktifkan sorting untuk kolom Aksi
+        ]
     });
+});
+
+document.getElementById('confirmSubmit').addEventListener('click', function() {
+    document.getElementById('formSetujuiSemua').submit();
+});
 </script>
 @endpush

@@ -589,6 +589,11 @@ input, select, textarea, button {
         max-width: 100%;
     }
 }
+
+/* Icon styling */
+.mdi {
+    vertical-align: middle;
+}
 </style>
 
 <div class="container-fluid p-4">
@@ -597,8 +602,14 @@ input, select, textarea, button {
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h3 class="text-dark fw-bold mb-1">Rencana Anggaran Biaya (RAB) Pembangunan</h3>
-                    <p class="text-muted mb-0">Rincian biaya pembangunan unit dari awal hingga selesai</p>
+                    <h3 class="text-dark fw-bold mb-1">
+                        <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>
+                        Rencana Anggaran Biaya (RAB) Pembangunan
+                    </h3>
+                    <p class="text-muted mb-0">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Rincian biaya pembangunan unit dari awal hingga selesai
+                    </p>
                 </div>
             </div>
         </div>
@@ -613,7 +624,9 @@ input, select, textarea, button {
 
                         {{-- UNIT --}}
                         <div class="col-12 col-sm-6 col-md-2">
-                            <small class="text-muted d-block">Unit</small>
+                            <small class="text-muted d-block">
+                                <i class="mdi mdi-home me-1"></i>Unit
+                            </small>
                             <select class="rab-form-control" id="unitSelect">
                                 @foreach ($land->units as $unit)
                                     <option value="{{ $unit->id }}"
@@ -628,25 +641,33 @@ input, select, textarea, button {
 
                         {{-- TIPE / NAMA --}}
                         <div class="col-12 col-sm-6 col-md-3">
-                            <small class="text-muted d-block">Tipe / Nama</small>
+                            <small class="text-muted d-block">
+                                <i class="mdi mdi-shape-outline me-1"></i>Tipe / Nama
+                            </small>
                             <input type="text" id="unitType" class="rab-form-control" readonly>
                         </div>
 
                         {{-- LUAS TANAH --}}
                         <div class="col-6 col-sm-4 col-md-2">
-                            <small class="text-muted d-block">Luas Tanah</small>
+                            <small class="text-muted d-block">
+                                <i class="mdi mdi-ruler-square me-1"></i>Luas Tanah
+                            </small>
                             <input type="text" id="unitArea" class="rab-form-control" readonly>
                         </div>
 
                         {{-- LUAS BANGUNAN --}}
                         <div class="col-6 col-sm-4 col-md-2">
-                            <small class="text-muted d-block">Luas Bangunan</small>
+                            <small class="text-muted d-block">
+                                <i class="mdi mdi-ruler-square me-1"></i>Luas Bangunan
+                            </small>
                             <input type="text" id="unitBuilding" class="rab-form-control" readonly>
                         </div>
 
                         {{-- HARGA --}}
                         <div class="col-12 col-sm-4 col-md-3">
-                            <small class="text-muted d-block">Harga Jual Unit</small>
+                            <small class="text-muted d-block">
+                                <i class="mdi mdi-currency-usd me-1"></i>Harga Jual Unit
+                            </small>
                             <input type="text" id="unitPrice" class="rab-form-control" readonly>
                         </div>
 
@@ -679,11 +700,14 @@ input, select, textarea, button {
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header bg-secondary text-white d-flex justify-content-between">
-                            <h5 class="mb-0">{{ $title }}</h5>
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="mdi mdi-{{ $key == 'persiapan' ? 'tools' : ($key == 'pondasi' ? 'foundation' : ($key == 'struktur' ? 'bridge' : ($key == 'dinding' ? 'wall' : ($key == 'atap' ? 'roofing' : ($key == 'finishing' ? 'brush' : 'dots-horizontal'))))) }} me-2"></i>
+                                {{ $title }}
+                            </h5>
                             <button type="button" class="rab-btn rab-btn-light rab-btn-sm"
                                 onclick="tambahItem('{{ $key }}')">
-                                Tambah Item
+                                <i class="mdi mdi-plus me-1"></i>Tambah Item
                             </button>
                         </div>
 
@@ -692,15 +716,15 @@ input, select, textarea, button {
         <table class="table table-bordered mb-0">
             <thead class="bg-light">
                 <tr>
-                    <th width="5%">No</th>
-                    <th width="25%">Uraian</th>
-                    <th width="8%">Volume</th>
-                    <th width="8%">Satuan</th>
-                    <th width="10%">Harga</th>
-                    <th width="10%">Total</th>
-                    <th width="15%">Keterangan</th>
-                    <th width="10%">Dokumentasi</th>
-                    <th width="9%">Aksi</th>
+                    <th width="5%"><i class="mdi mdi-counter me-1"></i>No</th>
+                    <th width="25%"><i class="mdi mdi-format-list-bulleted me-1"></i>Uraian</th>
+                    <th width="8%"><i class="mdi mdi-cube-outline me-1"></i>Volume</th>
+                    <th width="8%"><i class="mdi mdi-ruler me-1"></i>Satuan</th>
+                    <th width="10%"><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
+                    <th width="10%"><i class="mdi mdi-calculator me-1"></i>Total</th>
+                    <th width="15%"><i class="mdi mdi-note-text me-1"></i>Keterangan</th>
+                    <th width="10%"><i class="mdi mdi-camera me-1"></i>Dokumentasi</th>
+                    <th width="9%"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                 </tr>
             </thead>
 
@@ -713,25 +737,33 @@ input, select, textarea, button {
                             <td>{{ $item->uraian }}</td>
                             <td>{{ $item->volume }}</td>
                             <td>{{ $item->satuan }}</td>
-                            <td class="text-end">{{ number_format($item->harga_satuan) }}</td>
-                            <td class="text-end">{{ number_format($item->total) }}</td>
+                            <td class="text-end">Rp {{ number_format($item->harga_satuan) }}</td>
+                            <td class="text-end">Rp {{ number_format($item->total) }}</td>
                             <td>{{ $item->keterangan }}</td>
                             <td>
                                 {{-- Form upload dokumentasi --}}
                                 <form action="{{ route('progress.uploadDocumentation', $item->id) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <input type="file" name="dokumentasi" class="form-control form-control-sm mb-1">
-                                    <button type="submit" class="btn btn-primary btn-sm w-100">Upload</button>
+                                    <div class="d-flex flex-column gap-1">
+                                        <input type="file" name="dokumentasi" class="form-control form-control-sm">
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                            <i class="mdi mdi-upload me-1"></i>Upload
+                                        </button>
+                                    </div>
                                 </form>
 
                                 {{-- Jika sudah ada file, tampilkan link --}}
                                 @if($item->dokumentasi)
                                     <a href="{{ asset('storage/' . $item->dokumentasi) }}" target="_blank" class="btn btn-success btn-sm mt-1 w-100">
-                                        Lihat File
+                                        <i class="mdi mdi-eye me-1"></i>Lihat File
                                     </a>
                                 @endif
                             </td>
-                            <td class="text-center">-</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="hapusItem(this, '{{ $key }}')" title="Hapus">
+                                    <i class="mdi mdi-delete"></i>
+                                </button>
+                            </td>
                         </tr>
                     @endforeach
                 @endif
@@ -740,11 +772,11 @@ input, select, textarea, button {
             <tfoot class="bg-light">
                 <tr>
                     <th colspan="6" class="text-end">
-                        SUB TOTAL {{ strtoupper($key) }}
+                        <i class="mdi mdi-calculator me-1"></i>SUB TOTAL {{ strtoupper($key) }}
                     </th>
                     <th>
                         <input type="text" id="subtotal-{{ $key }}"
-                            class="rab-form-control rab-form-control-sm text-end" readonly>
+                            class="rab-form-control rab-form-control-sm text-end fw-bold" readonly>
                     </th>
                     <th colspan="2"></th>
                 </tr>
@@ -764,18 +796,20 @@ input, select, textarea, button {
                 <div class="card border-primary">
                     <div class="card-body">
                         <div class="d-flex flex-column flex-sm-row justify-content-between mb-3 align-items-center gap-3">
-                            <h5 class="text-center text-primary mb-0">RINCIAN RAB</h5>
+                            <h5 class="text-center text-primary mb-0">
+                                <i class="mdi mdi-chart-pie me-2"></i>RINCIAN RAB
+                            </h5>
 
                             <div class="d-flex flex-wrap gap-2">
                                 {{-- Tombol Print --}}
                                 <a href="{{ url('/dashboard-cetak-rab') }}" target="_blank"
                                     class="rab-btn rab-btn-success rab-btn-sm">
-                                    <i class="mdi mdi-printer"></i> Cetak RAB
+                                    <i class="mdi mdi-printer me-1"></i> Cetak RAB
                                 </a>
 
                                 <button type="button" class="rab-btn rab-btn-primary rab-btn-sm acc-btn"
                                     data-id="{{ $selectedUnit->id }}">
-                                    <i class="mdi mdi-check"></i> ACC RAB
+                                    <i class="mdi mdi-check me-1"></i> ACC RAB
                                 </button>
                             </div>
                         </div>
@@ -786,11 +820,11 @@ input, select, textarea, button {
                             <table class="table table-sm table-bordered">
                                 <thead class="table-primary text-center">
                                     <tr>
-                                        <th>No</th>
-                                        <th>Item Pekerjaan / Material</th>
-                                        <th>Kuantitas</th>
-                                        <th>Harga Satuan (Rp)</th>
-                                        <th>Total (Rp)</th>
+                                        <th><i class="mdi mdi-counter me-1"></i>No</th>
+                                        <th><i class="mdi mdi-format-list-bulleted me-1"></i>Item Pekerjaan / Material</th>
+                                        <th><i class="mdi mdi-cube-outline me-1"></i>Kuantitas</th>
+                                        <th><i class="mdi mdi-currency-usd me-1"></i>Harga Satuan (Rp)</th>
+                                        <th><i class="mdi mdi-calculator me-1"></i>Total (Rp)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -806,9 +840,9 @@ input, select, textarea, button {
                                             <td class="text-center">{{ $i + 1 }}</td>
                                             <td>{{ $item->uraian }}</td>
                                             <td class="text-center">{{ $item->volume }}</td>
-                                            <td class="text-end">{{ number_format($item->harga_satuan, 0, ',', '.') }}
+                                            <td class="text-end">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}
                                             </td>
-                                            <td class="text-end">{{ number_format($itemTotal, 0, ',', '.') }}</td>
+                                            <td class="text-end">Rp {{ number_format($itemTotal, 0, ',', '.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -838,22 +872,24 @@ input, select, textarea, button {
         <div class="col-12 col-md-6">
             <div class="card border-primary shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="card-title text-primary mb-3">Ringkasan RAB</h6>
+                    <h6 class="card-title text-primary mb-3">
+                        <i class="mdi mdi-chart-pie me-2"></i>Ringkasan RAB
+                    </h6>
                     <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
-                        <span class="mb-1 mb-sm-0">Subtotal</span>
+                        <span class="mb-1 mb-sm-0"><i class="mdi mdi-calculator me-1"></i>Subtotal</span>
                         <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
-                            value="{{ number_format($subtotal, 0, ',', '.') }}">
+                            value="Rp {{ number_format($subtotal, 0, ',', '.') }}">
                     </div>
                     <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
-                        <span class="mb-1 mb-sm-0">PPN (10%)</span>
+                        <span class="mb-1 mb-sm-0"><i class="mdi mdi-percent me-1"></i>PPN (10%)</span>
                         <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
-                            value="{{ number_format($ppn, 0, ',', '.') }}">
+                            value="Rp {{ number_format($ppn, 0, ',', '.') }}">
                     </div>
                     <hr>
                     <div class="d-flex flex-column flex-sm-row justify-content-between">
-                        <span class="fw-bold mb-1 mb-sm-0">Total RAB</span>
+                        <span class="fw-bold mb-1 mb-sm-0"><i class="mdi mdi-cash-multiple me-1"></i>Total RAB</span>
                         <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
-                            value="{{ number_format($totalRAB, 0, ',', '.') }}">
+                            value="Rp {{ number_format($totalRAB, 0, ',', '.') }}">
                     </div>
                 </div>
             </div>
@@ -863,27 +899,29 @@ input, select, textarea, button {
         <div class="col-12 col-md-6">
             <div class="card border-success shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="card-title text-success mb-3">Harga Jual Final</h6>
+                    <h6 class="card-title text-success mb-3">
+                        <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
+                    </h6>
                     <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
-                        <span class="mb-1 mb-sm-0">Total RAB</span>
+                        <span class="mb-1 mb-sm-0"><i class="mdi mdi-calculator me-1"></i>Total RAB</span>
                         <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
-                            value="{{ number_format($totalRAB, 0, ',', '.') }}">
+                            value="Rp {{ number_format($totalRAB, 0, ',', '.') }}">
                     </div>
                     <div class="d-flex flex-column flex-sm-row justify-content-between mb-2">
-                        <span class="mb-1 mb-sm-0">Harga Jual Unit</span>
+                        <span class="mb-1 mb-sm-0"><i class="mdi mdi-home me-1"></i>Harga Jual Unit</span>
                         <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
-                            value="{{ number_format($unitPrice, 0, ',', '.') }}">
+                            value="Rp {{ number_format($unitPrice, 0, ',', '.') }}">
                     </div>
                     <hr>
                     <div class="d-flex flex-column flex-sm-row justify-content-between mb-3">
-                        <span class="fw-bold mb-1 mb-sm-0">Harga Jual Final</span>
+                        <span class="fw-bold mb-1 mb-sm-0"><i class="mdi mdi-cash-multiple me-1"></i>Harga Jual Final</span>
                         <input type="text" class="rab-form-control text-end fw-bold w-100 w-sm-auto" style="max-width: 200px;" readonly
-                            value="{{ number_format($finalPrice, 0, ',', '.') }}">
+                            value="Rp {{ number_format($finalPrice, 0, ',', '.') }}">
                     </div>
 
                     {{-- Tombol Simpan --}}
                     <button type="submit" class="rab-btn rab-btn-success w-100">
-                        Simpan
+                        <i class="mdi mdi-content-save me-1"></i>Simpan
                     </button>
                 </div>
             </div>
@@ -959,6 +997,7 @@ function tambahItem(kategori) {
         <input type="text"
             name="items[${indexItem}][uraian]"
             class="rab-form-control rab-form-control-sm"
+            placeholder="Masukkan uraian"
             required>
     </td>
     <td>
@@ -971,8 +1010,8 @@ function tambahItem(kategori) {
         <select name="items[${indexItem}][satuan]"
             class="rab-form-control rab-form-control-sm">
             <option value="ls">ls</option>
-            <option value="m2">m2</option>
-            <option value="m3">m3</option>
+            <option value="m2">m²</option>
+            <option value="m3">m³</option>
             <option value="unit">unit</option>
             <option value="zak">zak</option>
             <option value="buah">buah</option>
@@ -994,7 +1033,8 @@ function tambahItem(kategori) {
     <td>
         <input type="text"
             name="items[${indexItem}][keterangan]"
-            class="rab-form-control rab-form-control-sm">
+            class="rab-form-control rab-form-control-sm"
+            placeholder="Opsional">
     </td>
     <td>
         <input type="file"
@@ -1004,8 +1044,9 @@ function tambahItem(kategori) {
     <td class="text-center">
         <button type="button"
             class="rab-btn rab-btn-outline-danger rab-btn-sm"
-            onclick="hapusItem(this, '${kategori}')">
-            Hapus
+            onclick="hapusItem(this, '${kategori}')"
+            title="Hapus">
+            <i class="mdi mdi-delete"></i> Hapus
         </button>
     </td>
 </tr>
@@ -1020,9 +1061,11 @@ function tambahItem(kategori) {
 /* HAPUS ITEM */
 /* ============================= */
 function hapusItem(button, kategori) {
-    button.closest('tr').remove();
-    updateNomor(kategori);
-    hitungSemua();
+    if (confirm('Yakin ingin menghapus item ini?')) {
+        button.closest('tr').remove();
+        updateNomor(kategori);
+        hitungSemua();
+    }
 }
 
 /* ============================= */
@@ -1073,7 +1116,7 @@ function hitungSemua() {
 
                 let totalInput = row.querySelector(".total-item");
                 if (totalInput) {
-                    totalInput.value = total.toLocaleString('id-ID');
+                    totalInput.value = 'Rp ' + total.toLocaleString('id-ID');
                 }
             }
             /* ROW DARI DATABASE */
@@ -1087,7 +1130,7 @@ function hitungSemua() {
 
         let subtotalInput = document.getElementById(config.subtotal);
         if (subtotalInput) {
-            subtotalInput.value = subtotal.toLocaleString('id-ID');
+            subtotalInput.value = 'Rp ' + subtotal.toLocaleString('id-ID');
         }
 
         grandTotal += subtotal;
@@ -1095,7 +1138,7 @@ function hitungSemua() {
 
     let grandInput = document.getElementById("grand-total");
     if (grandInput) {
-        grandInput.value = grandTotal.toLocaleString('id-ID');
+        grandInput.value = 'Rp ' + grandTotal.toLocaleString('id-ID');
     }
 }
 
