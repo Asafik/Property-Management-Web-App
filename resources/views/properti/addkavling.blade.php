@@ -335,6 +335,80 @@ select.kavling-form-control {
     margin-top: 0.2rem;
 }
 
+/* ===== FILTER SECTION - SAMA PERSIS DENGAN PROPERTI ===== */
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.filter-card .card-body {
+    padding: 1rem !important;
+}
+
+.filter-card .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.3px;
+}
+
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    height: auto;
+    min-height: 40px;
+    border: 1px solid #e0e4e9;
+}
+
+.filter-card .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    min-height: 40px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    height: auto;
+}
+
+@media (min-width: 576px) {
+    .form-control, .form-select {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+
+/* Form Label */
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+}
+
 /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
 .card {
     transition: all 0.3s ease;
@@ -397,59 +471,59 @@ select.kavling-form-control {
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
     color: #9a55ff;
     font-weight: 600;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 2px solid #e9ecef;
-    padding: 0.6rem 0.25rem;
+    padding: 0.8rem 0.5rem;
     white-space: nowrap;
 }
 
 @media (min-width: 576px) {
     .table thead th {
-        font-size: 0.75rem;
-        padding: 0.7rem 0.4rem;
+        font-size: 0.85rem;
+        padding: 0.9rem 0.6rem;
     }
 }
 
 @media (min-width: 768px) {
     .table thead th {
-        font-size: 0.8rem;
-        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+        padding: 1rem 0.75rem;
     }
 }
 
 /* Kolom No - lebih rapat */
 .table thead th:first-child {
-    padding-left: 0.5rem;
-    width: 45px;
+    padding-left: 0.75rem;
+    width: 60px;
 }
 
 .table tbody td:first-child {
-    padding-left: 0.5rem;
+    padding-left: 0.75rem;
     font-weight: 500;
-    width: 45px;
+    width: 60px;
 }
 
 .table tbody td {
     vertical-align: middle;
-    font-size: 0.75rem;
-    padding: 0.6rem 0.25rem;
+    font-size: 0.85rem;
+    padding: 0.8rem 0.5rem;
     border-bottom: 1px solid #e9ecef;
     color: #2c2e3f;
 }
 
 @media (min-width: 576px) {
     .table tbody td {
-        font-size: 0.8rem;
-        padding: 0.7rem 0.4rem;
+        font-size: 0.9rem;
+        padding: 0.9rem 0.6rem;
     }
 }
 
 @media (min-width: 768px) {
     .table tbody td {
-        font-size: 0.85rem;
-        padding: 0.8rem 0.5rem;
+        font-size: 0.95rem;
+        padding: 1rem 0.75rem;
     }
 }
 
@@ -457,9 +531,18 @@ select.kavling-form-control {
     background-color: #f8f9fa;
 }
 
+/* Nama properti - lebih rapat dengan nomor */
+.table tbody td:nth-child(2) {
+    padding-left: 0.3rem;
+}
+
+.table tbody td .d-flex.align-items-center {
+    gap: 0.5rem;
+}
+
 /* Icon dalam tabel */
 .table tbody td i {
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 /* Text colors */
@@ -471,90 +554,7 @@ select.kavling-form-control {
 .fw-bold { font-weight: 600 !important; }
 .text-muted { color: #a5b3cb !important; }
 
-/* Badge Styling */
-.badge {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.6rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-@media (min-width: 576px) {
-    .badge {
-        padding: 0.3rem 0.5rem;
-        font-size: 0.65rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .badge {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.7rem;
-    }
-}
-
-.badge.badge-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-    color: #ffffff;
-}
-
-.badge.badge-warning {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-    color: #2c2e3f;
-}
-
-.badge.badge-primary {
-    background: linear-gradient(135deg, #9a55ff, #da8cff) !important;
-    color: #ffffff;
-}
-
-.badge.badge-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-    color: #ffffff;
-}
-
-/* Action buttons styling */
-.btn-outline-primary,
-.btn-outline-info,
-.btn-outline-danger {
-    border: 1px solid;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.65rem;
-}
-
-.btn-outline-primary {
-    border-color: #9a55ff;
-    color: #9a55ff;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: white;
-}
-
-.btn-outline-info {
-    border-color: #17a2b8;
-    color: #17a2b8;
-}
-
-.btn-outline-info:hover {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: white;
-}
-
-.btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
-}
-
-.btn-outline-danger:hover {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: white;
-}
-
-/* Pagination Styling - DIPERKECIL */
+/* ===== PAGINATION STYLING - DIPERKECIL ===== */
 .pagination {
     margin: 0;
     gap: 3px;
@@ -620,23 +620,114 @@ select.kavling-form-control {
     }
 }
 
+/* Badge Styling */
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .badge {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .badge {
+        padding: 0.45rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
+.badge.badge-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+    color: #ffffff;
+}
+
+.badge.badge-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+    color: #2c2e3f;
+}
+
+.badge.badge-primary {
+    background: linear-gradient(135deg, #9a55ff, #da8cff) !important;
+    color: #ffffff;
+}
+
+.badge.badge-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
+    color: #ffffff;
+}
+
+/* Action buttons styling */
+.btn-outline-primary,
+.btn-outline-info,
+.btn-outline-danger {
+    border: 1px solid;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.btn-outline-primary {
+    border-color: #9a55ff;
+    color: #9a55ff;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    color: white;
+}
+
+.btn-outline-info {
+    border-color: #17a2b8;
+    color: #17a2b8;
+}
+
+.btn-outline-info:hover {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de);
+    color: white;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
+    color: white;
+}
+
 /* Responsive untuk mobile */
 @media (max-width: 576px) {
     .table thead th {
-        font-size: 0.65rem;
-        padding: 0.5rem 0.2rem;
+        font-size: 0.75rem;
+        padding: 0.6rem 0.3rem;
     }
 
     .table tbody td {
-        font-size: 0.7rem;
-        padding: 0.5rem 0.2rem;
+        font-size: 0.8rem;
+        padding: 0.6rem 0.3rem;
     }
 
-    .btn-outline-primary,
-    .btn-outline-info,
-    .btn-outline-danger {
-        padding: 0.2rem 0.3rem;
-        font-size: 0.6rem;
+    .filter-card {
+        padding: 0.75rem;
+    }
+
+    .filter-card .form-label {
+        font-size: 0.8rem;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select,
+    .filter-card .btn {
+        font-size: 0.8rem;
+        min-height: 38px;
     }
 }
 
@@ -666,6 +757,20 @@ select.kavling-form-control {
 .mdi {
     vertical-align: middle;
 }
+
+/* Styling untuk tombol reset icon-only */
+.btn-icon-only {
+    width: 40px;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only i {
+    font-size: 1.2rem;
+    margin: 0;
+}
 </style>
 
 <div class="container-fluid p-4">
@@ -673,15 +778,20 @@ select.kavling-form-control {
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h3 class="text-dark fw-bold mb-1">
-                        <i class="mdi mdi-pencil-ruler me-2" style="color: #9a55ff;"></i>
-                        Buat Kavling / Master Unit
-                    </h3>
-                    <p class="text-muted mb-0">
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Buat unit-unit kavling dari tanah yang sudah diverifikasi
-                    </p>
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-1 fw-bold text-dark">
+                            <i class="mdi mdi-pencil-ruler me-2" style="color: #9a55ff;"></i>
+                            Buat Kavling / Master Unit
+                        </h4>
+                        <p class="mb-0 text-muted small">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Buat unit-unit kavling dari tanah yang sudah diverifikasi
+                        </p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-pencil-ruler" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1073,7 +1183,137 @@ select.kavling-form-control {
                     <span class="badge badge-primary"><i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit</span>
                 </div>
                 <div class="card-body">
-                    <!-- Tabel Data - TANPA FILTER -->
+                    <!-- Filter Section - SAMA PERSIS DENGAN PROPERTI -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="filter-card">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                    </h6>
+
+                                    <!-- FILTER UNTUK MOBILE -->
+                                    <div class="d-block d-md-none">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                            </label>
+                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari blok/unit...">
+                                        </div>
+
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
+                                                </label>
+                                                <select id="filterTypeMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach($land->units->pluck('type')->unique() as $type)
+                                                        @if($type)
+                                                            <option value="{{ $type }}">{{ $type }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-map-marker me-1"></i>Posisi
+                                                </label>
+                                                <select id="filterPosisiMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach($land->units->pluck('position')->unique() as $position)
+                                                        @if($position)
+                                                            <option value="{{ $position }}">{{ $position }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-2 mt-2">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showDataMobile" class="form-control">
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
+                                                    <i class="mdi mdi-refresh me-1"></i> Reset
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                    <div class="d-none d-md-block">
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-md-3">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" id="searchInput" class="form-control" placeholder="Cari blok/unit...">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
+                                                </label>
+                                                <select id="filterType" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach($land->units->pluck('type')->unique() as $type)
+                                                        @if($type)
+                                                            <option value="{{ $type }}">{{ $type }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-map-marker me-1"></i>Posisi
+                                                </label>
+                                                <select id="filterPosisi" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach($land->units->pluck('position')->unique() as $position)
+                                                        @if($position)
+                                                            <option value="{{ $position }}">{{ $position }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showData" class="form-control">
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset Filter">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <!-- Kolom kosong untuk menjaga keseimbangan -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Data -->
                     <div class="table-responsive">
                         <table id="tableKavling" class="table table-hover" style="width:100%">
                             <thead>
@@ -1176,7 +1416,6 @@ select.kavling-form-control {
                                         </td>
                                     </tr>
                                 @empty
-                                    {{-- BARIS KOSONG DENGAN 9 KOLOM --}}
                                     <tr>
                                         <td class="text-center fw-bold">-</td>
                                         <td>-</td>
@@ -1405,18 +1644,84 @@ $(document).ready(function() {
     // Inisialisasi DataTables - hanya untuk sorting
     let table = $('#tableKavling').DataTable({
         responsive: true,
-        paging: false,        // Matikan pagination DataTables
-        info: false,           // Matikan info
-        searching: false,      // Matikan search bawaan
-        lengthChange: false,   // Matikan length change
-        ordering: true,        // Aktifkan sorting saja
+        paging: false,
+        info: false,
+        searching: false,
+        lengthChange: false,
+        ordering: true,
         language: {
             emptyTable: "Belum ada unit kavling",
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
-            { orderable: false, targets: [0, 8] } // Non-aktifkan sorting untuk kolom No dan Aksi
+            { orderable: false, targets: [0, 8] }
         ]
+    });
+
+    // Fungsi filter manual
+    function filterData() {
+        let searchTerm = '';
+        let typeFilter = '';
+        let posisiFilter = '';
+
+        // Deteksi versi filter yang aktif
+        if ($('#searchInputMobile').is(':visible')) {
+            searchTerm = $('#searchInputMobile').val().toLowerCase();
+            typeFilter = $('#filterTypeMobile').val().toLowerCase();
+            posisiFilter = $('#filterPosisiMobile').val().toLowerCase();
+        } else {
+            searchTerm = $('#searchInput').val().toLowerCase();
+            typeFilter = $('#filterType').val().toLowerCase();
+            posisiFilter = $('#filterPosisi').val().toLowerCase();
+        }
+
+        // Filter menggunakan DataTables
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                let blok = data[1] ? data[1].toLowerCase() : '';
+                let type = data[4] ? data[4].toLowerCase() : '';
+                let posisi = data[7] ? data[7].toLowerCase() : '';
+
+                let matchSearch = searchTerm === '' || blok.includes(searchTerm);
+                let matchType = typeFilter === '' || type.includes(typeFilter);
+                let matchPosisi = posisiFilter === '' || posisi.includes(posisiFilter);
+
+                return matchSearch && matchType && matchPosisi;
+            }
+        );
+
+        table.draw();
+        $.fn.dataTable.ext.search.pop();
+    }
+
+    // Event listener untuk filter
+    $('#searchInput, #searchInputMobile').on('keyup', filterData);
+    $('#filterType, #filterTypeMobile').on('change', filterData);
+    $('#filterPosisi, #filterPosisiMobile').on('change', filterData);
+
+    // Fungsi reset filter
+    function resetFilters() {
+        if ($('#searchInputMobile').is(':visible')) {
+            $('#searchInputMobile').val('');
+            $('#filterTypeMobile').val('');
+            $('#filterPosisiMobile').val('');
+        } else {
+            $('#searchInput').val('');
+            $('#filterType').val('');
+            $('#filterPosisi').val('');
+        }
+
+        $.fn.dataTable.ext.search.pop();
+        table.search('').columns().search('').draw();
+    }
+
+    // Event listener untuk reset
+    $('#resetFilter, #resetFilterMobile').click(resetFilters);
+
+    // Fungsi untuk mengubah jumlah baris (UI only)
+    $('#showData, #showDataMobile').change(function() {
+        let rowCount = $(this).val();
+        alert('Mengubah tampilan menjadi ' + rowCount + ' data per halaman (demo)');
     });
 
     // Format Rupiah untuk input harga
