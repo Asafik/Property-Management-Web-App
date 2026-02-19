@@ -49,6 +49,7 @@ class SellUnitController extends Controller
       'agencies'
     ));
   }
+  
   public function setCustomer(Request $request, $unitId)
   {
     $unit = LandBankUnit::findOrFail($unitId);

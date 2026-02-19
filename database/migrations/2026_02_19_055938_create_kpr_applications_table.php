@@ -12,7 +12,10 @@ return new class extends Migration
             $table->id();
 
             // RELASI
-            $table->foreignId('land_bank_units_id')->constrained()->cascadeOnDelete();
+           $table->foreignId('unit_id')
+      ->constrained('land_bank_units')
+      ->cascadeOnDelete();
+
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->foreignId('banks_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('sales_id')->nullable()->constrained('employees')->nullOnDelete();

@@ -37,7 +37,7 @@ class KprApplication extends Model
 
     public function bank()
     {
-        return $this->belongsTo(Bank::class);
+        return $this->belongsTo(Banks::class);
     }
 
     public function sales()

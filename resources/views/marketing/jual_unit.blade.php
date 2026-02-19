@@ -489,13 +489,16 @@
                                         <td>{{ $c->job_status ?? 'Masih Kosong' }}</td>
                                         <td>
 
-                                            <form method="POST" action="{{ route('set.customer', $unit->id) }}">
-                                                @csrf
-                                                <input type="hidden" name="customer_id" value="{{ $c->id }}">
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    Pilih
-                                                </button>
-                                            </form>
+                                            @foreach ($units as $unit)
+                                                <form method="POST" action="{{ route('set.customer', $unit->id) }}">
+                                                    @csrf
+                                                    <input type="hidden" name="customer_id"
+                                                        value="{{ $c->id }}">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        Pilih
+                                                    </button>
+                                                </form>
+                                            @endforeach
 
 
 
