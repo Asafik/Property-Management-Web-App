@@ -721,16 +721,27 @@ h3.text-dark {
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Pagination Laravel -->
+                    <!-- Pagination -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="text-muted small mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan {{ $lands->firstItem() }} - {{ $lands->lastItem() }} dari {{ $lands->total() }} data
+                            Menampilkan 1-8 dari 156 data
                         </div>
-                        <div class="d-flex justify-content-center">
-                            {{ $lands->links() }}
-                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previus</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
