@@ -51,7 +51,6 @@
                     <div class="pengajuan-card-body">
                         <form class="pengajuan-form-sample" method="POST" action="{{ route('pengajuans.store') }}"
                             enctype="multipart/form-data">
-
                             @csrf
 
                             <!-- Alert Info -->
@@ -63,41 +62,33 @@
                             </div>
 
                             <!-- Search Customer -->
-                            <!-- Search Customer -->
                             <div class="pengajuan-form-group" style="position: relative;">
-
-                                <label for="searchCustomer">
-                                    Cari Customer
-                                    <span class="pengajuan-text-danger">*</span>
-                                </label>
-
+                                <label for="searchCustomer">Cari Customer <span
+                                        class="pengajuan-text-danger">*</span></label>
                                 <div class="pengajuan-search-wrapper">
                                     <i class="mdi mdi-magnify pengajuan-search-icon"></i>
                                     <input type="text" class="pengajuan-search-input" id="searchCustomer"
                                         placeholder="Cari customer..." autocomplete="off">
                                 </div>
 
-                                <!-- Hidden ID untuk dikirim ke server -->
+                                <!-- Hidden inputs -->
                                 <input type="hidden" name="customer_id" id="customer_id">
+                                <input type="hidden" name="unit_id" id="unit_id">
+                                <input type="hidden" name="marketing_id"
+                                    value="{{ session('employee_id') }}">
 
                                 <!-- Dropdown hasil pencarian -->
                                 <div id="customerResults" class="pengajuan-search-results"></div>
-
-                                <small class="pengajuan-text-muted">
-                                    Ketik nama, NIK, atau unit
-                                </small>
-
+                                <small class="pengajuan-text-muted">Ketik nama, NIK, atau unit</small>
                             </div>
-
 
                             <hr class="pengajuan-hr">
 
+                            <!-- Detail Unit yang Dibooking -->
                             <div class="pengajuan-section-title">
                                 <i class="mdi mdi-home-city"></i>
                                 Detail Unit yang Dibooking
                             </div>
-
-                            <!-- Info Unit -->
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
@@ -128,9 +119,9 @@
                                 </div>
                             </div>
 
-
                             <hr class="pengajuan-hr">
 
+                            <!-- Data Pengajuan KPR -->
                             <div class="pengajuan-section-title">
                                 <i class="mdi mdi-bank"></i>
                                 Data Pengajuan KPR
@@ -138,11 +129,9 @@
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <!-- Pilih Bank -->
                                     <div class="pengajuan-form-group">
-                                        <label for="bank">Bank Tujuan <span
-                                                class="pengajuan-text-danger">*</span></label>
-                                        <select class="pengajuan-form-control" id="bank" name="bank" required>
+                                        <label>Bank Tujuan <span class="pengajuan-text-danger">*</span></label>
+                                        <select class="pengajuan-form-control" name="bank" required>
                                             <option value="">-- Pilih Bank --</option>
                                             <option>Bank ABC Syariah</option>
                                             <option>Bank Mandiri</option>
@@ -158,10 +147,9 @@
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <!-- Produk KPR -->
                                     <div class="pengajuan-form-group">
-                                        <label for="produkKpr">Produk KPR</label>
-                                        <select class="pengajuan-form-control" id="produkKpr" name="produkKpr">
+                                        <label>Produk KPR</label>
+                                        <select class="pengajuan-form-control" name="produkKpr">
                                             <option>KPR Subsidi</option>
                                             <option>KPR Non Subsidi</option>
                                             <option>KPR Syariah</option>
@@ -174,37 +162,31 @@
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <!-- Jumlah Pinjaman -->
                                     <div class="pengajuan-form-group">
-                                        <label for="jumlahPinjaman">Jumlah Pinjaman <span
-                                                class="pengajuan-text-danger">*</span></label>
+                                        <label>Jumlah Pinjaman <span class="pengajuan-text-danger">*</span></label>
                                         <div class="pengajuan-input-group">
-                                            <div class="pengajuan-input-group-prepend">
-                                                <span class="pengajuan-input-group-text">Rp</span>
-                                            </div>
-                                            <input type="text" class="pengajuan-form-control" id="jumlahPinjaman"
-                                                name="jumlahPinjaman" placeholder="360.000.000" value="360.000.000"
-                                                required>
+                                            <div class="pengajuan-input-group-prepend"><span
+                                                    class="pengajuan-input-group-text">Rp</span></div>
+                                            <input type="text" class="pengajuan-form-control" name="jumlahPinjaman"
+                                                placeholder="360.000.000" value="360.000.000" required>
                                         </div>
                                         <small class="pengajuan-text-muted">Maksimal 80%</small>
                                     </div>
                                 </div>
+
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <!-- Uang Muka (DP) -->
                                     <div class="pengajuan-form-group">
                                         <label>Uang Muka (DP)</label>
                                         <div class="pengajuan-input-group">
-                                            <div class="pengajuan-input-group-prepend">
-                                                <span class="pengajuan-input-group-text">Rp</span>
-                                            </div>
-                                            <input type="text" class="pengajuan-form-control" id="uangMuka"
-                                                name="down_payment" required>
+                                            <div class="pengajuan-input-group-prepend"><span
+                                                    class="pengajuan-input-group-text">Rp</span></div>
+                                            <input type="text" class="pengajuan-form-control" name="down_payment"
+                                                id="uangMuka" required>
                                         </div>
                                     </div>
-
                                 </div>
+
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <!-- Tenor -->
                                     <div class="pengajuan-form-group">
                                         <label>Tenor</label>
                                         <select class="pengajuan-form-control" name="installment_duration" required>
@@ -215,176 +197,93 @@
                                             <option value="20">20 Tahun</option>
                                         </select>
                                     </div>
-
                                 </div>
                             </div>
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <!-- Suku Bunga -->
                                     <div class="pengajuan-form-group">
-                                        <label for="bunga">Suku Bunga (%)</label>
+                                        <label>Suku Bunga (%)</label>
                                         <div class="pengajuan-input-group">
-                                            <input type="text" class="pengajuan-form-control" id="bunga"
-                                                name="bunga" placeholder="7.5" value="7.5">
-                                            <div class="pengajuan-input-group-prepend">
-                                                <span class="pengajuan-input-group-text">%</span>
-                                            </div>
+                                            <input type="text" class="pengajuan-form-control" name="bunga"
+                                                placeholder="7.5" value="7.5">
+                                            <div class="pengajuan-input-group-prepend"><span
+                                                    class="pengajuan-input-group-text">%</span></div>
                                         </div>
                                         <small class="pengajuan-text-muted">Per tahun</small>
                                     </div>
                                 </div>
+
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <!-- Estimasi Angsuran -->
                                     <div class="pengajuan-form-group">
                                         <label>Estimasi Angsuran</label>
                                         <div class="pengajuan-input-group">
-                                            <div class="pengajuan-input-group-prepend">
-                                                <span class="pengajuan-input-group-text">Rp</span>
-                                            </div>
-                                            <input type="text" class="pengajuan-form-control" id="angsuran"
-                                                name="monthly_installment">
+                                            <div class="pengajuan-input-group-prepend"><span
+                                                    class="pengajuan-input-group-text">Rp</span></div>
+                                            <input type="text" class="pengajuan-form-control"
+                                                name="monthly_installment" id="angsuran">
                                         </div>
                                     </div>
-
                                 </div>
+
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <!-- Status Pekerjaan -->
                                     <div class="pengajuan-form-group">
-                                        <label for="statusPekerjaan">Status Pekerjaan</label>
-                                        <input type="text" class="pengajuan-form-control" id="statusPekerjaan"
-                                            name="statusPekerjaan" value="Karyawan Swasta">
+                                        <label>Status Pekerjaan</label>
+                                        <input type="text" class="pengajuan-form-control" name="statusPekerjaan"
+                                            value="Karyawan Swasta">
                                     </div>
                                 </div>
                             </div>
 
                             <hr class="pengajuan-hr">
 
-                            <div class="pengajuan-section-title">
-                                <i class="mdi mdi-file-document"></i>
-                                Upload Dokumen Pendukung
-                            </div>
+                            <!-- Upload Dokumen -->
+                            <div class="pengajuan-section-title"><i class="mdi mdi-file-document"></i> Upload Dokumen
+                                Pendukung</div>
                             <p class="pengajuan-text-muted small mb-3">Dokumen tambahan untuk pengajuan KPR</p>
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="slipGaji">Slip Gaji (3 bulan) <span
-                                                class="pengajuan-text-danger">*</span></label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="slipGaji" name="slipGaji"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload Slip Gaji</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label>Slip Gaji (3 bulan) <span class="pengajuan-text-danger">*</span></label>
+                                    <input type="file" name="slipGaji" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="rekening">Rekening Tabungan (3 bulan) <span
-                                                class="pengajuan-text-danger">*</span></label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="rekening" name="rekening"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload Rekening</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label>Rekening Tabungan (3 bulan) <span class="pengajuan-text-danger">*</span></label>
+                                    <input type="file" name="rekening" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                             </div>
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="npwp">NPWP</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="npwp" name="npwp"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload NPWP</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label>NPWP</label>
+                                    <input type="file" name="npwp" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="sku">Surat Keterangan Usaha</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="sku" name="sku"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload SKU</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label>Surat Keterangan Usaha</label>
+                                    <input type="file" name="sku" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                             </div>
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="suratNikah">Surat Nikah</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="suratNikah" name="suratNikah"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload Surat Nikah</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label>Surat Nikah</label>
+                                    <input type="file" name="suratNikah" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="ktpPasangan">KTP Pasangan</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="ktpPasangan" name="ktpPasangan"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload KTP Pasangan</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label>KTP Pasangan</label>
+                                    <input type="file" name="ktpPasangan" accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                             </div>
 
                             <hr class="pengajuan-hr">
 
-                            <!-- Catatan Tambahan -->
                             <div class="pengajuan-form-group">
-                                <label for="catatan" class="pengajuan-text-primary">Catatan Tambahan</label>
-                                <textarea class="pengajuan-form-control" id="catatan" name="catatan" rows="2"
+                                <label>Catatan Tambahan</label>
+                                <textarea class="pengajuan-form-control" name="catatan" rows="2"
                                     placeholder="Contoh: Penghasilan tambahan..."></textarea>
                             </div>
 
-                            <!-- Info Marketing -->
-                            <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-start gap-3 mb-4"
-                                role="alert">
+                            <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-start gap-3 mb-4">
                                 <i class="mdi mdi-account-tie" style="font-size: 24px;"></i>
                                 <div>
                                     <strong>Ditangani oleh:</strong> Ahmad Rizki (Marketing Officer)<br>
@@ -392,109 +291,75 @@
                                 </div>
                             </div>
 
-                            <!-- Tombol Aksi -->
                             <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-                                <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
-                                    <a href="{{ url('/marketing/kpr') }}"
-                                        class="pengajuan-btn pengajuan-btn-outline-secondary flex-grow-1 flex-sm-grow-0">
-                                        <i class="mdi mdi-arrow-left me-1"></i>Kembali
-                                    </a>
-                                    <button type="reset"
-                                        class="pengajuan-btn pengajuan-btn-secondary flex-grow-1 flex-sm-grow-0">
-                                        <i class="mdi mdi-refresh me-1"></i>Reset
-                                    </button>
-                                </div>
-                                <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto justify-content-end">
-                                    <button type="button"
-                                        class="pengajuan-btn pengajuan-btn-outline-primary flex-grow-1 flex-sm-grow-0">
-                                        <i class="mdi mdi-content-save me-1"></i>Simpan Draft
-                                    </button>
-                                    <button type="submit"
-                                        class="pengajuan-btn pengajuan-btn-primary flex-grow-1 flex-sm-grow-0">
-                                        <i class="mdi mdi-send me-1"></i>Submit
-                                    </button>
-
-                                </div>
+                                <a href="{{ url('/marketing/kpr') }}"
+                                    class="pengajuan-btn pengajuan-btn-outline-secondary">Kembali</a>
+                                <button type="submit" class="pengajuan-btn pengajuan-btn-primary">Submit</button>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
     @push('scripts')
-        <script>
-            $('#searchCustomer').on('keyup', function() {
+ <script>
+$('#searchCustomer').on('keyup', function() {
+    let keyword = $(this).val();
+    if (keyword.length < 2) {
+        $('#customerResults').hide();
+        return;
+    }
 
-                let keyword = $(this).val();
-
-                if (keyword.length < 2) {
-                    $('#customerResults').hide();
-                    return;
-                }
-
-                $.ajax({
-                    url: "{{ route('pengajuan.search-customer') }}",
-                    type: "GET",
-                    data: {
-                        keyword: keyword
-                    },
-                    success: function(data) {
-
-                        let html = '';
-
-                        if (data.length > 0) {
-
-                            data.forEach(function(item) {
-                                html += `
-                        <div class="result-item" 
-                             data-id="${item.id}"
-                             data-name="${item.full_name}"
-                             data-unit="${item.units ? item.units[0].type : ''}"
-                             data-block="${item.units ? item.units[0].unit_code : ''}"
-                             data-price="${item.units ? item.units[0].price : ''}"
-                             data-status="${item.units ? item.units[0].status : ''}">
-                            ${item.full_name} - ${item.nik}
-                        </div>
-                    `;
-                            });
-
-                            $('#customerResults').html(html).show();
-
-                        } else {
-                            $('#customerResults').html('<div class="p-2">Tidak ditemukan</div>').show();
-                        }
-                    }
+    $.ajax({
+        url: "{{ route('pengajuan.search-customer') }}",
+        type: "GET",
+        data: { keyword: keyword },
+        success: function(data) {
+            let html = '';
+            if (data.length > 0) {
+                data.forEach(function(item) {
+                    let unit = item.units ? item.units[0] : null;
+                    html += `
+                    <div class="result-item" 
+                         data-id="${item.id}"
+                         data-name="${item.full_name}"
+                         data-unit="${unit ? unit.type : ''}"
+                         data-block="${unit ? unit.unit_code : ''}"
+                         data-price="${unit ? unit.price : ''}"
+                         data-status="${unit ? unit.status : ''}"
+                         data-unit-id="${unit ? unit.id : ''}">
+                        ${item.full_name} - ${item.nik}
+                    </div>`;
                 });
-            });
+                $('#customerResults').html(html).show();
+            } else {
+                $('#customerResults').html('<div class="p-2">Tidak ditemukan</div>').show();
+            }
+        }
+    });
+});
 
-            $(document).on('click', '.result-item', function() {
+$(document).on('click', '.result-item', function() {
+    let id = $(this).data('id');
+    let name = $(this).data('name');
+    let unit = $(this).data('unit');
+    let block = $(this).data('block');
+    let price = $(this).data('price');
+    let status = $(this).data('status');
+    let unitId = $(this).data('unit-id');
 
-                let id = $(this).data('id');
-                let name = $(this).data('name');
-                let unit = $(this).data('unit');
-                let block = $(this).data('block');
-                let price = $(this).data('price');
-                let status = $(this).data('status');
+    $('#searchCustomer').val(name);
+    $('#customer_id').val(id);
+    $('#unit_id').val(unitId);
+    $('#unit_name').val(unit);
+    $('#unit_block').val(block);
+    $('#unit_price').val(new Intl.NumberFormat('id-ID').format(price));
+    $('#booking_status').val(status);
+    $('#customerResults').hide();
+});
+</script>
 
-                $('#searchCustomer').val(name);
-                $('#customer_id').val(id);
-
-                $('#unit_name').val(unit);
-                $('#unit_block').val(block);
-                $('#unit_price').val(new Intl.NumberFormat('id-ID').format(price));
-                $('#booking_status').val(status);
-
-                $('#customerResults').hide();
-            });
-            / Bersihkan format titik sebelum submit
-            $('form').on('submit', function() {
-                let dp = $('input[name="down_payment"]').val();
-                let angsuran = $('input[name="monthly_installment"]').val();
-
-                if (dp) $('input[name="down_payment"]').val(dp.replace(/\./g, ''));
-                if (angsuran) $('input[name="monthly_installment"]').val(angsuran.replace(/\./g, ''));
-            });
-        </script>
     @endpush
 @endsection
