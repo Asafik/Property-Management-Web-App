@@ -68,12 +68,50 @@
     }
 }
 
+/* ===== FILTER SECTION - DIPERBESAR ===== */
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.filter-card .card-body {
+    padding: 1rem !important;
+}
+
+.filter-card .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.3px;
+}
+
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    height: auto;
+    min-height: 40px;
+    border: 1px solid #e0e4e9;
+}
+
+.filter-card .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    min-height: 40px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
 /* Form Controls */
 .form-control, .form-select {
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 0.4rem 0.6rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
@@ -82,8 +120,8 @@
 
 @media (min-width: 576px) {
     .form-control, .form-select {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
         border-radius: 10px;
     }
 }
@@ -96,19 +134,19 @@
 
 /* Form Label */
 .form-label {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: #9a55ff !important;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.3rem;
     letter-spacing: 0.3px;
     font-family: 'Nunito', sans-serif;
 }
 
 /* Button Styling */
 .btn {
-    font-size: 0.7rem;
-    padding: 0.35rem 0.6rem;
-    border-radius: 6px;
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
     font-family: 'Nunito', sans-serif;
@@ -117,9 +155,9 @@
 
 @media (min-width: 576px) {
     .btn {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.75rem;
-        border-radius: 8px;
+        font-size: 0.9rem;
+        padding: 0.7rem 1.2rem;
+        border-radius: 10px;
     }
 }
 
@@ -129,9 +167,9 @@
 }
 
 .btn-sm {
-    padding: 0.2rem 0.4rem;
-    font-size: 0.65rem;
-    border-radius: 4px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
 }
 
 /* Gradient Buttons */
@@ -169,10 +207,24 @@
     color: #ffffff !important;
 }
 
+/* Outline Buttons */
+.btn-outline-primary {
+    background: transparent;
+    border: 1px solid #9a55ff;
+    color: #9a55ff;
+    padding: 0.4rem 0.75rem;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    color: #ffffff;
+    border-color: transparent;
+}
+
 /* Badge Styling */
 .badge {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.6rem;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
     font-weight: 600;
     border-radius: 30px;
     display: inline-block;
@@ -181,21 +233,21 @@
 
 @media (min-width: 576px) {
     .badge {
-        padding: 0.3rem 0.5rem;
-        font-size: 0.65rem;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
     }
 }
 
 @media (min-width: 768px) {
     .badge {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.7rem;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.85rem;
     }
 }
 
 .badge-sm {
-    padding: 0.2rem 0.3rem;
-    font-size: 0.55rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
 }
 
 .badge-gradient-success {
@@ -236,59 +288,59 @@
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
     color: #9a55ff;
     font-weight: 600;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 2px solid #e9ecef;
-    padding: 0.6rem 0.25rem;
+    padding: 0.8rem 0.5rem;
     white-space: nowrap;
 }
 
 @media (min-width: 576px) {
     .table thead th {
-        font-size: 0.75rem;
-        padding: 0.7rem 0.4rem;
+        font-size: 0.85rem;
+        padding: 0.9rem 0.6rem;
     }
 }
 
 @media (min-width: 768px) {
     .table thead th {
-        font-size: 0.8rem;
-        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+        padding: 1rem 0.75rem;
     }
 }
 
 /* Kolom No - lebih rapat */
 .table thead th:first-child {
-    padding-left: 0.5rem;
-    width: 45px;
+    padding-left: 0.75rem;
+    width: 60px;
 }
 
 .table tbody td:first-child {
-    padding-left: 0.5rem;
+    padding-left: 0.75rem;
     font-weight: 500;
-    width: 45px;
+    width: 60px;
 }
 
 .table tbody td {
     vertical-align: middle;
-    font-size: 0.75rem;
-    padding: 0.6rem 0.25rem;
+    font-size: 0.85rem;
+    padding: 0.8rem 0.5rem;
     border-bottom: 1px solid #e9ecef;
     color: #2c2e3f;
 }
 
 @media (min-width: 576px) {
     .table tbody td {
-        font-size: 0.8rem;
-        padding: 0.7rem 0.4rem;
+        font-size: 0.9rem;
+        padding: 0.9rem 0.6rem;
     }
 }
 
 @media (min-width: 768px) {
     .table tbody td {
-        font-size: 0.85rem;
-        padding: 0.8rem 0.5rem;
+        font-size: 0.95rem;
+        padding: 1rem 0.75rem;
     }
 }
 
@@ -298,16 +350,16 @@
 
 /* Nama properti - lebih rapat dengan nomor */
 .table tbody td:nth-child(2) {
-    padding-left: 0.15rem;
+    padding-left: 0.3rem;
 }
 
 .table tbody td .d-flex.align-items-center {
-    gap: 0.25rem;
+    gap: 0.5rem;
 }
 
 /* Icon dalam tabel */
 .table tbody td i {
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 /* Text colors */
@@ -319,33 +371,37 @@
 .fw-bold { font-weight: 600 !important; }
 .text-muted { color: #a5b3cb !important; }
 
-/* Pagination Styling */
+/* ===== PAGINATION STYLING - DIPERKECIL ===== */
 .pagination {
     margin: 0;
-    gap: 2px;
+    gap: 3px;
 }
 
 .page-item .page-link {
     border: 1px solid #e9ecef;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
     color: #6c7383;
     background-color: #ffffff;
     border-radius: 6px !important;
     transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
 }
 
 @media (min-width: 576px) {
     .page-item .page-link {
         padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
+        min-width: 36px;
     }
 }
 
 @media (min-width: 768px) {
     .page-item .page-link {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
     }
 }
 
@@ -363,33 +419,44 @@
     transform: translateY(-1px);
 }
 
+/* Info text pagination */
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
+}
+
 /* Typography */
 h3.text-dark,
 h4.text-dark {
-    font-size: 1.1rem !important;
+    font-size: 1.3rem !important;
     font-weight: 700;
     color: #2c2e3f !important;
-    margin-bottom: 0.25rem !important;
+    margin-bottom: 0.5rem !important;
 }
 
 @media (min-width: 576px) {
     h3.text-dark,
     h4.text-dark {
-        font-size: 1.2rem !important;
+        font-size: 1.5rem !important;
     }
 }
 
 @media (min-width: 768px) {
     h3.text-dark,
     h4.text-dark {
-        font-size: 1.3rem !important;
-    }
-}
-
-@media (min-width: 992px) {
-    h3.text-dark,
-    h4.text-dark {
-        font-size: 1.5rem !important;
+        font-size: 1.7rem !important;
     }
 }
 
@@ -467,29 +534,49 @@ input, select, textarea, button {
 /* Responsive untuk mobile */
 @media (max-width: 576px) {
     .table thead th {
-        font-size: 0.65rem;
-        padding: 0.5rem 0.2rem;
+        font-size: 0.75rem;
+        padding: 0.6rem 0.3rem;
     }
 
     .table tbody td {
-        font-size: 0.7rem;
-        padding: 0.5rem 0.2rem;
+        font-size: 0.8rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    .filter-card {
+        padding: 0.75rem;
+    }
+
+    .filter-card .form-label {
+        font-size: 0.8rem;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select,
+    .filter-card .btn {
+        font-size: 0.8rem;
+        min-height: 38px;
+    }
+
+    h3.text-dark,
+    h4.text-dark {
+        font-size: 1.2rem !important;
     }
 }
 
 /* Badge dengan icon */
 .badge i {
-    font-size: 0.7rem;
-    margin-right: 2px;
+    font-size: 0.8rem;
+    margin-right: 4px;
 }
 
 /* ===== ACTION BUTTONS DENGAN TEXT ===== */
 .action-text {
     display: inline-block;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    border-radius: 4px;
+    border-radius: 6px;
     text-decoration: none;
     white-space: nowrap;
 }
@@ -555,6 +642,20 @@ input, select, textarea, button {
 .mdi {
     vertical-align: middle;
 }
+
+/* Styling untuk tombol reset icon-only */
+.btn-icon-only {
+    width: 40px;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only i {
+    font-size: 1.2rem;
+    margin: 0;
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -592,6 +693,146 @@ input, select, textarea, button {
                     </h4>
                 </div>
                 <div class="card-body">
+                    <!-- Filter Section - DIPERBESAR -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="filter-card">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                    </h6>
+
+                                    <!-- FILTER UNTUK MOBILE -->
+                                    <div class="d-block d-md-none">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                            </label>
+                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari nama properti...">
+                                        </div>
+
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                </label>
+                                                <select id="filterKategoriMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="Rumah">Rumah</option>
+                                                    <option value="Apartemen">Apartemen</option>
+                                                    <option value="Ruko">Ruko</option>
+                                                    <option value="Tanah">Tanah</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-gavel me-1"></i>Legalitas
+                                                </label>
+                                                <select id="filterLegalitasMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="terverifikasi">Terverifikasi</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="revisi">Revisi</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-2 mt-2">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-hammer me-1"></i>Pembangunan
+                                                </label>
+                                                <select id="filterPembangunanMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="Selesai">Selesai</option>
+                                                    <option value="progress">Progress</option>
+                                                    <option value="Belum">Belum</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showDataMobile" class="form-control">
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                    <div class="d-none d-md-block">
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-md-3">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" id="searchInput" class="form-control" placeholder="Cari nama properti...">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                </label>
+                                                <select id="filterKategori" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="Rumah">Rumah</option>
+                                                    <option value="Apartemen">Apartemen</option>
+                                                    <option value="Ruko">Ruko</option>
+                                                    <option value="Tanah">Tanah</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-gavel me-1"></i>Legalitas
+                                                </label>
+                                                <select id="filterLegalitas" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="terverifikasi">Terverifikasi</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="revisi">Revisi</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-hammer me-1"></i>Pembangunan
+                                                </label>
+                                                <select id="filterPembangunan" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="Selesai">Selesai</option>
+                                                    <option value="progress">Progress</option>
+                                                    <option value="Belum">Belum</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showData" class="form-control">
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset Filter">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!-- Kolom kosong untuk menjaga keseimbangan -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Tabel Data -->
                     <div class="table-responsive">
                         <table id="tableProperti" class="table table-hover" style="width:100%">
@@ -612,13 +853,13 @@ input, select, textarea, button {
                                 @foreach ($landBanks as $index => $item)
                                     <tr>
                                         <td class="text-center fw-bold">
-                                            <span class="badge bg-light text-dark">{{ $landBanks->firstItem() + $index }}</span>
+                                            <span class="badge bg-light text-dark">{{ $index + 1 }}</span>
                                         </td>
 
                                         {{-- NAMA PROPERTI --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home-variant text-primary me-1" style="font-size: 0.9rem;"></i>
+                                                <i class="mdi mdi-home-variant text-primary me-2" style="font-size: 1rem;"></i>
                                                 <span class="fw-bold">{{ Str::limit($item->name, 25) }}</span>
                                             </div>
                                             <small class="text-muted d-block d-md-none">
@@ -630,15 +871,15 @@ input, select, textarea, button {
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 @if(($item->zoning ?? 'Tanah') == 'Rumah')
-                                                    <i class="mdi mdi-home-city text-info me-1" style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-home-city text-info me-2" style="font-size: 1rem;"></i>
                                                 @elseif(($item->zoning ?? 'Tanah') == 'Apartemen')
-                                                    <i class="mdi mdi-office-building text-info me-1" style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-office-building text-info me-2" style="font-size: 1rem;"></i>
                                                 @elseif(($item->zoning ?? 'Tanah') == 'Ruko')
-                                                    <i class="mdi mdi-store text-info me-1" style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-store text-info me-2" style="font-size: 1rem;"></i>
                                                 @elseif(($item->zoning ?? 'Tanah') == 'Tanah')
-                                                    <i class="mdi mdi-terrain text-info me-1" style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-terrain text-info me-2" style="font-size: 1rem;"></i>
                                                 @else
-                                                    <i class="mdi mdi-shape-outline text-info me-1" style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-shape-outline text-info me-2" style="font-size: 1rem;"></i>
                                                 @endif
                                                 <span>{{ $item->zoning ?? 'Tanah' }}</span>
                                             </div>
@@ -647,7 +888,7 @@ input, select, textarea, button {
                                         {{-- LOKASI --}}
                                         <td class="d-none d-md-table-cell">
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-map-marker text-danger me-1" style="font-size: 0.9rem;"></i>
+                                                <i class="mdi mdi-map-marker text-danger me-2" style="font-size: 1rem;"></i>
                                                 <span>{{ Str::limit($item->address ?? '-', 20) }}</span>
                                             </div>
                                         </td>
@@ -655,7 +896,7 @@ input, select, textarea, button {
                                         {{-- HARGA BELI --}}
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
+                                                <i class="mdi mdi-currency-usd text-success me-2" style="font-size: 1rem;"></i>
                                                 <span class="text-nowrap fw-bold text-success">Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}</span>
                                             </div>
                                         </td>
@@ -827,19 +1068,41 @@ input, select, textarea, button {
                         </table>
                     </div>
 
-                    <!-- Pagination Laravel -->
+                    <!-- Pagination UI - DIPERKECIL -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                        <div class="text-muted small mb-2 mb-sm-0">
+                        <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari {{ $landBanks->total() }} data
+                            Menampilkan 1-8 dari 156 data
                         </div>
-                        <div class="d-flex justify-content-center">
-                            {{ $landBanks->links() }}
-                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Info Tambahan untuk Mobile -->
+    <div class="text-muted small mt-2 d-block d-sm-none">
+        <i class="mdi mdi-information-outline me-1"></i>
+        Geser untuk melihat konten lainnya
     </div>
 </div>
 @endsection
@@ -869,27 +1132,7 @@ $(document).ready(function () {
         },
         columnDefs: [
             { orderable: false, targets: [0, 7, 8] } // Non-aktifkan sorting untuk kolom No, Dokumen, Aksi
-        ],
-        drawCallback: function(settings) {
-            // Re-inisialisasi tooltip Bootstrap
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            });
-        }
-    });
-
-    // Inisialisasi tooltip Bootstrap
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    });
-
-    // Konfirmasi sebelum verifikasi
-    $('.action-text-verify').on('click', function(e) {
-        if (!confirm('Apakah Anda yakin ingin memverifikasi properti ini?')) {
-            e.preventDefault();
-        }
+        ]
     });
 });
 </script>

@@ -369,33 +369,37 @@
 .fw-bold { font-weight: 600 !important; }
 .text-muted { color: #a5b3cb !important; }
 
-/* Pagination Styling */
+/* ===== PAGINATION STYLING - DIPERKECIL ===== */
 .pagination {
     margin: 0;
-    gap: 5px;
+    gap: 3px;
 }
 
 .page-item .page-link {
     border: 1px solid #e9ecef;
-    padding: 0.5rem 0.9rem;
-    font-size: 0.85rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
     color: #6c7383;
     background-color: #ffffff;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
 }
 
 @media (min-width: 576px) {
     .page-item .page-link {
-        padding: 0.6rem 1.1rem;
-        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 36px;
     }
 }
 
 @media (min-width: 768px) {
     .page-item .page-link {
-        padding: 0.7rem 1.3rem;
-        font-size: 0.95rem;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
     }
 }
 
@@ -411,6 +415,24 @@
     border-color: #9a55ff;
     color: #9a55ff;
     transform: translateY(-1px);
+}
+
+/* Info text pagination */
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
 }
 
 /* Typography */
@@ -779,16 +801,18 @@ h3.text-dark {
                         </table>
                     </div>
 
-                    <!-- Pagination -->
+                    <!-- Pagination UI - DIPERKECIL SEPERTI HALAMAN PROPERTI -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                        <div class="text-muted mb-2 mb-sm-0" style="font-size: 0.9rem;">
+                        <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
                             Menampilkan 1 dari 156 data
                         </div>
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                 <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">Previus</a>
+                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </a>
                                 </li>
                                 <li class="page-item active"><a class="page-link" href="#">1</a></li>
                                 <li class="page-item"><a class="page-link" href="#">2</a></li>
@@ -796,7 +820,9 @@ h3.text-dark {
                                 <li class="page-item"><a class="page-link" href="#">4</a></li>
                                 <li class="page-item"><a class="page-link" href="#">5</a></li>
                                 <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
@@ -832,12 +858,6 @@ $(document).ready(function() {
         columnDefs: [
             { orderable: false, targets: [0, 6] }
         ]
-    });
-
-    // Inisialisasi tooltip Bootstrap
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
     });
 });
 </script>
