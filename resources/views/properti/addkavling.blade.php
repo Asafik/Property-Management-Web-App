@@ -335,38 +335,6 @@ select.kavling-form-control {
     margin-top: 0.2rem;
 }
 
-/* ===== FILTER SECTION STYLING ===== */
-.filter-card {
-    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-    border-radius: 10px;
-    padding: 0.5rem;
-    margin-bottom: 0.75rem;
-}
-
-.filter-card .card-body {
-    padding: 0.5rem !important;
-}
-
-.filter-card .form-label {
-    font-size: 0.65rem;
-    margin-bottom: 0.1rem;
-}
-
-.filter-card .form-control,
-.filter-card .form-select {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.7rem;
-    border-radius: 6px;
-    height: auto;
-    min-height: 28px;
-}
-
-.filter-card .btn {
-    padding: 0.2rem 0.4rem;
-    font-size: 0.65rem;
-    min-height: 28px;
-}
-
 /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
 .card {
     transition: all 0.3s ease;
@@ -586,33 +554,37 @@ select.kavling-form-control {
     color: white;
 }
 
-/* Pagination Styling */
+/* Pagination Styling - DIPERKECIL */
 .pagination {
     margin: 0;
-    gap: 2px;
+    gap: 3px;
 }
 
 .page-item .page-link {
     border: 1px solid #e9ecef;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
     color: #6c7383;
     background-color: #ffffff;
     border-radius: 6px !important;
     transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
 }
 
 @media (min-width: 576px) {
     .page-item .page-link {
         padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
+        min-width: 36px;
     }
 }
 
 @media (min-width: 768px) {
     .page-item .page-link {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
     }
 }
 
@@ -628,6 +600,24 @@ select.kavling-form-control {
     border-color: #9a55ff;
     color: #9a55ff;
     transform: translateY(-1px);
+}
+
+/* Info text pagination */
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
 }
 
 /* Responsive untuk mobile */
@@ -647,17 +637,6 @@ select.kavling-form-control {
     .btn-outline-danger {
         padding: 0.2rem 0.3rem;
         font-size: 0.6rem;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.6rem;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select,
-    .filter-card .btn {
-        font-size: 0.6rem;
-        min-height: 26px;
     }
 }
 
@@ -707,6 +686,26 @@ select.kavling-form-control {
             </div>
         </div>
     </div>
+
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        {{ $errors->first() }}
+    </div>
+    @endif
 
     <!-- Info Tanah Induk -->
     <div class="row">
@@ -1074,102 +1073,7 @@ select.kavling-form-control {
                     <span class="badge badge-primary"><i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit</span>
                 </div>
                 <div class="card-body">
-                    <!-- Filter Section -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="filter-card">
-                                <div class="card-body">
-                                    <h6 class="card-title mb-2" style="font-size: 0.8rem;">
-                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                    </h6>
-
-                                    <!-- FILTER UNTUK MOBILE -->
-                                    <div class="d-block d-md-none">
-                                        <div class="mb-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                            </label>
-                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari blok/unit...">
-                                        </div>
-
-                                        <div class="row g-1">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                </label>
-                                                <select id="filterTypeMobile" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Cluster Ijen">Cluster Ijen</option>
-                                                    <option value="Cluster Bromo">Cluster Bromo</option>
-                                                    <option value="Cluster Rinjani">Cluster Rinjani</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select id="showDataMobile" class="form-control">
-                                                    <option value="5">5</option>
-                                                    <option value="10" selected>10</option>
-                                                    <option value="25">25</option>
-                                                    <option value="50">50</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-1 mt-1">
-                                            <div class="col-12 d-flex align-items-end">
-                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset Filter
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                    <div class="d-none d-md-block">
-                                        <div class="row g-1">
-                                            <div class="col-md-4">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                </label>
-                                                <input type="text" id="searchInput" class="form-control" placeholder="Cari blok/unit...">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                </label>
-                                                <select id="filterType" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Cluster Ijen">Cluster Ijen</option>
-                                                    <option value="Cluster Bromo">Cluster Bromo</option>
-                                                    <option value="Cluster Rinjani">Cluster Rinjani</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select id="showData" class="form-control">
-                                                    <option value="5">5</option>
-                                                    <option value="10" selected>10</option>
-                                                    <option value="25">25</option>
-                                                    <option value="50">50</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2 d-flex align-items-end">
-                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabel Data -->
+                    <!-- Tabel Data - TANPA FILTER -->
                     <div class="table-responsive">
                         <table id="tableKavling" class="table table-hover" style="width:100%">
                             <thead>
@@ -1272,27 +1176,35 @@ select.kavling-form-control {
                                         </td>
                                     </tr>
                                 @empty
+                                    {{-- BARIS KOSONG DENGAN 9 KOLOM --}}
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i>
-                                            Belum ada unit kavling
-                                        </td>
+                                        <td class="text-center fw-bold">-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Pagination UI -->
+                    <!-- Pagination UI - DIPERKECIL -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                        <div class="text-muted small mb-2 mb-sm-0">
+                        <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
                             Menampilkan 1-{{ $land->units->count() }} dari {{ $land->units->count() }} data
                         </div>
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                 <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">Previus</a>
+                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </a>
                                 </li>
                                 <li class="page-item active"><a class="page-link" href="#">1</a></li>
                                 @if($land->units->count() > 10)
@@ -1302,7 +1214,9 @@ select.kavling-form-control {
                                     <li class="page-item"><a class="page-link" href="#">5</a></li>
                                 @endif
                                 <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
@@ -1503,65 +1417,6 @@ $(document).ready(function() {
         columnDefs: [
             { orderable: false, targets: [0, 8] } // Non-aktifkan sorting untuk kolom No dan Aksi
         ]
-    });
-
-    // Fungsi filter manual
-    function filterData() {
-        let searchTerm = '';
-        let typeFilter = '';
-
-        // Deteksi versi filter yang aktif
-        if ($('#searchInputMobile').is(':visible')) {
-            searchTerm = $('#searchInputMobile').val().toLowerCase();
-            typeFilter = $('#filterTypeMobile').val().toLowerCase();
-        } else {
-            searchTerm = $('#searchInput').val().toLowerCase();
-            typeFilter = $('#filterType').val().toLowerCase();
-        }
-
-        // Filter menggunakan DataTables
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                let row = table.row(dataIndex).data();
-                let blok = data[1] ? data[1].toLowerCase() : '';
-                let type = data[4] ? data[4].toLowerCase() : '';
-
-                let matchSearch = searchTerm === '' || blok.includes(searchTerm);
-                let matchType = typeFilter === '' || type.includes(typeFilter);
-
-                return matchSearch && matchType;
-            }
-        );
-
-        table.draw();
-        $.fn.dataTable.ext.search.pop();
-    }
-
-    // Event listener untuk filter
-    $('#searchInput, #searchInputMobile').on('keyup', filterData);
-    $('#filterType, #filterTypeMobile').on('change', filterData);
-
-    // Fungsi reset filter
-    function resetFilters() {
-        if ($('#searchInputMobile').is(':visible')) {
-            $('#searchInputMobile').val('');
-            $('#filterTypeMobile').val('');
-        } else {
-            $('#searchInput').val('');
-            $('#filterType').val('');
-        }
-
-        $.fn.dataTable.ext.search.pop();
-        table.search('').columns().search('').draw();
-    }
-
-    // Event listener untuk reset
-    $('#resetFilter, #resetFilterMobile').click(resetFilters);
-
-    // Fungsi untuk mengubah jumlah baris (UI only)
-    $('#showData, #showDataMobile').change(function() {
-        let rowCount = $(this).val();
-        alert('Mengubah tampilan menjadi ' + rowCount + ' data per halaman (demo)');
     });
 
     // Format Rupiah untuk input harga

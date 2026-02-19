@@ -59,7 +59,7 @@ class LandBankUnit extends Model
     }
 
     public function unit()
-    {
+{
         return $this->belongsTo(LandBankUnit::class, 'land_bank_unit_id');
     }
     public function progress()
@@ -74,4 +74,10 @@ class LandBankUnit extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+ public function rabs()
+{
+    return $this->hasMany(Rabs::class, 'unit_id');
+}
+
+
 }

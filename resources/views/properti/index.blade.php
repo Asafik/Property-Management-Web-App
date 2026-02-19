@@ -853,7 +853,7 @@ input, select, textarea, button {
                                 @foreach ($landBanks as $index => $item)
                                     <tr>
                                         <td class="text-center fw-bold">
-                                            <span class="badge bg-light text-dark">{{ $index + 1 }}</span>
+                                            <span class="badge bg-light text-dark">{{ $landBanks->firstItem() + $index }}</span>
                                         </td>
 
                                         {{-- NAMA PROPERTI --}}
@@ -937,129 +937,38 @@ input, select, textarea, button {
 
                                         {{-- DOKUMEN --}}
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-gradient-info btn-sm" data-bs-toggle="modal" data-bs-target="#documentModal{{ $item->id }}" title="Lihat Dokumen">
+                                            <button type="button" class="btn btn-gradient-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDokumen{{ $item->id }}" title="Lihat Dokumen">
                                                 <i class="mdi mdi-file-document"></i>
                                                 <span class="badge bg-white text-dark ms-1">{{ $item->documents->count() }}</span>
                                             </button>
-
-                                            <!-- Modal Dokumen -->
-                                            <div class="modal fade" id="documentModal{{ $item->id }}" tabindex="-1" aria-labelledby="documentModalLabel{{ $item->id }}" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="documentModalLabel{{ $item->id }}">
-                                                                <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>
-                                                                Dokumen - {{ $item->name }}
-                                                            </h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            @if ($item->documents->count() > 0)
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-bordered table-sm align-middle">
-                                                                        <thead class="table-light">
-                                                                            <tr>
-                                                                                <th><i class="mdi mdi-format-list-numbered me-1"></i>Nomer Dokumen</th>
-                                                                                <th><i class="mdi mdi-file-outline me-1"></i>Tipe</th>
-                                                                                <th><i class="mdi mdi-information me-1"></i>Status</th>
-                                                                                <th width="100"><i class="mdi mdi-eye me-1"></i>Aksi</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            @foreach ($item->documents as $doc)
-                                                                                <tr>
-                                                                                    <td>
-                                                                                        <i class="mdi mdi-file-document text-primary me-1"></i>
-                                                                                        {{ $doc->document_number }}
-                                                                                        <small class="text-muted d-block">
-                                                                                            {{ $doc->landbank->ownership_status ?? '-' }} / {{ $doc->landbank->certificate_owner ?? '-' }}
-                                                                                        </small>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        @if($doc->type == 'sertifikat')
-                                                                                            <i class="mdi mdi-certificate text-primary me-1"></i>
-                                                                                        @elseif($doc->type == 'imb')
-                                                                                            <i class="mdi mdi-domain text-info me-1"></i>
-                                                                                        @else
-                                                                                            <i class="mdi mdi-file text-secondary me-1"></i>
-                                                                                        @endif
-                                                                                        {{ ucfirst($doc->type) }}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        @if ($doc->status == 'pending')
-                                                                                            <span class="badge badge-gradient-warning">
-                                                                                                <i class="mdi mdi-clock-outline me-1"></i>Pending
-                                                                                            </span>
-                                                                                        @elseif($doc->status == 'ditolak')
-                                                                                            <span class="badge badge-gradient-danger">
-                                                                                                <i class="mdi mdi-close-circle me-1"></i>Ditolak
-                                                                                            </span>
-                                                                                        @elseif($doc->status == 'terverifikasi')
-                                                                                            <span class="badge badge-gradient-success">
-                                                                                                <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
-                                                                                            </span>
-                                                                                        @else
-                                                                                            <span class="badge bg-secondary">{{ ucfirst($doc->status) }}</span>
-                                                                                        @endif
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="btn btn-gradient-primary btn-sm" title="Lihat Dokumen">
-                                                                                            <i class="mdi mdi-eye"></i> Lihat
-                                                                                        </a>
-                                                                                    </td>
-                                                                                </tr>
-                                                                                @if ($doc->status === 'ditolak' && !empty($doc->catatan_admin))
-                                                                                    <tr>
-                                                                                        <td colspan="4">
-                                                                                            <div class="border-start border-4 border-danger ps-3 py-2 bg-light text-danger small">
-                                                                                                <i class="mdi mdi-alert-circle me-1"></i>
-                                                                                                <strong>Alasan Ditolak:</strong> {{ $doc->catatan_admin }}
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            @else
-                                                                <div class="text-center text-muted py-4">
-                                                                    <i class="mdi mdi-file-document-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                                                                    <p class="mt-2">
-                                                                        <i class="mdi mdi-information-outline me-2"></i>
-                                                                        Tidak ada dokumen.
-                                                                    </p>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                                                                <i class="mdi mdi-close me-1"></i> Tutup
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </td>
 
                                         {{-- AKSI DENGAN TEXT --}}
                                         <td class="text-center">
-                                            @if($item->documents->first() && $item->documents->first()->status == 'pending')
-                                                <a href="{{ route('properti.verifikasi', $item->id) }}" class="action-text action-text-verify">
-                                                    <i class="mdi mdi-check-decagram me-1"></i>Verifikasi
-                                                </a>
-                                            @elseif($item->documents->first() && $item->documents->first()->status == 'terverifikasi')
-                                                <span class="action-text action-text-verified">
-                                                    <i class="mdi mdi-check me-1"></i>Sudah Verif
-                                                </span>
-                                            @elseif($item->documents->first() && $item->documents->first()->status == 'ditolak')
-                                                <span class="action-text action-text-rejected">
-                                                    <i class="mdi mdi-close me-1"></i>Ditolak
-                                                </span>
-                                            @else
+                                            {{-- jika belum ada dokumen sama sekali --}}
+                                            @if ($item->documents->count() == 0)
                                                 <span class="action-text action-text-none">
                                                     <i class="mdi mdi-minus me-1"></i>No Data
                                                 </span>
+
+                                            {{-- jika ada dokumen ditolak --}}
+                                            @elseif($item->documents->contains('status', 'ditolak'))
+                                                <span class="action-text action-text-rejected">
+                                                    <i class="mdi mdi-close me-1"></i>Ditolak
+                                                </span>
+
+                                            {{-- jika semua dokumen sudah verif --}}
+                                            @elseif($item->documents->every(fn($d) => $d->status == 'terverifikasi'))
+                                                <span class="action-text action-text-verified">
+                                                    <i class="mdi mdi-check me-1"></i>Sudah Verif
+                                                </span>
+
+                                            {{-- selain itu (pending / baru upload / campur) --}}
+                                            @else
+                                                <a href="{{ route('properti.verifikasi', $item->id) }}"
+                                                   class="action-text action-text-verify">
+                                                    <i class="mdi mdi-check-decagram me-1"></i>Verifikasi
+                                                </a>
                                             @endif
                                         </td>
                                     </tr>
@@ -1068,31 +977,15 @@ input, select, textarea, button {
                         </table>
                     </div>
 
-                    <!-- Pagination UI - DIPERKECIL -->
+                    <!-- Pagination Laravel -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan 1-8 dari 156 data
+                            Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari {{ $landBanks->total() }} data
                         </div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
-                                        <i class="mdi mdi-chevron-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <i class="mdi mdi-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="d-flex justify-content-center">
+                            {{ $landBanks->links('pagination::bootstrap-4') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1105,19 +998,121 @@ input, select, textarea, button {
         Geser untuk melihat konten lainnya
     </div>
 </div>
+
+<!-- MODALS DILUAR TABEL -->
+@foreach ($landBanks as $item)
+<div class="modal fade" id="modalDokumen{{ $item->id }}" tabindex="-1" aria-labelledby="modalDokumenLabel{{ $item->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDokumenLabel{{ $item->id }}">
+                    <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>
+                    Dokumen - {{ $item->name }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if ($item->documents->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th><i class="mdi mdi-format-list-numbered me-1"></i>Nomer Dokumen</th>
+                                    <th><i class="mdi mdi-file-outline me-1"></i>Tipe</th>
+                                    <th><i class="mdi mdi-information me-1"></i>Status</th>
+                                    <th width="100"><i class="mdi mdi-eye me-1"></i>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($item->documents as $doc)
+                                    <tr>
+                                        <td>
+                                            <i class="mdi mdi-file-document text-primary me-1"></i>
+                                            {{ $doc->document_number }}
+                                            <small class="text-muted d-block">
+                                                {{ $doc->landbank->ownership_status ?? '-' }} / {{ $doc->landbank->certificate_owner ?? '-' }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            @if($doc->type == 'sertifikat')
+                                                <i class="mdi mdi-certificate text-primary me-1"></i>
+                                            @elseif($doc->type == 'imb')
+                                                <i class="mdi mdi-domain text-info me-1"></i>
+                                            @else
+                                                <i class="mdi mdi-file text-secondary me-1"></i>
+                                            @endif
+                                            {{ ucfirst($doc->type) }}
+                                        </td>
+                                        <td>
+                                            @if ($doc->status == 'pending')
+                                                <span class="badge badge-gradient-warning">
+                                                    <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                                </span>
+                                            @elseif($doc->status == 'ditolak')
+                                                <span class="badge badge-gradient-danger">
+                                                    <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                </span>
+                                            @elseif($doc->status == 'terverifikasi')
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                                </span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($doc->status) }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="btn btn-gradient-primary btn-sm" title="Lihat Dokumen">
+                                                <i class="mdi mdi-eye"></i> Lihat
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @if ($doc->status === 'ditolak' && !empty($doc->catatan_admin))
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="border-start border-4 border-danger ps-3 py-2 bg-light text-danger small">
+                                                    <i class="mdi mdi-alert-circle me-1"></i>
+                                                    <strong>Alasan Ditolak:</strong> {{ $doc->catatan_admin }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center text-muted py-4">
+                        <i class="mdi mdi-file-document-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-2">
+                            <i class="mdi mdi-information-outline me-2"></i>
+                            Tidak ada dokumen.
+                        </p>
+                    </div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                    <i class="mdi mdi-close me-1"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection
 
 @push('scripts')
 <script>
-$(document).ready(function () {
+$(document).ready(function() {
     // Inisialisasi DataTables - hanya untuk sorting
     let table = $('#tableProperti').DataTable({
         responsive: true,
-        paging: false,        // MATIKAN pagination DataTables
-        info: false,          // MATIKAN info DataTables
-        searching: false,     // MATIKAN search bawaan
-        lengthChange: false,  // MATIKAN length change
-        ordering: true,       // AKTIFKAN sorting saja
+        paging: false,
+        info: false,
+        searching: false,
+        lengthChange: false,
+        ordering: true,
         language: {
             emptyTable: `
                 <div class="text-center text-muted py-5">
@@ -1131,8 +1126,15 @@ $(document).ready(function () {
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
-            { orderable: false, targets: [0, 7, 8] } // Non-aktifkan sorting untuk kolom No, Dokumen, Aksi
+            { orderable: false, targets: [0, 7, 8] }
         ]
+    });
+
+    // Konfirmasi sebelum verifikasi
+    $('.action-text-verify').on('click', function(e) {
+        if (!confirm('Apakah Anda yakin ingin memverifikasi properti ini?')) {
+            e.preventDefault();
+        }
     });
 });
 </script>

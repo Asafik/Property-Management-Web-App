@@ -36,6 +36,25 @@
                 </div>
             </div>
         </div>
+        @if(session('success'))
+<div class="alert alert-success alert-dismissible fade show">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
+@if ($errors->any())
+<div class="alert alert-danger">
+    {{ $errors->first() }}
+</div>
+@endif
 
         <!-- Form Pengajuan KPR -->
         <div class="pengajuan-row">
@@ -55,7 +74,8 @@
 
                             <!-- hidden relasi -->
                             <input type="hidden" name="customer_id" id="customer_id">
-                            <input type="hidden" name="unit_id" id="unit_id">
+                             <input type="hidden" name="unit_id" id="unit_id">
+
 
                             <!-- Alert Info -->
                             <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-start gap-2 mb-4">
@@ -145,8 +165,8 @@
                                         <label>Jumlah Pinjaman *</label>
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman" id="jumlahPinjaman"
-                                                required>
+                                            <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
+                                                id="jumlahPinjaman" required>
                                         </div>
                                     </div>
                                 </div>
@@ -156,7 +176,8 @@
                                         <label>DP *</label>
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" name="dp" id="dp">
+                                            <input type="number" class="pengajuan-form-control" name="dp"
+                                                id="dp">
                                         </div>
                                     </div>
                                 </div>
@@ -179,14 +200,16 @@
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
                                         <label>Bunga (%)</label>
-                                        <input type="number" class="pengajuan-form-control" name="bunga" step="0.1" id="bunga" >
+                                        <input type="number" class="pengajuan-form-control" name="bunga"
+                                            step="0.1" id="bunga">
                                     </div>
                                 </div>
 
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
                                         <label>Estimasi Angsuran</label>
-                                        <input type="number" class="pengajuan-form-control" name="estimasi_angsuran" id="angsuran">
+                                        <input type="number" class="pengajuan-form-control" name="estimasi_angsuran"
+                                            id="angsuran">
                                     </div>
                                 </div>
 
@@ -336,129 +359,98 @@
         </div>
     </div>
     @push('scripts')
-       
-        <script>
-            $(document).ready(function() {
-
-                $('#searchCustomer').keyup(function() {
-
-                    let keyword = $(this).val();
-
-                    if (keyword.length < 2) {
-                        $('#resultCustomer').html('');
-                        return;
-                    }
-
-                    $.ajax({
-                        url: "{{ route('pengajuan.search-customer') }}",
-                        type: "GET",
-                        data: {
-                            keyword: keyword
-                        },
-                        success: function(res) {
-
-                            let html = '';
-
-                            if (res.length == 0) {
-                                html +=
-                                    `<div class="list-group-item text-muted">Customer tidak ditemukan</div>`;
-                            }
-
-                            res.forEach(function(cust) {
-
-                                let unitName = '-';
-                                let price = 0;
-
-                                if (cust.units) {
-                                    unitName = cust.units.name ?? '-';
-                                    price = cust.units.price ?? 0;
-                                }
-
-                                html += `
-        <a href="#" class="list-group-item list-group-item-action pilihCustomer"
-           data-id="${cust.id}"
-           data-nama="${cust.full_name}"
-           data-price="${price}">
-           
-           <strong>${cust.full_name}</strong><br>
-           <small>NIK: ${cust.nik}</small><br>
-           <small>Unit: ${unitName}</small>
-        </a>
-    `;
-                            });
-
-
-                            $('#resultCustomer').html(html);
-                        }
-                    });
-
-                });
-
-                // pilih customer
-                $(document).on('click', '.pilihCustomer', function(e) {
-                    e.preventDefault();
-
-                    let nama = $(this).data('nama');
-                    let id = $(this).data('id');
-                    let price = $(this).data('price');
-
-                    $('#searchCustomer').val(nama);
-                    $('#resultCustomer').html('');
-                    $('#customer_id').val(id);
-
-                    // 🔥 AUTO ISI JUMLAH PINJAMAN DARI HARGA UNIT
-                    if (price) {
-                        $('#jumlahPinjaman').val(price);
-                    }
-                });
-
-
-            });
-        </script>
 <script>
 $(document).ready(function(){
 
-    function hitungKpr(){
+    $('#searchCustomer').keyup(function(){
 
-        let harga  = parseFloat($('#jumlahPinjaman').val()) || 0;
-        let dp     = parseFloat($('#dp').val()) || 0;
-        let tenor  = parseFloat($('#tenor').val()) || 0;
-        let bunga  = parseFloat($('#bunga').val()) || 0;
+        let keyword = $(this).val();
 
-        console.log("harga:", harga);
-        console.log("dp:", dp);
-        console.log("tenor:", tenor);
-        console.log("bunga:", bunga);
-
-        // wajib ada harga + tenor + bunga
-        if(harga <= 0 || tenor <= 0 || bunga <= 0){
-            $('#angsuran').val('');
+        if(keyword.length < 2){
+            $('#resultCustomer').html('');
             return;
         }
 
-        let pinjaman = harga - dp;
-        if(pinjaman <= 0){
-            $('#angsuran').val(0);
-            return;
+        $.ajax({
+            url: "{{ route('pengajuan.search-customer') }}",
+            type: "GET",
+            data: {keyword: keyword},
+
+            success: function(res){
+
+                let html='';
+
+                if(res.length == 0){
+                    html += `<div class="list-group-item">Customer tidak ditemukan</div>`;
+                }
+
+                res.forEach(function(cust){
+
+                    let unitName='-';
+                    let price=0;
+                    let blok='-';
+                    let unitId=null;
+
+                    // 🔥 ambil unit pertama customer
+                    if(cust.units && cust.units.length > 0){
+                        let u = cust.units[0];
+
+                        unitName = u.type ?? '-';
+                        price    = u.price ?? 0;
+                        blok     = u.unit_code ?? '-';
+                        unitId   = u.id ?? null;
+                    }
+
+                    html += `
+                    <a href="#" class="list-group-item pilihCustomer"
+                        data-id="${cust.id}"
+                        data-nama="${cust.full_name}"
+                        data-unit="${unitName}"
+                        data-price="${price}"
+                        data-blok="${blok}"
+                        data-unitid="${unitId}">
+                        
+                        <strong>${cust.full_name}</strong><br>
+                        <small>NIK: ${cust.nik}</small><br>
+                        <small>Unit: ${unitName} (${blok})</small>
+                    </a>`;
+                });
+
+                $('#resultCustomer').html(html);
+            }
+        });
+    });
+
+
+    // 🔥 SAAT PILIH CUSTOMER
+    $(document).on('click','.pilihCustomer',function(e){
+        e.preventDefault();
+
+        let customerId = $(this).data('id');
+        let nama       = $(this).data('nama');
+        let unit       = $(this).data('unit');
+        let price      = $(this).data('price');
+        let blok       = $(this).data('blok');
+        let unitId     = $(this).data('unitid');
+
+        console.log('UNIT ID TERPILIH:', unitId); // debug
+
+        // isi hidden input
+        $('#customer_id').val(customerId);
+        $('#unit_id').val(unitId); // 🔥 WAJIB
+
+        // isi tampilan
+        $('#searchCustomer').val(nama);
+        $('#nama_unit').val(unit);
+        $('#blok_unit').val(blok);
+
+        if(price){
+            let rupiah = new Intl.NumberFormat('id-ID').format(price);
+            $('#harga_unit').val('Rp '+rupiah);
+            $('#jumlahPinjaman').val(price);
         }
 
-        let bungaBulanan = (bunga/100) / 12;
-        let totalBulan   = tenor * 12;
-
-        let angsuran = pinjaman * (bungaBulanan * Math.pow(1 + bungaBulanan, totalBulan)) 
-                     / (Math.pow(1 + bungaBulanan, totalBulan) - 1);
-
-        if(isNaN(angsuran) || !isFinite(angsuran)){
-            $('#angsuran').val('');
-            return;
-        }
-
-        $('#angsuran').val(Math.round(angsuran));
-    }
-
-    // 🔥 pakai input event (bukan keyup doang)
-    $(document).on('input change', '#jumlahPinjaman, #dp, #tenor, #bunga', function(){
-        hitungKpr();
+        $('#resultCustomer').html('');
     });
 
 });
@@ -466,5 +458,55 @@ $(document).ready(function(){
 
 
 
+
+
+        <script>
+            $(document).ready(function() {
+
+                function hitungKpr() {
+
+                    let harga = parseFloat($('#jumlahPinjaman').val()) || 0;
+                    let dp = parseFloat($('#dp').val()) || 0;
+                    let tenor = parseFloat($('#tenor').val()) || 0;
+                    let bunga = parseFloat($('#bunga').val()) || 0;
+
+                    console.log("harga:", harga);
+                    console.log("dp:", dp);
+                    console.log("tenor:", tenor);
+                    console.log("bunga:", bunga);
+
+                    // wajib ada harga + tenor + bunga
+                    if (harga <= 0 || tenor <= 0 || bunga <= 0) {
+                        $('#angsuran').val('');
+                        return;
+                    }
+
+                    let pinjaman = harga - dp;
+                    if (pinjaman <= 0) {
+                        $('#angsuran').val(0);
+                        return;
+                    }
+
+                    let bungaBulanan = (bunga / 100) / 12;
+                    let totalBulan = tenor * 12;
+
+                    let angsuran = pinjaman * (bungaBulanan * Math.pow(1 + bungaBulanan, totalBulan)) /
+                        (Math.pow(1 + bungaBulanan, totalBulan) - 1);
+
+                    if (isNaN(angsuran) || !isFinite(angsuran)) {
+                        $('#angsuran').val('');
+                        return;
+                    }
+
+                    $('#angsuran').val(Math.round(angsuran));
+                }
+
+                // 🔥 pakai input event (bukan keyup doang)
+                $(document).on('input change', '#jumlahPinjaman, #dp, #tenor, #bunga', function() {
+                    hitungKpr();
+                });
+
+            });
+        </script>
     @endpush
 @endsection

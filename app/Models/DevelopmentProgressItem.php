@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rabs;
 
 class DevelopmentProgressItem extends Model
 {
@@ -22,4 +23,9 @@ class DevelopmentProgressItem extends Model
     {
         return $this->belongsTo(DevelopmentProgress::class, 'development_progress_id');
     }
+    public function rabs()
+{
+    return $this->hasMany(Rabs::class);
+}
+
 }
