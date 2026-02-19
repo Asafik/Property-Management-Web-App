@@ -335,6 +335,38 @@ select.kavling-form-control {
     margin-top: 0.2rem;
 }
 
+/* ===== FILTER SECTION STYLING ===== */
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 10px;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.filter-card .card-body {
+    padding: 0.5rem !important;
+}
+
+.filter-card .form-label {
+    font-size: 0.65rem;
+    margin-bottom: 0.1rem;
+}
+
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
+    border-radius: 6px;
+    height: auto;
+    min-height: 28px;
+}
+
+.filter-card .btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+    min-height: 28px;
+}
+
 /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
 .card {
     transition: all 0.3s ease;
@@ -554,6 +586,50 @@ select.kavling-form-control {
     color: white;
 }
 
+/* Pagination Styling */
+.pagination {
+    margin: 0;
+    gap: 2px;
+}
+
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+}
+
+@media (min-width: 576px) {
+    .page-item .page-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-item .page-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.page-item .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff;
+    transform: translateY(-1px);
+}
+
 /* Responsive untuk mobile */
 @media (max-width: 576px) {
     .table thead th {
@@ -571,6 +647,17 @@ select.kavling-form-control {
     .btn-outline-danger {
         padding: 0.2rem 0.3rem;
         font-size: 0.6rem;
+    }
+
+    .filter-card .form-label {
+        font-size: 0.6rem;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select,
+    .filter-card .btn {
+        font-size: 0.6rem;
+        min-height: 26px;
     }
 }
 
@@ -986,122 +1073,241 @@ select.kavling-form-control {
                     </h5>
                     <span class="badge badge-primary"><i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit</span>
                 </div>
-             <div class="card-body">
-   <div class="table-responsive">
-    <table id="tableKavling" class="table table-hover" style="width:100%">
-        <thead>
-            <tr>
-                <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
-                <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
-                <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
-                <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th>
-                <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
-                <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
-                <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
-                <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($land->units as $i => $unit)
-                <tr>
-                    <td class="text-center fw-bold">{{ $i + 1 }}</td>
+                <div class="card-body">
+                    <!-- Filter Section -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="filter-card">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-2" style="font-size: 0.8rem;">
+                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                    </h6>
 
-                    {{-- BLOK / NO --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
-                            <span class="fw-bold">{{ $unit->unit_code }}</span>
+                                    <!-- FILTER UNTUK MOBILE -->
+                                    <div class="d-block d-md-none">
+                                        <div class="mb-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                            </label>
+                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari blok/unit...">
+                                        </div>
+
+                                        <div class="row g-1">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
+                                                </label>
+                                                <select id="filterTypeMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="Cluster Ijen">Cluster Ijen</option>
+                                                    <option value="Cluster Bromo">Cluster Bromo</option>
+                                                    <option value="Cluster Rinjani">Cluster Rinjani</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showDataMobile" class="form-control">
+                                                    <option value="5">5</option>
+                                                    <option value="10" selected>10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-1 mt-1">
+                                            <div class="col-12 d-flex align-items-end">
+                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
+                                                    <i class="mdi mdi-refresh me-1"></i> Reset Filter
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                    <div class="d-none d-md-block">
+                                        <div class="row g-1">
+                                            <div class="col-md-4">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" id="searchInput" class="form-control" placeholder="Cari blok/unit...">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
+                                                </label>
+                                                <select id="filterType" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="Cluster Ijen">Cluster Ijen</option>
+                                                    <option value="Cluster Bromo">Cluster Bromo</option>
+                                                    <option value="Cluster Rinjani">Cluster Rinjani</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select id="showData" class="form-control">
+                                                    <option value="5">5</option>
+                                                    <option value="10" selected>10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2 d-flex align-items-end">
+                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100">
+                                                    <i class="mdi mdi-refresh me-1"></i> Reset
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </td>
+                    </div>
 
-                    {{-- LUAS TANAH --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-ruler-square text-warning me-1" style="font-size: 0.9rem;"></i>
-                            <span class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }} m²</span>
+                    <!-- Tabel Data -->
+                    <div class="table-responsive">
+                        <table id="tableKavling" class="table table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
+                                    <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
+                                    <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
+                                    <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
+                                    <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th>
+                                    <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
+                                    <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
+                                    <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
+                                    <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($land->units as $i => $unit)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $i + 1 }}</td>
+
+                                        {{-- BLOK / NO --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-home text-primary me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="fw-bold">{{ $unit->unit_code }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- LUAS TANAH --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-ruler-square text-warning me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }} m²</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- LUAS BANGUNAN --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-domain text-secondary me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="text-nowrap">{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- TYPE --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-format-list-bulleted text-info me-1" style="font-size: 0.9rem;"></i>
+                                                <span>{{ $unit->type ?? '-' }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- HARGA --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
+                                                <span class="text-nowrap">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- HADAP --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-compass text-info me-1" style="font-size: 0.9rem;"></i>
+                                                <span>{{ $unit->facing ?? '-' }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- POSISI --}}
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-map-marker text-danger me-1" style="font-size: 0.9rem;"></i>
+                                                <span>{{ $unit->position ?? '-' }}</span>
+                                            </div>
+                                        </td>
+
+                                        {{-- AKSI --}}
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
+                                                   class="btn btn-outline-primary btn-sm" title="Edit">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+
+                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
+                                                   class="btn btn-outline-info btn-sm" title="Update Progress">
+                                                    <i class="mdi mdi-progress-clock"></i>
+                                                </a>
+
+                                                <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
+                                                      method="POST" style="display:inline-block;"
+                                                      onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-information-outline me-2"></i>
+                                            Belum ada unit kavling
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination UI -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
+                        <div class="text-muted small mb-2 mb-sm-0">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Menampilkan 1-{{ $land->units->count() }} dari {{ $land->units->count() }} data
                         </div>
-                    </td>
-
-                    {{-- LUAS BANGUNAN --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-domain text-secondary me-1" style="font-size: 0.9rem;"></i>
-                            <span class="text-nowrap">{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²</span>
-                        </div>
-                    </td>
-
-                    {{-- TYPE --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-format-list-bulleted text-info me-1" style="font-size: 0.9rem;"></i>
-                            <span>{{ $unit->type ?? '-' }}</span>
-                        </div>
-                    </td>
-
-                    {{-- HARGA --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-currency-usd text-success me-1" style="font-size: 0.9rem;"></i>
-                            <span class="text-nowrap">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
-                        </div>
-                    </td>
-
-                    {{-- HADAP --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-compass text-info me-1" style="font-size: 0.9rem;"></i>
-                            <span>{{ $unit->facing ?? '-' }}</span>
-                        </div>
-                    </td>
-
-                    {{-- POSISI --}}
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-map-marker text-danger me-1" style="font-size: 0.9rem;"></i>
-                            <span>{{ $unit->position ?? '-' }}</span>
-                        </div>
-                    </td>
-
-                    {{-- AKSI --}}
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center gap-1">
-                            <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
-                               class="btn btn-outline-primary btn-sm" title="Edit">
-                                <i class="mdi mdi-pencil"></i>
-                            </a>
-
-                            <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
-                               class="btn btn-outline-info btn-sm" title="Update Progress">
-                                <i class="mdi mdi-progress-clock"></i>
-                            </a>
-
-                            <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
-                                  method="POST" style="display:inline-block;"
-                                  onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="9" class="text-center text-muted py-4">
-                        <i class="mdi mdi-information-outline me-2"></i>
-                        Belum ada unit kavling
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-
-</div>
-
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previus</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                @if($land->units->count() > 10)
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                @endif
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1283,11 +1489,11 @@ $(document).ready(function() {
     });
 
     // Inisialisasi DataTables - hanya untuk sorting
-    $('#tableKavling').DataTable({
+    let table = $('#tableKavling').DataTable({
         responsive: true,
-        paging: false,        // Matikan pagination
+        paging: false,        // Matikan pagination DataTables
         info: false,           // Matikan info
-        searching: false,      // Matikan search
+        searching: false,      // Matikan search bawaan
         lengthChange: false,   // Matikan length change
         ordering: true,        // Aktifkan sorting saja
         language: {
@@ -1297,6 +1503,65 @@ $(document).ready(function() {
         columnDefs: [
             { orderable: false, targets: [0, 8] } // Non-aktifkan sorting untuk kolom No dan Aksi
         ]
+    });
+
+    // Fungsi filter manual
+    function filterData() {
+        let searchTerm = '';
+        let typeFilter = '';
+
+        // Deteksi versi filter yang aktif
+        if ($('#searchInputMobile').is(':visible')) {
+            searchTerm = $('#searchInputMobile').val().toLowerCase();
+            typeFilter = $('#filterTypeMobile').val().toLowerCase();
+        } else {
+            searchTerm = $('#searchInput').val().toLowerCase();
+            typeFilter = $('#filterType').val().toLowerCase();
+        }
+
+        // Filter menggunakan DataTables
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                let row = table.row(dataIndex).data();
+                let blok = data[1] ? data[1].toLowerCase() : '';
+                let type = data[4] ? data[4].toLowerCase() : '';
+
+                let matchSearch = searchTerm === '' || blok.includes(searchTerm);
+                let matchType = typeFilter === '' || type.includes(typeFilter);
+
+                return matchSearch && matchType;
+            }
+        );
+
+        table.draw();
+        $.fn.dataTable.ext.search.pop();
+    }
+
+    // Event listener untuk filter
+    $('#searchInput, #searchInputMobile').on('keyup', filterData);
+    $('#filterType, #filterTypeMobile').on('change', filterData);
+
+    // Fungsi reset filter
+    function resetFilters() {
+        if ($('#searchInputMobile').is(':visible')) {
+            $('#searchInputMobile').val('');
+            $('#filterTypeMobile').val('');
+        } else {
+            $('#searchInput').val('');
+            $('#filterType').val('');
+        }
+
+        $.fn.dataTable.ext.search.pop();
+        table.search('').columns().search('').draw();
+    }
+
+    // Event listener untuk reset
+    $('#resetFilter, #resetFilterMobile').click(resetFilters);
+
+    // Fungsi untuk mengubah jumlah baris (UI only)
+    $('#showData, #showDataMobile').change(function() {
+        let rowCount = $(this).val();
+        alert('Mengubah tampilan menjadi ' + rowCount + ' data per halaman (demo)');
     });
 
     // Format Rupiah untuk input harga
