@@ -82,7 +82,9 @@ Route::get('/dashboard-survey', fn() => view('marketing.survey'));
 */
 Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
 Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
-Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
+// Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
+Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->name('cetak.rab');
+
 
 
 /*
