@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\VerifikasiLegalController;
 
 use App\Http\Controllers\LandBankController;
 use App\Http\Controllers\AgencyPropertyController;
+use App\Http\Controllers\KprApplicationController;
 use App\Http\Controllers\RABController;
 
 use App\Http\Controllers\Marketing\CustomerController;
@@ -160,7 +161,7 @@ Route::post('/agency/store',[AgencyPropertyController::class,'store'])->name('ag
 |--------------------------------------------------------------------------
 | PENGAJUAN
 |--------------------------------------------------------------------------*/
-Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
-Route::post('/pengajuan/store', [PengajuanController::class, 'store'])->name('pengajuans.store');
+Route::get('/pengajuan', [KprApplicationController::class, 'index'])->name('pengajuan.index');
+Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('kpr.store');
 Route::get('/pengajuan/search-customer', 
 [CustomerController::class, 'search'])->name('pengajuan.search-customer');
