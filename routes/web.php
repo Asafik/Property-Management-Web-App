@@ -22,6 +22,7 @@ use App\Http\Controllers\RABController;
 use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
 
+use App\Http\Controllers\PengajuanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,7 +71,7 @@ Route::get('/dashboard-approved', fn() => view('marketing.approved'));
 Route::get('/dashboard-akad', fn() => view('marketing.akad'));
 Route::get('/dashboard-vertifikasi-kpr', fn() => view('marketing.vertifikasi_kpr'));
 Route::get('/dashboard-survey', fn() => view('marketing.survey'));
-Route::get('/dashboard-pengajuan', fn() => view('marketing.pengajuan'));
+
 
 
 /*
@@ -154,3 +155,12 @@ Route::post('/properti/progress/store',[DevelopmentProgressController::class, 's
 */
 Route::get('/Agency-Create',[AgencyPropertyController::class, 'index'])->name('agency');
 Route::post('/agency/store',[AgencyPropertyController::class,'store'])->name('agency.store');
+
+/*
+|--------------------------------------------------------------------------
+| PENGAJUAN
+|--------------------------------------------------------------------------*/
+Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
+Route::post('/pengajuan/store', [PengajuanController::class, 'store'])->name('pengajuans.store');
+Route::get('/pengajuan/search-customer', 
+[CustomerController::class, 'search'])->name('pengajuan.search-customer');

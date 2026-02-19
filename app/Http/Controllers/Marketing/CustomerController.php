@@ -91,4 +91,15 @@ class CustomerController extends Controller
 
         return 'CUST-' . $today . '-' . $newNumber;
     }
+    public function search(Request $request)
+{
+    $keyword = $request->keyword;
+
+    $customers = Customer::with('units') // relasi ke land_bank_unit
+        ->where('full_name', 'like', "%$keyword%")
+        ->orWhere('nik', 'like', "%$keyword%")
+        ->get();
+
+    return response()->json($customers);
+}
 }

@@ -489,14 +489,15 @@
                                         <td>{{ $c->job_status ?? 'Masih Kosong' }}</td>
                                         <td>
 
-                                            <form action="{{ route('set.customer', $unit->id) }}" method="POST">
+                                            <form method="POST" action="{{ route('set.customer', $unit->id) }}">
                                                 @csrf
                                                 <input type="hidden" name="customer_id" value="{{ $c->id }}">
-
-                                                <button type="submit" class="btn btn-sm btn-success">
+                                                <button type="submit" class="btn btn-success btn-sm">
                                                     Pilih
                                                 </button>
                                             </form>
+
+
 
                                         </td>
                                     </tr>
@@ -790,22 +791,50 @@
         }
     </script>
     <script>
+        let selectedUnitId = null;
+
+        function openCustomerModal(unitId) {
+            selectedUnitId = unitId;
+            $('#modalCustomer').modal('show');
+        }
+
         $(document).on('click', '.pilihCustomer', function() {
-            let id = $(this).data('id');
-            let nama = $(this).data('nama');
 
-            // contoh isi ke input
-            $('#customer_id').val(id);
-            $('#customer_nama').val(nama);
+            let customerId = $(this).data('id');
 
-            $('#modalCustomer').modal('hide');
+            if (!selectedUnitId) {
+                alert('Unit belum dipilih!');
+                return;
+            }
+
+            let actionUrl = "{{ route('set.customer', ['unitId' => 'UNIT_ID']) }}";
+            actionUrl = actionUrl.replace('UNIT_ID', selectedUnitId);
+
+            let form = $('<form>', {
+                method: 'POST',
+                action: actionUrl
+            });
+
+            form.append($('<input>', {
+                type: 'hidden',
+                name: '_token',
+                value: '{{ csrf_token() }}'
+            }));
+
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'customer_id',
+                value: customerId
+            }));
+
+            $('body').append(form);
+            form.submit();
         });
     </script>
-    <script>
-        $(document).ready(function() {
-            $('#tableCustomer').DataTable();
-        });
-    </script>
+
+
+
+
     {{-- <script>
         let currentUnit = null;
 

@@ -36,7 +36,7 @@ class Customer extends Model
 ];
 public function units()
 {
-    return $this->hasMany(LandBankUnit::class);
+    return $this->hasMany(LandBankUnit::class, 'customer_id','id');
 }
 
 }

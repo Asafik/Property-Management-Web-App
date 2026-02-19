@@ -818,6 +818,12 @@ select.kavling-form-control {
                                             <input type="number" name="area_per_unit" class="kavling-form-control" value="200">
                                         </div>
                                     </div>
+                                     <div class="col-md-3">
+                                        <div class="kavling-form-group">
+                                            <label>Luas Bangunan(m²)</label>
+                                            <input type="number" name="building_area_unit" class="kavling-form-control" placeholder="200">
+                                        </div>
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="kavling-form-group">
                                             <label>Harga per Unit (Rp)</label>

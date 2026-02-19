@@ -55,7 +55,7 @@
             <a class="nav-link" href="dashboard-vertifikasi-kpr">Vertifikasi KPR</a>
         </li>
          <li class="nav-item">
-            <a class="nav-link" href="dashboard-pengajuan">Pengajuan</a>
+            <a class="nav-link" href="{{route('pengajuan.index')}}">Pengajuan</a>
         </li>
         </li>
         </ul>

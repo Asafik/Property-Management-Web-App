@@ -221,6 +221,7 @@ public function generate(Request $request, $land_bank_id)
     $request->validate([
         'jumlah_unit'      => 'required|integer|min:1',
         'area_per_unit'    => 'required|numeric|min:1',
+        'building_area_unit' => 'required|numeric|min:1',
         'price_per_unit'   => 'nullable|numeric|min:0',
         'prefix_block'     => 'required|string|max:5',
         'start_number'     => 'required|integer|min:1',
@@ -249,6 +250,7 @@ public function generate(Request $request, $land_bank_id)
             'unit_number'  => $i,
             'unit_code'    => $unit_code,
             'area'         => $request->area_per_unit,
+            'building_area' => $request->building_area_unit,
             'price'        => $request->price_per_unit,
             'facing'       => $request->default_facing,
             'position'     => $request->default_position,
