@@ -5,29 +5,33 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/marketing/cash.css') }}">
 
-
 <div class="row">
     <div class="col-12">
         <!-- Header Info Customer -->
         <div class="card">
             <div class="card-body">
-                <div class="d-flex flex-wrap align-items-center">
-                    <div class="me-4 mb-2 mb-sm-0">
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                             <i class="mdi mdi-account" style="font-size: 24px;"></i>
                         </div>
                     </div>
+
+                    <!-- Info Customer -->
                     <div class="flex-grow-1">
                         <h4 class="mb-1">Budi Santoso</h4>
                         <p class="text-muted mb-0">Booking ID: #INV/202502/001</p>
                     </div>
+
+                    <!-- Info Unit -->
                     <div class="mt-3 mt-sm-0">
-                        <div class="d-flex">
-                            <div class="me-4">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div>
                                 <small class="text-muted d-block">Unit</small>
                                 <span class="fw-medium">The Lavender - Tipe 45</span>
                             </div>
-                            <div class="me-4">
+                            <div>
                                 <small class="text-muted d-block">Blok/No</small>
                                 <span class="fw-medium">C/12</span>
                             </div>
@@ -68,8 +72,8 @@
 <!-- Row untuk Status dan Info -->
 <div class="row mt-4">
     <!-- Kolom Kiri: Info Pembayaran -->
-    <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-cash-multiple me-2 text-primary"></i>
@@ -197,7 +201,7 @@
                     </div>
                 </div>
 
-                <hr class="cash-hr">
+                <hr class="my-3">
 
                 <!-- Form Input Pembayaran Lunas -->
                 <h6 class="cash-text-primary mb-3">Form Pembayaran Lunas</h6>
@@ -276,13 +280,19 @@
                     <i class="mdi mdi-check-circle me-2"></i>
                     Proses Pembayaran Lunas
                 </button>
+
+                <!-- Informasi Tambahan untuk Mobile -->
+                <div class="text-muted small mt-2 d-block d-sm-none">
+                    <i class="mdi mdi-information-outline me-1"></i>
+                    Geser untuk melihat konten lainnya
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Kolom Kanan: Info & Aksi -->
-    <div class="col-md-4 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-information me-2 text-primary"></i>
@@ -325,7 +335,7 @@
                     </table>
                 </div>
 
-                <hr class="cash-hr">
+                <hr class="my-3">
 
                 <!-- Timeline Transaksi -->
                 <h6 class="cash-text-primary mb-3">Timeline Transaksi</h6>
@@ -359,7 +369,7 @@
                     </div>
                 </div>
 
-                <hr class="cash-hr">
+                <hr class="my-3">
 
                 <!-- Dokumen Penting -->
                 <h6 class="cash-text-primary mb-3">Dokumen</h6>
@@ -388,28 +398,30 @@
                     </div>
                 </div>
 
-                <hr class="cash-hr">
+                <hr class="my-3">
 
                 <!-- Tombol Aksi -->
-                <button onclick="window.open('/dashboard-cetak-invoice-cash', '_blank')" class="cash-btn cash-btn-primary w-100 mb-2">
-                    <i class="mdi mdi-printer me-2"></i>
-                    Cetak Invoice
-                </button>
+                <div class="d-flex flex-column gap-2">
+                    <button onclick="window.open('/dashboard-cetak-invoice-cash', '_blank')" class="cash-btn cash-btn-primary w-100">
+                        <i class="mdi mdi-printer me-2"></i>
+                        Cetak Invoice
+                    </button>
 
-                <button class="cash-btn cash-btn-info w-100 mb-2">
-                    <i class="mdi mdi-whatsapp me-2"></i>
-                    Kirim Invoice
-                </button>
+                    <button class="cash-btn cash-btn-info w-100">
+                        <i class="mdi mdi-whatsapp me-2"></i>
+                        Kirim Invoice
+                    </button>
 
-                <button class="cash-btn cash-btn-outline-warning w-100 mb-2">
-                    <i class="mdi mdi-key me-2"></i>
-                    Serah Terima Kunci
-                </button>
+                    <button class="cash-btn cash-btn-outline-warning w-100">
+                        <i class="mdi mdi-key me-2"></i>
+                        Serah Terima Kunci
+                    </button>
 
-                <button class="cash-btn cash-btn-outline-secondary w-100">
-                    <i class="mdi mdi-arrow-left me-2"></i>
-                    Kembali
-                </button>
+                    <button class="cash-btn cash-btn-outline-secondary w-100">
+                        <i class="mdi mdi-arrow-left me-2"></i>
+                        Kembali
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -418,6 +430,7 @@
 
 @push('styles')
 <style>
+    /* Custom styles asli - tetap sama */
     .bg-light {
         background-color: #f8f9fc !important;
     }
@@ -426,12 +439,40 @@
     }
     .badge {
         padding: 5px 10px;
+        font-weight: 500;
     }
     hr {
         border-top: 1px solid rgba(0,0,0,.1);
     }
     .table-borderless td {
         padding: 0.3rem 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .d-flex.flex-wrap .mt-3.mt-sm-0 {
+            width: 100%;
+        }
+        .d-flex.flex-wrap .mt-3.mt-sm-0 .d-flex {
+            justify-content: space-between;
+        }
+        .d-flex.flex-wrap .mt-3.mt-sm-0 .d-flex > div {
+            margin-right: 0 !important;
+            text-align: center;
+            flex: 1;
+        }
+    }
+
+    .h-100 {
+        height: 100%;
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .gap-3 {
+        gap: 1rem;
     }
 </style>
 @endpush

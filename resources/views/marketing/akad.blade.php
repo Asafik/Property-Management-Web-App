@@ -10,23 +10,28 @@
         <!-- Header Info Customer -->
         <div class="card">
             <div class="card-body">
-                <div class="d-flex flex-wrap align-items-center">
-                    <div class="me-4 mb-2 mb-sm-0">
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                             <i class="mdi mdi-account" style="font-size: 24px;"></i>
                         </div>
                     </div>
+
+                    <!-- Info Customer -->
                     <div class="flex-grow-1">
                         <h4 class="mb-1">Budi Santoso</h4>
                         <p class="text-muted mb-0">Booking ID: #INV/202502/001</p>
                     </div>
+
+                    <!-- Info Unit -->
                     <div class="mt-3 mt-sm-0">
-                        <div class="d-flex">
-                            <div class="me-4">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div>
                                 <small class="text-muted d-block">Unit</small>
                                 <span class="fw-medium">The Lavender - Tipe 45</span>
                             </div>
-                            <div class="me-4">
+                            <div>
                                 <small class="text-muted d-block">Blok/No</small>
                                 <span class="fw-medium">C/12</span>
                             </div>
@@ -45,8 +50,8 @@
 <!-- Row untuk Progress dan Detail -->
 <div class="row mt-4">
     <!-- Kolom Kiri: Progress Timeline -->
-    <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-timeline-text me-2 text-primary"></i>
@@ -55,9 +60,9 @@
 
                 <!-- Progress Bar -->
                 <div class="mb-4">
-                    <div class="d-flex justify-content-between mb-2">
+                    <div class="d-flex flex-wrap justify-content-between mb-2">
                         <span class="text-muted">Progress Konfirmasi</span>
-                        <span class="text-primary">Menunggu Persetujuan Bank</span>
+                        <span class="text-warning">Menunggu Persetujuan Bank</span>
                     </div>
                     <div class="progress">
                         <div class="progress-bar bg-warning" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
@@ -65,41 +70,53 @@
                 </div>
 
                 <!-- Timeline Steps -->
-                <div class="row">
-                    <div class="col text-center">
-                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                <div class="timeline-steps">
+                    <div class="row g-2 g-md-0">
+                        <div class="col-4 col-md text-center mb-3 mb-md-0">
+                            <div class="step completed">
+                                <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-success small fw-medium">Pengajuan</span>
+                                <small class="text-muted d-none d-sm-block">12 Feb 2025</small>
+                            </div>
                         </div>
-                        <span class="d-block text-success small fw-medium">Pengajuan</span>
-                        <small class="text-muted">12 Feb 2025</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mb-3 mb-md-0">
+                            <div class="step completed">
+                                <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-success small fw-medium">Verifikasi</span>
+                                <small class="text-muted d-none d-sm-block">14 Feb 2025</small>
+                            </div>
                         </div>
-                        <span class="d-block text-success small fw-medium">Verifikasi</span>
-                        <small class="text-muted">14 Feb 2025</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mb-3 mb-md-0">
+                            <div class="step completed">
+                                <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-success small fw-medium">Survey</span>
+                                <small class="text-muted d-none d-sm-block">20 Feb 2025</small>
+                            </div>
                         </div>
-                        <span class="d-block text-success small fw-medium">Survey</span>
-                        <small class="text-muted">20 Feb 2025</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-clock" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mt-2 mt-md-0">
+                            <div class="step active">
+                                <div class="step-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-clock" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block small fw-medium">Persetujuan</span>
+                                <small class="text-muted d-none d-sm-block">Menunggu</small>
+                            </div>
                         </div>
-                        <span class="d-block small fw-medium">Persetujuan</span>
-                        <small class="text-muted">Menunggu</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-handshake" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mt-2 mt-md-0">
+                            <div class="step">
+                                <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-handshake" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-muted small fw-medium">Akad</span>
+                                <small class="text-muted d-none d-sm-block">Menunggu</small>
+                            </div>
                         </div>
-                        <span class="d-block text-muted small fw-medium">Akad</span>
-                        <small class="text-muted">Menunggu</small>
                     </div>
                 </div>
             </div>
@@ -107,15 +124,15 @@
     </div>
 
     <!-- Kolom Kanan: Detail KPR -->
-    <div class="col-md-4 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-bank me-2 text-primary"></i>
                     Detail KPR
                 </h5>
 
-                <div class="mb-3">
+                <div class="detail-info">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Bank Tujuan</span>
                         <span class="fw-medium">Bank ABC Syariah</span>
@@ -134,7 +151,7 @@
                     </div>
                 </div>
 
-                <hr class="konfirmasi-hr">
+                <hr class="my-3">
 
                 <div class="mt-3">
                     <small class="text-muted d-block mb-2">Ditangani oleh:</small>
@@ -154,10 +171,10 @@
 </div>
 
 <!-- Row untuk Konfirmasi Persetujuan -->
-<div class="row">
+<div class="row mt-4">
     <!-- Kolom Kiri: Form Konfirmasi -->
-    <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-help-circle me-2 text-primary"></i>
@@ -194,7 +211,7 @@
 
                 <!-- FORM KPR DISETUJUI (muncul jika pilih setuju) -->
                 <div id="formSetuju" style="display: none;">
-                    <hr class="konfirmasi-hr">
+                    <hr class="my-3">
                     <h6 class="mb-3 konfirmasi-text-primary">Form Persetujuan KPR</h6>
 
                     <div class="konfirmasi-alert konfirmasi-alert-success" role="alert">
@@ -278,7 +295,7 @@
 
                 <!-- FORM KPR DITOLAK (muncul jika pilih tolak) -->
                 <div id="formTolak" style="display: none;">
-                    <hr class="konfirmasi-hr">
+                    <hr class="my-3">
                     <h6 class="mb-3 konfirmasi-text-primary">Form Penolakan KPR</h6>
 
                     <div class="konfirmasi-alert konfirmasi-alert-danger" role="alert">
@@ -309,7 +326,7 @@
                         <textarea class="konfirmasi-form-control" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
                     </div>
 
-                    <hr class="konfirmasi-hr">
+                    <hr class="my-3">
 
                     <!-- TINDAKAN SELANJUTNYA - MODERN CARD STYLE -->
                     <h6 class="mb-3 konfirmasi-text-primary">Tindakan Selanjutnya</h6>
@@ -385,13 +402,19 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Informasi Tambahan untuk Mobile -->
+                <div class="text-muted small mt-2 d-block d-sm-none">
+                    <i class="mdi mdi-information-outline me-1"></i>
+                    Geser untuk melihat konten lainnya
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Kolom Kanan: Info & Ringkasan -->
-    <div class="col-md-4 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-information me-2 text-primary"></i>
@@ -427,7 +450,7 @@
                     </div>
                 </div>
 
-                <hr class="konfirmasi-hr">
+                <hr class="my-3">
 
                 <!-- Rekomendasi -->
                 <h6 class="mb-3 konfirmasi-text-primary">Rekomendasi Survey</h6>
@@ -436,7 +459,7 @@
                     Layak - Sesuai Harga
                 </div>
 
-                <hr class="konfirmasi-hr">
+                <hr class="my-3">
 
                 <!-- Timeline -->
                 <h6 class="mb-3 konfirmasi-text-primary">Timeline Pengajuan</h6>
@@ -470,7 +493,7 @@
                     </div>
                 </div>
 
-                <hr class="konfirmasi-hr">
+                <hr class="my-3">
 
                 <!-- Tombol Aksi -->
                 <button class="konfirmasi-btn konfirmasi-btn-primary w-100 mb-2" id="btnSimpan">
@@ -490,14 +513,79 @@
 
 @push('styles')
 <style>
+    /* Custom styles asli - tetap sama */
     .bg-light {
         background-color: #f8f9fc !important;
     }
+
     .badge {
         padding: 5px 10px;
+        font-weight: 500;
     }
+
+    .badge.bg-success {
+        background-color: #28a745 !important;
+        color: white;
+    }
+
+    .badge.bg-warning {
+        background-color: #ffc107 !important;
+        color: #2c2e3f;
+    }
+
+    @media (max-width: 576px) {
+        .timeline-steps .step small {
+            display: none !important;
+        }
+        .timeline-steps .step-icon {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .timeline-steps .step-icon i {
+            font-size: 16px !important;
+        }
+    }
+
+    .h-100 {
+        height: 100%;
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .gap-3 {
+        gap: 1rem;
+    }
+
+    @media (max-width: 576px) {
+        .d-flex.flex-wrap .mt-3.mt-sm-0 {
+            width: 100%;
+        }
+        .d-flex.flex-wrap .mt-3.mt-sm-0 .d-flex {
+            justify-content: space-between;
+        }
+        .d-flex.flex-wrap .mt-3.mt-sm-0 .d-flex > div {
+            margin-right: 0 !important;
+            text-align: center;
+            flex: 1;
+        }
+    }
+
     .cursor-pointer {
         cursor: pointer;
+    }
+
+    /* Timeline steps styling */
+    .timeline-steps .step .step-icon {
+        transition: all 0.3s ease;
+    }
+    .timeline-steps .step.completed .step-icon {
+        background-color: #28a745 !important;
+    }
+    .timeline-steps .step.active .step-icon {
+        background-color: #ffc107 !important;
+        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
     }
 </style>
 @endpush

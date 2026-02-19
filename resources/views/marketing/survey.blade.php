@@ -5,32 +5,33 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/marketing/survey.css') }}">
 
-<style>
-
-</style>
-
 <div class="row">
     <div class="col-12">
         <!-- Header Info Customer -->
         <div class="card">
             <div class="card-body">
-                <div class="d-flex flex-wrap align-items-center">
-                    <div class="me-4 mb-2 mb-sm-0">
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                             <i class="mdi mdi-account" style="font-size: 24px;"></i>
                         </div>
                     </div>
+
+                    <!-- Info Customer -->
                     <div class="flex-grow-1">
                         <h4 class="mb-1">Budi Santoso</h4>
                         <p class="text-muted mb-0">Booking ID: #INV/202502/001</p>
                     </div>
+
+                    <!-- Info Unit -->
                     <div class="mt-3 mt-sm-0">
-                        <div class="d-flex">
-                            <div class="me-4">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div>
                                 <small class="text-muted d-block">Unit</small>
                                 <span class="fw-medium">The Lavender - Tipe 45</span>
                             </div>
-                            <div class="me-4">
+                            <div>
                                 <small class="text-muted d-block">Blok/No</small>
                                 <span class="fw-medium">C/12</span>
                             </div>
@@ -49,8 +50,8 @@
 <!-- Row untuk Progress dan Detail -->
 <div class="row mt-4">
     <!-- Kolom Kiri: Progress Timeline -->
-    <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-timeline-text me-2 text-primary"></i>
@@ -59,7 +60,7 @@
 
                 <!-- Progress Bar -->
                 <div class="mb-4">
-                    <div class="d-flex justify-content-between mb-2">
+                    <div class="d-flex flex-wrap justify-content-between mb-2">
                         <span class="text-muted">Progress Survey</span>
                         <span class="text-primary">Tahap 3 dari 5</span>
                     </div>
@@ -69,41 +70,53 @@
                 </div>
 
                 <!-- Timeline Steps -->
-                <div class="row">
-                    <div class="col text-center">
-                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                <div class="timeline-steps">
+                    <div class="row g-2 g-md-0">
+                        <div class="col-4 col-md text-center mb-3 mb-md-0">
+                            <div class="step completed">
+                                <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-success small fw-medium">Pengajuan</span>
+                                <small class="text-muted d-none d-sm-block">12 Feb 2025</small>
+                            </div>
                         </div>
-                        <span class="d-block text-success small fw-medium">Pengajuan</span>
-                        <small class="text-muted">12 Feb 2025</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mb-3 mb-md-0">
+                            <div class="step completed">
+                                <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-check" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-success small fw-medium">Verifikasi</span>
+                                <small class="text-muted d-none d-sm-block">14 Feb 2025</small>
+                            </div>
                         </div>
-                        <span class="d-block text-success small fw-medium">Verifikasi</span>
-                        <small class="text-muted">14 Feb 2025</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-home" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mb-3 mb-md-0">
+                            <div class="step active">
+                                <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-home" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block small fw-medium">Survey</span>
+                                <small class="text-muted d-none d-sm-block">Sedang Proses</small>
+                            </div>
                         </div>
-                        <span class="d-block small fw-medium">Survey</span>
-                        <small class="text-muted">Sedang Proses</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-handshake" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mt-2 mt-md-0">
+                            <div class="step">
+                                <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-handshake" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-muted small fw-medium">Akad</span>
+                                <small class="text-muted d-none d-sm-block">Menunggu</small>
+                            </div>
                         </div>
-                        <span class="d-block text-muted small fw-medium">Akad</span>
-                        <small class="text-muted">Menunggu</small>
-                    </div>
-                    <div class="col text-center">
-                        <div class="bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
-                            <i class="mdi mdi-cash" style="font-size: 18px;"></i>
+                        <div class="col-4 col-md text-center mt-2 mt-md-0">
+                            <div class="step">
+                                <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 35px; height: 35px;">
+                                    <i class="mdi mdi-cash" style="font-size: 18px;"></i>
+                                </div>
+                                <span class="d-block text-muted small fw-medium">Cair</span>
+                                <small class="text-muted d-none d-sm-block">Menunggu</small>
+                            </div>
                         </div>
-                        <span class="d-block text-muted small fw-medium">Cair</span>
-                        <small class="text-muted">Menunggu</small>
                     </div>
                 </div>
             </div>
@@ -111,15 +124,15 @@
     </div>
 
     <!-- Kolom Kanan: Detail KPR -->
-    <div class="col-md-4 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-bank me-2 text-primary"></i>
                     Detail KPR
                 </h5>
 
-                <div class="mb-3">
+                <div class="detail-info">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Bank Tujuan</span>
                         <span class="fw-medium">Bank ABC Syariah</span>
@@ -138,7 +151,7 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <div class="mt-3">
                     <small class="text-muted d-block mb-2">Ditangani oleh:</small>
@@ -158,10 +171,10 @@
 </div>
 
 <!-- Row untuk Survey -->
-<div class="row">
+<div class="row mt-4">
     <!-- Form Survey -->
-    <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-home-map-marker me-2 text-primary"></i>
@@ -169,7 +182,7 @@
                 </h5>
 
                 <!-- Alert Info -->
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
                     <i class="mdi mdi-information-outline me-2"></i>
                     Isi hasil survey unit dengan lengkap. Data ini akan digunakan bank untuk penilaian.
                 </div>
@@ -201,7 +214,7 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Hasil Penilaian Unit</h6>
 
@@ -269,72 +282,56 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
-                <!-- ===== CHECKLIST MODERN DENGAN PREFIX SURVEY ===== -->
-                <div class="survey-section-title">
-                    <i class="mdi mdi-checkbox-marked-outline"></i>
-                    Checklist Kondisi Unit
-                </div>
+                <!-- CHECKLIST KONDISI UNIT -->
+                <div class="mb-4">
+                    <h6 class="mb-3 fw-bold" style="color: #9a55ff;">
+                        <i class="mdi mdi-checkbox-marked-outline me-2"></i>
+                        Checklist Kondisi Unit
+                    </h6>
 
-                <div class="survey-row">
-                    <div class="survey-col-12 survey-col-md-4">
-                        <div class="survey-checkbox-wrapper">
-                            <input type="checkbox" class="survey-checkbox-input" id="listrik" checked>
-                            <label class="survey-checkbox-label" for="listrik">
-                                <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                <span class="survey-check-text">Instalasi Listrik</span>
-                            </label>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="me-2" id="listrik" checked>
+                                <label for="listrik">Instalasi Listrik</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="survey-col-12 survey-col-md-4">
-                        <div class="survey-checkbox-wrapper">
-                            <input type="checkbox" class="survey-checkbox-input" id="air" checked>
-                            <label class="survey-checkbox-label" for="air">
-                                <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                <span class="survey-check-text">PDAM / Air Bersih</span>
-                            </label>
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="me-2" id="air" checked>
+                                <label for="air">PDAM / Air Bersih</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="survey-col-12 survey-col-md-4">
-                        <div class="survey-checkbox-wrapper">
-                            <input type="checkbox" class="survey-checkbox-input" id="akses" checked>
-                            <label class="survey-checkbox-label" for="akses">
-                                <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                <span class="survey-check-text">Akses Jalan</span>
-                            </label>
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="me-2" id="akses" checked>
+                                <label for="akses">Akses Jalan</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="survey-col-12 survey-col-md-4">
-                        <div class="survey-checkbox-wrapper">
-                            <input type="checkbox" class="survey-checkbox-input" id="sertifikat" checked>
-                            <label class="survey-checkbox-label" for="sertifikat">
-                                <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                <span class="survey-check-text">Sertifikat Sesuai</span>
-                            </label>
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="me-2" id="sertifikat" checked>
+                                <label for="sertifikat">Sertifikat Sesuai</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="survey-col-12 survey-col-md-4">
-                        <div class="survey-checkbox-wrapper">
-                            <input type="checkbox" class="survey-checkbox-input" id="shm" checked>
-                            <label class="survey-checkbox-label" for="shm">
-                                <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                <span class="survey-check-text">SHM / SHGB</span>
-                            </label>
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="me-2" id="shm" checked>
+                                <label for="shm">SHM / SHGB</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="survey-col-12 survey-col-md-4">
-                        <div class="survey-checkbox-wrapper">
-                            <input type="checkbox" class="survey-checkbox-input" id="imb" checked>
-                            <label class="survey-checkbox-label" for="imb">
-                                <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                <span class="survey-check-text">IMB</span>
-                            </label>
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="me-2" id="imb" checked>
+                                <label for="imb">IMB</label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Dokumentasi Survey</h6>
 
@@ -386,7 +383,7 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Catatan Survey</h6>
 
@@ -394,7 +391,7 @@
                     <textarea class="survey-form-control" rows="3" placeholder="Contoh: Lokasi strategis dekat jalan raya, lingkungan aman, akses mudah">Lokasi strategis dekat jalan raya, lingkungan aman, akses mudah ke fasilitas umum. Kondisi bangunan baru dan terawat.</textarea>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Rekomendasi</h6>
 
@@ -428,8 +425,8 @@
     </div>
 
     <!-- Kolom Kanan: Info Survey & Aksi -->
-    <div class="col-md-4 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
                     <i class="mdi mdi-clipboard-text me-2 text-primary"></i>
@@ -464,7 +461,7 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <!-- Ringkasan Hasil -->
                 <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Ringkasan Hasil</h6>
@@ -507,7 +504,7 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <!-- Timeline Survey -->
                 <h6 class="mb-3 fw-bold" style="color: #9a55ff;">Timeline Survey</h6>
@@ -541,28 +538,30 @@
                     </div>
                 </div>
 
-                <hr class="survey-hr">
+                <hr class="my-3">
 
                 <!-- Tombol Aksi -->
-                <button class="survey-btn survey-btn-success w-100 mb-2">
-                    <i class="mdi mdi-content-save me-2"></i>
-                    Simpan Hasil Survey
-                </button>
+                <div class="d-flex flex-column gap-2">
+                    <button class="survey-btn survey-btn-success w-100">
+                        <i class="mdi mdi-content-save me-2"></i>
+                        Simpan Hasil Survey
+                    </button>
 
-                <button class="survey-btn survey-btn-primary w-100 mb-2">
-                    <i class="mdi mdi-check-circle me-2"></i>
-                    Selesaikan Survey
-                </button>
+                    <button class="survey-btn survey-btn-primary w-100">
+                        <i class="mdi mdi-check-circle me-2"></i>
+                        Selesaikan Survey
+                    </button>
 
-                <button class="survey-btn survey-btn-outline-warning w-100 mb-2">
-                    <i class="mdi mdi-calendar-refresh me-2"></i>
-                    Reschedule Survey
-                </button>
+                    <button class="survey-btn survey-btn-outline-warning w-100">
+                        <i class="mdi mdi-calendar-refresh me-2"></i>
+                        Reschedule Survey
+                    </button>
 
-                <button class="survey-btn survey-btn-outline-secondary w-100">
-                    <i class="mdi mdi-arrow-left me-2"></i>
-                    Kembali ke Proses KPR
-                </button>
+                    <button class="survey-btn survey-btn-outline-secondary w-100">
+                        <i class="mdi mdi-arrow-left me-2"></i>
+                        Kembali ke Proses KPR
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -571,17 +570,63 @@
 
 @push('styles')
 <style>
+    /* Custom styles untuk konsistensi dengan halaman verifikasi */
     .bg-light {
         background-color: #f8f9fc !important;
     }
+
     .badge {
         padding: 5px 10px;
+        font-weight: 500;
     }
+
     .timeline .d-flex {
         align-items: flex-start;
     }
+
     .timeline i {
         font-size: 18px;
+    }
+
+    /* Progress steps styling */
+    .timeline-steps .step .step-icon {
+        transition: all 0.3s ease;
+    }
+
+    .timeline-steps .step.completed .step-icon {
+        background-color: #28a745 !important;
+    }
+
+    .timeline-steps .step.active .step-icon {
+        background-color: #9a55ff !important;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .timeline-steps .step small {
+            display: none !important;
+        }
+        .timeline-steps .step-icon {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .timeline-steps .step-icon i {
+            font-size: 16px !important;
+        }
+    }
+
+    /* Utility */
+    .h-100 {
+        height: 100%;
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .gap-3 {
+        gap: 1rem;
     }
 </style>
 @endpush
@@ -600,6 +645,21 @@
                 }
             });
         });
+
+        // Handler untuk tombol-tombol aksi
+        const btnSimpan = document.querySelector('.survey-btn-success');
+        if (btnSimpan) {
+            btnSimpan.addEventListener('click', function() {
+                alert('Hasil survey disimpan');
+            });
+        }
+
+        const btnSelesaikan = document.querySelector('.survey-btn-primary');
+        if (btnSelesaikan) {
+            btnSelesaikan.addEventListener('click', function() {
+                alert('Survey selesai, lanjut ke tahap berikutnya');
+            });
+        }
     });
 </script>
 @endpush
