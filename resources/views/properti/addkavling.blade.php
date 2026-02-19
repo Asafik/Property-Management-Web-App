@@ -988,14 +988,14 @@ select.kavling-form-control {
                 </div>
              <div class="card-body">
    <div class="table-responsive">
-    <table class="table table-hover">
+    <table id="tableKavling" class="table table-hover" style="width:100%">
         <thead>
             <tr>
                 <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
                 <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
                 <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
                 <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
-                <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th> <!-- Tambahan -->
+                <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th>
                 <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
                 <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
                 <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
@@ -1285,25 +1285,17 @@ $(document).ready(function() {
     // Inisialisasi DataTables - hanya untuk sorting
     $('#tableKavling').DataTable({
         responsive: true,
-        paging: false,
-        info: false,
-        searching: false,
-        lengthChange: false,
-        ordering: true,
+        paging: false,        // Matikan pagination
+        info: false,           // Matikan info
+        searching: false,      // Matikan search
+        lengthChange: false,   // Matikan length change
+        ordering: true,        // Aktifkan sorting saja
         language: {
-            emptyTable: `
-                <div class="text-center text-muted py-5">
-                    <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                    <p class="mt-3">
-                        <i class="mdi mdi-information-outline me-2"></i>
-                        Belum ada unit kavling
-                    </p>
-                </div>
-            `,
+            emptyTable: "Belum ada unit kavling",
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
-            { orderable: false, targets: [0, 6] }
+            { orderable: false, targets: [0, 8] } // Non-aktifkan sorting untuk kolom No dan Aksi
         ]
     });
 
@@ -1313,25 +1305,6 @@ $(document).ready(function() {
         if (nilai) {
             let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
             this.value = rupiah;
-        }
-    });
-
-    // File upload modern preview untuk tab Excel
-    $('.kavling-file-upload-modern input[type="file"]').change(function(e) {
-        const fileName = e.target.files[0]?.name;
-        const fileSize = e.target.files[0]?.size;
-        const label = $(this).closest('.kavling-file-upload-modern').find('.kavling-file-info-modern span');
-        const sizeSpan = $(this).closest('.kavling-file-upload-modern').find('.kavling-file-size');
-
-        if (fileName) {
-            label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-            if (fileSize) {
-                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                sizeSpan.text(sizeInMB + ' MB');
-            }
-        } else {
-            label.text('Upload File Excel');
-            sizeSpan.text('');
         }
     });
 });
