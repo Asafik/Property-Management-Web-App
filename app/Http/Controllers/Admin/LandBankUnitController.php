@@ -12,26 +12,25 @@ class LandBankUnitController extends Controller
     // Form buat kavling
 public function create($land_bank_id)
 {
-    // Ambil land beserta units
-    $land = LandBank::with('units')->findOrFail($land_bank_id);
+    $land = LandBank::findOrFail($land_bank_id);
 
-    // Mapping status ke persentase
+    $units = $land->units()->paginate(10);
+
     $map = [
         'belum_mulai' => 0,
         'pondasi'     => 20,
         'dinding'     => 40,
         'atap'        => 60,
         'finishing'   => 80,
-        'selesai' => 100
+        'selesai'     => 100
     ];
 
-    foreach ($land->units as $unit) {
-        // Pastikan value string sesuai mapping
+    foreach ($units as $unit) {
         $status = strtolower($unit->construction_progress ?? 'belum_mulai');
         $unit->progress_percentage = $map[$status] ?? 0;
     }
 
-    return view('properti.addkavling', compact('land'));
+    return view('properti.addkavling', compact('land', 'units'));
 }
 
 

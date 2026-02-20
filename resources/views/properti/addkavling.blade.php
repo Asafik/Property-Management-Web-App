@@ -1400,9 +1400,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($land->units as $i => $unit)
+                                  @forelse($units as $i => $unit)
                                         <tr>
-                                            <td class="text-center fw-bold">{{ $i + 1 }}</td>
+                                            <td class="text-center fw-bold">{{ $units->firstItem() + $i }}</td>
 
                                             {{-- BLOK / NO --}}
                                             <td>
@@ -1521,28 +1521,9 @@
                                 <i class="mdi mdi-information-outline me-1"></i>
                                 Menampilkan 1-{{ $land->units->count() }} dari {{ $land->units->count() }} data
                             </div>
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                    style="gap: 2px;">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    @if ($land->units->count() > 10)
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                    @endif
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
+                            <div class="mt-3">
+    {{ $units->links('pagination::bootstrap-5') }}
+</div>
                         </div>
                     </div>
                 </div>
