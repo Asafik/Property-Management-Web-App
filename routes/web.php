@@ -165,5 +165,10 @@ Route::post('/agency/store',[AgencyPropertyController::class,'store'])->name('ag
 |--------------------------------------------------------------------------*/
 Route::get('/pengajuan', [KprApplicationController::class, 'index'])->name('pengajuan.index');
 Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('kpr.store');
-Route::get('/pengajuan/search-customer', 
+Route::get('/pengajuan/search-customer',
 [CustomerController::class, 'search'])->name('pengajuan.search-customer');
+
+
+Route::get('/dashboard-master-data-bank', function () {
+    return view('bank.data_bank');
+});

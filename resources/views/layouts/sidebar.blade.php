@@ -98,11 +98,19 @@
     </div>
     </li>
 
-    <!-- MENU CUSTOMER -->
+     <!-- MENU CUSTOMER -->
     <li class="nav-item">
       <a class="nav-link" href="#">
         <span class="menu-title">Customer</span>
         <i class="mdi mdi-account-group menu-icon"></i>
+      </a>
+    </li>
+
+    <!-- MENU Master data bank -->
+    <li class="nav-item">
+      <a class="nav-link" href="dashboard-master-data-bank">
+        <span class="menu-title">Data Bank</span>
+        <i class="mdi mdi-chart-bar menu-icon"></i>
       </a>
     </li>
 
