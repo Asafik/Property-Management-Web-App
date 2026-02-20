@@ -1242,7 +1242,9 @@
                                         <td>{{ $c->customer_id ?? '-' }}</td>
                                         <td>{{ $c->full_name ?? '-' }}</td>
                                         <td>{{ $c->phone ?? '-' }}</td>
-                                        <td>{{ $c->job_status ?? '-' }}</td>
+                                        <td>
+                                            {{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : ($c->job_status ?: '-') }}
+                                        </td>
                                         <td>
                                             <button class="btn btn-sm btn-gradient-success pilihCustomer"
                                                 data-id="{{ $c->id }}">
