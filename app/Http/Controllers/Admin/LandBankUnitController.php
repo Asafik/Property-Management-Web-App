@@ -10,29 +10,16 @@ use App\Models\LandBankUnit;
 class LandBankUnitController extends Controller
 {
     // Form buat kavling
-public function create($land_bank_id)
+public function create(Request $request, $land_bank_id)
 {
     $land = LandBank::findOrFail($land_bank_id);
 
-    $units = $land->units()->paginate(10);
+    $perPage = $request->get('per_page', 10); // default 10
 
-    $map = [
-        'belum_mulai' => 0,
-        'pondasi'     => 20,
-        'dinding'     => 40,
-        'atap'        => 60,
-        'finishing'   => 80,
-        'selesai'     => 100
-    ];
+    $units = $land->units()->paginate($perPage)->withQueryString();
 
-    foreach ($units as $unit) {
-        $status = strtolower($unit->construction_progress ?? 'belum_mulai');
-        $unit->progress_percentage = $map[$status] ?? 0;
-    }
-
-    return view('properti.addkavling', compact('land', 'units'));
+    return view('properti.addkavling', compact('land', 'units', 'perPage'));
 }
-
 
 
 
