@@ -33,7 +33,7 @@
                             <i class="mdi mdi-file-document text-white" style="font-size: 1.2rem; font-size: clamp(1rem, 3vw, 1.5rem);"></i>
                         </div>
                         <div class="overflow-hidden">
-                            <h3 class="mb-0 fs-5 fs-md-3">24</h3>
+                            <h3 class="mb-0 fs-5 fs-md-3">{{$totalPengajuan}}</h3>
                             <small class="text-muted text-truncate d-block" style="font-size: clamp(0.7rem, 2vw, 0.85rem);">Total Pengajuan</small>
                         </div>
                     </div>

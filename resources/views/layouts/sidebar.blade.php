@@ -37,7 +37,7 @@
             <a class="nav-link" href="{{route('marketing.tambah_customer')}}">Tambah Customer</a>
         </li>
           <li class="nav-item">
-            <a class="nav-link" href="dashboard-list-pengajuan">list Pengajuan</a>
+            <a class="nav-link" href="{{route('marketing.list_pengajuan')}}">list Pengajuan</a>
         <li class="nav-item">
          <li class="nav-item">
             <a class="nav-link" href="dashboard-approved">Approved</a>

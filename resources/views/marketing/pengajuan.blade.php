@@ -138,7 +138,7 @@
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
                                     <div class="pengajuan-form-group">
                                         <label>Bank Tujuan *</label>
-                                        <select class="pengajuan-form-control" name="bank_id" required>
+                                        <select class="pengajuan-form-control" name="banks_id" required>
                                             <option value="">-- Pilih Bank --</option>
                                             @foreach ($banks as $bank)
                                                 <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>

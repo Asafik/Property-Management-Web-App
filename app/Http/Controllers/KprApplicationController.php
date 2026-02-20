@@ -47,7 +47,7 @@ public function store(Request $request)
         $request->validate([
             'customer_id' => 'required',
             'unit_id' => 'required',
-            'bank_id' => 'required',
+            'banks_id' => 'required',
             'dp' => 'required|numeric',
             'tenor' => 'required|numeric',
             'bunga' => 'required|numeric',
@@ -91,7 +91,7 @@ public function store(Request $request)
         KprApplication::create([
             'customer_id' => $request->customer_id,
             'unit_id' => $request->unit_id,
-            'bank_id' => $request->bank_id,
+            'banks_id' => $request->banks_id,
 
             'produk_kpr' => $request->produk_kpr,
             'harga_unit' => $hargaUnit,

@@ -22,7 +22,7 @@ use App\Http\Controllers\RABController;
 
 use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
-
+use App\Http\Controllers\ListPengajuanController;
 use App\Http\Controllers\PengajuanController;
 
 /*
@@ -66,7 +66,8 @@ Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer']
 | VIEW MARKETING (sementara static)
 |--------------------------------------------------------------------------
 */
-Route::get('/dashboard-list-pengajuan', fn() => view('marketing.list_pengajuan'));
+// Route::get('/dashboard-list-pengajuan', fn() => view('marketing.list_pengajuan'));
+Route::get('marketing/list-pengajuan', [ListPengajuanController::class, 'index'])->name('marketing.list_pengajuan');
 Route::get('/dashboard-cash', fn() => view('marketing.cash'));
 Route::get('/dashboard-approved', fn() => view('marketing.approved'));
 Route::get('/dashboard-akad', fn() => view('marketing.akad'));
