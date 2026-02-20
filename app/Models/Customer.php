@@ -32,7 +32,9 @@ class Customer extends Model
 
     'phone','home_phone','email','office_email',
 
-    'job_status','company_name','main_income','side_income','npwp'
+    'job_status','company_name','main_income','side_income','npwp', 'job_status_lainnya',
+
+    'domicile_province','domicile_city','domicile_subdistrict','domicile_village','domicile_rt','domicile_rw','domicile_postal_code','domicile_address',
 ];
 public function units()
 {

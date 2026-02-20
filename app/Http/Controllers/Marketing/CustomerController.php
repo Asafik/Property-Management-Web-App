@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -15,17 +16,18 @@ class CustomerController extends Controller
         return view('marketing.tambah_customer', compact('customerId'));
     }
 
-    // 🔥 STORE DATA CUSTOMER
-    public function store(Request $request)
-    {
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'email' => 'nullable|email',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'full_name' => 'required|string|max:255',
+        'phone' => 'nullable|string|max:20',
+        'email' => 'nullable|email',
+    ]);
+
+    try {
 
         $customer = Customer::create([
-            'customer_id' => $this->generateCustomerId(), // auto ID
+            'customer_id' => $this->generateCustomerId(),
             'full_name' => $request->full_name,
             'nickname' => $request->nickname,
             'nik' => $request->nik,
@@ -40,13 +42,11 @@ class CustomerController extends Controller
             'marital_date' => $request->marital_date,
             'child_count' => $request->child_count,
 
-            // pasangan & ortu
             'spouse_name' => $request->spouse_name,
             'spouse_nik' => $request->spouse_nik,
             'father_name' => $request->father_name,
             'mother_name' => $request->mother_name,
 
-            // alamat
             'province' => $request->province,
             'city' => $request->city,
             'subdistrict' => $request->subdistrict,
@@ -56,22 +56,43 @@ class CustomerController extends Controller
             'postal_code' => $request->postal_code,
             'address' => $request->address,
 
-            // kontak
             'phone' => $request->phone,
             'home_phone' => $request->home_phone,
             'email' => $request->email,
             'office_email' => $request->office_email,
 
-            // pekerjaan
             'job_status' => $request->job_status,
+            'job_status_lainnya' => $request->job_status_lainnya,
             'company_name' => $request->company_name,
             'main_income' => $request->main_income,
             'side_income' => $request->side_income,
             'npwp' => $request->npwp,
+
+            'domicile_province' => $request->domicile_province,
+            'domicile_city' => $request->domicile_city,
+            'domicile_subdistrict' => $request->domicile_subdistrict,
+            'domicile_village' => $request->domicile_village,
+            'domicile_rt' => $request->domicile_rt,
+            'domicile_rw' => $request->domicile_rw,
+            'domicile_postal_code' => $request->domicile_postal_code,
+            'domicile_address' => $request->domicile_address,
+
+            'instagram' => $request->instagram,
+            'facebook' => $request->facebook,
         ]);
 
         return redirect()->back()->with('success', 'Customer berhasil disimpan');
+
+    } catch (\Exception $e) {
+
+        // simpan error ke log (penting!)
+        Log::error('Error simpan customer: '.$e->getMessage());
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
     }
+}
 
     // 🔥 AUTO GENERATE ID
     private function generateCustomerId()
