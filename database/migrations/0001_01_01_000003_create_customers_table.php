@@ -67,9 +67,10 @@ Schema::create('customers', function (Blueprint $table) {
         'Karyawan Swasta',
         'Wiraswasta',
         'Ibu Rumah Tangga',
-        'Pensiunan'
+        'Pensiunan',
+        'Lainnya'
     ])->nullable();
-
+    $table->string('job_status_lainnya')->nullable();
     $table->string('company_name')->nullable();
     $table->bigInteger('main_income')->nullable();
     $table->bigInteger('side_income')->nullable();
