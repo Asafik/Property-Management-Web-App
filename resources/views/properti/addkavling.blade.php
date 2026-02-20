@@ -1400,7 +1400,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                  @forelse($units as $i => $unit)
+                                    @forelse($units as $i => $unit)
                                         <tr>
                                             <td class="text-center fw-bold">{{ $units->firstItem() + $i }}</td>
 
@@ -1522,8 +1522,8 @@
                                 Menampilkan 1-{{ $land->units->count() }} dari {{ $land->units->count() }} data
                             </div>
                             <div class="mt-3">
-    {{ $units->links('pagination::bootstrap-5') }}
-</div>
+                                {{ $units->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
                     </div>
                 </div>
