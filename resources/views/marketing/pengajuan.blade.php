@@ -4,7 +4,6 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('assets/css/marketing/pengajuan.css') }}">
-
     <div class="container-fluid p-3 p-md-4">
         <!-- Header -->
         <div class="pengajuan-row mb-3 mb-md-4">
@@ -409,7 +408,7 @@ $(document).ready(function(){
                         data-price="${price}"
                         data-blok="${blok}"
                         data-unitid="${unitId}">
-                        
+
                         <strong>${cust.full_name}</strong><br>
                         <small>NIK: ${cust.nik}</small><br>
                         <small>Unit: ${unitName} (${blok})</small>
