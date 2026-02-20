@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 */
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\LandBankUnitController;
 use App\Http\Controllers\Admin\DevelopmentProgressController;
@@ -169,6 +169,5 @@ Route::get('/pengajuan/search-customer',
 [CustomerController::class, 'search'])->name('pengajuan.search-customer');
 
 
-Route::get('/dashboard-master-data-bank', function () {
-    return view('bank.data_bank');
-});
+Route::get('/master-data-bank',[BankController::class, 'index'])->name('bank.index');
+Route::post('/master-data-bank/store',[BankController::class, 'store'])->name('bank.store');

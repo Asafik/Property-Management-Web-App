@@ -108,7 +108,7 @@
 
     <!-- MENU Master data bank -->
     <li class="nav-item">
-      <a class="nav-link" href="dashboard-master-data-bank">
+      <a class="nav-link" href="{{route('bank.index')}}">
         <span class="menu-title">Data Bank</span>
         <i class="mdi mdi-chart-bar menu-icon"></i>
       </a>

@@ -724,30 +724,33 @@ h3.text-dark {
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
                                     <th><i class="mdi mdi-bank me-1"></i>Nama Bank</th>
                                     <th><i class="mdi mdi-credit-card me-1"></i>Kode Bank</th>
-                                    <th><i class="mdi mdi-phone me-1"></i>No. Telepon</th>
-                                    <th><i class="mdi mdi-web me-1"></i>Website</th>
-                                    <th><i class="mdi mdi-map-marker me-1"></i>Alamat</th>
+                                    
                                     <th><i class="mdi mdi-flag me-1"></i>Status</th>
                                     <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($banks as $bank)
                                 <tr>
-                                    <td class="text-center fw-bold">1</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <i class="mdi mdi-bank text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">Bank Central Asia (BCA)</span>
+                                            <span class="fw-bold">{{ $bank->bank_name }}</span>
                                         </div>
                                     </td>
-                                    <td>BCA</td>
-                                    <td>(021) 23588-888</td>
-                                    <td>www.bca.co.id</td>
-                                    <td>Jl. Sudirman No. 1, Jakarta Pusat</td>
+                                    <td>{{ $bank->account_holder }}</td>
+                                    
                                     <td>
-                                        <span class="badge badge-gradient-success">
-                                            <i class="mdi mdi-check-circle me-1"></i>Aktif
-                                        </span>
+                                        @if($bank->is_active)
+                                            <span class="badge badge-gradient-success">
+                                                <i class="mdi mdi-check-circle me-1"></i>Aktif
+                                            </span>
+                                        @else
+                                            <span class="badge badge-gradient-danger">
+                                                <i class="mdi mdi-close-circle me-1"></i>Non-Aktif
+                                            </span>
+                                        @endif
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
@@ -763,6 +766,7 @@ h3.text-dark {
                                         </div>
                                     </td>
                                 </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -822,74 +826,34 @@ h3.text-dark {
                 <button type="button" class="btn-close" onclick="$('#modalTambahBank').modal('hide')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form action="{{ route('bank.store') }}" method="POST">
+                    @csrf
                     <div class="row">
                         <div class="col-md-6">
                             <div class="modal-form-group">
                                 <label>
                                     <i class="mdi mdi-bank me-1"></i>Nama Bank
                                 </label>
-                                <input type="text" class="modal-form-control" placeholder="Contoh: Bank Central Asia">
+                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: Bank Central Asia">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="modal-form-group">
                                 <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Kode Bank
+                                    <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
                                 </label>
-                                <input type="text" class="modal-form-control" placeholder="Contoh: BCA">
+                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: Andi Sukma ">
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                         <div class="col-md-6">
                             <div class="modal-form-group">
                                 <label>
-                                    <i class="mdi mdi-phone me-1"></i>No. Telepon
+                                    <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
                                 </label>
-                                <input type="text" class="modal-form-control" placeholder="Contoh: (021) 23588-888">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-web me-1"></i>Website
-                                </label>
-                                <input type="text" class="modal-form-control" placeholder="Contoh: www.bca.co.id">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-email me-1"></i>Email
-                                </label>
-                                <input type="email" class="modal-form-control" placeholder="Contoh: cs@bank.co.id">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-map-marker me-1"></i>Alamat
-                                </label>
-                                <textarea class="modal-form-control" rows="3" placeholder="Alamat lengkap bank..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-city me-1"></i>Kota
-                                </label>
-                                <input type="text" class="modal-form-control" placeholder="Contoh: Jakarta Pusat">
+                                <input type="number" name="number" class="modal-form-control" placeholder="Contoh: 1234567890">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -897,23 +861,17 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-flag me-1"></i>Status
                                 </label>
-                                <select class="modal-form-control">
-                                    <option value="aktif">Aktif</option>
-                                    <option value="nonaktif">Non-Aktif</option>
+                                <select class="modal-form-control" name="is_active">
+                                    <option value="1">Aktif</option>
+                                    <option value="0">Non-Aktif</option>
                                 </select>
                             </div>
                         </div>
                     </div>
+                    <button type="submit" class="btn btn-gradient-primary">Simpan</button>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahBank').modal('hide')">
-                    <i class="mdi mdi-close me-1"></i>Batal
-                </button>
-                <button type="button" class="btn btn-gradient-primary" onclick="alert('Bank berhasil ditambahkan!'); $('#modalTambahBank').modal('hide')">
-                    <i class="mdi mdi-check me-1"></i>Simpan
-                </button>
-            </div>
+            
         </div>
     </div>
 </div>

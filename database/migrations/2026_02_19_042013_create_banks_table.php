@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('bank_name');
             $table->boolean('is_active')->default(true);
+            $table->string('account_holder')->nullable();
             $table->string('number')->nullable();
             $table->timestamps();
         });
