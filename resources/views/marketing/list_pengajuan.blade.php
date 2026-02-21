@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Dashboard Marketing - Properti Management')
+@section('title', 'Customer Booking - Properti Management')
 
 @section('content')
     <style>
@@ -103,17 +103,7 @@
             height: auto;
         }
 
-        /* Circle icon dalam statistik */
-        .bg-gradient-primary .rounded-circle,
-        .bg-gradient-info .rounded-circle,
-        .bg-gradient-success .rounded-circle,
-        .bg-gradient-warning .rounded-circle,
-        .bg-gradient-secondary .rounded-circle {
-            background: rgba(255, 255, 255, 0.2) !important;
-            backdrop-filter: blur(2px);
-        }
-
-        /* ===== FILTER SECTION - SAMA PERSIS DENGAN MARKETING JUAL UNIT ===== */
+        /* ===== FILTER SECTION - DIPERBESAR ===== */
         .filter-card {
             background: linear-gradient(135deg, #f9f7ff, #f2ecff);
             border-radius: 12px;
@@ -179,24 +169,6 @@
             border-color: #9a55ff;
             box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
             outline: none;
-        }
-
-        /* Input group styling */
-        .input-group-text {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border: 1px solid #e9ecef;
-            border-right: none;
-            border-radius: 8px 0 0 8px;
-            color: #9a55ff;
-        }
-
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .input-group .form-control:focus {
-            border-left: none;
         }
 
         /* Form Label */
@@ -279,7 +251,7 @@
             color: #ffffff !important;
         }
 
-        /* Outline Buttons */
+        /* Outline Buttons - SAMA PERSIS DENGAN MARKETING JUAL UNIT */
         .btn-outline-primary {
             background: transparent;
             border: 1px solid #9a55ff;
@@ -395,6 +367,11 @@
             color: #ffffff;
         }
 
+        .badge.badge-secondary {
+            background: linear-gradient(135deg, #6c757d, #a5b3cb) !important;
+            color: #ffffff;
+        }
+
         /* ===== TABLE STYLING ===== */
         .table-responsive {
             overflow-x: auto;
@@ -435,6 +412,18 @@
             }
         }
 
+        /* Kolom No lebih rapat */
+        .table thead th:first-child {
+            padding-left: 0.75rem;
+            width: 60px;
+        }
+
+        .table tbody td:first-child {
+            padding-left: 0.75rem;
+            font-weight: 500;
+            width: 60px;
+        }
+
         .table tbody td {
             vertical-align: middle;
             font-size: 0.85rem;
@@ -459,6 +448,69 @@
 
         .table tbody tr:hover {
             background-color: #f8f9fa;
+        }
+
+        /* Nama properti - lebih rapat dengan nomor */
+        .table tbody td:nth-child(2) {
+            padding-left: 0.3rem;
+        }
+
+        .table tbody td .d-flex.align-items-center {
+            gap: 0.5rem;
+        }
+
+        /* Icon dalam tabel */
+        .table tbody td i {
+            font-size: 1rem;
+        }
+
+        /* Text colors */
+        .text-primary {
+            color: #9a55ff !important;
+        }
+
+        .text-info {
+            color: #17a2b8 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .fw-bold {
+            font-weight: 600 !important;
+        }
+
+        .text-muted {
+            color: #a5b3cb !important;
+        }
+
+        /* Typography */
+        h3.text-dark {
+            font-size: 1.3rem !important;
+            font-weight: 700;
+            color: #2c2e3f !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        @media (min-width: 576px) {
+            h3.text-dark {
+                font-size: 1.5rem !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            h3.text-dark {
+                font-size: 1.7rem !important;
+            }
         }
 
         /* Progress bar styling */
@@ -558,29 +610,34 @@
             }
         }
 
-        /* Typography */
-        h3.text-dark,
-        h4.text-dark {
-            font-size: 1.3rem !important;
+        /* Modal Styling */
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1rem;
             font-weight: 700;
-            color: #2c2e3f !important;
-            margin-bottom: 0.5rem !important;
+            color: #9a55ff;
         }
 
-        @media (min-width: 576px) {
-
-            h3.text-dark,
-            h4.text-dark {
-                font-size: 1.5rem !important;
-            }
+        .modal-body {
+            padding: 1.2rem;
         }
 
-        @media (min-width: 768px) {
-
-            h3.text-dark,
-            h4.text-dark {
-                font-size: 1.7rem !important;
-            }
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1rem;
+            border-radius: 0 0 16px 16px;
         }
 
         /* Badge dengan icon */
@@ -590,7 +647,11 @@
         }
 
         /* Hover effect untuk icon aksi */
-        .btn:hover {
+        .btn-outline-primary:hover,
+        .btn-outline-success:hover,
+        .btn-outline-warning:hover,
+        .btn-outline-danger:hover,
+        .btn-outline-info:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -622,49 +683,8 @@
                 min-height: 38px;
             }
 
-            h3.text-dark,
-            h4.text-dark {
+            h3.text-dark {
                 font-size: 1.2rem !important;
-            }
-
-            .grid-margin {
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        /* Gap utility */
-        .gap-1 {
-            gap: 0.25rem;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        .gap-3 {
-            gap: 1rem;
-        }
-
-        /* Font sizes */
-        .fs-5 {
-            font-size: 1.1rem;
-        }
-
-        .fs-6 {
-            font-size: 0.95rem;
-        }
-
-        @media (min-width: 768px) {
-            .fs-md-3 {
-                font-size: 1.5rem;
-            }
-
-            .fs-md-4 {
-                font-size: 1.3rem;
-            }
-
-            .fs-md-5 {
-                font-size: 1.2rem;
             }
         }
 
@@ -711,8 +731,8 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-chart-line me-2" style="color: #9a55ff;"></i>
-                                Dashboard Marketing
+                                <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
+                                Customer Booking
                             </h3>
                             <p class="text-muted mb-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
@@ -720,71 +740,67 @@
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
-                            <span class="text-muted small">Senin, 16 Februari 2026</span>
+                            <i class="mdi mdi-account-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <div class="row mt-3 mt-md-4 g-2 g-md-3">
-            <div class="col-6 col-md-3 grid-margin stretch-card">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body p-2 p-md-3">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-primary bg-gradient rounded-circle p-2 p-md-3 me-2 me-md-3">
-                                <i class="mdi mdi-file-document text-white"
-                                    style="font-size: 1.2rem; font-size: clamp(1rem, 3vw, 1.5rem);"></i>
-                            </div>
-                            <div class="overflow-hidden">
-                                <h3 class="mb-0 fs-5 fs-md-3">{{ $totalPengajuan }}</h3>
-                                <small class="text-muted text-truncate d-block"
-                                    style="font-size: clamp(0.7rem, 2vw, 0.85rem);">Total Pengajuan</small>
-                            </div>
-                        </div>
+        <!-- Row Statistik -->
+        <div class="row g-2 g-sm-2 g-md-3 mb-4">
+            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
+                <div class="card bg-gradient-primary card-img-holder text-white h-100">
+                    <div class="card-body p-2 p-sm-2 p-md-3">
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                            Total Pengajuan
+                            <i class="mdi mdi-file-document float-end" style="font-size: 1.2rem;"></i>
+                        </h4>
+                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalPengajuan }}</h2>
+                        <h6 class="card-text small">Semua pengajuan</h6>
                     </div>
                 </div>
             </div>
+
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-info card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3 d-flex align-items-center">
-                        <div class="rounded-circle p-2 p-md-3 me-2 me-md-3" style="background: rgba(255,255,255,0.2);">
-                            <i class="mdi mdi-bank" style="font-size: clamp(1rem, 3vw, 1.5rem);"></i>
-                        </div>
-                        <div>
-                            <h2 class="mb-0 fs-5 fs-md-3">15</h2>
-                            <small class="text-white opacity-75" style="font-size: clamp(0.7rem, 2vw, 0.85rem);">KPR
-                                Diproses</small>
-                        </div>
+                    <div class="card-body p-2 p-sm-2 p-md-3">
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                            KPR Diproses
+                            <i class="mdi mdi-bank float-end" style="font-size: 1.2rem;"></i>
+                        </h4>
+                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalKpr ?? 15 }}</h2>
+                        <h6 class="card-text small">Dalam proses</h6>
                     </div>
                 </div>
             </div>
+
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-success card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3 d-flex align-items-center">
-                        <div class="rounded-circle p-2 p-md-3 me-2 me-md-3" style="background: rgba(255,255,255,0.2);">
-                            <i class="mdi mdi-cash" style="font-size: clamp(1rem, 3vw, 1.5rem);"></i>
-                        </div>
-                        <div>
-                            <h2 class="mb-0 fs-5 fs-md-3">9</h2>
-                            <small class="text-white opacity-75"
-                                style="font-size: clamp(0.7rem, 2vw, 0.85rem);">Cash</small>
-                        </div>
+                    <div class="card-body p-2 p-sm-2 p-md-3">
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                            Cash
+                            <i class="mdi mdi-cash float-end" style="font-size: 1.2rem;"></i>
+                        </h4>
+                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalCash ?? 9 }}</h2>
+                        <h6 class="card-text small">Pembayaran tunai</h6>
                     </div>
                 </div>
             </div>
+
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-warning card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3 d-flex align-items-center">
-                        <div class="rounded-circle p-2 p-md-3 me-2 me-md-3" style="background: rgba(255,255,255,0.2);">
-                            <i class="mdi mdi-check-circle" style="font-size: clamp(1rem, 3vw, 1.5rem);"></i>
-                        </div>
-                        <div>
-                            <h2 class="mb-0 fs-5 fs-md-3">12</h2>
-                            <small class="text-white opacity-75" style="font-size: clamp(0.7rem, 2vw, 0.85rem);">Cair /
-                                Lunas</small>
-                        </div>
+                    <div class="card-body p-2 p-sm-2 p-md-3">
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                            Cair / Lunas
+                            <i class="mdi mdi-check-circle float-end" style="font-size: 1.2rem;"></i>
+                        </h4>
+                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalLunas ?? 12 }}</h2>
+                        <h6 class="card-text small">Selesai</h6>
                     </div>
                 </div>
             </div>
@@ -794,8 +810,7 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div
-                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                    <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                         <h5 class="card-title mb-2 mb-md-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                             Daftar Pengajuan
@@ -810,7 +825,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section - SAMA PERSIS DENGAN MARKETING JUAL UNIT -->
+                        <!-- Filter Section - DIPERBESAR (LANGSUNG DI DALAM CARD TABLE) -->
                         <div class="filter-card">
                             <div class="card-body">
                                 <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -890,7 +905,7 @@
                                     </div>
                                 </div>
 
-                                <!-- FILTER UNTUK TABLET & DESKTOP - SAMA PERSIS DENGAN MARKETING JUAL UNIT -->
+                                <!-- FILTER UNTUK TABLET & DESKTOP -->
                                 <div class="d-none d-md-block">
                                     <div class="row g-2 align-items-end">
                                         <div class="col-md-4">
@@ -980,22 +995,11 @@
                                     @foreach ($bookings as $booking)
                                         <tr>
                                             <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-
                                             <td>
-                                                <span class="fw-medium small">
-                                                    {{ $booking->booking_code }}
-                                                </span>
+                                                <span class="fw-medium small">{{ $booking->booking_code }}</span>
                                             </td>
-
-                                            <td class="small">
-                                                {{ $booking->customer->full_name ?? '-' }}
-                                            </td>
-
-                                            <td class="small">
-                                                {{ $booking->unit->block ?? '' }}
-                                                {{ $booking->unit->unit_number ?? '' }}
-                                            </td>
-
+                                            <td class="small">{{ $booking->customer->full_name ?? '-' }}</td>
+                                            <td class="small">{{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}</td>
                                             <td>
                                                 @if ($booking->purchase_type == 'kpr')
                                                     <span class="badge badge-info badge-sm">KPR</span>
@@ -1003,32 +1007,24 @@
                                                     <span class="badge badge-success badge-sm">Cash</span>
                                                 @endif
                                             </td>
-
                                             <td>
                                                 @switch($booking->status)
                                                     @case('active')
                                                         <span class="badge badge-warning badge-sm">Active</span>
-                                                    @break
-
+                                                        @break
                                                     @case('akad')
                                                         <span class="badge badge-primary badge-sm">Akad</span>
-                                                    @break
-
+                                                        @break
                                                     @case('lunas')
                                                         <span class="badge badge-success badge-sm">Lunas</span>
-                                                    @break
-
+                                                        @break
                                                     @case('ditolak')
                                                         <span class="badge badge-danger badge-sm">Ditolak</span>
-                                                    @break
-
+                                                        @break
                                                     @default
-                                                        <span class="badge badge-secondary badge-sm">
-                                                            {{ ucfirst($booking->status) }}
-                                                        </span>
+                                                        <span class="badge badge-secondary badge-sm">{{ ucfirst($booking->status) }}</span>
                                                 @endswitch
                                             </td>
-
                                             <td>
                                                 @php
                                                     $progress = match ($booking->status) {
@@ -1039,46 +1035,35 @@
                                                         default => 10,
                                                     };
                                                 @endphp
-
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div class="progress w-100" style="height: 6px;">
-                                                        <div class="progress-bar" style="width: {{ $progress }}%">
-                                                        </div>
+                                                        <div class="progress-bar" style="width: {{ $progress }}%"></div>
                                                     </div>
                                                     <span class="small">{{ $progress }}%</span>
                                                 </div>
                                             </td>
-
-                                            <td class="small">
-                                                {{ $booking->sales->name ?? '-' }}
-                                            </td>
-
+                                            <td class="small">{{ $booking->sales->name ?? '-' }}</td>
                                             <td class="text-center">
-                                                @if ($booking->purchase_type == 'kpr')
-                                                    <a href="{{ route('pengajuan.show', $booking->id) }}"
-                                                        class="btn btn-xs btn-gradient-primary" title="Proses KPR">
-                                                        <i class="mdi mdi-bank"></i>
-                                                    </a>
-                                                @else
-                                                    <a href="{{ route('cash.show', $booking->id) }}"
-                                                        class="btn btn-xs btn-gradient-success" title="Proses Cash">
-                                                        <i class="mdi mdi-cash"></i>
-                                                    </a>
-                                                @endif
                                                 <div class="d-flex justify-content-center gap-1">
-                                                    <a href="#" class="btn btn-xs btn-gradient-info"
-                                                        title="Detail">
+                                                    @if ($booking->purchase_type == 'kpr')
+                                                        <button class="btn btn-outline-primary btn-sm" title="Proses KPR">
+                                                            <i class="mdi mdi-bank"></i>
+                                                        </button>
+                                                    @else
+                                                        <button class="btn btn-outline-success btn-sm" title="Proses Cash">
+                                                            <i class="mdi mdi-cash"></i>
+                                                        </button>
+                                                    @endif
+                                                    <button class="btn btn-outline-primary btn-sm" title="Detail">
                                                         <i class="mdi mdi-eye"></i>
-                                                    </a>
-                                                    <a href="#" class="btn btn-xs btn-gradient-warning"
-                                                        title="Edit">
+                                                    </button>
+                                                    <button class="btn btn-outline-warning btn-sm" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
-                                                    </a>
-                                                    <form action="#" method="POST">
+                                                    </button>
+                                                    <form action="#" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-xs btn-gradient-danger"
-                                                            title="Hapus">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </form>
@@ -1090,24 +1075,25 @@
                             </table>
                         </div>
 
-                        <!-- Pagination UI - DIPERKECIL -->
+                        <!-- Pagination UI - DIPERKECIL (UI STATIK) -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 - 7 dari 24 data
+                                Menampilkan 1 - {{ $bookings->count() }} dari {{ $bookings->count() }} data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                    style="gap: 2px;">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                     <li class="page-item disabled">
                                         <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
                                     <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    @if($bookings->count() > 5)
                                     <li class="page-item"><a class="page-link" href="#">2</a></li>
                                     <li class="page-item"><a class="page-link" href="#">3</a></li>
                                     <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    @endif
                                     <li class="page-item">
                                         <a class="page-link" href="#" aria-label="Next">
                                             <i class="mdi mdi-chevron-right"></i>
