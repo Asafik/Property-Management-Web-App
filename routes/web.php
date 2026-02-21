@@ -19,7 +19,7 @@ use App\Http\Controllers\LandBankController;
 use App\Http\Controllers\AgencyPropertyController;
 use App\Http\Controllers\KprApplicationController;
 use App\Http\Controllers\RABController;
-
+Use App\Http\Controllers\CashController;
 use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
 use App\Http\Controllers\ListPengajuanController;
@@ -172,10 +172,11 @@ Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->nam
 Route::get('/pengajuan/search-customer',
 [CustomerController::class, 'search'])->name('pengajuan.search-customer');
 
-Route::get('/dashboard-cash-pengajuan', function () {
-    return view('marketing.cash_pengajuan');
-});
+// Route::get('/dashboard-cash-pengajuan', function () {
+//     return view('marketing.cash_pengajuan');
+// });
 
+Route::get('/dashboard-cash-pengajuan', [CashController::class, 'index'])->name('marketing.cash_pengajuan');
 
 Route::get('/master-data-bank',[BankController::class, 'index'])->name('bank.index');
 Route::post('/master-data-bank/store',[BankController::class, 'store'])->name('bank.store');

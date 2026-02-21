@@ -141,9 +141,12 @@
             <i class="mdi mdi-cached me-2 text-success"></i> Activity Log
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">
-            <i class="mdi mdi-logout me-2 text-primary"></i> Signout
-          </a>
+<form action="{{ route('logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="dropdown-item">
+        <i class="mdi mdi-logout me-2 text-primary"></i> Signout
+    </button>
+</form>
         </div>
       </li>
     </ul>

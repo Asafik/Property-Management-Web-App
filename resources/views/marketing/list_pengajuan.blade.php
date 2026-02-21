@@ -1044,51 +1044,50 @@
                                             </td>
                                             <td class="small">{{ $booking->sales->name ?? '-' }}</td>
                                             <td class="text-center">
-                                            <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
-                                                {{-- Proses KPR / Cash --}}
-                                                @if ($booking->purchase_type == 'kpr')
-                                                    <a href="{{ route('pengajuan.show', $booking->id) }}"
-                                                        class="btn btn-outline-primary btn-sm"
-                                                        title="Proses KPR">
-                                                        <i class="mdi mdi-bank"></i>
+                                                    {{-- Proses KPR / Cash --}}
+                                                    @if ($booking->purchase_type == 'kpr')
+                                                        <a href="{{ route('pengajuan.show', $booking->id) }}"
+                                                            class="btn btn-outline-primary btn-sm"
+                                                            title="Proses KPR">
+                                                            <i class="mdi mdi-bank"></i>
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('cash.show', $booking->id) }}"
+                                                            class="btn btn-outline-success btn-sm"
+                                                            title="Proses Cash">
+                                                            <i class="mdi mdi-cash"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    {{-- Detail --}}
+                                                    <a href="#"
+                                                        class="btn btn-outline-info btn-sm"
+                                                        title="Detail">
+                                                        <i class="mdi mdi-eye"></i>
                                                     </a>
-                                                @else
-                                                    <a href="{{ route('cash.show', $booking->id) }}"
-                                                        class="btn btn-outline-success btn-sm"
-                                                        title="Proses Cash">
-                                                        <i class="mdi mdi-cash"></i>
+
+                                                    {{-- Edit --}}
+                                                    <a href="#"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        title="Edit">
+                                                        <i class="mdi mdi-pencil"></i>
                                                     </a>
-                                                @endif
 
-                                                {{-- Detail --}}
-                                                <a href="#"
-                                                    class="btn btn-outline-info btn-sm"
-                                                    title="Detail">
-                                                    <i class="mdi mdi-eye"></i>
-                                                </a>
+                                                    {{-- Delete --}}
+                                                    <form action="#" method="POST" style="display:inline-block;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            title="Hapus">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </button>
+                                                    </form>
 
-                                                {{-- Edit --}}
-                                                <a href="#"
-                                                    class="btn btn-outline-warning btn-sm"
-                                                    title="Edit">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </a>
-
-                                                {{-- Delete --}}
-                                                <form action="#" method="POST" style="display:inline-block;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="btn btn-outline-danger btn-sm"
-                                                        title="Hapus">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </form>
-
-                                            </div>
-                                        </td>
-
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
