@@ -56,7 +56,7 @@
         </li>
          </li>
         <li class="nav-item">
-            <a class="nav-link" href="dashboard-cash-pengajuan">Cash Pengajuan</a>
+            <a class="nav-link" href="{{route('marketing.cash_pengajuan')}}">Cash Pengajuan</a>
         </li>
         </li>
         </ul>
