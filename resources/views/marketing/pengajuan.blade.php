@@ -75,7 +75,7 @@
                             <input type="hidden" name="customer_id" value="{{ $booking->customer->id ?? '' }}">
                             <input type="hidden" name="unit_id" value="{{ $booking->unit->id ?? '' }}">
                             <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                            
+
                             <!-- Alert Info -->
                             <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-start gap-2 mb-4">
                                 <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
@@ -152,68 +152,68 @@
                                 </div>
                             </div>
 
-                          <div class="pengajuan-row">
-    <!-- Harga Unit -->
-    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-        <div class="pengajuan-form-group">
-            <label>Harga Unit</label>
-            <div class="pengajuan-input-group">
-                <span class="pengajuan-input-group-text">Rp</span>
-                <input type="number" class="pengajuan-form-control" id="hargaUnit" 
-                    value="{{ $booking->unit->price ?? 0 }}" readonly>
-            </div>
-        </div>
-    </div>
+                            <div class="pengajuan-row">
+                                <!-- Harga Unit -->
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+                                    <div class="pengajuan-form-group">
+                                        <label>Harga Unit</label>
+                                        <div class="pengajuan-input-group">
+                                            <span class="pengajuan-input-group-text">Rp</span>
+                                            <input type="number" class="pengajuan-form-control" id="hargaUnit"
+                                                value="{{ $booking->unit->price ?? 0 }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
 
-    <!-- DP -->
-    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-        <div class="pengajuan-form-group">
-            <label>DP *</label>
-            <div class="pengajuan-input-group">
-                <span class="pengajuan-input-group-text">Rp</span>
-                <input type="number" class="pengajuan-form-control" name="dp"
-                    id="dp" required value="{{ $booking->booking_fee ?? 0 }}">
-            </div>
-        </div>
-    </div>
+                                <!-- DP -->
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+                                    <div class="pengajuan-form-group">
+                                        <label>DP *</label>
+                                        <div class="pengajuan-input-group">
+                                            <span class="pengajuan-input-group-text">Rp</span>
+                                            <input type="number" class="pengajuan-form-control" name="dp"
+                                                id="dp" required value="{{ $booking->booking_fee ?? 0 }}">
+                                        </div>
+                                    </div>
+                                </div>
 
-    <!-- Tenor -->
-    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-        <div class="pengajuan-form-group">
-            <label>Tenor *</label>
-            <select class="pengajuan-form-control" name="tenor" id="tenor" required>
-                <option value="">-- Pilih --</option>
-                <option value="5">5 Tahun</option>
-                <option value="10">10 Tahun</option>
-                <option value="15">15 Tahun</option>
-                <option value="20">20 Tahun</option>
-            </select>
-        </div>
-    </div>
+                                <!-- Tenor -->
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+                                    <div class="pengajuan-form-group">
+                                        <label>Tenor *</label>
+                                        <select class="pengajuan-form-control" name="tenor" id="tenor" required>
+                                            <option value="">-- Pilih --</option>
+                                            <option value="5">5 Tahun</option>
+                                            <option value="10">10 Tahun</option>
+                                            <option value="15">15 Tahun</option>
+                                            <option value="20">20 Tahun</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-    <!-- Bunga -->
-    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
-        <div class="pengajuan-form-group">
-            <label>Bunga (%) *</label>
-            <input type="number" class="pengajuan-form-control" name="bunga"
-                step="0.1" id="bunga" required>
-        </div>
-    </div>
+                                <!-- Bunga -->
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
+                                    <div class="pengajuan-form-group">
+                                        <label>Bunga (%) *</label>
+                                        <input type="number" class="pengajuan-form-control" name="bunga"
+                                            step="0.1" id="bunga" required>
+                                    </div>
+                                </div>
 
-    <!-- Jumlah Pinjaman (readonly, otomatis) -->
-    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
-        <div class="pengajuan-form-group">
-            <label>Jumlah Pinjaman</label>
-            <div class="pengajuan-input-group">
-                <span class="pengajuan-input-group-text">Rp</span>
-                <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
-                    id="jumlahPinjaman"
-                    value="{{ ($booking->unit->price ?? 0) - ($booking->booking_fee ?? 0) }}"
-                    readonly>
-            </div>
-        </div>
-    </div>
-</div>
+                                <!-- Jumlah Pinjaman (readonly, otomatis) -->
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
+                                    <div class="pengajuan-form-group">
+                                        <label>Jumlah Pinjaman</label>
+                                        <div class="pengajuan-input-group">
+                                            <span class="pengajuan-input-group-text">Rp</span>
+                                            <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
+                                                id="jumlahPinjaman"
+                                                value="{{ ($booking->unit->price ?? 0) - ($booking->booking_fee ?? 0) }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
@@ -227,7 +227,10 @@
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
                                         <label>Status Pekerjaan</label>
-                                        <input type="text" class="pengajuan-form-control" name="status_pekerjaan">
+                                        <input type="text" class="pengajuan-form-control" name="status_pekerjaan"
+                                            value="{{ ($booking->customer->job_status ?? '') === 'Lainnya'
+                                                ? $booking->customer->job_status_lainnya ?? ''
+                                                : $booking->customer->job_status ?? '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -265,45 +268,45 @@
         </div>
     </div>
     @push('scripts')
-       <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const hargaUnitInput = {{ $booking->unit->price ?? 0 }}; // harga unit tetap dari booking
-    const dpInput = document.querySelector('#dp');
-    const bungaInput = document.querySelector('#bunga');
-    const tenorSelect = document.querySelector('#tenor');
-    const angsuranInput = document.querySelector('#angsuran');
-    const jumlahPinjamanInput = document.querySelector('#jumlahPinjaman'); // input readonly jumlah pinjaman
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const hargaUnitInput = {{ $booking->unit->price ?? 0 }}; // harga unit tetap dari booking
+                const dpInput = document.querySelector('#dp');
+                const bungaInput = document.querySelector('#bunga');
+                const tenorSelect = document.querySelector('#tenor');
+                const angsuranInput = document.querySelector('#angsuran');
+                const jumlahPinjamanInput = document.querySelector('#jumlahPinjaman'); // input readonly jumlah pinjaman
 
-    function hitungPinjaman() {
-        const dp = parseFloat(dpInput.value) || 0;
-        const jumlahPinjaman = Math.max(hargaUnitInput - dp, 0);
-        jumlahPinjamanInput.value = jumlahPinjaman; // update input jumlah pinjaman
-        return jumlahPinjaman;
-    }
+                function hitungPinjaman() {
+                    const dp = parseFloat(dpInput.value) || 0;
+                    const jumlahPinjaman = Math.max(hargaUnitInput - dp, 0);
+                    jumlahPinjamanInput.value = jumlahPinjaman; // update input jumlah pinjaman
+                    return jumlahPinjaman;
+                }
 
-    function hitungAngsuran() {
-        const jumlahPinjaman = hitungPinjaman();
-        const bunga = parseFloat(bungaInput.value) || 0;
-        const tenor = parseInt(tenorSelect.value) || 0;
+                function hitungAngsuran() {
+                    const jumlahPinjaman = hitungPinjaman();
+                    const bunga = parseFloat(bungaInput.value) || 0;
+                    const tenor = parseInt(tenorSelect.value) || 0;
 
-        if (jumlahPinjaman > 0 && bunga >= 0 && tenor > 0) {
-            const bungaTotal = jumlahPinjaman * (bunga / 100); // bunga total
-            const totalPinjaman = jumlahPinjaman + bungaTotal;
-            const angsuran = totalPinjaman / (tenor * 12); // per bulan
-            angsuranInput.value = Math.round(angsuran);
-        } else {
-            angsuranInput.value = '';
-        }
-    }
+                    if (jumlahPinjaman > 0 && bunga >= 0 && tenor > 0) {
+                        const bungaTotal = jumlahPinjaman * (bunga / 100); // bunga total
+                        const totalPinjaman = jumlahPinjaman + bungaTotal;
+                        const angsuran = totalPinjaman / (tenor * 12); // per bulan
+                        angsuranInput.value = Math.round(angsuran);
+                    } else {
+                        angsuranInput.value = '';
+                    }
+                }
 
-    // Event listener
-    dpInput.addEventListener('input', hitungAngsuran);
-    bungaInput.addEventListener('input', hitungAngsuran);
-    tenorSelect.addEventListener('change', hitungAngsuran);
+                // Event listener
+                dpInput.addEventListener('input', hitungAngsuran);
+                bungaInput.addEventListener('input', hitungAngsuran);
+                tenorSelect.addEventListener('change', hitungAngsuran);
 
-    // Inisialisasi saat load
-    hitungPinjaman();
-});
-</script>
+                // Inisialisasi saat load
+                hitungPinjaman();
+            });
+        </script>
     @endpush
 @endsection
