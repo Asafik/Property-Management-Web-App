@@ -164,8 +164,10 @@ Route::post('/agency/store',[AgencyPropertyController::class,'store'])->name('ag
 |--------------------------------------------------------------------------
 | PENGAJUAN
 |--------------------------------------------------------------------------*/
-Route::get('/pengajuan', [KprApplicationController::class, 'index'])->name('pengajuan.index');
-Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('kpr.store');
+Route::get('/pengajuan/{booking}',
+    [KprApplicationController::class, 'show']
+)->name('pengajuan.show');
+Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('pengajuan.store');
 Route::get('/pengajuan/search-customer',
 [CustomerController::class, 'search'])->name('pengajuan.search-customer');
 

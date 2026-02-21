@@ -35,25 +35,25 @@
                 </div>
             </div>
         </div>
-        @if(session('success'))
-<div class="alert alert-success alert-dismissible fade show">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
 
-@if(session('error'))
-<div class="alert alert-danger alert-dismissible fade show">
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
 
-@if ($errors->any())
-<div class="alert alert-danger">
-    {{ $errors->first() }}
-</div>
-@endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                {{ $errors->first() }}
+            </div>
+        @endif
 
         <!-- Form Pengajuan KPR -->
         <div class="pengajuan-row">
@@ -67,15 +67,15 @@
                         </h4>
                     </div>
                     <div class="pengajuan-card-body">
-                        <form action="{{ route('kpr.store') }}" method="POST" enctype="multipart/form-data"
+                        <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data"
                             class="pengajuan-form-sample">
                             @csrf
 
-                            <!-- hidden relasi -->
-                            <input type="hidden" name="customer_id" id="customer_id">
-                             <input type="hidden" name="unit_id" id="unit_id">
-
-
+                            <!-- Hidden dari Booking -->
+                            <input type="hidden" name="customer_id" value="{{ $booking->customer->id ?? '' }}">
+                            <input type="hidden" name="unit_id" value="{{ $booking->unit->id ?? '' }}">
+                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                            
                             <!-- Alert Info -->
                             <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-start gap-2 mb-4">
                                 <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
@@ -83,22 +83,12 @@
                                     mengajukan KPR.</span>
                             </div>
 
-                            <!-- Search Customer -->
+                            <!-- Customer & Unit -->
                             <div class="pengajuan-form-group">
-                                <label>Cari Customer *</label>
-
-                                <div class="pengajuan-search-wrapper position-relative">
-                                    <i class="mdi mdi-magnify pengajuan-search-icon"></i>
-
-                                    <input type="text" id="searchCustomer" class="pengajuan-search-input"
-                                        placeholder="Cari customer..." autocomplete="off">
-
-                                    <!-- dropdown hasil -->
-                                    <div id="resultCustomer" class="list-group position-absolute w-100" style="z-index:999">
-                                    </div>
-                                </div>
+                                <label>Customer *</label>
+                                <input type="text" class="pengajuan-form-control"
+                                    value="{{ $booking->customer->full_name ?? '-' }}" readonly>
                             </div>
-
 
                             <hr class="pengajuan-hr">
 
@@ -109,20 +99,24 @@
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
-                                        <label>Nama Unit</label>
-                                        <input type="text" class="pengajuan-form-control" id="nama_unit" readonly>
+                                        <label>Type Unit</label>
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->type ?? '-' }}" readonly>
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-2">
                                     <div class="pengajuan-form-group">
                                         <label>Blok/No</label>
-                                        <input type="text" class="pengajuan-form-control" id="blok_unit" readonly>
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->block ?? '-' }} / {{ $booking->unit->unit_code ?? '-' }}"
+                                            readonly>
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
                                         <label>Harga Unit</label>
-                                        <input type="text" class="pengajuan-form-control" id="harga_unit" readonly>
+                                        <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
+                                            id="jumlahPinjaman" value="{{ $booking->unit->price ?? 0 }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -158,52 +152,70 @@
                                 </div>
                             </div>
 
+                          <div class="pengajuan-row">
+    <!-- Harga Unit -->
+    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+        <div class="pengajuan-form-group">
+            <label>Harga Unit</label>
+            <div class="pengajuan-input-group">
+                <span class="pengajuan-input-group-text">Rp</span>
+                <input type="number" class="pengajuan-form-control" id="hargaUnit" 
+                    value="{{ $booking->unit->price ?? 0 }}" readonly>
+            </div>
+        </div>
+    </div>
+
+    <!-- DP -->
+    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+        <div class="pengajuan-form-group">
+            <label>DP *</label>
+            <div class="pengajuan-input-group">
+                <span class="pengajuan-input-group-text">Rp</span>
+                <input type="number" class="pengajuan-form-control" name="dp"
+                    id="dp" required value="{{ $booking->booking_fee ?? 0 }}">
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenor -->
+    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+        <div class="pengajuan-form-group">
+            <label>Tenor *</label>
+            <select class="pengajuan-form-control" name="tenor" id="tenor" required>
+                <option value="">-- Pilih --</option>
+                <option value="5">5 Tahun</option>
+                <option value="10">10 Tahun</option>
+                <option value="15">15 Tahun</option>
+                <option value="20">20 Tahun</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Bunga -->
+    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
+        <div class="pengajuan-form-group">
+            <label>Bunga (%) *</label>
+            <input type="number" class="pengajuan-form-control" name="bunga"
+                step="0.1" id="bunga" required>
+        </div>
+    </div>
+
+    <!-- Jumlah Pinjaman (readonly, otomatis) -->
+    <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
+        <div class="pengajuan-form-group">
+            <label>Jumlah Pinjaman</label>
+            <div class="pengajuan-input-group">
+                <span class="pengajuan-input-group-text">Rp</span>
+                <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
+                    id="jumlahPinjaman"
+                    value="{{ ($booking->unit->price ?? 0) - ($booking->booking_fee ?? 0) }}"
+                    readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
                             <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Jumlah Pinjaman *</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
-                                                id="jumlahPinjaman" required>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>DP *</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" name="dp"
-                                                id="dp">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Tenor *</label>
-                                        <select class="pengajuan-form-control" name="tenor" id="tenor">
-                                            <option value="">-- Pilih --</option>
-                                            <option value="5">5 Tahun</option>
-                                            <option value="10">10 Tahun</option>
-                                            <option value="15">15 Tahun</option>
-                                            <option value="20">20 Tahun</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Bunga (%)</label>
-                                        <input type="number" class="pengajuan-form-control" name="bunga"
-                                            step="0.1" id="bunga">
-                                    </div>
-                                </div>
-
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
                                         <label>Estimasi Angsuran</label>
@@ -223,133 +235,28 @@
                             <hr class="pengajuan-hr">
 
                             <div class="pengajuan-section-title">
-                                <i class="mdi mdi-file-document"></i>
-                                Upload Dokumen Pendukung
+                                <i class="mdi mdi-file-document"></i>Upload Dokumen Pendukung
                             </div>
                             <p class="pengajuan-text-muted small mb-3">Dokumen tambahan untuk pengajuan KPR</p>
 
                             <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="slipGaji">Slip Gaji (3 bulan) <span
-                                                class="pengajuan-text-danger">*</span></label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="slipGaji" name="slip_gaji"
+                                @foreach (['slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'] as $file)
+                                    <div class="pengajuan-col-12 pengajuan-col-md-6 mb-3">
+                                        <div class="pengajuan-form-group">
+                                            <label
+                                                for="{{ $file }}">{{ ucwords(str_replace('_', ' ', $file)) }}</label>
+                                            <input type="file" id="{{ $file }}" name="{{ $file }}"
                                                 accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload Slip Gaji</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="rekening">Rekening Tabungan (3 bulan) <span
-                                                class="pengajuan-text-danger">*</span></label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="rekening" name="rekening_koran"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload Rekening</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
-
-                            <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="npwp">NPWP</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="npwp" name="npwp"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload NPWP</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="sku">Surat Keterangan Usaha</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="sku" name="sku"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload SKU</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="suratNikah">Surat Nikah</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="suratNikah" name="surat_nikah"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload Surat Nikah</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label for="ktpPasangan">KTP Pasangan</label>
-                                        <div class="pengajuan-file-upload">
-                                            <input type="file" id="ktpPasangan" name="ktp_pasangan"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="pengajuan-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="pengajuan-file-info">
-                                                    <span>Upload KTP Pasangan</span>
-                                                    <small>Max 5MB</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
 
                             <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
                                 <a href="{{ url('/marketing/kpr') }}"
-                                    class="pengajuan-btn pengajuan-btn-outline-secondary">
-                                    Kembali
-                                </a>
-
-                                <button type="submit" class="pengajuan-btn pengajuan-btn-primary">
-                                    Ajukan KPR
-                                </button>
+                                    class="pengajuan-btn pengajuan-btn-outline-secondary">Kembali</a>
+                                <button type="submit" class="pengajuan-btn pengajuan-btn-primary">Ajukan KPR</button>
                             </div>
-
                         </form>
 
                     </div>
@@ -358,154 +265,45 @@
         </div>
     </div>
     @push('scripts')
-<script>
-$(document).ready(function(){
+       <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hargaUnitInput = {{ $booking->unit->price ?? 0 }}; // harga unit tetap dari booking
+    const dpInput = document.querySelector('#dp');
+    const bungaInput = document.querySelector('#bunga');
+    const tenorSelect = document.querySelector('#tenor');
+    const angsuranInput = document.querySelector('#angsuran');
+    const jumlahPinjamanInput = document.querySelector('#jumlahPinjaman'); // input readonly jumlah pinjaman
 
-    $('#searchCustomer').keyup(function(){
+    function hitungPinjaman() {
+        const dp = parseFloat(dpInput.value) || 0;
+        const jumlahPinjaman = Math.max(hargaUnitInput - dp, 0);
+        jumlahPinjamanInput.value = jumlahPinjaman; // update input jumlah pinjaman
+        return jumlahPinjaman;
+    }
 
-        let keyword = $(this).val();
+    function hitungAngsuran() {
+        const jumlahPinjaman = hitungPinjaman();
+        const bunga = parseFloat(bungaInput.value) || 0;
+        const tenor = parseInt(tenorSelect.value) || 0;
 
-        if(keyword.length < 2){
-            $('#resultCustomer').html('');
-            return;
+        if (jumlahPinjaman > 0 && bunga >= 0 && tenor > 0) {
+            const bungaTotal = jumlahPinjaman * (bunga / 100); // bunga total
+            const totalPinjaman = jumlahPinjaman + bungaTotal;
+            const angsuran = totalPinjaman / (tenor * 12); // per bulan
+            angsuranInput.value = Math.round(angsuran);
+        } else {
+            angsuranInput.value = '';
         }
+    }
 
-        $.ajax({
-            url: "{{ route('pengajuan.search-customer') }}",
-            type: "GET",
-            data: {keyword: keyword},
+    // Event listener
+    dpInput.addEventListener('input', hitungAngsuran);
+    bungaInput.addEventListener('input', hitungAngsuran);
+    tenorSelect.addEventListener('change', hitungAngsuran);
 
-            success: function(res){
-
-                let html='';
-
-                if(res.length == 0){
-                    html += `<div class="list-group-item">Customer tidak ditemukan</div>`;
-                }
-
-                res.forEach(function(cust){
-
-                    let unitName='-';
-                    let price=0;
-                    let blok='-';
-                    let unitId=null;
-
-                    // 🔥 ambil unit pertama customer
-                    if(cust.units && cust.units.length > 0){
-                        let u = cust.units[0];
-
-                        unitName = u.type ?? '-';
-                        price    = u.price ?? 0;
-                        blok     = u.unit_code ?? '-';
-                        unitId   = u.id ?? null;
-                    }
-
-                    html += `
-                    <a href="#" class="list-group-item pilihCustomer"
-                        data-id="${cust.id}"
-                        data-nama="${cust.full_name}"
-                        data-unit="${unitName}"
-                        data-price="${price}"
-                        data-blok="${blok}"
-                        data-unitid="${unitId}">
-
-                        <strong>${cust.full_name}</strong><br>
-                        <small>NIK: ${cust.nik}</small><br>
-                        <small>Unit: ${unitName} (${blok})</small>
-                    </a>`;
-                });
-
-                $('#resultCustomer').html(html);
-            }
-        });
-    });
-
-
-    // 🔥 SAAT PILIH CUSTOMER
-    $(document).on('click','.pilihCustomer',function(e){
-        e.preventDefault();
-
-        let customerId = $(this).data('id');
-        let nama       = $(this).data('nama');
-        let unit       = $(this).data('unit');
-        let price      = $(this).data('price');
-        let blok       = $(this).data('blok');
-        let unitId     = $(this).data('unitid');
-
-        console.log('UNIT ID TERPILIH:', unitId); // debug
-
-        // isi hidden input
-        $('#customer_id').val(customerId);
-        $('#unit_id').val(unitId); // 🔥 WAJIB
-
-        // isi tampilan
-        $('#searchCustomer').val(nama);
-        $('#nama_unit').val(unit);
-        $('#blok_unit').val(blok);
-
-        if(price){
-            let rupiah = new Intl.NumberFormat('id-ID').format(price);
-            $('#harga_unit').val('Rp '+rupiah);
-            $('#jumlahPinjaman').val(price);
-        }
-
-        $('#resultCustomer').html('');
-    });
-
+    // Inisialisasi saat load
+    hitungPinjaman();
 });
 </script>
-
-
-
-
-
-        <script>
-            $(document).ready(function() {
-
-                function hitungKpr() {
-
-                    let harga = parseFloat($('#jumlahPinjaman').val()) || 0;
-                    let dp = parseFloat($('#dp').val()) || 0;
-                    let tenor = parseFloat($('#tenor').val()) || 0;
-                    let bunga = parseFloat($('#bunga').val()) || 0;
-
-                    console.log("harga:", harga);
-                    console.log("dp:", dp);
-                    console.log("tenor:", tenor);
-                    console.log("bunga:", bunga);
-
-                    // wajib ada harga + tenor + bunga
-                    if (harga <= 0 || tenor <= 0 || bunga <= 0) {
-                        $('#angsuran').val('');
-                        return;
-                    }
-
-                    let pinjaman = harga - dp;
-                    if (pinjaman <= 0) {
-                        $('#angsuran').val(0);
-                        return;
-                    }
-
-                    let bungaBulanan = (bunga / 100) / 12;
-                    let totalBulan = tenor * 12;
-
-                    let angsuran = pinjaman * (bungaBulanan * Math.pow(1 + bungaBulanan, totalBulan)) /
-                        (Math.pow(1 + bungaBulanan, totalBulan) - 1);
-
-                    if (isNaN(angsuran) || !isFinite(angsuran)) {
-                        $('#angsuran').val('');
-                        return;
-                    }
-
-                    $('#angsuran').val(Math.round(angsuran));
-                }
-
-                // 🔥 pakai input event (bukan keyup doang)
-                $(document).on('input change', '#jumlahPinjaman, #dp, #tenor, #bunga', function() {
-                    hitungKpr();
-                });
-
-            });
-        </script>
     @endpush
 @endsection

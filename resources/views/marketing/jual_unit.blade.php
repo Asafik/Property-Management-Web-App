@@ -1041,14 +1041,14 @@
                                                     <div class="d-flex align-items-center">
                                                         <i class="mdi mdi-account-tie text-primary me-2"
                                                             style="font-size: 1rem;"></i>
-                                                        {{ $unit->agency->name ?? '-' }}
+                                                        {{ $unit->activeBooking->sales->name ?? '-' }}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <i class="mdi mdi-account text-success me-2"
                                                             style="font-size: 1rem;"></i>
-                                                        {{ $unit->customer->full_name ?? '-' }}
+                                                        {{ $unit->activeBooking->customer->full_name ?? '-' }}
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
@@ -1214,6 +1214,7 @@
     <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
+
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
@@ -1222,9 +1223,29 @@
                     <button type="button" class="btn-close" onclick="$('#modalCustomer').modal('hide')"
                         aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
+
+                    <!-- Booking Fee Section -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-end">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Booking Fee</label>
+                                    <input type="text" class="form-control" id="booking_fee"
+                                        placeholder="Masukkan booking fee" autocomplete="off">
+                                </div>
+                                <div class="col-md-6 text-muted small">
+                                    <i class="mdi mdi-information-outline me-1"></i>
+                                    Pilih customer lalu klik metode pembayaran (Cash / KPR)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Customer -->
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover align-middle">
                             <thead class="table-light">
                                 <tr>
                                     <th>No</th>
@@ -1232,7 +1253,7 @@
                                     <th>Nama</th>
                                     <th>No HP</th>
                                     <th>Pekerjaan</th>
-                                    <th>Aksi</th>
+                                    <th width="160">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1246,16 +1267,24 @@
                                             {{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : ($c->job_status ?: '-') }}
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-gradient-success pilihCustomer"
-                                                data-id="{{ $c->id }}">
-                                                <i class="mdi mdi-check me-1"></i>Pilih
-                                            </button>
+                                            <div class="d-flex gap-1">
+                                                <button type="button" class="btn btn-sm btn-success pilihCustomer"
+                                                    data-id="{{ $c->id }}" data-type="cash">
+                                                    Cash
+                                                </button>
+
+                                                <button type="button" class="btn btn-sm btn-primary pilihCustomer"
+                                                    data-id="{{ $c->id }}" data-type="kpr">
+                                                    KPR
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -1275,7 +1304,7 @@
                 <div class="modal-body">
                     <form id="formAgency" method="POST">
                         @csrf
-                        <input type="hidden" name="employee_id" id="employee_id">
+                        <input type="hidden" name="sales_id" id="sales_id">
                     </form>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
@@ -1316,7 +1345,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi DataTables - hanya untuk sorting
+
+            /*
+            |--------------------------------------------------------------------------
+            | DataTables Unit
+            |--------------------------------------------------------------------------
+            */
             let table = $('#unitTable').DataTable({
                 responsive: true,
                 paging: false,
@@ -1334,9 +1368,15 @@
                 }]
             });
 
-            // Tooltips
+            // Tooltip
             $('[data-toggle="tooltip"]').tooltip();
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | OPEN CUSTOMER MODAL
+            |--------------------------------------------------------------------------
+            */
             window.openCustomerModal = function(unitId) {
 
                 if (!unitId) {
@@ -1344,37 +1384,101 @@
                     return;
                 }
 
+                // Simpan unit id ke modal
                 $('#modalCustomer').attr('data-unit-id', unitId);
+
+                // Reset booking fee setiap buka
+                $('#booking_fee').val('');
+
                 $('#modalCustomer').modal('show');
             };
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | PILIH CUSTOMER + PAYMENT TYPE + BOOKING FEE
+            |--------------------------------------------------------------------------
+            */
+            // FORMAT RUPIAH OTOMATIS
+            $('#booking_fee').on('input', function() {
+                let value = $(this).val().replace(/[^0-9]/g, '');
+                $(this).val(new Intl.NumberFormat('id-ID').format(value));
+            });
+
+
+            // PILIH CUSTOMER
             $(document).on('click', '.pilihCustomer', function() {
 
                 let customerId = $(this).data('id');
+                let purchaseType = $(this).data('type'); // cash / kpr
                 let unitId = $('#modalCustomer').attr('data-unit-id');
+                let bookingFee = $('#booking_fee').val().replace(/\./g, ''); // hilangkan titik
 
                 if (!unitId) {
-                    alert('Unit belum dipilih!');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Unit belum dipilih!'
+                    });
                     return;
                 }
 
-                let actionUrlTemplate = "{{ route('set.customer', ':unitId') }}";
-                let actionUrl = actionUrlTemplate.replace(':unitId', unitId);
+                if (!bookingFee || bookingFee <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Booking Fee Kosong',
+                        text: 'Booking fee harus diisi dan lebih dari 0!'
+                    });
+                    return;
+                }
 
-                let form = $('<form>', {
-                    method: 'POST',
-                    action: actionUrl
+                // KONFIRMASI SEBELUM SUBMIT
+                Swal.fire({
+                    title: 'Yakin pilih customer ini?',
+                    html: `
+            <p>Jenis Pembelian: <b>${purchaseType.toUpperCase()}</b></p>
+            <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
+        `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Simpan!',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        let actionUrlTemplate = "{{ route('set.customer', ':unitId') }}";
+                        let actionUrl = actionUrlTemplate.replace(':unitId', unitId);
+
+                        let form = $('<form>', {
+                            method: 'POST',
+                            action: actionUrl
+                        });
+
+                        form.append(
+                            `<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
+                        form.append(
+                            `<input type="hidden" name="customer_id" value="${customerId}">`);
+                        form.append(
+                            `<input type="hidden" name="purchase_type" value="${purchaseType}">`
+                            );
+                        form.append(
+                            `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
+
+                        $('body').append(form);
+                        form.submit();
+                    }
+
                 });
-
-                form.append(`<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
-                form.append(`<input type="hidden" name="customer_id" value="${customerId}">`);
-
-                $('body').append(form);
-                form.submit();
             });
-            // Agency modal
-            let selectedUnit = null;
 
+            /*
+            |--------------------------------------------------------------------------
+            | AGENCY MODAL
+            |--------------------------------------------------------------------------
+            */
             $(document).on('click', '.bukaModal', function() {
                 let unitId = $(this).data('unit');
                 let url = "{{ url('marketing/set-agency') }}/" + unitId;
@@ -1383,12 +1487,19 @@
             });
 
             $(document).on('click', '.pilihAgency', function() {
-                let employeeId = $(this).data('id');
-                $('#employee_id').val(employeeId);
+                let salesId = $(this).data('id');
+                $('#sales_id').val(salesId);
                 $('#formAgency').submit();
             });
+
         });
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | SWITCH VIEW
+        |--------------------------------------------------------------------------
+        */
         function switchView(view) {
             if (view === 'table') {
                 $('#tableView').show();
@@ -1403,6 +1514,12 @@
             }
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | EXPORT PLACEHOLDER
+        |--------------------------------------------------------------------------
+        */
         function exportTable(type) {
             const msg = type === 'excel' ? 'Excel' : 'PDF';
             Swal.fire({

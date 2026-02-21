@@ -412,12 +412,45 @@
                                                         <label>Provinsi</label>
                                                         <select class="add-form-control" id="provinsiDomisili"
                                                             name="domicile_province">
-                                                            <option value="">-- Pilih --</option>
+                                                            <option value="">-- Pilih Provinsi --</option>
+                                                            <option>Aceh</option>
+                                                            <option>Sumatera Utara</option>
+                                                            <option>Sumatera Barat</option>
+                                                            <option>Riau</option>
+                                                            <option>Kepulauan Riau</option>
+                                                            <option>Jambi</option>
+                                                            <option>Sumatera Selatan</option>
+                                                            <option>Bangka Belitung</option>
+                                                            <option>Bengkulu</option>
+                                                            <option>Lampung</option>
                                                             <option>DKI Jakarta</option>
                                                             <option>Jawa Barat</option>
                                                             <option>Jawa Tengah</option>
+                                                            <option>DI Yogyakarta</option>
                                                             <option>Jawa Timur</option>
                                                             <option>Banten</option>
+                                                            <option>Bali</option>
+                                                            <option>Nusa Tenggara Barat</option>
+                                                            <option>Nusa Tenggara Timur</option>
+                                                            <option>Kalimantan Barat</option>
+                                                            <option>Kalimantan Tengah</option>
+                                                            <option>Kalimantan Selatan</option>
+                                                            <option>Kalimantan Timur</option>
+                                                            <option>Kalimantan Utara</option>
+                                                            <option>Sulawesi Utara</option>
+                                                            <option>Gorontalo</option>
+                                                            <option>Sulawesi Tengah</option>
+                                                            <option>Sulawesi Barat</option>
+                                                            <option>Sulawesi Selatan</option>
+                                                            <option>Sulawesi Tenggara</option>
+                                                            <option>Maluku</option>
+                                                            <option>Maluku Utara</option>
+                                                            <option>Papua</option>
+                                                            <option>Papua Barat</option>
+                                                            <option>Papua Selatan</option>
+                                                            <option>Papua Tengah</option>
+                                                            <option>Papua Pegunungan</option>
+                                                            <option>Papua Barat Daya</option>
                                                         </select>
                                                     </div>
                                                 </div>

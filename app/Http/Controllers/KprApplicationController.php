@@ -7,16 +7,22 @@ use App\Models\Banks;
 use App\Models\LandBankUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Booking;
 class KprApplicationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-public function index()
+    public function show(Booking $booking)
 {
-    $banks = Banks::where('is_active',1)->get(); // atau Bank::all()
+    // load relasi customer + unit
+    $booking->load(['customer', 'unit']);
 
-    return view('marketing.pengajuan', compact('banks'));
+    // ambil daftar bank aktif
+    $banks = Banks::where('is_active', 1)->get();
+
+    // tampilkan form KPR untuk booking ini
+    return view('marketing.pengajuan', compact('booking', 'banks'));
 }
 
 
@@ -88,30 +94,29 @@ public function store(Request $request)
         // =============================
         // SIMPAN
         // =============================
-        KprApplication::create([
-            'customer_id' => $request->customer_id,
-            'unit_id' => $request->unit_id,
-            'banks_id' => $request->banks_id,
+       KprApplication::create([
+    'booking_id' => $request->booking_id ?? $request->unit_id, // pastikan booking_id dikirim dari form
+    'customer_id' => $request->customer_id,
+    'unit_id' => $request->unit_id,
+    'banks_id' => $request->banks_id,
+    'produk_kpr' => $request->produk_kpr,
+    'harga_unit' => $hargaUnit,
+    'jumlah_pinjaman' => $jumlahPinjaman,
+    'dp' => $request->dp,
+    'tenor' => $request->tenor,
+    'bunga' => $request->bunga,
+    'estimasi_angsuran' => $request->estimasi_angsuran,
+    'status_pekerjaan' => $request->status_pekerjaan,
+    'status' => 'pengajuan',
+    'submitted_at' => now(),
 
-            'produk_kpr' => $request->produk_kpr,
-            'harga_unit' => $hargaUnit,
-            'jumlah_pinjaman' => $jumlahPinjaman,
-            'dp' => $request->dp,
-            'tenor' => $request->tenor,
-            'bunga' => $request->bunga,
-            'estimasi_angsuran' => $request->estimasi_angsuran,
-
-            'status_pekerjaan' => $request->status_pekerjaan,
-            'status' => 'pengajuan',
-            'submitted_at' => now(),
-
-            'slip_gaji' => $upload['slip_gaji'] ?? null,
-            'rekening_koran' => $upload['rekening_koran'] ?? null,
-            'npwp' => $upload['npwp'] ?? null,
-            'sku' => $upload['sku'] ?? null,
-            'surat_nikah' => $upload['surat_nikah'] ?? null,
-            'ktp_pasangan' => $upload['ktp_pasangan'] ?? null,
-        ]);
+    'slip_gaji' => $upload['slip_gaji'] ?? null,
+    'rekening_koran' => $upload['rekening_koran'] ?? null,
+    'npwp' => $upload['npwp'] ?? null,
+    'sku' => $upload['sku'] ?? null,
+    'surat_nikah' => $upload['surat_nikah'] ?? null,
+    'ktp_pasangan' => $upload['ktp_pasangan'] ?? null,
+]);
 
         DB::commit();
 
@@ -130,13 +135,7 @@ public function store(Request $request)
 
 
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(KprApplication $kprApplication)
-    {
-        //
-    }
+   
 
     /**
      * Show the form for editing the specified resource.

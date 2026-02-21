@@ -37,7 +37,7 @@
             <a class="nav-link" href="{{route('marketing.tambah_customer')}}">Tambah Customer</a>
         </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{route('marketing.list_pengajuan')}}">list Pengajuan</a>
+            <a class="nav-link" href="{{route('marketing.list_pengajuan')}}"> Customer Booking</a>
         <li class="nav-item">
          <li class="nav-item">
             <a class="nav-link" href="dashboard-approved">Approved</a>
@@ -53,9 +53,6 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="dashboard-vertifikasi-kpr">Vertifikasi KPR</a>
-        </li>
-         <li class="nav-item">
-            <a class="nav-link" href="{{route('pengajuan.index')}}">Pengajuan</a>
         </li>
         </li>
         </ul>

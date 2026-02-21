@@ -78,6 +78,10 @@ class LandBankUnit extends Model
 {
     return $this->hasMany(Rabs::class, 'unit_id');
 }
-
+public function activeBooking()
+{
+    return $this->hasOne(Booking::class, 'unit_id')
+                ->where('status', 'active');
+}
 
 }

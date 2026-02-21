@@ -9,46 +9,74 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kpr_applications', function (Blueprint $table) {
-            $table->id();
+    $table->id();
 
-            // RELASI
-           $table->foreignId('unit_id')
-      ->constrained('land_bank_units')
-      ->cascadeOnDelete();
+    // ======================
+    // RELASI
+    // ======================
+    $table->foreignId('booking_id')
+          ->constrained()
+          ->cascadeOnDelete();
 
-            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('banks_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('sales_id')->nullable()->constrained('employees')->nullOnDelete();
+    $table->foreignId('unit_id')
+          ->constrained('land_bank_units')
+          ->cascadeOnDelete();
 
-            // DATA PENGAJUAN
-            $table->decimal('harga_unit', 15, 0)->nullable();
-            $table->decimal('dp', 15, 0)->nullable();
-            $table->integer('tenor')->nullable(); // tahun
-            $table->decimal('estimasi_cicilan', 15, 0)->nullable();
+    $table->foreignId('customer_id')
+          ->constrained()
+          ->cascadeOnDelete();
 
-            // STATUS KPR
-            $table->enum('status', [
-                'draft',
-                'pengajuan',
-                'dokumen',
-                'survey',
-                'analisa',
-                'approved',
-                'rejected',
-                'akad'
-            ])->default('draft');
+    $table->foreignId('banks_id')
+          ->nullable()
+          ->constrained()
+          ->nullOnDelete();
 
-            // TANGGAL PROSES
-            $table->timestamp('submitted_at')->nullable();
-            $table->timestamp('approved_at')->nullable();
-            $table->timestamp('rejected_at')->nullable();
-            $table->timestamp('akad_at')->nullable();
+    $table->foreignId('sales_id')
+          ->nullable()
+          ->constrained('employees')
+          ->nullOnDelete();
 
-            // CATATAN
-            $table->text('catatan')->nullable();
+    // ======================
+    // DATA FINANSIAL
+    // ======================
+    $table->decimal('harga_unit', 15, 0)->nullable();
+    $table->decimal('dp', 15, 0)->nullable();
+    $table->decimal('jumlah_pinjaman', 15, 0)->nullable();
+    $table->integer('tenor')->nullable();
+    $table->decimal('bunga', 5, 2)->nullable();
+    $table->decimal('estimasi_angsuran', 15, 0)->nullable();
 
-            $table->timestamps();
-        });
+    // ======================
+    // STATUS
+    // ======================
+    $table->enum('status', [
+        'draft',
+        'pengajuan',
+        'dokumen',
+        'survey',
+        'analisa',
+        'approved',
+        'rejected',
+        'akad'
+    ])->default('draft');
+
+    // ======================
+    // TANGGAL PROSES
+    // ======================
+    $table->timestamp('submitted_at')->nullable();
+    $table->timestamp('approved_at')->nullable();
+    $table->timestamp('rejected_at')->nullable();
+    $table->timestamp('akad_at')->nullable();
+
+    // ======================
+    // CATATAN
+    // ======================
+    $table->text('catatan')->nullable();
+
+    $table->unique('booking_id'); // cegah double KPR
+
+    $table->timestamps();
+});
     }
 
     public function down(): void

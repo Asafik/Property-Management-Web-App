@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('land_bank_units', function (Blueprint $table) {
@@ -18,7 +15,7 @@ return new class extends Migration
             $table->foreignId('land_bank_id')
                 ->constrained('land_banks')
                 ->onDelete('cascade');
-            $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
+
             // ===== IDENTITAS UNIT =====
             $table->string('block')->nullable(); // A
             $table->string('unit_number')->nullable(); // 1
@@ -29,7 +26,6 @@ return new class extends Migration
             $table->float('area'); // luas kavling
             $table->float('building_area')->nullable(); // luas bangunan (m²)
             $table->bigInteger('price')->nullable();
-
 
             $table->enum('facing', ['Utara', 'Selatan', 'Timur', 'Barat'])->nullable();
             $table->enum('position', ['Hook', 'Tengah', 'Sudut'])->nullable();
@@ -54,7 +50,7 @@ return new class extends Migration
                 'selesai'
             ])->default('belum_mulai');
 
-            // ===== POSISI DENAH (opsional siteplan grid) =====
+            // ===== POSISI DENAH =====
             $table->integer('x')->nullable();
             $table->integer('y')->nullable();
 
@@ -62,9 +58,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('land_bank_units');
