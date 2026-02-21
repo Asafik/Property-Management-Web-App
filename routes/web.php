@@ -30,9 +30,9 @@ use App\Http\Controllers\PengajuanController;
 | AUTH
 |--------------------------------------------------------------------------
 */
-Route::get('/login',[LoginController::class,'index'])->name('login');
+Route::get('/',[LoginController::class,'index'])->name('login');
 Route::post('/login',[LoginController::class,'login'])->name('login.proses');
-Route::post('/logout',[LoginController::class,'logout'])->name('logout');
+Route::get('/logout',[LoginController::class,'logout'])->name('logout');
 
 Route::get('/register', function () {
     return view('auth.register');
