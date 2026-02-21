@@ -54,6 +54,10 @@
         <li class="nav-item">
             <a class="nav-link" href="dashboard-vertifikasi-kpr">Vertifikasi KPR</a>
         </li>
+         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-cash-pengajuan">Cash Pengajuan</a>
+        </li>
         </li>
         </ul>
     </div>
