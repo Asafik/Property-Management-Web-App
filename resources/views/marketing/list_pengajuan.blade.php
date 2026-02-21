@@ -1043,27 +1043,32 @@
                                                 </div>
                                             </td>
                                             <td class="small">{{ $booking->sales->name ?? '-' }}</td>
-                                            <td class="text-center">
+                                           <td class="text-center">
+                                                @if ($booking->purchase_type == 'kpr')
+                                                    <a href="{{ route('pengajuan.show', $booking->id) }}"
+                                                        class="btn btn-xs btn-gradient-primary" title="Proses KPR">
+                                                        <i class="mdi mdi-bank"></i>
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('cash.show', $booking->id) }}"
+                                                        class="btn btn-xs btn-gradient-success" title="Proses Cash">
+                                                        <i class="mdi mdi-cash"></i>
+                                                    </a>
+                                                @endif
                                                 <div class="d-flex justify-content-center gap-1">
-                                                    @if ($booking->purchase_type == 'kpr')
-                                                        <button class="btn btn-outline-primary btn-sm" title="Proses KPR">
-                                                            <i class="mdi mdi-bank"></i>
-                                                        </button>
-                                                    @else
-                                                        <button class="btn btn-outline-success btn-sm" title="Proses Cash">
-                                                            <i class="mdi mdi-cash"></i>
-                                                        </button>
-                                                    @endif
-                                                    <button class="btn btn-outline-primary btn-sm" title="Detail">
+                                                    <a href="#" class="btn btn-xs btn-gradient-info"
+                                                        title="Detail">
                                                         <i class="mdi mdi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                                    </a>
+                                                    <a href="#" class="btn btn-xs btn-gradient-warning"
+                                                        title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
-                                                    </button>
-                                                    <form action="#" method="POST" style="display:inline-block;">
+                                                    </a>
+                                                    <form action="#" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                        <button type="submit" class="btn btn-xs btn-gradient-danger"
+                                                            title="Hapus">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </form>
