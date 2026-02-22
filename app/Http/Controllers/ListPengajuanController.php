@@ -24,4 +24,17 @@ class ListPengajuanController extends Controller
             'bookings'
         ));
     }
+
+   public function show($id)
+{
+    $booking = Booking::with([
+        'customer',
+        'unit',
+        'sales',
+        'kprApplication.bank',
+        'payments' 
+    ])->findOrFail($id);
+
+    return view('marketing.cash', compact('booking'));
+}
 }

@@ -740,7 +740,8 @@
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
-                            <i class="mdi mdi-account-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                            <i class="mdi mdi-account-multiple"
+                                style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                         </div>
                     </div>
                 </div>
@@ -752,7 +753,8 @@
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-primary card-img-holder text-white h-100">
                     <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
+                            alt="circle-image" />
                         <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
                             Total Pengajuan
                             <i class="mdi mdi-file-document float-end" style="font-size: 1.2rem;"></i>
@@ -766,7 +768,8 @@
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-info card-img-holder text-white h-100">
                     <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
+                            alt="circle-image" />
                         <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
                             KPR Diproses
                             <i class="mdi mdi-bank float-end" style="font-size: 1.2rem;"></i>
@@ -780,7 +783,8 @@
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-success card-img-holder text-white h-100">
                     <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
+                            alt="circle-image" />
                         <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
                             Cash
                             <i class="mdi mdi-cash float-end" style="font-size: 1.2rem;"></i>
@@ -794,7 +798,8 @@
             <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
                 <div class="card bg-gradient-warning card-img-holder text-white h-100">
                     <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
+                            alt="circle-image" />
                         <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
                             Cair / Lunas
                             <i class="mdi mdi-check-circle float-end" style="font-size: 1.2rem;"></i>
@@ -810,7 +815,8 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                    <div
+                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                         <h5 class="card-title mb-2 mb-md-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                             Daftar Pengajuan
@@ -999,7 +1005,8 @@
                                                 <span class="fw-medium small">{{ $booking->booking_code }}</span>
                                             </td>
                                             <td class="small">{{ $booking->customer->full_name ?? '-' }}</td>
-                                            <td class="small">{{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}</td>
+                                            <td class="small">{{ $booking->unit->block ?? '' }}
+                                                {{ $booking->unit->unit_number ?? '' }}</td>
                                             <td>
                                                 @if ($booking->purchase_type == 'kpr')
                                                     <span class="badge badge-info badge-sm">KPR</span>
@@ -1011,18 +1018,23 @@
                                                 @switch($booking->status)
                                                     @case('active')
                                                         <span class="badge badge-warning badge-sm">Active</span>
-                                                        @break
+                                                    @break
+
                                                     @case('akad')
                                                         <span class="badge badge-primary badge-sm">Akad</span>
-                                                        @break
+                                                    @break
+
                                                     @case('lunas')
                                                         <span class="badge badge-success badge-sm">Lunas</span>
-                                                        @break
+                                                    @break
+
                                                     @case('ditolak')
                                                         <span class="badge badge-danger badge-sm">Ditolak</span>
-                                                        @break
+                                                    @break
+
                                                     @default
-                                                        <span class="badge badge-secondary badge-sm">{{ ucfirst($booking->status) }}</span>
+                                                        <span
+                                                            class="badge badge-secondary badge-sm">{{ ucfirst($booking->status) }}</span>
                                                 @endswitch
                                             </td>
                                             <td>
@@ -1037,40 +1049,37 @@
                                                 @endphp
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div class="progress w-100" style="height: 6px;">
-                                                        <div class="progress-bar" style="width: {{ $progress }}%"></div>
+                                                        <div class="progress-bar" style="width: {{ $progress }}%">
+                                                        </div>
                                                     </div>
                                                     <span class="small">{{ $progress }}%</span>
                                                 </div>
                                             </td>
                                             <td class="small">{{ $booking->sales->name ?? '-' }}</td>
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                                <div
+                                                    class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
                                                     {{-- Proses KPR / Cash --}}
                                                     @if ($booking->purchase_type == 'kpr')
                                                         <a href="{{ route('pengajuan.show', $booking->id) }}"
-                                                            class="btn btn-outline-primary btn-sm"
-                                                            title="Proses KPR">
+                                                            class="btn btn-outline-primary btn-sm" title="Proses KPR">
                                                             <i class="mdi mdi-bank"></i>
                                                         </a>
                                                     @else
-                                                        <a href="{{ route('cash.show', $booking->id) }}"
-                                                            class="btn btn-outline-success btn-sm"
-                                                            title="Proses Cash">
+                                                        <a href="{{ route('marketing.cash', $booking->id) }}"
+                                                            class="btn btn-outline-success btn-sm" title="Proses Cash">
                                                             <i class="mdi mdi-cash"></i>
                                                         </a>
                                                     @endif
 
                                                     {{-- Detail --}}
-                                                    <a href="#"
-                                                        class="btn btn-outline-info btn-sm"
-                                                        title="Detail">
+                                                    <a href="#" class="btn btn-outline-info btn-sm" title="Detail">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
 
                                                     {{-- Edit --}}
-                                                    <a href="#"
-                                                        class="btn btn-outline-warning btn-sm"
+                                                    <a href="#" class="btn btn-outline-warning btn-sm"
                                                         title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
@@ -1079,8 +1088,7 @@
                                                     <form action="#" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit"
-                                                            class="btn btn-outline-danger btn-sm"
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"
                                                             title="Hapus">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
@@ -1101,17 +1109,18 @@
                                 Menampilkan 1 - {{ $bookings->count() }} dari {{ $bookings->count() }} data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
+                                    style="gap: 2px;">
                                     <li class="page-item disabled">
                                         <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
                                     <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    @if($bookings->count() > 5)
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    @if ($bookings->count() > 5)
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
                                     @endif
                                     <li class="page-item">
                                         <a class="page-link" href="#" aria-label="Next">

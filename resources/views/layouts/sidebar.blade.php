@@ -44,9 +44,6 @@
                         <a class="nav-link" href="dashboard-approved">Approved</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="dashboard-cash">Cash</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="dashboard-akad">Akad</a>
                     </li>
                     <li class="nav-item">

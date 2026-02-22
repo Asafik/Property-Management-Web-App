@@ -52,7 +52,7 @@ class Booking extends Model
         return $this->hasOne(KprApplication::class, 'booking_id');
     }
 
-    // Booking -> Payments (nanti kalau kamu buat)
+    
     public function payments()
     {
         return $this->hasMany(Payment::class, 'booking_id');

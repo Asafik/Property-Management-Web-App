@@ -23,6 +23,9 @@ Use App\Http\Controllers\CashController;
 use App\Http\Controllers\Marketing\CustomerController;
 use App\Http\Controllers\Marketing\SellUnitController;
 use App\Http\Controllers\ListPengajuanController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PengajuanController;
 
 /*
@@ -72,7 +75,10 @@ Route::get('/marketing/jual-unit/export/pdf', [SellUnitController::class, 'expor
 */
 // Route::get('/dashboard-list-pengajuan', fn() => view('marketing.list_pengajuan'));
 Route::get('marketing/list-pengajuan', [ListPengajuanController::class, 'index'])->name('marketing.list_pengajuan');
-Route::get('/dashboard-cash', fn() => view('marketing.cash'));
+// Route::get('/dashboard-cash', fn() => view('marketing.cash'));
+Route::get('/dashboard-cash/{booking}', [ListPengajuanController::class, 'show'])->name('marketing.cash');
+Route::put('/bookings/{booking}/update-nego', [BookingController::class, 'updateNego'])
+    ->name('bookings.updateNego');
 Route::get('/dashboard-approved', fn() => view('marketing.approved'));
 Route::get('/dashboard-akad', fn() => view('marketing.akad'));
 Route::get('/dashboard-vertifikasi-kpr', fn() => view('marketing.vertifikasi_kpr'));
@@ -86,7 +92,12 @@ Route::get('/dashboard-survey', fn() => view('marketing.survey'));
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
-Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
+// Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
+route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])->name('cetak.invoice_cash');
+Route::get('/dashboard-cetak-invoice-cash/{booking}/pdf', [InvoiceController::class, 'cetakPdf'])
+    ->name('dashboard.cetak.invoice.cash.pdf');
+
+Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
 // Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
 Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->name('cetak.rab');
 

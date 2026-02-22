@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Invoice Cash Keras - Properti Management</title>
@@ -42,7 +43,7 @@
             padding: 20px 40px;
             border-radius: 15px;
             letter-spacing: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .watermark-pattern {
@@ -116,7 +117,7 @@
 
         .btn.active {
             transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .btn:hover {
@@ -127,7 +128,7 @@
         .card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
             position: relative;
             z-index: 1;
@@ -381,6 +382,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Watermark PT PROPERTI MANAGEMENT (besar di tengah) -->
     <div class="watermark-text">PT PROPERTI MANAGEMENT</div>
@@ -453,38 +455,56 @@
                             <tr>
                                 <td>No. Invoice</td>
                                 <td>:</td>
-                                <td><strong id="invoiceNumber">INV/CASH/2025/03/001</strong></td>
+                                <td><strong
+                                        id="invoiceNumber">{{ $booking->invoice_number ?? 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</strong>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Tanggal Invoice</td>
                                 <td>:</td>
-                                <td>25 Maret 2025</td>
+                                <td>{{ \Carbon\Carbon::parse($booking->invoice_date ?? $booking->created_at)->translatedFormat('d F Y') }}
+                                </td>
                             </tr>
                             <tr>
                                 <td>Tanggal Lunas</td>
                                 <td>:</td>
-                                <td>25 Maret 2025</td>
+                                <td>
+                                    @php
+                                        $pelunasan = $booking->payments->where('type', 'pelunasan')->first();
+                                    @endphp
+                                    {{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}
+                                </td>
                             </tr>
                         </table>
                     </div>
+
                     <div style="width: 48%;">
                         <table class="info-table">
                             <tr>
                                 <td>Status</td>
                                 <td>:</td>
                                 <td>
-                                    <span class="badge-status badge-success" id="statusBadge">LUNAS</span>
+                                    @php
+                                        $totalPaid = $booking->payments->sum('amount');
+                                        $status =
+                                            $totalPaid >= ($booking->harga_nego ?? $booking->unit->price)
+                                                ? 'LUNAS'
+                                                : 'BELUM LUNAS';
+                                        $badgeClass = $status == 'LUNAS' ? 'badge-success' : 'badge-warning';
+                                    @endphp
+                                    <span class="badge-status {{ $badgeClass }}"
+                                        id="statusBadge">{{ $status }}</span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Jenis Cash</td>
                                 <td>:</td>
-                                <td>Cash Keras (Lunas Langsung)</td>
+                                <td>{{ $booking->type_cash ?? 'Cash Keras (Lunas Langsung)' }}</td>
                             </tr>
                             <tr>
                                 <td>Metode</td>
                                 <td>:</td>
-                                <td>Transfer Bank</td>
+                                <td>{{ $pelunasan->method ?? '-' }}</td>
                             </tr>
                         </table>
                     </div>
@@ -497,32 +517,32 @@
                         <tr>
                             <td>Nama Customer</td>
                             <td>:</td>
-                            <td><strong>Budi Santoso</strong></td>
+                            <td><strong>{{ $booking->customer->full_name ?? '-' }}</strong></td>
                         </tr>
                         <tr>
                             <td>NIK</td>
                             <td>:</td>
-                            <td>3273011203850001</td>
+                            <td>{{ $booking->customer->nik ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>No. HP</td>
                             <td>:</td>
-                            <td>081234567890</td>
+                            <td>{{ $booking->customer->phone ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Booking ID</td>
                             <td>:</td>
-                            <td>#INV/202502/001</td>
+                            <td>{{ $booking->booking_code ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Unit</td>
                             <td>:</td>
-                            <td>The Lavender - Tipe 45</td>
+                            <td>{{ $booking->unit->type ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Blok/No</td>
                             <td>:</td>
-                            <td>C/12</td>
+                            <td>{{ $booking->unit->unit_code ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
@@ -533,36 +553,47 @@
                     <tbody>
                         <tr>
                             <td width="60%"><strong>Harga Unit</strong></td>
-                            <td width="40%" class="text-end">Rp 450.000.000</td>
+                            <td width="40%" class="text-end">
+                                {{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price, 0, ',', '.') : '-' }}
+                            </td>
                         </tr>
                         <tr>
                             <td><strong>Hasil Negosiasi / Diskon</strong></td>
-                            <td class="text-end text-success">- Rp 15.000.000</td>
+                            <td class="text-end text-success">-
+                                {{ $booking->harga_nego ? 'Rp ' . number_format($booking->harga_nego, 0, ',', '.') : '-' }}
+                            </td>
                         </tr>
                         <tr class="total-row">
                             <td><strong>Harga Final Kesepakatan</strong></td>
-                            <td class="text-end"><strong>Rp 435.000.000</strong></td>
+                            <td class="text-end">
+                                <strong>{{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price - $booking->harga_nego, 0, ',', '.') : '-' }}</strong>
+                            </td>
                         </tr>
                         <tr class="grand-total">
                             <td><strong>TOTAL PEMBAYARAN LUNAS</strong></td>
-                            <td class="text-end"><strong>Rp 435.000.000</strong></td>
+                            <td class="text-end">
+                                <strong>{{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price - $booking->harga_nego, 0, ',', '.') : '-' }}</strong>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
 
                 <!-- Terbilang -->
                 <div class="terbilang">
-                    <strong>Terbilang:</strong> Empat ratus tiga puluh lima juta rupiah
+                    <strong>Terbilang:</strong>
+                    {{ $booking->unit->price ? ucwords(\Illuminate\Support\Str::lower(\App\Helpers\Terbilang::make($booking->unit->price - ($booking->harga_nego ?? 0)))) . ' rupiah' : '-' }}
                 </div>
 
                 <!-- INFORMASI KHUSUS KONVERSI KPR (Muncul hanya untuk skenario konversi) -->
                 <div id="infoKonversi" class="d-none">
                     <!-- Alert Warning -->
-                    <div class="alert alert-warning" style="background-color: #fff3cd; border: 1px solid #ffab2e; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <div class="alert alert-warning"
+                        style="background-color: #fff3cd; border: 1px solid #ffab2e; padding: 15px; border-radius: 8px; margin: 20px 0;">
                         <i class="mdi mdi-information-outline me-2"></i>
                         <strong>Catatan:</strong> Pembayaran ini merupakan konversi dari KPR yang ditolak.
                         <br>
-                        <small>Biaya KPR hangus: Rp 4.100.000 (Biaya Survey + Biaya Provisi) - sudah termasuk dalam perhitungan</small>
+                        <small>Biaya KPR hangus: Rp 4.100.000 (Biaya Survey + Biaya Provisi) - sudah termasuk dalam
+                            perhitungan</small>
                     </div>
 
                     <!-- Lampiran Surat Penolakan -->
@@ -581,33 +612,41 @@
                 </div>
 
                 <!-- Metode Pembayaran -->
+                <!-- Metode Pembayaran -->
                 <div class="payment-method">
                     <h5 style="margin-bottom: 10px; color: #4b49ac;">METODE PEMBAYARAN</h5>
+
+                    @php
+                        // Ambil pembayaran pelunasan terakhir
+                        $pelunasan = $booking->payments->where('type', 'pelunasan')->first();
+                    @endphp
+
                     <table class="info-table">
                         <tr>
                             <td>Metode</td>
                             <td>:</td>
-                            <td>Transfer Bank</td>
+                            <td>{{ $pelunasan->method ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Nama Bank</td>
                             <td>:</td>
-                            <td>Bank BCA</td>
+                            <td>{{ $pelunasan->notes ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>No. Rekening</td>
                             <td>:</td>
-                            <td>1234567890</td>
+                            <td>{{ $pelunasan->reference_number ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Atas Nama</td>
                             <td>:</td>
-                            <td>PT Properti Management</td>
+                            <td>{{ $pelunasan->notes ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Tanggal Transfer</td>
                             <td>:</td>
-                            <td>25 Maret 2025</td>
+                            <td>{{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -616,12 +655,12 @@
                 <div class="signature-section">
                     <div class="signature-box">
                         <p>Penerima,</p>
-                        <div class="signature-line">(Ahmad Rizki)</div>
-                        <p class="text-muted small">Marketing Officer</p>
+                        <div class="signature-line">{{ $booking->sales->name ?? '-' }}</div>
+                        <p class="text-muted small">{{ $booking->sales->role ?? '-' }}</p>
                     </div>
                     <div class="signature-box">
                         <p>Customer,</p>
-                        <div class="signature-line">(Budi Santoso)</div>
+                        <div class="signature-line">{{ $booking->customer->full_name ?? '-' }}</div>
                         <p class="text-muted small">Pembeli</p>
                     </div>
                 </div>
@@ -633,13 +672,16 @@
                     <p>Dicetak pada: {{ date('d/m/Y H:i:s') }}</p>
                 </div>
 
-                <!-- QR Code (simulasi) -->
-                <div style="text-align: right; margin-top: 20px;">
-                    <div style="display: inline-block; padding: 10px; background: #f8f9fc; border-radius: 8px;">
-                        <i class="mdi mdi-qrcode" style="font-size: 48px; color: #4b49ac;"></i>
-                        <p style="font-size: 10px; margin-top: 5px;" id="qrCodeText">INV/CASH/2025/03/001</p>
-                    </div>
-                </div>
+         <!-- QR Code Simulasi untuk preview -->
+<div style="text-align: right; margin-top: 20px;">
+   <div style="text-align: right; margin-top: 20px;">
+<div style="text-align: right;">
+    {!! $qrCodeSvg !!}
+    <p style="font-size: 10px;">Scan untuk download PDF</p>
+</div>
+</div>
+</div>
+
             </div>
         </div>
 
@@ -686,17 +728,25 @@
                 $('#qrCodeText').text('INV/CASH-KONV/2025/03/001');
 
                 // Status badge (warning untuk konversi)
-                $('#statusBadge').removeClass('badge-success').addClass('badge-warning').text('LUNAS (Konversi)');
+                $('#statusBadge').removeClass('badge-success').addClass('badge-warning').text(
+                    'LUNAS (Konversi)');
 
                 // Tampilkan info konversi
                 $('#infoKonversi').removeClass('d-none');
             });
-
-            // Simulasi download PDF
-            $('#btnDownloadPDF').click(function() {
-                alert('Fitur download PDF akan segera tersedia. Untuk sekarang, gunakan Cetak > Save as PDF');
-            });
+            
         });
     </script>
+    <script>
+    document.getElementById('btnDownloadPDF').addEventListener('click', function() {
+        // Gunakan ID booking dari Blade
+        const bookingId = {{ $booking->id }};
+        const url = `/dashboard-cetak-invoice-cash/${bookingId}/pdf`;
+        
+        // Buka PDF di tab baru
+        window.open(url, '_blank');
+    });
+</script>
 </body>
+
 </html>
