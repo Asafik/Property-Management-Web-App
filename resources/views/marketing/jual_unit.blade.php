@@ -838,6 +838,20 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe Unit
+                                                </label>
+                                                <select name="type" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($types as $type)
+                                                        <option value="{{ $type }}"
+                                                            {{ request('type') == $type ? 'selected' : '' }}>
+                                                            {{ $type }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
                                             <div class="col-6">
                                                 <label class="form-label">
@@ -944,7 +958,20 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-
+                                             <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe Unit
+                                                </label>
+                                                <select name="type" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($types as $type)
+                                                        <option value="{{ $type }}"
+                                                            {{ request('type') == $type ? 'selected' : '' }}>
+                                                            {{ $type }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-chart-arc me-1"></i>Status
@@ -1048,6 +1075,7 @@
                                             <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
                                             <th><i class="mdi mdi-home me-1"></i>Blok</th>
                                             <th><i class="mdi mdi-home-group me-1"></i>Proyek</th>
+                                            <th><i class="mdi mdi-home-modern me-1">Type Unit</i></th>
                                             <th class="d-none d-md-table-cell"><i
                                                     class="mdi mdi-map-marker me-1"></i>Lokasi</th>
                                             <th><i class="mdi mdi-arrow-expand me-1"></i>Luas Tanah</th>
@@ -1072,11 +1100,19 @@
                                                         <span class="fw-bold">{{ $unit->unit_code }}</span>
                                                     </div>
                                                 </td>
+
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <i class="mdi mdi-home-city text-info me-2"
                                                             style="font-size: 1rem;"></i>
                                                         {{ $unit->landBank->name ?? '-' }}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="mdi mdi-home-modern text-info me-2"
+                                                            style="font-size: 1rem;"></i>
+                                                        {{ $unit->type ?? '-' }}
                                                     </div>
                                                 </td>
                                                 <td class="d-none d-md-table-cell">
@@ -1661,36 +1697,36 @@
             window.location.href = url;
         }
     </script>
-    @if(session('success'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil',
-        text: "{{ session('success') }}",
-        showConfirmButton: false,
-        timer: 2500
-    });
-</script>
-@endif
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2500
+            });
+        </script>
+    @endif
 
-@if(session('error'))
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#d33'
-    });
-</script>
-@endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#d33'
+            });
+        </script>
+    @endif
 
-@if ($errors->any())
-<script>
-    Swal.fire({
-        icon: 'warning',
-        title: 'Validasi Gagal',
-        html: `{!! implode('<br>', $errors->all()) !!}`
-    });
-</script>
-@endif
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validasi Gagal',
+                html: `{!! implode('<br>', $errors->all()) !!}`
+            });
+        </script>
+    @endif
 @endpush

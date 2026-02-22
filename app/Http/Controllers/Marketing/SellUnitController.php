@@ -48,6 +48,9 @@ public function index(Request $request)
     if ($request->filled('status')) {
         $query->where('status', $request->status);
     }
+    if ($request->filled('type')) {
+    $query->where('type', $request->type);
+}
 
     // Filter Harga
     if ($request->filled('price')) {
@@ -86,7 +89,9 @@ public function index(Request $request)
     $agencies = Employee::where('role', 'agency')
         ->latest()
         ->get();
-
+    $types = LandBankUnit::select('type')
+            ->distinct()
+            ->pluck('type');
     return view('marketing.jual_unit', compact(
         'units',
         'totalUnits',
@@ -98,7 +103,8 @@ public function index(Request $request)
         'totalSold',
         'customers',
         'agencies',
-        'projects'
+        'projects',
+        'types'
     ));
 }
   
@@ -214,4 +220,9 @@ public function exportPdf()
 
     return $pdf->download('data-unit.pdf');
 }
+// public function exportPdf()
+// {
+//     $units = LandBankUnit::with('landBank')->get();
+//     return view('exports.units_pdf', compact('units'));
+// }
 }

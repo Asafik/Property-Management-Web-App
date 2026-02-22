@@ -20,6 +20,7 @@ class UnitsExport implements FromCollection, WithHeadings
         return [
             $unit->unit_code,
             $unit->landBank->name ?? '-',
+            $unit->type ?? '-',
             $unit->price,
             $unit->status,
             optional(optional($booking)->sales)->name ?? '-',
@@ -33,6 +34,7 @@ class UnitsExport implements FromCollection, WithHeadings
         return [
             'Blok',
             'Nama Project',
+            'Type Unit',
             'Harga Unit',
             'Status',
             'Nama Agent',
