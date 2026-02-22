@@ -59,7 +59,11 @@ Route::post('/marketing/set-agency/{unitId}',[SellUnitController::class, 'setAge
 Route::get('/marketing/create-customer', [CustomerController::class, 'index'])->name('marketing.tambah_customer');
 Route::post('/marketing/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
 Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])->name('set.customer');
+Route::get('/marketing/jual-unit/export/excel', [SellUnitController::class, 'exportExcel'])
+    ->name('marketing.jual-unit.export.excel');
 
+Route::get('/marketing/jual-unit/export/pdf', [SellUnitController::class, 'exportPdf'])
+    ->name('marketing.jual-unit.export.pdf');
 
 /*
 |--------------------------------------------------------------------------

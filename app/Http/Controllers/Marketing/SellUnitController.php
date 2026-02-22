@@ -11,6 +11,9 @@ use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UnitsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 class SellUnitController extends Controller
 {
 public function index(Request $request)
@@ -61,7 +64,7 @@ public function index(Request $request)
     // AMBIL DATA
     // =========================
 
-    $units = $query->get();
+   $units = $query->paginate(10)->withQueryString();
 
     // =========================
     // SEMUA LOGIC LAMA TETAP
@@ -115,7 +118,8 @@ public function setCustomer(Request $request, $unitId)
     $request->validate([
         'customer_id'   => 'required|exists:customers,id',
         'purchase_type' => 'required|in:cash,kpr',
-        'booking_fee'   => 'required'
+        'booking_fee'   => 'required',
+        
     ]);
 
     $unit = LandBankUnit::findOrFail($unitId);
@@ -160,27 +164,32 @@ public function setAgency(Request $request, $unitId)
     try {
 
         $validated = $request->validate([
-            'sales_id' => 'required|exists:employees,id',
+            'sales_id'  => 'required|exists:employees,id',
+            'agent_fee' => 'required'
         ]);
 
         $unit = LandBankUnit::findOrFail($unitId);
 
-        // Ambil booking aktif berdasarkan unit
         $booking = Booking::where('unit_id', $unit->id)
-                            ->where('status', 'active')
-                            ->first();
+                          ->where('status', 'active')
+                          ->first();
 
         if (!$booking) {
             Log::warning('Booking tidak ditemukan');
-            return back()->with('error', 'Booking belum dibuat');
+            return back()->with('error', 'Booking untuk unit ini belum dibuat. Silakan buat booking terlebih dahulu.');
         }
 
-        $booking->sales_id = $request->sales_id;
-        $booking->save();
+        // Bersihkan format rupiah
+        $agentFee = str_replace(['.', ','], '', $request->agent_fee);
 
-        Log::info('Sales berhasil diupdate');
+        $booking->update([
+            'sales_id'  => $request->sales_id,
+            'agent_fee' => $agentFee
+        ]);
 
-        return back()->with('success','Sales berhasil diupdate');
+        Log::info('Sales & Agent Fee berhasil diupdate');
+
+        return back()->with('success','Sales & Agent Fee berhasil diupdate');
 
     } catch (\Illuminate\Validation\ValidationException $e) {
 
@@ -190,8 +199,19 @@ public function setAgency(Request $request, $unitId)
     } catch (\Exception $e) {
 
         Log::error('GENERAL ERROR: ' . $e->getMessage());
-        return back()->with('error','Terjadi kesalahan sistem');
+       return back()->with('error', 'Booking untuk unit ini belum dibuat. Silakan buat booking terlebih dahulu.');
     }
 }
+public function exportExcel()
+{
+    return Excel::download(new UnitsExport, 'data-unit.xlsx');
+}
+public function exportPdf()
+{
+    $units = LandBankUnit::with('landBank')->get();
 
+    $pdf = Pdf::loadView('exports.units_pdf', compact('units'));
+
+    return $pdf->download('data-unit.pdf');
+}
 }

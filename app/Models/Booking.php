@@ -13,6 +13,7 @@ class Booking extends Model
         'unit_id',
         'customer_id',
         'sales_id',
+        'agent_fee',
         'booking_code',
         'booking_fee',
         'booking_date',

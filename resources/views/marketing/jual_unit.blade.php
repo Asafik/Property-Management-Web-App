@@ -790,12 +790,16 @@
                             Daftar Unit Kavling
                         </h5>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-gradient-success" onclick="alert('Export Excel')">
-                                <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Excel</span>
-                            </button>
-                            <button class="btn btn-sm btn-gradient-danger" onclick="alert('Export PDF')">
-                                <i class="mdi mdi-file-pdf me-1"></i><span class="d-none d-sm-inline">PDF</span>
-                            </button>
+                            <a href="{{ route('marketing.jual-unit.export.excel') }}"
+                                class="btn btn-sm btn-gradient-success">
+                                <i class="mdi mdi-export me-1"></i>
+                                <span class="d-none d-sm-inline">Excel</span>
+                            </a>
+
+                            <a href="{{ route('marketing.jual-unit.export.pdf') }}" class="btn btn-sm btn-gradient-danger">
+                                <i class="mdi mdi-file-pdf me-1"></i>
+                                <span class="d-none d-sm-inline">PDF</span>
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -806,179 +810,218 @@
                                     <i class="mdi mdi-filter-outline me-1"></i>Filter Data
                                 </h6>
 
-                             <form method="GET" action="{{ route('marketing.jual-unit') }}">
+                                <form method="GET" action="{{ route('marketing.jual-unit') }}">
 
-    <!-- FILTER MOBILE -->
-    <div class="d-block d-md-none">
+                                    <!-- FILTER MOBILE -->
+                                    <div class="d-block d-md-none">
 
-        <div class="mb-3">
-            <label class="form-label">
-                <i class="mdi mdi-magnify me-1"></i>Cari Unit
-            </label>
-            <input type="text"
-                   name="search"
-                   value="{{ request('search') }}"
-                   class="form-control"
-                   placeholder="Cari blok, lokasi...">
-        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Cari Unit
+                                            </label>
+                                            <input type="text" name="search" value="{{ request('search') }}"
+                                                class="form-control" placeholder="Cari blok, lokasi...">
+                                        </div>
 
-        <div class="row g-2">
-            <div class="col-6">
-                <label class="form-label">
-                    <i class="mdi mdi-home me-1"></i>Proyek
-                </label>
-               <select name="project" class="form-control">
-    <option value="">Semua</option>
-    @foreach($projects as $project)
-        <option value="{{ $project->name }}"
-            {{ request('project') == $project->name ? 'selected' : '' }}>
-            {{ $project->name }}
-        </option>
-    @endforeach
-</select>
-            </div>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home me-1"></i>Proyek
+                                                </label>
+                                                <select name="project" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($projects as $project)
+                                                        <option value="{{ $project->name }}"
+                                                            {{ request('project') == $project->name ? 'selected' : '' }}>
+                                                            {{ $project->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
-            <div class="col-6">
-                <label class="form-label">
-                    <i class="mdi mdi-chart-arc me-1"></i>Status
-                </label>
-                <select name="status" class="form-control">
-                    <option value="">Semua</option>
-                    <option value="draft" {{ request('status')=='draft'?'selected':'' }}>Draft</option>
-                    <option value="ready" {{ request('status')=='ready'?'selected':'' }}>Ready</option>
-                    <option value="booked" {{ request('status')=='booked'?'selected':'' }}>Booked</option>
-                    <option value="sold" {{ request('status')=='sold'?'selected':'' }}>Sold</option>
-                </select>
-            </div>
-        </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select name="status" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="draft"
+                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>
+                                                        Draft</option>
+                                                    <option value="ready"
+                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>
+                                                        Ready</option>
+                                                    <option value="booked"
+                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
+                                                    </option>
+                                                    <option value="sold"
+                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                        Sold</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-        <div class="row g-2 mt-2">
-            <div class="col-6">
-                <label class="form-label">
-                    <i class="mdi mdi-currency-usd me-1"></i>Harga
-                </label>
-                <select name="price" class="form-control">
-                    <option value="">Semua</option>
-                    <option value="<500" {{ request('price')=='<500'?'selected':'' }}>&lt; Rp 500 Jt</option>
-                    <option value="500-1000" {{ request('price')=='500-1000'?'selected':'' }}>Rp 500 Jt - 1 M</option>
-                    <option value=">1000" {{ request('price')=='>1000'?'selected':'' }}>&gt; Rp 1 M</option>
-                </select>
-            </div>
+                                        <div class="row g-2 mt-2">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-currency-usd me-1"></i>Harga
+                                                </label>
+                                                <select name="price" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="<500"
+                                                        {{ request('price') == '<500' ? 'selected' : '' }}>
+                                                        &lt; Rp 500 Jt</option>
+                                                    <option value="500-1000"
+                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>Rp 500 Jt -
+                                                        1 M
+                                                    </option>
+                                                    <option value=">1000"
+                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>
+                                                        &gt; Rp 1 M</option>
+                                                </select>
+                                            </div>
 
-            <div class="col-6">
-                <label class="form-label">
-                    <i class="mdi mdi-counter me-1"></i>Tampil
-                </label>
-                <select name="perPage" class="form-control">
-                    <option value="10" {{ request('perPage')==10?'selected':'' }}>10</option>
-                    <option value="25" {{ request('perPage')==25?'selected':'' }}>25</option>
-                    <option value="50" {{ request('perPage')==50?'selected':'' }}>50</option>
-                    <option value="100" {{ request('perPage')==100?'selected':'' }}>100</option>
-                </select>
-            </div>
-        </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="perPage" class="form-control">
+                                                    <option value="10"
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    </option>
+                                                    <option value="25"
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    </option>
+                                                    <option value="50"
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    </option>
+                                                    <option value="100"
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-        <div class="row g-2 mt-3">
-            <div class="col-6">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="mdi mdi-filter me-1"></i> Filter
-                </button>
-            </div>
-            <div class="col-6">
-                <a href="{{ route('marketing.jual-unit') }}"
-                   class="btn btn-gradient-secondary w-100">
-                    <i class="mdi mdi-refresh me-1"></i> Reset
-                </a>
-            </div>
-        </div>
-    </div>
+                                        <div class="row g-2 mt-3">
+                                            <div class="col-6">
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="mdi mdi-filter me-1"></i> Filter
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="{{ route('marketing.jual-unit') }}"
+                                                    class="btn btn-gradient-secondary w-100">
+                                                    <i class="mdi mdi-refresh me-1"></i> Reset
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
-    <!-- FILTER DESKTOP -->
-    <div class="d-none d-md-block">
-        <div class="row g-2 align-items-end">
+                                    <!-- FILTER DESKTOP -->
+                                    <div class="d-none d-md-block">
+                                        <div class="row g-2 align-items-end">
 
-            <div class="col-md-4">
-                <label class="form-label">
-                    <i class="mdi mdi-magnify me-1"></i>Cari Unit
-                </label>
-                <input type="text"
-                       name="search"
-                       value="{{ request('search') }}"
-                       class="form-control"
-                       placeholder="Cari blok, lokasi...">
-            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Cari Unit
+                                                </label>
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari blok, lokasi...">
+                                            </div>
 
-            <div class="col-md-2">
-                <label class="form-label">
-                    <i class="mdi mdi-home me-1"></i>Proyek
-                </label>
-                <select name="project" class="form-control">
-                    <option value="">Semua</option>
-                    @foreach($projects as $project)
-                        <option value="{{ $project->name }}"
-                            {{ request('project') == $project->name ? 'selected' : '' }}>
-                            {{ $project->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home me-1"></i>Proyek
+                                                </label>
+                                                <select name="project" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($projects as $project)
+                                                        <option value="{{ $project->name }}"
+                                                            {{ request('project') == $project->name ? 'selected' : '' }}>
+                                                            {{ $project->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
-            <div class="col-md-2">
-                <label class="form-label">
-                    <i class="mdi mdi-chart-arc me-1"></i>Status
-                </label>
-                <select name="status" class="form-control">
-                    <option value="">Semua</option>
-                    <option value="draft" {{ request('status')=='draft'?'selected':'' }}>Draft</option>
-                    <option value="ready" {{ request('status')=='ready'?'selected':'' }}>Ready</option>
-                    <option value="booked" {{ request('status')=='booked'?'selected':'' }}>Booked</option>
-                    <option value="sold" {{ request('status')=='sold'?'selected':'' }}>Sold</option>
-                </select>
-            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select name="status" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="draft"
+                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>
+                                                        Draft</option>
+                                                    <option value="ready"
+                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>
+                                                        Ready</option>
+                                                    <option value="booked"
+                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
+                                                    </option>
+                                                    <option value="sold"
+                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                        Sold</option>
+                                                </select>
+                                            </div>
 
-            <div class="col-md-2">
-                <label class="form-label">
-                    <i class="mdi mdi-currency-usd me-1"></i>Harga
-                </label>
-                <select name="price" class="form-control">
-                    <option value="">Semua</option>
-                    <option value="<500" {{ request('price')=='<500'?'selected':'' }}>&lt; Rp 500 Jt</option>
-                    <option value="500-1000" {{ request('price')=='500-1000'?'selected':'' }}>Rp 500 Jt - 1 M</option>
-                    <option value=">1000" {{ request('price')=='>1000'?'selected':'' }}>&gt; Rp 1 M</option>
-                </select>
-            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-currency-usd me-1"></i>Harga
+                                                </label>
+                                                <select name="price" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="<500"
+                                                        {{ request('price') == '<500' ? 'selected' : '' }}>
+                                                        &lt; Rp 500 Jt</option>
+                                                    <option value="500-1000"
+                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>Rp 500 Jt -
+                                                        1 M
+                                                    </option>
+                                                    <option value=">1000"
+                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>
+                                                        &gt; Rp 1 M</option>
+                                                </select>
+                                            </div>
 
-            <div class="col-md-1">
-                <label class="form-label">
-                    <i class="mdi mdi-counter me-1"></i>Tampil
-                </label>
-                <select name="perPage" class="form-control">
-                    <option value="10" {{ request('perPage')==10?'selected':'' }}>10</option>
-                    <option value="25" {{ request('perPage')==25?'selected':'' }}>25</option>
-                    <option value="50" {{ request('perPage')==50?'selected':'' }}>50</option>
-                    <option value="100" {{ request('perPage')==100?'selected':'' }}>100</option>
-                </select>
-            </div>
+                                            <div class="col-md-1">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="perPage" class="form-control">
+                                                    <option value="10"
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    </option>
+                                                    <option value="25"
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    </option>
+                                                    <option value="50"
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    </option>
+                                                    <option value="100"
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    </option>
+                                                </select>
+                                            </div>
 
-          <div class="col-md-2 d-flex gap-2">
-    
-    <button type="submit"
-        class="btn btn-primary w-50 btn-icon-only"
-        title="Filter">
-        <i class="mdi mdi-filter"></i>
-    </button>
+                                            <div class="col-md-2 d-flex gap-2">
 
-    <a href="{{ route('marketing.jual-unit') }}"
-        class="btn btn-gradient-secondary w-50">
-        <i class="mdi mdi-refresh"></i>
-    </a>
+                                                <button type="submit" class="btn btn-primary w-50 btn-icon-only"
+                                                    title="Filter">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
 
-</div>
-        </div>
-    </div>
+                                                <a href="{{ route('marketing.jual-unit') }}"
+                                                    class="btn btn-gradient-secondary w-50">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
 
-</form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
                             </div>
                         </div>
 
@@ -1013,6 +1056,7 @@
                                             <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
                                             <th><i class="mdi mdi-chart-arc me-1"></i>Status</th>
                                             <th><i class="mdi mdi-account-tie me-1"></i>Agent</th>
+                                            <th><i class="mdi mdi-currency-usd me-1"></i>Fee Agent</th>
                                             <th><i class="mdi mdi-account me-1"></i>Customer</th>
                                             <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                                         </tr>
@@ -1049,7 +1093,7 @@
                                                         {{ $unit->area ?? ($unit->area ?? '-') }} m²
                                                     </div>
                                                 </td>
-                                                                                                <td>
+                                                <td>
                                                     <div class="d-flex align-items-center">
                                                         <i class="mdi mdi-ruler-square text-warning me-2"
                                                             style="font-size: 1rem;"></i>
@@ -1092,6 +1136,14 @@
                                                         <i class="mdi mdi-account-tie text-primary me-2"
                                                             style="font-size: 1rem;"></i>
                                                         {{ $unit->activeBooking->sales->name ?? '-' }}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="mdi mdi-currency-usd text-info me-2"
+                                                            style="font-size: 1rem;"></i>
+                                                        Rp
+                                                        {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
                                                     </div>
                                                 </td>
                                                 <td>
@@ -1172,7 +1224,8 @@
 
                                             <div class="d-flex align-items-center mt-2 p-2 bg-light rounded small">
                                                 <i class="mdi mdi-account-tie text-primary me-2"></i>
-                                                <span class="text-muted">Agent: {{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}</span>
+                                                <span class="text-muted">Agent:
+                                                    {{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}</span>
                                             </div>
 
                                             <div class="d-flex justify-content-between align-items-center mt-3">
@@ -1214,30 +1267,17 @@
                             @endforelse
                         </div>
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
+
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 dari 156 data
+                                Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }}
+                                dari {{ $units->total() }} data
                             </div>
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                    style="gap: 2px;">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
+
+                            <div>
+                                {{ $units->links('pagination::bootstrap-5') }}
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -1276,20 +1316,28 @@
 
                 <div class="modal-body">
 
-                    <!-- Booking Fee Section -->
+                    <!-- Booking & Agent Fee Section -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-body">
                             <div class="row align-items-end">
+
+                                <!-- Booking Fee -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Booking Fee</label>
-                                    <input type="text" class="form-control" id="booking_fee"
+                                    <input type="text" class="form-control" id="booking_fee" name="booking_fee"
                                         placeholder="Masukkan booking fee" autocomplete="off">
                                 </div>
-                                <div class="col-md-6 text-muted small">
+
+                            </div>
+
+                            <!-- Info -->
+                            <div class="row mt-2">
+                                <div class="col-12 text-muted small">
                                     <i class="mdi mdi-information-outline me-1"></i>
                                     Pilih customer lalu klik metode pembayaran (Cash / KPR)
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -1344,18 +1392,34 @@
     <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
+
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
                         Pilih Agency
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
+
                     <form id="formAgency" method="POST">
                         @csrf
                         <input type="hidden" name="sales_id" id="sales_id">
+
+                        <!-- 🔥 Agent Fee Input -->
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <label class="form-label fw-bold">Agent Fee</label>
+                                <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
+                                    placeholder="Masukkan agent fee" autocomplete="off">
+                                <small class="text-muted">
+                                    Masukkan nominal fee untuk agency yang dipilih
+                                </small>
+                            </div>
+                        </div>
                     </form>
+
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead class="table-light">
@@ -1385,6 +1449,7 @@
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -1513,7 +1578,7 @@
                             `<input type="hidden" name="customer_id" value="${customerId}">`);
                         form.append(
                             `<input type="hidden" name="purchase_type" value="${purchaseType}">`
-                            );
+                        );
                         form.append(
                             `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
 
@@ -1532,12 +1597,26 @@
             $(document).on('click', '.bukaModal', function() {
                 let unitId = $(this).data('unit');
                 let url = "{{ url('marketing/set-agency') }}/" + unitId;
+
                 $('#formAgency').attr('action', url);
+                $('#sales_id').val('');
+                $('#agent_fee_modal').val('');
                 $('#modalAgency').modal('show');
             });
 
             $(document).on('click', '.pilihAgency', function() {
                 let salesId = $(this).data('id');
+                let agentFee = $('#agent_fee_modal').val();
+
+                if (!agentFee) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Agent fee wajib diisi!'
+                    });
+                    return;
+                }
+
                 $('#sales_id').val(salesId);
                 $('#formAgency').submit();
             });
@@ -1571,14 +1650,47 @@
         |--------------------------------------------------------------------------
         */
         function exportTable(type) {
-            const msg = type === 'excel' ? 'Excel' : 'PDF';
-            Swal.fire({
-                icon: 'info',
-                title: 'Export ' + msg,
-                text: 'Fitur export sedang dalam pengembangan',
-                timer: 2000,
-                showConfirmButton: false
-            });
+            let url = '';
+
+            if (type === 'excel') {
+                url = "{{ route('marketing.jual-unit.export.excel') }}";
+            } else if (type === 'pdf') {
+                url = "{{ route('marketing.jual-unit.export.pdf') }}";
+            }
+
+            window.location.href = url;
         }
     </script>
+    @if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: "{{ session('success') }}",
+        showConfirmButton: false,
+        timer: 2500
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#d33'
+    });
+</script>
+@endif
+
+@if ($errors->any())
+<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Validasi Gagal',
+        html: `{!! implode('<br>', $errors->all()) !!}`
+    });
+</script>
+@endif
 @endpush
