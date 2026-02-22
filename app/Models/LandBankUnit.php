@@ -80,8 +80,7 @@ class LandBankUnit extends Model
 }
 public function activeBooking()
 {
-    return $this->hasOne(Booking::class, 'unit_id')
-                ->where('status', 'active');
+    return $this->hasOne(Booking::class, 'unit_id')->latestOfMany();
 }
 
 }

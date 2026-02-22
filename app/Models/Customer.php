@@ -40,5 +40,9 @@ public function units()
 {
     return $this->hasMany(LandBankUnit::class, 'customer_id','id');
 }
+public function documents()
+{
+    return $this->hasMany(CustomerDocument::class);
+}
 
 }

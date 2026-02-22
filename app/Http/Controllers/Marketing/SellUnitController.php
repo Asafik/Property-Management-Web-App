@@ -13,44 +13,91 @@ use App\Models\Booking;
 use Illuminate\Support\Facades\Log;
 class SellUnitController extends Controller
 {
-  public function index()
-  {
-    // Ambil semua unit beserta relasi landBank
-    $units = LandBankUnit::with('landBank')->get();
+public function index(Request $request)
+{
+    // Ambil query dulu (belum get)
+   $query = LandBankUnit::with([
+        'landBank',
+        'activeBooking.sales',
+        'activeBooking.customer'
+    ]);
 
-    // Hitung total unit
+    // =========================
+    // FILTER SECTION
+    // =========================
+
+    // Search (blok / nama lokasi dll)
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('block', 'like', '%' . $request->search . '%')
+              ->orWhere('unit_number', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    // Filter Project (dari relasi landBank)
+    if ($request->filled('project')) {
+        $query->whereHas('landBank', function ($q) use ($request) {
+            $q->where('name', $request->project);
+        });
+    }
+
+    // Filter Status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // Filter Harga
+    if ($request->filled('price')) {
+        if ($request->price == '<500') {
+            $query->where('price', '<', 500000000);
+        } elseif ($request->price == '500-1000') {
+            $query->whereBetween('price', [500000000, 1000000000]);
+        } elseif ($request->price == '>1000') {
+            $query->where('price', '>', 1000000000);
+        }
+    }
+
+    // =========================
+    // AMBIL DATA
+    // =========================
+
+    $units = $query->get();
+
+    // =========================
+    // SEMUA LOGIC LAMA TETAP
+    // =========================
+
     $totalUnits = $units->count();
     $totalTersedia = $units->where('status', 'ready')->count();
     $totalBooking = $units->where('status', 'booked')->count();
     $totalSold = $units->where('status', 'sold')->count();
-    // Hitung total luas semua unit
+
     $totalArea = $units->sum('area');
 
-    // Hitung sisa luas tanah per unit (jika diperlukan)
-    // Contoh: total luas dari semua tanah
     $totalLandArea = LandBank::sum('area');
     $sisaLuas = max(0, $totalLandArea - $totalArea);
 
-    // Hitung total nilai unit
     $totalNilai = $units->sum('price');
+    $projects = LandBank::select('id','name')->orderBy('name')->get();
     $customers = Customer::latest()->get();
     $agencies = Employee::where('role', 'agency')
-      ->latest()
-      ->get();
+        ->latest()
+        ->get();
 
     return view('marketing.jual_unit', compact(
-      'units',
-      'totalUnits',
-      'totalArea',
-      'sisaLuas',
-      'totalNilai',
-      'totalTersedia',
-      'totalBooking',
-      'totalSold',
-      'customers',
-      'agencies'
+        'units',
+        'totalUnits',
+        'totalArea',
+        'sisaLuas',
+        'totalNilai',
+        'totalTersedia',
+        'totalBooking',
+        'totalSold',
+        'customers',
+        'agencies',
+        'projects'
     ));
-  }
+}
   
   // public function setCustomer(Request $request, $unitId)
   // {
