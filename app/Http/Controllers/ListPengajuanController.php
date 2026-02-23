@@ -34,7 +34,7 @@ class ListPengajuanController extends Controller
         'kprApplication.bank',
         'payments' 
     ])->findOrFail($id);
-
-    return view('marketing.cash', compact('booking'));
+    $unit = $booking->unit; // ini otomatis dari relasi 'unit' di model Booking
+    return view('marketing.cash', compact('booking', 'unit'));
 }
 }
