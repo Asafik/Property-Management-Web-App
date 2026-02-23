@@ -850,35 +850,58 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <div class="card border-success shadow-sm mb-3">
-                        <div class="card-body">
-                            <h6 class="card-title text-success mb-3"><i class="mdi mdi-cash-check me-2"></i>Harga Jual
-                                Final</h6>
-                            <input type="hidden" name="price" value="{{ $finalPrice }}">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Total RAB</span>
-                                <input type="text" class="rab-form-control text-end fw-bold"
-                                    value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Harga Jual Unit</span>
-                                <input type="text" class="rab-form-control text-end fw-bold"
-                                    value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between mb-3">
-                                <span>Harga Jual Final</span>
-                                <input type="text" class="rab-form-control text-end fw-bold"
-                                    value="Rp {{ number_format($finalPrice, 0, ',', '.') }}" readonly>
-                            </div>
+               <div class="col-12 col-md-6">
+    <div class="card border-success shadow-sm mb-3">
+        <div class="card-body">
+            <h6 class="card-title text-success mb-3">
+                <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
+            </h6>
 
-                            <button type="submit" class="rab-btn rab-btn-success w-100">
-                                <i class="mdi mdi-content-save me-1"></i>Simpan
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <input type="hidden" name="price" value="{{ $finalPrice }}">
+
+            <div class="d-flex justify-content-between mb-2">
+                <span>Total RAB</span>
+                <input type="text" class="rab-form-control text-end fw-bold"
+                    value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
+            </div>
+
+            <div class="d-flex justify-content-between mb-2">
+                <span>Harga Jual Unit</span>
+                <input type="text" class="rab-form-control text-end fw-bold"
+                    value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between mb-3">
+                <span>Harga Jual Final</span>
+                <input type="text" class="rab-form-control text-end fw-bold"
+                    value="Rp {{ number_format($finalPrice, 0, ',', '.') }}" readonly>
+            </div>
+
+            {{-- Tombol aksi --}}
+            <div class="d-flex flex-wrap gap-2">
+                {{-- Simpan --}}
+                <button type="submit" class="rab-btn rab-btn-success flex-grow-1">
+                    <i class="mdi mdi-content-save me-1"></i>Simpan
+                </button>
+
+                {{-- Cetak RAB --}}
+                <a href="{{ route('cetak.rab', $unit->id) }}" target="_blank"
+                    class="rab-btn rab-btn-primary flex-grow-1">
+                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                </a>
+
+                {{-- ACC RAB --}}
+                <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
+                    data-id="{{ $unit->id }}">
+                    <i class="mdi mdi-check me-1"></i>ACC RAB
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
             </div>
         </form>
 
@@ -1139,38 +1162,38 @@
             window.location.href = url.toString();
         });
     </script>
-    <script>
-        document.querySelectorAll('.acc-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                let unitId = this.dataset.id;
+<script>
+document.querySelectorAll('.acc-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        let unitId = this.dataset.id;
 
-                if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
+        if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
 
-                fetch(`/properti/progress/acc-ajax/${unitId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
+        fetch(`/properti/progress/acc-ajax/${unitId}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
 
-                            // Update teks/progress di halaman tanpa reload
-                            const progressText = document.querySelector(`#progress-text-${unitId}`);
-                            if (progressText) progressText.textContent = data.construction_progress;
-                        } else {
-                            alert('Gagal: ' + data.message);
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('Terjadi error pada request AJAX.');
-                    });
-            });
+                // Update teks/progress di halaman tanpa reload
+                const progressText = document.querySelector(`#progress-text-${unitId}`);
+                if (progressText) progressText.textContent = data.construction_progress;
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi error pada request AJAX.');
         });
-    </script>
+    });
+});
+</script>
 @endpush
