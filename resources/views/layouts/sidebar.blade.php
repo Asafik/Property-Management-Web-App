@@ -96,7 +96,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard-lokasi">Lokasi</a>
+                    <a class="nav-link" href="{{route('lokasi.index')}}">Lokasi</a>
                 </li>
 
             </ul>
