@@ -461,13 +461,36 @@
                                 <i class="mdi mdi-download"></i>
                             </button>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">gitu
                             <span>Bukti Negosiasi Harga</span>
                             <button class="cash-btn cash-btn-outline-primary"
                                 style="width: auto; padding: 0.25rem 0.75rem;">
                                 <i class="mdi mdi-download"></i>
                             </button>
                         </div>
+
+                        <!-- Dokumen Bukti Transfer -->
+                        @php
+                            // Ambil payment untuk unit ini, misal $unit->activeBooking->payments
+                            $payment = $unit->activeBooking
+                                ? $unit->activeBooking->payments()->latest()->first()
+                                : null;
+                        @endphp
+                        @if ($payment && $payment->reference_number)
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>
+                                    <i class="mdi mdi-bank-transfer me-1"></i>
+                                    Bukti Transfer
+                                </span>
+                                <a href="{{ asset('storage/' . $payment->reference_number) }}" target="_blank"
+                                    class="cash-btn cash-btn-outline-success"
+                                    style="width: auto; padding: 0.25rem 0.75rem;">
+                                    <i class="mdi mdi-download"></i>
+                                </a>
+                            </div>
+                        @endif
+
                         <!-- DOKUMEN TAMBAHAN UNTUK SKENARIO 2 -->
                         <div class="d-flex justify-content-between align-items-center mb-2" id="dokumenPenolakan"
                             style="display: none;">
@@ -704,34 +727,36 @@
             });
         </script>
     @endif
-    <script>
-document.getElementById('btnProsesBayar').addEventListener('click', function() {
-    Swal.fire({
-        title: 'Konfirmasi Pembayaran',
-        text: "Apakah Anda yakin ingin memproses pembayaran ini?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, proses pembayaran!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Submit form
-            this.closest('form').submit();
-        }
-    });
-});
+<script>
+    document.getElementById('btnProsesBayar').addEventListener('click', function(e) {
+        e.preventDefault(); // cegah submit otomatis
 
-// Optional: tampilkan SweetAlert sukses jika session success ada
-@if(session('success'))
-Swal.fire({
-    icon: 'success',
-    title: 'Berhasil!',
-    text: '{{ session("success") }}',
-    timer: 2500,
-    showConfirmButton: false
-});
-@endif
+        Swal.fire({
+            title: 'Konfirmasi Pembayaran',
+            text: "Apakah Anda yakin ingin memproses pembayaran ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, proses pembayaran!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit form secara manual
+                this.closest('form').submit();
+            }
+        });
+    });
+
+    // Optional: tampilkan SweetAlert sukses jika session success ada
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 2500,
+            showConfirmButton: false
+        });
+    @endif
 </script>
 @endpush
