@@ -49,19 +49,6 @@ class LandBankUnit extends Model
     {
         return $this->hasMany(UnitMaterial::class, 'unit_id');
     }
-    public function developmentProgress()
-    {
-        return $this->hasOne(DevelopmentProgress::class);
-    }
-    public function items()
-    {
-        return $this->hasMany(DevelopmentProgressItem::class);
-    }
-
-    public function unit()
-{
-        return $this->belongsTo(LandBankUnit::class, 'land_bank_unit_id');
-    }
     public function progress()
     {
         return $this->hasOne(DevelopmentProgress::class, 'land_bank_unit_id');
@@ -69,6 +56,9 @@ class LandBankUnit extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+    public function items(){
+        return $this->hasMany(DevelopmentProgressItem::class, 'unit_id');
     }
     public function agency()
     {

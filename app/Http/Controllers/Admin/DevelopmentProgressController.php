@@ -8,22 +8,49 @@ use App\Models\LandBankUnit;
 use App\Models\DevelopmentProgress;
 use App\Models\DevelopmentProgressItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // ← INI WAJIB
+use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\Log;
 
 class DevelopmentProgressController extends Controller
 {
+// public function index($land_bank_id, Request $request)
+// {
+//     $land = LandBank::with('units')->findOrFail($land_bank_id);
+
+//     $unitId = $request->unit_id ?? $land->units->first()->id;
+
+//     $selectedUnit = $land->units()
+//         ->with('progress.items')
+//         ->findOrFail($unitId);
+
+//     // Ambil semua item dari progress unit
+//     $items = $selectedUnit->progress ? $selectedUnit->progress->items : collect();
+
+//     return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items'));
+// }
 public function index($land_bank_id, Request $request)
 {
     $land = LandBank::with('units')->findOrFail($land_bank_id);
 
+    // Ambil unit yang dipilih, atau default unit pertama
     $unitId = $request->unit_id ?? $land->units->first()->id;
 
     $selectedUnit = $land->units()
-        ->with('progress.items')
+        ->with('progress.items') // ambil progress beserta items
         ->findOrFail($unitId);
 
+    // Jika belum ada progress, buat otomatis
+    if (!$selectedUnit->progress) {
+        $selectedUnit->progress()->create([
+            'title' => 'Progress Pembangunan',
+        ]);
+
+        // reload relasi supaya $selectedUnit->progress sudah ada
+        $selectedUnit->load('progress.items');
+    }
+
     // Ambil semua item dari progress unit
-    $items = $selectedUnit->progress ? $selectedUnit->progress->items : collect();
+    $items = $selectedUnit->progress->items;
 
     return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items'));
 }
@@ -85,9 +112,25 @@ public function store(Request $request)
 
         DB::commit();
 
+        // Log success
+        Log::info("RAB & Harga Jual berhasil disimpan", [
+            'land_bank_unit_id' => $request->land_bank_unit_id,
+            'progress_enum' => $progressEnum,
+            'user_id' => auth()->id() ?? null,
+        ]);
+
         return back()->with('success', 'RAB & Harga Jual berhasil disimpan.');
     } catch (\Exception $e) {
         DB::rollBack();
+
+        // Log error
+        Log::error("Gagal menyimpan RAB & Harga Jual", [
+            'land_bank_unit_id' => $request->land_bank_unit_id ?? null,
+            'error_message' => $e->getMessage(),
+            'stack_trace' => $e->getTraceAsString(),
+            'user_id' => auth()->id() ?? null,
+        ]);
+
         return back()->with('error', $e->getMessage());
     }
 }
