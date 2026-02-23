@@ -26,6 +26,7 @@ use App\Http\Controllers\ListPengajuanController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PengajuanController;
 
 /*
@@ -213,6 +214,8 @@ Route::get('/dashboard-cash-dokument-legal', function () {
 });
 
 
-Route::get('/dashboard-lokasi', function () {
-    return view('lokasi.lokasi');
-});
+// Route::get('/dashboard-lokasi', function () {
+//     return view('lokasi.lokasi');
+// });
+Route::get('/dashboard-lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
+Route::get('/lokasi-data', [LokasiController::class, 'lokasiData']); // Untuk JSON
