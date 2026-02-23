@@ -734,7 +734,7 @@
                 // Tampilkan info konversi
                 $('#infoKonversi').removeClass('d-none');
             });
-            
+
         });
     </script>
     <script>
@@ -742,7 +742,7 @@
         // Gunakan ID booking dari Blade
         const bookingId = {{ $booking->id }};
         const url = `/dashboard-cetak-invoice-cash/${bookingId}/pdf`;
-        
+
         // Buka PDF di tab baru
         window.open(url, '_blank');
     });

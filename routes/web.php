@@ -195,3 +195,16 @@ Route::get('/dashboard-cash-pengajuan', [CashController::class, 'index'])->name(
 
 Route::get('/master-data-bank',[BankController::class, 'index'])->name('bank.index');
 Route::post('/master-data-bank/store',[BankController::class, 'store'])->name('bank.store');
+
+Route::get('/dashboard-akad-cash', function () {
+    return view('marketing.akad_cash');
+});
+
+Route::get('/dashboard-cash-dokument-legal', function () {
+    return view('marketing.cash_dokument_legal');
+});
+
+
+Route::get('/dashboard-lokasi', function () {
+    return view('lokasi.lokasi');
+});

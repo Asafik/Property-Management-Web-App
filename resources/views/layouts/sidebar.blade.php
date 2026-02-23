@@ -56,6 +56,13 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('marketing.cash_pengajuan') }}">Cash Pengajuan</a>
         </li>
+         <li class="nav-item">
+                        <a class="nav-link" href="dashboard-akad-cash">Akad Cash</a>
+                    </li>
+        </li>
+         <li class="nav-item">
+                        <a class="nav-link" href="/dashboard-cash-dokument-legal">Cash Dokument Legal</a>
+                    </li>
         </li>
     </ul>
     </div>
@@ -89,7 +96,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Lokasi</a>
+                    <a class="nav-link" href="dashboard-lokasi">Lokasi</a>
                 </li>
 
             </ul>
