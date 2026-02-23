@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>Invoice Cash Keras - Properti Management</title>
 
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/ti-icons/css/themify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/css/vendor.bundle.base.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
+    @if(!isset($pdf) || !$pdf)
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.9.55/css/materialdesignicons.min.css">
+    @endif
 
     <style>
-        /* Style khusus untuk invoice */
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f5f7fa;
-            padding: 20px;
-            font-family: 'Roboto', sans-serif;
-            position: relative;
+            font-family: 'Times New Roman', Times, serif !important;
+            background-color: {{ isset($pdf) && $pdf ? 'white' : '#f5f7fa' }};
+            padding: {{ isset($pdf) && $pdf ? '0' : '30px 20px' }};
+            margin: {{ isset($pdf) && $pdf ? '2cm' : '0' }};
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Paksa semua pakai Times New Roman */
+        body, .card, .card-body, table, td, th, p, h1, h2, h3, h4, h5,
+        .btn, .badge-status, .info-section, .terbilang, .footer-note,
+        .alert, small, strong, span, div {
+            font-family: 'Times New Roman', Times, serif !important;
         }
 
         .invoice-container {
-            max-width: 900px;
+            max-width: 210mm;
+            width: 100%;
             margin: 0 auto;
             position: relative;
+            box-shadow: {{ isset($pdf) && $pdf ? 'none' : '0 8px 20px rgba(0,0,0,0.1)' }};
         }
 
-        /* Watermark PT PROPERTI MANAGEMENT */
+        /* ===== WATERMARK ===== */
         .watermark-text {
             user-select: none;
-            font-size: 80px;
+            font-size: 70px;
             color: rgba(75, 73, 172, 0.15);
             position: fixed;
             top: 50%;
@@ -39,13 +54,13 @@
             z-index: 999;
             pointer-events: none;
             font-weight: bold;
-            border: 3px solid rgba(75, 73, 172, 0.1);
-            padding: 20px 40px;
-            border-radius: 15px;
-            letter-spacing: 5px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            border: 4px double rgba(75, 73, 172, 0.1);
+            padding: 20px 50px;
+            border-radius: 10px;
+            letter-spacing: 6px;
         }
 
+        @if(!isset($pdf) || !$pdf)
         .watermark-pattern {
             position: fixed;
             top: 0;
@@ -63,50 +78,46 @@
         }
 
         .watermark-pattern span {
-            font-size: 60px;
+            font-size: 50px;
             font-weight: bold;
             color: #4b49ac;
-            margin: 50px;
+            margin: 40px;
             white-space: nowrap;
         }
+        @endif
 
-        /* Style untuk tombol */
+        /* ===== TOMBOL ===== */
+        @if(!isset($pdf) || !$pdf)
         .btn-container {
             margin-bottom: 20px;
         }
 
         .btn {
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 8px 18px;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
             font-size: 14px;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-        }
-
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: 0.2s;
         }
 
         .btn-primary {
             background: linear-gradient(45deg, #4b49ac, #7a78c5);
             color: white;
-            border: none;
         }
 
         .btn-success {
             background: linear-gradient(45deg, #00d25b, #028a44);
             color: white;
-            border: none;
         }
 
         .btn-warning {
             background: linear-gradient(45deg, #ffab2e, #f16a0e);
             color: white;
-            border: none;
         }
 
         .btn-outline-secondary {
@@ -116,101 +127,135 @@
         }
 
         .btn.active {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            border: 2px solid #4b49ac;
+            font-weight: bold;
         }
 
         .btn:hover {
             opacity: 0.9;
         }
+        @endif
 
-        /* Style untuk card */
+        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            box-shadow: {{ isset($pdf) && $pdf ? 'none' : '0 2px 15px rgba(0, 0, 0, 0.1)' }};
+            margin-bottom: {{ isset($pdf) && $pdf ? '0' : '25px' }};
             position: relative;
             z-index: 1;
+            border: {{ isset($pdf) && $pdf ? 'none' : '1px solid #e0e5ec' }};
         }
 
         .card-body {
-            padding: 30px;
+            padding: 40px 45px;
         }
 
-        /* Style untuk invoice */
+        /* ===== HEADER ===== */
         .invoice-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 2px solid #4b49ac;
             padding-bottom: 20px;
         }
 
         .invoice-header h2 {
             color: #4b49ac;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 5px;
         }
 
         .invoice-header p {
             color: #6c757d;
             margin: 2px 0;
+            font-size: 14px;
         }
 
         .invoice-title {
             text-align: center;
-            margin: 30px 0;
+            margin: 20px 0 25px;
         }
 
         .invoice-title h3 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             color: #333;
             border-bottom: 2px dashed #4b49ac;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
             display: inline-block;
         }
 
-        .info-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #f8f9fc;
-            border-radius: 8px;
+        /* ===== FLEX ROW ===== */
+        .row-flex {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
+        .col-half {
+            width: 48%;
+        }
+
+        /* ===== TABEL INFO ===== */
         .info-table {
             width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
         .info-table td {
-            padding: 8px 5px;
+            padding: 6px 5px;
             border: none;
+            vertical-align: top;
         }
 
         .info-table td:first-child {
-            width: 150px;
-            font-weight: bold;
+            width: 130px;
+            font-weight: 600;
             color: #555;
         }
 
         .info-table td:nth-child(2) {
-            width: 20px;
+            width: 15px;
+            text-align: center;
         }
 
+        /* ===== INFO SECTION ===== */
+        .info-section {
+            margin-bottom: 30px;
+            padding: 18px 22px;
+            background-color: #f8f9fc;
+            border-left: 6px solid #4b49ac;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-section h5, h5 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4b49ac;
+            text-decoration: underline;
+            text-underline-offset: 5px;
+        }
+
+        /* ===== TABEL DETAIL ===== */
         .detail-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .detail-table th {
-            background-color: #4b49ac;
-            color: white;
-            padding: 12px;
-            text-align: left;
+            margin: 25px 0 15px;
+            font-size: 15px;
         }
 
         .detail-table td {
-            padding: 12px;
+            padding: 10px 12px;
             border-bottom: 1px solid #dee2e6;
         }
 
@@ -218,71 +263,58 @@
             border-bottom: none;
         }
 
-        .total-row {
+        .total-row td {
             font-weight: bold;
             background-color: #f0f0f0;
-        }
-
-        .total-row td {
-            font-size: 16px;
         }
 
         .grand-total {
             background-color: #4b49ac;
             color: white;
+            font-weight: bold;
         }
 
         .grand-total td {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
+            padding: 12px 10px;
         }
 
+        .text-end {
+            text-align: right;
+        }
+
+        .text-success {
+            color: #00d25b;
+        }
+
+        /* ===== TERBILANG ===== */
         .terbilang {
             margin: 20px 0;
-            padding: 15px;
+            padding: 15px 20px;
             background-color: #f8f9fc;
-            border-left: 4px solid #4b49ac;
+            border-left: 6px solid #4b49ac;
             font-style: italic;
             font-size: 16px;
+            border-radius: 0 8px 8px 0;
         }
 
-        .payment-method {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px dashed #4b49ac;
+        /* ===== ALERT ===== */
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffab2e;
+            padding: 16px;
             border-radius: 8px;
+            margin: 20px 0;
         }
 
-        .signature-section {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .signature-box {
-            text-align: center;
-            width: 45%;
-        }
-
-        .signature-line {
-            margin-top: 60px;
-            border-top: 1px solid #333;
-            padding-top: 10px;
-        }
-
-        .footer-note {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 12px;
-            color: #6c757d;
-        }
-
+        /* ===== BADGE ===== */
         .badge-status {
             display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 5px 18px;
+            border-radius: 30px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
 
         .badge-success {
@@ -295,147 +327,150 @@
             color: white;
         }
 
-        .text-success {
-            color: #00d25b;
+        /* ===== METODE PEMBAYARAN ===== */
+        .payment-method {
+            margin: 25px 0 30px;
+            padding: 18px 22px;
+            border: 1px dashed #4b49ac;
+            background: white;
+            border-radius: 8px;
         }
 
-        .text-danger {
-            color: #dc3545;
-        }
-
-        .text-muted {
-            color: #6c757d;
-        }
-
-        .small {
+        /* ===== FOOTER ===== */
+        .footer-note {
+            margin-top: 35px;
+            text-align: center;
             font-size: 12px;
+            color: #6c757d;
+            border-top: 1px dashed #acb8c5;
+            padding-top: 18px;
+        }
+
+        /* ===== QR CODE ===== */
+        .qr-container {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .qr-box {
+            display: inline-block;
+            text-align: center;
+        }
+
+        .qr-box svg {
+            width: 90px;
+            height: 90px;
+        }
+
+        .qr-text {
+            font-size: 9px;
+            margin-top: 4px;
+            color: #4b49ac;
         }
 
         .d-none {
             display: none;
         }
 
-        /* Mode cetak */
+        /* ===== PRINT ===== */
         @media print {
+            @page {
+                size: A4;
+                margin: 1.8cm;
+            }
+
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
             }
 
             .invoice-container {
                 max-width: 100%;
+                box-shadow: none;
             }
 
             .btn-container,
-            .d-print-none {
+            .d-print-none,
+            .watermark-pattern {
                 display: none !important;
             }
 
             .card {
+                border: none;
                 box-shadow: none;
-                border: 1px solid #ddd;
+            }
+
+            .card-body {
+                padding: 0;
             }
 
             .watermark-text {
                 opacity: 0.15;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                color: #4b49ac;
             }
 
-            .watermark-pattern span {
-                opacity: 0.1;
+            .badge-success, .grand-total, .badge-warning {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-            }
-
-            .badge-status {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .signature-section {
-                flex-direction: column;
-                gap: 30px;
-            }
-
-            .signature-box {
-                width: 100%;
-            }
-
-            .info-table td:first-child {
-                width: 120px;
-            }
-
-            .watermark-text {
-                font-size: 40px;
-                padding: 10px 20px;
-            }
-
-            .watermark-pattern span {
-                font-size: 30px;
-                margin: 20px;
             }
         }
     </style>
 </head>
-
 <body>
-    <!-- Watermark PT PROPERTI MANAGEMENT (besar di tengah) -->
+
+    <!-- WATERMARK -->
     <div class="watermark-text">PT PROPERTI MANAGEMENT</div>
 
-    <!-- Watermark pattern berulang -->
+    @if(!isset($pdf) || !$pdf)
     <div class="watermark-pattern">
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
+        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
+        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
+        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
+        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
     </div>
+    @endif
 
     <div class="invoice-container">
-        <!-- Tombol Pilihan Skenario (tidak ikut print) -->
+        @if(!isset($pdf) || !$pdf)
+        <!-- TOMBOL WEB -->
         <div class="btn-container d-print-none">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <div>
                     <button class="btn btn-outline-secondary" onclick="history.back()">
-                        <i class="mdi mdi-arrow-left me-2"></i> Kembali
+                        <i class="mdi mdi-arrow-left"></i> Kembali
                     </button>
                 </div>
-                <div>
-                    <button class="btn btn-primary me-2" onclick="window.print()">
-                        <i class="mdi mdi-printer me-2"></i> Cetak Invoice
-                    </button>
-                    <button class="btn btn-success" id="btnDownloadPDF">
-                        <i class="mdi mdi-download me-2"></i> Download PDF
+                <div style="display: flex; gap: 10px;">
+                    <a href="{{ $downloadUrlCash }}" class="btn btn-success" target="_blank">
+                        <i class="mdi mdi-download"></i> PDF Cash Awal
+                    </a>
+                    <a href="{{ $downloadUrlKonversi }}" class="btn btn-warning" target="_blank">
+                        <i class="mdi mdi-download"></i> PDF Konversi
+                    </a>
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <i class="mdi mdi-printer"></i> Cetak
                     </button>
                 </div>
             </div>
-
-            <!-- Toggle untuk pilih skenario -->
-            <div class="d-flex justify-content-center mb-4">
-                <div class="btn-group" role="group">
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                <div class="btn-group" style="display: flex; gap: 6px;">
                     <button type="button" class="btn btn-success active" id="btnCashAwal">
-                        <i class="mdi mdi-cash me-1"></i> Cash Awal
+                        <i class="mdi mdi-cash"></i> Cash Awal
                     </button>
                     <button type="button" class="btn btn-warning" id="btnKonversi">
-                        <i class="mdi mdi-bank-off me-1"></i> Konversi dari KPR
+                        <i class="mdi mdi-bank-off"></i> Konversi dari KPR
                     </button>
                 </div>
-                <small class="text-muted ms-3 d-none d-md-inline">Klik untuk ganti jenis invoice</small>
             </div>
         </div>
+        @endif
 
-        <!-- Card Invoice -->
+        <!-- CARD INVOICE -->
         <div class="card">
             <div class="card-body">
-                <!-- Header Perusahaan -->
+                <!-- HEADER PERUSAHAAN -->
                 <div class="invoice-header">
                     <h2>PT PROPERTI MANAGEMENT</h2>
                     <p>Jl. Sudirman No. 123, Jakarta Selatan 12190</p>
@@ -443,310 +478,220 @@
                     <p>NPWP: 01.234.567.8-123.000</p>
                 </div>
 
-                <!-- Judul Invoice (Berubah sesuai skenario) -->
+                <!-- JUDUL INVOICE -->
                 <div class="invoice-title">
-                    <h3 id="invoiceTitle">INVOICE CASH KERAS (LUNAS LANGSUNG)</h3>
+                    <h3 id="invoiceTitle">
+                        @if(isset($jenis) && $jenis == 'konversi')
+                            INVOICE CASH KERAS (KONVERSI DARI KPR)
+                        @else
+                            INVOICE CASH KERAS (LUNAS LANGSUNG)
+                        @endif
+                    </h3>
                 </div>
 
-                <!-- Nomor dan Tanggal Invoice -->
-                <div class="row" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                    <div style="width: 48%;">
-                        <table class="info-table">
-                            <tr>
-                                <td>No. Invoice</td>
-                                <td>:</td>
-                                <td><strong
-                                        id="invoiceNumber">{{ $booking->invoice_number ?? 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Tanggal Invoice</td>
-                                <td>:</td>
-                                <td>{{ \Carbon\Carbon::parse($booking->invoice_date ?? $booking->created_at)->translatedFormat('d F Y') }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Tanggal Lunas</td>
-                                <td>:</td>
-                                <td>
-                                    @php
-                                        $pelunasan = $booking->payments->where('type', 'pelunasan')->first();
-                                    @endphp
-                                    {{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                <!-- INFO INVOICE -->
+                @php
+                    $pelunasan = $booking->payments->where('type', 'pelunasan')->first();
+                    $totalPaid = $booking->payments->sum('amount');
+                    $hargaFinal = ($booking->harga_nego ?? $booking->unit->price);
 
-                    <div style="width: 48%;">
-                        <table class="info-table">
-                            <tr>
-                                <td>Status</td>
-                                <td>:</td>
-                                <td>
-                                    @php
-                                        $totalPaid = $booking->payments->sum('amount');
-                                        $status =
-                                            $totalPaid >= ($booking->harga_nego ?? $booking->unit->price)
-                                                ? 'LUNAS'
-                                                : 'BELUM LUNAS';
-                                        $badgeClass = $status == 'LUNAS' ? 'badge-success' : 'badge-warning';
-                                    @endphp
-                                    <span class="badge-status {{ $badgeClass }}"
-                                        id="statusBadge">{{ $status }}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jenis Cash</td>
-                                <td>:</td>
-                                <td>{{ $booking->type_cash ?? 'Cash Keras (Lunas Langsung)' }}</td>
-                            </tr>
-                            <tr>
-                                <td>Metode</td>
-                                <td>:</td>
-                                <td>{{ $pelunasan->method ?? '-' }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                    if (isset($jenis) && $jenis == 'konversi') {
+                        $status = 'LUNAS (Konversi)';
+                        $badgeClass = 'badge-warning';
+                    } else {
+                        $status = $totalPaid >= $hargaFinal ? 'LUNAS' : 'BELUM LUNAS';
+                        $badgeClass = $status == 'LUNAS' ? 'badge-success' : 'badge-warning';
+                    }
+                @endphp
 
-                <!-- Info Customer -->
-                <div class="info-section">
-                    <h5 style="margin-bottom: 15px; color: #4b49ac;">DATA CUSTOMER</h5>
-                    <table class="info-table">
-                        <tr>
-                            <td>Nama Customer</td>
-                            <td>:</td>
-                            <td><strong>{{ $booking->customer->full_name ?? '-' }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>NIK</td>
-                            <td>:</td>
-                            <td>{{ $booking->customer->nik ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>No. HP</td>
-                            <td>:</td>
-                            <td>{{ $booking->customer->phone ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Booking ID</td>
-                            <td>:</td>
-                            <td>{{ $booking->booking_code ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Unit</td>
-                            <td>:</td>
-                            <td>{{ $booking->unit->type ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Blok/No</td>
-                            <td>:</td>
-                            <td>{{ $booking->unit->unit_code ?? '-' }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <!-- Detail Harga & Negosiasi -->
-                <h5 style="margin-bottom: 15px; color: #4b49ac;">RINCIAN HARGA</h5>
-                <table class="detail-table">
-                    <tbody>
-                        <tr>
-                            <td width="60%"><strong>Harga Unit</strong></td>
-                            <td width="40%" class="text-end">
-                                {{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price, 0, ',', '.') : '-' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Hasil Negosiasi / Diskon</strong></td>
-                            <td class="text-end text-success">-
-                                {{ $booking->harga_nego ? 'Rp ' . number_format($booking->harga_nego, 0, ',', '.') : '-' }}
-                            </td>
-                        </tr>
-                        <tr class="total-row">
-                            <td><strong>Harga Final Kesepakatan</strong></td>
-                            <td class="text-end">
-                                <strong>{{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price - $booking->harga_nego, 0, ',', '.') : '-' }}</strong>
-                            </td>
-                        </tr>
-                        <tr class="grand-total">
-                            <td><strong>TOTAL PEMBAYARAN LUNAS</strong></td>
-                            <td class="text-end">
-                                <strong>{{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price - $booking->harga_nego, 0, ',', '.') : '-' }}</strong>
-                            </td>
-                        </tr>
-                    </tbody>
+                <table class="info-table" style="width:100%; margin-bottom:20px;">
+                    <tr>
+                        <td>No. Invoice</td>
+                        <td>:</td>
+                        <td><strong id="invoiceNumber">{{ $invoiceNumber }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal Invoice</td>
+                        <td>:</td>
+                        <td>{{ \Carbon\Carbon::parse($booking->invoice_date ?? $booking->created_at)->translatedFormat('d F Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal Lunas</td>
+                        <td>:</td>
+                        <td>{{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>:</td>
+                        <td>
+                            <span class="badge-status {{ $badgeClass }}" id="statusBadge">{{ $status }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Jenis Cash</td>
+                        <td>:</td>
+                        <td id="jenisCash">
+                            @if(isset($jenis) && $jenis == 'konversi')
+                                Cash Keras (Konversi dari KPR)
+                            @else
+                                {{ $booking->type_cash ?? 'Cash Keras (Lunas Langsung)' }}
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Metode</td>
+                        <td>:</td>
+                        <td>{{ $pelunasan->method ?? '-' }}</td>
+                    </tr>
                 </table>
 
-                <!-- Terbilang -->
-                <div class="terbilang">
-                    <strong>Terbilang:</strong>
-                    {{ $booking->unit->price ? ucwords(\Illuminate\Support\Str::lower(\App\Helpers\Terbilang::make($booking->unit->price - ($booking->harga_nego ?? 0)))) . ' rupiah' : '-' }}
-                </div>
-
-                <!-- INFORMASI KHUSUS KONVERSI KPR (Muncul hanya untuk skenario konversi) -->
-                <div id="infoKonversi" class="d-none">
-                    <!-- Alert Warning -->
-                    <div class="alert alert-warning"
-                        style="background-color: #fff3cd; border: 1px solid #ffab2e; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                        <i class="mdi mdi-information-outline me-2"></i>
-                        <strong>Catatan:</strong> Pembayaran ini merupakan konversi dari KPR yang ditolak.
-                        <br>
-                        <small>Biaya KPR hangus: Rp 4.100.000 (Biaya Survey + Biaya Provisi) - sudah termasuk dalam
-                            perhitungan</small>
-                    </div>
-
-                    <!-- Lampiran Surat Penolakan -->
-                    <div class="alert alert-light border" style="padding: 15px; border-radius: 8px; margin: 20px 0;">
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-file-pdf text-danger me-3" style="font-size: 24px;"></i>
-                            <div>
-                                <strong>Surat Penolakan KPR</strong>
-                                <p class="mb-0 small text-muted">Bank ABC Syariah - 25 Februari 2025</p>
-                            </div>
-                            <button class="btn btn-sm btn-outline-danger ms-auto">
-                                <i class="mdi mdi-download me-1"></i> Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Metode Pembayaran -->
-                <!-- Metode Pembayaran -->
-                <div class="payment-method">
-                    <h5 style="margin-bottom: 10px; color: #4b49ac;">METODE PEMBAYARAN</h5>
-
-                    @php
-                        // Ambil pembayaran pelunasan terakhir
-                        $pelunasan = $booking->payments->where('type', 'pelunasan')->first();
-                    @endphp
-
+                <!-- DATA CUSTOMER -->
+                <div class="info-section">
+                    <h5>DATA CUSTOMER</h5>
                     <table class="info-table">
-                        <tr>
-                            <td>Metode</td>
-                            <td>:</td>
-                            <td>{{ $pelunasan->method ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Nama Bank</td>
-                            <td>:</td>
-                            <td>{{ $pelunasan->notes ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>No. Rekening</td>
-                            <td>:</td>
-                            <td>{{ $pelunasan->reference_number ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Atas Nama</td>
-                            <td>:</td>
-                            <td>{{ $pelunasan->notes ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Tanggal Transfer</td>
-                            <td>:</td>
-                            <td>{{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}
-                            </td>
-                        </tr>
+                        <tr><td>Nama Customer</td><td>:</td><td><strong>{{ $booking->customer->full_name ?? 'Ahmad Amrozi' }}</strong></td></tr>
+                        <tr><td>NIK</td><td>:</td><td>{{ $booking->customer->nik ?? '3273011203850001' }}</td></tr>
+                        <tr><td>No. HP</td><td>:</td><td>{{ $booking->customer->phone ?? '081234567890' }}</td></tr>
+                        <tr><td>Booking ID</td><td>:</td><td>{{ $booking->booking_code ?? '#INV/202502/001' }}</td></tr>
+                        <tr><td>Unit</td><td>:</td><td>{{ $booking->unit->type ?? 'The Lavender - Tipe 45' }}</td></tr>
+                        <tr><td>Blok/No</td><td>:</td><td>{{ $booking->unit->unit_code ?? 'C/12' }}</td></tr>
                     </table>
                 </div>
 
-                <!-- Tanda Tangan -->
-                <div class="signature-section">
-                    <div class="signature-box">
-                        <p>Penerima,</p>
-                        <div class="signature-line">{{ $booking->sales->name ?? '-' }}</div>
-                        <p class="text-muted small">{{ $booking->sales->role ?? '-' }}</p>
-                    </div>
-                    <div class="signature-box">
-                        <p>Customer,</p>
-                        <div class="signature-line">{{ $booking->customer->full_name ?? '-' }}</div>
-                        <p class="text-muted small">Pembeli</p>
+                <!-- RINCIAN HARGA -->
+                <h5>RINCIAN HARGA</h5>
+                <table class="detail-table">
+                    <tr>
+                        <td width="60%"><strong>Harga Unit</strong></td>
+                        <td class="text-end">{{ $booking->unit->price ? 'Rp ' . number_format($booking->unit->price, 0, ',', '.') : 'Rp 450.000.000' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hasil Negosiasi / Diskon</strong></td>
+                        <td class="text-end text-success">- {{ $booking->harga_nego ? 'Rp ' . number_format($booking->harga_nego, 0, ',', '.') : 'Rp 20.000.000' }}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>Harga Final Kesepakatan</strong></td>
+                        <td class="text-end"><strong>Rp {{ number_format(($booking->unit->price ?? 450000000) - ($booking->harga_nego ?? 20000000), 0, ',', '.') }}</strong></td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td><strong>TOTAL PEMBAYARAN LUNAS</strong></td>
+                        <td class="text-end"><strong>Rp {{ number_format(($booking->unit->price ?? 450000000) - ($booking->harga_nego ?? 20000000), 0, ',', '.') }}</strong></td>
+                    </tr>
+                </table>
+
+                <!-- TERBILANG -->
+                <div class="terbilang">
+                    <strong>Terbilang:</strong> {{ $terbilang ?? 'Empat ratus tiga puluh juta rupiah' }}
+                </div>
+
+                <!-- INFORMASI KHUSUS KONVERSI -->
+                <div id="infoKonversi" class="{{ (!isset($jenis) || $jenis != 'konversi') ? 'd-none' : '' }}">
+                    <div class="alert-warning">
+                        <i class="mdi mdi-information-outline me-2"></i>
+                        <strong>Catatan:</strong> Pembayaran ini merupakan konversi dari KPR yang ditolak.<br>
+                        <small>Biaya KPR hangus: Rp 4.100.000 (Biaya Survey + Biaya Provisi) - sudah termasuk dalam perhitungan</small>
                     </div>
                 </div>
 
-                <!-- Footer Note -->
+                <!-- METODE PEMBAYARAN -->
+                <div class="payment-method">
+                    <h5>METODE PEMBAYARAN</h5>
+                    <table class="info-table">
+                        <tr><td>Metode</td><td>:</td><td>{{ $pelunasan->method ?? 'Transfer Bank' }}</td></tr>
+                        <tr><td>Nama Bank</td><td>:</td><td>{{ $pelunasan->notes ?? 'Bank Mandiri' }}</td></tr>
+                        <tr><td>No. Rekening</td><td>:</td><td>{{ $pelunasan->reference_number ?? '123-456-7890' }}</td></tr>
+                        <tr><td>Atas Nama</td><td>:</td><td>{{ $pelunasan->notes ?? 'PT Properti Management' }}</td></tr>
+                        <tr><td>Tanggal Transfer</td><td>:</td><td>{{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}</td></tr>
+                    </table>
+                </div>
+
+                <!-- TANDA TANGAN -->
+                <table style="width: 100%; margin-top: 55px; border-collapse: collapse; page-break-inside: avoid;">
+                    <tr>
+                        <td style="width: 45%; text-align: center; vertical-align: top; padding: 0;">
+                            <p style="margin: 0 0 5px 0; font-weight: 500; font-size: 14px; text-align: center;">Penerima,</p>
+                            <div style="margin-top: 50px; border-top: 2px solid #000000; padding-top: 10px; font-weight: 600; font-size: 16px; text-align: center; width: 100%;">
+                                {{ $booking->sales->name ?? '_________________' }}
+                            </div>
+                            <p style="color: #6c757d; font-size: 12px; margin-top: 5px; text-align: center;">{{ $booking->sales->role ?? 'Finance Manager' }}</p>
+                        </td>
+
+                        <td style="width: 10%;"></td>
+
+                        <td style="width: 45%; text-align: center; vertical-align: top; padding: 0;">
+                            <p style="margin: 0 0 5px 0; font-weight: 500; font-size: 14px; text-align: center;">Customer,</p>
+                            <div style="margin-top: 50px; border-top: 2px solid #000000; padding-top: 10px; font-weight: 600; font-size: 16px; text-align: center; width: 100%;">
+                                {{ $booking->customer->full_name ?? '_________________' }}
+                            </div>
+                            <p style="color: #6c757d; font-size: 12px; margin-top: 5px; text-align: center;">Pembeli</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- FOOTER -->
                 <div class="footer-note">
                     <p>Dokumen ini sah dan dicetak secara elektronik</p>
                     <p>Invoice ini merupakan bukti pembayaran lunas yang valid</p>
                     <p>Dicetak pada: {{ date('d/m/Y H:i:s') }}</p>
                 </div>
 
-         <!-- QR Code Simulasi untuk preview -->
-<div style="text-align: right; margin-top: 20px;">
-   <div style="text-align: right; margin-top: 20px;">
-<div style="text-align: right;">
-    {!! $qrCodeSvg !!}
-    <p style="font-size: 10px;">Scan untuk download PDF</p>
-</div>
-</div>
-</div>
-
+                <!-- QR CODE -->
+                <div class="qr-container">
+                    <div class="qr-box">
+                        @if(isset($qrCodeSvg) && $qrCodeSvg)
+                            {!! $qrCodeSvg !!}
+                        @else
+                            <svg width="90" height="90" viewBox="0 0 100 100" style="border:1px solid #ddd;">
+                                <rect width="100" height="100" fill="white"/>
+                                <rect x="15" y="15" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="40" y="15" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="65" y="15" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="15" y="40" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="40" y="40" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="65" y="40" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="15" y="65" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="40" y="65" width="16" height="16" fill="#4b49ac"/>
+                                <rect x="65" y="65" width="16" height="16" fill="#4b49ac"/>
+                            </svg>
+                        @endif
+                        <div class="qr-text">Scan untuk verifikasi</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Informasi Watermark (tidak ikut print) -->
-        <div class="alert alert-info d-print-none mt-3">
-            <i class="mdi mdi-information-outline me-2"></i>
-            Dokumen ini dilengkapi watermark "PT PROPERTI MANAGEMENT" untuk keamanan.
+        @if(!isset($pdf) || !$pdf)
+        <div class="alert alert-info d-print-none" style="background:#e8ecf5;padding:12px;border-radius:8px;margin-top:10px;">
+            <i class="mdi mdi-information-outline"></i> Dokumen ini dilengkapi watermark "PT PROPERTI MANAGEMENT" untuk keamanan.
         </div>
+        @endif
     </div>
 
-    <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
+    @if(!isset($pdf) || !$pdf)
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Toggle untuk 2 skenario
+            const originalNumber = $('#invoiceNumber').text();
+
             $('#btnCashAwal').click(function() {
-                // Aktifkan button
-                $(this).addClass('active');
-                $('#btnKonversi').removeClass('active');
-
-                // Ubah judul invoice
+                $(this).addClass('active').siblings().removeClass('active');
                 $('#invoiceTitle').text('INVOICE CASH KERAS (LUNAS LANGSUNG)');
-
-                // Ubah nomor invoice
-                $('#invoiceNumber').text('INV/CASH/2025/03/001');
-                $('#qrCodeText').text('INV/CASH/2025/03/001');
-
-                // Status badge tetap LUNAS (hijau)
-                $('#statusBadge').removeClass('badge-warning').addClass('badge-success').text('LUNAS');
-
-                // Sembunyikan info konversi
+                $('#invoiceNumber').text(originalNumber);
+                $('#jenisCash').text('Cash Keras (Lunas Langsung)');
+                $('#statusBadge').removeClass('badge-warning').addClass('badge-success').text('{{ $status }}');
                 $('#infoKonversi').addClass('d-none');
             });
 
             $('#btnKonversi').click(function() {
-                // Aktifkan button
-                $(this).addClass('active');
-                $('#btnCashAwal').removeClass('active');
-
-                // Ubah judul invoice
+                $(this).addClass('active').siblings().removeClass('active');
                 $('#invoiceTitle').text('INVOICE CASH KERAS (KONVERSI DARI KPR)');
-
-                // Ubah nomor invoice
-                $('#invoiceNumber').text('INV/CASH-KONV/2025/03/001');
-                $('#qrCodeText').text('INV/CASH-KONV/2025/03/001');
-
-                // Status badge (warning untuk konversi)
-                $('#statusBadge').removeClass('badge-success').addClass('badge-warning').text(
-                    'LUNAS (Konversi)');
-
-                // Tampilkan info konversi
+                $('#invoiceNumber').text(originalNumber.replace('CASH', 'CASH-KONV'));
+                $('#jenisCash').text('Cash Keras (Konversi dari KPR)');
+                $('#statusBadge').removeClass('badge-success').addClass('badge-warning').text('LUNAS (Konversi)');
                 $('#infoKonversi').removeClass('d-none');
             });
-
         });
     </script>
-    <script>
-    document.getElementById('btnDownloadPDF').addEventListener('click', function() {
-        // Gunakan ID booking dari Blade
-        const bookingId = {{ $booking->id }};
-        const url = `/dashboard-cetak-invoice-cash/${bookingId}/pdf`;
-
-        // Buka PDF di tab baru
-        window.open(url, '_blank');
-    });
-</script>
+    @endif
 </body>
-
 </html>

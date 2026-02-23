@@ -6,47 +6,110 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class InvoiceController extends Controller
 {
-    // Halaman preview web
     public function index($id)
     {
-        $booking = Booking::with('payments', 'unit', 'customer')->findOrFail($id);
-
+        $booking = Booking::with('payments', 'unit', 'customer', 'sales')->findOrFail($id);
         $invoiceNumber = 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
 
-         // URL download PDF otomatis pakai route() → sesuaikan APP_URL
-    $downloadUrl = route('dashboard.cetak.invoice.cash.pdf', $booking->id);
+        $downloadUrlCash = route('dashboard.cetak.invoice.cash.pdf', $booking->id);
+        $downloadUrlKonversi = route('dashboard.cetak.invoice.konversi.pdf', $booking->id);
 
-        // QR Code SVG
-        $qrCodeSvg = QrCode::format('svg')->size(150)->generate($downloadUrl);
+        // QR Code SVG untuk WEB
+        try {
+            $qrCodeSvg = QrCode::format('svg')
+                ->size(150)
+                ->color(75, 73, 172)
+                ->generate($downloadUrlCash);
+        } catch (\Exception $e) {
+            $qrCodeSvg = null;
+        }
 
-        return view('cetak.invoice_cash', compact('booking', 'invoiceNumber', 'qrCodeSvg'));
+        $terbilang = $this->terbilang(($booking->unit->price ?? 450000000) - ($booking->harga_nego ?? 20000000));
+
+        return view('cetak.invoice_cash', compact(
+            'booking', 'invoiceNumber', 'qrCodeSvg', 'terbilang',
+            'downloadUrlCash', 'downloadUrlKonversi'
+        ));
     }
 
-    // Generate & download PDF
-public function cetakPdf(Booking $booking)
-{
-    $invoiceNumber = 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
+    public function cetakPdf(Booking $booking)
+    {
+        return $this->generatePdf($booking, 'cash');
+    }
 
-    // Generate QR Code untuk PDF
-    $qrData = json_encode([
-        'invoice_number' => $invoiceNumber,
-        'customer_name' => $booking->customer->name ?? '-',
-        'total_amount' => $booking->unit->price ?? 0,
-        'due_date' => now()->format('Y-m-d'),
-    ]);
-    $qrCodeSvg = QrCode::format('svg')->size(150)->generate($qrData);
+    public function cetakPdfKonversi(Booking $booking)
+    {
+        return $this->generatePdf($booking, 'konversi');
+    }
 
-    $pdf = Pdf::loadView('cetak.invoice_cash', [
-        'booking' => $booking,
-        'invoiceNumber' => $invoiceNumber,
-        'qrCodeSvg' => $qrCodeSvg, // 🔹 kirim ke view
-    ])->setPaper('a4');
+    private function generatePdf(Booking $booking, $jenis = 'cash')
+    {
+        $booking->load('payments', 'unit', 'customer', 'sales');
 
-   $fileName = 'invoice_' . str_replace(['/', '\\'], '-', $invoiceNumber) . '.pdf';
+        if ($jenis == 'konversi') {
+            $invoiceNumber = 'INV/CASH-KONV/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
+        } else {
+            $invoiceNumber = 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
+        }
 
-return $pdf->download($fileName);
-}
+        $qrData = json_encode([
+            'invoice' => $invoiceNumber,
+            'customer' => $booking->customer->name ?? '-',
+            'amount' => $booking->unit->price ?? 0,
+            'date' => now()->format('Y-m-d'),
+            'type' => $jenis
+        ]);
+
+        // QR Code - PAKSA PAKAI PNG (PASTI MUNCUL DI DOMPDF)
+        $qrBase64 = null;
+        try {
+            $qrPng = QrCode::format('png')
+                ->size(150)
+                ->margin(1)
+                ->color(75, 73, 172)
+                ->generate($qrData);
+
+            $qrBase64 = 'data:image/png;base64,' . base64_encode($qrPng);
+            Log::info('QR PDF sukses: ' . $invoiceNumber);
+
+        } catch (\Exception $e) {
+            Log::error('QR PDF gagal: ' . $e->getMessage());
+            $qrBase64 = null;
+        }
+
+        $terbilang = $this->terbilang(($booking->unit->price ?? 450000000) - ($booking->harga_nego ?? 20000000));
+
+        $pdf = Pdf::loadView('cetak.invoice_cash', [
+            'booking' => $booking,
+            'invoiceNumber' => $invoiceNumber,
+            'qrBase64' => $qrBase64, // PNG base64 untuk PDF
+            'terbilang' => $terbilang,
+            'jenis' => $jenis,
+            'pdf' => true
+        ])->setPaper('A4', 'portrait');
+
+        $fileName = 'invoice_' . ($jenis == 'konversi' ? 'konversi_' : '') . str_replace(['/', '\\'], '-', $invoiceNumber) . '.pdf';
+        return $pdf->download($fileName);
+    }
+
+    private function terbilang($angka)
+    {
+        $angka = abs($angka);
+        $huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+
+        if ($angka < 12) return $huruf[$angka];
+        if ($angka < 20) return $huruf[$angka - 10] . " belas";
+        if ($angka < 100) return $huruf[floor($angka/10)] . " puluh " . $huruf[$angka % 10];
+        if ($angka < 200) return "seratus " . $this->terbilang($angka - 100);
+        if ($angka < 1000) return $huruf[floor($angka/100)] . " ratus " . $this->terbilang($angka % 100);
+        if ($angka < 2000) return "seribu " . $this->terbilang($angka - 1000);
+        if ($angka < 1000000) return $this->terbilang(floor($angka/1000)) . " ribu " . $this->terbilang($angka % 1000);
+        if ($angka < 1000000000) return $this->terbilang(floor($angka/1000000)) . " juta " . $this->terbilang($angka % 1000000);
+
+        return "Angka terlalu besar";
+    }
 }

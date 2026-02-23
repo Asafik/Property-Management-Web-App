@@ -93,9 +93,17 @@ Route::get('/dashboard-survey', fn() => view('marketing.survey'));
 */
 Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
 // Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
-route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])->name('cetak.invoice_cash');
+// Route untuk halaman web (dengan 2 tab)
+Route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])
+    ->name('cetak.invoice_cash');
+
+// Route untuk download PDF Cash Awal
 Route::get('/dashboard-cetak-invoice-cash/{booking}/pdf', [InvoiceController::class, 'cetakPdf'])
     ->name('dashboard.cetak.invoice.cash.pdf');
+
+// Route untuk download PDF Konversi
+Route::get('/dashboard-cetak-invoice-konversi/{booking}/pdf', [InvoiceController::class, 'cetakPdfKonversi'])
+    ->name('dashboard.cetak.invoice.konversi.pdf');
 
 Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
 // Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
