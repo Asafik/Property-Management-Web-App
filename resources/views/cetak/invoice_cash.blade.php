@@ -598,10 +598,11 @@
                     <h5>METODE PEMBAYARAN</h5>
                     <table class="info-table">
                         <tr><td>Metode</td><td>:</td><td>{{ $pelunasan->method ?? 'Transfer Bank' }}</td></tr>
-                        <tr><td>Nama Bank</td><td>:</td><td>{{ $pelunasan->notes ?? 'Bank Mandiri' }}</td></tr>
-                        <tr><td>No. Rekening</td><td>:</td><td>{{ $pelunasan->reference_number ?? '123-456-7890' }}</td></tr>
-                        <tr><td>Atas Nama</td><td>:</td><td>{{ $pelunasan->notes ?? 'PT Properti Management' }}</td></tr>
+                        <tr><td>Nama Bank</td><td>:</td><td>{{ $pelunasan->banks->bank_name ?? 'Bank Mandiri' }}</td></tr>
+                        <tr><td>No. Rekening</td><td>:</td><td>{{ $pelunasan->banks->number ?? '123-456-7890' }}</td></tr>
+                        <tr><td>Atas Nama</td><td>:</td><td>{{ $pelunasan->banks->account_holder ?? 'PT Properti Management' }}</td></tr>
                         <tr><td>Tanggal Transfer</td><td>:</td><td>{{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}</td></tr>
+                        <tr><td>Catatan</td><td>:</td><td>{{ $pelunasan->notes ?? '-' }}</td></tr>
                     </table>
                 </div>
 
@@ -654,7 +655,7 @@
                                 <rect x="65" y="65" width="16" height="16" fill="#4b49ac"/>
                             </svg>
                         @endif
-                        <div class="qr-text">Scan untuk verifikasi</div>
+                        <div class="qr-text"></div>
                     </div>
                 </div>
             </div>

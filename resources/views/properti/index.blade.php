@@ -789,7 +789,8 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables - hanya untuk sorting
+
+    // Inisialisasi DataTables
     let table = $('#tableProperti').DataTable({
         responsive: true,
         paging: false,
@@ -814,12 +815,27 @@ $(document).ready(function() {
         ]
     });
 
-    // Konfirmasi sebelum verifikasi
+    // Konfirmasi SweetAlert sebelum verifikasi
     $('.action-text-verify').on('click', function(e) {
-        if (!confirm('Apakah Anda yakin ingin memverifikasi properti ini?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        let link = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Verifikasi Properti?',
+            text: "Properti akan ditandai sebagai sudah diverifikasi.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = link;
+            }
+        });
     });
+
 });
 </script>
 @endpush

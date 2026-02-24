@@ -1100,7 +1100,7 @@
                                                         'active' => 25,
                                                         'survey' => 40,
                                                         'akad' => 80,
-                                                        'lunas' => 100,
+                                                        'completed' => 100,
                                                         default => 10,
                                                     };
                                                 @endphp
