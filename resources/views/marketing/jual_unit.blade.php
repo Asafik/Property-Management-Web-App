@@ -103,7 +103,7 @@
             height: auto;
         }
 
-        /* ===== FILTER SECTION - DIPERBESAR ===== */
+        /* ===== FILTER SECTION - UKURAN NORMAL ===== */
         .filter-card {
             background: linear-gradient(135deg, #f9f7ff, #f2ecff);
             border-radius: 12px;
@@ -121,6 +121,7 @@
             color: #9a55ff !important;
             margin-bottom: 0.4rem;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         .filter-card .form-control,
@@ -128,17 +129,21 @@
             padding: 0.5rem 0.75rem;
             font-size: 0.9rem;
             border-radius: 8px;
-            height: auto;
-            min-height: 40px;
+            height: 40px;
             border: 1px solid #e0e4e9;
+            width: 100%;
         }
 
         .filter-card .btn {
             padding: 0.5rem 0.75rem;
             font-size: 0.85rem;
-            min-height: 40px;
+            height: 40px;
             border-radius: 8px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         /* Form Controls */
@@ -151,17 +156,7 @@
             transition: all 0.2s ease;
             background-color: #ffffff;
             color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
+            height: 40px;
         }
 
         .form-control:focus,
@@ -192,14 +187,6 @@
             border: none;
         }
 
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -209,6 +196,7 @@
             padding: 0.35rem 0.7rem;
             font-size: 0.8rem;
             border-radius: 6px;
+            height: 32px;
         }
 
         .btn-gradient-primary {
@@ -225,26 +213,6 @@
             background: #5a6268 !important;
         }
 
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
         /* Outline Buttons */
         .btn-outline-primary {
             background: transparent;
@@ -255,54 +223,6 @@
 
         .btn-outline-primary:hover {
             background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-success {
-            background: transparent;
-            border: 1px solid #28a745;
-            color: #28a745;
-        }
-
-        .btn-outline-success:hover {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-warning {
-            background: transparent;
-            border: 1px solid #ffc107;
-            color: #ffc107;
-        }
-
-        .btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #dc3545;
-            color: #dc3545;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-info {
-            background: transparent;
-            border: 1px solid #17a2b8;
-            color: #17a2b8;
-        }
-
-        .btn-outline-info:hover {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
             color: #ffffff;
             border-color: transparent;
         }
@@ -324,18 +244,6 @@
             }
         }
 
-        @media (min-width: 768px) {
-            .badge {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        .badge-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.7rem;
-        }
-
         .badge-gradient-success {
             background: linear-gradient(135deg, #28a745, #5cb85c);
             color: #ffffff;
@@ -351,17 +259,7 @@
             color: #ffffff;
         }
 
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-        }
-
-        .badge-gradient-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-        }
-
-        /* ===== TABLE STYLING ===== */
+        /* ===== TABLE STYLING - UKURAN NORMAL ===== */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -387,32 +285,6 @@
             white-space: nowrap;
         }
 
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        /* Kolom No lebih rapat */
-        .table thead th:first-child {
-            padding-left: 0.75rem;
-            width: 60px;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.75rem;
-            font-weight: 500;
-            width: 60px;
-        }
-
         .table tbody td {
             vertical-align: middle;
             font-size: 0.85rem;
@@ -421,36 +293,8 @@
             color: #2c2e3f;
         }
 
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
         .table tbody tr:hover {
             background-color: #f8f9fa;
-        }
-
-        /* Nama properti - lebih rapat dengan nomor */
-        .table tbody td:nth-child(2) {
-            padding-left: 0.3rem;
-        }
-
-        .table tbody td .d-flex.align-items-center {
-            gap: 0.5rem;
-        }
-
-        /* Icon dalam tabel */
-        .table tbody td i {
-            font-size: 1rem;
         }
 
         /* Text colors */
@@ -470,10 +314,6 @@
             color: #28a745 !important;
         }
 
-        .text-warning {
-            color: #ffc107 !important;
-        }
-
         .fw-bold {
             font-weight: 600 !important;
         }
@@ -488,64 +328,6 @@
             font-weight: 700;
             color: #2c2e3f !important;
             margin-bottom: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-            h3.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            h3.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        /* Modal Styling */
-        .modal-content {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .modal-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #9a55ff;
-        }
-
-        .modal-body {
-            padding: 1.2rem;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 0 0 16px 16px;
-        }
-
-        /* Badge dengan icon */
-        .badge i {
-            font-size: 0.8rem;
-            margin-right: 4px;
-        }
-
-        /* Hover effect untuk icon aksi */
-        .btn-outline-primary:hover,
-        .btn-outline-success:hover,
-        .btn-outline-warning:hover,
-        .btn-outline-danger:hover,
-        .btn-outline-info:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive untuk mobile */
@@ -572,7 +354,7 @@
             .filter-card .form-select,
             .filter-card .btn {
                 font-size: 0.8rem;
-                min-height: 38px;
+                height: 38px;
             }
 
             h3.text-dark {
@@ -600,18 +382,27 @@
             vertical-align: middle;
         }
 
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
+        /* Styling untuk tombol filter dan reset */
+        .btn-filter-reset {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
+            width: 100%;
+            height: 40px;
         }
 
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
+        .btn-filter-reset i {
+            font-size: 1rem;
+        }
+
+        /* Row filter spacing */
+        .filter-row {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
         }
 
         /* ===== GRID VIEW CARD STYLING ===== */
@@ -625,7 +416,7 @@
             box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15) !important;
         }
 
-        /* ===== PAGINATION STYLING - DIPERKECIL ===== */
+        /* ===== PAGINATION STYLING ===== */
         .pagination {
             margin: 0;
             gap: 3px;
@@ -641,22 +432,6 @@
             transition: all 0.2s ease;
             min-width: 32px;
             text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
         }
 
         .page-item.active .page-link {
@@ -679,16 +454,26 @@
             color: #6c7383;
         }
 
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
+        /* Button group styling */
+        .btn-group .btn-outline-primary {
+            border: 1px solid #9a55ff;
         }
 
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
+        .btn-group .btn-outline-primary.active {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+        }
+
+        /* Kolom filter dengan padding minimal */
+        .filter-col {
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+
+        /* Membuat select lebih pendek secara visual */
+        select.form-control {
+            background-position: right 0.5rem center;
+            padding-right: 1.5rem;
         }
     </style>
 
@@ -703,7 +488,7 @@
                                 <i class="mdi mdi-home-group me-2" style="color: #9a55ff;"></i>
                                 Marketing Jual Unit
                             </h3>
-                            <p class="text-muted mb-0">
+                            <p class="text-muted mb-0 small">
                                 <i class="mdi mdi-information-outline me-1"></i>
                                 Kelola unit-unit yang siap dipasarkan ke customer
                             </p>
@@ -779,7 +564,7 @@
             </div>
         </div>
 
-        <!-- Tabel Data (dengan filter di dalamnya) -->
+        <!-- Tabel Data -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
@@ -795,7 +580,6 @@
                                 <i class="mdi mdi-export me-1"></i>
                                 <span class="d-none d-sm-inline">Excel</span>
                             </a>
-
                             <a href="{{ route('marketing.jual-unit.export.pdf') }}" class="btn btn-sm btn-gradient-danger">
                                 <i class="mdi mdi-file-pdf me-1"></i>
                                 <span class="d-none d-sm-inline">PDF</span>
@@ -803,7 +587,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section - DIPERBESAR (LANGSUNG DI DALAM CARD TABLE) -->
+                        <!-- Filter Section - SEJAJAR DENGAN SELECT DIPERKECIL -->
                         <div class="filter-card">
                             <div class="card-body">
                                 <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -811,140 +595,20 @@
                                 </h6>
 
                                 <form method="GET" action="{{ route('marketing.jual-unit') }}">
-
-                                    <!-- FILTER MOBILE -->
-                                    <div class="d-block d-md-none">
-
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Cari Unit
-                                            </label>
-                                            <input type="text" name="search" value="{{ request('search') }}"
-                                                class="form-control" placeholder="Cari blok, lokasi...">
-                                        </div>
-
-                                        <div class="row g-2">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Proyek
-                                                </label>
-                                                <select name="project" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($projects as $project)
-                                                        <option value="{{ $project->name }}"
-                                                            {{ request('project') == $project->name ? 'selected' : '' }}>
-                                                            {{ $project->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe Unit
-                                                </label>
-                                                <select name="type" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($types as $type)
-                                                        <option value="{{ $type }}"
-                                                            {{ request('type') == $type ? 'selected' : '' }}>
-                                                            {{ $type }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
-                                                </label>
-                                                <select name="status" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="draft"
-                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>
-                                                        Draft</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>
-                                                        Ready</option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                        Sold</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-2 mt-2">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-currency-usd me-1"></i>Harga
-                                                </label>
-                                                <select name="price" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="<500"
-                                                        {{ request('price') == '<500' ? 'selected' : '' }}>
-                                                        &lt; Rp 500 Jt</option>
-                                                    <option value="500-1000"
-                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>Rp 500 Jt -
-                                                        1 M
-                                                    </option>
-                                                    <option value=">1000"
-                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>
-                                                        &gt; Rp 1 M</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-2 mt-3">
-                                            <div class="col-6">
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    <i class="mdi mdi-filter me-1"></i> Filter
-                                                </button>
-                                            </div>
-                                            <div class="col-6">
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary w-100">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- FILTER DESKTOP -->
+                                    <!-- FILTER DESKTOP - SEJAJAR DENGAN KOLOM KECIL -->
                                     <div class="d-none d-md-block">
-                                        <div class="row g-2 align-items-end">
-
-                                            <div class="col-md-4">
+                                        <div class="row g-1 align-items-end">
+                                            <!-- Cari Unit (lebih besar) -->
+                                            <div class="col-md-2 filter-col">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-magnify me-1"></i>Cari Unit
                                                 </label>
                                                 <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari blok, lokasi...">
+                                                    class="form-control" placeholder="Cari...">
                                             </div>
 
-                                            <div class="col-md-2">
+                                            <!-- Proyek -->
+                                            <div class="col-md-2 filter-col">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-home me-1"></i>Proyek
                                                 </label>
@@ -958,9 +622,11 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                             <div class="col-md-2">
+
+                                            <!-- Tipe Unit (diperkecil) -->
+                                            <div class="col-md-1 filter-col">
                                                 <label class="form-label">
-                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe Unit
+                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe
                                                 </label>
                                                 <select name="type" class="form-control">
                                                     <option value="">Semua</option>
@@ -972,82 +638,164 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-md-2">
+
+                                            <!-- Status (diperkecil) -->
+                                            <div class="col-md-1 filter-col">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-chart-arc me-1"></i>Status
                                                 </label>
                                                 <select name="status" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="draft"
-                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>
-                                                        Draft</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>
-                                                        Ready</option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                        Sold</option>
+                                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
+                                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Booked</option>
+                                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-2">
+                                            <!-- Harga -->
+                                            <div class="col-md-2 filter-col">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-currency-usd me-1"></i>Harga
                                                 </label>
                                                 <select name="price" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="<500"
-                                                        {{ request('price') == '<500' ? 'selected' : '' }}>
-                                                        &lt; Rp 500 Jt</option>
-                                                    <option value="500-1000"
-                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>Rp 500 Jt -
-                                                        1 M
-                                                    </option>
-                                                    <option value=">1000"
-                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>
-                                                        &gt; Rp 1 M</option>
+                                                    <option value="<500" {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt</option>
+                                                    <option value="500-1000" {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M</option>
+                                                    <option value=">1000" {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M</option>
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-1">
+                                            <!-- Tampil (diperkecil) -->
+                                            <div class="col-md-1 filter-col">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-counter me-1"></i>Tampil
                                                 </label>
                                                 <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
-                                                    </option>
+                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-2 d-flex gap-2">
-
-                                                <button type="submit" class="btn btn-primary w-50 btn-icon-only"
-                                                    title="Filter">
+                                            <!-- Button Filter -->
+                                            <div class="col-md-1 filter-col">
+                                                <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                <button type="submit" class="btn btn-gradient-primary w-100 btn-filter-reset" title="Filter">
                                                     <i class="mdi mdi-filter"></i>
                                                 </button>
+                                            </div>
 
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary w-50">
+                                            <!-- Button Reset -->
+                                            <div class="col-md-1 filter-col">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <a href="{{ route('marketing.jual-unit') }}" class="btn btn-gradient-secondary w-100 btn-filter-reset" title="Reset">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
-
                                             </div>
                                         </div>
                                     </div>
 
+                                    <!-- FILTER MOBILE -->
+                                    <div class="d-block d-md-none">
+                                        <!-- Baris 1: Cari Unit -->
+                                        <div class="row filter-row g-1">
+                                            <div class="col-12">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Cari Unit
+                                                </label>
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari...">
+                                            </div>
+                                        </div>
+
+                                        <!-- Baris 2: Proyek & Tipe -->
+                                        <div class="row filter-row g-1">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home me-1"></i>Proyek
+                                                </label>
+                                                <select name="project" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($projects as $project)
+                                                        <option value="{{ $project->name }}"
+                                                            {{ request('project') == $project->name ? 'selected' : '' }}>
+                                                            {{ $project->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe
+                                                </label>
+                                                <select name="type" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($types as $type)
+                                                        <option value="{{ $type }}"
+                                                            {{ request('type') == $type ? 'selected' : '' }}>
+                                                            {{ $type }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Baris 3: Status & Harga -->
+                                        <div class="row filter-row g-1">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select name="status" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
+                                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Booked</option>
+                                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-currency-usd me-1"></i>Harga
+                                                </label>
+                                                <select name="price" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="<500" {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt</option>
+                                                    <option value="500-1000" {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M</option>
+                                                    <option value=">1000" {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Baris 4: Tampil & Button -->
+                                        <div class="row filter-row g-1">
+                                            <div class="col-4">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="perPage" class="form-control">
+                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-4">
+                                                <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                <button type="submit" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-4">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <a href="{{ route('marketing.jual-unit') }}" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -1072,130 +820,55 @@
                                 <table class="table table-hover" id="unitTable" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                            <th><i class="mdi mdi-home me-1"></i>Blok</th>
-                                            <th><i class="mdi mdi-home-group me-1"></i>Proyek</th>
-                                            <th><i class="mdi mdi-home-modern me-1">Type Unit</i></th>
-                                            <th class="d-none d-md-table-cell"><i
-                                                    class="mdi mdi-map-marker me-1"></i>Lokasi</th>
-                                            <th><i class="mdi mdi-arrow-expand me-1"></i>Luas Tanah</th>
-                                            <th><i class="mdi mdi-arrow-expand me-1"></i>Luas Bangunan</th>
-                                            <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
-                                            <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
-                                            <th><i class="mdi mdi-chart-arc me-1"></i>Status</th>
-                                            <th><i class="mdi mdi-account-tie me-1"></i>Agent</th>
-                                            <th><i class="mdi mdi-currency-usd me-1"></i>Fee Agent</th>
-                                            <th><i class="mdi mdi-account me-1"></i>Customer</th>
-                                            <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                            <th class="text-center">No</th>
+                                            <th>Blok</th>
+                                            <th>Proyek</th>
+                                            <th>Tipe</th>
+                                            <th class="d-none d-md-table-cell">Lokasi</th>
+                                            <th>Luas Tanah</th>
+                                            <th>Luas Bangunan</th>
+                                            <th>Harga</th>
+                                            <th>Hadap</th>
+                                            <th>Status</th>
+                                            <th>Agent</th>
+                                            <th>Fee Agent</th>
+                                            <th>Customer</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($units as $index => $unit)
                                             <tr>
-                                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                                <td class="text-center fw-bold">{{ $units->firstItem() + $index }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-home-variant text-primary me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        <span class="fw-bold">{{ $unit->unit_code }}</span>
+                                                        <i class="mdi mdi-home-variant text-primary me-2"></i>
+                                                        <span>{{ $unit->unit_code }}</span>
                                                     </div>
                                                 </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-home-city text-info me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->landBank->name ?? '-' }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-home-modern text-info me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->type ?? '-' }}
-                                                    </div>
-                                                </td>
-                                                <td class="d-none d-md-table-cell">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-map-marker text-danger me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ Str::limit($unit->landBank->address ?? '-', 20) }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-ruler-square text-warning me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->area ?? ($unit->area ?? '-') }} m²
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-ruler-square text-warning me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->building_area ?? ($unit->building_area ?? '-') }} m²
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-currency-usd text-success me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        <span class="text-nowrap fw-bold text-success">Rp
-                                                            {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-compass text-info me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->facing ?? '-' }}
-                                                    </div>
-                                                </td>
+                                                <td>{{ $unit->landBank->name ?? '-' }}</td>
+                                                <td>{{ $unit->type ?? '-' }}</td>
+                                                <td class="d-none d-md-table-cell">{{ Str::limit($unit->landBank->address ?? '-', 15) }}</td>
+                                                <td>{{ $unit->area ?? '-' }} m²</td>
+                                                <td>{{ $unit->building_area ?? '-' }} m²</td>
+                                                <td>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
+                                                <td>{{ $unit->facing ?? '-' }}</td>
                                                 <td>
                                                     @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                        <span class="badge badge-gradient-success">
-                                                            <i class="mdi mdi-check-circle me-1"></i>Tersedia
-                                                        </span>
+                                                        <span class="badge badge-gradient-success">Tersedia</span>
                                                     @elseif($unit->status == 'sold')
-                                                        <span class="badge badge-gradient-danger">
-                                                            <i class="mdi mdi-cash me-1"></i>Terjual
-                                                        </span>
+                                                        <span class="badge badge-gradient-danger">Terjual</span>
                                                     @else
-                                                        <span class="badge badge-gradient-warning">
-                                                            <i
-                                                                class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}
-                                                        </span>
+                                                        <span class="badge badge-gradient-warning">{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-account-tie text-primary me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->activeBooking->sales->name ?? '-' }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-currency-usd text-info me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        Rp
-                                                        {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-account text-success me-2"
-                                                            style="font-size: 1rem;"></i>
-                                                        {{ $unit->activeBooking->customer->full_name ?? '-' }}
-                                                    </div>
-                                                </td>
+                                                <td>{{ $unit->activeBooking->sales->name ?? '-' }}</td>
+                                                <td>Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}</td>
+                                                <td>{{ $unit->activeBooking->customer->full_name ?? '-' }}</td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-1">
                                                         <button class="btn btn-outline-primary btn-sm" title="Detail">
                                                             <i class="mdi mdi-eye"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-warning btn-sm" title="Edit">
-                                                            <i class="mdi mdi-pencil"></i>
                                                         </button>
                                                         <button onclick="openCustomerModal({{ $unit->id }})"
                                                             class="btn btn-outline-danger btn-sm" title="Tambah Customer">
@@ -1210,9 +883,8 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="11" class="text-center text-muted py-4">
-                                                    <i class="mdi mdi-home-outline"
-                                                        style="font-size: 2rem; opacity: 0.3;"></i>
+                                                <td colspan="14" class="text-center text-muted py-4">
+                                                    <i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>
                                                 </td>
                                             </tr>
@@ -1230,65 +902,26 @@
                                         <div class="card-body p-3">
                                             <div class="position-relative">
                                                 @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                    <span
-                                                        class="badge badge-gradient-success position-absolute top-0 end-0 m-2">Tersedia</span>
+                                                    <span class="badge badge-gradient-success position-absolute top-0 end-0 m-2">Tersedia</span>
                                                 @elseif($unit->status == 'sold')
-                                                    <span
-                                                        class="badge badge-gradient-danger position-absolute top-0 end-0 m-2">Terjual</span>
+                                                    <span class="badge badge-gradient-danger position-absolute top-0 end-0 m-2">Terjual</span>
                                                 @else
-                                                    <span
-                                                        class="badge badge-gradient-warning position-absolute top-0 end-0 m-2">{{ ucfirst($unit->status) }}</span>
+                                                    <span class="badge badge-gradient-warning position-absolute top-0 end-0 m-2">{{ ucfirst($unit->status) }}</span>
                                                 @endif
                                                 <div class="text-center bg-light py-3 py-md-4 rounded">
-                                                    <i class="mdi mdi-home-outline"
-                                                        style="font-size: 36px; color: #9a55ff;"></i>
+                                                    <i class="mdi mdi-home-outline" style="font-size: 36px; color: #9a55ff;"></i>
                                                 </div>
                                             </div>
-                                            <h5 class="mt-2 fs-6">{{ $unit->unit_code }} -
-                                                {{ $unit->landBank->name ?? '-' }}</h5>
-                                            <p class="text-muted small mb-1">
-                                                <i
-                                                    class="mdi mdi-map-marker me-1"></i>{{ Str::limit($unit->landBank->address ?? '-', 20) }}
-                                            </p>
-                                            <p class="small mb-1">
-                                                <i
-                                                    class="mdi mdi-arrow-expand me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
-                                                m² | Hadap {{ $unit->facing ?? '-' }}
-                                            </p>
-                                            <h5 class="text-primary mt-2">Rp
-                                                {{ number_format($unit->price ?? 0, 0, ',', '.') }}</h5>
-
-                                            <div class="d-flex align-items-center mt-2 p-2 bg-light rounded small">
-                                                <i class="mdi mdi-account-tie text-primary me-2"></i>
-                                                <span class="text-muted">Agent:
-                                                    {{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}</span>
-                                            </div>
-
-                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <h6 class="mt-2 fw-bold">{{ $unit->unit_code }}</h6>
+                                            <p class="text-muted small mb-1">{{ $unit->landBank->name ?? '-' }}</p>
+                                            <p class="small mb-1">{{ $unit->building_area ?? $unit->area ?? '-' }} m² | Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <small class="text-muted">
-                                                    @if ($unit->activeBooking && $unit->activeBooking->customer)
-                                                        <i
-                                                            class="mdi mdi-account me-1"></i>{{ optional(optional($unit->activeBooking)->customer)->full_name ?? '-' }}
-                                                    @else
-                                                        <i class="mdi mdi-account-outline me-1"></i>Belum ada customer
-                                                    @endif
+                                                    <i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
                                                 </small>
-                                                <div class="btn-group btn-group-sm">
-                                                    <button class="btn btn-outline-primary"
-                                                        onclick="alert('Detail unit')">
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </button>
-                                                    @if ($unit->status == 'sold')
-                                                        <button class="btn btn-outline-secondary" disabled>
-                                                            <i class="mdi mdi-lock"></i>
-                                                        </button>
-                                                    @else
-                                                        <button class="btn btn-outline-danger"
-                                                            onclick="$('#modalCustomer').modal('show')">
-                                                            <i class="mdi mdi-account-plus"></i>
-                                                        </button>
-                                                    @endif
-                                                </div>
+                                                <button class="btn btn-outline-danger btn-sm" onclick="openCustomerModal({{ $unit->id }})">
+                                                    <i class="mdi mdi-account-plus"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1302,18 +935,17 @@
                                 </div>
                             @endforelse
                         </div>
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
 
+                        <!-- Pagination -->
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
                                 Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }}
                                 dari {{ $units->total() }} data
                             </div>
-
                             <div>
                                 {{ $units->links('pagination::bootstrap-5') }}
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -1340,40 +972,32 @@
     <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
                         Data Customer
                     </h5>
-                    <button type="button" class="btn-close" onclick="$('#modalCustomer').modal('hide')"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
-
-                    <!-- Booking & Agent Fee Section -->
+                    <!-- Booking Fee Section -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-body">
                             <div class="row align-items-end">
-
-                                <!-- Booking Fee -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Booking Fee</label>
                                     <input type="text" class="form-control" id="booking_fee" name="booking_fee"
                                         placeholder="Masukkan booking fee" autocomplete="off">
                                 </div>
-
                             </div>
-
-                            <!-- Info -->
                             <div class="row mt-2">
-                                <div class="col-12 text-muted small">
-                                    <i class="mdi mdi-information-outline me-1"></i>
-                                    Pilih customer lalu klik metode pembayaran (Cash / KPR)
+                                <div class="col-12">
+                                    <small class="text-muted">
+                                        <i class="mdi mdi-information-outline me-1"></i>
+                                        Pilih customer lalu klik metode pembayaran
+                                    </small>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -1406,7 +1030,6 @@
                                                     data-id="{{ $c->id }}" data-type="cash">
                                                     Cash
                                                 </button>
-
                                                 <button type="button" class="btn btn-sm btn-primary pilihCustomer"
                                                     data-id="{{ $c->id }}" data-type="kpr">
                                                     KPR
@@ -1418,7 +1041,6 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -1428,7 +1050,6 @@
     <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
@@ -1436,14 +1057,12 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-
                     <form id="formAgency" method="POST">
                         @csrf
                         <input type="hidden" name="sales_id" id="sales_id">
 
-                        <!-- 🔥 Agent Fee Input -->
+                        <!-- Agent Fee Input -->
                         <div class="card mb-3 border-0 shadow-sm">
                             <div class="card-body">
                                 <label class="form-label fw-bold">Agent Fee</label>
@@ -1477,7 +1096,7 @@
                                         <td>
                                             <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
                                                 data-id="{{ $a->id }}">
-                                                <i class="mdi mdi-check me-1"></i>Pilih
+                                                Pilih
                                             </button>
                                         </td>
                                     </tr>
@@ -1485,7 +1104,6 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -1496,12 +1114,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-
-            /*
-            |--------------------------------------------------------------------------
-            | DataTables Unit
-            |--------------------------------------------------------------------------
-            */
+            // DataTables Unit
             let table = $('#unitTable').DataTable({
                 responsive: true,
                 paging: false,
@@ -1515,55 +1128,35 @@
                 },
                 columnDefs: [{
                     orderable: false,
-                    targets: [0, 10]
+                    targets: [0, 13]
                 }]
             });
 
-            // Tooltip
-            $('[data-toggle="tooltip"]').tooltip();
+            // Format Rupiah untuk booking fee
+            $('#booking_fee, #agent_fee_modal').on('input', function() {
+                let value = $(this).val().replace(/[^0-9]/g, '');
+                if (value) {
+                    $(this).val(new Intl.NumberFormat('id-ID').format(value));
+                }
+            });
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | OPEN CUSTOMER MODAL
-            |--------------------------------------------------------------------------
-            */
+            // OPEN CUSTOMER MODAL
             window.openCustomerModal = function(unitId) {
-
                 if (!unitId) {
                     alert('Unit tidak valid!');
                     return;
                 }
-
-                // Simpan unit id ke modal
                 $('#modalCustomer').attr('data-unit-id', unitId);
-
-                // Reset booking fee setiap buka
                 $('#booking_fee').val('');
-
                 $('#modalCustomer').modal('show');
             };
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | PILIH CUSTOMER + PAYMENT TYPE + BOOKING FEE
-            |--------------------------------------------------------------------------
-            */
-            // FORMAT RUPIAH OTOMATIS
-            $('#booking_fee').on('input', function() {
-                let value = $(this).val().replace(/[^0-9]/g, '');
-                $(this).val(new Intl.NumberFormat('id-ID').format(value));
-            });
-
-
             // PILIH CUSTOMER
             $(document).on('click', '.pilihCustomer', function() {
-
                 let customerId = $(this).data('id');
-                let purchaseType = $(this).data('type'); // cash / kpr
+                let purchaseType = $(this).data('type');
                 let unitId = $('#modalCustomer').attr('data-unit-id');
-                let bookingFee = $('#booking_fee').val().replace(/\./g, ''); // hilangkan titik
+                let bookingFee = $('#booking_fee').val().replace(/\./g, '');
 
                 if (!unitId) {
                     Swal.fire({
@@ -1583,13 +1176,12 @@
                     return;
                 }
 
-                // KONFIRMASI SEBELUM SUBMIT
                 Swal.fire({
                     title: 'Yakin pilih customer ini?',
                     html: `
-            <p>Jenis Pembelian: <b>${purchaseType.toUpperCase()}</b></p>
-            <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
-        `,
+                        <p class="mb-1">Jenis: <b>${purchaseType.toUpperCase()}</b></p>
+                        <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
+                    `,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Simpan!',
@@ -1597,9 +1189,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33'
                 }).then((result) => {
-
                     if (result.isConfirmed) {
-
                         let actionUrlTemplate = "{{ route('set.customer', ':unitId') }}";
                         let actionUrl = actionUrlTemplate.replace(':unitId', unitId);
 
@@ -1608,28 +1198,18 @@
                             action: actionUrl
                         });
 
-                        form.append(
-                            `<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
-                        form.append(
-                            `<input type="hidden" name="customer_id" value="${customerId}">`);
-                        form.append(
-                            `<input type="hidden" name="purchase_type" value="${purchaseType}">`
-                        );
-                        form.append(
-                            `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
+                        form.append(`<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
+                        form.append(`<input type="hidden" name="customer_id" value="${customerId}">`);
+                        form.append(`<input type="hidden" name="purchase_type" value="${purchaseType}">`);
+                        form.append(`<input type="hidden" name="booking_fee" value="${bookingFee}">`);
 
                         $('body').append(form);
                         form.submit();
                     }
-
                 });
             });
 
-            /*
-            |--------------------------------------------------------------------------
-            | AGENCY MODAL
-            |--------------------------------------------------------------------------
-            */
+            // AGENCY MODAL
             $(document).on('click', '.bukaModal', function() {
                 let unitId = $(this).data('unit');
                 let url = "{{ url('marketing/set-agency') }}/" + unitId;
@@ -1642,7 +1222,7 @@
 
             $(document).on('click', '.pilihAgency', function() {
                 let salesId = $(this).data('id');
-                let agentFee = $('#agent_fee_modal').val();
+                let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
 
                 if (!agentFee) {
                     Swal.fire({
@@ -1654,17 +1234,12 @@
                 }
 
                 $('#sales_id').val(salesId);
+                $('#formAgency').append(`<input type="hidden" name="agent_fee" value="${agentFee}">`);
                 $('#formAgency').submit();
             });
-
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SWITCH VIEW
-        |--------------------------------------------------------------------------
-        */
+        // SWITCH VIEW
         function switchView(view) {
             if (view === 'table') {
                 $('#tableView').show();
@@ -1678,25 +1253,8 @@
                 $('#btnTableView').removeClass('active');
             }
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXPORT PLACEHOLDER
-        |--------------------------------------------------------------------------
-        */
-        function exportTable(type) {
-            let url = '';
-
-            if (type === 'excel') {
-                url = "{{ route('marketing.jual-unit.export.excel') }}";
-            } else if (type === 'pdf') {
-                url = "{{ route('marketing.jual-unit.export.pdf') }}";
-            }
-
-            window.location.href = url;
-        }
     </script>
+
     @if (session('success'))
         <script>
             Swal.fire({
@@ -1704,7 +1262,7 @@
                 title: 'Berhasil',
                 text: "{{ session('success') }}",
                 showConfirmButton: false,
-                timer: 2500
+                timer: 2000
             });
         </script>
     @endif

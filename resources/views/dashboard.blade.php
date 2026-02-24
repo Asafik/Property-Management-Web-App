@@ -635,9 +635,9 @@ h3.text-dark {
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <label class="form-label">
-                                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
                                                 </label>
-                                                <select id="filterKategoriMobile" class="form-control">
+                                                <select id="filterTypeMobile" class="form-control">
                                                     <option value="">Semua</option>
                                                     <option value="Rumah">Rumah</option>
                                                     <option value="Apartemen">Apartemen</option>
@@ -668,7 +668,15 @@ h3.text-dark {
                                                     <option value="100">100</option>
                                                 </select>
                                             </div>
-                                            <div class="col-6 d-flex align-items-end">
+                                            <div class="col-6">
+                                                <button type="button" id="filterDataMobile" class="btn btn-gradient-primary w-100" style="margin-top: 24px;">
+                                                    <i class="mdi mdi-filter-outline me-1"></i> Filter
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-2">
+                                            <div class="col-12">
                                                 <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
                                                     <i class="mdi mdi-refresh me-1"></i> Reset
                                                 </button>
@@ -679,7 +687,7 @@ h3.text-dark {
                                     <!-- FILTER UNTUK TABLET & DESKTOP -->
                                     <div class="d-none d-md-block">
                                         <div class="row g-2 align-items-end">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                 </label>
@@ -687,9 +695,9 @@ h3.text-dark {
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="form-label">
-                                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
                                                 </label>
-                                                <select id="filterKategori" class="form-control">
+                                                <select id="filterType" class="form-control">
                                                     <option value="">Semua</option>
                                                     <option value="Rumah">Rumah</option>
                                                     <option value="Apartemen">Apartemen</option>
@@ -697,7 +705,7 @@ h3.text-dark {
                                                     <option value="Tanah">Tanah</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-map-marker me-1"></i>Lokasi
                                                 </label>
@@ -718,8 +726,13 @@ h3.text-dark {
                                                 </select>
                                             </div>
                                             <div class="col-md-1">
+                                                <button type="button" id="filterData" class="btn btn-gradient-primary w-100" title="Filter Data">
+                                                    <i class="mdi mdi-filter-outline"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-1">
                                                 <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100" title="Reset Filter">
-                                                    <i class="mdi mdi-refresh me-1"></i>
+                                                    <i class="mdi mdi-refresh"></i>
                                                 </button>
                                             </div>
                                         </div>

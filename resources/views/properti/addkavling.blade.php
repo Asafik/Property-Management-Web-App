@@ -354,6 +354,7 @@
             color: #9a55ff !important;
             margin-bottom: 0.4rem;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         .filter-card .form-control,
@@ -361,17 +362,21 @@
             padding: 0.5rem 0.75rem;
             font-size: 0.9rem;
             border-radius: 8px;
-            height: auto;
-            min-height: 40px;
+            height: 40px;
             border: 1px solid #e0e4e9;
+            width: 100%;
         }
 
         .filter-card .btn {
             padding: 0.5rem 0.75rem;
             font-size: 0.85rem;
-            min-height: 40px;
+            height: 40px;
             border-radius: 8px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         /* Form Controls */
@@ -384,7 +389,7 @@
             transition: all 0.2s ease;
             background-color: #ffffff;
             color: #2c2e3f;
-            height: auto;
+            height: 40px;
         }
 
         @media (min-width: 576px) {
@@ -752,23 +757,14 @@
             .filter-card .form-select,
             .filter-card .btn {
                 font-size: 0.8rem;
-                min-height: 38px;
+                height: 38px;
             }
         }
 
         /* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
-        .dataTables_filter {
-            display: none !important;
-        }
-
-        .dataTables_length {
-            display: none !important;
-        }
-
-        .dataTables_paginate {
-            display: none !important;
-        }
-
+        .dataTables_filter,
+        .dataTables_length,
+        .dataTables_paginate,
         .dataTables_info {
             display: none !important;
         }
@@ -785,18 +781,27 @@
             vertical-align: middle;
         }
 
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
+        /* Styling untuk tombol filter dan reset */
+        .btn-filter-reset {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
+            width: 100%;
+            height: 40px;
         }
 
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
+        .btn-filter-reset i {
+            font-size: 1rem;
+        }
+
+        /* Row filter spacing */
+        .filter-row {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
         }
     </style>
 
@@ -1231,7 +1236,7 @@
             </div>
         </div>
 
-        <!-- Daftar Unit yang Akan Dibuat -->
+        <!-- Daftar Unit yang Akan Dibuat - FOKUS BAGIAN TABEL DENGAN FILTER -->
         <div class="row">
             <div class="col-12 grid-margin">
                 <div class="card">
@@ -1244,7 +1249,7 @@
                             unit</span>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section - SAMA PERSIS DENGAN PROPERTI -->
+                        <!-- FILTER SECTION - SAMA PERSIS SEPERTI SEBELUMNYA -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="filter-card">
@@ -1255,15 +1260,19 @@
 
                                         <!-- FILTER UNTUK MOBILE -->
                                         <div class="d-block d-md-none">
-                                            <div class="mb-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                </label>
-                                                <input type="text" id="searchInputMobile" class="form-control"
-                                                    placeholder="Cari blok/unit...">
+                                            <!-- Baris 1: Pencarian -->
+                                            <div class="row filter-row">
+                                                <div class="col-12">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                    </label>
+                                                    <input type="text" id="searchInputMobile" class="form-control"
+                                                        placeholder="Cari blok/unit...">
+                                                </div>
                                             </div>
 
-                                            <div class="row g-2">
+                                            <!-- Baris 2: Type & Posisi -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-shape-outline me-1"></i>Type
@@ -1272,8 +1281,7 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}
-                                                                </option>
+                                                                <option value="{{ $type }}">{{ $type }}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1286,15 +1294,28 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}
-                                                                </option>
+                                                                <option value="{{ $position }}">{{ $position }}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
                                                 </div>
                                             </div>
 
-                                            <div class="row g-2 mt-2">
+                                            <!-- Baris 3: Hadap & Tampil -->
+                                            <div class="row filter-row">
+                                                <div class="col-6">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-compass me-1"></i>Hadap
+                                                    </label>
+                                                    <select id="filterHadapMobile" class="form-control">
+                                                        <option value="">Semua</option>
+                                                        @foreach ($land->units->pluck('facing')->unique() as $facing)
+                                                            @if ($facing)
+                                                                <option value="{{ $facing }}">{{ $facing }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
@@ -1306,11 +1327,18 @@
                                                         <option value="100">100</option>
                                                     </select>
                                                 </div>
+                                            </div>
+
+                                            <!-- Baris 4: Button Filter & Reset -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
-                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <button type="button" id="resetFilterMobile"
-                                                        class="btn btn-gradient-secondary w-100">
-                                                        <i class="mdi mdi-refresh me-1"></i> Reset
+                                                    <button type="button" id="filterDataMobile" class="btn btn-gradient-primary btn-filter-reset">
+                                                        <i class="mdi mdi-filter-outline"></i> Filter
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary btn-filter-reset">
+                                                        <i class="mdi mdi-refresh"></i> Reset
                                                     </button>
                                                 </div>
                                             </div>
@@ -1318,7 +1346,7 @@
 
                                         <!-- FILTER UNTUK TABLET & DESKTOP -->
                                         <div class="d-none d-md-block">
-                                            <div class="row g-2 align-items-end">
+                                            <div class="row g-2 align-items-end filter-row">
                                                 <div class="col-md-3">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-magnify me-1"></i>Pencarian
@@ -1334,8 +1362,7 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}
-                                                                </option>
+                                                                <option value="{{ $type }}">{{ $type }}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1348,8 +1375,20 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}
-                                                                </option>
+                                                                <option value="{{ $position }}">{{ $position }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-compass me-1"></i>Hadap
+                                                    </label>
+                                                    <select id="filterHadap" class="form-control">
+                                                        <option value="">Semua</option>
+                                                        @foreach ($land->units->pluck('facing')->unique() as $facing)
+                                                            @if ($facing)
+                                                                <option value="{{ $facing }}">{{ $facing }}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1366,15 +1405,16 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <button type="button" id="resetFilter"
-                                                        class="btn btn-gradient-secondary w-100 btn-icon-only"
-                                                        title="Reset Filter">
-                                                        <i class="mdi mdi-refresh"></i>
+                                                    <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                    <button type="button" id="filterData" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                        <i class="mdi mdi-filter-outline"></i>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <!-- Kolom kosong untuk menjaga keseimbangan -->
+                                                <div class="col-md-1">
+                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                    <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                        <i class="mdi mdi-refresh"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1383,7 +1423,7 @@
                             </div>
                         </div>
 
-                        <!-- Tabel Data -->
+                        <!-- Tabel Data dengan Icon LENGKAP -->
                         <div class="table-responsive">
                             <table id="tableKavling" class="table table-hover" style="width:100%">
                                 <thead>
@@ -1402,13 +1442,14 @@
                                 <tbody>
                                     @forelse($units as $i => $unit)
                                         <tr>
-                                            <td class="text-center fw-bold">{{ $units->firstItem() + $i }}</td>
+                                            <td class="text-center fw-bold">
+                                                <span class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
+                                            </td>
 
                                             {{-- BLOK / NO --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home text-primary me-1"
-                                                        style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-home text-primary me-2"></i>
                                                     <span class="fw-bold">{{ $unit->unit_code }}</span>
                                                 </div>
                                             </td>
@@ -1416,30 +1457,23 @@
                                             {{-- LUAS TANAH --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-ruler-square text-warning me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span
-                                                        class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }}
-                                                        m²</span>
+                                                    <i class="mdi mdi-ruler-square text-warning me-2"></i>
+                                                    <span>{{ number_format($unit->area, 0, ',', '.') }} m²</span>
                                                 </div>
                                             </td>
 
                                             {{-- LUAS BANGUNAN --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-domain text-secondary me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span
-                                                        class="text-nowrap">{{ number_format($unit->building_area ?? 0, 0, ',', '.') }}
-                                                        m²</span>
+                                                    <i class="mdi mdi-domain text-secondary me-2"></i>
+                                                    <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²</span>
                                                 </div>
                                             </td>
 
                                             {{-- TYPE --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-format-list-bulleted text-info me-1"
-                                                        style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-format-list-bulleted text-info me-2"></i>
                                                     <span>{{ $unit->type ?? '-' }}</span>
                                                 </div>
                                             </td>
@@ -1447,18 +1481,15 @@
                                             {{-- HARGA --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-currency-usd text-success me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span class="text-nowrap">Rp
-                                                        {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                                                    <i class="mdi mdi-currency-usd text-success me-2"></i>
+                                                    <span>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
                                                 </div>
                                             </td>
 
                                             {{-- HADAP --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-compass text-info me-1"
-                                                        style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-compass text-info me-2"></i>
                                                     <span>{{ $unit->facing ?? '-' }}</span>
                                                 </div>
                                             </td>
@@ -1466,15 +1497,14 @@
                                             {{-- POSISI --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-map-marker text-danger me-1"
-                                                        style="font-size: 0.9rem;"></i>
+                                                    <i class="mdi mdi-map-marker text-danger me-2"></i>
                                                     <span>{{ $unit->position ?? '-' }}</span>
                                                 </div>
                                             </td>
 
                                             {{-- AKSI --}}
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
+                                                <div class="d-flex justify-content-center gap-2">
                                                     <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
                                                         class="btn btn-outline-primary btn-sm" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
@@ -1500,15 +1530,10 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td class="text-center fw-bold">-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
+                                            <td colspan="9" class="text-center py-4">
+                                                <i class="mdi mdi-information-outline me-2"></i>
+                                                Belum ada unit kavling
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -1519,7 +1544,7 @@
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1-{{ $land->units->count() }} dari {{ $land->units->count() }} data
+                                Menampilkan {{ $units->firstItem() ?? 0 }}-{{ $units->lastItem() ?? 0 }} dari {{ $units->total() }} data
                             </div>
                             <div class="mt-3">
                                 {{ $units->links('pagination::bootstrap-5') }}
@@ -1722,72 +1747,6 @@
                     orderable: false,
                     targets: [0, 8]
                 }]
-            });
-
-            // Fungsi filter manual
-            function filterData() {
-                let searchTerm = '';
-                let typeFilter = '';
-                let posisiFilter = '';
-
-                // Deteksi versi filter yang aktif
-                if ($('#searchInputMobile').is(':visible')) {
-                    searchTerm = $('#searchInputMobile').val().toLowerCase();
-                    typeFilter = $('#filterTypeMobile').val().toLowerCase();
-                    posisiFilter = $('#filterPosisiMobile').val().toLowerCase();
-                } else {
-                    searchTerm = $('#searchInput').val().toLowerCase();
-                    typeFilter = $('#filterType').val().toLowerCase();
-                    posisiFilter = $('#filterPosisi').val().toLowerCase();
-                }
-
-                // Filter menggunakan DataTables
-                $.fn.dataTable.ext.search.push(
-                    function(settings, data, dataIndex) {
-                        let blok = data[1] ? data[1].toLowerCase() : '';
-                        let type = data[4] ? data[4].toLowerCase() : '';
-                        let posisi = data[7] ? data[7].toLowerCase() : '';
-
-                        let matchSearch = searchTerm === '' || blok.includes(searchTerm);
-                        let matchType = typeFilter === '' || type.includes(typeFilter);
-                        let matchPosisi = posisiFilter === '' || posisi.includes(posisiFilter);
-
-                        return matchSearch && matchType && matchPosisi;
-                    }
-                );
-
-                table.draw();
-                $.fn.dataTable.ext.search.pop();
-            }
-
-            // Event listener untuk filter
-            $('#searchInput, #searchInputMobile').on('keyup', filterData);
-            $('#filterType, #filterTypeMobile').on('change', filterData);
-            $('#filterPosisi, #filterPosisiMobile').on('change', filterData);
-
-            // Fungsi reset filter
-            function resetFilters() {
-                if ($('#searchInputMobile').is(':visible')) {
-                    $('#searchInputMobile').val('');
-                    $('#filterTypeMobile').val('');
-                    $('#filterPosisiMobile').val('');
-                } else {
-                    $('#searchInput').val('');
-                    $('#filterType').val('');
-                    $('#filterPosisi').val('');
-                }
-
-                $.fn.dataTable.ext.search.pop();
-                table.search('').columns().search('').draw();
-            }
-
-            // Event listener untuk reset
-            $('#resetFilter, #resetFilterMobile').click(resetFilters);
-
-            // Fungsi untuk mengubah jumlah baris (UI only)
-            $('#showData, #showDataMobile').change(function() {
-                let rowCount = $(this).val();
-                alert('Mengubah tampilan menjadi ' + rowCount + ' data per halaman (demo)');
             });
 
             // Format Rupiah untuk input harga

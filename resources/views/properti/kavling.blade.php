@@ -86,6 +86,7 @@
     color: #9a55ff !important;
     margin-bottom: 0.4rem;
     letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
 .filter-card .form-control,
@@ -93,17 +94,21 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
     border-radius: 8px;
-    height: auto;
-    min-height: 40px;
+    height: 40px;
     border: 1px solid #e0e4e9;
+    width: 100%;
 }
 
 .filter-card .btn {
     padding: 0.5rem 0.75rem;
     font-size: 0.85rem;
-    min-height: 40px;
+    height: 40px;
     border-radius: 8px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 /* Form Controls */
@@ -115,7 +120,7 @@
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
-    height: auto;
+    height: 40px;
 }
 
 @media (min-width: 576px) {
@@ -170,6 +175,7 @@
     padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
     border-radius: 6px;
+    height: 32px;
 }
 
 .btn-gradient-secondary {
@@ -500,7 +506,7 @@ h4.text-dark {
     .filter-card .form-select,
     .filter-card .btn {
         font-size: 0.8rem;
-        min-height: 38px;
+        height: 38px;
     }
 
     h3.text-dark,
@@ -510,18 +516,9 @@ h4.text-dark {
 }
 
 /* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
-.dataTables_filter {
-    display: none !important;
-}
-
-.dataTables_length {
-    display: none !important;
-}
-
-.dataTables_paginate {
-    display: none !important;
-}
-
+.dataTables_filter,
+.dataTables_length,
+.dataTables_paginate,
 .dataTables_info {
     display: none !important;
 }
@@ -536,18 +533,27 @@ h4.text-dark {
     vertical-align: middle;
 }
 
-/* Styling untuk tombol reset icon-only */
-.btn-icon-only {
-    width: 40px;
-    padding: 0.5rem 0;
+/* Styling untuk tombol filter dan reset */
+.btn-filter-reset {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 5px;
+    width: 100%;
+    height: 40px;
 }
 
-.btn-icon-only i {
-    font-size: 1.2rem;
-    margin: 0;
+.btn-filter-reset i {
+    font-size: 1rem;
+}
+
+/* Row filter spacing */
+.filter-row {
+    margin-bottom: 0.5rem;
+}
+
+.filter-row:last-child {
+    margin-bottom: 0;
 }
 </style>
 
@@ -597,14 +603,18 @@ h4.text-dark {
 
                                     <!-- FILTER UNTUK MOBILE -->
                                     <div class="d-block d-md-none">
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                            </label>
-                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari nama properti...">
+                                        <!-- Baris 1: Pencarian -->
+                                        <div class="row filter-row">
+                                            <div class="col-12">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari nama properti...">
+                                            </div>
                                         </div>
 
-                                        <div class="row g-2">
+                                        <!-- Baris 2: Type & Lokasi -->
+                                        <div class="row filter-row">
                                             <div class="col-6">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-shape-outline me-1"></i>Type
@@ -628,7 +638,19 @@ h4.text-dark {
                                             </div>
                                         </div>
 
-                                        <div class="row g-2 mt-2">
+                                        <!-- Baris 3: Status & Tampil -->
+                                        <div class="row filter-row">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select id="filterStatusMobile" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="sold">Terjual</option>
+                                                    <option value="booking">Booking</option>
+                                                    <option value="available">Tersedia</option>
+                                                </select>
+                                            </div>
                                             <div class="col-6">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-counter me-1"></i>Tampil
@@ -640,17 +662,26 @@ h4.text-dark {
                                                     <option value="100">100</option>
                                                 </select>
                                             </div>
-                                            <div class="col-6 d-flex align-items-end">
-                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
+                                        </div>
+
+                                        <!-- Baris 4: Button Filter & Reset -->
+                                        <div class="row filter-row">
+                                            <div class="col-6">
+                                                <button type="button" id="filterDataMobile" class="btn btn-gradient-primary btn-filter-reset">
+                                                    <i class="mdi mdi-filter-outline"></i> Filter
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary btn-filter-reset">
+                                                    <i class="mdi mdi-refresh"></i> Reset
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- FILTER UNTUK TABLET & DESKTOP - SAMA PERSIS DENGAN PROPERTI -->
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
                                     <div class="d-none d-md-block">
-                                        <div class="row g-2 align-items-end">
+                                        <div class="row g-2 align-items-end filter-row">
                                             <div class="col-md-3">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-magnify me-1"></i>Pencarian
@@ -678,6 +709,17 @@ h4.text-dark {
                                                     <option value="Jakarta">Jakarta</option>
                                                 </select>
                                             </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select id="filterStatus" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="sold">Terjual</option>
+                                                    <option value="booking">Booking</option>
+                                                    <option value="available">Tersedia</option>
+                                                </select>
+                                            </div>
                                             <div class="col-md-1">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-counter me-1"></i>Tampil
@@ -690,13 +732,16 @@ h4.text-dark {
                                                 </select>
                                             </div>
                                             <div class="col-md-1">
-                                                <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset Filter">
-                                                    <i class="mdi mdi-refresh"></i>
+                                                <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                <button type="button" id="filterData" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                    <i class="mdi mdi-filter-outline"></i>
                                                 </button>
                                             </div>
-                                            <div class="col-md-3">
-                                                <!-- Kolom kosong untuk menjaga keseimbangan -->
+                                            <div class="col-md-1">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -705,7 +750,7 @@ h4.text-dark {
                         </div>
                     </div>
 
-                    <!-- Tabel Data -->
+                    <!-- Tabel Data dengan ICON LENGKAP -->
                     <div class="table-responsive">
                         <table id="tableKavling" class="table table-hover" style="width:100%">
                             <thead>
@@ -831,7 +876,7 @@ h4.text-dark {
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                 <li class="page-item {{ $lands->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $lands->previousPageUrl() }}" tabindex="-1" aria-label="Previous" {{ $lands->onFirstPage() ? 'aria-disabled=true' : '' }}>
+                                    <a class="page-link" href="{{ $lands->previousPageUrl() }}" tabindex="-1" aria-label="Previous">
                                         <i class="mdi mdi-chevron-left"></i>
                                     </a>
                                 </li>
@@ -843,7 +888,7 @@ h4.text-dark {
                                 @endfor
 
                                 <li class="page-item {{ $lands->hasMorePages() ? '' : 'disabled' }}">
-                                    <a class="page-link" href="{{ $lands->nextPageUrl() }}" aria-label="Next" {{ $lands->hasMorePages() ? '' : 'aria-disabled=true' }}>
+                                    <a class="page-link" href="{{ $lands->nextPageUrl() }}" aria-label="Next">
                                         <i class="mdi mdi-chevron-right"></i>
                                     </a>
                                 </li>
@@ -869,11 +914,11 @@ $(document).ready(function() {
     // Inisialisasi DataTables - hanya untuk sorting
     let table = $('#tableKavling').DataTable({
         responsive: true,
-        paging: false,        // MATIKAN pagination DataTables
-        info: false,          // MATIKAN info DataTables
-        searching: false,     // MATIKAN search bawaan
-        lengthChange: false,  // MATIKAN length change
-        ordering: true,       // AKTIFKAN sorting saja
+        paging: false,
+        info: false,
+        searching: false,
+        lengthChange: false,
+        ordering: true,
         language: {
             emptyTable: `
                 <div class="text-center text-muted py-5">
@@ -887,9 +932,11 @@ $(document).ready(function() {
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
-            { orderable: false, targets: [0, 7] } // Non-aktifkan sorting untuk kolom No dan Aksi
+            { orderable: false, targets: [0, 7] }
         ]
     });
+
+    // Event handler untuk filter bisa ditambahkan nanti
 });
 </script>
 @endpush

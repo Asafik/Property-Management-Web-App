@@ -121,6 +121,7 @@
             color: #9a55ff !important;
             margin-bottom: 0.4rem;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         .filter-card .form-control,
@@ -128,17 +129,21 @@
             padding: 0.5rem 0.75rem;
             font-size: 0.9rem;
             border-radius: 8px;
-            height: auto;
-            min-height: 40px;
+            height: 40px;
             border: 1px solid #e0e4e9;
+            width: 100%;
         }
 
         .filter-card .btn {
             padding: 0.5rem 0.75rem;
             font-size: 0.85rem;
-            min-height: 40px;
+            height: 40px;
             border-radius: 8px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         /* Form Controls */
@@ -151,7 +156,7 @@
             transition: all 0.2s ease;
             background-color: #ffffff;
             color: #2c2e3f;
-            height: auto;
+            height: 40px;
         }
 
         @media (min-width: 576px) {
@@ -209,6 +214,7 @@
             padding: 0.35rem 0.7rem;
             font-size: 0.8rem;
             border-radius: 6px;
+            height: 32px;
         }
 
         .btn-xs {
@@ -680,7 +686,7 @@
             .filter-card .form-select,
             .filter-card .btn {
                 font-size: 0.8rem;
-                min-height: 38px;
+                height: 38px;
             }
 
             h3.text-dark {
@@ -708,18 +714,33 @@
             vertical-align: middle;
         }
 
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
+        /* Styling untuk tombol filter dan reset */
+        .btn-filter-reset {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
+            width: 100%;
+            height: 40px;
         }
 
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
+        .btn-filter-reset i {
+            font-size: 1rem;
+        }
+
+        /* Row filter spacing */
+        .filter-row {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Kolom filter dengan padding minimal */
+        .filter-col {
+            padding-left: 3px;
+            padding-right: 3px;
         }
     </style>
 
@@ -831,7 +852,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section - DIPERBESAR (LANGSUNG DI DALAM CARD TABLE) -->
+                        <!-- Filter Section - SEJAJAR SEPERTI MARKETING JUAL UNIT -->
                         <div class="filter-card">
                             <div class="card-body">
                                 <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -840,88 +861,20 @@
 
                                 <!-- FILTER UNTUK MOBILE -->
                                 <div class="d-block d-md-none">
-                                    <div class="mb-3">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                        </label>
-                                        <input type="text" class="form-control"
-                                            placeholder="Cari customer, no booking, unit...">
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-chart-arc me-1"></i>Status
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua Status</option>
-                                                <option>Draft</option>
-                                                <option>Pengajuan</option>
-                                                <option>Verifikasi</option>
-                                                <option>Survey</option>
-                                                <option>Akad</option>
-                                                <option>Cair</option>
-                                                <option>Lunas</option>
-                                                <option>Ditolak</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-cash-multiple me-1"></i>Metode
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua Metode</option>
-                                                <option>KPR</option>
-                                                <option>Cash</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2 mt-2">
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-account-tie me-1"></i>Marketing
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua Marketing</option>
-                                                <option>Ahmad Rizki</option>
-                                                <option>Rina Wijaya</option>
-                                                <option>Budi Hartono</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1"></i>Tampil
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2 mt-2">
-                                        <div class="col-12 d-flex align-items-end">
-                                            <button type="button" class="btn btn-gradient-secondary w-100">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                <div class="d-none d-md-block">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-4">
+                                    <!-- Baris 1: Pencarian -->
+                                    <div class="row filter-row">
+                                        <div class="col-12">
                                             <label class="form-label">
                                                 <i class="mdi mdi-magnify me-1"></i>Pencarian
                                             </label>
                                             <input type="text" class="form-control"
                                                 placeholder="Cari customer, no booking, unit...">
                                         </div>
-                                        <div class="col-md-2">
+                                    </div>
+
+                                    <!-- Baris 2: Status & Metode -->
+                                    <div class="row filter-row">
+                                        <div class="col-6">
                                             <label class="form-label">
                                                 <i class="mdi mdi-chart-arc me-1"></i>Status
                                             </label>
@@ -937,7 +890,7 @@
                                                 <option>Ditolak</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-6">
                                             <label class="form-label">
                                                 <i class="mdi mdi-cash-multiple me-1"></i>Metode
                                             </label>
@@ -947,7 +900,11 @@
                                                 <option>Cash</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
+                                    </div>
+
+                                    <!-- Baris 3: Marketing & Tampil -->
+                                    <div class="row filter-row">
+                                        <div class="col-6">
                                             <label class="form-label">
                                                 <i class="mdi mdi-account-tie me-1"></i>Marketing
                                             </label>
@@ -958,7 +915,7 @@
                                                 <option>Budi Hartono</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-1">
+                                        <div class="col-6">
                                             <label class="form-label">
                                                 <i class="mdi mdi-counter me-1"></i>Tampil
                                             </label>
@@ -969,12 +926,112 @@
                                                 <option value="100">100</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-1">
+                                    </div>
+
+                                    <!-- Baris 4: Button Filter & Reset -->
+                                    <div class="row filter-row">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                <i class="mdi mdi-filter-outline"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                <i class="mdi mdi-refresh"></i> Reset
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FILTER UNTUK TABLET & DESKTOP - SEJAJAR -->
+                                <div class="d-none d-md-block">
+                                    <div class="row g-1 align-items-end">
+                                        <!-- Pencarian (lebih besar) -->
+                                        <div class="col-md-3 filter-col">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                            </label>
+                                            <input type="text" class="form-control"
+                                                placeholder="Cari customer, no booking, unit...">
+                                        </div>
+
+                                        <!-- Status -->
+                                        <div class="col-md-2 filter-col">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-chart-arc me-1"></i>Status
+                                            </label>
+                                            <select class="form-control">
+                                                <option value="">Semua Status</option>
+                                                <option>Draft</option>
+                                                <option>Pengajuan</option>
+                                                <option>Verifikasi</option>
+                                                <option>Survey</option>
+                                                <option>Akad</option>
+                                                <option>Cair</option>
+                                                <option>Lunas</option>
+                                                <option>Ditolak</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Metode (diperkecil) -->
+                                        <div class="col-md-1 filter-col">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-cash-multiple me-1"></i>Metode
+                                            </label>
+                                            <select class="form-control">
+                                                <option value="">Semua</option>
+                                                <option>KPR</option>
+                                                <option>Cash</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Marketing (diperkecil) -->
+                                        <div class="col-md-2 filter-col">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-account-tie me-1"></i>Marketing
+                                            </label>
+                                            <select class="form-control">
+                                                <option value="">Semua</option>
+                                                <option>Ahmad Rizki</option>
+                                                <option>Rina Wijaya</option>
+                                                <option>Budi Hartono</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Tampil (diperkecil) -->
+                                        <div class="col-md-1 filter-col">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-counter me-1"></i>Tampil
+                                            </label>
+                                            <select class="form-control">
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Button Filter -->
+                                        <div class="col-md-1 filter-col">
+                                            <label class="form-label" style="visibility: hidden;">Filter</label>
+                                            <button type="button" class="btn btn-gradient-primary w-100 btn-filter-reset" title="Filter">
+                                                <i class="mdi mdi-filter-outline"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Button Reset -->
+                                        <div class="col-md-1 filter-col">
                                             <label class="form-label" style="visibility: hidden;">Reset</label>
-                                            <button type="button" class="btn btn-gradient-secondary w-100 btn-icon-only"
-                                                title="Reset Filter">
+                                            <button type="button" class="btn btn-gradient-secondary w-100 btn-filter-reset" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Baris 2 untuk filter tambahan jika diperlukan (kosong) -->
+                                    <div class="row g-1 align-items-end mt-2">
+                                        <div class="col-md-12">
+                                            <!-- Kolom kosong untuk menjaga keseimbangan -->
                                         </div>
                                     </div>
                                 </div>
@@ -1102,7 +1159,7 @@
                             </table>
                         </div>
 
-                        <!-- Pagination UI - DIPERKECIL (UI STATIK) -->
+                        <!-- Pagination -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
