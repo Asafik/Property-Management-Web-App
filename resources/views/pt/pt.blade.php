@@ -1,10 +1,10 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data Bank - Property Management App')
+@section('title', 'Master Data PT - Property Management App')
 
 @section('content')
 <style>
-/* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN DASHBOARD ===== */
+/* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN BANK ===== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
@@ -68,7 +68,7 @@
     }
 }
 
-/* ===== FILTER SECTION - DIPERBESAR ===== */
+/* ===== FILTER SECTION ===== */
 .filter-card {
     background: linear-gradient(135deg, #f9f7ff, #f2ecff);
     border-radius: 12px;
@@ -207,35 +207,11 @@
 }
 
 /* Outline Buttons */
-.btn-outline-primary {
-    background: transparent;
-    border: 1px solid #9a55ff;
-    color: #9a55ff;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-success {
-    background: transparent;
-    border: 1px solid #28a745;
-    color: #28a745;
-}
-
-.btn-outline-success:hover {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    border-color: transparent;
-}
-
 .btn-outline-warning {
     background: transparent;
     border: 1px solid #ffc107;
     color: #ffc107;
+    padding: 0.4rem 0.75rem;
 }
 
 .btn-outline-warning:hover {
@@ -248,22 +224,11 @@
     background: transparent;
     border: 1px solid #dc3545;
     color: #dc3545;
+    padding: 0.4rem 0.75rem;
 }
 
 .btn-outline-danger:hover {
     background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-info {
-    background: transparent;
-    border: 1px solid #17a2b8;
-    color: #17a2b8;
-}
-
-.btn-outline-info:hover {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
     color: #ffffff;
     border-color: transparent;
 }
@@ -312,11 +277,6 @@
     color: #ffffff;
 }
 
-.badge-gradient-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: #ffffff;
-}
-
 .badge-gradient-primary {
     background: linear-gradient(135deg, #9a55ff, #da8cff);
     color: #ffffff;
@@ -362,18 +322,6 @@
     }
 }
 
-/* Kolom No lebih rapat */
-.table thead th:first-child {
-    padding-left: 0.75rem;
-    width: 60px;
-}
-
-.table tbody td:first-child {
-    padding-left: 0.75rem;
-    font-weight: 500;
-    width: 60px;
-}
-
 .table tbody td {
     vertical-align: middle;
     font-size: 0.85rem;
@@ -400,50 +348,72 @@
     background-color: #f8f9fa;
 }
 
-/* Nama properti - lebih rapat dengan nomor */
-.table tbody td:nth-child(2) {
-    padding-left: 0.3rem;
+/* ===== PAGINATION STYLING ===== */
+.pagination {
+    margin: 0;
+    gap: 3px;
 }
 
-.table tbody td .d-flex.align-items-center {
-    gap: 0.5rem;
-}
-
-/* Icon dalam tabel */
-.table tbody td i {
-    font-size: 1rem;
-}
-
-/* Text colors */
-.text-primary { color: #9a55ff !important; }
-.text-info { color: #17a2b8 !important; }
-.text-danger { color: #dc3545 !important; }
-.text-success { color: #28a745 !important; }
-.text-warning { color: #ffc107 !important; }
-.fw-bold { font-weight: 600 !important; }
-.text-muted { color: #a5b3cb !important; }
-
-/* Typography */
-h3.text-dark {
-    font-size: 1.3rem !important;
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
 }
 
 @media (min-width: 576px) {
-    h3.text-dark {
-        font-size: 1.5rem !important;
+    .page-item .page-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 36px;
     }
 }
 
 @media (min-width: 768px) {
-    h3.text-dark {
-        font-size: 1.7rem !important;
+    .page-item .page-link {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
     }
 }
 
-/* Modal Styling */
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.page-item .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff;
+    transform: translateY(-1px);
+}
+
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* ===== MODAL STYLING ===== */
 .modal-content {
     border: none;
     border-radius: 16px;
@@ -473,87 +443,6 @@ h3.text-dark {
     border-radius: 0 0 16px 16px;
 }
 
-/* Badge dengan icon */
-.badge i {
-    font-size: 0.8rem;
-    margin-right: 4px;
-}
-
-/* Hover effect untuk icon aksi */
-.btn-outline-primary:hover,
-.btn-outline-success:hover,
-.btn-outline-warning:hover,
-.btn-outline-danger:hover,
-.btn-outline-info:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Responsive untuk mobile */
-@media (max-width: 576px) {
-    .table thead th {
-        font-size: 0.75rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .table tbody td {
-        font-size: 0.8rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .filter-card {
-        padding: 0.75rem;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.8rem;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select,
-    .filter-card .btn {
-        font-size: 0.8rem;
-        min-height: 38px;
-    }
-
-    h3.text-dark {
-        font-size: 1.2rem !important;
-    }
-}
-
-/* DataTables Custom Styling */
-.dataTables_filter,
-.dataTables_length,
-.dataTables_paginate,
-.dataTables_info {
-    display: none !important;
-}
-
-/* Sorting indicator */
-.sorting, .sorting_asc, .sorting_desc {
-    cursor: pointer;
-}
-
-/* Icon styling */
-.mdi {
-    vertical-align: middle;
-}
-
-/* Styling untuk tombol reset icon-only */
-.btn-icon-only {
-    width: 40px;
-    padding: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon-only i {
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-/* Form group untuk modal */
 .modal-form-group {
     margin-bottom: 1rem;
 }
@@ -584,6 +473,64 @@ h3.text-dark {
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
     outline: none;
 }
+
+/* Styling untuk tombol reset icon-only */
+.btn-icon-only {
+    width: 40px;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only i {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 576px) {
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    .table tbody td {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    .filter-card {
+        padding: 0.75rem;
+    }
+
+    .filter-card .form-label {
+        font-size: 0.8rem;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select,
+    .filter-card .btn {
+        font-size: 0.8rem;
+        min-height: 38px;
+    }
+}
+
+/* DataTables Custom Styling */
+.dataTables_filter,
+.dataTables_length,
+.dataTables_paginate,
+.dataTables_info {
+    display: none !important;
+}
+
+.sorting, .sorting_asc, .sorting_desc {
+    cursor: pointer;
+}
+
+.mdi {
+    vertical-align: middle;
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -594,34 +541,34 @@ h3.text-dark {
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>
-                            Master Data Bank
+                            <i class="mdi mdi-domain me-2" style="color: #9a55ff;"></i>
+                            Master Data PT
                         </h3>
                         <p class="text-muted mb-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data bank untuk keperluan transaksi dan pembayaran
+                            Kelola data perusahaan (PT) untuk keperluan administrasi
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
-                        <i class="mdi mdi-bank" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        <i class="mdi mdi-domain" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabel Data Bank -->
+    <!-- Tabel Data PT -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <h5 class="card-title mb-2 mb-md-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Bank
+                        Daftar Perusahaan (PT)
                     </h5>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-gradient-primary" onclick="$('#modalTambahBank').modal('show')">
-                            <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah Bank</span>
+                        <button type="button" class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPT">
+                            <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah PT</span>
                         </button>
                     </div>
                 </div>
@@ -637,22 +584,12 @@ h3.text-dark {
                             <div class="d-block d-md-none">
                                 <div class="mb-3">
                                     <label class="form-label">
-                                        <i class="mdi mdi-magnify me-1"></i>Cari Bank
+                                        <i class="mdi mdi-magnify me-1"></i>Cari PT
                                     </label>
-                                    <input type="text" class="form-control" placeholder="Cari nama bank...">
+                                    <input type="text" class="form-control" placeholder="Cari nama PT...">
                                 </div>
 
                                 <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="nonaktif">Non-Aktif</option>
-                                        </select>
-                                    </div>
                                     <div class="col-6">
                                         <label class="form-label">
                                             <i class="mdi mdi-counter me-1"></i>Tampil
@@ -667,7 +604,12 @@ h3.text-dark {
                                 </div>
 
                                 <div class="row g-2 mt-2">
-                                    <div class="col-12 d-flex align-items-end">
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-gradient-primary w-100">
+                                            <i class="mdi mdi-filter me-1"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
                                         <button type="button" class="btn btn-gradient-secondary w-100">
                                             <i class="mdi mdi-refresh me-1"></i> Reset
                                         </button>
@@ -678,21 +620,11 @@ h3.text-dark {
                             <!-- FILTER UNTUK TABLET & DESKTOP -->
                             <div class="d-none d-md-block">
                                 <div class="row g-2 align-items-end">
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Cari Bank
+                                            <i class="mdi mdi-magnify me-1"></i>Cari PT
                                         </label>
-                                        <input type="text" class="form-control" placeholder="Cari nama bank...">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="nonaktif">Non-Aktif</option>
-                                        </select>
+                                        <input type="text" class="form-control" placeholder="Cari nama PT...">
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">
@@ -706,9 +638,13 @@ h3.text-dark {
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label" style="visibility: hidden;">Reset</label>
-                                        <button type="button" class="btn btn-gradient-secondary w-100">
-                                            <i class="mdi mdi-refresh me-1"></i> Reset
+                                        <button type="button" class="btn btn-gradient-primary w-100">
+                                            <i class="mdi mdi-filter me-1"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset">
+                                            <i class="mdi mdi-refresh"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -716,55 +652,133 @@ h3.text-dark {
                         </div>
                     </div>
 
-                    <!-- Tabel Bank -->
+                    <!-- Tabel PT -->
                     <div class="table-responsive">
-                        <table class="table table-hover" id="tableBank" style="width:100%">
+                        <table class="table table-hover" id="tablePT" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                    <th><i class="mdi mdi-bank me-1"></i>Nama Bank</th>
-                                    <th><i class="mdi mdi-credit-card me-1"></i>Kode Bank</th>
-                                    <th><i class="mdi mdi-flag me-1"></i>Status</th>
+                                    <th><i class="mdi mdi-domain me-1"></i>Nama PT</th>
+                                    <th><i class="mdi mdi-map-marker me-1"></i>Alamat</th>
+                                    <th><i class="mdi mdi-phone me-1"></i>No. HP</th>
                                     <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($banks as $bank)
+                                <!-- Data PT 1 -->
                                 <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">1</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-bank text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">{{ $bank->bank_name }}</span>
+                                            <i class="mdi mdi-domain text-primary me-2" style="font-size: 1rem;"></i>
+                                            <span class="fw-bold">PT Properti Management</span>
                                         </div>
                                     </td>
-                                    <td>{{ $bank->account_holder }}</td>
-                                    <td>
-                                        @if($bank->is_active)
-                                            <span class="badge badge-gradient-success">
-                                                <i class="mdi mdi-check-circle me-1"></i>Aktif
-                                            </span>
-                                        @else
-                                            <span class="badge badge-gradient-danger">
-                                                <i class="mdi mdi-close-circle me-1"></i>Non-Aktif
-                                            </span>
-                                        @endif
-                                    </td>
+                                    <td>Jl. Sudirman No. 123, Jakarta Selatan</td>
+                                    <td>081234567890</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPT">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Nonaktifkan">
-                                                <i class="mdi mdi-close-circle"></i>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Hapus" onclick="return confirm('Hapus PT Properti Management?')">
+                                                <i class="mdi mdi-delete"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+
+                                <!-- Data PT 2 -->
+                                <tr>
+                                    <td class="text-center fw-bold">2</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-domain text-primary me-2" style="font-size: 1rem;"></i>
+                                            <span class="fw-bold">PT Griya Indah</span>
+                                        </div>
+                                    </td>
+                                    <td>Jl. Thamrin No. 45, Jakarta Pusat</td>
+                                    <td>085678901234</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPT">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Hapus" onclick="return confirm('Hapus PT Griya Indah?')">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Data PT 3 -->
+                                <tr>
+                                    <td class="text-center fw-bold">3</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-domain text-primary me-2" style="font-size: 1rem;"></i>
+                                            <span class="fw-bold">PT Bangun Sejahtera</span>
+                                        </div>
+                                    </td>
+                                    <td>Jl. Gatot Subroto Kav. 12, Jakarta Selatan</td>
+                                    <td>087890123456</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPT">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Hapus" onclick="return confirm('Hapus PT Bangun Sejahtera?')">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Data PT 4 -->
+                                <tr>
+                                    <td class="text-center fw-bold">4</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-domain text-primary me-2" style="font-size: 1rem;"></i>
+                                            <span class="fw-bold">PT Permata Hijau</span>
+                                        </div>
+                                    </td>
+                                    <td>Jl. Rasuna Said Kav. 3, Jakarta Selatan</td>
+                                    <td>089012345678</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPT">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Hapus" onclick="return confirm('Hapus PT Permata Hijau?')">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Data PT 5 -->
+                                <tr>
+                                    <td class="text-center fw-bold">5</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-domain text-primary me-2" style="font-size: 1rem;"></i>
+                                            <span class="fw-bold">PT Karya Mandiri</span>
+                                        </div>
+                                    </td>
+                                    <td>Jl. M.H. Thamrin No. 10, Jakarta Pusat</td>
+                                    <td>081345678901</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPT">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Hapus" onclick="return confirm('Hapus PT Karya Mandiri?')">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -773,7 +787,7 @@ h3.text-dark {
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan 1 - {{ $banks->count() }} dari {{ $banks->count() }} data
+                            Menampilkan 1 - 5 dari 5 data
                         </div>
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
@@ -812,74 +826,124 @@ h3.text-dark {
     </div>
 </div>
 
-<!-- MODAL TAMBAH BANK -->
-<div class="modal fade" id="modalTambahBank" tabindex="-1" aria-hidden="true">
+<!-- MODAL TAMBAH PT -->
+<div class="modal fade" id="modalTambahPT" tabindex="-1" aria-labelledby="modalTambahPTLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-bank-plus me-2" style="color: #9a55ff;"></i>
-                    Tambah Bank Baru
+                <h5 class="modal-title" id="modalTambahPTLabel">
+                    <i class="mdi mdi-domain-plus me-2" style="color: #9a55ff;"></i>
+                    Tambah PT Baru
                 </h5>
-                <button type="button" class="btn-close" onclick="$('#modalTambahBank').modal('hide')" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('bank.store') }}" method="POST">
+                <form id="formTambahPT">
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="modal-form-group">
                                 <label>
-                                    <i class="mdi mdi-bank me-1"></i>Nama Bank
+                                    <i class="mdi mdi-domain me-1"></i>Nama PT
                                 </label>
-                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: Bank Central Asia">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
-                                </label>
-                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: Andi Sukma ">
+                                <input type="text" name="nama_pt" class="modal-form-control" placeholder="Contoh: PT Properti Management">
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                         <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="modal-form-group">
                                 <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
+                                    <i class="mdi mdi-map-marker me-1"></i>Alamat
                                 </label>
-                                <input type="number" name="number" class="modal-form-control" placeholder="Contoh: 1234567890">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status
-                                </label>
-                                <select class="modal-form-control" name="is_active">
-                                    <option value="1">Aktif</option>
-                                    <option value="0">Non-Aktif</option>
-                                </select>
+                                <textarea name="alamat" class="modal-form-control" rows="3" placeholder="Alamat lengkap PT..."></textarea>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-gradient-primary">Simpan</button>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-phone me-1"></i>No. HP
+                                </label>
+                                <input type="text" name="no_hp" class="modal-form-control" placeholder="Contoh: 081234567890">
+                            </div>
+                        </div>
+                    </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formTambahPT" class="btn btn-gradient-primary" onclick="alert('Data PT berhasil ditambahkan (demo)'); $('#modalTambahPT').modal('hide');">Simpan</button>
             </div>
         </div>
     </div>
 </div>
-@endsection
+
+<!-- MODAL EDIT PT -->
+<div class="modal fade" id="modalEditPT" tabindex="-1" aria-labelledby="modalEditPTLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditPTLabel">
+                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
+                    Edit PT
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditPT">
+                    @csrf
+                    @method('PUT')
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-domain me-1"></i>Nama PT
+                                </label>
+                                <input type="text" name="nama_pt" class="modal-form-control" value="PT Properti Management">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-map-marker me-1"></i>Alamat
+                                </label>
+                                <textarea name="alamat" class="modal-form-control" rows="3">Jl. Sudirman No. 123, Jakarta Selatan</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-phone me-1"></i>No. HP
+                                </label>
+                                <input type="text" name="no_hp" class="modal-form-control" value="081234567890">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formEditPT" class="btn btn-gradient-primary" onclick="alert('Data PT berhasil diperbarui (demo)'); $('#modalEditPT').modal('hide');">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     // Inisialisasi DataTables - hanya untuk sorting
-    let table = $('#tableBank').DataTable({
+    let table = $('#tablePT').DataTable({
         responsive: true,
         paging: false,
         info: false,
@@ -887,27 +951,30 @@ $(document).ready(function() {
         lengthChange: false,
         ordering: true,
         language: {
-            emptyTable: "Data bank belum tersedia",
+            emptyTable: "Data PT belum tersedia",
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
-            { orderable: false, targets: [4] } // Non-aktifkan sorting untuk kolom Aksi (index ke-4)
+            { orderable: false, targets: [4] } // Non-aktifkan sorting untuk kolom Aksi
         ]
     });
 
-    // Tooltips
-    $('[data-toggle="tooltip"]').tooltip();
-});
+    // Handle edit button click - untuk mengisi data di modal edit
+    $('.btn-outline-warning').click(function() {
+        let row = $(this).closest('tr');
+        let namaPT = row.find('td:eq(1) span.fw-bold').text();
+        let alamat = row.find('td:eq(2)').text();
+        let noHP = row.find('td:eq(3)').text();
 
-function exportTable(type) {
-    const msg = type === 'excel' ? 'Excel' : 'PDF';
-    Swal.fire({
-        icon: 'info',
-        title: 'Export ' + msg,
-        text: 'Fitur export sedang dalam pengembangan',
-        timer: 2000,
-        showConfirmButton: false
+        // Isi form edit dengan data yang sesuai
+        $('#modalEditPT input[name="nama_pt"]').val(namaPT);
+        $('#modalEditPT textarea[name="alamat"]').val(alamat);
+        $('#modalEditPT input[name="no_hp"]').val(noHP);
+
+        // Update judul modal
+        $('#modalEditPTLabel').text('Edit PT: ' + namaPT);
     });
-}
+});
 </script>
 @endpush
+@endsection

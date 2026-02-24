@@ -219,3 +219,17 @@ Route::get('/dashboard-cash-dokument-legal', function () {
 // });
 Route::get('/dashboard-lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
 Route::get('/lokasi-data', [LokasiController::class, 'lokasiData']); // Untuk JSON
+
+
+Route::get('/dashboard-promo', function () {
+    return view('promo.promo');
+});
+
+Route::get('/dashboard-pt', function () {
+    return view('pt.pt');
+});
+
+Route::get('/dashboard-servis', function () {
+    return view('servis.servis');
+});
+

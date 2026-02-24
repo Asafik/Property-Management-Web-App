@@ -328,7 +328,7 @@
 
                     <hr class="my-3">
 
-                    <!-- TINDAKAN SELANJUTNYA - MODERN CARD STYLE -->
+                    <!-- TINDAKAN SELANJUTNYA - MODERN CARD STYLE (DENGAN TAMBAHAN BANDING ULANG) -->
                     <h6 class="mb-3 konfirmasi-text-primary">Tindakan Selanjutnya</h6>
 
                     <div class="row">
@@ -368,14 +368,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="konfirmasi-tindakan-card">
-                                <input type="radio" name="tindakan" id="tindakanBatal">
-                                <label class="konfirmasi-tindakan-label" for="tindakanBatal">
+                                <input type="radio" name="tindakan" id="tindakanBanding">
+                                <label class="konfirmasi-tindakan-label" for="tindakanBanding">
                                     <div class="konfirmasi-tindakan-icon">
-                                        <i class="mdi mdi-cancel"></i>
+                                        <i class="mdi mdi-scale-balance"></i>
                                     </div>
                                     <div class="konfirmasi-tindakan-content">
-                                        <span class="konfirmasi-tindakan-title">Batalkan Transaksi</span>
-                                        <span class="konfirmasi-tindakan-desc">Customer batal beli (refund)</span>
+                                        <span class="konfirmasi-tindakan-title">Banding Ulang</span>
+                                        <span class="konfirmasi-tindakan-desc">Ajukan banding ke bank yang sama</span>
                                     </div>
                                     <div class="konfirmasi-tindakan-check">
                                         <i class="mdi mdi-check-circle"></i>
@@ -393,6 +393,23 @@
                                     <div class="konfirmasi-tindakan-content">
                                         <span class="konfirmasi-tindakan-title">Revisi Dokumen</span>
                                         <span class="konfirmasi-tindakan-desc">Lengkapi dokumen</span>
+                                    </div>
+                                    <div class="konfirmasi-tindakan-check">
+                                        <i class="mdi mdi-check-circle"></i>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="konfirmasi-tindakan-card">
+                                <input type="radio" name="tindakan" id="tindakanBatal">
+                                <label class="konfirmasi-tindakan-label" for="tindakanBatal">
+                                    <div class="konfirmasi-tindakan-icon">
+                                        <i class="mdi mdi-cancel"></i>
+                                    </div>
+                                    <div class="konfirmasi-tindakan-content">
+                                        <span class="konfirmasi-tindakan-title">Batalkan Transaksi</span>
+                                        <span class="konfirmasi-tindakan-desc">Customer batal beli (refund)</span>
                                     </div>
                                     <div class="konfirmasi-tindakan-check">
                                         <i class="mdi mdi-check-circle"></i>
