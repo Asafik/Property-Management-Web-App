@@ -51,8 +51,8 @@ return new class extends Migration
             ])->default('belum_mulai');
 
             // ===== POSISI DENAH =====
-            $table->integer('x')->nullable();
-            $table->integer('y')->nullable();
+            $table->json('coordinates')->nullable();
+            $table->float('map_scale')->nullable(); // optional untuk responsive
 
             $table->timestamps();
         });

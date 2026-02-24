@@ -22,11 +22,13 @@ class LandBankUnit extends Model
         'position',
         'description',
         'status',
-        'x',
-        'y',
+        'coordinates',
+        'map_scale',
         'construction_progress', // jika ada kolom progress
     ];
-
+    protected $casts = [
+    'coordinates' => 'array',
+    ];
     public function getConstructionProgressPercentageAttribute()
     {
         $map = [
