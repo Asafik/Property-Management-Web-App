@@ -72,7 +72,7 @@
     <!-- MENU PROPERTI DENGAN SUB-MENU -->
     <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#properti" aria-expanded="false" aria-controls="properti">
-            <span class="menu-title">Properti</span>
+            <span class="menu-title">Tanah Induk (Land Bank)</span>
             <i class="menu-arrow"></i>
             <i class="mdi mdi-office-building menu-icon"></i>
         </a>
@@ -81,14 +81,14 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('properti-all') ? 'active' : '' }}"
                         href="{{ route('properti-all') }}">
-                        Semua Properti
+                        Semua Tanah 
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('properti') ? 'active' : '' }}"
                         href="{{ route('properti') }}">
-                        Tambah Properti
+                        Tambah Tanah (LandBank)
                     </a>
                 </li>
                 <li class="nav-item">

@@ -466,14 +466,9 @@
 
                         <!-- Footer -->
                         <div class="text-center mt-5">
-                            <p class="small text-muted mb-3">
-                                <a href="#" class="footer-link">
-                                    <i class="mdi mdi-arrow-left"></i>
-                                    Kembali ke Beranda
-                                </a>
-                            </p>
+
                             <div class="d-flex justify-content-center gap-3">
-                                <span class="text-muted small">© 2024 Properti Management</span>
+                                <span class="text-muted small">© {{ now()->year }} Properti Management</span>
                                 <span class="text-muted small">|</span>
                                 <span class="text-muted small">All rights reserved</span>
                             </div>

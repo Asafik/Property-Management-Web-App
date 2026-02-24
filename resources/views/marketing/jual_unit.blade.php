@@ -958,7 +958,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                             <div class="col-md-2">
+                                            <div class="col-md-2">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-home-modern me-1"></i>Tipe Unit
                                                 </label>
@@ -1355,13 +1355,30 @@
                     <!-- Booking & Agent Fee Section -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-body">
-                            <div class="row align-items-end">
+                            <div class="row">
 
                                 <!-- Booking Fee -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Booking Fee</label>
                                     <input type="text" class="form-control" id="booking_fee" name="booking_fee"
                                         placeholder="Masukkan booking fee" autocomplete="off">
+                                </div>
+
+                                <!-- Upload Bukti Transfer -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Upload Bukti Transfer</label>
+                                    <form id="formBooking" method="POST" enctype="multipart/form-data">
+                                        @csrf
+
+                                        <input type="hidden" name="customer_id" id="customer_id">
+                                        <input type="hidden" name="purchase_type" id="purchase_type">
+                                        <input type="hidden" name="booking_fee" id="booking_fee_hidden">
+
+                                        <input type="file" name="bukti_transfer" class="form-control" required>
+                                    </form>
+                                    <small class="text-muted">
+                                        Format: JPG, PNG, PDF (Max 2MB)
+                                    </small>
                                 </div>
 
                             </div>
@@ -1603,10 +1620,14 @@
                         let actionUrlTemplate = "{{ route('set.customer', ':unitId') }}";
                         let actionUrl = actionUrlTemplate.replace(':unitId', unitId);
 
-                        let form = $('<form>', {
-                            method: 'POST',
-                            action: actionUrl
-                        });
+                        let form = $('#formBooking');
+
+                        form.attr('action', actionUrl);
+                        $('#customer_id').val(customerId);
+                        $('#purchase_type').val(purchaseType);
+                        $('#booking_fee_hidden').val(bookingFee);
+
+                        form.submit();
 
                         form.append(
                             `<input type="hidden" name="_token" value="{{ csrf_token() }}">`);

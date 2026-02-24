@@ -10,7 +10,10 @@ use App\Models\LandBank;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Booking;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UnitsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -125,32 +128,44 @@ public function setCustomer(Request $request, $unitId)
         'customer_id'   => 'required|exists:customers,id',
         'purchase_type' => 'required|in:cash,kpr',
         'booking_fee'   => 'required',
-        
+        'bukti_transfer'=> 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
     $unit = LandBankUnit::findOrFail($unitId);
 
-    // Bersihkan format rupiah (hapus titik)
+    // Bersihkan format rupiah
     $bookingFee = str_replace('.', '', $request->booking_fee);
 
-    // Generate booking code
-    $bookingCode = 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+    // Upload file
+    $filePath = $request->file('bukti_transfer')
+                        ->store('payments/booking_fee', 'public');
 
-    Booking::create([
-        'booking_code'  => $bookingCode,
-        'unit_id'       => $unit->id,
-        'customer_id'   => $request->customer_id,
-        'booking_date'  => now(),
-        'purchase_type' => $request->purchase_type,
-        'booking_fee'   => $bookingFee,
-        'status'        => 'active',
-    ]);
+    DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
 
-    // Update status unit
-    $unit->status = 'booked';
-    $unit->save();
+        $booking = Booking::create([
+            'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
+            'unit_id'       => $unit->id,
+            'customer_id'   => $request->customer_id,
+            'booking_date'  => now(),
+            'purchase_type' => $request->purchase_type,
+            'booking_fee'   => $bookingFee,
+            'status'        => 'active',
+        ]);
 
-    return back()->with('success', 'Booking berhasil dibuat & customer terpasang');
+        Payment::create([
+            'booking_id'      => $booking->id,
+            'type'            => 'dp',
+            'amount'          => $bookingFee,
+            'payment_date'    => now(),
+            'method'          => 'transfer',
+            'reference_number'=> $filePath, // <-- simpan path file di sini
+            'notes'           => 'Bukti transfer booking fee',
+        ]);
+
+        $unit->update(['status' => 'booked']);
+    });
+
+    return back()->with('success', 'Booking & bukti transfer berhasil disimpan');
 }
   // public function setAgency(Request $request, $unitId)
   // {

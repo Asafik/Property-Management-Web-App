@@ -462,7 +462,7 @@
                             </button>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mb-2">gitu
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <span>Bukti Negosiasi Harga</span>
                             <button class="cash-btn cash-btn-outline-primary"
                                 style="width: auto; padding: 0.25rem 0.75rem;">
@@ -470,18 +470,36 @@
                             </button>
                         </div>
 
-                        <!-- Dokumen Bukti Transfer -->
                         @php
-                            // Ambil payment untuk unit ini, misal $unit->activeBooking->payments
                             $payment = $unit->activeBooking
                                 ? $unit->activeBooking->payments()->latest()->first()
                                 : null;
+
+                            $label = null;
+
+                            if ($payment) {
+                                switch ($payment->type) {
+                                    case 'booking_fee':
+                                        $label = 'Booking Fee';
+                                        break;
+                                    case 'dp':
+                                        $label = 'DP';
+                                        break;
+                                    case 'pelunasan':
+                                        $label = 'Pelunasan';
+                                        break;
+                                    case 'cicilan':
+                                        $label = 'Cicilan';
+                                        break;
+                                }
+                            }
                         @endphp
+
                         @if ($payment && $payment->reference_number)
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>
                                     <i class="mdi mdi-bank-transfer me-1"></i>
-                                    Bukti Transfer
+                                    {{ $label }}
                                 </span>
                                 <a href="{{ asset('storage/' . $payment->reference_number) }}" target="_blank"
                                     class="cash-btn cash-btn-outline-success"
@@ -727,36 +745,36 @@
             });
         </script>
     @endif
-<script>
-    document.getElementById('btnProsesBayar').addEventListener('click', function(e) {
-        e.preventDefault(); // cegah submit otomatis
+    <script>
+        document.getElementById('btnProsesBayar').addEventListener('click', function(e) {
+            e.preventDefault(); // cegah submit otomatis
 
-        Swal.fire({
-            title: 'Konfirmasi Pembayaran',
-            text: "Apakah Anda yakin ingin memproses pembayaran ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, proses pembayaran!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Submit form secara manual
-                this.closest('form').submit();
-            }
+            Swal.fire({
+                title: 'Konfirmasi Pembayaran',
+                text: "Apakah Anda yakin ingin memproses pembayaran ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, proses pembayaran!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form secara manual
+                    this.closest('form').submit();
+                }
+            });
         });
-    });
 
-    // Optional: tampilkan SweetAlert sukses jika session success ada
-    @if (session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            timer: 2500,
-            showConfirmButton: false
-        });
-    @endif
-</script>
+        // Optional: tampilkan SweetAlert sukses jika session success ada
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
 @endpush
