@@ -3,7 +3,506 @@
 @section('title', 'Survey KPR - Properti Management')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/marketing/survey.css') }}">
+
+<style>
+    /* ===== STYLE CSS KHUSUS UNTUK HALAMAN SURVEY ===== */
+    /* Form Styling */
+    .survey-form-group {
+        margin-bottom: 1rem;
+    }
+
+    @media (min-width: 768px) {
+        .survey-form-group {
+            margin-bottom: 1.2rem;
+        }
+    }
+
+    .survey-form-group label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #9a55ff !important;
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.3px;
+        font-family: 'Nunito', sans-serif;
+        display: block;
+    }
+
+    @media (min-width: 768px) {
+        .survey-form-group label {
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+    }
+
+    .survey-form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 0.7rem 0.8rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        background-color: #ffffff;
+        color: #2c2e3f;
+        width: 100%;
+        font-family: 'Nunito', sans-serif;
+    }
+
+    @media (min-width: 768px) {
+        .survey-form-control {
+            padding: 0.6rem 0.75rem;
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+    }
+
+    .survey-form-control:focus {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+        outline: none;
+    }
+
+    /* File Upload Styling */
+    .survey-file-upload {
+        position: relative;
+        width: 100%;
+    }
+
+    .survey-file-upload input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .survey-file-upload .survey-file-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 6px;
+        padding: 1rem 0.6rem;
+        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        border: 2px dashed #d0d4db;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 100px;
+    }
+
+    @media (min-width: 576px) {
+        .survey-file-upload .survey-file-label {
+            flex-direction: row;
+            text-align: left;
+            gap: 8px;
+            padding: 0.75rem 1rem;
+            min-height: auto;
+        }
+    }
+
+    .survey-file-upload:hover .survey-file-label {
+        border-color: #9a55ff;
+        background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+    }
+
+    .survey-file-upload .survey-file-label i {
+        font-size: 1.6rem;
+        color: #9a55ff;
+        background: rgba(154, 85, 255, 0.1);
+        padding: 8px;
+        border-radius: 50%;
+    }
+
+    .survey-file-upload .survey-file-label .survey-file-info {
+        flex: 1;
+        width: 100%;
+    }
+
+    .survey-file-upload .survey-file-label .survey-file-info span {
+        display: block;
+        font-weight: 600;
+        color: #2c2e3f;
+        font-size: 0.8rem;
+        word-break: break-word;
+    }
+
+    .survey-file-upload .survey-file-label .survey-file-info small {
+        color: #6c7383;
+        font-size: 0.65rem;
+        display: block;
+        margin-top: 2px;
+    }
+
+    /* Input Group */
+    .survey-input-group {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .survey-input-group-prepend {
+        display: flex;
+    }
+
+    .survey-input-group-text {
+        display: flex;
+        align-items: center;
+        padding: 0.7rem 0.8rem;
+        font-size: 0.85rem;
+        font-weight: 400;
+        line-height: 1;
+        color: #6c7383;
+        text-align: center;
+        white-space: nowrap;
+        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        border: 1px solid #e9ecef;
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+    }
+
+    .survey-input-group .survey-form-control {
+        border-radius: 0 10px 10px 0;
+    }
+
+    /* Button Styling */
+    .survey-btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-family: 'Nunito', sans-serif;
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    @media (min-width: 576px) {
+        .survey-btn {
+            width: auto;
+            padding: 0.5rem 1.2rem;
+        }
+    }
+
+    .survey-btn-primary {
+        background: linear-gradient(to right, #da8cff, #9a55ff);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+    }
+
+    .survey-btn-primary:hover {
+        background: linear-gradient(to right, #c77cff, #8a45e6);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+    }
+
+    .survey-btn-success {
+        background: linear-gradient(135deg, #28a745, #5cb85c);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    .survey-btn-success:hover {
+        background: linear-gradient(135deg, #218838, #4cae4c);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+    }
+
+    .survey-btn-outline-primary {
+        background: transparent;
+        border: 1px solid #9a55ff;
+        color: #9a55ff;
+    }
+
+    .survey-btn-outline-primary:hover {
+        background: linear-gradient(135deg, #9a55ff, #da8cff);
+        color: #ffffff;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+    }
+
+    .survey-btn-outline-secondary {
+        background: transparent;
+        border: 1px solid #e9ecef;
+        color: #6c7383;
+    }
+
+    .survey-btn-outline-secondary:hover {
+        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        color: #2c2e3f;
+        border-color: #9a55ff;
+        transform: translateY(-2px);
+    }
+
+    .survey-btn-outline-warning {
+        background: transparent;
+        border: 1px solid #ffc107;
+        color: #ffc107;
+    }
+
+    .survey-btn-outline-warning:hover {
+        background: linear-gradient(135deg, #ffc107, #ffdb6d);
+        color: #2c2e3f;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+
+    /* Text colors */
+    .survey-text-muted {
+        color: #a5b3cb !important;
+        font-size: 0.7rem;
+        display: block;
+        margin-top: 0.2rem;
+    }
+
+    .survey-text-primary {
+        color: #9a55ff !important;
+    }
+
+    .survey-text-danger {
+        color: #dc3545 !important;
+    }
+
+    .survey-text-success {
+        color: #28a745 !important;
+    }
+
+    /* Divider */
+    .survey-hr {
+        border-top: 1px solid #e9ecef;
+        margin: 0.8rem 0;
+    }
+
+    /* ===== MODERN CHECKBOX STYLING UNTUK SURVEY ===== */
+    .survey-checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 0.3rem;
+    }
+
+    .survey-checkbox-wrapper {
+        position: relative;
+        flex: 1 1 calc(50% - 0.8rem);
+        min-width: 160px;
+    }
+
+    @media (min-width: 768px) {
+        .survey-checkbox-wrapper {
+            flex: 1 1 calc(33.333% - 0.8rem);
+        }
+    }
+
+    @media (min-width: 992px) {
+        .survey-checkbox-wrapper {
+            flex: 1 1 calc(25% - 0.8rem);
+        }
+    }
+
+    .survey-checkbox-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .survey-checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.8rem 1rem;
+        background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+        border: 2px solid rgba(154, 85, 255, 0.2);
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08);
+    }
+
+    .survey-checkbox-label::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(218, 140, 255, 0.1), rgba(154, 85, 255, 0.1));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .survey-checkbox-wrapper:hover .survey-checkbox-label {
+        border-color: #9a55ff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
+    }
+
+    .survey-checkbox-wrapper:hover .survey-checkbox-label::before {
+        opacity: 1;
+    }
+
+    .survey-check-icon {
+        font-size: 1.5rem;
+        color: #d0d4db;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+        border-radius: 50%;
+        padding: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .survey-checkbox-input:checked + .survey-checkbox-label {
+        border-color: #9a55ff;
+        background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
+        box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
+    }
+
+    .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
+        color: #9a55ff;
+        transform: scale(1.1);
+        filter: drop-shadow(0 4px 8px rgba(154, 85, 255, 0.4));
+        animation: surveyCheckPulse 0.3s ease;
+    }
+
+    .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-text {
+        color: #9a55ff;
+        font-weight: 600;
+    }
+
+    .survey-check-text {
+        transition: all 0.3s ease;
+        position: relative;
+        font-size: 0.9rem;
+        color: #2c2e3f;
+        font-weight: 500;
+    }
+
+    .survey-check-text::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(to right, #da8cff, #9a55ff);
+        transition: width 0.3s ease;
+    }
+
+    .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-text::before {
+        width: 100%;
+    }
+
+    @keyframes surveyCheckPulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1.1);
+        }
+    }
+
+    /* Grid System */
+    .survey-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -0.5rem;
+        margin-left: -0.5rem;
+    }
+
+    .survey-col-12,
+    .survey-col-md-4,
+    .survey-col-md-6 {
+        position: relative;
+        width: 100%;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .survey-col-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        .survey-col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .survey-col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    /* Section Title */
+    .survey-section-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #9a55ff !important;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .survey-section-title i {
+        color: #9a55ff;
+        font-size: 1rem;
+        background: rgba(154, 85, 255, 0.1);
+        padding: 6px;
+        border-radius: 8px;
+    }
+
+    /* Responsive untuk mobile */
+    @media (max-width: 576px) {
+        .survey-checkbox-group {
+            gap: 0.5rem;
+        }
+
+        .survey-checkbox-wrapper {
+            flex: 0 0 calc(50% - 0.5rem);
+            min-width: auto;
+        }
+
+        .survey-checkbox-label {
+            padding: 0.6rem 0.8rem;
+        }
+
+        .survey-check-text {
+            font-size: 0.8rem;
+        }
+
+        .survey-check-icon {
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (max-width: 375px) {
+        .survey-checkbox-wrapper {
+            flex: 0 0 100%;
+        }
+    }
+
+</style>
 
 <div class="row">
     <div class="col-12">
@@ -284,49 +783,60 @@
 
                 <hr class="my-3">
 
-                <!-- CHECKLIST KONDISI UNIT -->
+                <!-- CHECKLIST KONDISI UNIT DENGAN MODERN CHECKBOX -->
                 <div class="mb-4">
                     <h6 class="mb-3 fw-bold" style="color: #9a55ff;">
                         <i class="mdi mdi-checkbox-marked-outline me-2"></i>
                         Checklist Kondisi Unit
                     </h6>
 
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="me-2" id="listrik" checked>
-                                <label for="listrik">Instalasi Listrik</label>
-                            </div>
+                    <div class="survey-checkbox-group">
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="listrik" checked>
+                            <label class="survey-checkbox-label" for="listrik">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">Instalasi Listrik</span>
+                            </label>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="me-2" id="air" checked>
-                                <label for="air">PDAM / Air Bersih</label>
-                            </div>
+
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="air" checked>
+                            <label class="survey-checkbox-label" for="air">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">PDAM / Air Bersih</span>
+                            </label>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="me-2" id="akses" checked>
-                                <label for="akses">Akses Jalan</label>
-                            </div>
+
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="akses" checked>
+                            <label class="survey-checkbox-label" for="akses">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">Akses Jalan</span>
+                            </label>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="me-2" id="sertifikat" checked>
-                                <label for="sertifikat">Sertifikat Sesuai</label>
-                            </div>
+
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="sertifikat" checked>
+                            <label class="survey-checkbox-label" for="sertifikat">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">Sertifikat Sesuai</span>
+                            </label>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="me-2" id="shm" checked>
-                                <label for="shm">SHM / SHGB</label>
-                            </div>
+
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="shm" checked>
+                            <label class="survey-checkbox-label" for="shm">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">SHM / SHGB</span>
+                            </label>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="me-2" id="imb" checked>
-                                <label for="imb">IMB</label>
-                            </div>
+
+                        <div class="survey-checkbox-wrapper">
+                            <input type="checkbox" class="survey-checkbox-input" id="imb" checked>
+                            <label class="survey-checkbox-label" for="imb">
+                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                <span class="survey-check-text">IMB</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -642,6 +1152,16 @@
                 const label = this.closest('.survey-file-upload').querySelector('.survey-file-info span');
                 if (fileName && label) {
                     label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
+                } else {
+                    // Reset ke teks awal
+                    const inputName = this.name;
+                    if (inputName === 'fotoDepan') {
+                        label.textContent = 'Upload Foto';
+                    } else if (inputName === 'fotoInterior') {
+                        label.textContent = 'Upload Foto';
+                    } else if (inputName === 'fotoLingkungan') {
+                        label.textContent = 'Upload Foto';
+                    }
                 }
             });
         });

@@ -81,7 +81,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('properti-all') ? 'active' : '' }}"
                         href="{{ route('properti-all') }}">
-                        Semua Tanah 
+                        Semua Tanah
                     </a>
                 </li>
 
@@ -109,6 +109,30 @@
             <span class="menu-title">Customer</span>
             <i class="mdi mdi-account-group menu-icon"></i>
         </a>
+    </li>
+
+    <!-- MENU Promo -->
+    <li class="nav-item">
+        <a class="nav-link" href="dashboard-promo">
+            <span class="menu-title">Promo</span>
+            <i class="mdi mdi-percent menu-icon"></i>
+        </a>
+    </li>
+
+    <!-- MENU Pt -->
+    <li class="nav-item">
+        <a class="nav-link" href="dashboard-pt">
+            <span class="menu-title">PT</span>
+            <i class="mdi mdi-percent menu-icon"></i>
+        </a>
+    </li>
+
+        <!-- MENU Servis -->
+        <li class="nav-item">
+            <a class="nav-link" href="dashboard-servis">
+                <span class="menu-title">Servis</span>
+                <i class="mdi mdi-wrench menu-icon"></i>
+            </a>
     </li>
 
     <!-- MENU Master data bank -->
