@@ -1066,7 +1066,7 @@
                                                     placeholder="500.000.000">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
                                                 <label>Hadap</label>

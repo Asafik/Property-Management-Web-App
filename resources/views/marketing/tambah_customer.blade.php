@@ -63,7 +63,7 @@
         </div>
 
         <!-- Form Tambah Customer -->
-        <form action="{{ route('customer.store') }}" method="POST">
+        <form action="{{ route('customer.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="add-row">
                 <div class="add-col-12">
@@ -698,81 +698,76 @@
                                         </div>
 
                                         <!-- TAB 6: DOKUMEN -->
-                                        <div class="add-custom-tab-pane" id="dokumen" role="tabpanel"
-                                            aria-labelledby="dokumen-tab">
-                                            <div class="add-row">
-                                                <div class="add-col-md-6">
-                                                    <div class="add-form-group">
-                                                        <label>Upload KTP <span class="add-text-danger">*</span></label>
-                                                        <div class="add-file-upload">
-                                                            <input type="file" id="uploadKtp" name="uploadKtp"
-                                                                accept=".jpg,.jpeg,.png,.pdf">
-                                                            <div class="add-file-label">
-                                                                <i class="mdi mdi-cloud-upload"></i>
-                                                                <div class="add-file-info">
-                                                                    <span>Klik untuk upload KTP</span>
-                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                                                                </div>
-                                                                <span class="add-file-size"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="add-col-md-6">
-                                                    <div class="add-form-group">
-                                                        <label>Upload Kartu Keluarga</label>
-                                                        <div class="add-file-upload">
-                                                            <input type="file" id="uploadKk" name="uploadKk"
-                                                                accept=".jpg,.jpeg,.png,.pdf">
-                                                            <div class="add-file-label">
-                                                                <i class="mdi mdi-cloud-upload"></i>
-                                                                <div class="add-file-info">
-                                                                    <span>Klik untuk upload KK</span>
-                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                                                                </div>
-                                                                <span class="add-file-size"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="add-row">
-                                                <div class="add-col-md-6">
-                                                    <div class="add-form-group">
-                                                        <label>Upload NPWP</label>
-                                                        <div class="add-file-upload">
-                                                            <input type="file" id="uploadNpwp" name="uploadNpwp"
-                                                                accept=".jpg,.jpeg,.png,.pdf">
-                                                            <div class="add-file-label">
-                                                                <i class="mdi mdi-cloud-upload"></i>
-                                                                <div class="add-file-info">
-                                                                    <span>Klik untuk upload NPWP</span>
-                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                                                                </div>
-                                                                <span class="add-file-size"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="add-col-md-6">
-                                                    <div class="add-form-group">
-                                                        <label>Upload KTP Pasangan</label>
-                                                        <div class="add-file-upload">
-                                                            <input type="file" id="uploadPasangan"
-                                                                name="uploadPasangan" accept=".jpg,.jpeg,.png,.pdf">
-                                                            <div class="add-file-label">
-                                                                <i class="mdi mdi-cloud-upload"></i>
-                                                                <div class="add-file-info">
-                                                                    <span>Klik untuk upload KTP Pasangan</span>
-                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                                                                </div>
-                                                                <span class="add-file-size"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+<div class="add-custom-tab-pane" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
+    <div class="add-row">
+        <div class="add-col-md-6">
+            <div class="add-form-group">
+                <label>Upload KTP <span class="add-text-danger">*</span></label>
+                <div class="add-file-upload">
+                    <input type="file" id="uploadKtp" name="uploadKtp" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="add-file-label">
+                        <i class="mdi mdi-cloud-upload"></i>
+                        <div class="add-file-info">
+                            <span class="file-name-text">Klik untuk upload KTP</span>
+                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                        </div>
+                        <span class="add-file-size file-size-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="add-col-md-6">
+            <div class="add-form-group">
+                <label>Upload Kartu Keluarga</label>
+                <div class="add-file-upload">
+                    <input type="file" id="uploadKk" name="uploadKk" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="add-file-label">
+                        <i class="mdi mdi-cloud-upload"></i>
+                        <div class="add-file-info">
+                            <span class="file-name-text">Klik untuk upload KK</span>
+                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                        </div>
+                        <span class="add-file-size file-size-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="add-row">
+        <div class="add-col-md-6">
+            <div class="add-form-group">
+                <label>Upload NPWP</label>
+                <div class="add-file-upload">
+                    <input type="file" id="uploadNpwp" name="uploadNpwp" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="add-file-label">
+                        <i class="mdi mdi-cloud-upload"></i>
+                        <div class="add-file-info">
+                            <span class="file-name-text">Klik untuk upload NPWP</span>
+                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                        </div>
+                        <span class="add-file-size file-size-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="add-col-md-6">
+            <div class="add-form-group">
+                <label>Upload KTP Pasangan</label>
+                <div class="add-file-upload">
+                    <input type="file" id="uploadPasangan" name="uploadPasangan" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="add-file-label">
+                        <i class="mdi mdi-cloud-upload"></i>
+                        <div class="add-file-info">
+                            <span class="file-name-text">Klik untuk upload KTP Pasangan</span>
+                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                        </div>
+                        <span class="add-file-size file-size-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                                     </div>
 
                                     <hr class="add-hr">
@@ -803,8 +798,8 @@
         </form>
     </div>
 @endsection
-
 @push('scripts')
+    <!-- Script Tab yang sudah ada -->
     <script>
         $(document).ready(function() {
             // Simple Tab Functionality
@@ -824,14 +819,14 @@
             });
         });
     </script>
+
+    <!-- Script Date of Birth yang sudah ada -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
             const dateInput = document.querySelector('input[name="date_birth"]');
             const ageInput = document.querySelector('input[name="age"]');
 
             dateInput.addEventListener('change', function() {
-
                 if (!this.value) {
                     ageInput.value = '';
                     return;
@@ -841,7 +836,6 @@
                 const today = new Date();
 
                 let age = today.getFullYear() - birthDate.getFullYear();
-
                 const monthDiff = today.getMonth() - birthDate.getMonth();
 
                 // Kalau ulang tahun belum lewat tahun ini
@@ -852,13 +846,13 @@
 
                 ageInput.value = age >= 0 ? age : '';
             });
-
         });
     </script>
+
+    <!-- Script Alamat Sama KTP yang sudah ada -->
     <script>
         document.getElementById("alamatSamaKTP").addEventListener("change", function() {
             const isChecked = this.checked;
-
             const fields = [
                 "provinsi",
                 "kota",
@@ -884,6 +878,8 @@
             });
         });
     </script>
+
+    <!-- Script Job Status yang sudah ada -->
     <script>
         document.getElementById("jobStatus").addEventListener("change", function() {
             const lainnyaWrapper = document.getElementById("jobStatusLainnyaWrapper");
@@ -896,4 +892,67 @@
             }
         });
     </script>
+
+    <!-- SCRIPT BARU: Upload File dengan Nama Terbaca -->
+    <script>
+        $(document).ready(function() {
+            // Fungsi untuk handle upload file di tab dokumen
+            $('#dokumen input[type="file"]').on('change', function() {
+                const $fileUpload = $(this).closest('.add-file-upload');
+                const $fileNameSpan = $fileUpload.find('.add-file-info span');
+                const $fileSizeSpan = $fileUpload.find('.add-file-size');
+
+                if (this.files && this.files.length > 0) {
+                    const file = this.files[0];
+
+                    // Tampilkan nama file
+                    $fileNameSpan.text(file.name);
+
+                    // Hitung dan tampilkan ukuran file
+                    let fileSize = file.size;
+                    let sizeText = '';
+
+                    if (fileSize < 1024 * 1024) {
+                        // Kurang dari 1 MB -> Tampilkan dalam KB
+                        sizeText = (fileSize / 1024).toFixed(1) + ' KB';
+                    } else {
+                        // Lebih dari 1 MB -> Tampilkan dalam MB
+                        sizeText = (fileSize / (1024 * 1024)).toFixed(1) + ' MB';
+                    }
+
+                    $fileSizeSpan.text(sizeText);
+
+                    // Tambah class untuk styling (opsional)
+                    $fileUpload.addClass('add-file-selected');
+
+                } else {
+                    // Jika tidak ada file, reset ke teks default
+                    const inputId = $(this).attr('id');
+
+                    switch(inputId) {
+                        case 'uploadKtp':
+                            $fileNameSpan.text('Klik untuk upload KTP');
+                            break;
+                        case 'uploadKk':
+                            $fileNameSpan.text('Klik untuk upload KK');
+                            break;
+                        case 'uploadNpwp':
+                            $fileNameSpan.text('Klik untuk upload NPWP');
+                            break;
+                        case 'uploadPasangan':
+                            $fileNameSpan.text('Klik untuk upload KTP Pasangan');
+                            break;
+                        default:
+                            $fileNameSpan.text('Klik untuk upload file');
+                    }
+
+                    $fileSizeSpan.text('');
+                    $fileUpload.removeClass('add-file-selected');
+                }
+            });
+
+
+        });
+    </script>
+
 @endpush
