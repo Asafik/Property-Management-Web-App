@@ -12,28 +12,29 @@
             <div class="add-col-12">
                 <h3 class="text-dark fw-bold fs-4 fs-md-3" style="color: #2c2e3f; margin-bottom: 0.25rem;">Tambah Customer
                     Baru</h3>
-                    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-@if ($errors->any())
-    <div class="alert alert-warning">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-                <p class="add-text-muted small" style="margin-bottom: 0;">Input data lengkap customer untuk keperluan booking,
+                @if ($errors->any())
+                    <div class="alert alert-warning">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <p class="add-text-muted small" style="margin-bottom: 0;">Input data lengkap customer untuk keperluan
+                    booking,
                     KPR, dan transaksi properti</p>
             </div>
         </div>
@@ -582,28 +583,32 @@
                                         <div class="add-custom-tab-pane" id="pekerjaan" role="tabpanel"
                                             aria-labelledby="pekerjaan-tab">
                                             <div class="add-row">
-                                               <div class="add-col-md-6">
-    <div class="add-form-group">
-        <label>Status Pekerjaan</label>
-        <select class="add-form-control" name="job_status" id="jobStatus">
-            <option value="">-- Pilih --</option>
-            <option value="Karyawan Swasta">Karyawan Swasta</option>
-            <option value="PNS">PNS</option>
-            <option value="Wiraswasta">Wiraswasta</option>
-            <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
-            <option value="Pensiunan">Pensiunan</option>
-            <option value="Lainnya">Lainnya</option>
-        </select>
-    </div>
-</div>
+                                                <div class="add-col-md-6">
+                                                    <div class="add-form-group">
+                                                        <label>Status Pekerjaan</label>
+                                                        <select class="add-form-control" name="job_status"
+                                                            id="jobStatus">
+                                                            <option value="">-- Pilih --</option>
+                                                            <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                                            <option value="PNS">PNS</option>
+                                                            <option value="Wiraswasta">Wiraswasta</option>
+                                                            <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                                                            <option value="Pensiunan">Pensiunan</option>
+                                                            <option value="Lainnya">Lainnya</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-<!-- Input tambahan (hidden dulu) -->
-<div class="add-col-md-6" id="jobStatusLainnyaWrapper" style="display: none;">
-    <div class="add-form-group">
-        <label>Masukkan Status Pekerjaan</label>
-        <input type="text" class="add-form-control" id="jobStatusLainnya" name="job_status_lainnya" placeholder="Tulis di sini...">
-    </div>
-</div>
+                                                <!-- Input tambahan (hidden dulu) -->
+                                                <div class="add-col-md-6" id="jobStatusLainnyaWrapper"
+                                                    style="display: none;">
+                                                    <div class="add-form-group">
+                                                        <label>Masukkan Status Pekerjaan</label>
+                                                        <input type="text" class="add-form-control"
+                                                            id="jobStatusLainnya" name="job_status_lainnya"
+                                                            placeholder="Tulis di sini...">
+                                                    </div>
+                                                </div>
                                                 <div class="add-col-md-6">
                                                     <div class="add-form-group">
                                                         <label>Perusahaan</label>
@@ -851,44 +856,44 @@
         });
     </script>
     <script>
-document.getElementById("alamatSamaKTP").addEventListener("change", function () {
-    const isChecked = this.checked;
+        document.getElementById("alamatSamaKTP").addEventListener("change", function() {
+            const isChecked = this.checked;
 
-    const fields = [    
-        "provinsi",
-        "kota",
-        "kecamatan",
-        "kelurahan",
-        "rt",
-        "rw",
-        "kodePos",
-        "alamat"
-    ];
+            const fields = [
+                "provinsi",
+                "kota",
+                "kecamatan",
+                "kelurahan",
+                "rt",
+                "rw",
+                "kodePos",
+                "alamat"
+            ];
 
-    fields.forEach(function (field) {
-        const ktpField = document.getElementById(field + "KTP");
-        const domField = document.getElementById(field + "Domisili");
+            fields.forEach(function(field) {
+                const ktpField = document.getElementById(field + "KTP");
+                const domField = document.getElementById(field + "Domisili");
 
-        if (isChecked) {
-            domField.value = ktpField.value;
-            domField.setAttribute("readonly", true);
-        } else {
-            domField.value = "";
-            domField.removeAttribute("readonly");
-        }
-    });
-});
-</script>
-<script>
-document.getElementById("jobStatus").addEventListener("change", function () {
-    const lainnyaWrapper = document.getElementById("jobStatusLainnyaWrapper");
+                if (isChecked) {
+                    domField.value = ktpField.value;
+                    domField.setAttribute("readonly", true);
+                } else {
+                    domField.value = "";
+                    domField.removeAttribute("readonly");
+                }
+            });
+        });
+    </script>
+    <script>
+        document.getElementById("jobStatus").addEventListener("change", function() {
+            const lainnyaWrapper = document.getElementById("jobStatusLainnyaWrapper");
 
-    if (this.value === "Lainnya") {
-        lainnyaWrapper.style.display = "block";
-    } else {
-        lainnyaWrapper.style.display = "none";
-        document.getElementById("jobStatusLainnya").value = "";
-    }
-});
-</script>
+            if (this.value === "Lainnya") {
+                lainnyaWrapper.style.display = "block";
+            } else {
+                lainnyaWrapper.style.display = "none";
+                document.getElementById("jobStatusLainnya").value = "";
+            }
+        });
+    </script>
 @endpush

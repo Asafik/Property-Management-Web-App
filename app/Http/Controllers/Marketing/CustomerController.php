@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Customer;
+use App\Models\CustomerDocument;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
@@ -22,10 +24,19 @@ public function store(Request $request)
         'full_name' => 'required|string|max:255',
         'phone' => 'nullable|string|max:20',
         'email' => 'nullable|email',
+
+        // Validasi file
+        'uploadKtp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'uploadKk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'uploadNpwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'uploadPasangan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
+
+    DB::beginTransaction();
 
     try {
 
+        // 1️⃣ Simpan customer
         $customer = Customer::create([
             'customer_id' => $this->generateCustomerId(),
             'full_name' => $request->full_name,
@@ -81,16 +92,48 @@ public function store(Request $request)
             'facebook' => $request->facebook,
         ]);
 
+        // 2️⃣ Mapping dokumen
+        $documents = [
+            'uploadKtp' => 'KTP',
+            'uploadKk' => 'Kartu Keluarga',
+            'uploadNpwp' => 'NPWP',
+            'uploadPasangan' => 'KTP Pasangan',
+        ];
+
+        foreach ($documents as $inputName => $docName) {
+
+            if ($request->hasFile($inputName)) {
+
+                $file = $request->file($inputName);
+
+                // bikin nama unik
+                $filename = time().'_'.$file->getClientOriginalName();
+
+                $path = $file->storeAs('customer_documents', $filename, 'public');
+
+                CustomerDocument::create([
+                    'customer_id' => $customer->id,
+                    'document_name' => $docName,
+                    'file' => $path,
+                    'upload_date' => now(),
+                    'status' => 'Pending',
+                ]);
+            }
+        }
+
+        DB::commit();
+
         return redirect()->back()->with('success', 'Customer berhasil disimpan');
 
     } catch (\Exception $e) {
 
-        // simpan error ke log (penting!)
+        DB::rollBack();
+
         Log::error('Error simpan customer: '.$e->getMessage());
 
         return redirect()->back()
             ->withInput()
-            ->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+            ->with('error', 'Terjadi kesalahan saat menyimpan data.');
     }
 }
 
