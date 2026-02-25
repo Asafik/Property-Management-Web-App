@@ -401,7 +401,12 @@
                             <h2 class="fw-bold mb-2" style="color: #1e293b;">Masuk ke Akun</h2>
                             <p class="text-muted">Silakan login untuk mengakses dashboard</p>
                         </div>
-
+                        @if(session('error'))
+                            <div class="alert-modern" role="alert">
+                                <i class="mdi mdi-alert-circle"></i>
+                                <div>{{ session('error') }}</div>
+                            </div>
+                            @endif
                         <!-- Form Login -->
                         <form action="{{ route('login.proses') }}" method="POST">
                             @csrf
@@ -455,12 +460,7 @@
                                 Login ke Dashboard
                             </button>
 
-                            @if(session('error'))
-                            <div class="alert-modern" role="alert">
-                                <i class="mdi mdi-alert-circle"></i>
-                                <div>{{ session('error') }}</div>
-                            </div>
-                            @endif
+                            
 
                         </form>
 
