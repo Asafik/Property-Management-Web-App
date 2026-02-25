@@ -42,7 +42,12 @@ class LandBank extends Model
         'file_pbb',
         'photo',
         'description',
-        'status'
+        'status',
+        'elevasi_awal',
+        'elevasi_rencana',
+        'volume_cut',
+        'volume_fill',
+        'status_cut_fill',
     ];
     public function documents()
     {
