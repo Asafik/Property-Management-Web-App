@@ -698,98 +698,114 @@
                                         </div>
 
                                         <!-- TAB 6: DOKUMEN -->
-<div class="add-custom-tab-pane" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
-    <div class="add-row">
-        <div class="add-col-md-6">
-            <div class="add-form-group">
-                <label>Upload KTP <span class="add-text-danger">*</span></label>
-                <div class="add-file-upload">
-                    <input type="file" id="uploadKtp" name="uploadKtp" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="add-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="add-file-info">
-                            <span class="file-name-text">Klik untuk upload KTP</span>
-                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                        </div>
-                        <span class="add-file-size file-size-text"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="add-col-md-6">
-            <div class="add-form-group">
-                <label>Upload Kartu Keluarga</label>
-                <div class="add-file-upload">
-                    <input type="file" id="uploadKk" name="uploadKk" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="add-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="add-file-info">
-                            <span class="file-name-text">Klik untuk upload KK</span>
-                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                        </div>
-                        <span class="add-file-size file-size-text"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="add-row">
-        <div class="add-col-md-6">
-            <div class="add-form-group">
-                <label>Upload NPWP</label>
-                <div class="add-file-upload">
-                    <input type="file" id="uploadNpwp" name="uploadNpwp" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="add-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="add-file-info">
-                            <span class="file-name-text">Klik untuk upload NPWP</span>
-                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                        </div>
-                        <span class="add-file-size file-size-text"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="add-col-md-6">
-            <div class="add-form-group">
-                <label>Upload KTP Pasangan</label>
-                <div class="add-file-upload">
-                    <input type="file" id="uploadPasangan" name="uploadPasangan" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="add-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="add-file-info">
-                            <span class="file-name-text">Klik untuk upload KTP Pasangan</span>
-                            <small>Format: JPG, PNG, PDF (Max 2MB)</small>
-                        </div>
-                        <span class="add-file-size file-size-text"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                        <div class="add-custom-tab-pane" id="dokumen" role="tabpanel"
+                                            aria-labelledby="dokumen-tab">
+                                            <div class="add-row">
+                                                <div class="add-col-md-6">
+                                                    <div class="add-form-group">
+                                                        <label>Upload KTP <span class="add-text-danger">*</span></label>
+                                                        <div class="add-file-upload">
+                                                            <input type="file" id="uploadKtp" name="uploadKtp"
+                                                                accept=".jpg,.jpeg,.png,.pdf">
+                                                            <div class="add-file-label">
+                                                                <i class="mdi mdi-cloud-upload"></i>
+                                                                <div class="add-file-info">
+                                                                    <span class="file-name-text">Klik untuk upload
+                                                                        KTP</span>
+                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                                </div>
+                                                                <span class="add-file-size file-size-text"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="add-col-md-6">
+                                                    <div class="add-form-group">
+                                                        <label>Upload Kartu Keluarga</label>
+                                                        <div class="add-file-upload">
+                                                            <input type="file" id="uploadKk" name="uploadKk"
+                                                                accept=".jpg,.jpeg,.png,.pdf">
+                                                            <div class="add-file-label">
+                                                                <i class="mdi mdi-cloud-upload"></i>
+                                                                <div class="add-file-info">
+                                                                    <span class="file-name-text">Klik untuk upload
+                                                                        KK</span>
+                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                                </div>
+                                                                <span class="add-file-size file-size-text"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="add-row">
+                                                <div class="add-col-md-6">
+                                                    <div class="add-form-group">
+                                                        <label>Upload NPWP</label>
+                                                        <div class="add-file-upload">
+                                                            <input type="file" id="uploadNpwp" name="uploadNpwp"
+                                                                accept=".jpg,.jpeg,.png,.pdf">
+                                                            <div class="add-file-label">
+                                                                <i class="mdi mdi-cloud-upload"></i>
+                                                                <div class="add-file-info">
+                                                                    <span class="file-name-text">Klik untuk upload
+                                                                        NPWP</span>
+                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                                </div>
+                                                                <span class="add-file-size file-size-text"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="add-col-md-6">
+                                                    <div class="add-form-group">
+                                                        <label>Upload KTP Pasangan</label>
+                                                        <div class="add-file-upload">
+                                                            <input type="file" id="uploadPasangan"
+                                                                name="uploadPasangan" accept=".jpg,.jpeg,.png,.pdf">
+                                                            <div class="add-file-label">
+                                                                <i class="mdi mdi-cloud-upload"></i>
+                                                                <div class="add-file-info">
+                                                                    <span class="file-name-text">Klik untuk upload KTP
+                                                                        Pasangan</span>
+                                                                    <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                                </div>
+                                                                <span class="add-file-size file-size-text"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                               
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <hr class="add-hr">
 
                                     <!-- Tombol Aksi - Responsif -->
                                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-                                        <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
-                                            <a href="{{ url('/customer') }}"
-                                                class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0">
-                                                <i class="mdi mdi-arrow-left me-1"></i>Kembali
-                                            </a>
-                                            <button type="reset"
-                                                class="add-btn add-btn-secondary flex-grow-1 flex-sm-grow-0">
-                                                <i class="mdi mdi-refresh me-1"></i>Reset
-                                            </button>
-                                        </div>
-                                        <div class="w-100 w-sm-auto">
-                                            <button type="submit" class="add-btn add-btn-primary w-100">
-                                                <i class="mdi mdi-content-save me-1"></i>Simpan Customer
-                                            </button>
-                                        </div>
-                                    </div>
+    <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
+
+        <!-- KEMBALI KE TAB SEBELUMNYA -->
+        <button type="button"
+            class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0"
+            id="btnPrevGlobal">
+            <i class="mdi mdi-arrow-left me-1"></i>Kembali
+        </button>
+
+        <button type="reset"
+            class="add-btn add-btn-secondary flex-grow-1 flex-sm-grow-0">
+            <i class="mdi mdi-refresh me-1"></i>Reset
+        </button>
+
+        <!-- BUTTON DINAMIS -->
+        <button type="button" id="btnNextGlobal"
+            class="add-btn add-btn-primary flex-grow-1 flex-sm-grow-0">
+            Lanjut <i class="mdi mdi-arrow-right ms-1"></i>
+        </button>
+
+    </div>
+</div>
                                 </form>
                             </div>
                     </div>
@@ -929,7 +945,7 @@
                     // Jika tidak ada file, reset ke teks default
                     const inputId = $(this).attr('id');
 
-                    switch(inputId) {
+                    switch (inputId) {
                         case 'uploadKtp':
                             $fileNameSpan.text('Klik untuk upload KTP');
                             break;
@@ -954,5 +970,100 @@
 
         });
     </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
+    const tabLinks = document.querySelectorAll(".add-custom-tab-link");
+    const tabItems = document.querySelectorAll(".add-custom-tab-item");
+    const tabPanes = document.querySelectorAll(".add-custom-tab-pane");
+
+    const btnNext = document.getElementById("btnNextGlobal");
+    const btnPrev = document.getElementById("btnPrevGlobal");
+
+    const form = btnNext.closest("form");
+
+    function switchTab(targetTab) {
+
+        tabLinks.forEach(tab => tab.classList.remove("active"));
+        tabPanes.forEach(pane => pane.classList.remove("active"));
+
+        targetTab.classList.add("active");
+
+        const targetPane = document.querySelector(targetTab.getAttribute("href"));
+        if (targetPane) targetPane.classList.add("active");
+
+        updateButtonState();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateButtonState() {
+
+        const activeTab = document.querySelector(".add-custom-tab-link.active");
+        const currentItem = activeTab.closest(".add-custom-tab-item");
+
+        const isFirst = currentItem.previousElementSibling === null;
+        const isLast = currentItem.nextElementSibling === null;
+
+        // === HANDLE PREV BUTTON ===
+        if (isFirst) {
+            btnPrev.disabled = true;
+            btnPrev.classList.add("disabled");
+        } else {
+            btnPrev.disabled = false;
+            btnPrev.classList.remove("disabled");
+        }
+
+        // === HANDLE NEXT / SUBMIT BUTTON ===
+        if (isLast) {
+            btnNext.innerHTML = 'Simpan Customer <i class="mdi mdi-content-save ms-1"></i>';
+            btnNext.setAttribute("type", "submit");
+        } else {
+            btnNext.innerHTML = 'Lanjut <i class="mdi mdi-arrow-right ms-1"></i>';
+            btnNext.setAttribute("type", "button");
+        }
+    }
+
+    // NEXT BUTTON
+    btnNext.addEventListener("click", function () {
+
+        if (btnNext.getAttribute("type") === "submit") {
+            form.submit();
+            return;
+        }
+
+        const activeTab = document.querySelector(".add-custom-tab-link.active");
+        const currentItem = activeTab.closest(".add-custom-tab-item");
+        const nextItem = currentItem.nextElementSibling;
+
+        if (nextItem) {
+            const nextTab = nextItem.querySelector(".add-custom-tab-link");
+            switchTab(nextTab);
+        }
+    });
+
+    // PREV BUTTON
+    btnPrev.addEventListener("click", function () {
+
+        const activeTab = document.querySelector(".add-custom-tab-link.active");
+        const currentItem = activeTab.closest(".add-custom-tab-item");
+        const prevItem = currentItem.previousElementSibling;
+
+        if (prevItem) {
+            const prevTab = prevItem.querySelector(".add-custom-tab-link");
+            switchTab(prevTab);
+        }
+    });
+
+    // TAB CLICK MANUAL
+    tabLinks.forEach(tab => {
+        tab.addEventListener("click", function (e) {
+            e.preventDefault();
+            switchTab(this);
+        });
+    });
+
+    updateButtonState();
+
+});
+</script>
 @endpush

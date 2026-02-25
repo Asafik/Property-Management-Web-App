@@ -27,6 +27,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\PengajuanController;
 
 /*
@@ -225,10 +226,14 @@ Route::get('/dashboard-promo', function () {
     return view('promo.promo');
 });
 
-Route::get('/dashboard-pt', function () {
-    return view('pt.pt');
-});
-
+// Route::get('/dashboard-pt', function () {
+//     return view('pt.pt');
+// });
+Route::get('/dashboard-pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+Route::post('/dashboard-pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
+Route::delete('/dashboard-pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
+Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
+Route::put('/dashboard-pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
 Route::get('/dashboard-servis', function () {
     return view('servis.servis');
 });
