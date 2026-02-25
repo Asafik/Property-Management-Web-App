@@ -735,7 +735,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="mdi mdi-domain"></i> Daftar Project
+                    <i class="mdi mdi-domain"></i> Daftar Project 
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -1017,9 +1017,9 @@
         @endif
         <script>
 $(document).on('click', '.project-badge', function() {
-
     let companyId = $(this).data('id');
 
+    // Tampilkan modal dan spinner
     $('#modalProjects').modal('show');
     $('#projectContent').html(`
         <div class="text-center py-4">
@@ -1027,16 +1027,21 @@ $(document).on('click', '.project-badge', function() {
         </div>
     `);
 
+    // Ambil data project
     $.get('/company/' + companyId + '/projects', function(response) {
+       
 
         let html = '';
 
+        // Tampilkan nama PT
+        if(response.name) {
+            html += `<h5 class="mb-3">${response.name}</h5>`;
+        }
+
         if (response.land_banks.length === 0) {
-            html = `<div class="alert alert-warning">Tidak ada project</div>`;
+            html += `<div class="alert alert-warning">Tidak ada project</div>`;
         } else {
-
             response.land_banks.forEach(function(project) {
-
                 html += `
                     <div class="card mb-3">
                         <div class="card-header bg-light">
@@ -1049,17 +1054,10 @@ $(document).on('click', '.project-badge', function() {
                 `;
 
                 if (project.units.length > 0) {
-
                     html += `<ul class="list-group">`;
-
                     project.units.forEach(function(unit) {
-                        html += `
-                            <li class="list-group-item">
-                                ${unit.name}
-                            </li>
-                        `;
+                        html += `<li class="list-group-item">${unit.name}</li>`;
                     });
-
                     html += `</ul>`;
                 } else {
                     html += `<small class="text-muted">Belum ada unit</small>`;
@@ -1071,7 +1069,6 @@ $(document).on('click', '.project-badge', function() {
 
         $('#projectContent').html(html);
     });
-
 });
 </script>
     @endpush
