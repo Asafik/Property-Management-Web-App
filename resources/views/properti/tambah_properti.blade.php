@@ -723,6 +723,32 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="properti-col-md-6">
+                                    <div class="properti-form-group">
+                                        <label class="properti-form-label">
+                                            Nama Perusahaan <span class="properti-text-danger">*</span>
+                                        </label>
+
+                                        <select name="company_profile_id" id="companySelect"
+                                            class="properti-form-control @error('company_profile_id') is-invalid @enderror"
+                                            required>
+
+                                            <option value="">-- Pilih Perusahaan --</option>
+
+                                            @foreach ($companies as $company)
+                                                <option value="{{ $company->id }}"
+                                                    {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                    {{ $company->name }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+
+                                        @error('company_profile_id')
+                                            <div class="properti-text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
 
                                 <div class="properti-col-md-6">
                                     <div class="properti-form-group">
@@ -741,7 +767,8 @@
                                             <option value="HGU"
                                                 {{ old('statusKepemilikan') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna
                                                 Usaha)</option>
-                                            <option value="HP" {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>
+                                            <option value="HP"
+                                                {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>
                                                 HP (Hak Pakai)</option>
                                         </select>
                                         @error('statusKepemilikan')
@@ -1133,7 +1160,7 @@
                             <hr class="properti-hr">
                             {{-- ================= STATUS ================= --}}
                             <h5 class="properti-section-title">
-                               <i class="fas fa-truck-monster me-2"></i>
+                                <i class="fas fa-truck-monster me-2"></i>
                                 Data Cut and Fill
                             </h5>
                             <div class="properti-row">
@@ -1275,6 +1302,7 @@
 @endsection
 
 @push('scripts')
+
     <script>
         // Format rupiah untuk harga perolehan
         document.addEventListener('DOMContentLoaded', function() {

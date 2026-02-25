@@ -99,7 +99,7 @@ public function store(Request $request)
         return redirect()
             ->route('company-profile.index')
             ->with('success', 'Company profile berhasil diperbarui.');
-            
+
         //
     }
 
@@ -115,4 +115,12 @@ public function store(Request $request)
             ->with('success', 'Company profile berhasil dihapus.');
 
     }
+    public function getProjects($id)
+{
+    $company = CompanyProfile::with([
+        'landBanks.units' // pastikan relasi units ada
+    ])->findOrFail($id);
+
+    return response()->json($company);
+}
 }

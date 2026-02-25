@@ -693,9 +693,10 @@
                                             <td>{{ $item->address }}</td>
                                             <td>{{ $item->phone }}</td>
 
-                                            {{-- Kolom Jumlah Project --}}
+
                                             <td class="text-center">
-                                                <span class="badge bg-success">
+                                                <span class="badge bg-success project-badge" data-id="{{ $item->id }}"
+                                                    style="cursor:pointer;">
                                                     {{ $item->land_banks_count }} Project
                                                 </span>
                                             </td>
@@ -728,7 +729,28 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div class="modal fade" id="modalProjects" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-domain"></i> Daftar Project
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="projectContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
                         </div>
 
                         <!-- Pagination UI -->
@@ -834,69 +856,64 @@
     </div>
 
     <!-- MODAL EDIT PT -->
-  <div class="modal fade" id="modalEditPT" tabindex="-1" aria-labelledby="modalEditPTLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
+    <div class="modal fade" id="modalEditPT" tabindex="-1" aria-labelledby="modalEditPTLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEditPTLabel">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit PT
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditPTLabel">
+                        <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
+                        Edit PT
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
 
-            <div class="modal-body">
-                <form id="formEditPT" method="POST">
-                    @csrf
-                    @method('PUT')
+                <div class="modal-body">
+                    <form id="formEditPT" method="POST">
+                        @csrf
+                        @method('PUT')
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>Nama PT</label>
-                                <input type="text" name="name" id="editName"
-                                    class="modal-form-control">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="modal-form-group">
+                                    <label>Nama PT</label>
+                                    <input type="text" name="name" id="editName" class="modal-form-control">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>Alamat</label>
-                                <textarea name="address" id="editAddress"
-                                    class="modal-form-control" rows="3"></textarea>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="modal-form-group">
+                                    <label>Alamat</label>
+                                    <textarea name="address" id="editAddress" class="modal-form-control" rows="3"></textarea>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>No. HP</label>
-                                <input type="text" name="phone" id="editPhone"
-                                    class="modal-form-control">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="modal-form-group">
+                                    <label>No. HP</label>
+                                    <input type="text" name="phone" id="editPhone" class="modal-form-control">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </form>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+
+                    <button type="submit" form="formEditPT" class="btn btn-gradient-primary">
+                        Update
+                    </button>
+                </div>
+
             </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary"
-                    data-bs-dismiss="modal">Batal</button>
-
-                <button type="submit" form="formEditPT"
-                    class="btn btn-gradient-primary">
-                    Update
-                </button>
-            </div>
-
         </div>
     </div>
-</div>
 
     @push('scripts')
         <script>
@@ -953,32 +970,32 @@
             });
         </script>
         <script>
-document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
 
-    const editButtons = document.querySelectorAll('.btnEdit');
+                const editButtons = document.querySelectorAll('.btnEdit');
 
-    editButtons.forEach(button => {
+                editButtons.forEach(button => {
 
-        button.addEventListener('click', function () {
+                    button.addEventListener('click', function() {
 
-            let id = this.getAttribute('data-id');
-            let name = this.getAttribute('data-name');
-            let address = this.getAttribute('data-address');
-            let phone = this.getAttribute('data-phone');
+                        let id = this.getAttribute('data-id');
+                        let name = this.getAttribute('data-name');
+                        let address = this.getAttribute('data-address');
+                        let phone = this.getAttribute('data-phone');
 
-            document.getElementById('editName').value = name;
-            document.getElementById('editAddress').value = address;
-            document.getElementById('editPhone').value = phone;
+                        document.getElementById('editName').value = name;
+                        document.getElementById('editAddress').value = address;
+                        document.getElementById('editPhone').value = phone;
 
-            // Set action form dynamically
-            document.getElementById('formEditPT').action =
-                `/dashboard-pt/${id}`;
-        });
+                        // Set action form dynamically
+                        document.getElementById('formEditPT').action =
+                            `/dashboard-pt/${id}`;
+                    });
 
-    });
+                });
 
-});
-</script>
+            });
+        </script>
         @if (session('success'))
             <script>
                 Swal.fire({
@@ -998,5 +1015,64 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             </script>
         @endif
+        <script>
+$(document).on('click', '.project-badge', function() {
+
+    let companyId = $(this).data('id');
+
+    $('#modalProjects').modal('show');
+    $('#projectContent').html(`
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary"></div>
+        </div>
+    `);
+
+    $.get('/company/' + companyId + '/projects', function(response) {
+
+        let html = '';
+
+        if (response.land_banks.length === 0) {
+            html = `<div class="alert alert-warning">Tidak ada project</div>`;
+        } else {
+
+            response.land_banks.forEach(function(project) {
+
+                html += `
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>${project.name}</strong>
+                            <span class="badge bg-info float-end">
+                                ${project.units.length} Unit
+                            </span>
+                        </div>
+                        <div class="card-body">
+                `;
+
+                if (project.units.length > 0) {
+
+                    html += `<ul class="list-group">`;
+
+                    project.units.forEach(function(unit) {
+                        html += `
+                            <li class="list-group-item">
+                                ${unit.name}
+                            </li>
+                        `;
+                    });
+
+                    html += `</ul>`;
+                } else {
+                    html += `<small class="text-muted">Belum ada unit</small>`;
+                }
+
+                html += `</div></div>`;
+            });
+        }
+
+        $('#projectContent').html(html);
+    });
+
+});
+</script>
     @endpush
 @endsection

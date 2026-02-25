@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LandBank;
+use App\Models\CompanyProfile;
 use App\Models\LandBankDocument;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +12,8 @@ class LandBankController extends Controller
 {
     public function index()
     {
-        return view('properti.tambah_properti');
+        $companies = CompanyProfile::withCount('landBanks')->get();
+        return view('properti.tambah_properti', compact('companies'));
     }
 
 public function store(Request $request)
@@ -19,6 +21,7 @@ public function store(Request $request)
     $request->validate([
         'namaTanah' => 'required|string|max:200',
         'statusKepemilikan' => 'required|string',
+        'company_profile_id' => 'required|exists:company_profiles,id',
         'lokasi' => 'required|string',
         'luasTanah' => 'required|numeric',
         'hargaPerolehan' => 'required',
@@ -48,6 +51,7 @@ public function store(Request $request)
         // ===============================
         $land = LandBank::create([
             'name' => $request->namaTanah,
+            'company_profile_id' => $request->company_profile_id,
             'ownership_status' => $request->statusKepemilikan,
             'certificate_no' => $request->noSertifikat,
             'certificate_owner' => $request->atasNama,

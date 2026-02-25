@@ -10,6 +10,7 @@ class LandBank extends Model
     //
     protected $fillable = [
         'name',
+        'company_profile_id',
         'ceritificate_no',
         'ownership_status',
         'certificate_owner',

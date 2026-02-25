@@ -232,7 +232,7 @@ Route::get('/dashboard-promo', function () {
 Route::get('/dashboard-pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
 Route::post('/dashboard-pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
 Route::delete('/dashboard-pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
-
+Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
 Route::put('/dashboard-pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
 Route::get('/dashboard-servis', function () {
     return view('servis.servis');

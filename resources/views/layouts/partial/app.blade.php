@@ -38,6 +38,19 @@
 </div>
 
 <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
+
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#companySelect').select2({
+        placeholder: "Cari perusahaan...",
+        width: '100%'
+    });
+});
+</script>
 <script src="{{ asset('admin/assets/vendors/chart.js/chart.umd.js') }}"></script>
 <script src="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script>
@@ -46,7 +59,7 @@
 <script src="{{ asset('admin/assets/js/todolist.js') }}"></script>
 <script src="{{ asset('admin/assets/js/jquery.cookie.js') }}"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
