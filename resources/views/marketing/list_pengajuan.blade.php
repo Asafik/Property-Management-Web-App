@@ -404,6 +404,12 @@
             white-space: nowrap;
         }
 
+        .table thead th i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+            color: #9a55ff;
+        }
+
         @media (min-width: 576px) {
             .table thead th {
                 font-size: 0.85rem;
@@ -436,6 +442,11 @@
             padding: 0.8rem 0.5rem;
             border-bottom: 1px solid #e9ecef;
             color: #2c2e3f;
+        }
+
+        .table tbody td i {
+            margin-right: 5px;
+            font-size: 1rem;
         }
 
         @media (min-width: 576px) {
@@ -1038,20 +1049,20 @@
                             </div>
                         </div>
 
-                        <!-- Tabel -->
+                        <!-- Tabel DENGAN ICON DI SEMUA KOLOM -->
                         <div class="table-responsive">
                             <table class="table table-hover" id="tableMarketing" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                        <th><i class="mdi mdi-ticket me-1"></i>Booking ID</th>
-                                        <th><i class="mdi mdi-account me-1"></i>Customer</th>
-                                        <th><i class="mdi mdi-home me-1"></i>Unit</th>
-                                        <th><i class="mdi mdi-cash-multiple me-1"></i>Metode</th>
-                                        <th><i class="mdi mdi-chart-arc me-1"></i>Status</th>
-                                        <th><i class="mdi mdi-progress-clock me-1"></i>Progress</th>
-                                        <th><i class="mdi mdi-account-tie me-1"></i>Marketing</th>
-                                        <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                        <th class="text-center"><i class="mdi mdi-counter"></i> No</th>
+                                        <th><i class="mdi mdi-ticket"></i> Booking ID</th>
+                                        <th><i class="mdi mdi-account"></i> Customer</th>
+                                        <th><i class="mdi mdi-home"></i> Unit</th>
+                                        <th><i class="mdi mdi-cash-multiple"></i> Metode</th>
+                                        <th><i class="mdi mdi-chart-arc"></i> Status</th>
+                                        <th><i class="mdi mdi-progress-clock"></i> Progress</th>
+                                        <th><i class="mdi mdi-account-tie"></i> Marketing</th>
+                                        <th class="text-center"><i class="mdi mdi-cog"></i> Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1059,39 +1070,44 @@
                                         <tr>
                                             <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                             <td>
+                                                <i class="mdi mdi-ticket text-primary me-1"></i>
                                                 <span class="fw-medium small">{{ $booking->booking_code }}</span>
                                             </td>
-                                            <td class="small">{{ $booking->customer->full_name ?? '-' }}</td>
-                                            <td class="small">{{ $booking->unit->block ?? '' }}
-                                                {{ $booking->unit->unit_number ?? '' }}</td>
+                                            <td class="small">
+                                                <i class="mdi mdi-account text-info me-1"></i>
+                                                {{ $booking->customer->full_name ?? '-' }}
+                                            </td>
+                                            <td class="small">
+                                                <i class="mdi mdi-home text-warning me-1"></i>
+                                                {{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}
+                                            </td>
                                             <td>
                                                 @if ($booking->purchase_type == 'kpr')
-                                                    <span class="badge badge-info badge-sm">KPR</span>
+                                                    <span class="badge badge-info badge-sm"><i class="mdi mdi-bank me-1"></i>KPR</span>
                                                 @else
-                                                    <span class="badge badge-success badge-sm">Cash</span>
+                                                    <span class="badge badge-success badge-sm"><i class="mdi mdi-cash me-1"></i>Cash</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @switch($booking->status)
                                                     @case('active')
-                                                        <span class="badge badge-warning badge-sm">Active</span>
+                                                        <span class="badge badge-warning badge-sm"><i class="mdi mdi-clock-outline me-1"></i>Active</span>
                                                     @break
 
                                                     @case('akad')
-                                                        <span class="badge badge-primary badge-sm">Akad</span>
+                                                        <span class="badge badge-primary badge-sm"><i class="mdi mdi-handshake me-1"></i>Akad</span>
                                                     @break
 
                                                     @case('lunas')
-                                                        <span class="badge badge-success badge-sm">Lunas</span>
+                                                        <span class="badge badge-success badge-sm"><i class="mdi mdi-check-circle me-1"></i>Lunas</span>
                                                     @break
 
                                                     @case('ditolak')
-                                                        <span class="badge badge-danger badge-sm">Ditolak</span>
+                                                        <span class="badge badge-danger badge-sm"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
                                                     @break
 
                                                     @default
-                                                        <span
-                                                            class="badge badge-secondary badge-sm">{{ ucfirst($booking->status) }}</span>
+                                                        <span class="badge badge-secondary badge-sm"><i class="mdi mdi-information-outline me-1"></i>{{ ucfirst($booking->status) }}</span>
                                                 @endswitch
                                             </td>
                                             <td>
@@ -1112,11 +1128,12 @@
                                                     <span class="small">{{ $progress }}%</span>
                                                 </div>
                                             </td>
-                                            <td class="small">{{ $booking->sales->name ?? '-' }}</td>
+                                            <td class="small">
+                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                {{ $booking->sales->name ?? '-' }}
+                                            </td>
                                             <td class="text-center">
-                                                <div
-                                                    class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-
+                                                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
                                                     {{-- Proses KPR / Cash --}}
                                                     @if ($booking->purchase_type == 'kpr')
                                                         <a href="{{ route('pengajuan.show', $booking->id) }}"
@@ -1136,8 +1153,7 @@
                                                     </a>
 
                                                     {{-- Edit --}}
-                                                    <a href="#" class="btn btn-outline-warning btn-sm"
-                                                        title="Edit">
+                                                    <a href="#" class="btn btn-outline-warning btn-sm" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
 
@@ -1145,12 +1161,10 @@
                                                     <form action="#" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                            title="Hapus">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </form>
-
                                                 </div>
                                             </td>
                                         </tr>
@@ -1213,23 +1227,42 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi DataTables - hanya untuk sorting
-            let table = $('#tableMarketing').DataTable({
-                responsive: true,
-                paging: false,
-                info: false,
-                searching: false,
-                lengthChange: false,
-                ordering: true,
-                language: {
-                    emptyTable: "Data pengajuan belum tersedia",
-                    zeroRecords: "Data tidak ditemukan",
-                },
-                columnDefs: [{
-                    orderable: false,
-                    targets: [8]
-                }]
+            // CEK APAKAH TABEL MEMILIKI DATA
+            let hasData = false;
+            $('#tableMarketing tbody tr').each(function() {
+                let rowText = $(this).text();
+                if (rowText && !rowText.includes('Data pengajuan belum tersedia')) {
+                    hasData = true;
+                }
             });
+
+            // Hancurkan instance DataTables jika sudah ada
+            if ($.fn.DataTable.isDataTable('#tableMarketing')) {
+                $('#tableMarketing').DataTable().destroy();
+            }
+
+            // HANYA inisialisasi DataTables JIKA ADA DATA
+            if (hasData) {
+                // Inisialisasi DataTables - hanya untuk sorting
+                let table = $('#tableMarketing').DataTable({
+                    responsive: true,
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Data pengajuan belum tersedia",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [{
+                        orderable: false,
+                        targets: [8] // Kolom Aksi
+                    }]
+                });
+            } else {
+                console.log('Tabel kosong, DataTables tidak diinisialisasi');
+            }
         });
 
         function exportTable(type) {

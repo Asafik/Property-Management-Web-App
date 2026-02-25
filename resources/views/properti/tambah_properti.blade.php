@@ -992,7 +992,7 @@ input, select, textarea, button {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="properti-col-md-4">
                                 <div class="properti-form-group">
                                     <label class="properti-form-label">Upload PBB</label>
