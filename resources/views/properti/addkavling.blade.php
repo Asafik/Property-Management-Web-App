@@ -980,13 +980,7 @@
                                         <span>Manual Satu per Satu</span>
                                     </a>
                                 </li>
-                                <li class="add-custom-tab-item">
-                                    <a class="add-custom-tab-link" id="generate-tab" data-toggle="tab" href="#generate"
-                                        role="tab" aria-controls="generate" aria-selected="false">
-                                        <i class="mdi mdi-auto-fix"></i>
-                                        <span>Generate Otomatis</span>
-                                    </a>
-                                </li>
+
                                 <li class="add-custom-tab-item">
                                     <a class="add-custom-tab-link" id="import-tab" data-toggle="tab" href="#import"
                                         role="tab" aria-controls="import" aria-selected="false">
@@ -1022,8 +1016,19 @@
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
                                                 <label>Type Unit</label>
-                                                <input type="text" name="type" class="kavling-form-control"
-                                                    placeholder="Cluster Ijen">
+                                                <select name="type" class="kavling-form-control">
+                                                    <option value="">-- Pilih Type --</option>
+                                                    <option value="subsidi">Subsidi</option>
+                                                    <option value="komersil">Komersil</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="kavling-form-group">
+                                                <label>Nama Unit</label>
+                                                <input type="text" name="unit_name" class="kavling-form-control"
+                                                    placeholder="Cluster Mawar">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -1047,6 +1052,21 @@
                                                     placeholder="500.000.000">
                                             </div>
                                         </div>
+                                         <div class="col-md-3">
+                                            <div class="kavling-form-group">
+                                                <label>Harga IJB (Rp)</label>
+                                                <input type="text" name="ijb_price" class="kavling-form-control"
+                                                    placeholder="500.000.000">
+                                            </div>
+                                        </div>
+                                         <div class="col-md-3">
+                                            <div class="kavling-form-group">
+                                                <label>Harga AJB (Rp)</label>
+                                                <input type="text" name="ajb_price" class="kavling-form-control"
+                                                    placeholder="500.000.000">
+                                            </div>
+                                        </div>
+                                        
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
                                                 <label>Hadap</label>
@@ -1087,102 +1107,6 @@
                                     </div>
                                 </form>
                             </div>
-
-                            <!-- TAB GENERATE OTOMATIS -->
-                            <div class="add-custom-tab-pane" id="generate" role="tabpanel"
-                                aria-labelledby="generate-tab">
-                                <form action="{{ route('properti.generateKavling', $land->id) }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Jumlah Unit</label>
-                                                <input type="number" name="jumlah_unit" class="kavling-form-control"
-                                                    value="10">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Luas per Unit (m²)</label>
-                                                <input type="number" name="area_per_unit" class="kavling-form-control"
-                                                    value="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Luas Bangunan(m²)</label>
-                                                <input type="number" name="building_area_unit"
-                                                    class="kavling-form-control" placeholder="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga per Unit (Rp)</label>
-                                                <input type="text" name="price_per_unit" class="kavling-form-control"
-                                                    value="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Tipe Unit</label>
-                                                <input type="text" name="type" class="kavling-form-control"
-                                                    placeholder="Cluster Ijen">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Prefix Blok</label>
-                                                <input type="text" name="prefix_block" class="kavling-form-control"
-                                                    value="A">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Nomor Awal</label>
-                                                <input type="number" name="start_number" class="kavling-form-control"
-                                                    value="1">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Hadap Default</label>
-                                                <select name="default_facing" class="kavling-form-control">
-                                                    <option>Utara</option>
-                                                    <option>Selatan</option>
-                                                    <option>Timur</option>
-                                                    <option>Barat</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Posisi Default</label>
-                                                <select name="default_position" class="kavling-form-control">
-                                                    <option>Tengah</option>
-                                                    <option>Hook</option>
-                                                    <option>Sudut</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 d-flex align-items-end">
-                                            <div class="kavling-form-group w-100">
-                                                <button type="submit" class="kavling-btn kavling-btn-primary w-100">
-                                                    <i class="mdi mdi-auto-fix me-1"></i>Generate Unit
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="alert alert-info mt-3">
-                                    <i class="mdi mdi-information-outline me-2"></i>
-                                    Total luas yang akan digunakan:
-                                    <strong>{{ number_format($land->area_used ?? 0, 0, ',', '.') }} m²</strong> dari
-                                    {{ number_format($land->area ?? 0, 0, ',', '.') }} m²
-                                </div>
-                            </div>
-
                             <!-- TAB IMPORT EXCEL -->
                             <div class="add-custom-tab-pane" id="import" role="tabpanel"
                                 aria-labelledby="import-tab">
@@ -1281,7 +1205,8 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}</option>
+                                                                <option value="{{ $type }}">{{ $type }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1294,7 +1219,8 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}</option>
+                                                                <option value="{{ $position }}">{{ $position }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1311,7 +1237,8 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('facing')->unique() as $facing)
                                                             @if ($facing)
-                                                                <option value="{{ $facing }}">{{ $facing }}</option>
+                                                                <option value="{{ $facing }}">{{ $facing }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1332,12 +1259,14 @@
                                             <!-- Baris 4: Button Filter & Reset -->
                                             <div class="row filter-row">
                                                 <div class="col-6">
-                                                    <button type="button" id="filterDataMobile" class="btn btn-gradient-primary btn-filter-reset">
+                                                    <button type="button" id="filterDataMobile"
+                                                        class="btn btn-gradient-primary btn-filter-reset">
                                                         <i class="mdi mdi-filter-outline"></i> Filter
                                                     </button>
                                                 </div>
                                                 <div class="col-6">
-                                                    <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary btn-filter-reset">
+                                                    <button type="button" id="resetFilterMobile"
+                                                        class="btn btn-gradient-secondary btn-filter-reset">
                                                         <i class="mdi mdi-refresh"></i> Reset
                                                     </button>
                                                 </div>
@@ -1362,7 +1291,8 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}</option>
+                                                                <option value="{{ $type }}">{{ $type }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1375,7 +1305,8 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}</option>
+                                                                <option value="{{ $position }}">{{ $position }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1388,7 +1319,8 @@
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('facing')->unique() as $facing)
                                                             @if ($facing)
-                                                                <option value="{{ $facing }}">{{ $facing }}</option>
+                                                                <option value="{{ $facing }}">{{ $facing }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -1406,13 +1338,15 @@
                                                 </div>
                                                 <div class="col-md-1">
                                                     <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                    <button type="button" id="filterData" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                    <button type="button" id="filterData"
+                                                        class="btn btn-gradient-primary w-100 btn-filter-reset">
                                                         <i class="mdi mdi-filter-outline"></i>
                                                     </button>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                    <button type="button" id="resetFilter"
+                                                        class="btn btn-gradient-secondary w-100 btn-filter-reset">
                                                         <i class="mdi mdi-refresh"></i>
                                                     </button>
                                                 </div>
@@ -1443,7 +1377,8 @@
                                     @forelse($units as $i => $unit)
                                         <tr>
                                             <td class="text-center fw-bold">
-                                                <span class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
+                                                <span
+                                                    class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
                                             </td>
 
                                             {{-- BLOK / NO --}}
@@ -1466,7 +1401,8 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-domain text-secondary me-2"></i>
-                                                    <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²</span>
+                                                    <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }}
+                                                        m²</span>
                                                 </div>
                                             </td>
 
@@ -1544,7 +1480,8 @@
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan {{ $units->firstItem() ?? 0 }}-{{ $units->lastItem() ?? 0 }} dari {{ $units->total() }} data
+                                Menampilkan {{ $units->firstItem() ?? 0 }}-{{ $units->lastItem() ?? 0 }} dari
+                                {{ $units->total() }} data
                             </div>
                             <div class="mt-3">
                                 {{ $units->links('pagination::bootstrap-5') }}

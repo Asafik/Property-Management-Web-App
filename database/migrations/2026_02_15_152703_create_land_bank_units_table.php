@@ -19,17 +19,20 @@ return new class extends Migration
             // ===== IDENTITAS UNIT =====
             $table->string('block')->nullable(); // A
             $table->string('unit_number')->nullable(); // 1
-            $table->string('unit_code')->unique(); // A.1
-            $table->string('type')->nullable();
+            $table->string('unit_code')->nullable(); // A.1
+            $table->enum('type', ['subsidi', 'komersil'])->default('subsidi'); // tipe unit
+            $table->string('unit_name')->nullable(); // nama unit
 
             // ===== DATA KAVLING =====
             $table->float('area'); // luas kavling
             $table->float('building_area')->nullable(); // luas bangunan (m²)
             $table->bigInteger('price')->nullable();
-
+            $table->bigInteger('ijb_price')->nullable(); // harga untuk perhitungan IJB
+            $table->bigInteger('ajb_price')->nullable(); // harga untuk perhitungan AJB
             $table->enum('facing', ['Utara', 'Selatan', 'Timur', 'Barat'])->nullable();
             $table->enum('position', ['Hook', 'Tengah', 'Sudut'])->nullable();
-
+            $table->json('x')->nullable(); // untuk menyimpan koordinat titik-titik polygon
+            $table->json('y')->nullable(); // untuk menyimpan koordinat titik-titik polygon
             $table->text('description')->nullable();
 
             // ===== STATUS =====

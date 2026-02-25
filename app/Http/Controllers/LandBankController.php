@@ -95,6 +95,10 @@ class LandBankController extends Controller
                     'type' => 'pbb',
                     'number' => $request->noPBB
                 ],
+                'uploadAKTATanah' => [
+                    'type' => 'akta_tanah',
+                    'number' => $request->noAktaTanah
+                ]
             ];
 
             foreach ($documents as $field => $doc) {

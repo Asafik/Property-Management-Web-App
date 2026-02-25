@@ -475,9 +475,6 @@
             background-position: right 0.5rem center;
             padding-right: 1.5rem;
         }
-        svg {
-    border: 3px solid red !important;
-}
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -649,15 +646,10 @@
                                                 </label>
                                                 <select name="status" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="draft"
-                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
+                                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
+                                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Booked</option>
+                                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
                                                 </select>
                                             </div>
 
@@ -668,15 +660,9 @@
                                                 </label>
                                                 <select name="price" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="<500"
-                                                        {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt
-                                                    </option>
-                                                    <option value="500-1000"
-                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M
-                                                    </option>
-                                                    <option value=">1000"
-                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M
-                                                    </option>
+                                                    <option value="<500" {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt</option>
+                                                    <option value="500-1000" {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M</option>
+                                                    <option value=">1000" {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M</option>
                                                 </select>
                                             </div>
 
@@ -686,23 +672,17 @@
                                                     <i class="mdi mdi-counter me-1"></i>Tampil
                                                 </label>
                                                 <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
                                                 </select>
                                             </div>
 
                                             <!-- Button Filter -->
                                             <div class="col-md-1 filter-col">
                                                 <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary w-100 btn-filter-reset"
-                                                    title="Filter">
+                                                <button type="submit" class="btn btn-gradient-primary w-100 btn-filter-reset" title="Filter">
                                                     <i class="mdi mdi-filter"></i>
                                                 </button>
                                             </div>
@@ -710,9 +690,7 @@
                                             <!-- Button Reset -->
                                             <div class="col-md-1 filter-col">
                                                 <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary w-100 btn-filter-reset"
-                                                    title="Reset">
+                                                <a href="{{ route('marketing.jual-unit') }}" class="btn btn-gradient-secondary w-100 btn-filter-reset" title="Reset">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
@@ -772,15 +750,10 @@
                                                 </label>
                                                 <select name="status" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="draft"
-                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
+                                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
+                                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Booked</option>
+                                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
@@ -789,15 +762,9 @@
                                                 </label>
                                                 <select name="price" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="<500"
-                                                        {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt
-                                                    </option>
-                                                    <option value="500-1000"
-                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M
-                                                    </option>
-                                                    <option value=">1000"
-                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M
-                                                    </option>
+                                                    <option value="<500" {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt</option>
+                                                    <option value="500-1000" {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M</option>
+                                                    <option value=">1000" {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -809,27 +776,21 @@
                                                     <i class="mdi mdi-counter me-1"></i>Tampil
                                                 </label>
                                                 <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
                                                 </select>
                                             </div>
                                             <div class="col-4">
                                                 <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                <button type="submit" class="btn btn-gradient-primary w-100 btn-filter-reset">
                                                     <i class="mdi mdi-filter"></i>
                                                 </button>
                                             </div>
                                             <div class="col-4">
                                                 <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                <a href="{{ route('marketing.jual-unit') }}" class="btn btn-gradient-secondary w-100 btn-filter-reset">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
@@ -849,11 +810,6 @@
                                 <button type="button" class="btn btn-outline-primary" id="btnGridView"
                                     onclick="switchView('grid')">
                                     <i class="mdi mdi-view-grid me-1"></i><span class="d-none d-sm-inline">Grid</span>
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" id="btnSitePlanView"
-                                    onclick="switchView('site-plan')">
-                                    <i class="mdi mdi-view-grid me-1"></i><span class="d-none d-sm-inline">Site
-                                        Plan</span>
                                 </button>
                             </div>
                         </div>
@@ -892,8 +848,7 @@
                                                 </td>
                                                 <td>{{ $unit->landBank->name ?? '-' }}</td>
                                                 <td>{{ $unit->type ?? '-' }}</td>
-                                                <td class="d-none d-md-table-cell">
-                                                    {{ Str::limit($unit->landBank->address ?? '-', 15) }}</td>
+                                                <td class="d-none d-md-table-cell">{{ Str::limit($unit->landBank->address ?? '-', 15) }}</td>
                                                 <td>{{ $unit->area ?? '-' }} m²</td>
                                                 <td>{{ $unit->building_area ?? '-' }} m²</td>
                                                 <td>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
@@ -904,14 +859,11 @@
                                                     @elseif($unit->status == 'sold')
                                                         <span class="badge badge-gradient-danger">Terjual</span>
                                                     @else
-                                                        <span
-                                                            class="badge badge-gradient-warning">{{ ucfirst($unit->status) }}</span>
+                                                        <span class="badge badge-gradient-warning">{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                 </td>
                                                 <td>{{ $unit->activeBooking->sales->name ?? '-' }}</td>
-                                                <td>Rp
-                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
-                                                </td>
+                                                <td>Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}</td>
                                                 <td>{{ $unit->activeBooking->customer->full_name ?? '-' }}</td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-1">
@@ -932,8 +884,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="14" class="text-center text-muted py-4">
-                                                    <i class="mdi mdi-home-outline"
-                                                        style="font-size: 2rem; opacity: 0.3;"></i>
+                                                    <i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>
                                                 </td>
                                             </tr>
@@ -943,40 +894,32 @@
                             </div>
                         </div>
 
-                        <!-- GRID VIEW (Kata    log) -->
-                        <div id="GridView" class="row g-3" style="display: none;">
+                        <!-- GRID VIEW (Katalog) -->
+                        <div id="gridView" class="row g-3" style="display: none;">
                             @forelse ($units as $unit)
                                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                                     <div class="card grid-card h-100">
                                         <div class="card-body p-3">
                                             <div class="position-relative">
                                                 @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                    <span
-                                                            class="badge badge-gradient-success position-absolute top-0 end-0 m-2">Tersedia</span>
+                                                    <span class="badge badge-gradient-success position-absolute top-0 end-0 m-2">Tersedia</span>
                                                 @elseif($unit->status == 'sold')
-                                                    <span
-                                                        class="badge badge-gradient-danger position-absolute top-0 end-0 m-2">Terjual</span>
+                                                    <span class="badge badge-gradient-danger position-absolute top-0 end-0 m-2">Terjual</span>
                                                 @else
-                                                    <span
-                                                        class="badge badge-gradient-warning position-absolute top-0 end-0 m-2">{{ ucfirst($unit->status) }}</span>
+                                                    <span class="badge badge-gradient-warning position-absolute top-0 end-0 m-2">{{ ucfirst($unit->status) }}</span>
                                                 @endif
                                                 <div class="text-center bg-light py-3 py-md-4 rounded">
-                                                    <i class="mdi mdi-home-outline"
-                                                        style="font-size: 36px; color: #9a55ff;"></i>
+                                                    <i class="mdi mdi-home-outline" style="font-size: 36px; color: #9a55ff;"></i>
                                                 </div>
                                             </div>
                                             <h6 class="mt-2 fw-bold">{{ $unit->unit_code }}</h6>
                                             <p class="text-muted small mb-1">{{ $unit->landBank->name ?? '-' }}</p>
-                                            <p class="small mb-1">{{ $unit->building_area ?? ($unit->area ?? '-') }} m² |
-                                                Rp
-                                                {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
+                                            <p class="small mb-1">{{ $unit->building_area ?? $unit->area ?? '-' }} m² | Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
                                             <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <small class="text-muted">
-                                                    <i
-                                                        class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
+                                                    <i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
                                                 </small>
-                                                <button class="btn btn-outline-danger btn-sm"
-                                                    onclick="openCustomerModal({{ $unit->id }})">
+                                                <button class="btn btn-outline-danger btn-sm" onclick="openCustomerModal({{ $unit->id }})">
                                                     <i class="mdi mdi-account-plus"></i>
                                                 </button>
                                             </div>
@@ -993,50 +936,6 @@
                             @endforelse
                         </div>
 
-                        <!-- ================= SITE PLAN VIEW ================= -->
-                        <div id="sitePlanView" style="display:none;">
-
-                            <div class="card">
-                                <div class="card-body p-2">
-
-                             <img id="siteImage"
-     src="{{ asset('storage/siteplan.jfif') }}"
-     style="width:100%; display:block; pointer-events:none;">
-
-                                     <svg id="siteSvg"
-     viewBox="0 0 1600 900"
-     preserveAspectRatio="xMidYMid meet"
-     style="position:absolute;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            z-index:999;">
-
-                                            @foreach ($units as $unit)
-                                                @if ($unit->polygon_points)
-                                                    <polygon points="{{ $unit->polygon_points }}"
-                                                        fill="
-                                                            @if ($unit->status == 'sold') #ff4d4f
-                                                            @elseif($unit->status == 'booking') #ffc107
-                                                            @else #28a745 @endif
-                                                        "
-                                                        stroke="#000" stroke-width="2"
-                                                        style="cursor:pointer; opacity:0.6; transition:0.2s;"
-                                                        onmouseover="this.style.opacity=1"
-                                                        onmouseout="this.style.opacity=0.6"
-                                                        onclick="openCustomerModal({{ $unit->id }})" />
-                                                @endif
-                                            @endforeach
-
-                                        </svg>
-                                        <button id="savePolygon">Simpan Polygon</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                            
-                        </div>
                         <!-- Pagination -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
@@ -1112,7 +1011,7 @@
                                     </small>
                                 </div>
 
-
+>>>>>>> cfc19b8f2f63ea838af862452109748f4ee0e1d7
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
@@ -1236,65 +1135,6 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-window.addEventListener("load", function() {
-
-    const img = document.getElementById("siteImage");
-    const svg = document.getElementById("siteSvg");
-    const saveBtn = document.getElementById("savePolygon");
-
-    let pointsArray = [];
-    let tempPolygon = null;
-
-    // set viewBox sesuai gambar asli
-    svg.setAttribute("viewBox", `0 0 ${img.naturalWidth} ${img.naturalHeight}`);
-
-    svg.addEventListener("click", function(e) {
-
-        const rect = svg.getBoundingClientRect();
-
-        const scaleX = img.naturalWidth / rect.width;
-        const scaleY = img.naturalHeight / rect.height;
-
-        const x = Math.round((e.clientX - rect.left) * scaleX);
-        const y = Math.round((e.clientY - rect.top) * scaleY);
-
-        pointsArray.push(`${x},${y}`);
-
-        drawTemporaryPolygon();
-    });
-
-    function drawTemporaryPolygon() {
-
-        if (tempPolygon) {
-            tempPolygon.remove();
-        }
-
-        tempPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        tempPolygon.setAttribute("points", pointsArray.join(" "));
-        tempPolygon.setAttribute("fill", "rgba(0,123,255,0.4)");
-        tempPolygon.setAttribute("stroke", "#007bff");
-        tempPolygon.setAttribute("stroke-width", "2");
-
-        svg.appendChild(tempPolygon);
-    }
-
-    saveBtn.addEventListener("click", function() {
-
-        if (pointsArray.length < 3) {
-            alert("Minimal 3 titik");
-            return;
-        }
-
-        const finalPoints = pointsArray.join(" ");
-        alert("Polygon disimpan:\n\n" + finalPoints);
-
-        // reset setelah simpan
-        pointsArray = [];
-    });
-
-});
-</script>
     <script>
         $(document).ready(function() {
             // DataTables Unit
@@ -1385,15 +1225,10 @@ window.addEventListener("load", function() {
 
                         form.submit();
 
-                        form.append(
-                            `<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
-                        form.append(
-                            `<input type="hidden" name="customer_id" value="${customerId}">`);
-                        form.append(
-                            `<input type="hidden" name="purchase_type" value="${purchaseType}">`
-                        );
-                        form.append(
-                            `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
+                        form.append(`<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
+                        form.append(`<input type="hidden" name="customer_id" value="${customerId}">`);
+                        form.append(`<input type="hidden" name="purchase_type" value="${purchaseType}">`);
+                        form.append(`<input type="hidden" name="booking_fee" value="${bookingFee}">`);
 
                         $('body').append(form);
                         form.submit();
@@ -1433,43 +1268,18 @@ window.addEventListener("load", function() {
 
         // SWITCH VIEW
         function switchView(view) {
-
-            // sembunyikan semua view
-            $('#tableView').hide();
-            $('#gridView').hide();
-            $('#sitePlanView').hide();
-
-            // hapus active semua tombol
-            $('#btnTableView').removeClass('active');
-            $('#btnGridView').removeClass('active');
-            $('#btnSitePlanView').removeClass('active');
-
-            // tampilkan sesuai pilihan
             if (view === 'table') {
                 $('#tableView').show();
+                $('#gridView').hide();
                 $('#btnTableView').addClass('active');
-            }
-
-            if (view === 'grid') {
+                $('#btnGridView').removeClass('active');
+            } else {
+                $('#tableView').hide();
                 $('#gridView').show();
                 $('#btnGridView').addClass('active');
+                $('#btnTableView').removeClass('active');
             }
-
-            if (view === 'site-plan') {
-                $('#sitePlanView').show();
-                $('#btnSitePlanView').addClass('active');
-            }
-
-            // simpan ke localStorage biar tidak reset saat reload
-            localStorage.setItem('unitView', view);
         }
-
-
-        // load view terakhir saat page dibuka
-        $(document).ready(function() {
-            let savedView = localStorage.getItem('unitView') || 'table';
-            switchView(savedView);
-        });
     </script>
 
     @if (session('success'))
@@ -1503,45 +1313,5 @@ window.addEventListener("load", function() {
                 html: `{!! implode('<br>', $errors->all()) !!}`
             });
         </script>
-   <script>
-window.addEventListener("load", function() {
-
-    const img = document.getElementById("siteImage");
-    const svg = document.getElementById("siteSvg");
-
-    // paksa tinggi SVG sama dengan gambar
-    svg.style.height = img.clientHeight + "px";
-
-    svg.setAttribute("viewBox", `0 0 ${img.naturalWidth} ${img.naturalHeight}`);
-
-    svg.onclick = function() {
-        alert("SVG KLIK MASUK");
-    };
-
-});
-</script>
-<script>
-window.onload = function() {
-
-    const img = document.getElementById("siteImage");
-    const svg = document.getElementById("siteSvg");
-
-    svg.setAttribute("viewBox", `0 0 ${img.naturalWidth} ${img.naturalHeight}`);
-
-    svg.addEventListener("click", function(e) {
-
-        const rect = svg.getBoundingClientRect();
-
-        const scaleX = img.naturalWidth / rect.width;
-        const scaleY = img.naturalHeight / rect.height;
-
-        const x = (e.clientX - rect.left) * scaleX;
-        const y = (e.clientY - rect.top) * scaleY;
-
-        alert(Math.round(x) + "," + Math.round(y));
-    });
-
-};
-</script>
     @endif
 @endpush

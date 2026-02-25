@@ -851,7 +851,7 @@ input, select, textarea, button {
                                         class="properti-form-control @error('jenisJalan') is-invalid @enderror">
                                         <option value="">-- Pilih Jenis Jalan --</option>
                                         <option value="Aspal" {{ old('jenisJalan') == 'Aspal' ? 'selected' : '' }}>Aspal</option>
-                                        <option value="Beton" {{ old('jenisJalan') == 'Beton' ? 'selected' : '' }}>Beton</option>
+                                        <option value="Beton" {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok</option>
                                         <option value="Tanah" {{ old('jenisJalan') == 'Tanah' ? 'selected' : '' }}>Tanah</option>
                                     </select>
                                     @error('jenisJalan')
@@ -992,6 +992,7 @@ input, select, textarea, button {
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="properti-col-md-4">
                                 <div class="properti-form-group">
                                     <label class="properti-form-label">Upload PBB</label>
@@ -1001,6 +1002,22 @@ input, select, textarea, button {
                                             <i class="fas fa-cloud-upload-alt"></i>
                                             <div class="properti-file-info-modern">
                                                 <span>Upload PBB</span>
+                                                <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                            </div>
+                                            <span class="properti-file-size"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="properti-col-md-4">
+                                <div class="properti-form-group">
+                                    <label class="properti-form-label">Upload AKTA Tanah</label>
+                                    <div class="properti-file-upload-modern">
+                                        <input type="file" name="uploadAKTATanah" id="uploadAKTATanah" accept=".pdf,.jpg,.jpeg,.png">
+                                        <div class="properti-file-label-modern">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <div class="properti-file-info-modern">
+                                                <span>Upload AKTA Tanah</span>
                                                 <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
                                             </div>
                                             <span class="properti-file-size"></span>
@@ -1173,6 +1190,9 @@ input, select, textarea, button {
                         label.textContent = 'Upload IMB';
                     } else if (inputName === 'uploadPBB') {
                         label.textContent = 'Upload PBB';
+                    }
+                    else if (inputName === 'uploadAKTATanah') {
+                            label.textContent = 'Upload AKTA Tanah';
                     }
                     sizeSpan.textContent = '';
                 }

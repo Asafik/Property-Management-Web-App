@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,16 +11,16 @@ use App\Models\LandBankUnit;
 class LandBankUnitController extends Controller
 {
     // Form buat kavling
-public function create(Request $request, $land_bank_id)
-{
-    $land = LandBank::findOrFail($land_bank_id);
+    public function create(Request $request, $land_bank_id)
+    {
+        $land = LandBank::findOrFail($land_bank_id);
 
-    $perPage = $request->get('per_page', 10); // default 10
+        $perPage = $request->get('per_page', 10); // default 10
 
-    $units = $land->units()->paginate($perPage)->withQueryString();
+        $units = $land->units()->paginate($perPage)->withQueryString();
 
-    return view('properti.addkavling', compact('land', 'units', 'perPage'));
-}
+        return view('properti.addkavling', compact('land', 'units', 'perPage'));
+    }
 
 
 
@@ -36,14 +37,17 @@ public function create(Request $request, $land_bank_id)
 
         $priceClean = $request->price ? str_replace(['.', ','], '', $request->price) : null;
         $request->merge(['price' => $priceClean]);
-        
+
         $request->validate([
             'block'         => 'required|string|max:5',
             'unit_number'   => 'required|string|max:5',
             'type'          => 'required|string|max:50',
+            'unit_name'     => 'nullable|string|max:255',
             'area'          => 'required|numeric|min:1',
             'building_area' => 'required|numeric|min:1',
             'price'         => 'nullable|numeric|min:0',
+            'ijb_price'     => 'nullable|numeric|min:0',
+            'ajb_price'     => 'nullable|numeric|min:0',
             'facing'        => 'nullable|in:Utara,Selatan,Timur,Barat',
             'position'      => 'nullable|in:Hook,Tengah,Sudut',
             'description'   => 'nullable|string|max:255',
@@ -52,8 +56,12 @@ public function create(Request $request, $land_bank_id)
 
         $unit_code = $request->block . '.' . $request->unit_number;
 
-        if (LandBankUnit::where('unit_code', $unit_code)->exists()) {
-            return back()->with('error', 'Unit ' . $unit_code . ' sudah ada.');
+        if (LandBankUnit::where('unit_code', $unit_code)
+            ->where('land_bank_id', $land->id)
+            ->exists()
+        ) {
+
+            return back()->with('error', 'Unit ' . $unit_code . ' sudah ada di proyek ini.');
         }
 
         LandBankUnit::create([
@@ -62,9 +70,12 @@ public function create(Request $request, $land_bank_id)
             'unit_number'  => $request->unit_number,
             'unit_code'    => $unit_code,
             'type'         => $request->type,
+            'unit_name'    => $request->unit_name,
             'area'         => $request->area,
             'building_area' => $request->building_area,
             'price'        => $request->price ?? 0,
+            'ijb_price'    => $request->ijb_price ?? 0,
+            'ajb_price'    => $request->ajb_price ?? 0,
             'facing'       => $request->facing,
             'position'     => $request->position,
             'description'  => $request->description,
@@ -193,97 +204,7 @@ public function create(Request $request, $land_bank_id)
 
     //     return back()->with('success', $request->jumlah_unit . ' unit berhasil digenerate.');
     // }
-public function generate(Request $request, $land_bank_id)
-{
-    Log::info('=== GENERATE KAVLING START ===');
-    Log::info('Request Data:', $request->all());
 
-    try {
-
-        $land = LandBank::findOrFail($land_bank_id);
-        Log::info('Land ditemukan', ['land_id' => $land->id, 'remaining_area' => $land->remaining_area]);
-
-        // Bersihkan harga
-        if ($request->has('price_per_unit')) {
-            $request->merge([
-                'price_per_unit' => str_replace(['.', ','], '', $request->price_per_unit)
-            ]);
-        }
-
-        $validated = $request->validate([
-            'jumlah_unit'        => 'required|integer|min:1',
-            'area_per_unit'      => 'required|numeric|min:1',
-            'building_area_unit' => 'required|numeric|min:1',
-            'price_per_unit'     => 'nullable|numeric|min:0',
-            'prefix_block'       => 'required|string|max:5',
-            'start_number'       => 'required|integer|min:1',
-            'type' => 'nullable|string|max:20',
-            'default_facing'     => 'nullable|in:Utara,Selatan,Timur,Barat',
-            'default_position'   => 'nullable|in:Hook,Tengah,Sudut',
-        ]);
-
-        Log::info('Validation lolos');
-
-        $total_area_needed = $request->jumlah_unit * $request->area_per_unit;
-
-        Log::info('Total area needed', [
-            'total' => $total_area_needed,
-            'remaining' => $land->remaining_area
-        ]);
-
-        if ($total_area_needed > $land->remaining_area) {
-            Log::warning('Sisa tanah tidak cukup');
-            return back()->with('error', 'Sisa luas tanah tidak cukup.');
-        }
-
-        $start = $request->start_number;
-        $end   = $start + $request->jumlah_unit - 1;
-
-        for ($i = $start; $i <= $end; $i++) {
-
-            $unit_code = $request->prefix_block . '.' . $i;
-
-            if (LandBankUnit::where('unit_code', $unit_code)->exists()) {
-                Log::warning('Unit sudah ada', ['unit_code' => $unit_code]);
-                continue;
-            }
-
-            Log::info('Membuat unit', ['unit_code' => $unit_code]);
-
-            LandBankUnit::create([
-                'land_bank_id' => $land->id,
-                'block'        => $request->prefix_block,
-                'unit_number'  => $i,
-                'unit_code'    => $unit_code,
-                'area'         => $request->area_per_unit,
-                'building_area'=> $request->building_area_unit,
-                'price'        => $request->price_per_unit,
-                'type'         => $request->type, 
-                'facing'       => $request->default_facing,
-                'position'     => $request->default_position,
-                'status'       => 'draft',
-            ]);
-        }
-
-        $land->remaining_area -= $total_area_needed;
-        $land->save();
-
-        Log::info('Generate selesai');
-        Log::info('=== GENERATE KAVLING END ===');
-
-        return back()->with('success', $request->jumlah_unit . ' unit berhasil digenerate.');
-
-    } catch (\Exception $e) {
-
-        Log::error('ERROR GENERATE KAVLING', [
-            'message' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile(),
-        ]);
-
-        return back()->with('error', 'Terjadi error. Cek log.');
-    }
-}
 
 
     // Tampilkan form edit
@@ -300,6 +221,8 @@ public function generate(Request $request, $land_bank_id)
             'unit_number' => 'required|string|max:5',
             'area'        => 'required|numeric|min:1',
             'price'       => 'nullable|numeric|min:0',
+            'ijb_price'   => 'nullable|numeric|min:0',
+            'ajb_price'   => 'nullable|numeric|min:0',
             'facing'      => 'nullable|in:Utara,Selatan,Timur,Barat',
             'position'    => 'nullable|in:Hook,Tengah,Sudut',
             'description' => 'nullable|string|max:255',
@@ -313,6 +236,8 @@ public function generate(Request $request, $land_bank_id)
             'unit_code'   => $unit_code,
             'area'        => $request->area,
             'price'       => str_replace(['.', ','], '', $request->price ?? 0),
+            'ijb_price'   => str_replace(['.', ','], '', $request->ijb_price ?? 0),
+            'ajb_price'   => str_replace(['.', ','], '', $request->ajb_price ?? 0),
             'facing'      => $request->facing,
             'position'    => $request->position,
             'description' => $request->description,
