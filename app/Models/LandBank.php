@@ -69,4 +69,10 @@ class LandBank extends Model
     return $doc ? $doc->document_number : null;
 }
 
+
+public function companyProfile()
+{
+    return $this->belongsTo(CompanyProfile::class); 
+}
+
 }
