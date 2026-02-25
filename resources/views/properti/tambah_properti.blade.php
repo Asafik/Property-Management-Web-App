@@ -90,6 +90,85 @@
             padding-right: 2rem;
         }
 
+        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 10px !important;
+            padding: 0.5rem 0.8rem !important;
+            min-height: 42px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+            color: #a5b3cb !important;
+        }
+
         /* Input Group */
         .properti-input-group {
             display: flex;
@@ -662,6 +741,10 @@
         }
     </style>
 
+    {{-- SELECT2 CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
     <div class="container-fluid px-2 px-md-3 px-lg-4">
         <div class="row">
             <div class="col-12 grid-margin">
@@ -729,20 +812,19 @@
                                             Nama Perusahaan <span class="properti-text-danger">*</span>
                                         </label>
 
+                                        {{-- SELECT DENGAN SEARCH (SELECT2) --}}
                                         <select name="company_profile_id" id="companySelect"
-                                            class="properti-form-control @error('company_profile_id') is-invalid @enderror"
-                                            required>
-
+                                                class="properti-form-control @error('company_profile_id') is-invalid @enderror"
+                                                required>
                                             <option value="">-- Pilih Perusahaan --</option>
-
                                             @foreach ($companies as $company)
-                                                <option value="{{ $company->id }}"
-                                                    {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                <option value="{{ $company->id }}" {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
                                                     {{ $company->name }}
                                                 </option>
                                             @endforeach
-
                                         </select>
+
+                                        <small class="properti-text-muted">Ketik untuk mencari perusahaan</small>
 
                                         @error('company_profile_id')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -904,7 +986,7 @@
                                             <option value="">-- Pilih Jenis Jalan --</option>
                                             <option value="Aspal" {{ old('jenisJalan') == 'Aspal' ? 'selected' : '' }}>
                                                 Aspal</option>
-                                            <option value="Beton"
+                                            <option value="Paving Blok"
                                                 {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok
                                             </option>
                                             <option value="Tanah" {{ old('jenisJalan') == 'Tanah' ? 'selected' : '' }}>
@@ -1302,6 +1384,11 @@
 @endsection
 
 @push('scripts')
+    {{-- jQuery (required untuk Select2) --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {{-- Select2 JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         // Format rupiah untuk harga perolehan
@@ -1363,6 +1450,24 @@
                         sizeSpan.textContent = '';
                     }
                 });
+            });
+        });
+
+        // SELECT2 INITIALIZATION
+        $(document).ready(function() {
+            $('#companySelect').select2({
+                theme: 'bootstrap-5',
+                placeholder: '-- Pilih Perusahaan --',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
             });
         });
 

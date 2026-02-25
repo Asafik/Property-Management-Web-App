@@ -918,7 +918,7 @@
 @endphp
 
 <div class="progress" style="height: 22px;">
-    <div 
+    <div
         class="progress-bar progress-bar-striped progress-bar-animated
             @if($progress <= 20) bg-danger
             @elseif($progress < 100) bg-warning

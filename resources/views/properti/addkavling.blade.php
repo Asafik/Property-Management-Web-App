@@ -1357,136 +1357,172 @@
                             </div>
                         </div>
 
-                        <!-- Tabel Data dengan Icon LENGKAP -->
-                        <div class="table-responsive">
-                            <table id="tableKavling" class="table table-hover" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                        <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
-                                        <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
-                                        <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
-                                        <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th>
-                                        <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
-                                        <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
-                                        <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
-                                        <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($units as $i => $unit)
-                                        <tr>
-                                            <td class="text-center fw-bold">
-                                                <span
-                                                    class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
-                                            </td>
+<!-- Tabel Data dengan Icon LENGKAP - KOLOM DIGABUNG -->
+<div class="table-responsive">
+    <table id="tableKavling" class="table table-hover" style="width:100%">
+        <thead>
+            <tr>
+                <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
+                <th><i class="mdi mdi-home me-1"></i>Unit</th> {{-- GABUNGAN Blok + No Unit --}}
+                <th><i class="mdi mdi-format-list-bulleted me-1"></i>Tipe / Nama</th> {{-- GABUNGAN Type + Nama Unit --}}
+                <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
+                <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
+                <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
+                <th><i class="mdi mdi-file-document me-1"></i>Harga IJB</th>
+                <th><i class="mdi mdi-file-document me-1"></i>Harga AJB</th>
+                <th><i class="mdi mdi-compass me-1"></i>Hadap / Posisi</th> {{-- GABUNGAN Hadap + Posisi --}}
+                <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($units as $i => $unit)
+                <tr>
+                    <td class="text-center fw-bold">
+                        <span class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
+                    </td>
 
-                                            {{-- BLOK / NO --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home text-primary me-2"></i>
-                                                    <span class="fw-bold">{{ $unit->unit_code }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- LUAS TANAH --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-ruler-square text-warning me-2"></i>
-                                                    <span>{{ number_format($unit->area, 0, ',', '.') }} m²</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- LUAS BANGUNAN --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-domain text-secondary me-2"></i>
-                                                    <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }}
-                                                        m²</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- TYPE --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-format-list-bulleted text-info me-2"></i>
-                                                    <span>{{ $unit->type ?? '-' }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- HARGA --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-currency-usd text-success me-2"></i>
-                                                    <span>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- HADAP --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-compass text-info me-2"></i>
-                                                    <span>{{ $unit->facing ?? '-' }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- POSISI --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-map-marker text-danger me-2"></i>
-                                                    <span>{{ $unit->position ?? '-' }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- AKSI --}}
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
-                                                        class="btn btn-outline-primary btn-sm" title="Edit">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
-
-                                                    <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
-                                                        class="btn btn-outline-info btn-sm" title="Update Progress">
-                                                        <i class="mdi mdi-progress-clock"></i>
-                                                    </a>
-
-                                                    <form
-                                                        action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
-                                                        method="POST" style="display:inline-block;"
-                                                        onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                            <i class="mdi mdi-delete"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center py-4">
-                                                <i class="mdi mdi-information-outline me-2"></i>
-                                                Belum ada unit kavling
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                    {{-- GABUNGAN 1: BLOK + NO UNIT (contoh: A.1) --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-home text-primary me-2"></i>
+                            <span class="fw-bold">
+                                @php
+                                    $blok = $unit->block ?? explode('.', $unit->unit_code)[0] ?? '-';
+                                    $nomor = $unit->unit_number ?? explode('.', $unit->unit_code)[1] ?? '-';
+                                @endphp
+                                {{ $blok }}.{{ $nomor }}
+                            </span>
                         </div>
+                    </td>
 
-                        <!-- Pagination UI - DIPERKECIL -->
+                      <td>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: 600; color: #2c2e3f;">
+                                <i class="mdi mdi-home-city text-primary me-1" style="font-size: 0.8rem;"></i>
+                                {{ $unit->unit_name ?? '-' }}
+                            </span>
+                            <span style="font-size: 0.9rem; color: #6c757d; margin-top: 2px;">
+                                <i class="mdi mdi-format-list-bulleted text-info me-1" style="font-size: 0.7rem;"></i>
+                                {{ ucfirst($unit->type ?? '-') }}
+                            </span>
+                        </div>
+                    </td>
+                    {{-- LUAS TANAH --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-ruler-square text-warning me-2"></i>
+                            <span>{{ number_format($unit->area, 0, ',', '.') }} m²</span>
+                        </div>
+                    </td>
+
+                    {{-- LUAS BANGUNAN --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-domain text-secondary me-2"></i>
+                            <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²</span>
+                        </div>
+                    </td>
+
+                    {{-- HARGA --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-currency-usd text-success me-2"></i>
+                            <span>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
+
+                    {{-- HARGA IJB --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-file-document text-info me-2"></i>
+                            <span>Rp {{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
+
+                    {{-- HARGA AJB --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-file-document text-primary me-2"></i>
+                            <span>Rp {{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
+
+                    {{-- GABUNGAN 3: HADAP + POSISI --}}
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="mdi mdi-compass text-info me-2"></i>
+                            <span>
+                                @if($unit->facing || $unit->position)
+                                    {{ $unit->facing ?? '-' }} / {{ $unit->position ?? '-' }}
+                                @else
+                                    -
+                                @endif
+                            </span>
+                        </div>
+                    </td>
+
+                    {{-- AKSI --}}
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
+                                class="btn btn-outline-primary btn-sm" title="Edit">
+                                <i class="mdi mdi-pencil"></i>
+                            </a>
+
+                            <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
+                                class="btn btn-outline-info btn-sm" title="Update Progress">
+                                <i class="mdi mdi-progress-clock"></i>
+                            </a>
+
+                            <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
+                                method="POST" style="display:inline-block;"
+                                onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                    <i class="mdi mdi-delete"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="10" class="text-center py-4">
+                        <i class="mdi mdi-information-outline me-2"></i>
+                        Belum ada unit kavling
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan {{ $units->firstItem() ?? 0 }}-{{ $units->lastItem() ?? 0 }} dari
-                                {{ $units->total() }} data
-                            </div>
-                            <div class="mt-3">
-                                {{ $units->links('pagination::bootstrap-5') }}
-                            </div>
+                        <div class="pagination-info mb-2 mb-sm-0">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Menampilkan 1 dari 156 data
                         </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -1655,20 +1691,36 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Simple Tab Functionality
-            $('.add-custom-tab-link').on('click', function(e) {
-                e.preventDefault();
+    $(document).ready(function() {
+        // Simple Tab Functionality
+        $('.add-custom-tab-link').on('click', function(e) {
+            e.preventDefault();
 
-                $('.add-custom-tab-link').removeClass('active');
-                $('.add-custom-tab-pane').removeClass('active');
+            $('.add-custom-tab-link').removeClass('active');
+            $('.add-custom-tab-pane').removeClass('active');
 
-                $(this).addClass('active');
-                var target = $(this).attr('href');
-                $(target).addClass('active');
-            });
+            $(this).addClass('active');
+            var target = $(this).attr('href');
+            $(target).addClass('active');
+        });
 
-            // Inisialisasi DataTables - hanya untuk sorting
+        // CEK APAKAH TABEL MEMILIKI DATA
+        let hasData = false;
+        $('#tableKavling tbody tr').each(function() {
+            let rowText = $(this).text();
+            if (rowText && !rowText.includes('Belum ada unit kavling')) {
+                hasData = true;
+            }
+        });
+
+        // Hancurkan instance DataTables jika sudah ada
+        if ($.fn.DataTable.isDataTable('#tableKavling')) {
+            $('#tableKavling').DataTable().destroy();
+        }
+
+        // HANYA inisialisasi DataTables JIKA ADA DATA
+        if (hasData) {
+            console.log('Data ditemukan, menginisialisasi DataTables');
             let table = $('#tableKavling').DataTable({
                 responsive: true,
                 paging: false,
@@ -1680,20 +1732,70 @@
                     emptyTable: "Belum ada unit kavling",
                     zeroRecords: "Data tidak ditemukan",
                 },
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 8]
-                }]
+                columnDefs: [
+                    { targets: 0, orderable: false },  // Kolom No
+                    { targets: 9, orderable: false }   // Kolom Aksi (index ke-9)
+                ]
+            });
+        } else {
+            console.log('Tabel kosong, DataTables tidak diinisialisasi');
+        }
+
+        // ===== FORMAT RUPIAH UNTUK INPUT HARGA =====
+        // Format tampilan Rupiah saat mengetik
+        $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').on('keyup', function() {
+            let nilai = this.value.replace(/\D/g, '');
+            if (nilai) {
+                // Batasi panjang karakter untuk block (misal block max 5)
+                let fieldName = $(this).attr('name');
+                if (fieldName === 'block' && nilai.length > 5) {
+                    // Block max 5 karakter
+                    this.value = this.value.substring(0, 5);
+                    return;
+                }
+
+                let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
+                this.value = rupiah;
+            }
+        });
+
+        // Sebelum form disubmit, ubah format Rupiah ke angka biasa
+        $('form').on('submit', function() {
+            $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').each(function() {
+                let nilai = $(this).val().replace(/\./g, ''); // Hapus semua titik
+                $(this).val(nilai); // Set ke angka asli (misal 5000000)
             });
 
-            // Format Rupiah untuk input harga
-            $('input[name="price"], input[name="price_per_unit"]').on('keyup', function() {
-                let nilai = this.value.replace(/\D/g, '');
-                if (nilai) {
-                    let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
-                    this.value = rupiah;
-                }
-            });
+            // Debug: lihat nilai yang dikirim
+            console.log('Form submitted dengan nilai:');
+            console.log('price:', $('input[name="price"]').val());
+            console.log('ijb_price:', $('input[name="ijb_price"]').val());
+            console.log('ajb_price:', $('input[name="ajb_price"]').val());
+
+            return true; // Lanjutkan submit
         });
-    </script>
+
+        // Validasi block field (max 5 karakter)
+        $('input[name="block"]').on('keyup', function() {
+            let nilai = $(this).val();
+            if (nilai.length > 5) {
+                $(this).val(nilai.substring(0, 5));
+                alert('Blok maksimal 5 karakter');
+            }
+        });
+
+        // Filter functionality (placeholder)
+        $('#filterData, #filterDataMobile').on('click', function() {
+            alert('Fitur filter sedang dalam pengembangan');
+        });
+
+        $('#resetFilter, #resetFilterMobile').on('click', function() {
+            $('#searchInput, #searchInputMobile').val('');
+            $('#filterType, #filterTypeMobile').val('');
+            $('#filterPosisi, #filterPosisiMobile').val('');
+            $('#filterHadap, #filterHadapMobile').val('');
+            location.reload();
+        });
+    });
+</script>
 @endpush
