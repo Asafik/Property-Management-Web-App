@@ -213,6 +213,21 @@
             background: #5a6268 !important;
         }
 
+        .btn-gradient-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-danger {
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-info {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
+            color: #ffffff !important;
+        }
+
         /* Outline Buttons */
         .btn-outline-primary {
             background: transparent;
@@ -223,6 +238,30 @@
 
         .btn-outline-primary:hover {
             background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .btn-outline-danger {
+            background: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-outline-danger:hover {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .btn-outline-info {
+            background: transparent;
+            border: 1px solid #17a2b8;
+            color: #17a2b8;
+        }
+
+        .btn-outline-info:hover {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
             color: #ffffff;
             border-color: transparent;
         }
@@ -259,6 +298,11 @@
             color: #ffffff;
         }
 
+        .badge-gradient-info {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: #ffffff;
+        }
+
         /* ===== TABLE STYLING - UKURAN NORMAL ===== */
         .table-responsive {
             overflow-x: auto;
@@ -285,12 +329,23 @@
             white-space: nowrap;
         }
 
+        .table thead th i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+            color: #9a55ff;
+        }
+
         .table tbody td {
             vertical-align: middle;
             font-size: 0.85rem;
             padding: 0.8rem 0.5rem;
             border-bottom: 1px solid #e9ecef;
             color: #2c2e3f;
+        }
+
+        .table tbody td i {
+            margin-right: 5px;
+            font-size: 1rem;
         }
 
         .table tbody tr:hover {
@@ -312,6 +367,10 @@
 
         .text-success {
             color: #28a745 !important;
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
         }
 
         .fw-bold {
@@ -474,6 +533,33 @@
         select.form-control {
             background-position: right 0.5rem center;
             padding-right: 1.5rem;
+        }
+
+        /* Progress Bar Styling */
+        .progress {
+            height: 22px;
+            border-radius: 11px;
+            background-color: #e9ecef;
+        }
+
+        .progress-bar {
+            border-radius: 11px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            line-height: 22px;
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+            color: #2c2e3f !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
         }
     </style>
 
@@ -850,27 +936,27 @@
                             </div>
                         </div>
 
-                        <!-- TABLE VIEW -->
+                        <!-- TABLE VIEW DENGAN ICON DI SEMUA KOLOM -->
                         <div id="tableView">
                             <div class="table-responsive">
                                 <table class="table table-hover" id="unitTable" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Blok</th>
-                                            <th>Proyek</th>
-                                            <th>Tipe</th>
-                                            <th class="d-none d-md-table-cell">Lokasi</th>
-                                            <th>Luas Tanah</th>
-                                            <th>Luas Bangunan</th>
-                                            <th>Harga</th>
-                                            <th>Hadap</th>
-                                            <th>Status</th>
-                                            <th>Status Pembangunan</th>
-                                            <th>Agent</th>
-                                            <th>Fee Agent</th>
-                                            <th>Customer</th>
-                                            <th class="text-center">Aksi</th>
+                                            <th class="text-center"><i class="mdi mdi-counter"></i> No</th>
+                                            <th><i class="mdi mdi-home-variant"></i> Blok</th>
+                                            <th><i class="mdi mdi-office-building"></i> Proyek</th>
+                                            <th><i class="mdi mdi-shape-outline"></i> Tipe</th>
+                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi</th>
+                                            <th><i class="mdi mdi-ruler-square"></i> Luas Tanah</th>
+                                            <th><i class="mdi mdi-domain"></i> Luas Bangunan</th>
+                                            <th><i class="mdi mdi-currency-usd"></i> Harga</th>
+                                            <th><i class="mdi mdi-compass"></i> Hadap</th>
+                                            <th><i class="mdi mdi-chart-arc"></i> Status</th>
+                                            <th><i class="mdi mdi-hammer"></i> Status Pembangunan</th>
+                                            <th><i class="mdi mdi-account-tie"></i> Agent</th>
+                                            <th><i class="mdi mdi-cash"></i> Fee Agent</th>
+                                            <th><i class="mdi mdi-account"></i> Customer</th>
+                                            <th class="text-center"><i class="mdi mdi-cog"></i> Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -883,61 +969,84 @@
                                                         <span>{{ $unit->unit_code }}</span>
                                                     </div>
                                                 </td>
-                                                <td>{{ $unit->landBank->name ?? '-' }}</td>
-                                                <td>{{ $unit->type ?? '-' }}</td>
+                                                <td>
+                                                    <i class="mdi mdi-office-building text-info me-1"></i>
+                                                    {{ $unit->landBank->name ?? '-' }}
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-shape-outline text-secondary me-1"></i>
+                                                    {{ $unit->type ?? '-' }}
+                                                </td>
                                                 <td class="d-none d-md-table-cell">
-                                                    {{ Str::limit($unit->landBank->address ?? '-', 15) }}</td>
-                                                <td>{{ $unit->area ?? '-' }} m²</td>
-                                                <td>{{ $unit->building_area ?? '-' }} m²</td>
-                                                <td>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
-                                                <td>{{ $unit->facing ?? '-' }}</td>
+                                                    <i class="mdi mdi-map-marker text-danger me-1"></i>
+                                                    {{ Str::limit($unit->landBank->address ?? '-', 15) }}
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-ruler-square text-warning me-1"></i>
+                                                    {{ $unit->area ?? '-' }} m²
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-domain text-secondary me-1"></i>
+                                                    {{ $unit->building_area ?? '-' }} m²
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-currency-usd text-success me-1"></i>
+                                                    Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-compass text-info me-1"></i>
+                                                    {{ $unit->facing ?? '-' }}
+                                                </td>
                                                 <td>
                                                     @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                        <span class="badge badge-gradient-success">Tersedia</span>
+                                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
                                                     @elseif($unit->status == 'sold')
-                                                        <span class="badge badge-gradient-danger">Terjual</span>
+                                                        <span class="badge badge-gradient-danger"><i class="mdi mdi-cash-check me-1"></i>Terjual</span>
                                                     @else
-                                                        <span
-                                                            class="badge badge-gradient-warning">{{ ucfirst($unit->status) }}</span>
+                                                        <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                 </td>
                                                 <td>
-              @php
-    $status = $unit->construction_progress;
-
-    $progressMap = [
-        'belum_mulai' => 0,
-        'pondasi' => 20,
-        'dinding' => 40,
-        'atap' => 60,
-        'finishing' => 80,
-        'selesai' => 100,
-    ];
-
-    $progress = $progressMap[$status] ?? 0;
-@endphp
-
-<div class="progress" style="height: 22px;">
-    <div
-        class="progress-bar progress-bar-striped progress-bar-animated
-            @if($progress <= 20) bg-danger
-            @elseif($progress < 100) bg-warning
-            @else bg-success
-            @endif"
-        role="progressbar"
-        style="width: {{ $progress }}%;"
-        aria-valuenow="{{ $progress }}"
-        aria-valuemin="0"
-        aria-valuemax="100">
-        {{ ucfirst(str_replace('_',' ', $status ?? 'belum_mulai')) }}
-    </div>
-</div>
+                                                    @php
+                                                        $status = $unit->construction_progress;
+                                                        $progressMap = [
+                                                            'belum_mulai' => 0,
+                                                            'pondasi' => 20,
+                                                            'dinding' => 40,
+                                                            'atap' => 60,
+                                                            'finishing' => 80,
+                                                            'selesai' => 100,
+                                                        ];
+                                                        $progress = $progressMap[$status] ?? 0;
+                                                    @endphp
+                                                    <div class="progress" style="height: 22px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated
+                                                            @if($progress <= 20) bg-danger
+                                                            @elseif($progress < 100) bg-warning
+                                                            @else bg-success
+                                                            @endif"
+                                                            role="progressbar"
+                                                            style="width: {{ $progress }}%;"
+                                                            aria-valuenow="{{ $progress }}"
+                                                            aria-valuemin="0"
+                                                            aria-valuemax="100">
+                                                            <i class="mdi mdi-{{ $progress <= 20 ? 'alert' : ($progress < 100 ? 'progress-clock' : 'check-circle') }} me-1"></i>
+                                                            {{ ucfirst(str_replace('_',' ', $status ?? 'belum_mulai')) }}
+                                                        </div>
+                                                    </div>
                                                 </td>
-                                                <td>{{ $unit->activeBooking->sales->name ?? '-' }}</td>
-                                                <td>Rp
-                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
+                                                <td>
+                                                    <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                    {{ $unit->activeBooking->sales->name ?? '-' }}
                                                 </td>
-                                                <td>{{ $unit->activeBooking->customer->full_name ?? '-' }}</td>
+                                                <td>
+                                                    <i class="mdi mdi-cash text-success me-1"></i>
+                                                    Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-account text-info me-1"></i>
+                                                    {{ $unit->activeBooking->customer->full_name ?? '-' }}
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-1">
                                                         <button class="btn btn-outline-primary btn-sm" title="Detail">
@@ -956,7 +1065,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="14" class="text-center text-muted py-4">
+                                                <td colspan="15" class="text-center text-muted py-4">
                                                     <i class="mdi mdi-home-outline"
                                                         style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>
@@ -976,28 +1085,24 @@
                                         <div class="card-body p-3">
                                             <div class="position-relative">
                                                 @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                    <span
-                                                        class="badge badge-gradient-success position-absolute top-0 end-0 m-2">Tersedia</span>
+                                                    <span class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
                                                 @elseif($unit->status == 'sold')
-                                                    <span
-                                                        class="badge badge-gradient-danger position-absolute top-0 end-0 m-2">Terjual</span>
+                                                    <span class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i class="mdi mdi-cash-check me-1"></i>Terjual</span>
                                                 @else
-                                                    <span
-                                                        class="badge badge-gradient-warning position-absolute top-0 end-0 m-2">{{ ucfirst($unit->status) }}</span>
+                                                    <span class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                 @endif
                                                 <div class="text-center bg-light py-3 py-md-4 rounded">
                                                     <i class="mdi mdi-home-outline"
                                                         style="font-size: 36px; color: #9a55ff;"></i>
                                                 </div>
                                             </div>
-                                            <h6 class="mt-2 fw-bold">{{ $unit->unit_code }}</h6>
-                                            <p class="text-muted small mb-1">{{ $unit->landBank->name ?? '-' }}</p>
-                                            <p class="small mb-1">{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | Rp
+                                            <h6 class="mt-2 fw-bold"><i class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}</h6>
+                                            <p class="text-muted small mb-1"><i class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}</p>
+                                            <p class="small mb-1"><i class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
                                                 {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
                                             <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <small class="text-muted">
-                                                    <i
-                                                        class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
+                                                    <i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
                                                 </small>
                                                 <button class="btn btn-outline-danger btn-sm"
                                                     onclick="openCustomerModal({{ $unit->id }})">
@@ -1110,12 +1215,12 @@
                         <table class="table table-bordered table-hover align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th>No</th>
-                                    <th>ID Customer</th>
-                                    <th>Nama</th>
-                                    <th>No HP</th>
-                                    <th>Pekerjaan</th>
-                                    <th width="160">Aksi</th>
+                                    <th><i class="mdi mdi-counter me-1"></i> No</th>
+                                    <th><i class="mdi mdi-card-account-details me-1"></i> ID Customer</th>
+                                    <th><i class="mdi mdi-account me-1"></i> Nama</th>
+                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
+                                    <th><i class="mdi mdi-briefcase me-1"></i> Pekerjaan</th>
+                                    <th width="160"><i class="mdi mdi-cog me-1"></i> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1123,20 +1228,18 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $c->customer_id ?? '-' }}</td>
-                                        <td>{{ $c->full_name ?? '-' }}</td>
-                                        <td>{{ $c->phone ?? '-' }}</td>
-                                        <td>
-                                            {{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : ($c->job_status ?: '-') }}
-                                        </td>
+                                        <td><i class="mdi mdi-account text-primary me-1"></i>{{ $c->full_name ?? '-' }}</td>
+                                        <td><i class="mdi mdi-phone text-success me-1"></i>{{ $c->phone ?? '-' }}</td>
+                                        <td><i class="mdi mdi-briefcase text-info me-1"></i>{{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : ($c->job_status ?: '-') }}</td>
                                         <td>
                                             <div class="d-flex gap-1">
                                                 <button type="button" class="btn btn-sm btn-success pilihCustomer"
                                                     data-id="{{ $c->id }}" data-type="cash">
-                                                    Cash
+                                                    <i class="mdi mdi-cash me-1"></i>Cash
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-primary pilihCustomer"
                                                     data-id="{{ $c->id }}" data-type="kpr">
-                                                    KPR
+                                                    <i class="mdi mdi-bank me-1"></i>KPR
                                                 </button>
                                             </div>
                                         </td>
@@ -1183,24 +1286,24 @@
                         <table class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Agency</th>
-                                    <th>No HP</th>
-                                    <th>Alamat</th>
-                                    <th>Aksi</th>
+                                    <th><i class="mdi mdi-counter me-1"></i> No</th>
+                                    <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
+                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
+                                    <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
+                                    <th><i class="mdi mdi-cog me-1"></i> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($agencies as $a)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $a->name }}</td>
-                                        <td>{{ $a->phone }}</td>
-                                        <td>{{ $a->address }}</td>
+                                        <td><i class="mdi mdi-office-building text-primary me-1"></i>{{ $a->name }}</td>
+                                        <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}</td>
+                                        <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
                                         <td>
                                             <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
                                                 data-id="{{ $a->id }}">
-                                                Pilih
+                                                <i class="mdi mdi-check me-1"></i>Pilih
                                             </button>
                                         </td>
                                     </tr>
@@ -1212,42 +1315,76 @@
             </div>
         </div>
     </div>
+
+    <!-- Form tersembunyi untuk submit customer -->
+    <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
+        @csrf
+        <input type="hidden" name="customer_id" id="customer_id">
+        <input type="hidden" name="purchase_type" id="purchase_type">
+        <input type="hidden" name="booking_fee" id="booking_fee_hidden">
+        <input type="file" name="bukti_transfer" id="bukti_transfer_hidden">
+    </form>
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // DataTables Unit
-            let table = $('#unitTable').DataTable({
-                responsive: true,
-                paging: false,
-                info: false,
-                searching: false,
-                lengthChange: false,
-                ordering: true,
-                language: {
-                    emptyTable: "Data unit belum tersedia",
-                    zeroRecords: "Data tidak ditemukan",
-                },
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 13]
-                }]
+            // CEK APAKAH TABEL MEMILIKI DATA (bukan baris kosong)
+            let hasData = false;
+            $('#unitTable tbody tr').each(function() {
+                // Jika baris memiliki lebih dari 1 kolom ATAU tidak memiliki colspan
+                if ($(this).find('td').length > 1 || $(this).find('td[colspan]').length === 0) {
+                    hasData = true;
+                }
             });
 
-            // Format Rupiah untuk booking fee
+            // Hancurkan instance DataTables jika sudah ada
+            if ($.fn.DataTable.isDataTable('#unitTable')) {
+                $('#unitTable').DataTable().destroy();
+            }
+
+            // HANYA inisialisasi DataTables JIKA ADA DATA
+            if (hasData) {
+                console.log('Data ditemukan, menginisialisasi DataTables');
+                let table = $('#unitTable').DataTable({
+                    responsive: true,
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Data unit belum tersedia",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [
+                        { targets: 0, orderable: false },  // Kolom No
+                        { targets: 14, orderable: false }  // Kolom Aksi (index ke-14)
+                    ]
+                });
+            } else {
+                console.log('Tabel kosong, DataTables tidak diinisialisasi');
+            }
+
+            // Format Rupiah untuk booking fee dan agent fee
             $('#booking_fee, #agent_fee_modal').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
                 if (value) {
                     $(this).val(new Intl.NumberFormat('id-ID').format(value));
+                } else {
+                    $(this).val('');
                 }
             });
 
             // OPEN CUSTOMER MODAL
             window.openCustomerModal = function(unitId) {
                 if (!unitId) {
-                    alert('Unit tidak valid!');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Unit tidak valid!'
+                    });
                     return;
                 }
                 $('#modalCustomer').attr('data-unit-id', unitId);

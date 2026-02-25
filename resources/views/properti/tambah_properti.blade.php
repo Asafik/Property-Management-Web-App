@@ -1453,7 +1453,7 @@
             });
         });
 
-        // SELECT2 INITIALIZATION
+        // SELECT2 INITIALIZATION - HANYA UNTUK SELECT PERUSAHAAN
         $(document).ready(function() {
             $('#companySelect').select2({
                 theme: 'bootstrap-5',
