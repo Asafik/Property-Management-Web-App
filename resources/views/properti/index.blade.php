@@ -348,6 +348,110 @@
             display: none !important;
         }
 
+        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.8rem !important;
+            min-height: 40px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 38px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+            color: #a5b3cb !important;
+        }
+
+        /* Paksa hanya 5 item yang tampil di Select2 */
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important; /* Kurang lebih 5 item */
+            overflow-y: auto !important;
+        }
+
+        /* Styling scrollbar */
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
         /* Responsive untuk mobile */
         @media (max-width: 576px) {
             .table thead th {
@@ -420,6 +524,7 @@
         }
     </style>
 
+   
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Card -->
         <div class="row mb-4">
@@ -477,57 +582,77 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Baris 2: Kategori & Legalitas -->
+                                            <!-- BARIS FILTER PERUSAHAAN (MOBILE) - SELECT2 -->
                                             <div class="row filter-row">
-                                                <div class="col-6">
+                                                <div class="col-12">
                                                     <label class="form-label">
-                                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                        <i class="mdi mdi-domain me-1"></i>Perusahaan
                                                     </label>
-                                                    <select name="kategori" class="form-control">
-                                                        <option value="">Semua Kategori</option>
-                                                        @foreach ($categories as $kategori)
-                                                            <option value="{{ $kategori }}"
-                                                                {{ request('kategori') == $kategori ? 'selected' : '' }}>
-                                                                {{ $kategori }}
+                                                    <select name="company_id" id="filterCompanyMobile" class="form-control select2-mobile">
+                                                        <option value="">Semua Perusahaan</option>
+                                                        @foreach ($companies as $company)
+                                                            <option value="{{ $company->id }}"
+                                                                {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                                                {{ $company->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                            </div>
+
+                                            <!-- Baris 2: Legalitas & Pembangunan -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-gavel me-1"></i>Legalitas
                                                     </label>
-                                                    <select id="filterLegalitasMobile" class="form-control">
+                                                    <select name="legalitas" id="filterLegalitasMobile" class="form-control">
                                                         <option value="">Semua Legalitas</option>
-                                                        <option value="terverifikasi">Terverifikasi</option>
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="revisi">Revisi</option>
+                                                        <option value="terverifikasi"
+                                                            {{ request('legalitas') == 'terverifikasi' ? 'selected' : '' }}>
+                                                            Terverifikasi</option>
+                                                        <option value="Pending"
+                                                            {{ request('legalitas') == 'Pending' ? 'selected' : '' }}>
+                                                            Pending</option>
+                                                        <option value="revisi"
+                                                            {{ request('legalitas') == 'revisi' ? 'selected' : '' }}>
+                                                            Revisi</option>
                                                     </select>
                                                 </div>
-                                            </div>
-
-                                            <!-- Baris 3: Pembangunan & Tampil -->
-                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-hammer me-1"></i>Pembangunan
                                                     </label>
-                                                    <select id="filterPembangunanMobile" class="form-control">
+                                                    <select name="pembangunan" id="filterPembangunanMobile" class="form-control">
                                                         <option value="">Semua Pembangunan</option>
-                                                        <option value="Selesai">Selesai</option>
-                                                        <option value="progress">Progress</option>
-                                                        <option value="Belum">Belum</option>
+                                                        <option value="Selesai"
+                                                            {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>
+                                                            Selesai</option>
+                                                        <option value="progress"
+                                                            {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
+                                                            Progress</option>
+                                                        <option value="Belum"
+                                                            {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>
+                                                            Belum</option>
                                                     </select>
                                                 </div>
+                                            </div>
+
+                                            <!-- Baris 3: Tampil -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select id="showDataMobile" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
+                                                    <select name="show" id="showDataMobile" class="form-control">
+                                                        <option value="10"
+                                                            {{ request('show') == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25"
+                                                            {{ request('show') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50"
+                                                            {{ request('show') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100"
+                                                            {{ request('show') == 100 ? 'selected' : '' }}>100</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -551,10 +676,10 @@
 
                                         <!-- FILTER UNTUK TABLET & DESKTOP -->
                                         <div class="d-none d-md-block">
-                                            <form method="GET" action="{{ route('properti-all') }}">
+                                            <form method="GET" action="{{ route('properti-all') }}" id="filterForm">
                                                 <div class="row g-2 align-items-end filter-row">
 
-                                                    <!-- Search - placeholder diubah -->
+                                                    <!-- Search -->
                                                     <div class="col-md-3">
                                                         <label class="form-label">
                                                             <i class="mdi mdi-magnify me-1"></i>Pencarian
@@ -564,17 +689,17 @@
                                                             placeholder="Cari PT atau Properti...">
                                                     </div>
 
-                                                    <!-- Kategori -->
+                                                    <!-- FILTER PERUSAHAAN (DESKTOP) - PAKAI SELECT2 -->
                                                     <div class="col-md-2">
                                                         <label class="form-label">
-                                                            <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                            <i class="mdi mdi-domain me-1"></i>Perusahaan
                                                         </label>
-                                                        <select name="kategori" class="form-control">
-                                                            <option value="">Semua Kategori</option>
-                                                            @foreach ($categories as $kategori)
-                                                                <option value="{{ $kategori }}"
-                                                                    {{ request('kategori') == $kategori ? 'selected' : '' }}>
-                                                                    {{ $kategori }}
+                                                        <select name="company_id" id="filterCompany" class="form-control select2-desktop">
+                                                            <option value="">Semua Perusahaan</option>
+                                                            @foreach ($companies as $company)
+                                                                <option value="{{ $company->id }}"
+                                                                    {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                                                    {{ $company->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -876,11 +1001,50 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function() {
+            // ===========================================
+            // 1. SELECT2 UNTUK FILTER PERUSAHAAN
+            // ===========================================
+            $('#filterCompany').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Semua Perusahaan',
+                allowClear: true,
+                minimumResultsForSearch: 0,
+                dropdownCssClass: 'select2-limited-items',
+                language: {
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
 
-            // CEK APAKAH TABEL MEMILIKI DATA
+            $('#filterCompanyMobile').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Semua Perusahaan',
+                allowClear: true,
+                minimumResultsForSearch: 0,
+                dropdownCssClass: 'select2-limited-items',
+                dropdownParent: $('#filterCompanyMobile').parent(),
+                language: {
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+
+            // ===========================================
+            // 2. DATATABLES CONDITIONAL
+            // ===========================================
             let hasData = false;
             $('#tableProperti tbody tr').each(function() {
                 let rowText = $(this).text();
@@ -896,8 +1060,7 @@
 
             // HANYA inisialisasi DataTables JIKA ADA DATA
             if (hasData) {
-                // Inisialisasi DataTables
-                let table = $('#tableProperti').DataTable({
+                $('#tableProperti').DataTable({
                     responsive: true,
                     paging: false,
                     info: false,
@@ -905,15 +1068,7 @@
                     lengthChange: false,
                     ordering: true,
                     language: {
-                        emptyTable: `
-                            <div class="text-center text-muted py-5">
-                                <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                                <p class="mt-3">
-                                    <i class="mdi mdi-information-outline me-2"></i>
-                                    Data belum tersedia
-                                </p>
-                            </div>
-                        `,
+                        emptyTable: "Tidak ada data tersedia",
                         zeroRecords: "Data tidak ditemukan",
                     },
                     columnDefs: [
@@ -924,7 +1079,9 @@
                 });
             }
 
-            // Konfirmasi SweetAlert sebelum verifikasi
+            // ===========================================
+            // 3. SWEETALERT UNTUK VERIFIKASI
+            // ===========================================
             $('.action-text-verify').on('click', function(e) {
                 e.preventDefault();
                 let link = $(this).attr('href');
@@ -945,10 +1102,11 @@
                 });
             });
 
-            // Filter functionality untuk mobile
+            // ===========================================
+            // 4. FILTER MOBILE
+            // ===========================================
             $('#filterDataMobile').on('click', function() {
-                // Implementasi filter mobile bisa ditambahkan di sini
-                alert('Fitur filter mobile sedang dalam pengembangan');
+                $('#filterForm').submit();
             });
 
             $('#resetFilterMobile').on('click', function() {

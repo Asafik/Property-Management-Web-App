@@ -169,6 +169,31 @@
             color: #a5b3cb !important;
         }
 
+        /* Paksa hanya 5 item yang tampil di Select2 */
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important; /* Kurang lebih 5 item */
+            overflow-y: auto !important;
+        }
+
+        /* Styling scrollbar */
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
         /* Input Group */
         .properti-input-group {
             display: flex;
@@ -741,9 +766,6 @@
         }
     </style>
 
-    {{-- SELECT2 CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     <div class="container-fluid px-2 px-md-3 px-lg-4">
         <div class="row">
@@ -812,7 +834,7 @@
                                             Nama Perusahaan <span class="properti-text-danger">*</span>
                                         </label>
 
-                                        {{-- SELECT DENGAN SEARCH (SELECT2) --}}
+                                        {{-- SELECT DENGAN SEARCH (SELECT2) - PAKSA 5 ITEM --}}
                                         <select name="company_profile_id" id="companySelect"
                                                 class="properti-form-control @error('company_profile_id') is-invalid @enderror"
                                                 required>
@@ -1384,11 +1406,6 @@
 @endsection
 
 @push('scripts')
-    {{-- jQuery (required untuk Select2) --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    {{-- Select2 JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         // Format rupiah untuk harga perolehan
@@ -1454,12 +1471,14 @@
         });
 
         // SELECT2 INITIALIZATION - HANYA UNTUK SELECT PERUSAHAAN
+        // PAKSA HANYA 5 ITEM YANG TAMPIL
         $(document).ready(function() {
             $('#companySelect').select2({
                 theme: 'bootstrap-5',
                 placeholder: '-- Pilih Perusahaan --',
                 allowClear: true,
                 width: '100%',
+                dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
                 language: {
                     noResults: function() {
                         return "Perusahaan tidak ditemukan";
