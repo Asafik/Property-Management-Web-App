@@ -1169,35 +1169,30 @@
                     <!-- Booking Fee Section -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-body">
-
                             <div class="row">
-
                                 <!-- Booking Fee -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Booking Fee</label>
-                                    <input type="text" class="form-control" id="booking_fee" name="booking_fee"
-                                        placeholder="Masukkan booking fee" autocomplete="off">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">Rp</span>
+                                        <input type="text" class="form-control" id="booking_fee" name="booking_fee"
+                                            placeholder="Masukkan booking fee" autocomplete="off">
+                                    </div>
                                 </div>
-
 
                                 <!-- Upload Bukti Transfer -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Upload Bukti Transfer</label>
-                                    <form id="formBooking" method="POST" enctype="multipart/form-data">
-                                        @csrf
-
-                                        <input type="hidden" name="customer_id" id="customer_id">
-                                        <input type="hidden" name="purchase_type" id="purchase_type">
-                                        <input type="hidden" name="booking_fee" id="booking_fee_hidden">
-
-                                        <input type="file" name="bukti_transfer" class="form-control" required>
-                                    </form>
+                                    <div class="input-group">
+                                        <input type="file" name="bukti_transfer" class="form-control" id="bukti_transfer" required>
+                                        <span class="input-group-text bg-white">
+                                            <i class="mdi mdi-cloud-upload text-primary"></i>
+                                        </span>
+                                    </div>
                                     <small class="text-muted">
                                         Format: JPG, PNG, PDF (Max 2MB)
                                     </small>
                                 </div>
-
-
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
@@ -1210,111 +1205,281 @@
                         </div>
                     </div>
 
-                    <!-- Table Customer -->
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle">
-                            <thead class="table-light">
+                    <!-- Search & Filter Card -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Search -->
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">
+                                        <i class="mdi mdi-magnify text-primary me-1"></i>
+                                        Cari Customer
+                                    </label>
+                                    <input type="text" id="searchCustomer" class="form-control"
+                                        placeholder="Cari nama, ID, atau no. HP customer...">
+                                </div>
+
+                                <!-- Filter Pekerjaan -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="mdi mdi-briefcase text-primary me-1"></i>
+                                        Filter Pekerjaan
+                                    </label>
+                                    <select class="form-control" id="filterPekerjaan">
+                                        <option value="">Semua Pekerjaan</option>
+                                        @php
+                                            $uniqueJobs = collect($customers)->pluck('job_status')->unique()->filter();
+                                        @endphp
+                                        @foreach($uniqueJobs as $job)
+                                            <option value="{{ $job }}">{{ $job }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Total Customer -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small">
+                            <i class="mdi mdi-account-multiple me-1"></i>
+                            Total: {{ count($customers) }} customer
+                        </span>
+                        <span class="badge badge-gradient-info">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Klik tombol Cash/KPR untuk memilih
+                        </span>
+                    </div>
+
+                    <!-- Table Customer dengan Scroll (TANPA HOVER) -->
+                    <div class="table-responsive" style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
+                        <table class="table table-bordered align-middle mb-0">
+                            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
                                 <tr>
-                                    <th><i class="mdi mdi-counter me-1"></i> No</th>
+                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No</th>
                                     <th><i class="mdi mdi-card-account-details me-1"></i> ID Customer</th>
                                     <th><i class="mdi mdi-account me-1"></i> Nama</th>
                                     <th><i class="mdi mdi-phone me-1"></i> No HP</th>
                                     <th><i class="mdi mdi-briefcase me-1"></i> Pekerjaan</th>
-                                    <th width="160"><i class="mdi mdi-cog me-1"></i> Aksi</th>
+                                    <th class="text-center" style="width: 160px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($customers as $c)
+                                @forelse ($customers as $c)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $c->customer_id ?? '-' }}</td>
-                                        <td><i class="mdi mdi-account text-primary me-1"></i>{{ $c->full_name ?? '-' }}</td>
-                                        <td><i class="mdi mdi-phone text-success me-1"></i>{{ $c->phone ?? '-' }}</td>
-                                        <td><i class="mdi mdi-briefcase text-info me-1"></i>{{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : ($c->job_status ?: '-') }}</td>
+                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                         <td>
-                                            <div class="d-flex gap-1">
+                                            <span class="badge bg-light text-dark">{{ $c->customer_id ?? '-' }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                    style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                                                    {{ strtoupper(substr($c->full_name ?? 'C', 0, 1)) }}
+                                                </div>
+                                                <span class="fw-medium">{{ $c->full_name ?? '-' }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-whatsapp text-success me-1"></i>
+                                            {{ $c->phone ?? '-' }}
+                                        </td>
+                                        <td>
+                                            @if($c->job_status)
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="mdi mdi-briefcase-outline me-1"></i>
+                                                    {{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : $c->job_status }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-1 justify-content-center">
                                                 <button type="button" class="btn btn-sm btn-success pilihCustomer"
-                                                    data-id="{{ $c->id }}" data-type="cash">
+                                                    data-id="{{ $c->id }}" data-type="cash"
+                                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                                     <i class="mdi mdi-cash me-1"></i>Cash
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-primary pilihCustomer"
-                                                    data-id="{{ $c->id }}" data-type="kpr">
+                                                    data-id="{{ $c->id }}" data-type="kpr"
+                                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                                     <i class="mdi mdi-bank me-1"></i>KPR
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <i class="mdi mdi-account-off" style="font-size: 2rem; opacity: 0.3;"></i>
+                                            <p class="mt-2 text-muted">Tidak ada data customer</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- MODAL AGENCY -->
-    <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
-                        Pilih Agency
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formAgency" method="POST">
-                        @csrf
-                        <input type="hidden" name="sales_id" id="sales_id">
-
-                        <!-- Agent Fee Input -->
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <label class="form-label fw-bold">Agent Fee</label>
-                                <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
-                                    placeholder="Masukkan agent fee" autocomplete="off">
+                    <!-- Footer Info -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    Masukkan nominal fee untuk agency yang dipilih
+                                    <i class="mdi mdi-information-outline me-1"></i>
+                                    Tabel dapat di-scroll untuk melihat lebih banyak data
+                                </small>
+                                <small class="text-muted">
+                                    <i class="mdi mdi-arrow-down me-1"></i>
+                                    {{ count($customers) }} data
                                 </small>
                             </div>
                         </div>
-                    </form>
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th><i class="mdi mdi-counter me-1"></i> No</th>
-                                    <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
-                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
-                                    <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
-                                    <th><i class="mdi mdi-cog me-1"></i> Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($agencies as $a)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td><i class="mdi mdi-office-building text-primary me-1"></i>{{ $a->name }}</td>
-                                        <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}</td>
-                                        <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
-                                                data-id="{{ $a->id }}">
-                                                <i class="mdi mdi-check me-1"></i>Pilih
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+ <!-- MODAL AGENCY -->
+<div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
+                    Pilih Agency
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Card untuk Agent Fee & Search (JADI SATU) -->
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <form id="formAgency" method="POST">
+                            @csrf
+                            <input type="hidden" name="sales_id" id="sales_id">
+
+                            <div class="row">
+                                <!-- Agent Fee Input -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="mdi mdi-cash text-primary me-1"></i>
+                                        Agent Fee
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">Rp</span>
+                                        <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
+                                            placeholder="Masukkan agent fee" autocomplete="off">
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="mdi mdi-information-outline me-1"></i>
+                                        Masukkan nominal fee untuk agency yang dipilih
+                                    </small>
+                                </div>
+
+                                <!-- Search Agency -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="mdi mdi-magnify text-primary me-1"></i>
+                                        Cari Agency
+                                    </label>
+                                    <div class="position-relative">
+                                        <i class="mdi mdi-magnify position-absolute"
+                                           style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i>
+                                        <input type="text" id="searchAgency" class="form-control"
+                                               placeholder="Cari nama agency..."
+                                               style="padding-left: 40px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Info Total Agency -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small">
+                        <i class="mdi mdi-office-building me-1"></i>
+                        Total: {{ count($agencies) }} agency
+                    </span>
+                    <span class="badge badge-gradient-info">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Klik tombol Pilih untuk memilih agency
+                    </span>
+                </div>
+
+                <!-- Table Agency dengan Scroll -->
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
+                    <table class="table table-bordered align-middle mb-0">
+                        <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
+                            <tr>
+                                <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No</th>
+                                <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
+                                <th><i class="mdi mdi-phone me-1"></i> No HP</th>
+                                <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
+                                <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($agencies as $a)
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                 style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                                                {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}
+                                            </div>
+                                            <span class="fw-medium">{{ $a->name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="mdi mdi-phone text-success me-1"></i>
+                                        {{ $a->phone }}
+                                    </td>
+                                    <td>
+                                        <i class="mdi mdi-map-marker text-danger me-1"></i>
+                                        {{ $a->address }}
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
+                                                data-id="{{ $a->id }}" style="border-radius: 20px; padding: 0.25rem 1rem;">
+                                            <i class="mdi mdi-check me-1"></i>Pilih
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">
+                                        <i class="mdi mdi-office-building-off" style="font-size: 2rem; opacity: 0.3;"></i>
+                                        <p class="mt-2 text-muted">Tidak ada data agency</p>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Tabel dapat di-scroll untuk melihat lebih banyak data
+                            </small>
+                            <small class="text-muted">
+                                <i class="mdi mdi-arrow-down me-1"></i>
+                                {{ count($agencies) }} data
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
