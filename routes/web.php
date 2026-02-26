@@ -244,6 +244,11 @@ Route::get('/dashboard-servis', function () {
 });
 
 
+Route::get('/dashboard-dokument', function () {
+    return view('dokument.dokument');
+});
+
+
 
 Route::get('/dashboard-pengaturan', function () {
     return view('setting.setting');
