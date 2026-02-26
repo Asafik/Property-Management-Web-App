@@ -871,6 +871,7 @@
 
                     <hr>
 
+    
 
                     {{-- Tombol aksi --}}
                     <div class="d-flex flex-wrap gap-2">
@@ -884,6 +885,12 @@
                             class="rab-btn rab-btn-primary flex-grow-1">
                             <i class="mdi mdi-printer me-1"></i>Cetak RAB
                         </a>
+
+                        {{-- ACC RAB --}}
+                        <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
+                            data-id="{{ $unit->id }}">
+                            <i class="mdi mdi-check me-1"></i>ACC RAB
+                        </button>
                     </div>
                 </div>
             </div>
