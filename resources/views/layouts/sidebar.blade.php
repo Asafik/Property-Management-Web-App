@@ -172,7 +172,7 @@
         </a>
     </li>
 
->>>>>>> 3674da9658dc55e6821625ed2103014b5a803488
+
     <!-- MENU INVENTORY UNIT -->
     <li class="nav-item">
         <a class="nav-link" href="#">

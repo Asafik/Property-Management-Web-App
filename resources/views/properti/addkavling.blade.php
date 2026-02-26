@@ -899,7 +899,7 @@
                                     <label class="text-muted small">
                                         <i class="mdi mdi-gavel me-1"></i>Status Legal
                                     </label>
-                                    @if ($land->legal_status == 'terverifikasi')
+                                    @if ($land->legal_status == 'verified')
                                         <p class="fw-bold"><span class="badge badge-success"><i
                                                     class="mdi mdi-check-circle me-1"></i>Terverifikasi</span></p>
                                     @else

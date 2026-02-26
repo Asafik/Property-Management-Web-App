@@ -28,6 +28,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\CompanyProfileController;
+use App\Http\Controllers\LandBankDocumentController;
 use App\Http\Controllers\PengajuanController;
 
 /*
@@ -242,9 +243,11 @@ Route::get('/dashboard-servis', function () {
 });
 
 
-Route::get('/dashboard-dokument', function () {
-    return view('dokument.dokument');
-});
+// Route::get('/dashboard-dokument', function () {
+//     return view('dokument.dokument');
+// });
+Route::get('/dashboard-dokument', [LandBankDocumentController::class, 'index'])->name('dokument.index');
+Route::post('/dashboard-dokument/store', [LandBankDocumentController::class, 'store'])->name('document-types.store');
 
 
 
