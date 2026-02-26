@@ -1167,7 +1167,7 @@
                                                                 class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                 </td>
-                                                <td style="min-width:160px;">
+                                                <td style="min-width:180px;">
                                                     @php
                                                         $status = $unit->construction_progress;
                                                         $progressMap = [
@@ -1179,6 +1179,9 @@
                                                             'selesai' => 100,
                                                         ];
                                                         $progress = $progressMap[$status] ?? 0;
+
+                                                        // jika belum mulai, kasih minimal width supaya text terlihat
+                                                        $barWidth = $status === 'belum_mulai' ? 100 : $progress;
                                                     @endphp
 
                                                     <div class="progress rounded-pill"
@@ -1186,15 +1189,19 @@
                                                         <div class="progress-bar 
                                                             d-flex align-items-center justify-content-center
                                                             fw-semibold text-white
-                                                            @if ($progress <= 20) bg-danger
+                                                            @if ($status === 'belum_mulai') bg-danger
                                                             @elseif($progress < 100) bg-warning
                                                             @else bg-success @endif"
                                                             role="progressbar"
-                                                            style="width: {{ $progress }}%; transition: .5s;"
+                                                            style="width: {{ $barWidth }}%; transition: .5s;"
                                                             aria-valuenow="{{ $progress }}" aria-valuemin="0"
                                                             aria-valuemax="100">
 
-                                                            {{ $progress }}%
+                                                            @if ($status === 'belum_mulai')
+                                                                Belum mulai pembangunan
+                                                            @else
+                                                                {{ $progress }}%
+                                                            @endif
 
                                                         </div>
                                                     </div>
@@ -1244,61 +1251,61 @@
 
                         <!-- GRID VIEW (Katalog) -->
                         <div id="gridView" style="display: none;">
-                          <div class="row g-3">
-                            @forelse ($units as $unit)
-                                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                                    <div class="card grid-card h-100">
-                                        <div class="card-body p-3">
-                                            <div class="position-relative">
-                                                @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                    <span
-                                                        class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
-                                                            class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                @elseif($unit->status == 'sold')
-                                                    <span
-                                                        class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
-                                                            class="mdi mdi-cash-check me-1"></i>Terjual</span>
-                                                @else
-                                                    <span
-                                                        class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
-                                                            class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
-                                                @endif
-                                                <div class="text-center bg-light py-3 py-md-4 rounded">
-                                                    <i class="mdi mdi-home-outline"
-                                                        style="font-size: 36px; color: #9a55ff;"></i>
+                            <div class="row g-3">
+                                @forelse ($units as $unit)
+                                    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                                        <div class="card grid-card h-100">
+                                            <div class="card-body p-3">
+                                                <div class="position-relative">
+                                                    @if ($unit->status == 'ready' || $unit->status == 'tersedia')
+                                                        <span
+                                                            class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
+                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    @elseif($unit->status == 'sold')
+                                                        <span
+                                                            class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
+                                                                class="mdi mdi-cash-check me-1"></i>Terjual</span>
+                                                    @else
+                                                        <span
+                                                            class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
+                                                                class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
+                                                    @endif
+                                                    <div class="text-center bg-light py-3 py-md-4 rounded">
+                                                        <i class="mdi mdi-home-outline"
+                                                            style="font-size: 36px; color: #9a55ff;"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <h6 class="mt-2 fw-bold"><i
-                                                    class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}
-                                            </h6>
-                                            <p class="text-muted small mb-1"><i
-                                                    class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
-                                            </p>
-                                            <p class="small mb-1"><i
-                                                    class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
-                                                m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
-                                                {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
-                                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                                <small class="text-muted">
-                                                    <i
-                                                        class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
-                                                </small>
-                                                <button class="btn btn-outline-danger btn-sm"
-                                                    onclick="openCustomerModal({{ $unit->id }})">
-                                                    <i class="mdi mdi-account-plus"></i>
-                                                </button>
+                                                <h6 class="mt-2 fw-bold"><i
+                                                        class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}
+                                                </h6>
+                                                <p class="text-muted small mb-1"><i
+                                                        class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
+                                                </p>
+                                                <p class="small mb-1"><i
+                                                        class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
+                                                    m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
+                                                    {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted">
+                                                        <i
+                                                            class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
+                                                    </small>
+                                                    <button class="btn btn-outline-danger btn-sm"
+                                                        onclick="openCustomerModal({{ $unit->id }})">
+                                                        <i class="mdi mdi-account-plus"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @empty
-                                <div class="col-12">
-                                    <div class="text-center text-muted py-5">
-                                        <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-3">Belum ada unit tersedia</p>
+                                @empty
+                                    <div class="col-12">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                            <p class="mt-3">Belum ada unit tersedia</p>
+                                        </div>
                                     </div>
-                                </div>
-                            @endforelse
+                                @endforelse
                             </div>
                         </div>
 
