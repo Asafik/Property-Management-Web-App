@@ -1309,266 +1309,266 @@
                             </div>
                         </div>
 
-                            <!-- DENAH VIEW (DARI HALAMAN BUAT KAVLING) -->
-                            <div id="denahView" style="display: none;">
-                                <div class="denah-container">
-                                    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+                        <!-- DENAH VIEW (DARI HALAMAN BUAT KAVLING) -->
+                        <div id="denahView" style="display: none;">
+                            <div class="denah-container">
+                                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+                                    @php
+                                        // Kelompokkan unit berdasarkan proyek (landBank)
+                                        $unitsByProject = $units->groupBy(function ($item) {
+                                            return $item->landBank->name ?? 'Tanpa Proyek';
+                                        });
+                                    @endphp
+
+                                    @foreach ($unitsByProject as $projectName => $projectUnits)
                                         @php
-                                            // Kelompokkan unit berdasarkan proyek (landBank)
-                                            $unitsByProject = $units->groupBy(function ($item) {
-                                                return $item->landBank->name ?? 'Tanpa Proyek';
-                                            });
+                                            // Kelompokkan unit per proyek berdasarkan blok
+                                            $blokKavlings = [];
+                                            foreach ($projectUnits as $unit) {
+                                                $blok = explode('.', $unit->unit_code)[0];
+                                                $blokKavlings[$blok][] = $unit;
+                                            }
+                                            $allBloks = array_keys($blokKavlings);
                                         @endphp
 
-                                        @foreach ($unitsByProject as $projectName => $projectUnits)
-                                            @php
-                                                // Kelompokkan unit per proyek berdasarkan blok
-                                                $blokKavlings = [];
-                                                foreach ($projectUnits as $unit) {
-                                                    $blok = explode('.', $unit->unit_code)[0];
-                                                    $blokKavlings[$blok][] = $unit;
-                                                }
-                                                $allBloks = array_keys($blokKavlings);
-                                            @endphp
+                                        <div
+                                            style="margin-bottom: 25px; width:100%; border-bottom: 1px dashed #9a55ff; padding-bottom: 15px;">
+                                            <h6 class="text-primary mb-3">
+                                                <i class="mdi mdi-office-building me-2"></i>
+                                                Proyek: {{ $projectName }}
+                                            </h6>
 
-                                            <div
-                                                style="margin-bottom: 25px; width:100%; border-bottom: 1px dashed #9a55ff; padding-bottom: 15px;">
-                                                <h6 class="text-primary mb-3">
-                                                    <i class="mdi mdi-office-building me-2"></i>
-                                                    Proyek: {{ $projectName }}
-                                                </h6>
+                                            @foreach ($allBloks as $blok)
+                                                <div style="margin-bottom:15px; width:100%;">
+                                                    @php
+                                                        $typesInBlok = collect($blokKavlings[$blok])
+                                                            ->pluck('type')
+                                                            ->unique()
+                                                            ->values()
+                                                            ->toArray();
 
-                                                @foreach ($allBloks as $blok)
-                                                    <div style="margin-bottom:15px; width:100%;">
-                                                        @php
-                                                            $typesInBlok = collect($blokKavlings[$blok])
-                                                                ->pluck('type')
-                                                                ->unique()
-                                                                ->values()
-                                                                ->toArray();
+                                                        $typeLetters = [];
 
-                                                            $typeLetters = [];
-
-                                                            foreach ($typesInBlok as $type) {
-                                                                if ($type == 'subsidi') {
-                                                                    $typeLetters[] = 'S';
-                                                                } elseif ($type == 'komersil') {
-                                                                    $typeLetters[] = 'K';
-                                                                }
+                                                        foreach ($typesInBlok as $type) {
+                                                            if ($type == 'subsidi') {
+                                                                $typeLetters[] = 'S';
+                                                            } elseif ($type == 'komersil') {
+                                                                $typeLetters[] = 'K';
                                                             }
+                                                        }
 
-                                                            $labelType = implode(' & ', $typeLetters);
+                                                        $labelType = implode(' & ', $typeLetters);
+                                                    @endphp
+
+                                                    <strong style="font-size: 14px;">
+                                                        Blok {{ $blok }} - {{ $labelType }}
+                                                        <small class="text-muted ms-2">({{ count($blokKavlings[$blok]) }}
+                                                            unit)</small>
+                                                    </strong>
+
+                                                    <div
+                                                        style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; margin-top:8px;">
+
+                                                        @php
+                                                            $numbers = [];
+                                                            foreach ($blokKavlings[$blok] as $unit) {
+                                                                $num = (int) explode('.', $unit->unit_code)[1];
+                                                                $numbers[] = $num;
+                                                            }
+                                                            $maxNum = max($numbers);
                                                         @endphp
 
-                                                        <strong style="font-size: 14px;">
-                                                            Blok {{ $blok }} - {{ $labelType }}
-                                                            <small class="text-muted ms-2">({{ count($blokKavlings[$blok]) }}
-                                                                unit)</small>
-                                                        </strong>
-
-                                                        <div
-                                                            style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; margin-top:8px;">
-
+                                                        @for ($i = 1; $i <= $maxNum; $i++)
                                                             @php
-                                                                $numbers = [];
-                                                                foreach ($blokKavlings[$blok] as $unit) {
-                                                                    $num = (int) explode('.', $unit->unit_code)[1];
-                                                                    $numbers[] = $num;
+                                                                $unitFound = collect($blokKavlings[$blok])->firstWhere(
+                                                                    'unit_code',
+                                                                    $blok . '.' . $i,
+                                                                );
+
+                                                                $bgColor = '#6c757d'; // abu-abu untuk belum ada
+                                                                $icon = 'close';
+                                                                $borderStyle = 'none';
+                                                                $extraStyle = '';
+                                                                $typeBadge = '';
+                                                                $statusText = 'Belum Tersedia';
+
+                                                                if ($unitFound) {
+                                                                    $statusText = ucfirst($unitFound->status);
+
+                                                                    // WARNA BERDASARKAN STATUS
+                                                                    switch ($unitFound->status) {
+                                                                        case 'sold':
+                                                                            $bgColor = '#dc3545'; // merah
+                                                                            $icon = 'check';
+                                                                            break;
+
+                                                                        case 'booked':
+                                                                            $bgColor = '#ffc107'; // kuning
+                                                                            $icon = 'clock';
+                                                                            break;
+
+                                                                        case 'draft':
+                                                                            $bgColor = '#343a40'; // hitam
+                                                                            $icon = 'pencil';
+                                                                            break;
+
+                                                                        case 'ready':
+                                                                            if ($unitFound->type == 'subsidi') {
+                                                                                $bgColor = '#28a745'; // hijau
+                                                                                $typeBadge = 'S';
+                                                                            } else {
+                                                                                $bgColor = '#0d6efd'; // biru
+                                                                                $typeBadge = 'K';
+                                                                            }
+                                                                            $icon = 'home';
+                                                                            break;
+                                                                    }
+
+                                                                    // BORDER BERDASARKAN PROGRESS
+                                                                    switch ($unitFound->construction_progress) {
+                                                                        case 'belum_mulai':
+                                                                            $borderStyle = '2px dashed #000';
+                                                                            $extraStyle =
+                                                                                'background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px);';
+                                                                            break;
+
+                                                                        case 'pondasi':
+                                                                            $borderStyle = '2px solid #000';
+                                                                            break;
+
+                                                                        case 'dinding':
+                                                                            $borderStyle = '3px solid #000';
+                                                                            break;
+
+                                                                        case 'atap':
+                                                                            $borderStyle = '3px double #000';
+                                                                            break;
+
+                                                                        case 'finishing':
+                                                                            $borderStyle = '3px groove #000';
+                                                                            break;
+
+                                                                        case 'selesai':
+                                                                            $borderStyle = '3px solid #155724';
+                                                                            break;
+                                                                    }
                                                                 }
-                                                                $maxNum = max($numbers);
                                                             @endphp
 
-                                                            @for ($i = 1; $i <= $maxNum; $i++)
-                                                                @php
-                                                                    $unitFound = collect($blokKavlings[$blok])->firstWhere(
-                                                                        'unit_code',
-                                                                        $blok . '.' . $i,
-                                                                    );
-
-                                                                    $bgColor = '#6c757d'; // abu-abu untuk belum ada
-                                                                    $icon = 'close';
-                                                                    $borderStyle = 'none';
-                                                                    $extraStyle = '';
-                                                                    $typeBadge = '';
-                                                                    $statusText = 'Belum Tersedia';
-
-                                                                    if ($unitFound) {
-                                                                        $statusText = ucfirst($unitFound->status);
-
-                                                                        // WARNA BERDASARKAN STATUS
-                                                                        switch ($unitFound->status) {
-                                                                            case 'sold':
-                                                                                $bgColor = '#dc3545'; // merah
-                                                                                $icon = 'check';
-                                                                                break;
-
-                                                                            case 'booked':
-                                                                                $bgColor = '#ffc107'; // kuning
-                                                                                $icon = 'clock';
-                                                                                break;
-
-                                                                            case 'draft':
-                                                                                $bgColor = '#343a40'; // hitam
-                                                                                $icon = 'pencil';
-                                                                                break;
-
-                                                                            case 'ready':
-                                                                                if ($unitFound->type == 'subsidi') {
-                                                                                    $bgColor = '#28a745'; // hijau
-                                                                                    $typeBadge = 'S';
-                                                                                } else {
-                                                                                    $bgColor = '#0d6efd'; // biru
-                                                                                    $typeBadge = 'K';
-                                                                                }
-                                                                                $icon = 'home';
-                                                                                break;
-                                                                        }
-
-                                                                        // BORDER BERDASARKAN PROGRESS
-                                                                        switch ($unitFound->construction_progress) {
-                                                                            case 'belum_mulai':
-                                                                                $borderStyle = '2px dashed #000';
-                                                                                $extraStyle =
-                                                                                    'background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px);';
-                                                                                break;
-
-                                                                            case 'pondasi':
-                                                                                $borderStyle = '2px solid #000';
-                                                                                break;
-
-                                                                            case 'dinding':
-                                                                                $borderStyle = '3px solid #000';
-                                                                                break;
-
-                                                                            case 'atap':
-                                                                                $borderStyle = '3px double #000';
-                                                                                break;
-
-                                                                            case 'finishing':
-                                                                                $borderStyle = '3px groove #000';
-                                                                                break;
-
-                                                                            case 'selesai':
-                                                                                $borderStyle = '3px solid #155724';
-                                                                                break;
-                                                                        }
-                                                                    }
-                                                                @endphp
-
-                                                                <span class="unit-box"
-                                                                    style="
+                                                            <span class="unit-box"
+                                                                style="
                                                                         background-color: var(--unit-bg, {{ $bgColor }});
                                                                         border: {{ $borderStyle }};
                                                                         {{ $extraStyle }}
                                                                     "
-                                                                    data-status="{{ $unitFound->status ?? 'unavailable' }}"
-                                                                    data-type="{{ $unitFound->type ?? '' }}"
-                                                                    title="{{ $unitFound ? 'Blok: ' . $unitFound->unit_code . ' - Status: ' . $statusText . ' - Progress: ' . ($unitFound->construction_progress ?? 'belum_mulai') : 'Unit ' . $blok . '.' . $i . ' belum tersedia' }}">
+                                                                data-status="{{ $unitFound->status ?? 'unavailable' }}"
+                                                                data-type="{{ $unitFound->type ?? '' }}"
+                                                                title="{{ $unitFound ? 'Blok: ' . $unitFound->unit_code . ' - Status: ' . $statusText . ' - Progress: ' . ($unitFound->construction_progress ?? 'belum_mulai') : 'Unit ' . $blok . '.' . $i . ' belum tersedia' }}">
 
-                                                                    @if ($typeBadge)
-                                                                        <span
-                                                                            class="type-badge-small">{{ $typeBadge }}</span>
-                                                                    @endif
+                                                                @if ($typeBadge)
+                                                                    <span
+                                                                        class="type-badge-small">{{ $typeBadge }}</span>
+                                                                @endif
 
-                                                                    <i class="mdi mdi-{{ $icon }} me-1"></i>
-                                                                    {{ $blok . '.' . $i }}
-                                                                </span>
-                                                            @endfor
-                                                        </div>
+                                                                <i class="mdi mdi-{{ $icon }} me-1"></i>
+                                                                {{ $blok . '.' . $i }}
+                                                            </span>
+                                                        @endfor
                                                     </div>
-                                                @endforeach
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
 
-                                    <!-- LEGEND -->
-                                    <div class="mt-5 pt-3 border-top">
-                                        <h6 class="mb-3">Keterangan:</h6>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <h6 class="small fw-bold">Status Penjualan:</h6>
-                                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                                    <span class="legend-box bg-danger">Sold</span>
-                                                    <span class="legend-box bg-warning text-dark">Booked</span>
-                                                    <span class="legend-box bg-dark">Draft</span>
-                                                    <span class="legend-box bg-success">Ready - Subsidi</span>
-                                                    <span class="legend-box bg-primary">Ready - Komersil</span>
-                                                    <span class="legend-box" style="background-color:#6c757d;">Belum
-                                                        Tersedia</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h6 class="small fw-bold">Progress Pembangunan (Border):</h6>
-                                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                                    <span
-                                                        style="border:2px dashed #000; padding:4px 8px; background:#f8f9fa;">Belum
-                                                        Mulai</span>
-                                                    <span
-                                                        style="border:2px solid #000; padding:4px 8px; background:#f8f9fa;">Pondasi</span>
-                                                    <span
-                                                        style="border:3px solid #000; padding:4px 8px; background:#f8f9fa;">Dinding</span>
-                                                    <span
-                                                        style="border:3px double #000; padding:4px 8px; background:#f8f9fa;">Atap</span>
-                                                    <span
-                                                        style="border:3px groove #000; padding:4px 8px; background:#f8f9fa;">Finishing</span>
-                                                    <span
-                                                        style="border:3px solid #155724; padding:4px 8px; background:#f8f9fa;">Selesai</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <h6 class="small fw-bold">Tipe Unit:</h6>
-                                                <div class="d-flex gap-2">
-                                                    <span class="badge bg-success">S = Subsidi</span>
-                                                    <span class="badge bg-primary">K = Komersil</span>
-                                                </div>
+                                <!-- LEGEND -->
+                                <div class="mt-5 pt-3 border-top">
+                                    <h6 class="mb-3">Keterangan:</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h6 class="small fw-bold">Status Penjualan:</h6>
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <span class="legend-box bg-danger">Sold</span>
+                                                <span class="legend-box bg-warning text-dark">Booked</span>
+                                                <span class="legend-box bg-dark">Draft</span>
+                                                <span class="legend-box bg-success">Ready - Subsidi</span>
+                                                <span class="legend-box bg-primary">Ready - Komersil</span>
+                                                <span class="legend-box" style="background-color:#6c757d;">Belum
+                                                    Tersedia</span>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <h6 class="mb-3">Atur Warna Status</h6>
-
-                                        <div class="row g-3">
-                                            <div class="col-md-2">
-                                                <label>Sold</label>
-                                                <input type="color" id="color_sold" value="#dc3545"
-                                                    class="form-control form-control-color">
+                                        <div class="col-md-4">
+                                            <h6 class="small fw-bold">Progress Pembangunan (Border):</h6>
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <span
+                                                    style="border:2px dashed #000; padding:4px 8px; background:#f8f9fa;">Belum
+                                                    Mulai</span>
+                                                <span
+                                                    style="border:2px solid #000; padding:4px 8px; background:#f8f9fa;">Pondasi</span>
+                                                <span
+                                                    style="border:3px solid #000; padding:4px 8px; background:#f8f9fa;">Dinding</span>
+                                                <span
+                                                    style="border:3px double #000; padding:4px 8px; background:#f8f9fa;">Atap</span>
+                                                <span
+                                                    style="border:3px groove #000; padding:4px 8px; background:#f8f9fa;">Finishing</span>
+                                                <span
+                                                    style="border:3px solid #155724; padding:4px 8px; background:#f8f9fa;">Selesai</span>
                                             </div>
-
-                                            <div class="col-md-2">
-                                                <label>Booked</label>
-                                                <input type="color" id="color_booked" value="#ffc107"
-                                                    class="form-control form-control-color">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label>Draft</label>
-                                                <input type="color" id="color_draft" value="#343a40"
-                                                    class="form-control form-control-color">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label>Ready Subsidi</label>
-                                                <input type="color" id="color_ready_subsidi" value="#28a745"
-                                                    class="form-control form-control-color">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label>Ready Komersil</label>
-                                                <input type="color" id="color_ready_komersil" value="#0d6efd"
-                                                    class="form-control form-control-color">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label>Belum Tersedia</label>
-                                                <input type="color" id="color_unavailable" value="#6c757d"
-                                                    class="form-control form-control-color">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="small fw-bold">Tipe Unit:</h6>
+                                            <div class="d-flex gap-2">
+                                                <span class="badge bg-success">S = Subsidi</span>
+                                                <span class="badge bg-primary">K = Komersil</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="mb-3">Atur Warna Status</h6>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-2">
+                                            <label>Sold</label>
+                                            <input type="color" id="color_sold" value="#dc3545"
+                                                class="form-control form-control-color">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Booked</label>
+                                            <input type="color" id="color_booked" value="#ffc107"
+                                                class="form-control form-control-color">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Draft</label>
+                                            <input type="color" id="color_draft" value="#343a40"
+                                                class="form-control form-control-color">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Ready Subsidi</label>
+                                            <input type="color" id="color_ready_subsidi" value="#28a745"
+                                                class="form-control form-control-color">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Ready Komersil</label>
+                                            <input type="color" id="color_ready_komersil" value="#0d6efd"
+                                                class="form-control form-control-color">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Belum Tersedia</label>
+                                            <input type="color" id="color_unavailable" value="#6c757d"
+                                                class="form-control form-control-color">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- SITE PLAN VIEW (STATIK) -->
                         <div id="landmapView" style="display: none;">
@@ -1577,8 +1577,7 @@
                                 <h4 class="mb-3">Site Plan</h4>
 
                                 <div class="siteplan-wrapper">
-                                    <img src="{{ asset('images/sitepland.jfif') }}" alt="Site Plan Kawasan"
-                                        class="img-fluid siteplan-img">
+                                    @include('layouts.partial.sitepland')
                                 </div>
 
                             </div>

@@ -27,5 +27,8 @@ class DevelopmentProgressItem extends Model
 {
     return $this->hasMany(Rabs::class);
 }
-
+public function documents()
+{
+    return $this->hasMany(DevelopmentItemDocument::class);
+}
 }

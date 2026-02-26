@@ -174,6 +174,19 @@
             color: white;
         }
 
+        .rab-btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .rab-btn-warning:hover {
+            background: linear-gradient(135deg, #e0a800, #ffcd39);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+            color: #2c2e3f;
+        }
+
         .rab-btn-light {
             background: #f8f9fa;
             border: 1px solid #e9ecef;
@@ -199,6 +212,201 @@
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
+        /* ===== FILE UPLOAD MODERN STYLING ===== */
+        .file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.3rem 0.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 32px;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-label {
+                padding: 0.4rem 0.6rem;
+                gap: 6px;
+                min-height: 36px;
+            }
+        }
+
+        .file-upload-modern:hover .file-upload-label {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .file-upload-label i {
+            font-size: 1rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 4px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .file-upload-info {
+            flex: 1;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .file-upload-info span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-info span {
+                font-size: 0.7rem;
+            }
+        }
+
+        .file-upload-info small {
+            color: #6c7383;
+            font-size: 0.55rem;
+            display: block;
+        }
+
+        .file-upload-size {
+            font-size: 0.55rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-size {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+        }
+
+        .file-upload-label.file-selected {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+        }
+
+        .file-upload-label.file-selected i {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Preview file button dengan teks */
+        .file-preview-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: white;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .file-preview-btn {
+                padding: 0.3rem 1rem;
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+        }
+
+        .file-preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .file-preview-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* Dokumen container */
+        .dokumen-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+        }
+
+        /* ===== TABLE COLUMN WIDTH ADJUSTMENTS ===== */
+        .table thead th:nth-child(1) { width: 4%; }  /* No */
+        .table thead th:nth-child(2) { width: 18%; } /* Uraian (diperkecil) */
+        .table thead th:nth-child(3) { width: 6%; }  /* Volume */
+        .table thead th:nth-child(4) { width: 6%; }  /* Satuan */
+        .table thead th:nth-child(5) { width: 10%; } /* Harga */
+        .table thead th:nth-child(6) { width: 10%; } /* Total */
+        .table thead th:nth-child(7) { width: 15%; } /* Keterangan */
+        .table thead th:nth-child(8) { width: 18%; } /* Dokumentasi (diperbesar) */
+        .table thead th:nth-child(9) { width: 8%; }  /* Aksi */
+
+        .table tbody td:nth-child(1) { text-align: center; }
+        .table tbody td:nth-child(5) { text-align: right; }
+        .table tbody td:nth-child(6) { text-align: right; }
+
+        /* Input di dalam tabel */
+        .table input[type="text"],
+        .table input[type="number"],
+        .table select {
+            width: 100%;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.7rem;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .table input[type="text"],
+            .table input[type="number"],
+            .table select {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .table input:focus {
+            border-color: #9a55ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.1);
+        }
+
         /* Text colors */
         .rab-text-muted {
             color: #a5b3cb !important;
@@ -221,7 +429,7 @@
             }
         }
 
-        /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
+        /* ===== CARD STYLING ===== */
         .card {
             transition: all 0.3s ease;
             margin-bottom: 1rem;
@@ -284,7 +492,7 @@
             }
         }
 
-        /* Table styling - Responsif */
+        /* Table styling */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -293,10 +501,11 @@
         }
 
         .table {
-            min-width: 700px;
+            min-width: 1000px;
+            width: 100%;
         }
 
-        @media (min-width: 992px) {
+        @media (min-width: 1200px) {
             .table {
                 min-width: 100%;
             }
@@ -310,14 +519,14 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #e9ecef;
-            padding: 0.4rem 0.25rem;
+            padding: 0.5rem 0.25rem;
             white-space: nowrap;
         }
 
         @media (min-width: 576px) {
             .table thead th {
                 font-size: 0.7rem;
-                padding: 0.5rem 0.4rem;
+                padding: 0.6rem 0.4rem;
             }
         }
 
@@ -330,14 +539,14 @@
 
         .table tbody td {
             vertical-align: middle;
-            font-size: 0.65rem;
-            padding: 0.4rem 0.25rem;
+            font-size: 0.7rem;
+            padding: 0.5rem 0.25rem;
         }
 
         @media (min-width: 576px) {
             .table tbody td {
-                font-size: 0.7rem;
-                padding: 0.5rem 0.4rem;
+                font-size: 0.75rem;
+                padding: 0.6rem 0.4rem;
             }
         }
 
@@ -384,60 +593,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
         }
 
-        @media (min-width: 768px) {
-            .shadow-sm {
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
-            }
-        }
-
-        /* Text muted */
-        .text-muted {
-            color: #a5b3cb !important;
-            font-size: 0.65rem;
-        }
-
-        @media (min-width: 576px) {
-            .text-muted {
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .text-muted {
-                font-size: 0.75rem;
-            }
-        }
-
-        /* Badge styling */
-        .badge {
-            padding: 3px 6px;
-            font-weight: 500;
-            font-size: 0.6rem;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 4px 8px;
-                font-size: 0.65rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 5px 10px;
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Border colors untuk card tertentu */
-        .border-primary {
-            border-color: #9a55ff !important;
-        }
-
-        .border-success {
-            border-color: #28a745 !important;
-        }
-
         /* Typography */
         h3.text-dark {
             font-size: 1.1rem !important;
@@ -462,136 +617,9 @@
             }
         }
 
-        /* Row spacing */
-        .row {
-            margin-right: -0.25rem;
-            margin-left: -0.25rem;
-        }
-
-        @media (min-width: 576px) {
-            .row {
-                margin-right: -0.5rem;
-                margin-left: -0.5rem;
-            }
-        }
-
-        /* Column padding */
-        [class*="col-"] {
-            padding-right: 0.25rem;
-            padding-left: 0.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 576px) {
-            [class*="col-"] {
-                padding-right: 0.5rem;
-                padding-left: 0.5rem;
-                margin-bottom: 0;
-            }
-        }
-
-        /* Margin utilities */
-        .mb-4 {
-            margin-bottom: 1rem !important;
-        }
-
-        @media (min-width: 576px) {
-            .mb-4 {
-                margin-bottom: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .mb-4 {
-                margin-bottom: 2rem !important;
-            }
-        }
-
-        /* Gap utility */
-        .gap-3 {
-            gap: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-            .gap-3 {
-                gap: 0.8rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .gap-3 {
-                gap: 1rem !important;
-            }
-        }
-
-        /* Card header button group */
-        .card-header.d-flex {
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: flex-start !important;
-        }
-
-        @media (min-width: 576px) {
-            .card-header.d-flex {
-                flex-direction: row;
-                gap: 1rem;
-                align-items: center !important;
-            }
-        }
-
-        /* Info unit row */
-        .row .col-md-2,
-        .row .col-md-3 {
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 576px) {
-
-            .row .col-md-2,
-            .row .col-md-3 {
-                margin-bottom: 0;
-            }
-        }
-
-        /* Card title */
-        .card-title {
-            font-size: 0.9rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
         /* Text end input */
         .text-end input {
             text-align: right;
-        }
-
-        /* Better touch targets for mobile */
-        input,
-        select,
-        textarea,
-        button {
-            font-size: 16px !important;
-        }
-
-        /* Max width untuk input di card */
-        .max-width-200 {
-            max-width: 200px;
-        }
-
-        @media (max-width: 576px) {
-            .max-width-200 {
-                max-width: 100%;
-            }
         }
 
         /* Icon styling */
@@ -601,7 +629,7 @@
     </style>
 
     <div class="container-fluid p-4">
-        <!-- Header - HARUS DIPISAH JADI CARD SENDIRI -->
+        <!-- Header -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
@@ -618,6 +646,7 @@
                 </div>
             </div>
         </div>
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show">
                 {{ session('success') }}
@@ -637,13 +666,13 @@
                 {{ $errors->first() }}
             </div>
         @endif
+
         <!-- Info Unit -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card bg-light">
                     <div class="card-body">
                         <div class="row">
-
                             {{-- UNIT --}}
                             <div class="col-12 col-sm-6 col-md-2">
                                 <small class="text-muted d-block">
@@ -692,15 +721,13 @@
                                 </small>
                                 <input type="text" id="unitPrice" class="rab-form-control" readonly>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <form action="{{ route('properti.progress.store') }}" method="POST">
+        <form action="{{ route('properti.progress.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="land_bank_unit_id" value="{{ $selectedUnit->id }}">
             <input type="hidden" name="development_progress_id" value="{{ $selectedUnit->progress->id }}">
@@ -748,15 +775,15 @@
                                     <table class="table table-bordered mb-0">
                                         <thead class="bg-light">
                                             <tr>
-                                                <th width="5%">No</th>
-                                                <th width="25%">Uraian</th>
-                                                <th width="8%">Volume</th>
-                                                <th width="8%">Satuan</th>
-                                                <th width="10%">Harga</th>
-                                                <th width="10%">Total</th>
-                                                <th width="15%">Keterangan</th>
-                                                <th width="10%">Dokumentasi</th>
-                                                <th width="9%">Aksi</th>
+                                                <th>NO</th>
+                                                <th>URAIAN</th>
+                                                <th>VOLUME</th>
+                                                <th>SATUAN</th>
+                                                <th>HARGA</th>
+                                                <th>TOTAL</th>
+                                                <th>KETERANGAN</th>
+                                                <th>DOKUMENTASI</th>
+                                                <th>AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody id="body-{{ $key }}">
@@ -764,28 +791,33 @@
                                             @if ($selectedUnit->progress)
                                                 @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
                                                     <tr>
-                                                        <td>{{ $i + 1 }}</td>
+                                                        <td class="text-center">{{ $i + 1 }}</td>
                                                         <td>{{ $item->uraian }}</td>
                                                         <td>{{ $item->volume }}</td>
                                                         <td>{{ $item->satuan }}</td>
-                                                        <td class="text-end">Rp
-                                                            {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                                                        <td class="text-end">Rp
-                                                            {{ number_format($item->total, 0, ',', '.') }}</td>
+                                                        <td>Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                                                        <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
                                                         <td>{{ $item->keterangan }}</td>
                                                         <td>
-                                                            @if ($item->dokumentasi)
-                                                                <a href="{{ asset('storage/' . $item->dokumentasi) }}"
-                                                                    target="_blank"
-                                                                    class="btn btn-success btn-sm w-100 mt-1">
-                                                                    <i class="mdi mdi-eye me-1"></i>Lihat File
-                                                                </a>
+                                                            @php
+                                                                $documents = $item->documents;
+                                                            @endphp
+                                                            @if ($documents->count() > 0)
+                                                                @foreach ($documents as $doc)
+                                                                    <a href="{{ asset('storage/' . $doc->file_path) }}"
+                                                                        target="_blank"
+                                                                        class="file-preview-btn">
+                                                                        <i class="mdi mdi-eye"></i>
+                                                                        <span>Lihat</span>
+                                                                    </a>
+                                                                @endforeach
+                                                            @else
+                                                                <span class="text-muted">-</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="hapusItem(this, '{{ $key }}')"
-                                                                title="Hapus">
+                                                                onclick="hapusItem(this, '{{ $key }}')" title="Hapus">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </button>
                                                         </td>
@@ -801,10 +833,10 @@
                                         <tfoot class="bg-light">
                                             <tr>
                                                 <th colspan="6" class="text-end">SUB TOTAL {{ strtoupper($key) }}</th>
-                                                <th><input type="text" id="subtotal-{{ $key }}"
-                                                        class="rab-form-control rab-form-control-sm text-end fw-bold"
-                                                        readonly></th>
-                                                <th colspan="2"></th>
+                                                <th colspan="3">
+                                                    <input type="text" id="subtotal-{{ $key }}"
+                                                        class="rab-form-control rab-form-control-sm text-end fw-bold" readonly>
+                                                </th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -850,61 +882,56 @@
                     </div>
                 </div>
 
-               <div class="col-12 col-md-6">
-    <div class="card border-success shadow-sm mb-3">
-        <div class="card-body">
-            <h6 class="card-title text-success mb-3">
-                <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
-            </h6>
+                <div class="col-12 col-md-6">
+                    <div class="card border-success shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-success mb-3">
+                                <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
+                            </h6>
 
-            <input type="hidden" name="price" value="{{ $finalPrice }}">
+                            <input type="hidden" name="price" value="{{ $finalPrice }}">
 
-            <div class="d-flex justify-content-between mb-2">
-                <span>Total RAB</span>
-                <input type="text" class="rab-form-control text-end fw-bold"
-                    value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
-            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total RAB</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
+                            </div>
 
-            <div class="d-flex justify-content-between mb-2">
-                <span>Harga Jual Unit</span>
-                <input type="text" class="rab-form-control text-end fw-bold"
-                    value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
-            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Harga Jual Unit</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
+                            </div>
 
-            <hr>
+                            <hr>
 
-            <div class="d-flex justify-content-between mb-3">
-                <span>Harga Jual Final</span>
-                <input type="text" class="rab-form-control text-end fw-bold"
-                    value="Rp {{ number_format($finalPrice, 0, ',', '.') }}" readonly>
-            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="fw-bold">TOTAL FINAL</span>
+                                <input type="text" class="rab-form-control text-end fw-bold text-primary"
+                                    value="Rp {{ number_format($finalPrice, 0, ',', '.') }}" readonly>
+                            </div>
 
-            {{-- Tombol aksi --}}
-            <div class="d-flex flex-wrap gap-2">
-                {{-- Simpan --}}
-                <button type="submit" class="rab-btn rab-btn-success flex-grow-1">
-                    <i class="mdi mdi-content-save me-1"></i>Simpan
-                </button>
+                            {{-- Tombol aksi --}}
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="submit" class="rab-btn rab-btn-success flex-grow-1">
+                                    <i class="mdi mdi-content-save me-1"></i>Simpan
+                                </button>
 
-                {{-- Cetak RAB --}}
-                <a href="{{ route('cetak.rab', $unit->id) }}" target="_blank"
-                    class="rab-btn rab-btn-primary flex-grow-1">
-                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
-                </a>
+                                <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
+                                    class="rab-btn rab-btn-primary flex-grow-1">
+                                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                                </a>
 
-                {{-- ACC RAB --}}
-                <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
-                    data-id="{{ $unit->id }}">
-                    <i class="mdi mdi-check me-1"></i>ACC RAB
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
+                                <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
+                                    data-id="{{ $selectedUnit->id }}">
+                                    <i class="mdi mdi-check me-1"></i>ACC RAB
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
-
     </div>
 @endsection
 
@@ -926,54 +953,24 @@
                     'Rp ' + Number(price).toLocaleString('id-ID');
             }
 
-            updateFields(); // load pertama
+            updateFields();
             select.addEventListener('change', updateFields);
         });
     </script>
+
     <script>
         let indexItem = 0;
 
         const kategoriMap = {
-            persiapan: {
-                prefix: "1",
-                body: "body-persiapan",
-                subtotal: "subtotal-persiapan"
-            },
-            pondasi: {
-                prefix: "2",
-                body: "body-pondasi",
-                subtotal: "subtotal-pondasi"
-            },
-            struktur: {
-                prefix: "3",
-                body: "body-struktur",
-                subtotal: "subtotal-struktur"
-            },
-            dinding: {
-                prefix: "4",
-                body: "body-dinding",
-                subtotal: "subtotal-dinding"
-            },
-            atap: {
-                prefix: "5",
-                body: "body-atap",
-                subtotal: "subtotal-atap"
-            },
-            finishing: {
-                prefix: "6",
-                body: "body-finishing",
-                subtotal: "subtotal-finishing"
-            },
-            lainnya: {
-                prefix: "7",
-                body: "body-lainnya",
-                subtotal: "subtotal-lainnya"
-            },
+            persiapan: { prefix: "1", body: "body-persiapan", subtotal: "subtotal-persiapan" },
+            pondasi: { prefix: "2", body: "body-pondasi", subtotal: "subtotal-pondasi" },
+            struktur: { prefix: "3", body: "body-struktur", subtotal: "subtotal-struktur" },
+            dinding: { prefix: "4", body: "body-dinding", subtotal: "subtotal-dinding" },
+            atap: { prefix: "5", body: "body-atap", subtotal: "subtotal-atap" },
+            finishing: { prefix: "6", body: "body-finishing", subtotal: "subtotal-finishing" },
+            lainnya: { prefix: "7", body: "body-lainnya", subtotal: "subtotal-lainnya" },
         };
 
-        /* ============================= */
-        /* TAMBAH ITEM */
-        /* ============================= */
         function tambahItem(kategori) {
             let config = kategoriMap[kategori];
             let tbody = document.getElementById(config.body);
@@ -982,77 +979,96 @@
             let kode = config.prefix + "." + nomor;
 
             let row = `
-<tr>
-    <td>${kode}</td>
-    <td>
-        <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
-        <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
-        <input type="text"
-            name="items[${indexItem}][uraian]"
-            class="rab-form-control rab-form-control-sm"
-            placeholder="Masukkan uraian"
-            required>
-    </td>
-    <td>
-        <input type="number"
-            name="items[${indexItem}][volume]"
-            class="rab-form-control rab-form-control-sm volume"
-            value="1" min="0">
-    </td>
-    <td>
-        <select name="items[${indexItem}][satuan]"
-            class="rab-form-control rab-form-control-sm">
-            <option value="ls">ls</option>
-            <option value="m2">m²</option>
-            <option value="m3">m³</option>
-            <option value="unit">unit</option>
-            <option value="zak">zak</option>
-            <option value="buah">buah</option>
-            <option value="kg">kg</option>
-            <option value="hari">hari</option>
-        </select>
-    </td>
-    <td>
-        <input type="number"
-            name="items[${indexItem}][harga_satuan]"
-            class="rab-form-control rab-form-control-sm harga-satuan"
-            value="0" min="0">
-    </td>
-    <td>
-        <input type="text"
-            class="rab-form-control rab-form-control-sm total-item text-end"
-            readonly>
-    </td>
-    <td>
-        <input type="text"
-            name="items[${indexItem}][keterangan]"
-            class="rab-form-control rab-form-control-sm"
-            placeholder="Opsional">
-    </td>
-    <td>
-        <input type="file"
-            name="items[${indexItem}][dokumentasi]"
-            class="rab-form-control rab-form-control-sm dokumentasi">
-    </td>
-    <td class="text-center">
-        <button type="button"
-            class="rab-btn rab-btn-outline-danger rab-btn-sm"
-            onclick="hapusItem(this, '${kategori}')"
-            title="Hapus">
-            <i class="mdi mdi-delete"></i> Hapus
-        </button>
-    </td>
-</tr>
-`;
+                <tr>
+                    <td class="text-center">${kode}</td>
+                    <td>
+                        <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
+                        <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
+                        <input type="text" name="items[${indexItem}][uraian]"
+                               class="form-control form-control-sm" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01"
+                               name="items[${indexItem}][volume]"
+                               class="form-control form-control-sm volume" required>
+                    </td>
+                    <td>
+                        <input type="text"
+                               name="items[${indexItem}][satuan]"
+                               class="form-control form-control-sm" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01"
+                               name="items[${indexItem}][harga_satuan]"
+                               class="form-control form-control-sm harga-satuan" required>
+                    </td>
+                    <td class="text-end">
+                        <input type="text"
+                               name="items[${indexItem}][total]"
+                               class="form-control form-control-sm text-end total-item"
+                               readonly>
+                    </td>
+                    <td>
+                        <input type="text"
+                               name="items[${indexItem}][keterangan]"
+                               class="form-control form-control-sm">
+                    </td>
+                    <td>
+                        <div class="file-upload-modern">
+                            <input type="file"
+                                   name="items[${indexItem}][dokumentasi]"
+                                   id="file-${indexItem}"
+                                   class="file-upload-input"
+                                   accept="image/*,.pdf"
+                                   onchange="handleFileSelect(this, ${indexItem})">
+                            <div class="file-upload-label" id="label-${indexItem}">
+                                <i class="mdi mdi-cloud-upload"></i>
+                                <div class="file-upload-info">
+                                    <span id="fileName-${indexItem}">Pilih file</span>
+                                    <small>Max 2MB</small>
+                                </div>
+                                <span class="file-upload-size" id="fileSize-${indexItem}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-outline-danger btn-sm"
+                                onclick="hapusItem(this, '${kategori}')">
+                            <i class="mdi mdi-delete"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
 
             tbody.insertAdjacentHTML('beforeend', row);
             indexItem++;
             hitungSemua();
         }
 
-        /* ============================= */
-        /* HAPUS ITEM */
-        /* ============================= */
+        function handleFileSelect(input, index) {
+            const file = input.files[0];
+            const label = document.getElementById(`label-${index}`);
+            const fileNameSpan = document.getElementById(`fileName-${index}`);
+            const fileSizeSpan = document.getElementById(`fileSize-${index}`);
+
+            if (file) {
+                fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+
+                if (file.size < 1024 * 1024) {
+                    fileSizeSpan.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                } else {
+                    fileSizeSpan.textContent = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+                }
+
+                label.classList.add('file-selected');
+            } else {
+                fileNameSpan.textContent = 'Pilih file';
+                fileSizeSpan.textContent = '';
+                label.classList.remove('file-selected');
+            }
+        }
+
         function hapusItem(button, kategori) {
             if (confirm('Yakin ingin menghapus item ini?')) {
                 button.closest('tr').remove();
@@ -1061,9 +1077,6 @@
             }
         }
 
-        /* ============================= */
-        /* UPDATE NOMOR */
-        /* ============================= */
         function updateNomor(kategori) {
             let config = kategoriMap[kategori];
             let rows = document.querySelectorAll("#" + config.body + " tr");
@@ -1079,17 +1092,6 @@
             });
         }
 
-        /* ============================= */
-        /* AMBIL ANGKA DARI TEXT */
-        /* ============================= */
-        function ambilAngka(text) {
-            if (!text) return 0;
-            return parseInt(text.replace(/[^0-9]/g, '')) || 0;
-        }
-
-        /* ============================= */
-        /* HITUNG SEMUA */
-        /* ============================= */
         function hitungSemua() {
             let grandTotal = 0;
 
@@ -1098,27 +1100,22 @@
                 let subtotal = 0;
 
                 document.querySelectorAll("#" + config.body + " tr").forEach(function(row) {
-                    let total = 0;
+                    let volumeInput = row.querySelector(".volume");
+                    let hargaInput = row.querySelector(".harga-satuan");
+                    let totalInput = row.querySelector(".total-item");
 
-                    /* ROW INPUT BARU */
-                    if (row.querySelector(".volume")) {
-                        let volume = parseFloat(row.querySelector(".volume").value) || 0;
-                        let harga = parseFloat(row.querySelector(".harga-satuan").value) || 0;
+                    if (volumeInput && hargaInput && totalInput) {
+                        let volume = parseFloat(volumeInput.value) || 0;
+                        let harga = parseFloat(hargaInput.value) || 0;
+                        let total = volume * harga;
 
-                        total = volume * harga;
-
-                        let totalInput = row.querySelector(".total-item");
-                        if (totalInput) {
-                            totalInput.value = 'Rp ' + total.toLocaleString('id-ID');
-                        }
-                    }
-                    /* ROW DARI DATABASE */
-                    else {
+                        totalInput.value = total.toLocaleString('id-ID');
+                        subtotal += total;
+                    } else {
                         let totalText = row.cells[5]?.innerText || "0";
-                        total = ambilAngka(totalText);
+                        let total = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
+                        subtotal += total;
                     }
-
-                    subtotal += total;
                 });
 
                 let subtotalInput = document.getElementById(config.subtotal);
@@ -1135,65 +1132,51 @@
             }
         }
 
-        /* ============================= */
-        /* REALTIME HITUNG */
-        /* ============================= */
         document.addEventListener("input", function(e) {
-            if (e.target.classList.contains("volume") ||
-                e.target.classList.contains("harga-satuan")) {
+            if (e.target.classList.contains("volume") || e.target.classList.contains("harga-satuan")) {
                 hitungSemua();
             }
         });
 
-        /* ============================= */
-        /* HITUNG SAAT LOAD */
-        /* ============================= */
         document.addEventListener("DOMContentLoaded", function() {
             hitungSemua();
         });
-    </script>
-    <script>
+
         document.getElementById("unitSelect").addEventListener("change", function() {
             let unitId = this.value;
-
             let url = new URL(window.location.href);
             url.searchParams.set('unit_id', unitId);
-
             window.location.href = url.toString();
         });
-    </script>
-<script>
-document.querySelectorAll('.acc-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        let unitId = this.dataset.id;
 
-        if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
+        document.querySelectorAll('.acc-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                let unitId = this.dataset.id;
+                if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
 
-        fetch(`/properti/progress/acc-ajax/${unitId}`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-
-                // Update teks/progress di halaman tanpa reload
-                const progressText = document.querySelector(`#progress-text-${unitId}`);
-                if (progressText) progressText.textContent = data.construction_progress;
-            } else {
-                alert('Gagal: ' + data.message);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert('Terjadi error pada request AJAX.');
+                fetch(`/properti/progress/acc-ajax/${unitId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            const progressText = document.querySelector(`#progress-text-${unitId}`);
+                            if (progressText) progressText.textContent = data.construction_progress;
+                        } else {
+                            alert('Gagal: ' + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Terjadi error pada request AJAX.');
+                    });
+            });
         });
-    });
-});
-</script>
+    </script>
 @endpush

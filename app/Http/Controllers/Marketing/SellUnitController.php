@@ -108,6 +108,27 @@ public function index(Request $request)
     $agencies = Employee::where('role', 'agency')->latest()->get();
     $types = LandBankUnit::select('type')->distinct()->pluck('type');
 
+$unitPaths = [
+    'A.1' => 'M16.77 101.2h44.35v24.11h-44.35v-24.11z', // path statik A.1
+    'A.2' => 'M16.77 126.1h44.35v26.86h-44.35v-26.86z', // contoh
+    'B.1' => 'M126.5 70.05h48.66v47.34c0 4.78-3.53 8.2-7.77 8.2h-40.89v-55.54z',
+    // tambahkan semua unit...
+];
+
+// ambil unit dari DB
+$unitsForSvg = (clone $statsQuery)->get(['id','unit_code','status','type']); // pastikan ada kolom tipe
+
+// set warna sesuai tipe
+// Tentukan warna berdasarkan status & type
+foreach ($unitsForSvg as $unit) {
+    if ($unit->type === 'komersil' && $unit->status === 'ready') {
+        $unit->fillColor = '#2675BB'; // biru
+    } elseif ($unit->status === 'ready') {
+        $unit->fillColor = '#CE2A2E'; // merah
+    } else {
+        $unit->fillColor = '#0DA351'; // hijau default
+    }
+}
     // =========================
     // RETURN VIEW
     // =========================
@@ -124,7 +145,10 @@ public function index(Request $request)
         'customers',
         'agencies',
         'projects',
-        'types'
+        'types',
+        'unitsForSvg',
+        'unitPaths'
+
     ));
 }
   
