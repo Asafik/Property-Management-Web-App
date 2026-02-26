@@ -561,6 +561,34 @@
         .bg-success {
             background: linear-gradient(135deg, #28a745, #5cb85c) !important;
         }
+
+        /* Modal Scroll Styling */
+        .modal-table-container {
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+
+        .sticky-header thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 5;
+        }
+
+        /* Search input icon */
+        .search-input {
+            padding-left: 40px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 10px;
+            color: #9a55ff;
+            z-index: 10;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -1178,6 +1206,7 @@
                                         <input type="text" class="form-control" id="booking_fee" name="booking_fee"
                                             placeholder="Masukkan booking fee" autocomplete="off">
                                     </div>
+                                    <small class="text-muted">Nominal booking fee yang dibayar customer</small>
                                 </div>
 
                                 <!-- Upload Bukti Transfer -->
@@ -1215,8 +1244,11 @@
                                         <i class="mdi mdi-magnify text-primary me-1"></i>
                                         Cari Customer
                                     </label>
-                                    <input type="text" id="searchCustomer" class="form-control"
-                                        placeholder="Cari nama, ID, atau no. HP customer...">
+                                    <div class="position-relative">
+                                        <i class="mdi mdi-magnify position-absolute search-icon"></i>
+                                        <input type="text" id="searchCustomer" class="form-control search-input"
+                                            placeholder="Cari nama, ID, atau no. HP customer...">
+                                    </div>
                                 </div>
 
                                 <!-- Filter Pekerjaan -->
@@ -1252,9 +1284,9 @@
                     </div>
 
                     <!-- Table Customer dengan Scroll (TANPA HOVER) -->
-                    <div class="table-responsive" style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                        <table class="table table-bordered align-middle mb-0">
-                            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
+                    <div class="modal-table-container">
+                        <table class="table table-bordered align-middle mb-0 sticky-header">
+                            <thead class="table-light">
                                 <tr>
                                     <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No</th>
                                     <th><i class="mdi mdi-card-account-details me-1"></i> ID Customer</th>
@@ -1341,145 +1373,143 @@
         </div>
     </div>
 
- <!-- MODAL AGENCY -->
-<div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
-                    Pilih Agency
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Card untuk Agent Fee & Search (JADI SATU) -->
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-body">
-                        <form id="formAgency" method="POST">
-                            @csrf
-                            <input type="hidden" name="sales_id" id="sales_id">
-
-                            <div class="row">
-                                <!-- Agent Fee Input -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-cash text-primary me-1"></i>
-                                        Agent Fee
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white">Rp</span>
-                                        <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
-                                            placeholder="Masukkan agent fee" autocomplete="off">
-                                    </div>
-                                    <small class="text-muted">
-                                        <i class="mdi mdi-information-outline me-1"></i>
-                                        Masukkan nominal fee untuk agency yang dipilih
-                                    </small>
-                                </div>
-
-                                <!-- Search Agency -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-magnify text-primary me-1"></i>
-                                        Cari Agency
-                                    </label>
-                                    <div class="position-relative">
-                                        <i class="mdi mdi-magnify position-absolute"
-                                           style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i>
-                                        <input type="text" id="searchAgency" class="form-control"
-                                               placeholder="Cari nama agency..."
-                                               style="padding-left: 40px;">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+    <!-- MODAL AGENCY -->
+    <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
+                        Pilih Agency
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+                <div class="modal-body">
+                    <!-- Card untuk Agent Fee & Search (JADI SATU) -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <form id="formAgency" method="POST">
+                                @csrf
+                                <input type="hidden" name="sales_id" id="sales_id">
 
-                <!-- Info Total Agency -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-muted small">
-                        <i class="mdi mdi-office-building me-1"></i>
-                        Total: {{ count($agencies) }} agency
-                    </span>
-                    <span class="badge badge-gradient-info">
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Klik tombol Pilih untuk memilih agency
-                    </span>
-                </div>
-
-                <!-- Table Agency dengan Scroll -->
-                <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                    <table class="table table-bordered align-middle mb-0">
-                        <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                            <tr>
-                                <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No</th>
-                                <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
-                                <th><i class="mdi mdi-phone me-1"></i> No HP</th>
-                                <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
-                                <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($agencies as $a)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                 style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
-                                                {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}
-                                            </div>
-                                            <span class="fw-medium">{{ $a->name }}</span>
+                                <div class="row">
+                                    <!-- Agent Fee Input -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">
+                                            <i class="mdi mdi-cash text-primary me-1"></i>
+                                            Agent Fee
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white">Rp</span>
+                                            <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
+                                                placeholder="Masukkan agent fee" autocomplete="off">
                                         </div>
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-phone text-success me-1"></i>
-                                        {{ $a->phone }}
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                        {{ $a->address }}
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
-                                                data-id="{{ $a->id }}" style="border-radius: 20px; padding: 0.25rem 1rem;">
-                                            <i class="mdi mdi-check me-1"></i>Pilih
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">
-                                        <i class="mdi mdi-office-building-off" style="font-size: 2rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 text-muted">Tidak ada data agency</p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                        <small class="text-muted">
+                                            <i class="mdi mdi-information-outline me-1"></i>
+                                            Masukkan nominal fee untuk agency yang dipilih
+                                        </small>
+                                    </div>
 
-                <!-- Footer Info -->
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Tabel dapat di-scroll untuk melihat lebih banyak data
-                            </small>
-                            <small class="text-muted">
-                                <i class="mdi mdi-arrow-down me-1"></i>
-                                {{ count($agencies) }} data
-                            </small>
+                                    <!-- Search Agency -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">
+                                            <i class="mdi mdi-magnify text-primary me-1"></i>
+                                            Cari Agency
+                                        </label>
+                                        <div class="position-relative">
+                                            <i class="mdi mdi-magnify position-absolute search-icon"></i>
+                                            <input type="text" id="searchAgency" class="form-control search-input"
+                                                   placeholder="Cari nama agency...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Info Total Agency -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small">
+                            <i class="mdi mdi-office-building me-1"></i>
+                            Total: {{ count($agencies) }} agency
+                        </span>
+                        <span class="badge badge-gradient-info">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Klik tombol Pilih untuk memilih agency
+                        </span>
+                    </div>
+
+                    <!-- Table Agency dengan Scroll -->
+                    <div class="modal-table-container">
+                        <table class="table table-bordered align-middle mb-0 sticky-header">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No</th>
+                                    <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
+                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
+                                    <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
+                                    <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($agencies as $a)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                     style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                                                    {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}
+                                                </div>
+                                                <span class="fw-medium">{{ $a->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-phone text-success me-1"></i>
+                                            {{ $a->phone }}
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-map-marker text-danger me-1"></i>
+                                            {{ $a->address }}
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
+                                                    data-id="{{ $a->id }}" style="border-radius: 20px; padding: 0.25rem 1rem;">
+                                                <i class="mdi mdi-check me-1"></i>Pilih
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">
+                                            <i class="mdi mdi-office-building-off" style="font-size: 2rem; opacity: 0.3;"></i>
+                                            <p class="mt-2 text-muted">Tidak ada data agency</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer Info -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="mdi mdi-information-outline me-1"></i>
+                                    Tabel dapat di-scroll untuk melihat lebih banyak data
+                                </small>
+                                <small class="text-muted">
+                                    <i class="mdi mdi-arrow-down me-1"></i>
+                                    {{ count($agencies) }} data
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -1554,6 +1584,7 @@
                 }
                 $('#modalCustomer').attr('data-unit-id', unitId);
                 $('#booking_fee').val('');
+                $('#bukti_transfer').val('');
                 $('#modalCustomer').modal('show');
             };
 
@@ -1563,6 +1594,7 @@
                 let purchaseType = $(this).data('type');
                 let unitId = $('#modalCustomer').attr('data-unit-id');
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '');
+                let buktiTransfer = $('#bukti_transfer')[0].files[0];
 
                 if (!unitId) {
                     Swal.fire({
@@ -1582,6 +1614,25 @@
                     return;
                 }
 
+                if (!buktiTransfer) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bukti Transfer Kosong',
+                        text: 'Bukti transfer wajib diupload!'
+                    });
+                    return;
+                }
+
+                // Validasi ukuran file (max 2MB)
+                if (buktiTransfer.size > 2 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Terlalu Besar',
+                        text: 'Ukuran file maksimal 2MB!'
+                    });
+                    return;
+                }
+
                 Swal.fire({
                     title: 'Yakin pilih customer ini?',
                     html: `
@@ -1596,30 +1647,49 @@
                     cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        let actionUrlTemplate = "{{ route('set.customer', ':unitId') }}";
-                        let actionUrl = actionUrlTemplate.replace(':unitId', unitId);
+                        // Buat FormData
+                        let formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('customer_id', customerId);
+                        formData.append('purchase_type', purchaseType);
+                        formData.append('booking_fee', bookingFee);
+                        formData.append('bukti_transfer', buktiTransfer);
 
-                        let form = $('#formBooking');
+                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 
-                        form.attr('action', actionUrl);
-                        $('#customer_id').val(customerId);
-                        $('#purchase_type').val(purchaseType);
-                        $('#booking_fee_hidden').val(bookingFee);
-
-                        form.submit();
-
-                        form.append(
-                            `<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
-                        form.append(
-                            `<input type="hidden" name="customer_id" value="${customerId}">`);
-                        form.append(
-                            `<input type="hidden" name="purchase_type" value="${purchaseType}">`
-                            );
-                        form.append(
-                            `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
-
-                        $('body').append(form);
-                        form.submit();
+                        // Kirim via AJAX
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#modalCustomer').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Customer berhasil dipilih',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                let errorMsg = 'Terjadi kesalahan';
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    errorMsg = xhr.responseJSON.message;
+                                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                                    errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                                }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: errorMsg
+                                });
+                            }
+                        });
                     }
                 });
             });
@@ -1639,18 +1709,67 @@
                 let salesId = $(this).data('id');
                 let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
 
-                if (!agentFee) {
+                if (!agentFee || agentFee <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Oops...',
-                        text: 'Agent fee wajib diisi!'
+                        text: 'Agent fee wajib diisi dan lebih dari 0!'
                     });
                     return;
                 }
 
-                $('#sales_id').val(salesId);
-                $('#formAgency').append(`<input type="hidden" name="agent_fee" value="${agentFee}">`);
-                $('#formAgency').submit();
+                Swal.fire({
+                    title: 'Yakin pilih agency ini?',
+                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Pilih!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Buat form data
+                        let formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('sales_id', salesId);
+                        formData.append('agent_fee', agentFee);
+
+                        let unitId = $(this).closest('.bukaModal').data('unit');
+                        let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
+
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#modalAgency').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Agency berhasil dipilih',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: xhr.responseJSON?.message || 'Terjadi kesalahan'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Reset form saat modal ditutup
+            $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {
+                $('#booking_fee, #agent_fee_modal').val('');
+                $('#bukti_transfer').val('');
             });
         });
 
