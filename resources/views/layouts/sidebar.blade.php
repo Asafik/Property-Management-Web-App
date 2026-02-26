@@ -103,12 +103,30 @@
         </div>
     </li>
 
-    <!-- MENU CUSTOMER -->
+  <!-- MENU CUSTOMER DENGAN SUB-MENU -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" data-bs-toggle="collapse" href="#customer" aria-expanded="false" aria-controls="customer">
             <span class="menu-title">Customer</span>
+            <i class="menu-arrow"></i>
             <i class="mdi mdi-account-group menu-icon"></i>
         </a>
+        <div class="collapse" id="customer">
+            <ul class="nav flex-column sub-menu">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard-customer">
+                        Customer (Sudah Beli)
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard-tamu">
+                        Tamu / Prospek
+                    </a>
+                </li>
+
+            </ul>
+        </div>
     </li>
 
     <!-- MENU Promo -->
@@ -164,6 +182,14 @@
             </ul>
         </div>
     </li>
+    <!-- MENU Dokument -->
+    <li class="nav-item">
+        <a class="nav-link" href="dashboard-dokument">
+            <span class="menu-title">Dokument</span>
+            <i class="mdi mdi-account-cog menu-icon"></i>
+        </a>
+    </li>
+
 
     <!-- MENU INVENTORY UNIT -->
     <li class="nav-item">
@@ -199,7 +225,7 @@
 
     <!-- MENU PENGATURAN -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="dashboard-pengaturan">
             <span class="menu-title">Pengaturan</span>
             <i class="mdi mdi-cog menu-icon"></i>
         </a>

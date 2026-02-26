@@ -131,7 +131,7 @@
             border-color: #e9ecef !important;
             border-radius: 10px !important;
             overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
         }
 
         .select2-container--bootstrap-5 .select2-results__option {
@@ -167,6 +167,32 @@
 
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
             color: #a5b3cb !important;
+        }
+
+        /* Paksa hanya 5 item yang tampil di Select2 */
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important;
+            /* Kurang lebih 5 item */
+            overflow-y: auto !important;
+        }
+
+        /* Styling scrollbar */
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
         }
 
         /* Input Group */
@@ -741,9 +767,6 @@
         }
     </style>
 
-    {{-- SELECT2 CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     <div class="container-fluid px-2 px-md-3 px-lg-4">
         <div class="row">
@@ -812,13 +835,14 @@
                                             Nama Perusahaan <span class="properti-text-danger">*</span>
                                         </label>
 
-                                        {{-- SELECT DENGAN SEARCH (SELECT2) --}}
+                                        {{-- SELECT DENGAN SEARCH (SELECT2) - PAKSA 5 ITEM --}}
                                         <select name="company_profile_id" id="companySelect"
-                                                class="properti-form-control @error('company_profile_id') is-invalid @enderror"
-                                                required>
+                                            class="properti-form-control @error('company_profile_id') is-invalid @enderror"
+                                            required>
                                             <option value="">-- Pilih Perusahaan --</option>
                                             @foreach ($companies as $company)
-                                                <option value="{{ $company->id }}" {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                <option value="{{ $company->id }}"
+                                                    {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
                                                     {{ $company->name }}
                                                 </option>
                                             @endforeach
@@ -1058,123 +1082,53 @@
                             </h5>
 
                             <div class="properti-row">
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">No Sertifikat <span
-                                                class="properti-text-danger">*</span></label>
-                                        <input type="text" name="noSertifikat"
-                                            class="properti-form-control @error('noSertifikat') is-invalid @enderror"
-                                            value="{{ old('noSertifikat') }}" required>
-                                        @error('noSertifikat')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Atas Nama <span
-                                                class="properti-text-danger">*</span></label>
-                                        <input type="text" name="atasNama"
-                                            class="properti-form-control @error('atasNama') is-invalid @enderror"
-                                            value="{{ old('atasNama') }}" required>
-                                        @error('atasNama')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">No IMB</label>
-                                        <input type="text" name="noIMB" class="properti-form-control"
-                                            value="{{ old('noIMB') }}" placeholder="Nomor IMB">
-                                    </div>
-                                </div>
-                            </div>
+                                @foreach ($documentTypes as $type)
+                                    <div class="properti-col-md-4">
+                                        <div class="properti-form-group">
+                                            <label class="properti-form-label">
+                                                No {{ $type->name }}
+                                            </label>
 
-                            <div class="properti-form-group">
-                                <label class="properti-form-label">No PBB</label>
-                                <input type="text" name="noPBB" class="properti-form-control"
-                                    value="{{ old('noPBB') }}" placeholder="Nomor PBB">
+                                            <input type="text" name="documents[{{ $type->id }}][number]"
+                                                class="properti-form-control" placeholder="Nomor {{ $type->name }}">
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
 
                             <hr class="properti-hr">
 
-                            {{-- ================= UPLOAD DOKUMEN MODERN ================= --}}
+                            <hr class="properti-hr">
+
                             <h5 class="properti-section-title">
                                 <i class="fas fa-upload me-2"></i>
                                 Upload Dokumen
                             </h5>
 
                             <div class="properti-row">
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Upload Sertifikat</label>
-                                        <div class="properti-file-upload-modern">
-                                            <input type="file" name="uploadSertifikat" id="uploadSertifikat"
-                                                accept=".pdf,.jpg,.jpeg,.png">
-                                            <div class="properti-file-label-modern">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <div class="properti-file-info-modern">
-                                                    <span>Upload Sertifikat</span>
-                                                    <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                                </div>
-                                                <span class="properti-file-size"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Upload IMB</label>
-                                        <div class="properti-file-upload-modern">
-                                            <input type="file" name="uploadIMB" id="uploadIMB"
-                                                accept=".pdf,.jpg,.jpeg,.png">
-                                            <div class="properti-file-label-modern">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <div class="properti-file-info-modern">
-                                                    <span>Upload IMB</span>
-                                                    <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                                </div>
-                                                <span class="properti-file-size"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @foreach ($documentTypes as $type)
+                                    <div class="properti-col-md-4">
+                                        <div class="properti-form-group">
+                                            <label class="properti-form-label">
+                                                Upload {{ $type->name }}
+                                            </label>
 
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Upload PBB</label>
-                                        <div class="properti-file-upload-modern">
-                                            <input type="file" name="uploadPBB" id="uploadPBB"
-                                                accept=".pdf,.jpg,.jpeg,.png">
-                                            <div class="properti-file-label-modern">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <div class="properti-file-info-modern">
-                                                    <span>Upload PBB</span>
-                                                    <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                            <div class="properti-file-upload-modern">
+                                                <input type="file" name="documents[{{ $type->id }}][file]"
+                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png">
+
+                                                <div class="properti-file-label-modern">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <div class="properti-file-info-modern">
+                                                        <span>Upload {{ $type->name }}</span>
+                                                        <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                                    </div>
+                                                    <span class="properti-file-size"></span>
                                                 </div>
-                                                <span class="properti-file-size"></span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Upload AKTA Tanah</label>
-                                        <div class="properti-file-upload-modern">
-                                            <input type="file" name="uploadAKTATanah" id="uploadAKTATanah"
-                                                accept=".pdf,.jpg,.jpeg,.png">
-                                            <div class="properti-file-label-modern">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <div class="properti-file-info-modern">
-                                                    <span>Upload AKTA Tanah</span>
-                                                    <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                                </div>
-                                                <span class="properti-file-size"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
 
                             <hr class="properti-hr">
@@ -1384,12 +1338,6 @@
 @endsection
 
 @push('scripts')
-    {{-- jQuery (required untuk Select2) --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    {{-- Select2 JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script>
         // Format rupiah untuk harga perolehan
         document.addEventListener('DOMContentLoaded', function() {
@@ -1453,13 +1401,15 @@
             });
         });
 
-        // SELECT2 INITIALIZATION
+        // SELECT2 INITIALIZATION - HANYA UNTUK SELECT PERUSAHAAN
+        // PAKSA HANYA 5 ITEM YANG TAMPIL
         $(document).ready(function() {
             $('#companySelect').select2({
                 theme: 'bootstrap-5',
                 placeholder: '-- Pilih Perusahaan --',
                 allowClear: true,
                 width: '100%',
+                dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
                 language: {
                     noResults: function() {
                         return "Perusahaan tidak ditemukan";

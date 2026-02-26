@@ -149,14 +149,27 @@
 
     <div class="container-fluid p-3 p-md-4">
         <!-- Header -->
-        <div class="pengajuan-row mb-3 mb-md-4">
-            <div class="pengajuan-col-12">
-                <h3 class="text-dark fw-bold" style="color: #2c2e3f; margin-bottom: 0.25rem;">Form Pengajuan KPR</h3>
-                <p class="pengajuan-text-muted small" style="margin-bottom: 0;">Lengkapi data pengajuan KPR untuk customer
-                    yang sudah booking unit</p>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">
+                                <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>
+                                Form Pengajuan KPR
+                            </h3>
+                            <p class="text-muted mb-0 small">
+                                <i class="mdi mdi-information-outline me-1 text-primary"></i>
+                                Lengkapi data pengajuan KPR untuk customer yang sudah booking unit
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-bank" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
         <!-- Info Status -->
         <div class="pengajuan-row mb-3">
             <div class="pengajuan-col-12">

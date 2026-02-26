@@ -24,7 +24,7 @@ class LoginController extends Controller
         ];
 
         if(Auth::attempt($credentials)){
-            return redirect('/dashboard');
+           return redirect()->route('dashboard');
         }
 
         return back()->with('error','Username atau password salah');

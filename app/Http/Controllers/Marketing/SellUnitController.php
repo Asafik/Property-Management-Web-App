@@ -21,8 +21,10 @@ class SellUnitController extends Controller
 {
 public function index(Request $request)
 {
-    // Ambil query dulu (belum get)
-   $query = LandBankUnit::with([
+    // =========================
+    // BASE QUERY
+    // =========================
+    $query = LandBankUnit::with([
         'landBank',
         'activeBooking.sales',
         'activeBooking.customer'
@@ -32,30 +34,28 @@ public function index(Request $request)
     // FILTER SECTION
     // =========================
 
-    // Search (blok / nama lokasi dll)
     if ($request->filled('search')) {
         $query->where(function ($q) use ($request) {
             $q->where('block', 'like', '%' . $request->search . '%')
-              ->orWhere('unit_number', 'like', '%' . $request->search . '%');
+              ->orWhere('unit_number', 'like', '%' . $request->search . '%')
+              ->orWhere('unit_code', 'like', '%' . $request->search . '%');
         });
     }
 
-    // Filter Project (dari relasi landBank)
     if ($request->filled('project')) {
         $query->whereHas('landBank', function ($q) use ($request) {
             $q->where('name', $request->project);
         });
     }
 
-    // Filter Status
     if ($request->filled('status')) {
         $query->where('status', $request->status);
     }
-    if ($request->filled('type')) {
-    $query->where('type', $request->type);
-}
 
-    // Filter Harga
+    if ($request->filled('type')) {
+        $query->where('type', $request->type);
+    }
+
     if ($request->filled('price')) {
         if ($request->price == '<500') {
             $query->where('price', '<', 500000000);
@@ -67,36 +67,53 @@ public function index(Request $request)
     }
 
     // =========================
-    // AMBIL DATA
+    // CLONE QUERY UNTUK STATISTIK
     // =========================
-
-   $units = $query->paginate(10)->withQueryString();
+    $statsQuery = clone $query;
 
     // =========================
-    // SEMUA LOGIC LAMA TETAP
+    // PAGINATION
     // =========================
+    $units = $query->paginate(10)->withQueryString();
 
-    $totalUnits = $units->count();
-    $totalTersedia = $units->where('status', 'ready')->count();
-    $totalBooking = $units->where('status', 'booked')->count();
-    $totalSold = $units->where('status', 'sold')->count();
+    // =========================
+    // STATISTIK (AKURAT SESUAI FILTER)
+    // =========================
+    $totalUnits     = $statsQuery->count();
+    $totalTersedia  = (clone $statsQuery)->where('status', 'ready')->count();
+    $totalBooking   = (clone $statsQuery)->where('status', 'booked')->count();
+    $totalSold      = (clone $statsQuery)->where('status', 'sold')->count();
+    $totalArea      = $statsQuery->sum('area');
+    $totalNilai     = $statsQuery->sum('price');
 
-    $totalArea = $units->sum('area');
+    $totalLandArea  = LandBank::sum('area');
+    $sisaLuas       = max(0, $totalLandArea - $totalArea);
 
-    $totalLandArea = LandBank::sum('area');
-    $sisaLuas = max(0, $totalLandArea - $totalArea);
+    // =========================
+    // DATA UNTUK DENAH (TANPA PAGINATION)
+    // =========================
+    $unitsForDenah = (clone $statsQuery)->get()
+        ->groupBy(fn($item) => $item->landBank->name ?? 'Tanpa Proyek')
+        ->map(function ($projectUnits) {
+            return $projectUnits->groupBy(function ($unit) {
+                return explode('.', $unit->unit_code)[0];
+            });
+        });
 
-    $totalNilai = $units->sum('price');
+    // =========================
+    // DATA SUPPORT
+    // =========================
     $projects = LandBank::select('id','name')->orderBy('name')->get();
     $customers = Customer::latest()->get();
-    $agencies = Employee::where('role', 'agency')
-        ->latest()
-        ->get();
-    $types = LandBankUnit::select('type')
-            ->distinct()
-            ->pluck('type');
+    $agencies = Employee::where('role', 'agency')->latest()->get();
+    $types = LandBankUnit::select('type')->distinct()->pluck('type');
+
+    // =========================
+    // RETURN VIEW
+    // =========================
     return view('marketing.jual_unit', compact(
         'units',
+        'unitsForDenah',
         'totalUnits',
         'totalArea',
         'sisaLuas',

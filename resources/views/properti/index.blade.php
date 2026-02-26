@@ -242,12 +242,23 @@
             white-space: nowrap;
         }
 
+        .table thead th i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+            color: #9a55ff;
+        }
+
         .table tbody td {
             vertical-align: middle;
             font-size: 0.85rem;
             padding: 0.8rem 0.5rem;
             border-bottom: 1px solid #e9ecef;
             color: #2c2e3f;
+        }
+
+        .table tbody td i {
+            margin-right: 5px;
+            font-size: 1rem;
         }
 
         .table tbody tr:hover {
@@ -337,6 +348,110 @@
             display: none !important;
         }
 
+        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.8rem !important;
+            min-height: 40px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 38px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+            color: #a5b3cb !important;
+        }
+
+        /* Paksa hanya 5 item yang tampil di Select2 */
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important; /* Kurang lebih 5 item */
+            overflow-y: auto !important;
+        }
+
+        /* Styling scrollbar */
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
         /* Responsive untuk mobile */
         @media (max-width: 576px) {
             .table thead th {
@@ -409,6 +524,7 @@
         }
     </style>
 
+   
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Card -->
         <div class="row mb-4">
@@ -462,19 +578,21 @@
                                                         <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                     </label>
                                                     <input type="text" id="searchInputMobile" class="form-control"
-                                                        placeholder="Cari nama properti...">
+                                                        placeholder="Cari PT atau Properti...">
                                                 </div>
                                             </div>
-                                            <!-- Baris Tambahan: Company -->
+
+                                            <!-- BARIS FILTER PERUSAHAAN (MOBILE) - SELECT2 -->
                                             <div class="row filter-row">
                                                 <div class="col-12">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-domain me-1"></i>Perusahaan
                                                     </label>
-                                                    <select id="filterCompanyMobile" class="form-control">
-                                                        <option value="">Semua</option>
+                                                    <select name="company_id" id="filterCompanyMobile" class="form-control select2-mobile">
+                                                        <option value="">Semua Perusahaan</option>
                                                         @foreach ($companies as $company)
-                                                            <option value="{{ $company->id }}">
+                                                            <option value="{{ $company->id }}"
+                                                                {{ request('company_id') == $company->id ? 'selected' : '' }}>
                                                                 {{ $company->name }}
                                                             </option>
                                                         @endforeach
@@ -482,57 +600,59 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Baris 2: Kategori & Legalitas -->
+                                            <!-- Baris 2: Legalitas & Pembangunan -->
                                             <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori
-                                                    </label>
-                                                    <select name="kategori" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($categories as $kategori)
-                                                            <option value="{{ $kategori }}"
-                                                                {{ request('kategori') == $kategori ? 'selected' : '' }}>
-                                                                {{ $kategori }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-gavel me-1"></i>Legalitas
                                                     </label>
-                                                    <select id="filterLegalitasMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="terverifikasi">Terverifikasi</option>
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="revisi">Revisi</option>
+                                                    <select name="legalitas" id="filterLegalitasMobile" class="form-control">
+                                                        <option value="">Semua Legalitas</option>
+                                                        <option value="verified"
+                                                            {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
+                                                            Terverifikasi</option>
+                                                        <option value="pending"
+                                                            {{ request('legalitas') == 'pending' ? 'selected' : '' }}>
+                                                            Pending</option>
+                                                        <option value="rejected"
+                                                            {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>
+                                                            Rejected</option>
                                                     </select>
                                                 </div>
-                                            </div>
-
-                                            <!-- Baris 3: Pembangunan & Tampil -->
-                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-hammer me-1"></i>Pembangunan
                                                     </label>
-                                                    <select id="filterPembangunanMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="Selesai">Selesai</option>
-                                                        <option value="progress">Progress</option>
-                                                        <option value="Belum">Belum</option>
+                                                    <select name="pembangunan" id="filterPembangunanMobile" class="form-control">
+                                                        <option value="">Semua Pembangunan</option>
+                                                        <option value="Selesai"
+                                                            {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>
+                                                            Selesai</option>
+                                                        <option value="progress"
+                                                            {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
+                                                            Progress</option>
+                                                        <option value="Belum"
+                                                            {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>
+                                                            Belum</option>
                                                     </select>
                                                 </div>
+                                            </div>
+
+                                            <!-- Baris 3: Tampil -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select id="showDataMobile" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
+                                                    <select name="show" id="showDataMobile" class="form-control">
+                                                        <option value="10"
+                                                            {{ request('show') == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25"
+                                                            {{ request('show') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50"
+                                                            {{ request('show') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100"
+                                                            {{ request('show') == 100 ? 'selected' : '' }}>100</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -556,45 +676,30 @@
 
                                         <!-- FILTER UNTUK TABLET & DESKTOP -->
                                         <div class="d-none d-md-block">
-                                            <form method="GET" action="{{ route('properti-all') }}">
+                                            <form method="GET" action="{{ route('properti-all') }}" id="filterForm">
                                                 <div class="row g-2 align-items-end filter-row">
 
                                                     <!-- Search -->
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-3">
                                                         <label class="form-label">
                                                             <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                         </label>
                                                         <input type="text" name="search"
                                                             value="{{ request('search') }}" class="form-control"
-                                                            placeholder="Cari nama properti...">
+                                                            placeholder="Cari PT atau Properti...">
                                                     </div>
 
-                                                    <!-- Company -->
+                                                    <!-- FILTER PERUSAHAAN (DESKTOP) - PAKAI SELECT2 -->
                                                     <div class="col-md-2">
                                                         <label class="form-label">
                                                             <i class="mdi mdi-domain me-1"></i>Perusahaan
                                                         </label>
-                                                        <select name="company_profile_id" class="form-control">
-                                                            <option value="">Semua</option>
+                                                        <select name="company_id" id="filterCompany" class="form-control select2-desktop">
+                                                            <option value="">Semua Perusahaan</option>
                                                             @foreach ($companies as $company)
                                                                 <option value="{{ $company->id }}"
-                                                                    {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                                    {{ request('company_id') == $company->id ? 'selected' : '' }}>
                                                                     {{ $company->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">
-                                                            <i class="mdi mdi-shape-outline me-1"></i>Kategori
-                                                        </label>
-                                                        <select name="kategori" class="form-control">
-                                                            <option value="">Semua</option>
-                                                            @foreach ($categories as $kategori)
-                                                                <option value="{{ $kategori }}"
-                                                                    {{ request('kategori') == $kategori ? 'selected' : '' }}>
-                                                                    {{ $kategori }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -606,16 +711,16 @@
                                                             <i class="mdi mdi-gavel me-1"></i>Legalitas
                                                         </label>
                                                         <select name="legalitas" class="form-control">
-                                                            <option value="">Semua</option>
-                                                            <option value="terverifikasi"
-                                                                {{ request('legalitas') == 'terverifikasi' ? 'selected' : '' }}>
+                                                            <option value="">Semua Legalitas</option>
+                                                            <option value="verified"
+                                                                {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
                                                                 Terverifikasi</option>
-                                                            <option value="Pending"
-                                                                {{ request('legalitas') == 'Pending' ? 'selected' : '' }}>
+                                                            <option value="pending"
+                                                                {{ request('legalitas') == 'pending' ? 'selected' : '' }}>
                                                                 Pending</option>
-                                                            <option value="revisi"
-                                                                {{ request('legalitas') == 'revisi' ? 'selected' : '' }}>
-                                                                Revisi</option>
+                                                            <option value="rejected"
+                                                                {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>
+                                                                Rejected</option>
                                                         </select>
                                                     </div>
 
@@ -625,7 +730,7 @@
                                                             <i class="mdi mdi-hammer me-1"></i>Pembangunan
                                                         </label>
                                                         <select name="pembangunan" class="form-control">
-                                                            <option value="">Semua</option>
+                                                            <option value="">Semua Pembangunan</option>
                                                             <option value="Selesai"
                                                                 {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>
                                                                 Selesai</option>
@@ -662,6 +767,13 @@
                                                         </button>
                                                     </div>
 
+                                                    <!-- Reset Button -->
+                                                    <div class="col-md-1">
+                                                        <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary w-100">
+                                                            <i class="mdi mdi-refresh"></i>
+                                                        </a>
+                                                    </div>
+
                                                 </div>
                                             </form>
                                         </div>
@@ -670,32 +782,34 @@
                             </div>
                         </div>
 
-                        <!-- Tabel Data -->
+                        <!-- Tabel Data DENGAN ICON DI SEMUA KOLOM -->
                         <div class="table-responsive">
                             <table id="tableProperti" class="table table-hover" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 50px;">NO</th>
-                                        <th>NAMA PERUSAHAAN</th>
-                                        <th>NAMA PROPERTI</th>
-                                        <th>KATEGORI</th>
-                                        <th class="d-none d-md-table-cell">LOKASI</th>
-                                        <th>HARGA BELI</th>
-                                        <th>LEGALITAS</th>
-                                        <th>PEMBANGUNAN</th>
-                                        <th class="text-center">DOKUMEN</th>
-                                        <th class="text-center">AKSI</th>
+                                        <th class="text-center"><i class="mdi mdi-counter"></i> NO</th>
+                                        <th><i class="mdi mdi-domain"></i> NAMA PERUSAHAAN</th>
+                                        <th><i class="mdi mdi-home-variant"></i> NAMA PROPERTI</th>
+                                        <th><i class="mdi mdi-shape-outline"></i> KATEGORI</th>
+                                        <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> LOKASI</th>
+                                        <th><i class="mdi mdi-currency-usd"></i> HARGA BELI</th>
+                                        <th><i class="mdi mdi-gavel"></i> LEGALITAS</th>
+                                        <th><i class="mdi mdi-hammer"></i> PEMBANGUNAN</th>
+                                        <th class="text-center"><i class="mdi mdi-file-document"></i> DOKUMEN</th>
+                                        <th class="text-center"><i class="mdi mdi-cog"></i> AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($landBanks as $index => $item)
+                                    @forelse ($landBanks as $index => $item)
                                         <tr>
                                             <td class="text-center fw-bold">
-                                                <span
-                                                    class="badge bg-light text-dark">{{ $landBanks->firstItem() + $index }}</span>
+                                                <span class="badge bg-light text-dark">{{ $landBanks->firstItem() + $index }}</span>
                                             </td>
-                                            <td class=" fw-bold"><span
-                                                    class="badge bg-light text-dark">{{ $item->companyProfile->name ?? '-' }}</span>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-domain text-primary me-2"></i>
+                                                    <span class="fw-medium">{{ $item->companyProfile->name ?? '-' }}</span>
+                                                </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -703,68 +817,80 @@
                                                     <span class="fw-bold">{{ Str::limit($item->name, 25) }}</span>
                                                 </div>
                                                 <small class="text-muted d-block d-md-none">
-                                                    <i
-                                                        class="mdi mdi-map-marker me-1"></i>{{ Str::limit($item->address ?? '-', 15) }}
+                                                    <i class="mdi mdi-map-marker me-1"></i>{{ Str::limit($item->address ?? '-', 15) }}
                                                 </small>
                                             </td>
 
                                             <td>
-                                                <span>{{ $item->zoning ?? 'Tanah' }}</span>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-shape-outline text-info me-2"></i>
+                                                    <span>{{ $item->zoning ?? 'Tanah' }}</span>
+                                                </div>
                                             </td>
 
                                             <td class="d-none d-md-table-cell">
-                                                <span>{{ Str::limit($item->address ?? '-', 20) }}</span>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-map-marker text-danger me-2"></i>
+                                                    <span>{{ Str::limit($item->address ?? '-', 20) }}</span>
+                                                </div>
                                             </td>
 
                                             <td>
-                                                <span class="fw-bold text-success">Rp
-                                                    {{ number_format($item->acquisition_price, 0, ',', '.') }}</span>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-currency-usd text-success me-2"></i>
+                                                    <span class="fw-bold text-success">Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}</span>
+                                                </div>
                                             </td>
 
                                             <td>
-                                                @if ($item->legal_status == 'terverifikasi')
-                                                    <span class="badge badge-gradient-success">Terverifikasi</span>
-                                                @elseif ($item->legal_status == 'Pending')
-                                                    <span class="badge badge-gradient-warning">Pending</span>
+                                                @if ($item->legal_status == 'verified')
+                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
+                                                @elseif ($item->legal_status == 'pending')
+                                                    <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>
                                                 @else
-                                                    <span class="badge badge-gradient-danger">Revisi</span>
+                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Revisi</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item->development_status == 'Selesai')
-                                                    <span class="badge badge-gradient-success">Selesai</span>
+                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Selesai</span>
                                                 @elseif ($item->development_status == 'progress')
-                                                    <span class="badge badge-gradient-warning">Progress</span>
+                                                    <span class="badge badge-gradient-warning"><i class="mdi mdi-progress-clock me-1"></i>Progress</span>
                                                 @else
-                                                    <span class="badge badge-gradient-danger">Belum</span>
+                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Belum</span>
                                                 @endif
                                             </td>
 
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-gradient-info btn-sm"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#modalDokumen{{ $item->id }}">
+                                                    data-bs-toggle="modal" data-bs-target="#modalDokumen{{ $item->id }}">
                                                     <i class="mdi mdi-file-document"></i>
-                                                    <span
-                                                        class="badge bg-white text-dark ms-1">{{ $item->documents->count() }}</span>
+                                                    <span class="badge bg-white text-dark ms-1">{{ $item->documents->count() }}</span>
                                                 </button>
                                             </td>
 
                                             <td class="text-center">
                                                 @if ($item->documents->count() == 0)
-                                                    <span class="action-text action-text-none">No Data</span>
-                                                @elseif($item->documents->contains('status', 'ditolak'))
-                                                    <span class="action-text action-text-rejected">Ditolak</span>
-                                                @elseif($item->documents->every(fn($d) => $d->status == 'terverifikasi'))
-                                                    <span class="action-text action-text-verified">Sudah Verif</span>
+                                                    <span class="action-text action-text-none"><i class="mdi mdi-cancel me-1"></i>No Data</span>
+                                                @elseif($item->documents->contains('status', 'rejected'))
+                                                    <span class="action-text action-text-rejected"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
+                                                @elseif($item->documents->every(fn($d) => $d->status == 'verified'))
+                                                    <span class="action-text action-text-verified"><i class="mdi mdi-check-circle me-1"></i>Sudah Verif</span>
                                                 @else
                                                     <a href="{{ route('properti.verifikasi', $item->id) }}"
-                                                        class="action-text action-text-verify">Verifikasi</a>
+                                                        class="action-text action-text-verify"><i class="mdi mdi-account-check me-1"></i>Verifikasi</a>
                                                 @endif
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="10" class="text-center py-4">
+                                                <i class="mdi mdi-information-outline me-2"></i>
+                                                Belum ada data properti
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -773,11 +899,11 @@
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari
+                                Menampilkan {{ $landBanks->firstItem() ?? 0 }} - {{ $landBanks->lastItem() ?? 0 }} dari
                                 {{ $landBanks->total() }} data
                             </div>
                             <div class="d-flex justify-content-center">
-                                {{ $landBanks->links('pagination::bootstrap-4') }}
+                                {{ $landBanks->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
@@ -798,7 +924,10 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Dokumen - {{ $item->name }}</h5>
+                        <h5 class="modal-title">
+                            <i class="mdi mdi-file-document me-2" style="color: #9a55ff;"></i>
+                            Dokumen - {{ $item->name }}
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -807,29 +936,34 @@
                                 <table class="table table-bordered table-sm">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Nomor Dokumen</th>
-                                            <th>Tipe</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
+                                            <th><i class="mdi mdi-counter me-1"></i> Nomor Dokumen</th>
+                                            <th><i class="mdi mdi-file-outline me-1"></i> Tipe</th>
+                                            <th><i class="mdi mdi-chart-arc me-1"></i> Status</th>
+                                            <th><i class="mdi mdi-eye me-1"></i> Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($item->documents as $doc)
                                             <tr>
                                                 <td>{{ $doc->document_number }}</td>
-                                                <td>{{ ucfirst($doc->type) }}</td>
+                                                <td>
+                                                    <i class="mdi mdi-file-{{ $doc->type == 'sertifikat' ? 'certificate' : 'document' }} text-primary me-1"></i>
+                                                    {{ $doc->documentType->name ?? '-' }}
+                                                </td>
                                                 <td>
                                                     @if ($doc->status == 'pending')
-                                                        <span class="badge badge-gradient-warning">Pending</span>
+                                                        <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>
                                                     @elseif($doc->status == 'ditolak')
-                                                        <span class="badge badge-gradient-danger">Ditolak</span>
+                                                        <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
                                                     @elseif($doc->status == 'terverifikasi')
-                                                        <span class="badge badge-gradient-success">Terverifikasi</span>
+                                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
                                                     @endif
                                                 </td>
                                                 <td>
                                                     <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
-                                                        class="btn btn-gradient-primary btn-sm">Lihat</a>
+                                                        class="btn btn-gradient-primary btn-sm">
+                                                        <i class="mdi mdi-eye me-1"></i>Lihat
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @if ($doc->status === 'ditolak' && !empty($doc->catatan_admin))
@@ -837,6 +971,7 @@
                                                     <td colspan="4">
                                                         <div
                                                             class="border-start border-4 border-danger ps-3 py-2 bg-light text-danger small">
+                                                            <i class="mdi mdi-alert-circle me-1"></i>
                                                             <strong>Alasan:</strong> {{ $doc->catatan_admin }}
                                                         </div>
                                                     </td>
@@ -848,12 +983,15 @@
                             </div>
                         @else
                             <div class="text-center text-muted py-4">
-                                <p>Tidak ada dokumen.</p>
+                                <i class="mdi mdi-file-document-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <p class="mt-2">Tidak ada dokumen.</p>
                             </div>
                         @endif
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i>Tutup
+                        </button>
                     </div>
                 </div>
             </div>
@@ -862,38 +1000,88 @@
 
 @endsection
 
-
 @push('scripts')
+
     <script>
         $(document).ready(function() {
-
-            // Inisialisasi DataTables
-            let table = $('#tableProperti').DataTable({
-                responsive: true,
-                paging: false,
-                info: false,
-                searching: false,
-                lengthChange: false,
-                ordering: true,
+            // ===========================================
+            // 1. SELECT2 UNTUK FILTER PERUSAHAAN
+            // ===========================================
+            $('#filterCompany').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Semua Perusahaan',
+                allowClear: true,
+                minimumResultsForSearch: 0,
+                dropdownCssClass: 'select2-limited-items',
                 language: {
-                    emptyTable: `
-                <div class="text-center text-muted py-5">
-                    <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                    <p class="mt-3">
-                        <i class="mdi mdi-information-outline me-2"></i>
-                        Data belum tersedia
-                    </p>
-                </div>
-            `,
-                    zeroRecords: "Data tidak ditemukan",
-                },
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 7, 8]
-                }]
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
             });
 
-            // Konfirmasi SweetAlert sebelum verifikasi
+            $('#filterCompanyMobile').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Semua Perusahaan',
+                allowClear: true,
+                minimumResultsForSearch: 0,
+                dropdownCssClass: 'select2-limited-items',
+                dropdownParent: $('#filterCompanyMobile').parent(),
+                language: {
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
+
+            // ===========================================
+            // 2. DATATABLES CONDITIONAL
+            // ===========================================
+            let hasData = false;
+            $('#tableProperti tbody tr').each(function() {
+                let rowText = $(this).text();
+                if (rowText && !rowText.includes('Belum ada data properti')) {
+                    hasData = true;
+                }
+            });
+
+            // Hancurkan instance DataTables jika sudah ada
+            if ($.fn.DataTable.isDataTable('#tableProperti')) {
+                $('#tableProperti').DataTable().destroy();
+            }
+
+            // HANYA inisialisasi DataTables JIKA ADA DATA
+            if (hasData) {
+                $('#tableProperti').DataTable({
+                    responsive: true,
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Tidak ada data tersedia",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [
+                        { orderable: false, targets: [0] }, // Kolom No
+                        { orderable: false, targets: [8] }, // Kolom Dokumen
+                        { orderable: false, targets: [9] }  // Kolom Aksi
+                    ]
+                });
+            }
+
+            // ===========================================
+            // 3. SWEETALERT UNTUK VERIFIKASI
+            // ===========================================
             $('.action-text-verify').on('click', function(e) {
                 e.preventDefault();
                 let link = $(this).attr('href');
@@ -912,6 +1100,17 @@
                         window.location.href = link;
                     }
                 });
+            });
+
+            // ===========================================
+            // 4. FILTER MOBILE
+            // ===========================================
+            $('#filterDataMobile').on('click', function() {
+                $('#filterForm').submit();
+            });
+
+            $('#resetFilterMobile').on('click', function() {
+                window.location.href = "{{ route('properti-all') }}";
             });
 
         });
