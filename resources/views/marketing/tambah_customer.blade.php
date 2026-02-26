@@ -8,11 +8,29 @@
 
     <div class="container-fluid p-3 p-md-4">
         <!-- Header -->
-        <div class="add-row mb-3 mb-md-4">
-            <div class="add-col-12">
-                <h3 class="text-dark fw-bold fs-4 fs-md-3" style="color: #2c2e3f; margin-bottom: 0.25rem;">Tambah Customer
-                    Baru</h3>
-                @if (session('success'))
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">
+                                <i class="mdi mdi-account-plus me-2" style="color: #9a55ff;"></i>
+                                Tambah Customer Baru
+                            </h3>
+                            <p class="text-muted mb-0 small">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Input data lengkap customer untuk keperluan booking, KPR, dan transaksi properti
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-account-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
@@ -33,11 +51,6 @@
                         </ul>
                     </div>
                 @endif
-                <p class="add-text-muted small" style="margin-bottom: 0;">Input data lengkap customer untuk keperluan
-                    booking,
-                    KPR, dan transaksi properti</p>
-            </div>
-        </div>
 
         <!-- Progress Status -->
         <div class="add-row mb-3">
