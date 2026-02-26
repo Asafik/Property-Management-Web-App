@@ -925,14 +925,31 @@
                         <!-- Toggle View -->
                         <div class="d-flex justify-content-end mb-3">
                             <div class="btn-group btn-group-sm" role="group">
+
                                 <button type="button" class="btn btn-outline-primary active" id="btnTableView"
                                     onclick="switchView('table')">
-                                    <i class="mdi mdi-view-list me-1"></i><span class="d-none d-sm-inline">Table</span>
+                                    <i class="mdi mdi-view-list me-1"></i>
+                                    <span class="d-none d-sm-inline">Table</span>
                                 </button>
+
                                 <button type="button" class="btn btn-outline-primary" id="btnGridView"
                                     onclick="switchView('grid')">
-                                    <i class="mdi mdi-view-grid me-1"></i><span class="d-none d-sm-inline">Grid</span>
+                                    <i class="mdi mdi-view-grid me-1"></i>
+                                    <span class="d-none d-sm-inline">Grid</span>
                                 </button>
+
+                                <button type="button" class="btn btn-outline-primary" id="btnDenahView"
+                                    onclick="switchView('denah')">
+                                    <i class="mdi mdi-floor-plan me-1"></i>
+                                    <span class="d-none d-sm-inline">Denah Unit</span>
+                                </button>
+
+                                <button type="button" class="btn btn-outline-primary" id="btnLandMapView"
+                                    onclick="switchView('landmap')">
+                                    <i class="mdi mdi-map me-1"></i>
+                                    <span class="d-none d-sm-inline">Site Plan</span>
+                                </button>
+
                             </div>
                         </div>
 
@@ -946,7 +963,8 @@
                                             <th><i class="mdi mdi-home-variant"></i> Blok</th>
                                             <th><i class="mdi mdi-office-building"></i> Proyek</th>
                                             <th><i class="mdi mdi-shape-outline"></i> Tipe</th>
-                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi</th>
+                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi
+                                            </th>
                                             <th><i class="mdi mdi-ruler-square"></i> Luas Tanah</th>
                                             <th><i class="mdi mdi-domain"></i> Luas Bangunan</th>
                                             <th><i class="mdi mdi-currency-usd"></i> Harga</th>
@@ -999,11 +1017,14 @@
                                                 </td>
                                                 <td>
                                                     @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        <span class="badge badge-gradient-success"><i
+                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
                                                     @elseif($unit->status == 'sold')
-                                                        <span class="badge badge-gradient-danger"><i class="mdi mdi-cash-check me-1"></i>Terjual</span>
+                                                        <span class="badge badge-gradient-danger"><i
+                                                                class="mdi mdi-cash-check me-1"></i>Terjual</span>
                                                     @else
-                                                        <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
+                                                        <span class="badge badge-gradient-warning"><i
+                                                                class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -1021,17 +1042,15 @@
                                                     @endphp
                                                     <div class="progress" style="height: 22px;">
                                                         <div class="progress-bar progress-bar-striped progress-bar-animated
-                                                            @if($progress <= 20) bg-danger
+                                                            @if ($progress <= 20) bg-danger
                                                             @elseif($progress < 100) bg-warning
-                                                            @else bg-success
-                                                            @endif"
-                                                            role="progressbar"
-                                                            style="width: {{ $progress }}%;"
-                                                            aria-valuenow="{{ $progress }}"
-                                                            aria-valuemin="0"
+                                                            @else bg-success @endif"
+                                                            role="progressbar" style="width: {{ $progress }}%;"
+                                                            aria-valuenow="{{ $progress }}" aria-valuemin="0"
                                                             aria-valuemax="100">
-                                                            <i class="mdi mdi-{{ $progress <= 20 ? 'alert' : ($progress < 100 ? 'progress-clock' : 'check-circle') }} me-1"></i>
-                                                            {{ ucfirst(str_replace('_',' ', $status ?? 'belum_mulai')) }}
+                                                            <i
+                                                                class="mdi mdi-{{ $progress <= 20 ? 'alert' : ($progress < 100 ? 'progress-clock' : 'check-circle') }} me-1"></i>
+                                                            {{ ucfirst(str_replace('_', ' ', $status ?? 'belum_mulai')) }}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -1041,7 +1060,8 @@
                                                 </td>
                                                 <td>
                                                     <i class="mdi mdi-cash text-success me-1"></i>
-                                                    Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
+                                                    Rp
+                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td>
                                                     <i class="mdi mdi-account text-info me-1"></i>
@@ -1085,24 +1105,37 @@
                                         <div class="card-body p-3">
                                             <div class="position-relative">
                                                 @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                    <span class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    <span
+                                                        class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
+                                                            class="mdi mdi-check-circle me-1"></i>Tersedia</span>
                                                 @elseif($unit->status == 'sold')
-                                                    <span class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i class="mdi mdi-cash-check me-1"></i>Terjual</span>
+                                                    <span
+                                                        class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
+                                                            class="mdi mdi-cash-check me-1"></i>Terjual</span>
                                                 @else
-                                                    <span class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
+                                                    <span
+                                                        class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
+                                                            class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                 @endif
                                                 <div class="text-center bg-light py-3 py-md-4 rounded">
                                                     <i class="mdi mdi-home-outline"
                                                         style="font-size: 36px; color: #9a55ff;"></i>
                                                 </div>
                                             </div>
-                                            <h6 class="mt-2 fw-bold"><i class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}</h6>
-                                            <p class="text-muted small mb-1"><i class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}</p>
-                                            <p class="small mb-1"><i class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
+                                            <h6 class="mt-2 fw-bold"><i
+                                                    class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}
+                                            </h6>
+                                            <p class="text-muted small mb-1"><i
+                                                    class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
+                                            </p>
+                                            <p class="small mb-1"><i
+                                                    class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
+                                                m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
                                                 {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
                                             <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <small class="text-muted">
-                                                    <i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
+                                                    <i
+                                                        class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
                                                 </small>
                                                 <button class="btn btn-outline-danger btn-sm"
                                                     onclick="openCustomerModal({{ $unit->id }})">
@@ -1184,7 +1217,8 @@
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Upload Bukti Transfer</label>
                                     <div class="input-group">
-                                        <input type="file" name="bukti_transfer" class="form-control" id="bukti_transfer" required>
+                                        <input type="file" name="bukti_transfer" class="form-control"
+                                            id="bukti_transfer" required>
                                         <span class="input-group-text bg-white">
                                             <i class="mdi mdi-cloud-upload text-primary"></i>
                                         </span>
@@ -1230,7 +1264,7 @@
                                         @php
                                             $uniqueJobs = collect($customers)->pluck('job_status')->unique()->filter();
                                         @endphp
-                                        @foreach($uniqueJobs as $job)
+                                        @foreach ($uniqueJobs as $job)
                                             <option value="{{ $job }}">{{ $job }}</option>
                                         @endforeach
                                     </select>
@@ -1252,16 +1286,19 @@
                     </div>
 
                     <!-- Table Customer dengan Scroll (TANPA HOVER) -->
-                    <div class="table-responsive" style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
+                    <div class="table-responsive"
+                        style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
                         <table class="table table-bordered align-middle mb-0">
                             <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
                                 <tr>
-                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No</th>
+                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No
+                                    </th>
                                     <th><i class="mdi mdi-card-account-details me-1"></i> ID Customer</th>
                                     <th><i class="mdi mdi-account me-1"></i> Nama</th>
                                     <th><i class="mdi mdi-phone me-1"></i> No HP</th>
                                     <th><i class="mdi mdi-briefcase me-1"></i> Pekerjaan</th>
-                                    <th class="text-center" style="width: 160px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
+                                    <th class="text-center" style="width: 160px;"><i class="mdi mdi-cog me-1"></i> Aksi
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1285,7 +1322,7 @@
                                             {{ $c->phone ?? '-' }}
                                         </td>
                                         <td>
-                                            @if($c->job_status)
+                                            @if ($c->job_status)
                                                 <span class="badge bg-light text-dark">
                                                     <i class="mdi mdi-briefcase-outline me-1"></i>
                                                     {{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : $c->job_status }}
@@ -1341,145 +1378,149 @@
         </div>
     </div>
 
- <!-- MODAL AGENCY -->
-<div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
-                    Pilih Agency
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Card untuk Agent Fee & Search (JADI SATU) -->
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-body">
-                        <form id="formAgency" method="POST">
-                            @csrf
-                            <input type="hidden" name="sales_id" id="sales_id">
-
-                            <div class="row">
-                                <!-- Agent Fee Input -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-cash text-primary me-1"></i>
-                                        Agent Fee
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white">Rp</span>
-                                        <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
-                                            placeholder="Masukkan agent fee" autocomplete="off">
-                                    </div>
-                                    <small class="text-muted">
-                                        <i class="mdi mdi-information-outline me-1"></i>
-                                        Masukkan nominal fee untuk agency yang dipilih
-                                    </small>
-                                </div>
-
-                                <!-- Search Agency -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-magnify text-primary me-1"></i>
-                                        Cari Agency
-                                    </label>
-                                    <div class="position-relative">
-                                        <i class="mdi mdi-magnify position-absolute"
-                                           style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i>
-                                        <input type="text" id="searchAgency" class="form-control"
-                                               placeholder="Cari nama agency..."
-                                               style="padding-left: 40px;">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+    <!-- MODAL AGENCY -->
+    <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
+                        Pilih Agency
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+                <div class="modal-body">
+                    <!-- Card untuk Agent Fee & Search (JADI SATU) -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <form id="formAgency" method="POST">
+                                @csrf
+                                <input type="hidden" name="sales_id" id="sales_id">
 
-                <!-- Info Total Agency -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-muted small">
-                        <i class="mdi mdi-office-building me-1"></i>
-                        Total: {{ count($agencies) }} agency
-                    </span>
-                    <span class="badge badge-gradient-info">
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Klik tombol Pilih untuk memilih agency
-                    </span>
-                </div>
-
-                <!-- Table Agency dengan Scroll -->
-                <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                    <table class="table table-bordered align-middle mb-0">
-                        <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                            <tr>
-                                <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No</th>
-                                <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
-                                <th><i class="mdi mdi-phone me-1"></i> No HP</th>
-                                <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
-                                <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($agencies as $a)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                 style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
-                                                {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}
-                                            </div>
-                                            <span class="fw-medium">{{ $a->name }}</span>
+                                <div class="row">
+                                    <!-- Agent Fee Input -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">
+                                            <i class="mdi mdi-cash text-primary me-1"></i>
+                                            Agent Fee
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white">Rp</span>
+                                            <input type="text" class="form-control" name="agent_fee"
+                                                id="agent_fee_modal" placeholder="Masukkan agent fee" autocomplete="off">
                                         </div>
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-phone text-success me-1"></i>
-                                        {{ $a->phone }}
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                        {{ $a->address }}
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
-                                                data-id="{{ $a->id }}" style="border-radius: 20px; padding: 0.25rem 1rem;">
-                                            <i class="mdi mdi-check me-1"></i>Pilih
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">
-                                        <i class="mdi mdi-office-building-off" style="font-size: 2rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 text-muted">Tidak ada data agency</p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                        <small class="text-muted">
+                                            <i class="mdi mdi-information-outline me-1"></i>
+                                            Masukkan nominal fee untuk agency yang dipilih
+                                        </small>
+                                    </div>
 
-                <!-- Footer Info -->
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Tabel dapat di-scroll untuk melihat lebih banyak data
-                            </small>
-                            <small class="text-muted">
-                                <i class="mdi mdi-arrow-down me-1"></i>
-                                {{ count($agencies) }} data
-                            </small>
+                                    <!-- Search Agency -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">
+                                            <i class="mdi mdi-magnify text-primary me-1"></i>
+                                            Cari Agency
+                                        </label>
+                                        <div class="position-relative">
+                                            <i class="mdi mdi-magnify position-absolute"
+                                                style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i>
+                                            <input type="text" id="searchAgency" class="form-control"
+                                                placeholder="Cari nama agency..." style="padding-left: 40px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Info Total Agency -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small">
+                            <i class="mdi mdi-office-building me-1"></i>
+                            Total: {{ count($agencies) }} agency
+                        </span>
+                        <span class="badge badge-gradient-info">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Klik tombol Pilih untuk memilih agency
+                        </span>
+                    </div>
+
+                    <!-- Table Agency dengan Scroll -->
+                    <div class="table-responsive"
+                        style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
+                        <table class="table table-bordered align-middle mb-0">
+                            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
+                                <tr>
+                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No
+                                    </th>
+                                    <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
+                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
+                                    <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
+                                    <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($agencies as $a)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                    style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                                                    {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}
+                                                </div>
+                                                <span class="fw-medium">{{ $a->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-phone text-success me-1"></i>
+                                            {{ $a->phone }}
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-map-marker text-danger me-1"></i>
+                                            {{ $a->address }}
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
+                                                data-id="{{ $a->id }}"
+                                                style="border-radius: 20px; padding: 0.25rem 1rem;">
+                                                <i class="mdi mdi-check me-1"></i>Pilih
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">
+                                            <i class="mdi mdi-office-building-off"
+                                                style="font-size: 2rem; opacity: 0.3;"></i>
+                                            <p class="mt-2 text-muted">Tidak ada data agency</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer Info -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="mdi mdi-information-outline me-1"></i>
+                                    Tabel dapat di-scroll untuk melihat lebih banyak data
+                                </small>
+                                <small class="text-muted">
+                                    <i class="mdi mdi-arrow-down me-1"></i>
+                                    {{ count($agencies) }} data
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -1523,9 +1564,14 @@
                         emptyTable: "Data unit belum tersedia",
                         zeroRecords: "Data tidak ditemukan",
                     },
-                    columnDefs: [
-                        { targets: 0, orderable: false },  // Kolom No
-                        { targets: 14, orderable: false }  // Kolom Aksi (index ke-14)
+                    columnDefs: [{
+                            targets: 0,
+                            orderable: false
+                        }, // Kolom No
+                        {
+                            targets: 14,
+                            orderable: false
+                        } // Kolom Aksi (index ke-14)
                     ]
                 });
             } else {
@@ -1614,7 +1660,7 @@
                             `<input type="hidden" name="customer_id" value="${customerId}">`);
                         form.append(
                             `<input type="hidden" name="purchase_type" value="${purchaseType}">`
-                            );
+                        );
                         form.append(
                             `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
 
@@ -1654,18 +1700,38 @@
             });
         });
 
-        // SWITCH VIEW
         function switchView(view) {
+
+            // sembunyikan semua
+            document.getElementById('tableView').style.display = 'none';
+            document.getElementById('gridView').style.display = 'none';
+            document.getElementById('denahView').style.display = 'none';
+            document.getElementById('landmapView').style.display = 'none';
+
+            // reset active button
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // tampilkan sesuai pilihan
             if (view === 'table') {
-                $('#tableView').show();
-                $('#gridView').hide();
-                $('#btnTableView').addClass('active');
-                $('#btnGridView').removeClass('active');
-            } else {
-                $('#tableView').hide();
-                $('#gridView').show();
-                $('#btnGridView').addClass('active');
-                $('#btnTableView').removeClass('active');
+                document.getElementById('tableView').style.display = 'block';
+                document.getElementById('btnTableView').classList.add('active');
+            }
+
+            if (view === 'grid') {
+                document.getElementById('gridView').style.display = 'block';
+                document.getElementById('btnGridView').classList.add('active');
+            }
+
+            if (view === 'denah') {
+                document.getElementById('denahView').style.display = 'block';
+                document.getElementById('btnDenahView').classList.add('active');
+            }
+
+            if (view === 'landmap') {
+                document.getElementById('landmapView').style.display = 'block';
+                document.getElementById('btnLandMapView').classList.add('active');
             }
         }
     </script>
