@@ -247,18 +247,30 @@
 
     <div class="container-fluid p-3 p-md-4">
         <!-- Header -->
-        <div class="pengajuan-row mb-3 mb-md-4">
-            <div class="pengajuan-col-12">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <h3 class="text-dark fw-bold" style="color: #2c2e3f; margin-bottom: 0;">
-                        <i class="fas fa-coins cash-icon me-2" style="color: #9a55ff;"></i>
-                        Form Pembelian Cash
-                    </h3>
-                    <span class="badge-cash">Pembayaran Tunai</span>
+       <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <h3 class="text-dark fw-bold" style="color: #2c2e3f; margin-bottom: 0;">
+                                        <i class="fas fa-coins cash-icon me-2" style="color: #9a55ff;"></i>
+                                        Form Pembelian Cash
+                                    </h3>
+                                     <span class="badge-cash">Pembayaran Tunai</span>
+                                </div>
+                                <p class="text-muted small" style="margin-bottom: 0;">
+                                    <i class="mdi mdi-information-outline me-1 text-primary"></i>
+                                    Lengkapi data pembelian cash untuk customer yang sudah booking unit
+                                </p>
+                            </div>
+                            <div class="d-none d-md-block mt-3 mt-md-0">
+                                <i class="fas fa-coins" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="pengajuan-text-muted small" style="margin-bottom: 0;">
-                    Lengkapi data pembelian cash untuk customer yang sudah booking unit
-                </p>
             </div>
         </div>
 

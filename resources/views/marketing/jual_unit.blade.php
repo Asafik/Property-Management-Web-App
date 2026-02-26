@@ -605,6 +605,104 @@
             font-size: 12px;
             color: white;
         }
+
+        /* ===== FILE UPLOAD MODERN STYLING ===== */
+        .file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-modern .file-label-modern {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 6px;
+            padding: 1rem 0.6rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 100px;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-modern .file-label-modern {
+                flex-direction: row;
+                text-align: left;
+                gap: 8px;
+                padding: 0.75rem 1rem;
+                min-height: auto;
+            }
+        }
+
+        .file-upload-modern:hover .file-label-modern {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .file-upload-modern .file-label-modern i {
+            font-size: 1.6rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .file-upload-modern .file-label-modern .file-info-modern {
+            flex: 1;
+            width: 100%;
+        }
+
+        .file-upload-modern .file-label-modern .file-info-modern span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.8rem;
+            word-break: break-word;
+        }
+
+        .file-upload-modern .file-label-modern .file-info-modern small {
+            color: #6c7383;
+            font-size: 0.65rem;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .file-upload-modern .file-label-modern .file-size {
+            font-size: 0.7rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-modern .file-label-modern .file-size {
+                margin-top: 0;
+            }
+        }
+
+        .file-upload-modern .file-label-modern.file-selected {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -1516,13 +1614,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Booking Fee Section -->
+                    <!-- Booking Fee Section dengan MODERN FILE UPLOAD -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-body">
                             <div class="row">
                                 <!-- Booking Fee -->
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold">Booking Fee</label>
+                                    <label class="form-label fw-bold">
+                                        <i class="mdi mdi-cash-multiple text-primary me-1"></i>
+                                        Booking Fee <span class="text-danger">*</span>
+                                    </label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-white">Rp</span>
                                         <input type="text" class="form-control" id="booking_fee" name="booking_fee"
@@ -1531,26 +1632,30 @@
                                     <small class="text-muted">Nominal booking fee yang dibayar customer</small>
                                 </div>
 
-                                <!-- Upload Bukti Transfer -->
+                                <!-- Upload Bukti Transfer MODERN -->
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold">Upload Bukti Transfer</label>
-                                    <div class="input-group">
-                                        <input type="file" name="bukti_transfer" class="form-control"
-                                            id="bukti_transfer" required>
-                                        <span class="input-group-text bg-white">
-                                            <i class="mdi mdi-cloud-upload text-primary"></i>
-                                        </span>
+                                    <label class="form-label fw-bold">
+                                        <i class="mdi mdi-cloud-upload text-primary me-1"></i>
+                                        Upload Bukti Transfer <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="file-upload-modern">
+                                        <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="file-label-modern" id="buktiLabel">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="file-info-modern">
+                                                <span id="buktiFileName">Upload Bukti Transfer</span>
+                                                <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                            </div>
+                                            <span class="file-size" id="buktiFileSize"></span>
+                                        </div>
                                     </div>
-                                    <small class="text-muted">
-                                        Format: JPG, PNG, PDF (Max 2MB)
-                                    </small>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
                                     <small class="text-muted">
                                         <i class="mdi mdi-information-outline me-1"></i>
-                                        Pilih customer lalu klik metode pembayaran
+                                        Pilih customer lalu klik metode pembayaran (Cash/KPR)
                                     </small>
                                 </div>
                             </div>
@@ -1951,6 +2056,34 @@
                 }
             });
 
+            // FILE UPLOAD HANDLER - Modern styling
+            $('#bukti_transfer').on('change', function() {
+                const file = this.files[0];
+                const $label = $('#buktiLabel');
+                const $fileName = $('#buktiFileName');
+                const $fileSize = $('#buktiFileSize');
+
+                if (file) {
+                    // Tampilkan nama file
+                    $fileName.text(file.name.length > 30 ? file.name.substring(0, 30) + '...' : file.name);
+
+                    // Hitung ukuran file
+                    if (file.size < 1024 * 1024) {
+                        $fileSize.text((file.size / 1024).toFixed(1) + ' KB');
+                    } else {
+                        $fileSize.text((file.size / (1024 * 1024)).toFixed(1) + ' MB');
+                    }
+
+                    // Tambah class selected
+                    $label.addClass('file-selected');
+                } else {
+                    // Reset
+                    $fileName.text('Upload Bukti Transfer');
+                    $fileSize.text('');
+                    $label.removeClass('file-selected');
+                }
+            });
+
             // OPEN CUSTOMER MODAL
             window.openCustomerModal = function(unitId) {
                 if (!unitId) {
@@ -1963,16 +2096,22 @@
                 }
                 $('#modalCustomer').attr('data-unit-id', unitId);
                 $('#booking_fee').val('');
+                $('#bukti_transfer').val('');
+                $('#buktiFileName').text('Upload Bukti Transfer');
+                $('#buktiFileSize').text('');
+                $('#buktiLabel').removeClass('file-selected');
                 $('#modalCustomer').modal('show');
             };
 
-            // PILIH CUSTOMER
+            // PILIH CUSTOMER - DENGAN VALIDASI FILE
             $(document).on('click', '.pilihCustomer', function() {
                 let customerId = $(this).data('id');
                 let purchaseType = $(this).data('type');
                 let unitId = $('#modalCustomer').attr('data-unit-id');
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '');
+                let buktiTransfer = $('#bukti_transfer')[0].files[0];
 
+                // VALIDASI UNIT
                 if (!unitId) {
                     Swal.fire({
                         icon: 'error',
@@ -1982,11 +2121,43 @@
                     return;
                 }
 
-                if (!bookingFee || bookingFee <= 0) {
+                // VALIDASI BOOKING FEE
+                if (!bookingFee || parseInt(bookingFee) <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Booking Fee Kosong',
                         text: 'Booking fee harus diisi dan lebih dari 0!'
+                    });
+                    return;
+                }
+
+                // VALIDASI FILE UPLOAD - WAJIB UNTUK CASH DAN KPR
+                if (!buktiTransfer) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bukti Transfer Kosong',
+                        text: 'Bukti transfer wajib diupload!'
+                    });
+                    return;
+                }
+
+                // Validasi ukuran file (max 2MB)
+                if (buktiTransfer.size > 2 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Terlalu Besar',
+                        text: 'Ukuran file maksimal 2MB!'
+                    });
+                    return;
+                }
+
+                // Validasi tipe file
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+                if (!allowedTypes.includes(buktiTransfer.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tipe File Tidak Didukung',
+                        text: 'Format file harus JPG, PNG, atau PDF!'
                     });
                     return;
                 }
@@ -1996,6 +2167,7 @@
                     html: `
                         <p class="mb-1">Jenis: <b>${purchaseType.toUpperCase()}</b></p>
                         <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
+                        <p class="small text-muted mt-2">File: ${buktiTransfer.name}</p>
                     `,
                     icon: 'question',
                     showCancelButton: true,
@@ -2005,30 +2177,59 @@
                     cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        let actionUrlTemplate = "{{ route('set.customer', ':unitId') }}";
-                        let actionUrl = actionUrlTemplate.replace(':unitId', unitId);
+                        // Buat FormData
+                        let formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('customer_id', customerId);
+                        formData.append('purchase_type', purchaseType);
+                        formData.append('booking_fee', bookingFee);
+                        formData.append('bukti_transfer', buktiTransfer);
 
-                        let form = $('#formBooking');
+                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 
-                        form.attr('action', actionUrl);
-                        $('#customer_id').val(customerId);
-                        $('#purchase_type').val(purchaseType);
-                        $('#booking_fee_hidden').val(bookingFee);
+                        // Tampilkan loading
+                        Swal.fire({
+                            title: 'Memproses...',
+                            text: 'Harap tunggu',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
 
-                        form.submit();
-
-                        form.append(
-                            `<input type="hidden" name="_token" value="{{ csrf_token() }}">`);
-                        form.append(
-                            `<input type="hidden" name="customer_id" value="${customerId}">`);
-                        form.append(
-                            `<input type="hidden" name="purchase_type" value="${purchaseType}">`
-                        );
-                        form.append(
-                            `<input type="hidden" name="booking_fee" value="${bookingFee}">`);
-
-                        $('body').append(form);
-                        form.submit();
+                        // Kirim via AJAX
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#modalCustomer').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Customer berhasil dipilih',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                let errorMsg = 'Terjadi kesalahan';
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    errorMsg = xhr.responseJSON.message;
+                                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                                    errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                                }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: errorMsg
+                                });
+                            }
+                        });
                     }
                 });
             });
@@ -2048,21 +2249,74 @@
                 let salesId = $(this).data('id');
                 let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
 
-                if (!agentFee) {
+                if (!agentFee || parseInt(agentFee) <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Oops...',
-                        text: 'Agent fee wajib diisi!'
+                        text: 'Agent fee wajib diisi dan lebih dari 0!'
                     });
                     return;
                 }
 
-                $('#sales_id').val(salesId);
-                $('#formAgency').append(`<input type="hidden" name="agent_fee" value="${agentFee}">`);
-                $('#formAgency').submit();
+                Swal.fire({
+                    title: 'Yakin pilih agency ini?',
+                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Pilih!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Buat form data
+                        let formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('sales_id', salesId);
+                        formData.append('agent_fee', agentFee);
+
+                        let unitId = $(this).closest('.bukaModal').data('unit');
+                        let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
+
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#modalAgency').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Agency berhasil dipilih',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: xhr.responseJSON?.message || 'Terjadi kesalahan'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Reset form saat modal ditutup
+            $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {
+                $('#booking_fee, #agent_fee_modal').val('');
+                $('#bukti_transfer').val('');
+                $('#buktiFileName').text('Upload Bukti Transfer');
+                $('#buktiFileSize').text('');
+                $('#buktiLabel').removeClass('file-selected');
             });
         });
 
+        // SWITCH VIEW
         function switchView(view) {
             // sembunyikan semua
             document.getElementById('tableView').style.display = 'none';
