@@ -55,7 +55,7 @@ public function index(Request $request)
 }
 public function kavlingindex()
 {
-    $lands = LandBank::where('legal_status', 'terverifikasi')
+    $lands = LandBank::where('legal_status', 'verified')
                 ->latest()
                 ->paginate(10);
 

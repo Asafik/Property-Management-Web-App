@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\LandBank;
 use App\Models\CompanyProfile;
 use App\Models\LandBankDocument;
+use Illuminate\Support\Facades\Log;
+
+
+use App\Models\DocumentTypes;
 use Illuminate\Support\Facades\DB;
 
 class LandBankController extends Controller
@@ -13,148 +17,162 @@ class LandBankController extends Controller
     public function index()
     {
         $companies = CompanyProfile::withCount('landBanks')->get();
-        return view('properti.tambah_properti', compact('companies'));
+        $documentTypes = DocumentTypes::orderBy('name')->get();
+        return view('properti.tambah_properti', compact('companies', 'documentTypes'));
     }
-
 public function store(Request $request)
 {
-    $request->validate([
-        'namaTanah' => 'required|string|max:200',
-        'statusKepemilikan' => 'required|string',
-        'company_profile_id' => 'required|exists:company_profiles,id',
-        'lokasi' => 'required|string',
-        'luasTanah' => 'required|numeric',
-        'hargaPerolehan' => 'required',
-        'tanggalPerolehan' => 'required|date',
-        'noSertifikat' => 'required|string',
-        'atasNama' => 'required|string',
-        'statusLegal' => 'required|string',
-        'statusKavling' => 'required|string',
+    try {
 
-        // ===== CUT & FILL =====
-        'elevasi_awal'     => 'nullable|numeric',
-        'elevasi_rencana'  => 'nullable|numeric',
-        'volume_cut'       => 'nullable|numeric',
-        'volume_fill'      => 'nullable|numeric',
-        'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
-    ]);
+        $validated = $request->validate([
+            'namaTanah' => 'required|string|max:200',
+            'statusKepemilikan' => 'required|string',
+            'company_profile_id' => 'required|exists:company_profiles,id',
+            'lokasi' => 'required|string',
+            'luasTanah' => 'required|numeric',
+            'hargaPerolehan' => 'required',
+            'tanggalPerolehan' => 'required|date',
+            'statusLegal' => 'required|string',
+            'statusKavling' => 'required|string',
+
+            'elevasi_awal'     => 'nullable|numeric',
+            'elevasi_rencana'  => 'nullable|numeric',
+            'volume_cut'       => 'nullable|numeric',
+            'volume_fill'      => 'nullable|numeric',
+            'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
+
+            'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documents.*.number' => 'nullable|string|max:255',
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+
+        Log::warning('VALIDATION ERROR STORE LAND BANK', [
+            'errors' => $e->errors(),
+            'request' => $request->all()
+        ]);
+
+        throw $e; // biar tetap balik ke form dengan error
+    }
 
     DB::beginTransaction();
 
     try {
 
-        // Bersihkan format rupiah
         $harga = preg_replace('/[^0-9]/', '', $request->hargaPerolehan);
 
-        // ===============================
-        // INSERT LAND BANK
-        // ===============================
         $land = LandBank::create([
             'name' => $request->namaTanah,
             'company_profile_id' => $request->company_profile_id,
             'ownership_status' => $request->statusKepemilikan,
-            'certificate_no' => $request->noSertifikat,
-            'certificate_owner' => $request->atasNama,
-
             'area' => $request->luasTanah,
             'remaining_area' => $request->luasTanah ?? null,
             'acquisition_price' => $harga,
             'acquisition_date' => $request->tanggalPerolehan,
-
-            'imb_no' => $request->noIMB,
-            'pbb_no' => $request->noPBB,
-
             'address' => $request->lokasi,
             'village' => $request->kelurahan,
             'district' => $request->kecamatan,
             'city' => $request->kota,
             'province' => $request->provinsi,
             'postal_code' => $request->kodePos,
-
             'zoning' => $request->zonasi,
             'road_width' => $request->lebarJalan,
             'road_type' => $request->jenisJalan,
-
             'facility_school' => $request->has('fasSekolah'),
             'facility_hospital' => $request->has('fasRumahSakit'),
             'facility_mall' => $request->has('fasMall'),
             'facility_transport' => $request->has('fasTransportasi'),
-
             'legal_status' => $request->statusLegal,
             'development_status' => $request->statusKavling,
             'priority' => $request->prioritas,
-
             'lat' => $request->latitude,
             'lng' => $request->longitude,
-
             'description' => $request->deskripsi,
             'status' => 'draft',
-
-            // ===== CUT & FILL =====
-            'elevasi_awal'     => $request->elevasi_awal,
-            'elevasi_rencana'  => $request->elevasi_rencana,
-            'volume_cut'       => $request->volume_cut,
-            'volume_fill'      => $request->volume_fill,
-            'status_cut_fill'  => $request->status_cut_fill ?? 'planned',
+            'elevasi_awal' => $request->elevasi_awal,
+            'elevasi_rencana' => $request->elevasi_rencana,
+            'volume_cut' => $request->volume_cut,
+            'volume_fill' => $request->volume_fill,
+            'status_cut_fill' => $request->status_cut_fill ?? 'planned',
         ]);
 
+        if (!$land) {
+            Log::error('FAILED INSERT LAND BANK', [
+                'request' => $request->all()
+            ]);
+            throw new \Exception('Insert LandBank gagal');
+        }
+
         // ===============================
-        // HANDLE DOCUMENT
+        // HANDLE DOCUMENTS
         // ===============================
-        $documents = [
-            'uploadSertifikat' => [
-                'type' => 'sertifikat',
-                'number' => $request->noSertifikat
-            ],
-            'uploadIMB' => [
-                'type' => 'imb',
-                'number' => $request->noIMB
-            ],
-            'uploadPBB' => [
-                'type' => 'pbb',
-                'number' => $request->noPBB
-            ],
-            'uploadAKTATanah' => [
-                'type' => 'akta_tanah',
-                'number' => $request->noAktaTanah
-            ]
-        ];
+        if ($request->has('documents')) {
 
-        foreach ($documents as $field => $doc) {
+            foreach ($request->documents as $typeId => $doc) {
 
-            if ($request->hasFile($field)) {
+                if (empty($doc['number']) && empty($doc['file'])) {
+                    continue;
+                }
 
-                $path = $request->file($field)
-                    ->store('landbank/'.$doc['type'], 'public');
+                $filePath = null;
 
-                LandBankDocument::create([
-                    'land_bank_id' => $land->id,
-                    'type' => $doc['type'],
-                    'file_path' => $path,
-                    'document_number' => $doc['number'],
-                    'status' => 'pending',
-                    'revisi_ke' => 0
+                if (!empty($doc['file'])) {
+
+                    try {
+                        $filePath = $doc['file']
+                            ->store('landbank/'.$land->id.'/'.$typeId, 'public');
+
+                    } catch (\Exception $fileError) {
+
+                        Log::error('FILE UPLOAD ERROR', [
+                            'land_id' => $land->id,
+                            'type_id' => $typeId,
+                            'error' => $fileError->getMessage()
+                        ]);
+
+                        throw $fileError;
+                    }
+                }
+
+                $docInsert = LandBankDocument::create([
+                    'land_bank_id'     => $land->id,
+                    'document_type_id' => $typeId,
+                    'document_number'  => $doc['number'] ?? null,
+                    'file_path'        => $filePath,
+                    'status'           => 'pending',
+                    'revision_number'  => 0,
                 ]);
+
+                if (!$docInsert) {
+                    Log::error('FAILED INSERT LAND DOCUMENT', [
+                        'land_id' => $land->id,
+                        'type_id' => $typeId
+                    ]);
+
+                    throw new \Exception('Insert document gagal');
+                }
             }
         }
 
         DB::commit();
 
-        if ($request->redirect == 'verifikasi') {
-            return redirect('/properti/verifikasi-legal/'.$land->id)
-                ->with('success','Data tersimpan, lanjut verifikasi');
-        }
-
         return redirect()->route('properti')
-            ->with('success','Data properti berhasil disimpan');
+            ->with('success', 'Data properti berhasil disimpan');
 
     } catch (\Exception $e) {
 
         DB::rollBack();
-        return back()->with('error','Terjadi kesalahan: '.$e->getMessage());
+
+        Log::error('STORE LAND BANK ERROR', [
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'request' => $request->all()
+        ]);
+
+        return back()->with('error', 'Terjadi kesalahan, silakan cek log.');
     }
 }
-
     // ===============================
     // VERIFIKASI
     // ===============================
@@ -273,18 +291,18 @@ public function approveAllDocuments($id)
 
     foreach ($land->documents as $doc) {
         $doc->update([
-            'status' => 'terverifikasi'
+            'status' => 'verified',
         ]);
     }
 
     // Cek apakah semua dokumen sudah terverifikasi
     $allVerified = $land->documents->every(function($doc) {
-        return $doc->status === 'terverifikasi';
+        return $doc->status === 'verified';
     });
 
     if ($allVerified) {
         $land->update([
-            'legal_status' => 'terverifikasi'
+            'legal_status' => 'verified'
         ]);
     }
 
@@ -304,7 +322,7 @@ public function rejectAllDocuments(Request $request, $id)
 
     foreach ($land->documents as $doc) {
         $doc->update([
-            'status' => 'ditolak',
+            'status' => 'rejected',
             'catatan_admin' => $request->catatan_admin,
             'revisi_ke' => $doc->revisi_ke + 1
         ]);

@@ -608,15 +608,15 @@
                                                     </label>
                                                     <select name="legalitas" id="filterLegalitasMobile" class="form-control">
                                                         <option value="">Semua Legalitas</option>
-                                                        <option value="terverifikasi"
-                                                            {{ request('legalitas') == 'terverifikasi' ? 'selected' : '' }}>
+                                                        <option value="verified"
+                                                            {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
                                                             Terverifikasi</option>
-                                                        <option value="Pending"
-                                                            {{ request('legalitas') == 'Pending' ? 'selected' : '' }}>
+                                                        <option value="pending"
+                                                            {{ request('legalitas') == 'pending' ? 'selected' : '' }}>
                                                             Pending</option>
-                                                        <option value="revisi"
-                                                            {{ request('legalitas') == 'revisi' ? 'selected' : '' }}>
-                                                            Revisi</option>
+                                                        <option value="rejected"
+                                                            {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>
+                                                            Rejected</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-6">
@@ -712,15 +712,15 @@
                                                         </label>
                                                         <select name="legalitas" class="form-control">
                                                             <option value="">Semua Legalitas</option>
-                                                            <option value="terverifikasi"
-                                                                {{ request('legalitas') == 'terverifikasi' ? 'selected' : '' }}>
+                                                            <option value="verified"
+                                                                {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
                                                                 Terverifikasi</option>
-                                                            <option value="Pending"
-                                                                {{ request('legalitas') == 'Pending' ? 'selected' : '' }}>
+                                                            <option value="pending"
+                                                                {{ request('legalitas') == 'pending' ? 'selected' : '' }}>
                                                                 Pending</option>
-                                                            <option value="revisi"
-                                                                {{ request('legalitas') == 'revisi' ? 'selected' : '' }}>
-                                                                Revisi</option>
+                                                            <option value="rejected"
+                                                                {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>
+                                                                Rejected</option>
                                                         </select>
                                                     </div>
 
@@ -843,9 +843,9 @@
                                             </td>
 
                                             <td>
-                                                @if ($item->legal_status == 'terverifikasi')
+                                                @if ($item->legal_status == 'verified')
                                                     <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
-                                                @elseif ($item->legal_status == 'Pending')
+                                                @elseif ($item->legal_status == 'pending')
                                                     <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>
                                                 @else
                                                     <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Revisi</span>
@@ -873,9 +873,9 @@
                                             <td class="text-center">
                                                 @if ($item->documents->count() == 0)
                                                     <span class="action-text action-text-none"><i class="mdi mdi-cancel me-1"></i>No Data</span>
-                                                @elseif($item->documents->contains('status', 'ditolak'))
+                                                @elseif($item->documents->contains('status', 'rejected'))
                                                     <span class="action-text action-text-rejected"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
-                                                @elseif($item->documents->every(fn($d) => $d->status == 'terverifikasi'))
+                                                @elseif($item->documents->every(fn($d) => $d->status == 'verified'))
                                                     <span class="action-text action-text-verified"><i class="mdi mdi-check-circle me-1"></i>Sudah Verif</span>
                                                 @else
                                                     <a href="{{ route('properti.verifikasi', $item->id) }}"
@@ -948,7 +948,7 @@
                                                 <td>{{ $doc->document_number }}</td>
                                                 <td>
                                                     <i class="mdi mdi-file-{{ $doc->type == 'sertifikat' ? 'certificate' : 'document' }} text-primary me-1"></i>
-                                                    {{ ucfirst($doc->type) }}
+                                                    {{ $doc->documentType->name ?? '-' }}
                                                 </td>
                                                 <td>
                                                     @if ($doc->status == 'pending')

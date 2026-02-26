@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\DocumentTypes;
 use Illuminate\Database\Eloquent\Model;
 
 class LandBankDocument extends Model
 {
     protected $fillable = [
         'land_bank_id',
-        'type',
+            'document_type_id', // ← WAJIB ADA
+        
         'file_path',
         'document_number',
         'status',
@@ -21,4 +22,8 @@ class LandBankDocument extends Model
     {
         return $this->belongsTo(LandBank::class);
     }
+    public function documentType()
+{
+    return $this->belongsTo(DocumentTypes::class);
+}
 }
