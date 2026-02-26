@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LandBank;
 use App\Models\LandBankUnit;
-
+use App\Imports\LandBankUnitImport;
+use Maatwebsite\Excel\Facades\Excel;
 class LandBankUnitController extends Controller
 {
     // Form buat kavling
@@ -281,5 +282,32 @@ class LandBankUnitController extends Controller
         }
 
         return redirect()->back()->with('success', 'Progress dan bahan baku unit ' . $unit->unit_code . ' berhasil diperbarui.');
+    }
+    public function downloadTemplate()
+    {
+        $filePath = public_path('templates/land_bank_unit_template.xlsx');
+
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'Template tidak ditemukan.');
+        }
+
+        return response()->download($filePath, 'land_bank_unit_template.xlsx');
+    }
+    public function import(Request $request, $land_bank_id)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $import = new LandBankUnitImport($land_bank_id);
+            Excel::import($import, $file);
+
+            return redirect()->back()->with('success', 'Data unit berhasil diimpor.');
+        } catch (\Exception $e) {
+            Log::error('Import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengimpor: ' . $e->getMessage());
+        }
     }
 }

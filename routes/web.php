@@ -155,6 +155,8 @@ Route::get('/kavling',[PropertyController::class, 'kavlingindex'])->name('kavlin
 
 Route::get('/properti-buat-kavling/{land_bank_id}',[LandBankUnitController::class, 'create'])->name('properti.buatKavling');
 Route::post('/properti-buat-kavling/{land_bank_id}/store',[LandBankUnitController::class, 'store'])->name('properti.storeKavling');
+Route::get('/properti-buat-kavling/template', [LandBankUnitController::class, 'downloadTemplate'])->name('kavling.template');
+Route::post('/properti-buat-kavling/import', [LandBankUnitController::class, 'import'])->name('kavling.import');
 
 
 // edit kavling
