@@ -1167,7 +1167,7 @@
                                                                 class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <td style="min-width:160px;">
                                                     @php
                                                         $status = $unit->construction_progress;
                                                         $progressMap = [
@@ -1180,17 +1180,22 @@
                                                         ];
                                                         $progress = $progressMap[$status] ?? 0;
                                                     @endphp
-                                                    <div class="progress" style="height: 22px;">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated
+
+                                                    <div class="progress rounded-pill"
+                                                        style="height:22px; background:#f1f1f1;">
+                                                        <div class="progress-bar 
+                                                            d-flex align-items-center justify-content-center
+                                                            fw-semibold text-white
                                                             @if ($progress <= 20) bg-danger
                                                             @elseif($progress < 100) bg-warning
                                                             @else bg-success @endif"
-                                                            role="progressbar" style="width: {{ $progress }}%;"
+                                                            role="progressbar"
+                                                            style="width: {{ $progress }}%; transition: .5s;"
                                                             aria-valuenow="{{ $progress }}" aria-valuemin="0"
                                                             aria-valuemax="100">
-                                                            <i
-                                                                class="mdi mdi-{{ $progress <= 20 ? 'alert' : ($progress < 100 ? 'progress-clock' : 'check-circle') }} me-1"></i>
-                                                            {{ ucfirst(str_replace('_', ' ', $status ?? 'belum_mulai')) }}
+
+                                                            {{ $progress }}%
+
                                                         </div>
                                                     </div>
                                                 </td>
@@ -1639,7 +1644,8 @@
                                         Upload Bukti Transfer <span class="text-danger">*</span>
                                     </label>
                                     <div class="file-upload-modern">
-                                        <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf">
+                                        <input type="file" id="bukti_transfer" name="bukti_transfer"
+                                            accept=".jpg,.jpeg,.png,.pdf">
                                         <div class="file-label-modern" id="buktiLabel">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="file-info-modern">
@@ -2185,7 +2191,8 @@
                         formData.append('booking_fee', bookingFee);
                         formData.append('bukti_transfer', buktiTransfer);
 
-                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
+                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(
+                            ':unitId', unitId);
 
                         // Tampilkan loading
                         Swal.fire({
@@ -2220,8 +2227,10 @@
                                 let errorMsg = 'Terjadi kesalahan';
                                 if (xhr.responseJSON && xhr.responseJSON.message) {
                                     errorMsg = xhr.responseJSON.message;
-                                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-                                    errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                                } else if (xhr.responseJSON && xhr.responseJSON
+                                    .errors) {
+                                    errorMsg = Object.values(xhr.responseJSON.errors)
+                                        .join('\n');
                                 }
                                 Swal.fire({
                                     icon: 'error',
@@ -2298,7 +2307,8 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
-                                    text: xhr.responseJSON?.message || 'Terjadi kesalahan'
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan'
                                 });
                             }
                         });
