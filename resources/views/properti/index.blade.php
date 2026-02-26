@@ -953,9 +953,9 @@
                                                 <td>
                                                     @if ($doc->status == 'pending')
                                                         <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>
-                                                    @elseif($doc->status == 'ditolak')
+                                                    @elseif($doc->status == 'rejected')
                                                         <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
-                                                    @elseif($doc->status == 'terverifikasi')
+                                                    @elseif($doc->status == 'verified')
                                                         <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
                                                     @endif
                                                 </td>

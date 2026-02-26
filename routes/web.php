@@ -30,6 +30,7 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\LandBankDocumentController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\SiteplanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -250,7 +251,7 @@ Route::get('/dashboard-dokument', [LandBankDocumentController::class, 'index'])-
 Route::post('/dashboard-dokument/store', [LandBankDocumentController::class, 'store'])->name('document-types.store');
 
 
-
+Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
 Route::get('/dashboard-pengaturan', function () {
     return view('setting.setting');
 });
