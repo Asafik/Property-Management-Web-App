@@ -35,24 +35,22 @@ use App\Http\Controllers\PengajuanController;
 | AUTH
 |--------------------------------------------------------------------------
 */
-
-Route::get('/', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-
-Route::get('/register', function () {
-    return view('auth.register');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| DASHBOARD
-|--------------------------------------------------------------------------
-*/
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
+Route::middleware(['auth'])->group(function () {
 
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
 /*
 |--------------------------------------------------------------------------
 | ========================= MARKETING =========================
@@ -253,3 +251,8 @@ Route::get('/dashboard-dokument', function () {
 Route::get('/dashboard-pengaturan', function () {
     return view('setting.setting');
 });
+
+ 
+    
+});
+
