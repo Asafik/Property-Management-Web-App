@@ -1123,33 +1123,47 @@
                                             <div class="kavling-form-group">
                                                 <label>Download Template</label>
                                                 <div>
-                                                    <button class="kavling-btn kavling-btn-outline-success"
-                                                        onclick="alert('Download template excel')">
+                                                    <a href="{{ route('kavling.template') }}"
+                                                        class="kavling-btn kavling-btn-outline-success">
                                                         <i class="mdi mdi-download me-1"></i>Template Kavling.xlsx
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
+                                            <form action="{{ route('kavling.import', $land->id) }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
 
-                                            <div class="kavling-form-group">
-                                                <label>Upload File Excel</label>
-                                                <div class="kavling-file-upload-modern">
-                                                    <input type="file" id="uploadExcel" name="uploadExcel"
-                                                        accept=".xlsx,.xls">
-                                                    <div class="kavling-file-label-modern">
-                                                        <i class="mdi mdi-cloud-upload"></i>
-                                                        <div class="kavling-file-info-modern">
-                                                            <span>Upload File Excel</span>
-                                                            <small>Format: .xlsx, .xls (Max 5MB)</small>
+
+                                                <div class="kavling-form-group">
+                                                    <label>Upload File Excel</label>
+
+                                                    <div class="kavling-file-upload-modern position-relative">
+
+                                                        <!-- Input Asli (Hidden) -->
+                                                        <input type="file" id="uploadExcel" name="file"
+                                                            accept=".xlsx,.xls" required
+                                                            style="opacity:0; position:absolute; inset:0; cursor:pointer;">
+
+                                                        <!-- UI Custom -->
+                                                        <div
+                                                            class="kavling-file-label-modern text-center p-4 border rounded">
+                                                            <i class="mdi mdi-cloud-upload" style="font-size:32px;"></i>
+                                                            <div class="kavling-file-info-modern mt-2">
+                                                                <span id="fileName">Upload File Excel</span>
+                                                                <small class="d-block text-muted">
+                                                                    Format: .xlsx, .xls (Max 5MB)
+                                                                </small>
+                                                            </div>
                                                         </div>
-                                                        <span class="kavling-file-size"></span>
+
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <button class="kavling-btn kavling-btn-primary"
-                                                onclick="alert('Data berhasil diimport')">
-                                                <i class="mdi mdi-import me-1"></i>Import Data
-                                            </button>
+                                                <button class="kavling-btn kavling-btn-primary" type="submit"
+                                                    id="importButton" disabled>
+                                                    <i class="mdi mdi-import me-1"></i>Import Data
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -1857,6 +1871,32 @@
 @endsection
 
 @push('scripts')
+    <script>
+        document.getElementById('uploadExcel').addEventListener('change', function(e) {
+
+            const file = e.target.files[0];
+            const button = document.getElementById('importButton');
+            const fileNameSpan = document.getElementById('fileName');
+
+            if (!file) {
+                button.disabled = true;
+                fileNameSpan.innerText = "Upload File Excel";
+                return;
+            }
+
+            // Validasi size max 5MB
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File maksimal 5MB!");
+                e.target.value = "";
+                button.disabled = true;
+                fileNameSpan.innerText = "Upload File Excel";
+                return;
+            }
+
+            fileNameSpan.innerText = file.name;
+            button.disabled = false;
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Simple Tab Functionality
