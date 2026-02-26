@@ -1238,7 +1238,8 @@
                         </div>
 
                         <!-- GRID VIEW (Katalog) -->
-                        <div id="gridView" class="row g-3" style="display: none;">
+                        <div id="gridView" style="display: none;">
+                          <div class="row g-3">
                             @forelse ($units as $unit)
                                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                                     <div class="card grid-card h-100">
@@ -1293,6 +1294,7 @@
                                     </div>
                                 </div>
                             @endforelse
+                            </div>
                         </div>
 
                         <!-- DENAH VIEW (DARI HALAMAN BUAT KAVLING) -->
