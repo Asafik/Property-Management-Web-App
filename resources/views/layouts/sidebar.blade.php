@@ -103,12 +103,30 @@
         </div>
     </li>
 
-    <!-- MENU CUSTOMER -->
+  <!-- MENU CUSTOMER DENGAN SUB-MENU -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" data-bs-toggle="collapse" href="#customer" aria-expanded="false" aria-controls="customer">
             <span class="menu-title">Customer</span>
+            <i class="menu-arrow"></i>
             <i class="mdi mdi-account-group menu-icon"></i>
         </a>
+        <div class="collapse" id="customer">
+            <ul class="nav flex-column sub-menu">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard-customer">
+                        Customer (Sudah Beli)
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard-tamu">
+                        Tamu / Prospek
+                    </a>
+                </li>
+
+            </ul>
+        </div>
     </li>
 
     <!-- MENU Promo -->

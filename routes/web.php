@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
 /*
 |--------------------------------------------------------------------------
 | ========================= MARKETING =========================
@@ -252,7 +252,16 @@ Route::get('/dashboard-pengaturan', function () {
     return view('setting.setting');
 });
 
- 
-    
+Route::get('/dashboard-customer', function () {
+    return view('customer.customer');
 });
+
+Route::get('/dashboard-tamu', function () {
+    return view('customer.tamu');
+});
+
+
+});
+
+
 
