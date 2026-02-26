@@ -164,7 +164,15 @@
             </ul>
         </div>
     </li>
-    
+    <!-- MENU Dokument -->
+    <li class="nav-item">
+        <a class="nav-link" href="dashboard-dokument">
+            <span class="menu-title">Dokument</span>
+            <i class="mdi mdi-account-cog menu-icon"></i>
+        </a>
+    </li>
+
+>>>>>>> 3674da9658dc55e6821625ed2103014b5a803488
     <!-- MENU INVENTORY UNIT -->
     <li class="nav-item">
         <a class="nav-link" href="#">
