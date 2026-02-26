@@ -199,7 +199,7 @@
 
     <!-- MENU PENGATURAN -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="dashboard-pengaturan">
             <span class="menu-title">Pengaturan</span>
             <i class="mdi mdi-cog menu-icon"></i>
         </a>

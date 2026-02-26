@@ -561,6 +561,50 @@
         .bg-success {
             background: linear-gradient(135deg, #28a745, #5cb85c) !important;
         }
+
+        /* Denah Styling */
+        .denah-container {
+            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+            border-radius: 16px;
+            padding: 2rem;
+            min-height: 400px;
+        }
+
+        .unit-box {
+            position: relative;
+            min-width: 70px;
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .unit-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .type-badge-small {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #000;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        .legend-box {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -925,7 +969,6 @@
                         <!-- Toggle View -->
                         <div class="d-flex justify-content-end mb-3">
                             <div class="btn-group btn-group-sm" role="group">
-
                                 <button type="button" class="btn btn-outline-primary active" id="btnTableView"
                                     onclick="switchView('table')">
                                     <i class="mdi mdi-view-list me-1"></i>
@@ -949,7 +992,6 @@
                                     <i class="mdi mdi-map me-1"></i>
                                     <span class="d-none d-sm-inline">Site Plan</span>
                                 </button>
-
                             </div>
                         </div>
 
@@ -963,8 +1005,7 @@
                                             <th><i class="mdi mdi-home-variant"></i> Blok</th>
                                             <th><i class="mdi mdi-office-building"></i> Proyek</th>
                                             <th><i class="mdi mdi-shape-outline"></i> Tipe</th>
-                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi
-                                            </th>
+                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi</th>
                                             <th><i class="mdi mdi-ruler-square"></i> Luas Tanah</th>
                                             <th><i class="mdi mdi-domain"></i> Luas Bangunan</th>
                                             <th><i class="mdi mdi-currency-usd"></i> Harga</th>
@@ -1060,8 +1101,7 @@
                                                 </td>
                                                 <td>
                                                     <i class="mdi mdi-cash text-success me-1"></i>
-                                                    Rp
-                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
+                                                    Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td>
                                                     <i class="mdi mdi-account text-info me-1"></i>
@@ -1105,37 +1145,25 @@
                                         <div class="card-body p-3">
                                             <div class="position-relative">
                                                 @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                    <span
-                                                        class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
+                                                    <span class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
                                                             class="mdi mdi-check-circle me-1"></i>Tersedia</span>
                                                 @elseif($unit->status == 'sold')
-                                                    <span
-                                                        class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
+                                                    <span class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
                                                             class="mdi mdi-cash-check me-1"></i>Terjual</span>
                                                 @else
-                                                    <span
-                                                        class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
+                                                    <span class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
                                                             class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                 @endif
                                                 <div class="text-center bg-light py-3 py-md-4 rounded">
-                                                    <i class="mdi mdi-home-outline"
-                                                        style="font-size: 36px; color: #9a55ff;"></i>
+                                                    <i class="mdi mdi-home-outline" style="font-size: 36px; color: #9a55ff;"></i>
                                                 </div>
                                             </div>
-                                            <h6 class="mt-2 fw-bold"><i
-                                                    class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}
-                                            </h6>
-                                            <p class="text-muted small mb-1"><i
-                                                    class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
-                                            </p>
-                                            <p class="small mb-1"><i
-                                                    class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
-                                                m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
-                                                {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
+                                            <h6 class="mt-2 fw-bold"><i class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}</h6>
+                                            <p class="text-muted small mb-1"><i class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}</p>
+                                            <p class="small mb-1"><i class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | <i class="mdi mdi-currency-usd me-1"></i>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
                                             <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <small class="text-muted">
-                                                    <i
-                                                        class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
+                                                    <i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
                                                 </small>
                                                 <button class="btn btn-outline-danger btn-sm"
                                                     onclick="openCustomerModal({{ $unit->id }})">
@@ -1153,6 +1181,228 @@
                                     </div>
                                 </div>
                             @endforelse
+                        </div>
+
+                        <!-- DENAH VIEW (DARI HALAMAN BUAT KAVLING) -->
+                        <div id="denahView" style="display: none;">
+                            <div class="denah-container">
+                                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+                                    @php
+                                        // Kelompokkan unit berdasarkan proyek (landBank)
+                                        $unitsByProject = $units->groupBy(function($item) {
+                                            return $item->landBank->name ?? 'Tanpa Proyek';
+                                        });
+                                    @endphp
+
+                                    @foreach($unitsByProject as $projectName => $projectUnits)
+                                        @php
+                                            // Kelompokkan unit per proyek berdasarkan blok
+                                            $blokKavlings = [];
+                                            foreach ($projectUnits as $unit) {
+                                                $blok = explode('.', $unit->unit_code)[0];
+                                                $blokKavlings[$blok][] = $unit;
+                                            }
+                                            $allBloks = array_keys($blokKavlings);
+                                        @endphp
+
+                                        <div style="margin-bottom: 25px; width:100%; border-bottom: 1px dashed #9a55ff; padding-bottom: 15px;">
+                                            <h6 class="text-primary mb-3">
+                                                <i class="mdi mdi-office-building me-2"></i>
+                                                Proyek: {{ $projectName }}
+                                            </h6>
+
+                                            @foreach ($allBloks as $blok)
+                                                <div style="margin-bottom:15px; width:100%;">
+                                                    @php
+                                                        $typesInBlok = collect($blokKavlings[$blok])
+                                                            ->pluck('type')
+                                                            ->unique()
+                                                            ->values()
+                                                            ->toArray();
+
+                                                        $typeLetters = [];
+
+                                                        foreach ($typesInBlok as $type) {
+                                                            if ($type == 'subsidi') {
+                                                                $typeLetters[] = 'S';
+                                                            } elseif ($type == 'komersil') {
+                                                                $typeLetters[] = 'K';
+                                                            }
+                                                        }
+
+                                                        $labelType = implode(' & ', $typeLetters);
+                                                    @endphp
+
+                                                    <strong style="font-size: 14px;">
+                                                        Blok {{ $blok }} - {{ $labelType }}
+                                                        <small class="text-muted ms-2">({{ count($blokKavlings[$blok]) }} unit)</small>
+                                                    </strong>
+
+                                                    <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; margin-top:8px;">
+
+                                                        @php
+                                                            $numbers = [];
+                                                            foreach ($blokKavlings[$blok] as $unit) {
+                                                                $num = (int) explode('.', $unit->unit_code)[1];
+                                                                $numbers[] = $num;
+                                                            }
+                                                            $maxNum = max($numbers);
+                                                        @endphp
+
+                                                        @for ($i = 1; $i <= $maxNum; $i++)
+                                                            @php
+                                                                $unitFound = collect($blokKavlings[$blok])->firstWhere(
+                                                                    'unit_code',
+                                                                    $blok . '.' . $i,
+                                                                );
+
+                                                                $bgColor = '#6c757d'; // abu-abu untuk belum ada
+                                                                $icon = 'close';
+                                                                $borderStyle = 'none';
+                                                                $extraStyle = '';
+                                                                $typeBadge = '';
+                                                                $statusText = 'Belum Tersedia';
+
+                                                                if ($unitFound) {
+                                                                    $statusText = ucfirst($unitFound->status);
+
+                                                                    // WARNA BERDASARKAN STATUS
+                                                                    switch ($unitFound->status) {
+                                                                        case 'sold':
+                                                                            $bgColor = '#dc3545'; // merah
+                                                                            $icon = 'check';
+                                                                            break;
+
+                                                                        case 'booked':
+                                                                            $bgColor = '#ffc107'; // kuning
+                                                                            $icon = 'clock';
+                                                                            break;
+
+                                                                        case 'draft':
+                                                                            $bgColor = '#343a40'; // hitam
+                                                                            $icon = 'pencil';
+                                                                            break;
+
+                                                                        case 'ready':
+                                                                            if ($unitFound->type == 'subsidi') {
+                                                                                $bgColor = '#28a745'; // hijau
+                                                                                $typeBadge = 'S';
+                                                                            } else {
+                                                                                $bgColor = '#0d6efd'; // biru
+                                                                                $typeBadge = 'K';
+                                                                            }
+                                                                            $icon = 'home';
+                                                                            break;
+                                                                    }
+
+                                                                    // BORDER BERDASARKAN PROGRESS
+                                                                    switch ($unitFound->construction_progress) {
+                                                                        case 'belum_mulai':
+                                                                            $borderStyle = '2px dashed #000';
+                                                                            $extraStyle = 'background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px);';
+                                                                            break;
+
+                                                                        case 'pondasi':
+                                                                            $borderStyle = '2px solid #000';
+                                                                            break;
+
+                                                                        case 'dinding':
+                                                                            $borderStyle = '3px solid #000';
+                                                                            break;
+
+                                                                        case 'atap':
+                                                                            $borderStyle = '3px double #000';
+                                                                            break;
+
+                                                                        case 'finishing':
+                                                                            $borderStyle = '3px groove #000';
+                                                                            break;
+
+                                                                        case 'selesai':
+                                                                            $borderStyle = '3px solid #155724';
+                                                                            break;
+                                                                    }
+                                                                }
+                                                            @endphp
+
+                                                            <span class="unit-box"
+                                                                style="
+                                                                    background-color: {{ $bgColor }};
+                                                                    border: {{ $borderStyle }};
+                                                                    {{ $extraStyle }}
+                                                                    "
+                                                                title="{{ $unitFound ? 'Blok: ' . $unitFound->unit_code . ' - Status: ' . $statusText . ' - Progress: ' . ($unitFound->construction_progress ?? 'belum_mulai') : 'Unit ' . $blok . '.' . $i . ' belum tersedia' }}">
+
+                                                                @if ($typeBadge)
+                                                                    <span class="type-badge-small">{{ $typeBadge }}</span>
+                                                                @endif
+
+                                                                <i class="mdi mdi-{{ $icon }} me-1"></i>
+                                                                {{ $blok . '.' . $i }}
+                                                            </span>
+                                                        @endfor
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- LEGEND -->
+                                <div class="mt-5 pt-3 border-top">
+                                    <h6 class="mb-3">Keterangan:</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h6 class="small fw-bold">Status Penjualan:</h6>
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <span class="legend-box bg-danger">Sold</span>
+                                                <span class="legend-box bg-warning text-dark">Booked</span>
+                                                <span class="legend-box bg-dark">Draft</span>
+                                                <span class="legend-box bg-success">Ready - Subsidi</span>
+                                                <span class="legend-box bg-primary">Ready - Komersil</span>
+                                                <span class="legend-box" style="background-color:#6c757d;">Belum Tersedia</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="small fw-bold">Progress Pembangunan (Border):</h6>
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <span style="border:2px dashed #000; padding:4px 8px; background:#f8f9fa;">Belum Mulai</span>
+                                                <span style="border:2px solid #000; padding:4px 8px; background:#f8f9fa;">Pondasi</span>
+                                                <span style="border:3px solid #000; padding:4px 8px; background:#f8f9fa;">Dinding</span>
+                                                <span style="border:3px double #000; padding:4px 8px; background:#f8f9fa;">Atap</span>
+                                                <span style="border:3px groove #000; padding:4px 8px; background:#f8f9fa;">Finishing</span>
+                                                <span style="border:3px solid #155724; padding:4px 8px; background:#f8f9fa;">Selesai</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="small fw-bold">Tipe Unit:</h6>
+                                            <div class="d-flex gap-2">
+                                                <span class="badge bg-success">S = Subsidi</span>
+                                                <span class="badge bg-primary">K = Komersil</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SITE PLAN VIEW (STATIK) -->
+                        <div id="landmapView" style="display: none;">
+                            <div class="denah-container">
+                                <div class="text-center py-5">
+                                    <i class="mdi mdi-map-legend" style="font-size: 5rem; color: #9a55ff; opacity: 0.3;"></i>
+                                    <h4 class="mt-3">Site Plan</h4>
+                                    <p class="text-muted">Visualisasi site plan kawasan akan ditampilkan di sini. Saat ini dalam pengembangan.</p>
+                                    <div class="mt-4">
+                                        <div class="d-flex justify-content-center gap-3">
+                                            <div><span class="badge bg-success me-1"> </span> Tersedia</div>
+                                            <div><span class="badge bg-warning me-1"> </span> Booking</div>
+                                            <div><span class="badge bg-danger me-1"> </span> Terjual</div>
+                                            <div><span class="badge bg-secondary me-1"> </span> Belum Dibuat</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Pagination -->
@@ -1211,6 +1461,7 @@
                                         <input type="text" class="form-control" id="booking_fee" name="booking_fee"
                                             placeholder="Masukkan booking fee" autocomplete="off">
                                     </div>
+                                    <small class="text-muted">Nominal booking fee yang dibayar customer</small>
                                 </div>
 
                                 <!-- Upload Bukti Transfer -->
@@ -1286,19 +1537,16 @@
                     </div>
 
                     <!-- Table Customer dengan Scroll (TANPA HOVER) -->
-                    <div class="table-responsive"
-                        style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
+                    <div class="table-responsive" style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
                         <table class="table table-bordered align-middle mb-0">
                             <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
                                 <tr>
-                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No
-                                    </th>
+                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No</th>
                                     <th><i class="mdi mdi-card-account-details me-1"></i> ID Customer</th>
                                     <th><i class="mdi mdi-account me-1"></i> Nama</th>
                                     <th><i class="mdi mdi-phone me-1"></i> No HP</th>
                                     <th><i class="mdi mdi-briefcase me-1"></i> Pekerjaan</th>
-                                    <th class="text-center" style="width: 160px;"><i class="mdi mdi-cog me-1"></i> Aksi
-                                    </th>
+                                    <th class="text-center" style="width: 160px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1446,18 +1694,15 @@
                     </div>
 
                     <!-- Table Agency dengan Scroll -->
-                    <div class="table-responsive"
-                        style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
                         <table class="table table-bordered align-middle mb-0">
                             <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
                                 <tr>
-                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No
-                                    </th>
+                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No</th>
                                     <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
                                     <th><i class="mdi mdi-phone me-1"></i> No HP</th>
                                     <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
-                                    <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi
-                                    </th>
+                                    <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1483,8 +1728,7 @@
                                         </td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
-                                                data-id="{{ $a->id }}"
-                                                style="border-radius: 20px; padding: 0.25rem 1rem;">
+                                                data-id="{{ $a->id }}" style="border-radius: 20px; padding: 0.25rem 1rem;">
                                                 <i class="mdi mdi-check me-1"></i>Pilih
                                             </button>
                                         </td>
@@ -1492,8 +1736,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="text-center py-4">
-                                            <i class="mdi mdi-office-building-off"
-                                                style="font-size: 2rem; opacity: 0.3;"></i>
+                                            <i class="mdi mdi-office-building-off" style="font-size: 2rem; opacity: 0.3;"></i>
                                             <p class="mt-2 text-muted">Tidak ada data agency</p>
                                         </td>
                                     </tr>
@@ -1701,7 +1944,6 @@
         });
 
         function switchView(view) {
-
             // sembunyikan semua
             document.getElementById('tableView').style.display = 'none';
             document.getElementById('gridView').style.display = 'none';
@@ -1717,19 +1959,13 @@
             if (view === 'table') {
                 document.getElementById('tableView').style.display = 'block';
                 document.getElementById('btnTableView').classList.add('active');
-            }
-
-            if (view === 'grid') {
+            } else if (view === 'grid') {
                 document.getElementById('gridView').style.display = 'block';
                 document.getElementById('btnGridView').classList.add('active');
-            }
-
-            if (view === 'denah') {
+            } else if (view === 'denah') {
                 document.getElementById('denahView').style.display = 'block';
                 document.getElementById('btnDenahView').classList.add('active');
-            }
-
-            if (view === 'landmap') {
+            } else if (view === 'landmap') {
                 document.getElementById('landmapView').style.display = 'block';
                 document.getElementById('btnLandMapView').classList.add('active');
             }

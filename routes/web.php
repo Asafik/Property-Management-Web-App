@@ -240,3 +240,8 @@ Route::get('/dashboard-servis', function () {
     return view('servis.servis');
 });
 
+
+
+Route::get('/dashboard-pengaturan', function () {
+    return view('setting.setting');
+});
