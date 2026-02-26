@@ -1023,40 +1023,53 @@ $(document).on('click', '.project-badge', function() {
     $('#modalProjects').modal('show');
     $('#projectContent').html(`
         <div class="text-center py-4">
-            <div class="spinner-border text-primary"></div>
+            <div class="spinner-border text-primary" role="status"></div>
         </div>
     `);
 
+    // Fungsi untuk escape HTML agar aman dari XSS
+    function escapeHtml(text) {
+        return $('<div>').text(text).html();
+    }
+
     // Ambil data project
     $.get('/company/' + companyId + '/projects', function(response) {
-       
 
         let html = '';
 
         // Tampilkan nama PT
         if(response.name) {
-            html += `<h5 class="mb-3">${response.name}</h5>`;
+            html += `<h5 class="mb-3">${escapeHtml(response.name)}</h5>`;
         }
 
-        if (response.land_banks.length === 0) {
+        if (!response.land_banks || response.land_banks.length === 0) {
             html += `<div class="alert alert-warning">Tidak ada project</div>`;
         } else {
             response.land_banks.forEach(function(project) {
                 html += `
                     <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <strong>${project.name}</strong>
-                            <span class="badge bg-info float-end">
-                                ${project.units.length} Unit
-                            </span>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <strong>${escapeHtml(project.name)}</strong>
+                            <span class="badge bg-info">${project.units.length} Unit</span>
                         </div>
                         <div class="card-body">
                 `;
 
-                if (project.units.length > 0) {
+                if (project.units && project.units.length > 0) {
                     html += `<ul class="list-group">`;
                     project.units.forEach(function(unit) {
-                        html += `<li class="list-group-item">${unit.name}</li>`;
+                        html += `
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${escapeHtml(unit.unit_name)}</strong><br>
+                                    <small class="text-muted">
+                                        Code: ${escapeHtml(unit.unit_code)} |
+                                        Type: ${escapeHtml(unit.type)} |
+                                        Progress: ${escapeHtml(unit.construction_progress)}
+                                    </small>
+                                </div>
+                            </li>
+                        `;
                     });
                     html += `</ul>`;
                 } else {
@@ -1068,6 +1081,9 @@ $(document).on('click', '.project-badge', function() {
         }
 
         $('#projectContent').html(html);
+    })
+    .fail(function() {
+        $('#projectContent').html('<div class="alert alert-danger">Gagal memuat data project.</div>');
     });
 });
 </script>
