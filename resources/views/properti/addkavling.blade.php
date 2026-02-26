@@ -1129,9 +1129,10 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <form action="{{ route('kavling.import') }}" method="POST"
+                                            <form action="{{ route('kavling.import', $land->id) }}" method="POST"
                                                 enctype="multipart/form-data">
                                                 @csrf
+
 
                                                 <div class="kavling-form-group">
                                                     <label>Upload File Excel</label>
@@ -1139,7 +1140,7 @@
                                                     <div class="kavling-file-upload-modern position-relative">
 
                                                         <!-- Input Asli (Hidden) -->
-                                                        <input type="file" id="uploadExcel" name="uploadExcel"
+                                                        <input type="file" id="uploadExcel" name="file"
                                                             accept=".xlsx,.xls" required
                                                             style="opacity:0; position:absolute; inset:0; cursor:pointer;">
 
@@ -1870,32 +1871,32 @@
 @endsection
 
 @push('scripts')
-<script>
-document.getElementById('uploadExcel').addEventListener('change', function(e) {
+    <script>
+        document.getElementById('uploadExcel').addEventListener('change', function(e) {
 
-    const file = e.target.files[0];
-    const button = document.getElementById('importButton');
-    const fileNameSpan = document.getElementById('fileName');
+            const file = e.target.files[0];
+            const button = document.getElementById('importButton');
+            const fileNameSpan = document.getElementById('fileName');
 
-    if (!file) {
-        button.disabled = true;
-        fileNameSpan.innerText = "Upload File Excel";
-        return;
-    }
+            if (!file) {
+                button.disabled = true;
+                fileNameSpan.innerText = "Upload File Excel";
+                return;
+            }
 
-    // Validasi size max 5MB
-    if (file.size > 5 * 1024 * 1024) {
-        alert("File maksimal 5MB!");
-        e.target.value = "";
-        button.disabled = true;
-        fileNameSpan.innerText = "Upload File Excel";
-        return;
-    }
+            // Validasi size max 5MB
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File maksimal 5MB!");
+                e.target.value = "";
+                button.disabled = true;
+                fileNameSpan.innerText = "Upload File Excel";
+                return;
+            }
 
-    fileNameSpan.innerText = file.name;
-    button.disabled = false;
-});
-</script>
+            fileNameSpan.innerText = file.name;
+            button.disabled = false;
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Simple Tab Functionality
