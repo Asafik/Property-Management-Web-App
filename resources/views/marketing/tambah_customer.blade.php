@@ -880,32 +880,46 @@
 
     <!-- Script Alamat Sama KTP yang sudah ada -->
     <script>
-        document.getElementById("alamatSamaKTP").addEventListener("change", function() {
-            const isChecked = this.checked;
-            const fields = [
-                "provinsi",
-                "kota",
-                "kecamatan",
-                "kelurahan",
-                "rt",
-                "rw",
-                "kodePos",
-                "alamat"
-            ];
+       document.getElementById("alamatSamaKTP").addEventListener("change", function() {
+    const isChecked = this.checked;
 
-            fields.forEach(function(field) {
-                const ktpField = document.getElementById(field + "KTP");
-                const domField = document.getElementById(field + "Domisili");
+    const fields = [
+        "provinsi",
+        "kota",
+        "kecamatan",
+        "kelurahan",
+        "rt",
+        "rw",
+        "kodePos",
+        "alamat"
+    ];
 
-                if (isChecked) {
-                    domField.value = ktpField.value;
-                    domField.setAttribute("readonly", true);
-                } else {
-                    domField.value = "";
-                    domField.removeAttribute("readonly");
-                }
-            });
-        });
+    fields.forEach(function(field) {
+        const ktpField = document.getElementById(field + "KTP");
+        const domField = document.getElementById(field + "Domisili");
+
+        if (!ktpField || !domField) return;
+
+        if (isChecked) {
+            domField.value = ktpField.value;
+
+            if (domField.tagName === "SELECT") {
+                domField.disabled = true;
+            } else {
+                domField.setAttribute("readonly", true);
+            }
+
+        } else {
+            domField.value = "";
+
+            if (domField.tagName === "SELECT") {
+                domField.disabled = false;
+            } else {
+                domField.removeAttribute("readonly");
+            }
+        }
+    });
+});
     </script>
 
     <!-- Script Job Status yang sudah ada -->
