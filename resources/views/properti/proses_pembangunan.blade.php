@@ -780,124 +780,126 @@
                                                                     class="btn btn-success btn-sm w-100 mt-1">
                                                                     <i class="mdi mdi-eye me-1"></i>Lihat File
                                                                 </a>
-                                                        @endforeach
+                                                            @endforeach
                                                         </td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-outline-danger btn-sm"
-                                                        onclick="hapusItem(this, '{{ $key }}')" title="Hapus">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})"
+                                                                title="Hapus">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="9" class="text-center text-muted">Belum ada progress
+                                                        untuk kategori ini</td>
                                                 </tr>
-                                            @endforeach
-                                        @else
+                                            @endif
+                                        </tbody>
+                                        <tfoot class="bg-light">
                                             <tr>
-                                                <td colspan="9" class="text-center text-muted">Belum ada progress
-                                                    untuk kategori ini</td>
+                                                <th colspan="6" class="text-end">SUB TOTAL {{ strtoupper($key) }}</th>
+                                                <th><input type="text" id="subtotal-{{ $key }}"
+                                                        class="rab-form-control rab-form-control-sm text-end fw-bold"
+                                                        readonly></th>
+                                                <th colspan="2"></th>
                                             </tr>
-            @endif
-            </tbody>
-            <tfoot class="bg-light">
-                <tr>
-                    <th colspan="6" class="text-end">SUB TOTAL {{ strtoupper($key) }}</th>
-                    <th><input type="text" id="subtotal-{{ $key }}"
-                            class="rab-form-control rab-form-control-sm text-end fw-bold" readonly></th>
-                    <th colspan="2"></th>
-                </tr>
-            </tfoot>
-            </table>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    @endforeach
-
-    {{-- Rincian RAB --}}
-    @php
-        $subtotal = $items->sum(fn($item) => $item->total);
-        $ppn = $subtotal * 0.1;
-        $totalRAB = $subtotal + $ppn;
-        $unitPrice = $selectedUnit->price ?? 0;
-        $finalPrice = $totalRAB + $unitPrice;
-    @endphp
-
-    <div class="row">
-        <div class="col-12 col-md-6">
-            <div class="card border-primary shadow-sm mb-3">
-                <div class="card-body">
-                    <h6 class="card-title text-primary mb-3"><i class="mdi mdi-chart-pie me-2"></i>Ringkasan RAB
-                    </h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal</span>
-                        <input type="text" class="rab-form-control text-end fw-bold"
-                            value="Rp {{ number_format($subtotal, 0, ',', '.') }}" readonly>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>PPN (10%)</span>
-                        <input type="text" class="rab-form-control text-end fw-bold"
-                            value="Rp {{ number_format($ppn, 0, ',', '.') }}" readonly>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <span>Total RAB</span>
-                        <input type="text" class="rab-form-control text-end fw-bold"
-                            value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            @endforeach
 
-        <div class="col-12 col-md-6">
-            <div class="card border-success shadow-sm mb-3">
-                <div class="card-body">
-                    <h6 class="card-title text-success mb-3">
-                        <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
-                    </h6>
+            {{-- Rincian RAB --}}
+            @php
+                $subtotal = $items->sum(fn($item) => $item->total);
+                $ppn = $subtotal * 0.1;
+                $totalRAB = $subtotal + $ppn;
+                $unitPrice = $selectedUnit->price ?? 0;
+                $finalPrice = $totalRAB + $unitPrice;
+            @endphp
 
-                    <input type="hidden" name="price" value="{{ $finalPrice }}">
-
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Total RAB</span>
-                        <input type="text" class="rab-form-control text-end fw-bold"
-                            value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Harga Jual Unit</span>
-                        <input type="text" class="rab-form-control text-end fw-bold"
-                            value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
-                    </div>
-
-                    <hr>
-
-    
-
-                    {{-- Tombol aksi --}}
-                    <div class="d-flex flex-wrap gap-2">
-                        {{-- Simpan --}}
-                        <button type="submit" class="rab-btn rab-btn-success flex-grow-1">
-                            <i class="mdi mdi-content-save me-1"></i>Simpan
-                        </button>
-
-                        {{-- Cetak RAB --}}
-                        <a href="{{ route('cetak.rab', $unit->id) }}" target="_blank"
-                            class="rab-btn rab-btn-primary flex-grow-1">
-                            <i class="mdi mdi-printer me-1"></i>Cetak RAB
-                        </a>
-
-                        {{-- ACC RAB --}}
-                        <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
-                            data-id="{{ $unit->id }}">
-                            <i class="mdi mdi-check me-1"></i>ACC RAB
-                        </button>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="card border-primary shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-primary mb-3"><i class="mdi mdi-chart-pie me-2"></i>Ringkasan RAB
+                            </h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($subtotal, 0, ',', '.') }}" readonly>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>PPN (10%)</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($ppn, 0, ',', '.') }}" readonly>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span>Total RAB</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-    </div>
-    </form>
+                <div class="col-12 col-md-6">
+                    <div class="card border-success shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-success mb-3">
+                                <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
+                            </h6>
+
+                            <input type="hidden" name="price" value="{{ $finalPrice }}">
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total RAB</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Harga Jual Unit</span>
+                                <input type="text" class="rab-form-control text-end fw-bold"
+                                    value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
+                            </div>
+
+                            <hr>
+
+
+
+                            {{-- Tombol aksi --}}
+                            <div class="d-flex flex-wrap gap-2">
+                                {{-- Simpan --}}
+                                <button type="submit" class="rab-btn rab-btn-success flex-grow-1">
+                                    <i class="mdi mdi-content-save me-1"></i>Simpan
+                                </button>
+
+                                {{-- Cetak RAB --}}
+                                <a href="{{ route('cetak.rab', $unit->id) }}" target="_blank"
+                                    class="rab-btn rab-btn-primary flex-grow-1">
+                                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                                </a>
+
+                                {{-- ACC RAB --}}
+                                <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
+                                    data-id="{{ $unit->id }}">
+                                    <i class="mdi mdi-check me-1"></i>ACC RAB
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
 
     </div>
 @endsection
@@ -1025,13 +1027,14 @@
                        accept="image/*,.pdf">
             </td>
 
-            <td class="text-center">
-                <button type="button"
-                        class="btn btn-outline-danger btn-sm"
-                        onclick="hapusItem(this, '${kategori}')">
-                    <i class="mdi mdi-delete"></i>
-                </button>
-            </td>
+           <td class="text-center">
+        <button type="button"
+                class="btn btn-outline-danger btn-sm"
+                onclick="hapusItem(this, '${kategori}')"
+                title="Hapus">
+            <i class="mdi mdi-delete"></i>
+        </button>
+    </td>
         </tr>
         `;
 
@@ -1041,17 +1044,65 @@
             hitungSemua();
         }
 
-        /* ============================= */
-        /* HAPUS ITEM */
-        /* ============================= */
-        function hapusItem(button, kategori) {
-            if (confirm('Yakin ingin menghapus item ini?')) {
-                button.closest('tr').remove();
+   function hapusItem(button, kategori, itemId = null) {
+    // SweetAlert konfirmasi
+    Swal.fire({
+        title: 'Yakin ingin menghapus item ini?',
+        text: "Data yang dihapus tidak bisa dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (itemId) {
+                // Row sudah tersimpan di DB → hapus via AJAX
+                $.ajax({
+                    url: '/properti/progress/item/' + itemId,
+                    type: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $(button).closest('tr').remove(); // hapus row di tabel
+                            updateNomor(kategori);
+                            hitungSemua();
+
+                            // Notifikasi sukses SweetAlert
+                            Swal.fire(
+                                'Dihapus!',
+                                response.message,
+                                'success'
+                            );
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan saat menghapus item.',
+                            'error'
+                        );
+                    }
+                });
+            } else {
+                // Row baru, belum ada di DB → hapus langsung dari DOM
+                $(button).closest('tr').remove();
                 updateNomor(kategori);
                 hitungSemua();
+
+                Swal.fire(
+                    'Dihapus!',
+                    'Item baru berhasil dihapus dari tabel.',
+                    'success'
+                );
             }
         }
-
+    });
+}
         /* ============================= */
         /* UPDATE NOMOR & KODE */
         /* ============================= */

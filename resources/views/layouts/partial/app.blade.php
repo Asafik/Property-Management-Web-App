@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <title>Properti Management</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/zc5rd26/favicon.png">

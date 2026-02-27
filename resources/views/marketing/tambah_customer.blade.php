@@ -1010,49 +1010,44 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateButtonState() {
+    const activeTab = document.querySelector(".add-custom-tab-link.active");
+    const currentItem = activeTab.closest(".add-custom-tab-item");
 
-        const activeTab = document.querySelector(".add-custom-tab-link.active");
-        const currentItem = activeTab.closest(".add-custom-tab-item");
+    const isFirst = currentItem.previousElementSibling === null;
+    const isLast = currentItem.nextElementSibling === null;
 
-        const isFirst = currentItem.previousElementSibling === null;
-        const isLast = currentItem.nextElementSibling === null;
+    // PREV BUTTON
+    btnPrev.disabled = isFirst;
+    btnPrev.classList.toggle("disabled", isFirst);
 
-        // === HANDLE PREV BUTTON ===
-        if (isFirst) {
-            btnPrev.disabled = true;
-            btnPrev.classList.add("disabled");
-        } else {
-            btnPrev.disabled = false;
-            btnPrev.classList.remove("disabled");
-        }
-
-        // === HANDLE NEXT / SUBMIT BUTTON ===
-        if (isLast) {
-            btnNext.innerHTML = 'Simpan Customer <i class="mdi mdi-content-save ms-1"></i>';
-            btnNext.setAttribute("type", "submit");
-        } else {
-            btnNext.innerHTML = 'Lanjut <i class="mdi mdi-arrow-right ms-1"></i>';
-            btnNext.setAttribute("type", "button");
-        }
+    // NEXT / SUBMIT BUTTON
+    if (isLast) {
+        btnNext.innerHTML = 'Simpan Customer <i class="mdi mdi-content-save ms-1"></i>';
+        btnNext.setAttribute("type", "submit");
+    } else {
+        btnNext.innerHTML = 'Lanjut <i class="mdi mdi-arrow-right ms-1"></i>';
+        btnNext.setAttribute("type", "button"); // pastikan selalu button
     }
+}
 
     // NEXT BUTTON
-    btnNext.addEventListener("click", function () {
+    btnNext.addEventListener("click", function (e) {
+    e.preventDefault(); // cegah submit default
 
-        if (btnNext.getAttribute("type") === "submit") {
-            form.submit();
-            return;
-        }
+    if (btnNext.getAttribute("type") === "submit") {
+        form.submit();
+        return;
+    }
 
-        const activeTab = document.querySelector(".add-custom-tab-link.active");
-        const currentItem = activeTab.closest(".add-custom-tab-item");
-        const nextItem = currentItem.nextElementSibling;
+    const activeTab = document.querySelector(".add-custom-tab-link.active");
+    const currentItem = activeTab.closest(".add-custom-tab-item");
+    const nextItem = currentItem.nextElementSibling;
 
-        if (nextItem) {
-            const nextTab = nextItem.querySelector(".add-custom-tab-link");
-            switchTab(nextTab);
-        }
-    });
+    if (nextItem) {
+        const nextTab = nextItem.querySelector(".add-custom-tab-link");
+        switchTab(nextTab);
+    }
+});
 
     // PREV BUTTON
     btnPrev.addEventListener("click", function () {

@@ -177,6 +177,7 @@ Route::post('/progress/{item}/upload', [DevelopmentProgressController::class, 'u
 
 Route::get('/properti/progress/{land_bank_id}', [DevelopmentProgressController::class, 'index'])->name('properti.progress');
 Route::post('/properti/progress/store', [DevelopmentProgressController::class, 'store'])->name('properti.progress.store');
+Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
 
 
 /*

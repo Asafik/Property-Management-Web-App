@@ -2254,75 +2254,73 @@
             // AGENCY MODAL
             $(document).on('click', '.bukaModal', function() {
                 let unitId = $(this).data('unit');
-                let url = "{{ url('marketing/set-agency') }}/" + unitId;
-
-                $('#formAgency').attr('action', url);
+                $('#formAgency').attr('action', "{{ url('marketing/set-agency') }}/" + unitId);
+                $('#modalAgency').data('unit', unitId); // simpan di modal
                 $('#sales_id').val('');
                 $('#agent_fee_modal').val('');
                 $('#modalAgency').modal('show');
             });
 
-            $(document).on('click', '.pilihAgency', function() {
-                let salesId = $(this).data('id');
-                let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
+           $(document).on('click', '.pilihAgency', function() {
+    let salesId = $(this).data('id');
+    let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
 
-                if (!agentFee || parseInt(agentFee) <= 0) {
+    if (!agentFee || parseInt(agentFee) <= 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Agent fee wajib diisi dan lebih dari 0!'
+        });
+        return;
+    }
+
+    let unitId = $('#modalAgency').data('unit'); // ambil dari modal
+
+    Swal.fire({
+        title: 'Yakin pilih agency ini?',
+        html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Pilih!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('sales_id', salesId);
+            formData.append('agent_fee', agentFee);
+
+            let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
+
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#modalAgency').modal('hide');
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: 'Agent fee wajib diisi dan lebih dari 0!'
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Agency berhasil dipilih',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
                     });
-                    return;
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: xhr.responseJSON?.message || 'Terjadi kesalahan'
+                    });
                 }
-
-                Swal.fire({
-                    title: 'Yakin pilih agency ini?',
-                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Pilih!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Buat form data
-                        let formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        formData.append('sales_id', salesId);
-                        formData.append('agent_fee', agentFee);
-
-                        let unitId = $(this).closest('.bukaModal').data('unit');
-                        let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
-
-                        $.ajax({
-                            url: actionUrl,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                $('#modalAgency').modal('hide');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil',
-                                    text: 'Agency berhasil dipilih',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: xhr.responseJSON?.message ||
-                                        'Terjadi kesalahan'
-                                });
-                            }
-                        });
-                    }
-                });
             });
+        }
+    });
+});
 
             // Reset form saat modal ditutup
             $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {

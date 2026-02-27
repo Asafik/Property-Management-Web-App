@@ -218,4 +218,14 @@ class DevelopmentProgressController extends Controller
 
         return back()->with('success', 'File berhasil diupload!');
     }
+public function destroy($itemId)
+{
+    $item = DevelopmentProgressItem::findOrFail($itemId); // Ambil item
+    $item->delete(); // Hapus
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Item berhasil dihapus!'
+    ]);
+}
 }
