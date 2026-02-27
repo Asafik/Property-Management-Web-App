@@ -131,7 +131,7 @@
 
     <!-- MENU Promo -->
     <li class="nav-item">
-        <a class="nav-link" href="dashboard-promo">
+        <a class="nav-link" href="{{ route('promo.index') }}">
             <span class="menu-title">Promo</span>
             <i class="mdi mdi-percent menu-icon"></i>
         </a>

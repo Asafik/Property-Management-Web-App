@@ -31,6 +31,7 @@ use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\LandBankDocumentController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiteplanController;
+use App\Http\Controllers\PromoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -227,10 +228,12 @@ Route::get('/dashboard-cash-dokument-legal', function () {
 Route::get('/dashboard-lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
 Route::get('/lokasi-data', [LokasiController::class, 'lokasiData']); // Untuk JSON
 
+Route::get('/dashboard-promo', [PromoController::class, 'index'])->name('promo.index');
+Route::post('/dashboard-promo/store', [PromoController::class, 'store'])->name('promo.store');
 
-Route::get('/dashboard-promo', function () {
-    return view('promo.promo');
-});
+// Route::get('/dashboard-promo', function () {
+//     return view('promo.promo');
+// });
 
 // Route::get('/dashboard-pt', function () {
 //     return view('pt.pt');
