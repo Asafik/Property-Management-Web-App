@@ -1725,7 +1725,7 @@
                     <!-- Table Customer dengan Scroll (TANPA HOVER) -->
                     <div class="table-responsive"
                         style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                        <table class="table table-bordered align-middle mb-0">
+                        <table class="table table-bordered align-middle mb-0" id="customerTable">
                             <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
                                 <tr>
                                     <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No
@@ -2261,66 +2261,67 @@
                 $('#modalAgency').modal('show');
             });
 
-           $(document).on('click', '.pilihAgency', function() {
-    let salesId = $(this).data('id');
-    let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
+            $(document).on('click', '.pilihAgency', function() {
+                let salesId = $(this).data('id');
+                let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
 
-    if (!agentFee || parseInt(agentFee) <= 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: 'Agent fee wajib diisi dan lebih dari 0!'
-        });
-        return;
-    }
-
-    let unitId = $('#modalAgency').data('unit'); // ambil dari modal
-
-    Swal.fire({
-        title: 'Yakin pilih agency ini?',
-        html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Pilih!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('sales_id', salesId);
-            formData.append('agent_fee', agentFee);
-
-            let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
-
-            $.ajax({
-                url: actionUrl,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    $('#modalAgency').modal('hide');
+                if (!agentFee || parseInt(agentFee) <= 0) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'Agency berhasil dipilih',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        location.reload();
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Agent fee wajib diisi dan lebih dari 0!'
                     });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: xhr.responseJSON?.message || 'Terjadi kesalahan'
-                    });
+                    return;
                 }
+
+                let unitId = $('#modalAgency').data('unit'); // ambil dari modal
+
+                Swal.fire({
+                    title: 'Yakin pilih agency ini?',
+                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Pilih!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('sales_id', salesId);
+                        formData.append('agent_fee', agentFee);
+
+                        let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
+
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#modalAgency').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Agency berhasil dipilih',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan'
+                                });
+                            }
+                        });
+                    }
+                });
             });
-        }
-    });
-});
 
             // Reset form saat modal ditutup
             $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {
@@ -2360,6 +2361,16 @@
                 document.getElementById('btnLandMapView').classList.add('active');
             }
         }
+        $(document).ready(function() {
+            $('#searchCustomer').on('keyup', function() {
+                const searchTerm = $(this).val().toLowerCase();
+
+                $('#customerTable tbody tr').each(function() {
+                    const rowText = $(this).text().toLowerCase();
+                    $(this).toggle(rowText.indexOf(searchTerm) > -1);
+                });
+            });
+        });
     </script>
 
     @if (session('success'))
