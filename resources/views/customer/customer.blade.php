@@ -1,10 +1,10 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Data Tamu / Prospek - Property Management App')
+@section('title', 'Data Customer - Property Management App')
 
 @section('content')
 <style>
-/* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN CUSTOMER ===== */
+/* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN SEBELUMNYA ===== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
@@ -66,6 +66,41 @@
     .card-title {
         font-size: 1.1rem;
     }
+}
+
+/* ===== STATISTICS CARDS ===== */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #6a82fb, #4e6aff) !important;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+}
+
+.card-img-holder {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img-absolute {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    opacity: 0.3;
+    width: 80px;
+    height: auto;
 }
 
 /* ===== FILTER SECTION ===== */
@@ -220,19 +255,6 @@
     border-color: transparent;
 }
 
-.btn-outline-success {
-    background: transparent;
-    border: 1px solid #28a745;
-    color: #28a745;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-success:hover {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    border-color: transparent;
-}
-
 .btn-outline-warning {
     background: transparent;
     border: 1px solid #ffc107;
@@ -314,32 +336,6 @@
 .badge-gradient-info {
     background: linear-gradient(135deg, #17a2b8, #5bc0de);
     color: #ffffff;
-}
-
-.badge-gradient-primary {
-    background: linear-gradient(135deg, #9a55ff, #da8cff);
-    color: #ffffff;
-}
-
-.badge-gradient-secondary {
-    background: linear-gradient(135deg, #6c757d, #a5b3cb);
-    color: #ffffff;
-}
-
-/* Status Prospek Badge */
-.badge-hot {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: white;
-}
-
-.badge-warm {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-
-.badge-cold {
-    background: linear-gradient(135deg, #6c757d, #a5b3cb);
-    color: white;
 }
 
 /* ===== AVATAR STYLING ===== */
@@ -435,73 +431,6 @@
 
 .table tbody tr:hover {
     background-color: #f8f9fa;
-}
-
-/* ===== MODAL STYLING - SAMA PERSIS CUSTOMER ===== */
-.modal-content {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 16px 16px 0 0;
-}
-
-.modal-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #9a55ff;
-}
-
-.modal-body {
-    padding: 1.2rem;
-}
-
-.modal-footer {
-    border-top: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 0 0 16px 16px;
-}
-
-.modal-form-group {
-    margin-bottom: 1rem;
-}
-
-.modal-form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-.modal-form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-}
-
-.modal-form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-.modal-form-control[readonly] {
-    background-color: #f8f9fa;
-    border-color: #e9ecef;
-    color: #6c757d;
 }
 
 /* ===== PAGINATION STYLING ===== */
@@ -600,59 +529,6 @@
 .mdi {
     vertical-align: middle;
 }
-
-/* Status Badge */
-.status-aktif {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: white;
-}
-
-.status-tidak-aktif {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: white;
-}
-
-.status-pending {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-
-/* Card Stats */
-.stats-card {
-    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-    border: none;
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-}
-
-.stats-card .stats-icon {
-    width: 48px;
-    height: 48px;
-    background: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 0.75rem;
-}
-
-.stats-card .stats-icon i {
-    font-size: 24px;
-    color: #9a55ff;
-}
-
-.stats-card .stats-label {
-    font-size: 0.85rem;
-    color: #6c7383;
-    margin-bottom: 0.25rem;
-}
-
-.stats-card .stats-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2c2e3f;
-}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -664,11 +540,11 @@
                     <div>
                         <h3 class="text-dark mb-1">
                             <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
-                            Data Tamu / Prospek
+                            Data Customer
                         </h3>
                         <p class="text-muted mb-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data pengunjung dan calon pembeli unit properti
+                            Kelola data customer / pembeli unit properti
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -680,63 +556,76 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="mdi mdi-account-multiple"></i>
+    <div class="row g-2 g-sm-2 g-md-3">
+        <!-- Mobile: 2 cards per row, Tablet: 2 cards per row, Desktop: 4 cards per row -->
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
+            <div class="card bg-gradient-primary card-img-holder text-white h-100">
+                <div class="card-body p-2 p-sm-2 p-md-3">
+                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                        Total Customer
+                        <i class="mdi mdi-account-group float-end" style="font-size: 1.2rem;"></i>
+                    </h4>
+                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">248</h2>
+                    <h6 class="card-text small">Semua customer</h6>
                 </div>
-                <div class="stats-label">Total Tamu</div>
-                <div class="stats-value">156</div>
-                <small class="text-muted">Semua tamu</small>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="mdi mdi-fire"></i>
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
+            <div class="card bg-gradient-success card-img-holder text-white h-100">
+                <div class="card-body p-2 p-sm-2 p-md-3">
+                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                        Customer Aktif
+                        <i class="mdi mdi-account-check float-end" style="font-size: 1.2rem;"></i>
+                    </h4>
+                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">187</h2>
+                    <h6 class="card-text small">75% dari total</h6>
                 </div>
-                <div class="stats-label">Hot Prospek</div>
-                <div class="stats-value">42</div>
-                <small class="text-muted">Siap beli</small>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="mdi mdi-calendar-today"></i>
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
+            <div class="card bg-gradient-warning card-img-holder text-white h-100">
+                <div class="card-body p-2 p-sm-2 p-md-3">
+                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                        Pembeli Cash
+                        <i class="mdi mdi-cash-multiple float-end" style="font-size: 1.2rem;"></i>
+                    </h4>
+                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">98</h2>
+                    <h6 class="card-text small">39.5%</h6>
                 </div>
-                <div class="stats-label">Kunjungan Hari Ini</div>
-                <div class="stats-value">12</div>
-                <small class="text-muted">+3 dari kemarin</small>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stats-card">
-                <div class="stats-icon">
-                    <i class="mdi mdi-phone-log"></i>
+        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
+            <div class="card bg-gradient-info card-img-holder text-white h-100">
+                <div class="card-body p-2 p-sm-2 p-md-3">
+                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
+                        Pembeli KPR
+                        <i class="mdi mdi-bank float-end" style="font-size: 1.2rem;"></i>
+                    </h4>
+                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">150</h2>
+                    <h6 class="card-text small">60.5%</h6>
                 </div>
-                <div class="stats-label">Follow Up Hari Ini</div>
-                <div class="stats-value">8</div>
-                <small class="text-muted">Belum dilakukan</small>
             </div>
         </div>
     </div>
 
-    <!-- Tabel Data Tamu -->
-    <div class="row mt-2 mt-sm-2 mt-md-3">
+    <!-- Tabel Data Customer -->
+    <div class="row mt-4 mt-sm-4 mt-md-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <h5 class="card-title mb-2 mb-md-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Tamu / Prospek
+                        Daftar Customer
                     </h5>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-gradient-success" onclick="$('#modalImportTamu').modal('show')">
+                        <button class="btn btn-sm btn-gradient-success" onclick="$('#modalImportCustomer').modal('show')">
                             <i class="mdi mdi-import me-1"></i><span class="d-none d-sm-inline">Import</span>
                         </button>
-                        <button class="btn btn-sm btn-gradient-danger" onclick="$('#modalExportTamu').modal('show')">
+                        <button class="btn btn-sm btn-gradient-danger" onclick="$('#modalExportCustomer').modal('show')">
                             <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
                         </button>
                     </div>
@@ -746,41 +635,40 @@
                     <div class="filter-card">
                         <div class="card-body">
                             <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1"></i>Filter Data Tamu
+                                <i class="mdi mdi-filter-outline me-1"></i>Filter Data Customer
                             </h6>
 
                             <!-- FILTER UNTUK MOBILE -->
                             <div class="d-block d-md-none">
                                 <div class="mb-3">
                                     <label class="form-label">
-                                        <i class="mdi mdi-magnify me-1"></i>Cari Tamu
+                                        <i class="mdi mdi-magnify me-1"></i>Cari Customer
                                     </label>
-                                    <input type="text" class="form-control" placeholder="Cari nama, no. HP...">
+                                    <input type="text" class="form-control" placeholder="Cari nama, ID, no. HP...">
                                 </div>
 
                                 <div class="row g-2">
                                     <div class="col-6">
                                         <label class="form-label">
-                                            <i class="mdi mdi-source-branch me-1"></i>Sumber Info
+                                            <i class="mdi mdi-briefcase me-1"></i>Pekerjaan
                                         </label>
                                         <select class="form-control">
                                             <option value="">Semua</option>
-                                            <option value="instagram">Instagram</option>
-                                            <option value="facebook">Facebook</option>
-                                            <option value="iklan">Iklan</option>
-                                            <option value="referensi">Referensi</option>
-                                            <option value="walk-in">Walk-in</option>
+                                            <option value="karyawan">Karyawan Swasta</option>
+                                            <option value="pns">PNS</option>
+                                            <option value="wirausaha">Wirausaha</option>
+                                            <option value="profesional">Profesional</option>
                                         </select>
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label">
-                                            <i class="mdi mdi-chart-arc me-1"></i>Status Prospek
+                                            <i class="mdi mdi-flag me-1"></i>Status
                                         </label>
                                         <select class="form-control">
                                             <option value="">Semua</option>
-                                            <option value="hot">Hot</option>
-                                            <option value="warm">Warm</option>
-                                            <option value="cold">Cold</option>
+                                            <option value="aktif">Aktif</option>
+                                            <option value="tidak_aktif">Tidak Aktif</option>
+                                            <option value="pending">Pending</option>
                                         </select>
                                     </div>
                                 </div>
@@ -810,46 +698,34 @@
                                 <div class="row g-2 align-items-end">
                                     <div class="col-md-3">
                                         <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Cari Tamu
+                                            <i class="mdi mdi-magnify me-1"></i>Cari Customer
                                         </label>
-                                        <input type="text" class="form-control" placeholder="Nama, No. HP...">
+                                        <input type="text" class="form-control" placeholder="Nama, ID, No. HP...">
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">
-                                            <i class="mdi mdi-source-branch me-1"></i>Sumber Info
+                                            <i class="mdi mdi-briefcase me-1"></i>Pekerjaan
                                         </label>
                                         <select class="form-control">
                                             <option value="">Semua</option>
-                                            <option value="instagram">Instagram</option>
-                                            <option value="facebook">Facebook</option>
-                                            <option value="iklan">Iklan</option>
-                                            <option value="referensi">Referensi</option>
-                                            <option value="walk-in">Walk-in</option>
+                                            <option value="karyawan">Karyawan Swasta</option>
+                                            <option value="pns">PNS</option>
+                                            <option value="wirausaha">Wirausaha</option>
+                                            <option value="profesional">Profesional</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">
-                                            <i class="mdi mdi-chart-arc me-1"></i>Status Prospek
+                                            <i class="mdi mdi-flag me-1"></i>Status
                                         </label>
                                         <select class="form-control">
                                             <option value="">Semua</option>
-                                            <option value="hot">Hot</option>
-                                            <option value="warm">Warm</option>
-                                            <option value="cold">Cold</option>
+                                            <option value="aktif">Aktif</option>
+                                            <option value="tidak_aktif">Tidak Aktif</option>
+                                            <option value="pending">Pending</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-account-tie me-1"></i>Agent
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="1">Ahmad Fauzi</option>
-                                            <option value="2">Siti Aminah</option>
-                                            <option value="3">Budi Santoso</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
                                         <label class="form-label">
                                             <i class="mdi mdi-counter me-1"></i>Tampil
                                         </label>
@@ -875,60 +751,58 @@
                         </div>
                     </div>
 
-                    <!-- Tabel Tamu -->
+                    <!-- Tabel Customer -->
                     <div class="table-responsive">
-                        <table class="table table-hover" id="tableTamu" style="width:100%">
+                        <table class="table table-hover" id="tableCustomer" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                    <th><i class="mdi mdi-account me-1"></i>Nama Tamu</th>
-                                    <th><i class="mdi mdi-phone me-1"></i>Kontak</th>
-                                    <th><i class="mdi mdi-source-branch me-1"></i>Sumber Info</th>
-                                    <th><i class="mdi mdi-home-group me-1"></i>Minat Unit</th>
-                                    <th><i class="mdi mdi-account-tie me-1"></i>Agent</th>
-                                    <th><i class="mdi mdi-chart-arc me-1"></i>Status</th>
-                                    <th><i class="mdi mdi-calendar-clock me-1"></i>Follow Up</th>
+                                    <th><i class="mdi mdi-card-account-details me-1"></i>ID Customer</th>
+                                    <th><i class="mdi mdi-account me-1"></i>Nama Customer</th>
+                                    <th><i class="mdi mdi-phone me-1"></i>No. HP</th>
+                                    <th><i class="mdi mdi-briefcase me-1"></i>Pekerjaan</th>
+                                    <th><i class="mdi mdi-home me-1"></i>Alamat</th>
+                                    <th><i class="mdi mdi-flag me-1"></i>Status</th>
                                     <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Tamu 1 - Hot Prospek -->
+                                <!-- Customer 1 -->
                                 <tr>
                                     <td class="text-center fw-bold">1</td>
                                     <td>
+                                        <span class="badge bg-light text-dark">CUST-2025-001</span>
+                                    </td>
+                                    <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-circle avatar-sm me-2">
-                                                AS
+                                                BS
                                             </div>
                                             <div>
-                                                <span class="fw-bold">Ahmad Syarif</span>
-                                                <small class="text-muted d-block">ahmad.s@email.com</small>
+                                                <span class="fw-bold">Budi Santoso</span>
+                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>budi.s@email.com</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>0812-3456-7890</td>
+                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0812-3456-7890</td>
                                     <td>
                                         <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-instagram me-1"></i>Instagram
+                                            <i class="mdi mdi-briefcase-outline me-1"></i>Karyawan Swasta
                                         </span>
                                     </td>
                                     <td>
-                                        Tipe 36/72
-                                        <small class="text-muted d-block">Cluster Emerald</small>
+                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
+                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
+                                            Jl. Sudirman No. 123, Jakarta
+                                        </span>
                                     </td>
-                                    <td><i class="mdi mdi-account-tie text-primary me-1"></i>Ahmad Fauzi</td>
-                                    <td><span class="badge badge-hot"><i class="mdi mdi-fire me-1"></i>Hot</span></td>
                                     <td>
-                                        <small>Besok, 10:00</small>
-                                        <small class="text-muted d-block"><i class="mdi mdi-phone-outline me-1"></i>Telepon</small>
+                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Lihat Detail" onclick="$('#modalDetailTamu').modal('show')">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-success btn-sm" title="Konversi ke Customer">
-                                                <i class="mdi mdi-account-convert"></i>
+                                            <button class="btn btn-outline-warning btn-sm" title="Edit" onclick="$('#modalEditCustomer').modal('show')">
+                                                <i class="mdi mdi-pencil"></i>
                                             </button>
                                             <button class="btn btn-outline-danger btn-sm" title="Hapus" onclick="confirmDelete()">
                                                 <i class="mdi mdi-delete"></i>
@@ -936,175 +810,131 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <!-- Tamu 2 - Warm Prospek -->
+
+                                <!-- Customer 2 -->
                                 <tr>
                                     <td class="text-center fw-bold">2</td>
                                     <td>
+                                        <span class="badge bg-light text-dark">CUST-2025-002</span>
+                                    </td>
+                                    <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #ff6b6b, #ee5253);">
+                                                SW
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold">Siti Wijaya</span>
+                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>siti.w@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0856-7890-1234</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">
+                                            <i class="mdi mdi-briefcase-outline me-1"></i>Wirausaha
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
+                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
+                                            Jl. Gatot Subroto No. 45, Jakarta
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 3 -->
+                                <tr>
+                                    <td class="text-center fw-bold">3</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">CUST-2025-003</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">
+                                                AP
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold">Ahmad Pratama</span>
+                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>ahmad.p@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0813-4567-8901</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">
+                                            <i class="mdi mdi-briefcase-outline me-1"></i>PNS
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
+                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
+                                            Perumahan Griya Asri Blok A10, Tangerang
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Customer 4 -->
+                                <tr>
+                                    <td class="text-center fw-bold">4</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">CUST-2025-004</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #feca57, #ff9f43);">
                                                 RN
                                             </div>
                                             <div>
                                                 <span class="fw-bold">Rina Nugraha</span>
-                                                <small class="text-muted d-block">rina.n@email.com</small>
+                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>rina.n@email.com</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>0856-7890-1234</td>
+                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0821-6789-0123</td>
                                     <td>
                                         <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-facebook me-1"></i>Facebook
+                                            <i class="mdi mdi-briefcase-outline me-1"></i>Profesional
                                         </span>
                                     </td>
                                     <td>
-                                        Tipe 45/90
-                                        <small class="text-muted d-block">Cluster Sapphire</small>
-                                    </td>
-                                    <td><i class="mdi mdi-account-tie text-primary me-1"></i>Siti Aminah</td>
-                                    <td><span class="badge badge-warm"><i class="mdi mdi-weather-sunny me-1"></i>Warm</span></td>
-                                    <td>
-                                        <small>3 hari lagi</small>
-                                        <small class="text-muted d-block"><i class="mdi mdi-whatsapp me-1"></i>WA</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Lihat Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-success btn-sm" title="Konversi ke Customer">
-                                                <i class="mdi mdi-account-convert"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Tamu 3 - Cold Prospek -->
-                                <tr>
-                                    <td class="text-center fw-bold">3</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">
-                                                BP
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Budi Pratama</span>
-                                                <small class="text-muted d-block">budi.p@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>0813-4567-8901</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-web me-1"></i>Iklan Online
+                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
+                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
+                                            Apartemen Taman Rasuna, Jakarta
                                         </span>
                                     </td>
                                     <td>
-                                        Tipe 60/120
-                                        <small class="text-muted d-block">Cluster Ruby</small>
-                                    </td>
-                                    <td><i class="mdi mdi-account-tie text-primary me-1"></i>Budi Santoso</td>
-                                    <td><span class="badge badge-cold"><i class="mdi mdi-snowflake me-1"></i>Cold</span></td>
-                                    <td>
-                                        <small>Minggu depan</small>
-                                        <small class="text-muted d-block"><i class="mdi mdi-email me-1"></i>Email</small>
+                                        <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Lihat Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-success btn-sm" title="Konversi ke Customer">
-                                                <i class="mdi mdi-account-convert"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Tamu 4 - Walk-in -->
-                                <tr>
-                                    <td class="text-center fw-bold">4</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #feca57, #ff9f43);">
-                                                DS
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Dewi Sartika</span>
-                                                <small class="text-muted d-block">dewi.s@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>0821-6789-0123</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-store me-1"></i>Walk-in
-                                        </span>
-                                    </td>
-                                    <td>
-                                        Tipe 36/72
-                                        <small class="text-muted d-block">Cluster Emerald</small>
-                                    </td>
-                                    <td><i class="mdi mdi-account-tie text-primary me-1"></i>Ahmad Fauzi</td>
-                                    <td><span class="badge badge-warm"><i class="mdi mdi-weather-sunny me-1"></i>Warm</span></td>
-                                    <td>
-                                        <small>Hari ini</small>
-                                        <small class="text-muted d-block"><i class="mdi mdi-phone-outline me-1"></i>Telepon</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Lihat Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-success btn-sm" title="Konversi ke Customer">
-                                                <i class="mdi mdi-account-convert"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Tamu 5 - Referensi -->
-                                <tr>
-                                    <td class="text-center fw-bold">5</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #ff9ff3, #f368e0);">
-                                                MH
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Muhammad Hakim</span>
-                                                <small class="text-muted d-block">m.hakim@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>0857-8901-2345</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-account-multiple me-1"></i>Referensi
-                                        </span>
-                                    </td>
-                                    <td>
-                                        Tipe 45/90
-                                        <small class="text-muted d-block">Cluster Sapphire</small>
-                                    </td>
-                                    <td><i class="mdi mdi-account-tie text-primary me-1"></i>Siti Aminah</td>
-                                    <td><span class="badge badge-hot"><i class="mdi mdi-fire me-1"></i>Hot</span></td>
-                                    <td>
-                                        <small>2 hari lagi</small>
-                                        <small class="text-muted d-block"><i class="mdi mdi-whatsapp me-1"></i>WA</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Lihat Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-success btn-sm" title="Konversi ke Customer">
-                                                <i class="mdi mdi-account-convert"></i>
+                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                                <i class="mdi mdi-pencil"></i>
                                             </button>
                                             <button class="btn btn-outline-danger btn-sm" title="Hapus">
                                                 <i class="mdi mdi-delete"></i>
@@ -1120,7 +950,7 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan 1 - 5 dari 156 data
+                            Menampilkan 1 - 4 dari 248 data
                         </div>
                         <div>
                             <nav>
@@ -1151,7 +981,7 @@
             <div class="card">
                 <div class="card-body p-3">
                     <div class="d-flex flex-wrap gap-2">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
+                        <a href="dashboard" class="btn btn-gradient-secondary">
                             <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
                         </a>
                     </div>
@@ -1161,102 +991,108 @@
     </div>
 </div>
 
-<!-- MODAL DETAIL TAMU - SAMA PERSIS DENGAN CUSTOMER -->
-<div class="modal fade" id="modalDetailTamu" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- MODAL EDIT CUSTOMER -->
+<div class="modal fade" id="modalEditCustomer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="mdi mdi-account-details me-2" style="color: #9a55ff;"></i>
-                    Detail Tamu
+                    <i class="mdi mdi-account-edit me-2" style="color: #9a55ff;"></i>
+                    Edit Data Customer
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="text-center mb-4">
-                    <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 32px;">
-                        AS
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Nama Lengkap -->
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-account me-1 text-primary"></i>Nama Lengkap <span class="text-danger">*</span></label>
+                                <input type="text" class="modal-form-control" value="Budi Santoso" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- ID Customer -->
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-card-account-details me-1 text-primary"></i>ID Customer</label>
+                                <input type="text" class="modal-form-control" value="CUST-2025-001" readonly>
+                            </div>
+                        </div>
                     </div>
-                    <h5 class="fw-bold mb-1">Ahmad Syarif</h5>
-                    <span class="badge badge-hot"><i class="mdi mdi-fire me-1"></i>Hot Prospek</span>
-                </div>
 
-                <div class="list-group">
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-phone me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">No. HP</small>
-                            <span class="fw-bold">0812-3456-7890</span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- No. HP -->
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-phone me-1 text-primary"></i>No. HP <span class="text-danger">*</span></label>
+                                <input type="text" class="modal-form-control" value="0812-3456-7890" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Email -->
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-email me-1 text-primary"></i>Email</label>
+                                <input type="email" class="modal-form-control" value="budi.s@email.com">
+                            </div>
                         </div>
                     </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-email me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Email</small>
-                            <span class="fw-bold">ahmad.s@email.com</span>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Pekerjaan -->
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-briefcase me-1 text-primary"></i>Pekerjaan</label>
+                                <select class="modal-form-control">
+                                    <option value="">-- Pilih Pekerjaan --</option>
+                                    <option value="Karyawan Swasta" selected>Karyawan Swasta</option>
+                                    <option value="PNS">PNS</option>
+                                    <option value="Wirausaha">Wirausaha</option>
+                                    <option value="Profesional">Profesional</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Status -->
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-flag me-1 text-primary"></i>Status</label>
+                                <select class="modal-form-control">
+                                    <option value="aktif" selected>Aktif</option>
+                                    <option value="tidak_aktif">Tidak Aktif</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-source-branch me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Sumber Informasi</small>
-                            <span class="fw-bold">Instagram</span>
-                        </div>
+
+                    <!-- Alamat -->
+                    <div class="modal-form-group">
+                        <label><i class="mdi mdi-home me-1 text-primary"></i>Alamat Lengkap</label>
+                        <textarea class="modal-form-control" rows="2">Jl. Sudirman No. 123, Jakarta</textarea>
                     </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-account-tie me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Agent</small>
-                            <span class="fw-bold">Ahmad Fauzi</span>
-                        </div>
-                    </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-home-group me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Minat Unit</small>
-                            <span class="fw-bold">Tipe 36/72 - Cluster Emerald</span>
-                        </div>
-                    </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-currency-usd me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Budget</small>
-                            <span class="fw-bold">Rp 500.000.000</span>
-                        </div>
-                    </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-calendar me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Tanggal Kunjungan</small>
-                            <span class="fw-bold">25 Februari 2025</span>
-                        </div>
-                    </div>
-                    <div class="list-group-item border-0 ps-0 d-flex">
-                        <i class="mdi mdi-note-text me-3 text-primary" style="font-size: 20px;"></i>
-                        <div>
-                            <small class="text-muted d-block">Catatan</small>
-                            <span class="fw-bold">Tertarik dengan unit hook, akan survey lokasi</span>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                    <i class="mdi mdi-close me-1"></i>Tutup
+                    <i class="mdi mdi-close me-1"></i>Batal
+                </button>
+                <button type="button" class="btn btn-gradient-primary">
+                    <i class="mdi mdi-content-save me-1"></i>Update Data
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL IMPORT TAMU - SAMA PERSIS DENGAN CUSTOMER -->
-<div class="modal fade" id="modalImportTamu" tabindex="-1" aria-hidden="true">
+<!-- MODAL IMPORT CUSTOMER -->
+<div class="modal fade" id="modalImportCustomer" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="mdi mdi-import me-2" style="color: #9a55ff;"></i>
-                    Import Data Tamu
+                    Import Data Customer
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -1294,14 +1130,14 @@
     </div>
 </div>
 
-<!-- MODAL EXPORT TAMU - SAMA PERSIS DENGAN CUSTOMER -->
-<div class="modal fade" id="modalExportTamu" tabindex="-1" aria-hidden="true">
+<!-- MODAL EXPORT CUSTOMER -->
+<div class="modal fade" id="modalExportCustomer" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="mdi mdi-export me-2" style="color: #9a55ff;"></i>
-                    Export Data Tamu
+                    Export Data Customer
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -1331,10 +1167,11 @@
                 <div class="modal-form-group">
                     <label><i class="mdi mdi-filter-outline me-1 text-primary"></i>Filter Data yang Diexport</label>
                     <select class="modal-form-control">
-                        <option value="semua">Semua Tamu</option>
-                        <option value="hot">Hot Prospek</option>
-                        <option value="warm">Warm Prospek</option>
-                        <option value="cold">Cold Prospek</option>
+                        <option value="semua">Semua Customer</option>
+                        <option value="aktif">Customer Aktif</option>
+                        <option value="pending">Customer Pending</option>
+                        <option value="kpr">Pembeli KPR</option>
+                        <option value="cash">Pembeli Cash</option>
                     </select>
                 </div>
             </div>
@@ -1353,18 +1190,17 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     // CEK TABEL DATA
-    let hasData = $('#tableTamu tbody tr').length > 0;
+    let hasData = $('#tableCustomer tbody tr').length > 0;
 
-    if ($.fn.DataTable.isDataTable('#tableTamu')) {
-        $('#tableTamu').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable('#tableCustomer')) {
+        $('#tableCustomer').DataTable().destroy();
     }
 
     if (hasData) {
-        let table = $('#tableTamu').DataTable({
+        let table = $('#tableCustomer').DataTable({
             responsive: true,
             paging: false,
             info: false,
@@ -1372,67 +1208,22 @@ $(document).ready(function() {
             lengthChange: false,
             ordering: true,
             language: {
-                emptyTable: "Data tamu belum tersedia",
+                emptyTable: "Data customer belum tersedia",
                 zeroRecords: "Data tidak ditemukan",
             },
             columnDefs: [
                 { targets: 0, orderable: false },
-                { targets: 8, orderable: false }
+                { targets: 7, orderable: false }
             ]
         });
     }
 
     // DELETE CONFIRMATION
     window.confirmDelete = function() {
-        Swal.fire({
-            title: 'Hapus Tamu?',
-            text: "Data tamu yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Terhapus!',
-                    text: 'Data tamu berhasil dihapus.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        });
+        if (confirm('Apakah Anda yakin ingin menghapus customer ini?')) {
+            alert('Customer berhasil dihapus (demo)');
+        }
     };
 });
-
-// SWAL SESSION
-@if (session('success'))
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil',
-        text: "{{ session('success') }}",
-        showConfirmButton: false,
-        timer: 2000
-    });
-@endif
-
-@if (session('error'))
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#d33'
-    });
-@endif
-
-@if ($errors->any())
-    Swal.fire({
-        icon: 'warning',
-        title: 'Validasi Gagal',
-        html: `{!! implode('<br>', $errors->all()) !!}`
-    });
-@endif
 </script>
 @endpush

@@ -174,6 +174,19 @@
             color: white;
         }
 
+        .rab-btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .rab-btn-warning:hover {
+            background: linear-gradient(135deg, #e0a800, #ffcd39);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+            color: #2c2e3f;
+        }
+
         .rab-btn-light {
             background: #f8f9fa;
             border: 1px solid #e9ecef;
@@ -199,6 +212,201 @@
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
+        /* ===== FILE UPLOAD MODERN STYLING ===== */
+        .file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.3rem 0.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 32px;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-label {
+                padding: 0.4rem 0.6rem;
+                gap: 6px;
+                min-height: 36px;
+            }
+        }
+
+        .file-upload-modern:hover .file-upload-label {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .file-upload-label i {
+            font-size: 1rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 4px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .file-upload-info {
+            flex: 1;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .file-upload-info span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-info span {
+                font-size: 0.7rem;
+            }
+        }
+
+        .file-upload-info small {
+            color: #6c7383;
+            font-size: 0.55rem;
+            display: block;
+        }
+
+        .file-upload-size {
+            font-size: 0.55rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-size {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+        }
+
+        .file-upload-label.file-selected {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+        }
+
+        .file-upload-label.file-selected i {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Preview file button dengan teks */
+        .file-preview-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: white;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .file-preview-btn {
+                padding: 0.3rem 1rem;
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+        }
+
+        .file-preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .file-preview-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* Dokumen container */
+        .dokumen-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+        }
+
+        /* ===== TABLE COLUMN WIDTH ADJUSTMENTS ===== */
+        .table thead th:nth-child(1) { width: 4%; }  /* No */
+        .table thead th:nth-child(2) { width: 18%; } /* Uraian (diperkecil) */
+        .table thead th:nth-child(3) { width: 6%; }  /* Volume */
+        .table thead th:nth-child(4) { width: 6%; }  /* Satuan */
+        .table thead th:nth-child(5) { width: 10%; } /* Harga */
+        .table thead th:nth-child(6) { width: 10%; } /* Total */
+        .table thead th:nth-child(7) { width: 15%; } /* Keterangan */
+        .table thead th:nth-child(8) { width: 18%; } /* Dokumentasi (diperbesar) */
+        .table thead th:nth-child(9) { width: 8%; }  /* Aksi */
+
+        .table tbody td:nth-child(1) { text-align: center; }
+        .table tbody td:nth-child(5) { text-align: right; }
+        .table tbody td:nth-child(6) { text-align: right; }
+
+        /* Input di dalam tabel */
+        .table input[type="text"],
+        .table input[type="number"],
+        .table select {
+            width: 100%;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.7rem;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .table input[type="text"],
+            .table input[type="number"],
+            .table select {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .table input:focus {
+            border-color: #9a55ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.1);
+        }
+
         /* Text colors */
         .rab-text-muted {
             color: #a5b3cb !important;
@@ -221,7 +429,7 @@
             }
         }
 
-        /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
+        /* ===== CARD STYLING ===== */
         .card {
             transition: all 0.3s ease;
             margin-bottom: 1rem;
@@ -284,7 +492,7 @@
             }
         }
 
-        /* Table styling - Responsif */
+        /* Table styling */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -293,10 +501,11 @@
         }
 
         .table {
-            min-width: 700px;
+            min-width: 1000px;
+            width: 100%;
         }
 
-        @media (min-width: 992px) {
+        @media (min-width: 1200px) {
             .table {
                 min-width: 100%;
             }
@@ -310,14 +519,14 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #e9ecef;
-            padding: 0.4rem 0.25rem;
+            padding: 0.5rem 0.25rem;
             white-space: nowrap;
         }
 
         @media (min-width: 576px) {
             .table thead th {
                 font-size: 0.7rem;
-                padding: 0.5rem 0.4rem;
+                padding: 0.6rem 0.4rem;
             }
         }
 
@@ -330,14 +539,14 @@
 
         .table tbody td {
             vertical-align: middle;
-            font-size: 0.65rem;
-            padding: 0.4rem 0.25rem;
+            font-size: 0.7rem;
+            padding: 0.5rem 0.25rem;
         }
 
         @media (min-width: 576px) {
             .table tbody td {
-                font-size: 0.7rem;
-                padding: 0.5rem 0.4rem;
+                font-size: 0.75rem;
+                padding: 0.6rem 0.4rem;
             }
         }
 
@@ -384,60 +593,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
         }
 
-        @media (min-width: 768px) {
-            .shadow-sm {
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
-            }
-        }
-
-        /* Text muted */
-        .text-muted {
-            color: #a5b3cb !important;
-            font-size: 0.65rem;
-        }
-
-        @media (min-width: 576px) {
-            .text-muted {
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .text-muted {
-                font-size: 0.75rem;
-            }
-        }
-
-        /* Badge styling */
-        .badge {
-            padding: 3px 6px;
-            font-weight: 500;
-            font-size: 0.6rem;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 4px 8px;
-                font-size: 0.65rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 5px 10px;
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Border colors untuk card tertentu */
-        .border-primary {
-            border-color: #9a55ff !important;
-        }
-
-        .border-success {
-            border-color: #28a745 !important;
-        }
-
         /* Typography */
         h3.text-dark {
             font-size: 1.1rem !important;
@@ -462,136 +617,9 @@
             }
         }
 
-        /* Row spacing */
-        .row {
-            margin-right: -0.25rem;
-            margin-left: -0.25rem;
-        }
-
-        @media (min-width: 576px) {
-            .row {
-                margin-right: -0.5rem;
-                margin-left: -0.5rem;
-            }
-        }
-
-        /* Column padding */
-        [class*="col-"] {
-            padding-right: 0.25rem;
-            padding-left: 0.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 576px) {
-            [class*="col-"] {
-                padding-right: 0.5rem;
-                padding-left: 0.5rem;
-                margin-bottom: 0;
-            }
-        }
-
-        /* Margin utilities */
-        .mb-4 {
-            margin-bottom: 1rem !important;
-        }
-
-        @media (min-width: 576px) {
-            .mb-4 {
-                margin-bottom: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .mb-4 {
-                margin-bottom: 2rem !important;
-            }
-        }
-
-        /* Gap utility */
-        .gap-3 {
-            gap: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-            .gap-3 {
-                gap: 0.8rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .gap-3 {
-                gap: 1rem !important;
-            }
-        }
-
-        /* Card header button group */
-        .card-header.d-flex {
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: flex-start !important;
-        }
-
-        @media (min-width: 576px) {
-            .card-header.d-flex {
-                flex-direction: row;
-                gap: 1rem;
-                align-items: center !important;
-            }
-        }
-
-        /* Info unit row */
-        .row .col-md-2,
-        .row .col-md-3 {
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 576px) {
-
-            .row .col-md-2,
-            .row .col-md-3 {
-                margin-bottom: 0;
-            }
-        }
-
-        /* Card title */
-        .card-title {
-            font-size: 0.9rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
         /* Text end input */
         .text-end input {
             text-align: right;
-        }
-
-        /* Better touch targets for mobile */
-        input,
-        select,
-        textarea,
-        button {
-            font-size: 16px !important;
-        }
-
-        /* Max width untuk input di card */
-        .max-width-200 {
-            max-width: 200px;
-        }
-
-        @media (max-width: 576px) {
-            .max-width-200 {
-                max-width: 100%;
-            }
         }
 
         /* Icon styling */
@@ -601,7 +629,7 @@
     </style>
 
     <div class="container-fluid p-4">
-        <!-- Header - HARUS DIPISAH JADI CARD SENDIRI -->
+        <!-- Header -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
@@ -618,6 +646,7 @@
                 </div>
             </div>
         </div>
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show">
                 {{ session('success') }}
@@ -637,13 +666,13 @@
                 {{ $errors->first() }}
             </div>
         @endif
+
         <!-- Info Unit -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card bg-light">
                     <div class="card-body">
                         <div class="row">
-
                             {{-- UNIT --}}
                             <div class="col-12 col-sm-6 col-md-2">
                                 <small class="text-muted d-block">
@@ -692,13 +721,11 @@
                                 </small>
                                 <input type="text" id="unitPrice" class="rab-form-control" readonly>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <form action="{{ route('properti.progress.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -748,15 +775,15 @@
                                     <table class="table table-bordered mb-0">
                                         <thead class="bg-light">
                                             <tr>
-                                                <th width="5%">No</th>
-                                                <th width="25%">Uraian</th>
-                                                <th width="8%">Volume</th>
-                                                <th width="8%">Satuan</th>
-                                                <th width="10%">Harga</th>
-                                                <th width="10%">Total</th>
-                                                <th width="15%">Keterangan</th>
-                                                <th width="10%">Dokumentasi</th>
-                                                <th width="9%">Aksi</th>
+                                                <th>NO</th>
+                                                <th>URAIAN</th>
+                                                <th>VOLUME</th>
+                                                <th>SATUAN</th>
+                                                <th>HARGA</th>
+                                                <th>TOTAL</th>
+                                                <th>KETERANGAN</th>
+                                                <th>DOKUMENTASI</th>
+                                                <th>AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody id="body-{{ $key }}">
@@ -764,14 +791,12 @@
                                             @if ($selectedUnit->progress)
                                                 @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
                                                     <tr>
-                                                        <td>{{ $i + 1 }}</td>
+                                                        <td class="text-center">{{ $i + 1 }}</td>
                                                         <td>{{ $item->uraian }}</td>
                                                         <td>{{ $item->volume }}</td>
                                                         <td>{{ $item->satuan }}</td>
-                                                        <td class="text-end">Rp
-                                                            {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                                                        <td class="text-end">Rp
-                                                            {{ number_format($item->total, 0, ',', '.') }}</td>
+                                                        <td>Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                                                        <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
                                                         <td>{{ $item->keterangan }}</td>
                                                         <td>
                                                             @foreach ($item->documents as $doc)
@@ -805,12 +830,14 @@
                                                         class="rab-form-control rab-form-control-sm text-end fw-bold"
                                                         readonly></th>
                                                 <th colspan="2"></th>
+
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             @endforeach
@@ -900,7 +927,6 @@
 
             </div>
         </form>
-
     </div>
 @endsection
 
@@ -922,56 +948,25 @@
                     'Rp ' + Number(price).toLocaleString('id-ID');
             }
 
-            updateFields(); // load pertama
+            updateFields();
             select.addEventListener('change', updateFields);
         });
     </script>
+
     <script>
         let indexItem = 0;
 
         const kategoriMap = {
-            persiapan: {
-                prefix: "1",
-                body: "body-persiapan",
-                subtotal: "subtotal-persiapan"
-            },
-            pondasi: {
-                prefix: "2",
-                body: "body-pondasi",
-                subtotal: "subtotal-pondasi"
-            },
-            struktur: {
-                prefix: "3",
-                body: "body-struktur",
-                subtotal: "subtotal-struktur"
-            },
-            dinding: {
-                prefix: "4",
-                body: "body-dinding",
-                subtotal: "subtotal-dinding"
-            },
-            atap: {
-                prefix: "5",
-                body: "body-atap",
-                subtotal: "subtotal-atap"
-            },
-            finishing: {
-                prefix: "6",
-                body: "body-finishing",
-                subtotal: "subtotal-finishing"
-            },
-            lainnya: {
-                prefix: "7",
-                body: "body-lainnya",
-                subtotal: "subtotal-lainnya"
-            },
+            persiapan: { prefix: "1", body: "body-persiapan", subtotal: "subtotal-persiapan" },
+            pondasi: { prefix: "2", body: "body-pondasi", subtotal: "subtotal-pondasi" },
+            struktur: { prefix: "3", body: "body-struktur", subtotal: "subtotal-struktur" },
+            dinding: { prefix: "4", body: "body-dinding", subtotal: "subtotal-dinding" },
+            atap: { prefix: "5", body: "body-atap", subtotal: "subtotal-atap" },
+            finishing: { prefix: "6", body: "body-finishing", subtotal: "subtotal-finishing" },
+            lainnya: { prefix: "7", body: "body-lainnya", subtotal: "subtotal-lainnya" },
         };
 
-        /* ============================= */
-        /* TAMBAH ITEM */
-        /* ============================= */
         function tambahItem(kategori) {
-
             let config = kategoriMap[kategori];
             let tbody = document.getElementById(config.body);
 
@@ -979,6 +974,7 @@
             let kode = config.prefix + "." + nomor;
 
             let row = `
+
         <tr>
             <td class="text-center">${kode}</td>
 
@@ -1040,10 +1036,8 @@
 
             tbody.insertAdjacentHTML('beforeend', row);
             indexItem++;
-
             hitungSemua();
         }
-
    function hapusItem(button, kategori, itemId = null) {
     // SweetAlert konfirmasi
     Swal.fire({
@@ -1091,6 +1085,7 @@
             } else {
                 // Row baru, belum ada di DB → hapus langsung dari DOM
                 $(button).closest('tr').remove();
+
                 updateNomor(kategori);
                 hitungSemua();
 
@@ -1106,15 +1101,13 @@
         /* ============================= */
         /* UPDATE NOMOR & KODE */
         /* ============================= */
-        function updateNomor(kategori) {
 
+        function updateNomor(kategori) {
             let config = kategoriMap[kategori];
             let rows = document.querySelectorAll("#" + config.body + " tr");
 
             rows.forEach((row, i) => {
-
                 let kode = config.prefix + "." + (i + 1);
-
                 row.cells[0].innerText = kode;
 
                 let kodeInput = row.querySelector("input[name*='[kode]']");
@@ -1124,36 +1117,26 @@
             });
         }
 
-        /* ============================= */
-        /* HITUNG SEMUA */
-        /* ============================= */
         function hitungSemua() {
-
             let grandTotal = 0;
 
             Object.keys(kategoriMap).forEach(function(kategori) {
-
                 let config = kategoriMap[kategori];
                 let subtotal = 0;
 
                 document.querySelectorAll("#" + config.body + " tr").forEach(function(row) {
-
                     let volumeInput = row.querySelector(".volume");
                     let hargaInput = row.querySelector(".harga-satuan");
                     let totalInput = row.querySelector(".total-item");
 
                     if (volumeInput && hargaInput && totalInput) {
-
                         let volume = parseFloat(volumeInput.value) || 0;
                         let harga = parseFloat(hargaInput.value) || 0;
-
                         let total = volume * harga;
 
                         totalInput.value = total.toLocaleString('id-ID');
-
                         subtotal += total;
                     } else {
-                        // row dari database
                         let totalText = row.cells[5]?.innerText || "0";
                         let total = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
                         subtotal += total;
@@ -1174,38 +1157,26 @@
             }
         }
 
-        /* ============================= */
-        /* REALTIME HITUNG */
-        /* ============================= */
         document.addEventListener("input", function(e) {
-            if (e.target.classList.contains("volume") ||
-                e.target.classList.contains("harga-satuan")) {
+            if (e.target.classList.contains("volume") || e.target.classList.contains("harga-satuan")) {
                 hitungSemua();
             }
         });
 
-        /* ============================= */
-        /* HITUNG SAAT LOAD */
-        /* ============================= */
         document.addEventListener("DOMContentLoaded", function() {
             hitungSemua();
         });
-    </script>
-    <script>
+
         document.getElementById("unitSelect").addEventListener("change", function() {
             let unitId = this.value;
-
             let url = new URL(window.location.href);
             url.searchParams.set('unit_id', unitId);
-
             window.location.href = url.toString();
         });
-    </script>
-    <script>
+
         document.querySelectorAll('.acc-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 let unitId = this.dataset.id;
-
                 if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
 
                 fetch(`/properti/progress/acc-ajax/${unitId}`, {
@@ -1220,8 +1191,6 @@
                     .then(data => {
                         if (data.success) {
                             alert(data.message);
-
-                            // Update teks/progress di halaman tanpa reload
                             const progressText = document.querySelector(`#progress-text-${unitId}`);
                             if (progressText) progressText.textContent = data.construction_progress;
                         } else {

@@ -526,45 +526,56 @@
             background-color: #f8f9fa;
         }
 
-        /* ===== MODAL STYLING ===== */
+        /* ===== MODAL STYLING - DIPERBAIKI ===== */
         .modal-content {
             border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
         }
 
         .modal-header {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 16px 16px 0 0;
+            border-bottom: 1px solid rgba(154, 85, 255, 0.1);
+            padding: 1.2rem 1.5rem;
         }
 
         .modal-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #9a55ff;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-title i {
+            font-size: 1.3rem;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 10px;
+            margin-right: 10px;
         }
 
         .modal-body {
-            padding: 1.2rem;
+            padding: 1.8rem 1.5rem;
+            background: #ffffff;
         }
 
         .modal-footer {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
             border-top: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 0 0 16px 16px;
+            padding: 1rem 1.5rem;
         }
 
         .modal-form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .modal-form-group label {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #9a55ff !important;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
             letter-spacing: 0.3px;
             font-family: 'Nunito', sans-serif;
             display: block;
@@ -572,9 +583,9 @@
 
         .modal-form-control {
             border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
             transition: all 0.2s ease;
             background-color: #ffffff;
             color: #2c2e3f;
@@ -583,22 +594,89 @@
 
         .modal-form-control:focus {
             border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(154, 85, 255, 0.1);
             outline: none;
         }
 
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
+        .modal-switch-container {
+            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(154, 85, 255, 0.2);
+        }
+
+        .modal-switch-container .form-switch {
+            margin: 0;
+            padding-left: 2.5rem;
+        }
+
+        .modal-switch-container .form-check-input {
+            width: 2.5rem;
+            height: 1.3rem;
+            cursor: pointer;
+        }
+
+        .modal-switch-container .form-check-input:checked {
+            background-color: #9a55ff;
+            border-color: #9a55ff;
+        }
+
+        .modal-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-outline {
+            background: transparent;
+            border: 1px solid #e9ecef;
+            color: #6c7383;
+        }
+
+        .modal-btn-outline:hover {
+            background: #f8f9fa;
+            border-color: #9a55ff;
+            color: #9a55ff;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+        }
+
+        /* Styling untuk tombol reset sejajar */
+        .filter-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .filter-col {
+            flex: 1;
+        }
+
+        .filter-col-auto {
+            flex: 0 0 auto;
+        }
+
+        .btn-filter-reset {
+            height: 42px;
+            min-width: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
+            padding: 0 0.75rem;
         }
 
         /* ===== PAGINATION STYLING ===== */
@@ -817,16 +895,16 @@
                                     </div>
                                 </div>
 
-                                <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                <!-- FILTER UNTUK TABLET & DESKTOP - DIPERBAIKI SEJAJAR -->
                                 <div class="d-none d-md-block">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-4">
+                                    <div class="filter-row">
+                                        <div class="filter-col" style="flex: 2;">
                                             <label class="form-label">
                                                 <i class="mdi mdi-magnify me-1"></i>Cari Dokumen
                                             </label>
                                             <input type="text" class="form-control" placeholder="Cari nama dokumen...">
                                         </div>
-                                        <div class="col-md-2">
+                                        {{-- <div class="filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-shape-outline me-1"></i>Jenis Izin
                                             </label>
@@ -837,19 +915,18 @@
                                                 <option value="cutfill">Izin Cut and Fill</option>
                                                 <option value="lokasi">Izin Lokasi</option>
                                             </select>
-                                        </div>
-                                        <div class="col-md-2">
+                                        </div> --}}
+                                        <div class="filter-col">
                                             <label class="form-label">
-                                                <i class="mdi mdi-flag me-1"></i>Status
+                                                <i class="mdi mdi-flag me-1"></i>Has Expiry
                                             </label>
                                             <select class="form-control">
                                                 <option value="">Semua</option>
-                                                <option value="lengkap">Lengkap</option>
-                                                <option value="proses">Diproses</option>
-                                                <option value="kurang">Kurang</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-counter me-1"></i>Tampil
                                             </label>
@@ -860,14 +937,15 @@
                                                 <option value="100">100</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
-                                            <button type="button" class="btn btn-gradient-primary w-100">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                        <div class="filter-col-auto">
+                                            <label class="form-label" style="visibility: hidden;">Filter</label>
+                                            <button type="button" class="btn btn-gradient-primary btn-filter-reset">
+                                                <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
-                                        <div class="col-md-2">
-                                            <button type="button" class="btn btn-gradient-secondary w-100 btn-icon-only"
-                                                title="Reset">
+                                        <div class="filter-col-auto">
+                                            <label class="form-label" style="visibility: hidden;">Reset</label>
+                                            <button type="button" class="btn btn-gradient-secondary btn-filter-reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
                                         </div>
@@ -966,9 +1044,6 @@
                             <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
                                 <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
                             </a>
-                            <button class="btn btn-gradient-info" onclick="$('#modalInformasiIzin').modal('show')">
-                                <i class="mdi mdi-information-outline me-1"></i>Info Jenis Izin
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -976,15 +1051,15 @@
         </div>
     </div>
 
-    <!-- MODAL UPLOAD DOKUMEN IZIN -->
+    <!-- MODAL UPLOAD DOKUMEN IZIN - DIPERBAIKI -->
     <div class="modal fade" id="modalUploadDokumen" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content shadow-sm border-0">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
                 <!-- HEADER -->
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-semibold">
-                        <i class="mdi mdi-file-document-edit-outline me-2 text-primary"></i>
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="mdi mdi-file-document-plus-outline"></i>
                         Tambah Master Dokumen
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -996,63 +1071,50 @@
 
                     <div class="modal-body">
 
-                        <div class="row g-3">
+                        <!-- Document Name -->
+                        <div class="modal-form-group">
+                            <label class="form-label fw-semibold">
+                                Nama Dokumen <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" class="modal-form-control"
+                                placeholder="Contoh: IMB, PBG, SLF" required>
+                        </div>
 
-                            <!-- Document Name -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">
-                                    Nama Dokumen <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="name" class="form-control"
-                                    placeholder="Contoh: IMB, PBG, SLF" required>
-                            </div>
+                        <!-- Code -->
+                        <div class="modal-form-group">
+                            <label class="form-label fw-semibold">
+                                Code <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="code" class="modal-form-control" placeholder="imb / pbg / slf"
+                                required>
+                            <small class="text-muted mt-1 d-block">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Gunakan kode unik (huruf kecil tanpa spasi)
+                            </small>
+                        </div>
 
-                            <!-- Code -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">
-                                    Code <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="code" class="form-control" placeholder="imb / pbg / slf"
-                                    required>
+                        <!-- Has Expiry - Styling lebih baik -->
+                        <div class="modal-switch-container">
+                            <div>
+                                <span class="fw-semibold d-block">Dokumen memiliki masa berlaku</span>
                                 <small class="text-muted">
-                                    Gunakan kode unik (huruf kecil tanpa spasi)
+                                    Aktifkan jika dokumen memiliki tanggal kadaluarsa
                                 </small>
                             </div>
-
-                            <!-- Has Expiry -->
-                            <div class="col-12">
-                                <div class="d-flex align-items-center justify-content-between border rounded px-3 py-2">
-
-                                    <div>
-                                        <label for="hasExpirySwitch" class="fw-semibold mb-0">
-                                            Dokumen memiliki masa berlaku
-                                        </label>
-                                        <div>
-                                            <small class="text-muted">
-                                                Aktifkan jika dokumen memiliki tanggal kadaluarsa
-                                            </small>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-check form-switch m-0">
-                                        <input class="form-check-input" type="checkbox" name="has_expiry" value="1"
-                                            id="hasExpirySwitch">
-                                    </div>
-
-                                </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="has_expiry" value="1"
+                                    id="hasExpirySwitch">
                             </div>
-
                         </div>
 
                     </div>
 
                     <!-- FOOTER -->
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <div class="modal-footer">
+                        <button type="button" class="modal-btn modal-btn-outline" data-bs-dismiss="modal">
                             <i class="mdi mdi-close me-1"></i> Batal
                         </button>
-
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="modal-btn modal-btn-primary">
                             <i class="mdi mdi-content-save me-1"></i> Simpan
                         </button>
                     </div>
@@ -1067,12 +1129,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-
-            if ($.fn.DataTable.isDataTable('#tableDokumen')) {
-                $('#tableDokumen').DataTable().destroy();
+            // Inisialisasi DataTables jika diperlukan
+            if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#tableDokumen')) {
+                $('#tableDokumen').DataTable({
+                    responsive: true,
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Belum ada data dokumen izin",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [{
+                        orderable: false,
+                        targets: [0, 4] // Kolom No dan Aksi
+                    }]
+                });
             }
-
-
         });
 
         // SWAL SESSION
