@@ -431,3 +431,51 @@ input, select, textarea, button {
     </div>
 </div>
 @endsection
+@push('scripts')
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil!',
+    text: '{{ session('success') }}',
+    confirmButtonColor: '#9a55ff'
+});
+</script>
+@endif
+@if ($errors->any())
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    html: `{!! implode('<br>', $errors->all()) !!}`,
+    confirmButtonColor: '#9a55ff'
+});
+</script>
+@endif
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const form = document.querySelector("form[action='{{ route('agency.store') }}']");
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Simpan Data Sales?',
+            text: "Pastikan data sudah benar sebelum disimpan.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#9a55ff',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
+});
+</script>
+@endpush

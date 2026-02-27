@@ -33,7 +33,7 @@ public function store(Request $request)
         'address' => $request->address,
     ]);
 
-    return redirect('/agency')->with('success','Sales berhasil ditambahkan');
+    return redirect()->back()->with('success','Sales berhasil ditambahkan');
 }
 
 }
