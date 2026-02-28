@@ -694,67 +694,49 @@
             </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="row g-2 g-sm-2 g-md-3">
-            <!-- Mobile: 2 cards per row, Tablet: 2 cards per row, Desktop: 4 cards per row -->
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-primary card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Total Tamu
-                            <i class="mdi mdi-account-group float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">156</h2>
-                        <h6 class="card-text small">Semua tamu</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-danger card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Hot Prospek
-                            <i class="mdi mdi-fire float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">42</h2>
-                        <h6 class="card-text small">Siap beli</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-warning card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Kunjungan Hari Ini
-                            <i class="mdi mdi-calendar-today float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">12</h2>
-                        <h6 class="card-text small">+3 dari kemarin</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-info card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Follow Up Hari Ini
-                            <i class="mdi mdi-phone-log float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">8</h2>
-                        <h6 class="card-text small">Belum dilakukan</h6>
-                    </div>
-                </div>
+      <!-- Statistics Cards -->
+<div class="row g-4 justify-content-center">
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card bg-gradient-primary card-img-holder text-white h-100 shadow-sm border-0">
+            <div class="card-body p-4">
+                <h6 class="fw-normal mb-3">
+                    Total Tamu
+                    <i class="mdi mdi-account-group float-end fs-5"></i>
+                </h6>
+                <h2 class="fw-bold mb-2">{{ $totalGuests }}</h2>
+                <small>Semua tamu</small>
             </div>
         </div>
+    </div>
 
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card bg-gradient-danger card-img-holder text-white h-100 shadow-sm border-0">
+            <div class="card-body p-4">
+                <h6 class="fw-normal mb-3">
+                    Prospek Prioritas
+                    <i class="mdi mdi-fire float-end fs-5"></i>
+                </h6>
+                <h2 class="fw-bold mb-2">{{ $totalProspek }}</h2>
+                <small>Siap closing</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card bg-gradient-info card-img-holder text-white h-100 shadow-sm border-0">
+            <div class="card-body p-4">
+                <h6 class="fw-normal mb-3">
+                    Follow Up Hari Ini
+                    <i class="mdi mdi-phone-log float-end fs-5"></i>
+                </h6>
+                <h2 class="fw-bold mb-2">{{ $totalFollowUp }}</h2>
+                <small>Belum dilakukan</small>
+            </div>
+        </div>
+    </div>
+
+</div>
         <!-- Tabel Data Tamu -->
         <div class="row mt-4 mt-sm-4 mt-md-4">
             <div class="col-12">
@@ -772,8 +754,10 @@
                             <button class="btn btn-sm btn-gradient-danger" onclick="$('#modalExportTamu').modal('show')">
                                 <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
                             </button>
-                            <button class="btn btn-sm btn-gradient-primary" onclick="$('#modalTambahTamu').modal('show')">
-                                <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah Tamu</span>
+                            <button class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal"
+                                data-bs-target="#modalTambahTamu">
+                                <i class="mdi mdi-plus me-1"></i>
+                                <span class="d-none d-sm-inline">Tambah Tamu</span>
                             </button>
                         </div>
                     </div>
@@ -1036,200 +1020,11 @@
                                                     </form>
 
                                                     <!-- Tombol Edit -->
-                                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                        data-bs-target="#modalEditTamu-{{ $t->id }}">
+                                                    <button class="btn btn-sm btn-primary btnEditTamu"
+                                                        data-id="{{ $t->id }}">
                                                         <i class="mdi mdi-account-edit"></i> Edit
                                                     </button>
-                                                    <!-- MODAL TAMBAH TAMU -->
-                                                    <div class="modal fade" id="modalTambahTamu" tabindex="-1"
-                                                        aria-hidden="true">
-                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                            <div class="modal-content">
 
-                                                                <form action="{{ route('customer.tamu.store') }}"
-                                                                    method="POST">
-                                                                    @csrf
-
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">
-                                                                            <i class="mdi mdi-account-plus"></i>
-                                                                            Tambah Tamu Baru
-                                                                        </h5>
-                                                                        <button type="button" class="btn-close"
-                                                                            data-bs-dismiss="modal"></button>
-                                                                    </div>
-
-                                                                    <div class="modal-body">
-
-                                                                        <div class="row">
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Nama Lengkap <span
-                                                                                            class="text-danger">*</span></label>
-                                                                                    <input type="text"
-                                                                                        class="modal-form-control"
-                                                                                        name="name"
-                                                                                        placeholder="Contoh: Ahmad Syarif"
-                                                                                        required>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>No. HP <span
-                                                                                            class="text-danger">*</span></label>
-                                                                                    <input type="text"
-                                                                                        class="modal-form-control"
-                                                                                        name="phone"
-                                                                                        placeholder="Contoh: 081234567890"
-                                                                                        required>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="row mt-2">
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Email</label>
-                                                                                    <input type="email"
-                                                                                        class="modal-form-control"
-                                                                                        name="email"
-                                                                                        placeholder="email@domain.com">
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Sumber Informasi</label>
-                                                                                    <select class="modal-form-control"
-                                                                                        name="source" required>
-                                                                                        <option value="">-- Pilih
-                                                                                            Sumber --</option>
-                                                                                        <option value="instagram">Instagram
-                                                                                        </option>
-                                                                                        <option value="facebook">Facebook
-                                                                                        </option>
-                                                                                        <option value="tiktok">TikTok
-                                                                                        </option>
-                                                                                        <option value="iklan">Iklan Online
-                                                                                        </option>
-                                                                                        <option value="referensi">Referensi
-                                                                                        </option>
-                                                                                        <option value="walk-in">Walk-in
-                                                                                        </option>
-                                                                                        <option value="lainnya">Lainnya
-                                                                                        </option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="row mt-2">
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Agent</label>
-                                                                                    <select class="modal-form-control"
-                                                                                        name="assigned_to" required>
-                                                                                        <option value="">-- Pilih
-                                                                                            Agent --</option>
-                                                                                        @foreach ($agents as $agent)
-                                                                                            <option
-                                                                                                value="{{ $agent->id }}">
-                                                                                                {{ $agent->name }}
-                                                                                            </option>
-                                                                                        @endforeach
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Status Prospek</label>
-                                                                                    <select class="modal-form-control"
-                                                                                        name="status" required>
-                                                                                        <option value="new" selected>
-                                                                                            Baru</option>
-                                                                                        <option value="follow_up">Sudah Di
-                                                                                            Hubungi</option>
-                                                                                        <option value="negotiation">
-                                                                                            Negosiasi</option>
-                                                                                        <option value="converted">Jadi
-                                                                                            Booking / Beli</option>
-                                                                                        <option value="lost">Batal
-                                                                                        </option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="row mt-2">
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Proyek Minat</label>
-                                                                                    <select class="modal-form-control"
-                                                                                        name="land_bank_id"
-                                                                                        id="projectSelect" required>
-                                                                                        <option value="">-- Pilih
-                                                                                            Proyek --</option>
-                                                                                        @foreach ($projects as $project)
-                                                                                            <option
-                                                                                                value="{{ $project->id }}">
-                                                                                                {{ $project->name }}
-                                                                                            </option>
-                                                                                        @endforeach
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="modal-form-group">
-                                                                                    <label>Tipe Unit</label>
-                                                                                    <select class="modal-form-control"
-                                                                                        name="unit_id" id="unitSelect">
-                                                                                        <option value="">-- Pilih
-                                                                                            Tipe --</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="modal-form-group mt-2">
-                                                                            <label>Budget (Rp)</label>
-                                                                            <input type="text"
-                                                                                class="modal-form-control" name="budget"
-                                                                                placeholder="Contoh: 500000000">
-                                                                        </div>
-
-                                                                        <div class="modal-form-group mt-2">
-                                                                            <label>Next Follow Up</label>
-                                                                            <input type="date"
-                                                                                class="modal-form-control"
-                                                                                name="next_follow_up">
-                                                                        </div>
-
-                                                                        <div class="modal-form-group mt-2">
-                                                                            <label>Catatan</label>
-                                                                            <textarea class="modal-form-control" rows="2" name="notes" placeholder="Tambahkan catatan tentang tamu..."></textarea>
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">
-                                                                            Batal
-                                                                        </button>
-
-                                                                        <button type="submit" class="btn btn-primary">
-                                                                            Simpan Tamu
-                                                                        </button>
-                                                                    </div>
-
-                                                                </form>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                     <!-- Tombol Hapus -->
                                                     <button class="btn btn-outline-danger btn-sm" title="Hapus"
                                                         onclick="confirmDelete()">
@@ -1253,7 +1048,173 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- MODAL TAMBAH TAMU -->
+                        <div class="modal fade" id="modalTambahTamu" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
 
+                                    <form action="{{ route('customer.tamu.store') }}" method="POST">
+                                        @csrf
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <i class="mdi mdi-account-plus"></i>
+                                                Tambah Tamu Baru
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Nama Lengkap <span class="text-danger">*</span></label>
+                                                        <input type="text" class="modal-form-control" name="name"
+                                                            placeholder="Contoh: Ahmad Syarif" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>No. HP <span class="text-danger">*</span></label>
+                                                        <input type="text" class="modal-form-control" name="phone"
+                                                            placeholder="Contoh: 081234567890" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Email</label>
+                                                        <input type="email" class="modal-form-control" name="email"
+                                                            placeholder="email@domain.com">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Sumber Informasi</label>
+                                                        <select class="modal-form-control" name="source" required>
+                                                            <option value="">-- Pilih
+                                                                Sumber --</option>
+                                                            <option value="instagram">Instagram
+                                                            </option>
+                                                            <option value="facebook">Facebook
+                                                            </option>
+                                                            <option value="tiktok">TikTok
+                                                            </option>
+                                                            <option value="iklan">Iklan Online
+                                                            </option>
+                                                            <option value="referensi">Referensi
+                                                            </option>
+                                                            <option value="walk-in">Walk-in
+                                                            </option>
+                                                            <option value="lainnya">Lainnya
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Agent</label>
+                                                        <select class="modal-form-control" name="assigned_to" required>
+                                                            <option value="">-- Pilih
+                                                                Agent --</option>
+                                                            @foreach ($agents as $agent)
+                                                                <option value="{{ $agent->id }}">
+                                                                    {{ $agent->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Status Prospek</label>
+                                                        <select class="modal-form-control" name="status" required>
+                                                            <option value="new" selected>
+                                                                Baru</option>
+                                                            <option value="follow_up">Sudah Di
+                                                                Hubungi</option>
+                                                            <option value="negotiation">
+                                                                Negosiasi</option>
+                                                            <option value="converted">Jadi
+                                                                Booking / Beli</option>
+                                                            <option value="lost">Batal
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Proyek Minat</label>
+                                                        <select class="modal-form-control" name="land_bank_id"
+                                                            id="projectSelect" required>
+                                                            <option value="">-- Pilih
+                                                                Proyek --</option>
+                                                            @foreach ($projects as $project)
+                                                                <option value="{{ $project->id }}">
+                                                                    {{ $project->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="modal-form-group">
+                                                        <label>Tipe Unit</label>
+                                                        <select class="modal-form-control" name="unit_id"
+                                                            id="unitSelect">
+                                                            <option value="">-- Pilih
+                                                                Tipe --</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-form-group mt-2">
+                                                <label>Budget (Rp)</label>
+                                                <input type="text" class="modal-form-control" name="budget"
+                                                    placeholder="Contoh: 500000000">
+                                            </div>
+
+                                            <div class="modal-form-group mt-2">
+                                                <label>Next Follow Up</label>
+                                                <input type="date" class="modal-form-control" name="next_follow_up">
+                                            </div>
+
+                                            <div class="modal-form-group mt-2">
+                                                <label>Catatan</label>
+                                                <textarea class="modal-form-control" rows="2" name="notes" placeholder="Tambahkan catatan tentang tamu..."></textarea>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Batal
+                                            </button>
+
+                                            <button type="submit" class="btn btn-primary">
+                                                Simpan Tamu
+                                            </button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
                         <!-- Pagination -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
@@ -1303,164 +1264,192 @@
 
 
     <!-- MODAL EDIT TAMU -->
-    <div class="modal fade" id="modalEditTamu-{{ $t->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-account-edit"></i> Edit Data Tamu
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('customer.tamu.update', $t->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+    <div class="modal fade" id="modalEditTamu" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-account-edit"></i> Edit Data Tamu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-account text-primary"></i> Nama Lengkap <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="modal-form-control"
-                                        value="{{ $t->name }}" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-phone text-primary"></i> No. HP <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" name="phone" class="modal-form-control"
-                                        value="{{ $t->phone }}" required>
-                                </div>
+            <div class="modal-body">
+                <form id="formEditTamu" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <input type="hidden" id="edit_id">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>Nama Lengkap</label>
+                                <input type="text" name="name" id="edit_name" class="modal-form-control" required>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-email text-primary"></i> Email</label>
-                                    <input type="email" name="email" class="modal-form-control"
-                                        value="{{ $t->email }}">
-                                </div>
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>No. HP</label>
+                                <input type="text" name="phone" id="edit_phone" class="modal-form-control" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-source-branch text-primary"></i> Sumber Informasi <span
-                                            class="text-danger">*</span></label>
-                                    <select name="source" class="modal-form-control" required>
-                                        <option value="instagram" {{ $t->source == 'instagram' ? 'selected' : '' }}>
-                                            Instagram</option>
-                                        <option value="facebook" {{ $t->source == 'facebook' ? 'selected' : '' }}>Facebook
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-email text-primary"></i>Email</label>
+                                <input type="email" name="email" id="edit_email" class="modal-form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label><i class="mdi mdi-source-branch text-primary"></i>Sumber Informasi</label>
+                                <select name="source" id="edit_source" class="modal-form-control">
+                                    <option value="instagram">Instagram</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="iklan">Iklan Online</option>
+                                    <option value="referensi">Referensi</option>
+                                    <option value="walk-in">Walk-in</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="mdi mdi-account-tie me-1"></i>Agent
+                            </label>
+
+                            <select name="assigned_to" id="edit_assigned_to" class="form-control">
+                                <option value="">-- Pilih Agent --</option>
+                                @foreach ($agents as $agent)
+                                    <option value="{{ $agent->id }}">
+                                        {{ $agent->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        @php
+                            $statusLabel = [
+                                'new' => 'Baru',
+                                'follow_up' => 'Sudah Dihubungi',
+                                'negotiation' => 'Negosiasi',
+                                'converted' => 'Jadi Booking / Beli',
+                                'lost' => 'Batal',
+                            ];
+                        @endphp
+
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-chart-arc text-primary"></i>
+                                    Status Prospek
+                                </label>
+
+                                <select name="status" id="edit_status" class="modal-form-control">
+                                    @foreach ($statuses as $status)
+                                        <option value="{{ $status }}">
+                                            {{ $statusLabel[$status] }}
                                         </option>
-                                        <option value="tiktok" {{ $t->source == 'tiktok' ? 'selected' : '' }}>TikTok
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- PROJECT & UNIT --}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-office-building text-primary"></i>
+                                    Proyek Minat
+                                </label>
+
+                                {{-- FIXED: name sesuai migration --}}
+                                <select name="land_bank_id" id="edit_land_bank_id" class="modal-form-control">
+                                    <option value="">-- Pilih Proyek --</option>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id }}">
+                                            {{ $project->name }}
                                         </option>
-                                        <option value="iklan" {{ $t->source == 'iklan' ? 'selected' : '' }}>Iklan Online
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-home-group text-primary"></i>
+                                    Tipe Unit
+                                </label>
+
+                                <select name="unit_id" id="edit_unit_id" class="modal-form-control">
+                                    <option value="">-- Pilih Unit --</option>
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->id }}">
+                                            {{ $unit->unit_code }} - {{ $unit->type }}
                                         </option>
-                                        <option value="referensi" {{ $t->source == 'referensi' ? 'selected' : '' }}>
-                                            Referensi</option>
-                                        <option value="walk-in" {{ $t->source == 'walk-in' ? 'selected' : '' }}>Walk-in
-                                        </option>
-                                    </select>
-                                </div>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- CATATAN --}}
+                    <div class="modal-form-group">
+                        <label><i class="mdi mdi-note-text text-primary"></i>Catatan</label>
+                        <textarea name="notes" id="edit_notes" class="modal-form-control" rows="2"></textarea>
+                    </div>
+
+                    {{-- TAMBAHAN FIELD FOLLOW UP --}}
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-calendar-check text-primary"></i>
+                                    Last Follow Up
+                                </label>
+                                <input type="datetime-local"
+                                       name="last_follow_up"
+                                       id="edit_last_follow_up"
+                                       class="modal-form-control">
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-account-tie text-primary"></i> Agent <span
-                                            class="text-danger">*</span></label>
-                                    <select name="assigned_to" class="modal-form-control" required>
-                                        @foreach ($agents as $agent)
-                                            <option value="{{ $agent->id }}"
-                                                {{ $t->assigned_to == $agent->id ? 'selected' : '' }}>{{ $agent->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-chart-arc text-primary"></i> Status Prospek <span
-                                            class="text-danger">*</span></label>
-                                    <select name="status" class="modal-form-control" required>
-                                        <option value="new" {{ $t->status == 'new' ? 'selected' : '' }}>Baru</option>
-                                        <option value="follow_up" {{ $t->status == 'follow_up' ? 'selected' : '' }}>Sudah
-                                            Di Hubungi</option>
-                                        <option value="negotiation" {{ $t->status == 'negotiation' ? 'selected' : '' }}>
-                                            Negosiasi</option>
-                                        <option value="converted" {{ $t->status == 'converted' ? 'selected' : '' }}>Jadi
-                                            Booking / Beli</option>
-                                        <option value="lost" {{ $t->status == 'lost' ? 'selected' : '' }}>Batal</option>
-                                    </select>
-
-                                </div>
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-calendar-clock text-primary"></i>
+                                    Next Follow Up
+                                </label>
+                                <input type="datetime-local"
+                                       name="next_follow_up"
+                                       id="edit_next_follow_up"
+                                       class="modal-form-control">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-office-building text-primary"></i> Proyek Minat <span
-                                            class="text-danger">*</span></label>
-                                    <select name="land_bank_id" class="modal-form-control" required>
-                                        @foreach ($projects as $landBank)
-                                            <option value="{{ $landBank->id }}"
-                                                {{ $t->land_bank_id == $landBank->id ? 'selected' : '' }}>
-                                                {{ $landBank->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="modal-form-group">
-                                    <label><i class="mdi mdi-home-group text-primary"></i> Tipe Unit</label>
-                                    <select name="unit_id" class="modal-form-control">
-                                        <option value="">-- Pilih Unit --</option>
-                                        @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}"
-                                                {{ $t->unit_id == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->unit_code }} - {{ $unit->type }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-form-group">
-                            <label><i class="mdi mdi-currency-usd text-primary"></i> Budget (Rp)</label>
-                            <input type="text" name="budget" class="modal-form-control"
-                                value="{{ $t->budget }}">
-                        </div>
-
-                        <div class="modal-form-group">
-                            <label><i class="mdi mdi-note-text text-primary"></i> Catatan</label>
-                            <textarea name="notes" class="modal-form-control" rows="2">{{ $t->notes }}</textarea>
-                        </div>
-
-                        <div class="modal-form-group">
-                            <label><i class="mdi mdi-calendar-clock text-primary"></i> Next Follow Up <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" name="next_follow_up" class="modal-form-control"
-                                value="{{ $t->next_follow_up ? \Carbon\Carbon::parse($t->next_follow_up)->format('Y-m-d') : '' }}"
-                                required>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                                <i class="mdi mdi-close me-1"></i> Batal
-                            </button>
-                            <button type="submit" class="btn btn-gradient-primary">
-                                <i class="mdi mdi-content-save me-1"></i> Update Data
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="modal-footer mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">
+                            Update Data
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
     <div class="modal fade" id="modalFollowUp" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -1625,6 +1614,67 @@
 @endsection
 
 @push('scripts')
+    <script>
+        function showTambahTamu() {
+            var modal = new bootstrap.Modal(document.getElementById('modalTambahTamu'));
+            modal.show();
+        }
+    </script>
+   <script>
+    $(document).on('click', '.btnEditTamu', function () {
+
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: '/customer/guest/' + id + '/edit',
+            type: 'GET',
+            success: function (data) {
+
+                // Reset form dulu biar bersih
+                $('#formEditTamu')[0].reset();
+
+                // Set basic data
+                $('#edit_id').val(data.id);
+                $('#edit_name').val(data.name ?? '');
+                $('#edit_phone').val(data.phone ?? '');
+                $('#edit_email').val(data.email ?? '');
+                $('#edit_source').val(data.source ?? '');
+                $('#edit_assigned_to').val(data.assigned_to ?? '');
+                $('#edit_status').val(data.status ?? '');
+                $('#edit_land_bank_id').val(data.land_bank_id ?? '');
+                $('#edit_unit_id').val(data.unit_id ?? '');
+                $('#edit_notes').val(data.notes ?? '');
+
+                // Format datetime untuk input datetime-local
+                if (data.last_follow_up) {
+                    $('#edit_last_follow_up').val(
+                        data.last_follow_up.replace(' ', 'T')
+                    );
+                }
+
+                if (data.next_follow_up) {
+                    $('#edit_next_follow_up').val(
+                        data.next_follow_up.replace(' ', 'T')
+                    );
+                }
+
+                // Set form action
+                $('#formEditTamu').attr('action', '/customer/guest/' + data.id);
+
+                // Tampilkan modal (Bootstrap 5)
+                const modal = new bootstrap.Modal(
+                    document.getElementById('modalEditTamu')
+                );
+                modal.show();
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+                alert('Gagal mengambil data');
+            }
+        });
+
+    });
+</script>
     <script>
         $(document).ready(function() {
             // CEK TABEL DATA

@@ -296,7 +296,8 @@ Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('cu
 Route::post('/customer/guest/follow-up', [TamuController::class, 'followUp'])->name('customer.tamu.followup');
 Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
     ->name('costomer.guests.convert');
-Route::put('/customer/guest/{id}', [TamuController::class, 'update'])->name('customer.tamu.update');
+Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
+Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
 
 
 Route::get('/dashboard-customer-profil-cash', function () {
