@@ -187,9 +187,12 @@ Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController
 | ========================= AGENCY / SALES =========================
 |--------------------------------------------------------------------------
 */
-Route::get('/Agency-Create', [AgencyPropertyController::class, 'index'])->name('agency');
+Route::get('/agency', [AgencyPropertyController::class, 'index'])->name('agency.index');
+Route::get('/agency/create', [AgencyPropertyController::class, 'create'])->name('agency.create');
 Route::post('/agency/store', [AgencyPropertyController::class, 'store'])->name('agency.store');
-
+Route::get('/agency/{id}/edit', [AgencyPropertyController::class, 'edit'])->name('agency.edit');
+Route::put('/agency/{id}', [AgencyPropertyController::class, 'update'])->name('agency.update');
+Route::delete('/agency/{id}', [AgencyPropertyController::class, 'destroy'])->name('agency.destroy');
 /*
 |--------------------------------------------------------------------------
 | PENGAJUAN

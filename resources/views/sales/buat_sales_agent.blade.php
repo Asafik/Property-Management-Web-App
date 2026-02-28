@@ -377,8 +377,11 @@ input, select, textarea, button {
                     <span class="sales-badge sales-badge-secondary">* Wajib</span>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('agency.store') }}" method="POST">
+                <form action="{{ isset($employee) ? route('agency.update', $employee->id) : route('agency.store') }}" method="POST">
                         @csrf
+                        @if(isset($employee))
+                            @method('PUT')
+                        @endif
 
                         <!-- Alert -->
                         <div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4">
@@ -387,12 +390,12 @@ input, select, textarea, button {
                         </div>
 
                         <div class="sales-row">
-
                             <!-- Nama -->
                             <div class="sales-col-md-6">
                                 <div class="sales-form-group">
                                     <label>Nama Lengkap *</label>
-                                    <input type="text" name="name" class="sales-form-control" value="{{ old('name') }}" required>
+                                    <input type="text" name="name" class="sales-form-control"
+                                        value="{{ old('name', $employee->name ?? '') }}" required>
                                 </div>
                             </div>
 
@@ -400,20 +403,20 @@ input, select, textarea, button {
                             <div class="sales-col-md-6">
                                 <div class="sales-form-group">
                                     <label>Username *</label>
-                                    <input type="text" name="username" class="sales-form-control" value="{{ old('username') }}" required>
+                                    <input type="text" name="username" class="sales-form-control"
+                                        value="{{ old('username', $employee->username ?? '') }}" required>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="sales-row">
-
                             <!-- Password dengan Toggle -->
                             <div class="sales-col-md-6">
                                 <div class="sales-form-group">
-                                    <label>Password *</label>
+                                    <label>{{ isset($employee) ? 'Password Baru (opsional)' : 'Password *' }}</label>
                                     <div class="password-input-container">
-                                        <input type="password" name="password" id="password" class="sales-form-control" required>
+                                        <input type="password" name="password" id="password" class="sales-form-control"
+                                            {{ isset($employee) ? '' : 'required' }}>
                                         <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
                                             <i class="mdi mdi-eye"></i>
                                         </button>
@@ -425,10 +428,10 @@ input, select, textarea, button {
                             <div class="sales-col-md-6">
                                 <div class="sales-form-group">
                                     <label>Nomor HP *</label>
-                                    <input type="text" name="phone" class="sales-form-control" value="{{ old('phone') }}" required>
+                                    <input type="text" name="phone" class="sales-form-control"
+                                        value="{{ old('phone', $employee->phone ?? '') }}" required>
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- Role hidden (agency) -->
@@ -439,7 +442,7 @@ input, select, textarea, button {
                             <div class="sales-col-12">
                                 <div class="sales-form-group">
                                     <label>Alamat *</label>
-                                    <textarea name="address" class="sales-form-control" required>{{ old('address') }}</textarea>
+                                    <textarea name="address" class="sales-form-control" required>{{ old('address', $employee->address ?? '') }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -458,11 +461,10 @@ input, select, textarea, button {
                                 </button>
 
                                 <button type="submit" class="sales-btn sales-btn-primary">
-                                    Simpan Sales
+                                    {{ isset($employee) ? 'Update Sales' : 'Simpan Sales' }}
                                 </button>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>

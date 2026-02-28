@@ -198,13 +198,35 @@
         </a>
     </li>
 
-    <!-- MENU SALES / AGENT -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('agency') }}">
-            <span class="menu-title">Sales / Agent</span>
-            <i class="mdi mdi-account-tie menu-icon"></i>
-        </a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse"
+                href="#salesAgent"
+                aria-expanded="false"
+                aria-controls="salesAgent">
+
+                <span class="menu-title">Sales / Agent</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-account-tie menu-icon"></i>
+            </a>
+
+            <div class="collapse" id="salesAgent">
+                <ul class="nav flex-column sub-menu">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('agency.create') }}">
+                            Buat Agent / Sales
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('agency.index') }}">
+                            Data Agent / Sales
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </li>
 
     <!-- MENU LAPORAN -->
     <li class="nav-item">
