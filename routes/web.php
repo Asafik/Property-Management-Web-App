@@ -229,6 +229,11 @@ Route::get('/lokasi-data', [LokasiController::class, 'lokasiData']); // Untuk JS
 
 Route::get('/dashboard-promo', [PromoController::class, 'index'])->name('promo.index');
 Route::post('/dashboard-promo/store', [PromoController::class, 'store'])->name('promo.store');
+Route::get('/dashboard-promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
+Route::put('/dashboard-promo/{id}', [PromoController::class, 'update'])->name('promo.update');
+Route::delete('/dashboard-promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
+Route::get('/dashboard-promo/{id}', [PromoController::class, 'show'])->name('promo.show');
+Route::get('/dashboard-promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
 
 // Route::get('/dashboard-promo', function () {
 //     return view('promo.promo');

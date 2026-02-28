@@ -542,6 +542,29 @@
         .mdi {
             vertical-align: middle;
         }
+
+        /* Empty State Styling */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #d0d4db;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h5 {
+            color: #6c7383;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #a5b3cb;
+            margin-bottom: 1.5rem;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -595,7 +618,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section -->
+                        <!-- Filter Section - HANYA TAMPIL JIKA ADA DATA -->
+                        @if($promo->count() > 0)
                         <div class="filter-card">
                             <div class="card-body">
                                 <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -696,6 +720,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
 
                         <!-- Tabel Promo -->
                         <div class="table-responsive">
@@ -713,7 +738,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($promo as $p)
+                                    @forelse ($promo as $p)
                                         <tr>
                                             <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                             <td>
@@ -741,25 +766,25 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach
-                                    @if ($promo->isEmpty())
+                                    @empty
                                         <tr>
-                                            <td colspan="9" class="text-center text-muted py-4">
+                                            <td colspan="8" class="text-center text-muted py-4">
                                                 <i class="mdi mdi-emoticon-sad-outline me-2"
                                                     style="font-size: 1.5rem;"></i>
                                                 Tidak ada data promo atau biaya tambahan yang tersedia.
                                             </td>
                                         </tr>
-                                    @endif
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Pagination UI -->
+                        <!-- Pagination UI - HANYA TAMPIL JIKA ADA DATA -->
+                        @if($promo->count() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1-10 dari {{ $promo->count() }} promo
+                                Menampilkan 1-{{ min(10, $promo->count()) }} dari {{ $promo->count() }} promo
                             </div>
                             <nav aria-label="Page navigation">
                                 <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
@@ -770,7 +795,12 @@
                                         </a>
                                     </li>
                                     <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    @if($promo->count() > 10)
                                     <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    @endif
+                                    @if($promo->count() > 20)
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    @endif
                                     <li class="page-item">
                                         <a class="page-link" href="#" aria-label="Next">
                                             <i class="mdi mdi-chevron-right"></i>
@@ -779,6 +809,7 @@
                                 </ul>
                             </nav>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -1036,25 +1067,28 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(document).ready(function() {
-                // Inisialisasi DataTables - hanya untuk sorting
-                let table = $('#tablePromo').DataTable({
-                    responsive: true,
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    ordering: true,
-                    language: {
-                        emptyTable: "Data promo belum tersedia",
-                        zeroRecords: "Data tidak ditemukan",
-                    },
-                    columnDefs: [{
-                        orderable: false,
-                        targets: [7]
-                    }]
-                });
+                // Cek apakah ada data promo
+                var hasData = {{ $promo->count() > 0 ? 'true' : 'false' }};
 
-               
+                // HANYA inisialisasi DataTables jika ada data
+                if (hasData) {
+                    $('#tablePromo').DataTable({
+                        responsive: true,
+                        paging: false,
+                        info: false,
+                        searching: false,
+                        lengthChange: false,
+                        ordering: true,
+                        language: {
+                            emptyTable: "Data promo belum tersedia",
+                            zeroRecords: "Data tidak ditemukan",
+                        },
+                        columnDefs: [{
+                            orderable: false,
+                            targets: [7]
+                        }]
+                    });
+                }
 
                 // Format Rupiah untuk input nilai jika tipe nominal
                 $('#tipePromo').change(function() {
@@ -1120,15 +1154,15 @@
             });
         </script>
         <script>
-document.getElementById('berlaku').addEventListener('change', function() {
-    let periodeContainer = document.getElementById('periodeContainer');
+            document.getElementById('berlaku').addEventListener('change', function() {
+                let periodeContainer = document.getElementById('periodeContainer');
 
-    if (this.value === 'periode') {
-        periodeContainer.style.display = 'flex';
-    } else {
-        periodeContainer.style.display = 'none';
-    }
-});
-</script>
+                if (this.value === 'periode') {
+                    periodeContainer.style.display = 'flex';
+                } else {
+                    periodeContainer.style.display = 'none';
+                }
+            });
+        </script>
     @endpush
 @endsection
