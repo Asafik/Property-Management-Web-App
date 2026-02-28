@@ -63,8 +63,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
 Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
 
-Route::get('/marketing/create-customer', [CustomerController::class, 'index'])->name('marketing.tambah_customer');
-Route::post('/marketing/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
+
 Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])->name('set.customer');
 Route::get('/marketing/jual-unit/export/excel', [SellUnitController::class, 'exportExcel'])
     ->name('marketing.jual-unit.export.excel');
@@ -260,12 +259,19 @@ Route::get('/dashboard-pengaturan', function () {
     return view('setting.setting');
 });
 
+Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
+Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
+
 Route::get('/dashboard-customer', function () {
     return view('customer.customer');
 });
 
 Route::get('/dashboard-tamu', function () {
     return view('customer.tamu');
+});
+
+Route::get('/dashboard-customer-profil-cash', function () {
+    return view('customer.customer_profil_cash');
 });
 
 
