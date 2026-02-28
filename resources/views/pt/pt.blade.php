@@ -3,541 +3,7 @@
 @section('title', 'Master Data PT - Property Management App')
 
 @section('content')
-    <style>
-        /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN BANK ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            min-height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        /* Outline Buttons */
-        .btn-outline-warning {
-            background: transparent;
-            border: 1px solid #ffc107;
-            color: #ffc107;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #dc3545;
-            color: #dc3545;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        /* Badge Styling */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        .badge-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.7rem;
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-        }
-
-        .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-        }
-
-        .badge-gradient-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* ===== PAGINATION STYLING ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* ===== MODAL STYLING ===== */
-        .modal-content {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .modal-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #9a55ff;
-        }
-
-        .modal-body {
-            padding: 1.2rem;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 0 0 16px 16px;
-        }
-
-        .modal-form-group {
-            margin-bottom: 1rem;
-        }
-
-        .modal-form-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-            display: block;
-        }
-
-        .modal-form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            width: 100%;
-        }
-
-        .modal-form-control:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                min-height: 38px;
-            }
-        }
-
-        /* DataTables Custom Styling */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            cursor: pointer;
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-    </style>
+<link rel="stylesheet" href="{{ asset('assets/css/pt/pt.css') }}">
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Dashboard -->
@@ -735,7 +201,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="mdi mdi-domain"></i> Daftar Project 
+                    <i class="mdi mdi-domain"></i> Daftar Project
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -916,13 +382,11 @@
     </div>
 
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-
                 document.querySelectorAll('.btnDelete').forEach(button => {
-
                     button.addEventListener('click', function() {
-
                         let form = this.closest('.formDelete');
                         let companyName = this.getAttribute('data-name');
 
@@ -940,11 +404,8 @@
                                 form.submit();
                             }
                         });
-
                     });
-
                 });
-
             });
         </script>
         <script>
@@ -971,13 +432,9 @@
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-
                 const editButtons = document.querySelectorAll('.btnEdit');
-
                 editButtons.forEach(button => {
-
                     button.addEventListener('click', function() {
-
                         let id = this.getAttribute('data-id');
                         let name = this.getAttribute('data-name');
                         let address = this.getAttribute('data-address');
@@ -991,17 +448,18 @@
                         document.getElementById('formEditPT').action =
                             `/dashboard-pt/${id}`;
                     });
-
                 });
-
             });
         </script>
+
         @if (session('success'))
             <script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: "{{ session('success') }}",
+                    timer: 2000,
+                    showConfirmButton: false
                 });
             </script>
         @endif
@@ -1012,80 +470,82 @@
                     icon: 'error',
                     title: 'Oops...',
                     text: "{{ session('error') }}",
+                    timer: 2000,
+                    showConfirmButton: false
                 });
             </script>
         @endif
+
         <script>
-$(document).on('click', '.project-badge', function() {
-    let companyId = $(this).data('id');
+            $(document).on('click', '.project-badge', function() {
+                let companyId = $(this).data('id');
 
-    // Tampilkan modal dan spinner
-    $('#modalProjects').modal('show');
-    $('#projectContent').html(`
-        <div class="text-center py-4">
-            <div class="spinner-border text-primary" role="status"></div>
-        </div>
-    `);
+                // Tampilkan modal dan spinner
+                $('#modalProjects').modal('show');
+                $('#projectContent').html(`
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                `);
 
-    // Fungsi untuk escape HTML agar aman dari XSS
-    function escapeHtml(text) {
-        return $('<div>').text(text).html();
-    }
-
-    // Ambil data project
-    $.get('/company/' + companyId + '/projects', function(response) {
-
-        let html = '';
-
-        // Tampilkan nama PT
-        if(response.name) {
-            html += `<h5 class="mb-3">${escapeHtml(response.name)}</h5>`;
-        }
-
-        if (!response.land_banks || response.land_banks.length === 0) {
-            html += `<div class="alert alert-warning">Tidak ada project</div>`;
-        } else {
-            response.land_banks.forEach(function(project) {
-                html += `
-                    <div class="card mb-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <strong>${escapeHtml(project.name)}</strong>
-                            <span class="badge bg-info">${project.units.length} Unit</span>
-                        </div>
-                        <div class="card-body">
-                `;
-
-                if (project.units && project.units.length > 0) {
-                    html += `<ul class="list-group">`;
-                    project.units.forEach(function(unit) {
-                        html += `
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${escapeHtml(unit.unit_name)}</strong><br>
-                                    <small class="text-muted">
-                                        Code: ${escapeHtml(unit.unit_code)} |
-                                        Type: ${escapeHtml(unit.type)} |
-                                        Progress: ${escapeHtml(unit.construction_progress)}
-                                    </small>
-                                </div>
-                            </li>
-                        `;
-                    });
-                    html += `</ul>`;
-                } else {
-                    html += `<small class="text-muted">Belum ada unit</small>`;
+                // Fungsi untuk escape HTML agar aman dari XSS
+                function escapeHtml(text) {
+                    return $('<div>').text(text).html();
                 }
 
-                html += `</div></div>`;
-            });
-        }
+                // Ambil data project
+                $.get('/company/' + companyId + '/projects', function(response) {
+                    let html = '';
 
-        $('#projectContent').html(html);
-    })
-    .fail(function() {
-        $('#projectContent').html('<div class="alert alert-danger">Gagal memuat data project.</div>');
-    });
-});
-</script>
+                    // Tampilkan nama PT
+                    if(response.name) {
+                        html += `<h5 class="mb-3">${escapeHtml(response.name)}</h5>`;
+                    }
+
+                    if (!response.land_banks || response.land_banks.length === 0) {
+                        html += `<div class="alert alert-warning">Tidak ada project</div>`;
+                    } else {
+                        response.land_banks.forEach(function(project) {
+                            html += `
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <strong>${escapeHtml(project.name)}</strong>
+                                        <span class="badge bg-info">${project.units.length} Unit</span>
+                                    </div>
+                                    <div class="card-body">
+                            `;
+
+                            if (project.units && project.units.length > 0) {
+                                html += `<ul class="list-group">`;
+                                project.units.forEach(function(unit) {
+                                    html += `
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>${escapeHtml(unit.unit_name)}</strong><br>
+                                                <small class="text-muted">
+                                                    Code: ${escapeHtml(unit.unit_code)} |
+                                                    Type: ${escapeHtml(unit.type)} |
+                                                    Progress: ${escapeHtml(unit.construction_progress)}
+                                                </small>
+                                            </div>
+                                        </li>
+                                    `;
+                                });
+                                html += `</ul>`;
+                            } else {
+                                html += `<small class="text-muted">Belum ada unit</small>`;
+                            }
+
+                            html += `</div></div>`;
+                        });
+                    }
+
+                    $('#projectContent').html(html);
+                })
+                .fail(function() {
+                    $('#projectContent').html('<div class="alert alert-danger">Gagal memuat data project.</div>');
+                });
+            });
+        </script>
     @endpush
 @endsection

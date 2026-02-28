@@ -8,52 +8,37 @@ use Carbon\Carbon;
 
 class PromoController extends Controller
 {
-    //
     public function index()
     {
-
         $promo = Promo::all();
         return view('promo.promo', compact('promo'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'description' => 'required',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'validity_period' => 'required|in:selalu,periode',
-            'type' => 'required',
-            'category' => 'required',
-            'status' => 'required',
-            'value' => 'required',
+            'type' => 'required|in:persen,nominal',
+            'category' => 'required|in:promo,biaya,fasilitas',
+            'status' => 'required|in:aktif,tidak_aktif',
+            'value' => 'required|string',
             'start_date' => 'nullable|required_if:validity_period,periode|date',
             'end_date' => 'nullable|required_if:validity_period,periode|date|after_or_equal:start_date',
         ]);
 
+        $value = $request->value;
+        if ($request->type === 'nominal') {
+            $value = str_replace('.', '', $value);
+        }
+
         $durationDays = null;
 
         if ($request->validity_period === 'periode') {
-
             $start = Carbon::parse($request->start_date);
             $end   = Carbon::parse($request->end_date);
-
-            // +1 supaya tanggal mulai ikut dihitung
             $durationDays = $start->diffInDays($end) + 1;
-        }
-
-        $valuePercent = null;
-        $valueNominal = null;
-        $valueText    = null;
-
-        if ($request->type === 'persen') {
-            $valuePercent = $request->value;
-        }
-
-        if ($request->type === 'nominal') {
-            $valueNominal = str_replace('.', '', $request->value);
-        }
-
-        if ($request->type === 'bonus') {
-            $valueText = $request->value;
         }
 
         Promo::create([
@@ -65,12 +50,108 @@ class PromoController extends Controller
             'duration_days' => $durationDays,
             'type' => $request->type,
             'category' => $request->category,
-            'value_percent' => $valuePercent,
-            'value_nominal' => $valueNominal,
-            'value_text' => $valueText,
+            'value' => $value,
             'status' => $request->status
         ]);
 
         return redirect()->back()->with('success', 'Promo berhasil ditambahkan');
+    }
+
+    public function show($id)
+    {
+        $promo = Promo::findOrFail($id);
+        return response()->json($promo);
+    }
+
+    public function edit($id)
+    {
+        $promo = Promo::findOrFail($id);
+        return response()->json($promo);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'validity_period' => 'required|in:selalu,periode',
+            'type' => 'required|in:persen,nominal',
+            'category' => 'required|in:promo,biaya,fasilitas',
+            'status' => 'required|in:aktif,tidak_aktif',
+            'value' => 'required|string',
+            'start_date' => 'nullable|required_if:validity_period,periode|date',
+            'end_date' => 'nullable|required_if:validity_period,periode|date|after_or_equal:start_date',
+        ]);
+
+        $promo = Promo::findOrFail($id);
+
+        $value = $request->value;
+        if ($request->type === 'nominal') {
+            $value = str_replace('.', '', $value);
+        }
+
+        $durationDays = null;
+
+        if ($request->validity_period === 'periode') {
+            $start = Carbon::parse($request->start_date);
+            $end   = Carbon::parse($request->end_date);
+            $durationDays = $start->diffInDays($end) + 1;
+        }
+
+        $promo->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'validity_period' => $request->validity_period,
+            'start_date' => $request->validity_period === 'periode' ? $request->start_date : null,
+            'end_date' => $request->validity_period === 'periode' ? $request->end_date : null,
+            'duration_days' => $durationDays,
+            'type' => $request->type,
+            'category' => $request->category,
+            'value' => $value,
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success', 'Promo berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $promo = Promo::findOrFail($id);
+            $promo->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Promo berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus promo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getPromo($id)
+    {
+        try {
+            $promo = Promo::findOrFail($id);
+
+            if ($promo->type === 'nominal') {
+                $promo->value_formatted = number_format($promo->value, 0, ',', '.');
+            } else {
+                $promo->value_formatted = $promo->value;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $promo
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data promo tidak ditemukan'
+            ], 404);
+        }
     }
 }

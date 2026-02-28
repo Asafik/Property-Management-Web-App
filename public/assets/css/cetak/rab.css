@@ -1,0 +1,707 @@
+  /* ===== MODERN FORM STYLING UNTUK RAB ===== */
+        .rab-form-group {
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .rab-form-group {
+                margin-bottom: 1.2rem;
+            }
+        }
+
+        .rab-form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #9a55ff !important;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.3px;
+            font-family: 'Nunito', sans-serif;
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .rab-form-group label {
+                font-size: 0.85rem;
+                margin-bottom: 0.4rem;
+            }
+        }
+
+        .rab-form-control {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.5rem 0.6rem;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+            color: #2c2e3f;
+            width: 100%;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        @media (min-width: 576px) {
+            .rab-form-control {
+                padding: 0.6rem 0.75rem;
+                font-size: 0.85rem;
+                border-radius: 10px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .rab-form-control {
+                padding: 0.7rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .rab-form-control:focus {
+            border-color: #9a55ff;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+            outline: none;
+        }
+
+        .rab-form-control[readonly] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        select.rab-form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 12px;
+            padding-right: 2rem;
+        }
+
+        .rab-form-control-sm {
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            line-height: 1.5;
+            border-radius: 6px;
+        }
+
+        @media (min-width: 576px) {
+            .rab-form-control-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+                border-radius: 8px;
+            }
+        }
+
+        /* ===== MODERN BUTTON STYLING UNTUK RAB ===== */
+        .rab-btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            display: inline-block;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        @media (min-width: 576px) {
+            .rab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+                border-radius: 8px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .rab-btn {
+                padding: 0.56rem 1.5rem;
+                font-size: 0.85rem;
+                border-radius: 10px;
+            }
+        }
+
+        .rab-btn-sm {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.65rem;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .rab-btn-sm {
+                padding: 0.25rem 0.75rem;
+                font-size: 0.7rem;
+                border-radius: 6px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .rab-btn-sm {
+                padding: 0.3rem 0.9rem;
+                font-size: 0.75rem;
+                border-radius: 8px;
+            }
+        }
+
+        .rab-btn-primary {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        }
+
+        .rab-btn-primary:hover {
+            background: linear-gradient(to right, #c77cff, #8a45e6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+            color: white;
+        }
+
+        .rab-btn-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .rab-btn-success:hover {
+            background: linear-gradient(135deg, #218838, #4cae4c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+        .rab-btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .rab-btn-warning:hover {
+            background: linear-gradient(135deg, #e0a800, #ffcd39);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+            color: #2c2e3f;
+        }
+
+        .rab-btn-light {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            color: #2c2e3f;
+        }
+
+        .rab-btn-light:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .rab-btn-outline-danger {
+            background: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .rab-btn-outline-danger:hover {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: #ffffff;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        /* ===== FILE UPLOAD MODERN STYLING (DARI HALAMAN CASH) ===== */
+        .file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.3rem 0.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 32px;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-label {
+                padding: 0.4rem 0.6rem;
+                gap: 6px;
+                min-height: 36px;
+            }
+        }
+
+        .file-upload-modern:hover .file-upload-label {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .file-upload-label i {
+            font-size: 1rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 4px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .file-upload-info {
+            flex: 1;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .file-upload-info span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-info span {
+                font-size: 0.7rem;
+            }
+        }
+
+        .file-upload-info small {
+            color: #6c7383;
+            font-size: 0.55rem;
+            display: block;
+        }
+
+        .file-upload-size {
+            font-size: 0.55rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .file-upload-size {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+        }
+
+        .file-upload-label.file-selected {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+        }
+
+        .file-upload-label.file-selected i {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Preview file button dengan teks */
+        .file-preview-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: white;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .file-preview-btn {
+                padding: 0.3rem 1rem;
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+        }
+
+        .file-preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .file-preview-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* ===== TABLE COLUMN WIDTH ADJUSTMENTS ===== */
+        .table thead th:nth-child(1) { width: 4%; }  /* No */
+        .table thead th:nth-child(2) { width: 18%; } /* Uraian (diperkecil) */
+        .table thead th:nth-child(3) { width: 6%; }  /* Volume */
+        .table thead th:nth-child(4) { width: 6%; }  /* Satuan */
+        .table thead th:nth-child(5) { width: 10%; } /* Harga */
+        .table thead th:nth-child(6) { width: 10%; } /* Total */
+        .table thead th:nth-child(7) { width: 15%; } /* Keterangan */
+        .table thead th:nth-child(8) { width: 18%; } /* Dokumentasi (diperbesar) */
+        .table thead th:nth-child(9) { width: 8%; }  /* Aksi */
+
+        .table tbody td:nth-child(1) { text-align: center; }
+        .table tbody td:nth-child(5) { text-align: right; }
+        .table tbody td:nth-child(6) { text-align: right; }
+
+        /* Input di dalam tabel */
+        .table input[type="text"],
+        .table input[type="number"],
+        .table select {
+            width: 100%;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.7rem;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .table input[type="text"],
+            .table input[type="number"],
+            .table select {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .table input:focus {
+            border-color: #9a55ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.1);
+        }
+
+        /* Text colors */
+        .rab-text-muted {
+            color: #a5b3cb !important;
+            font-size: 0.65rem;
+            display: block;
+            margin-top: 0.15rem;
+        }
+
+        @media (min-width: 576px) {
+            .rab-text-muted {
+                font-size: 0.7rem;
+                margin-top: 0.2rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .rab-text-muted {
+                font-size: 0.75rem;
+                margin-top: 0.25rem;
+            }
+        }
+
+        /* ===== CARD STYLING ===== */
+        .card {
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+        }
+
+        .card-header {
+            padding: 0.6rem 0.75rem;
+        }
+
+        @media (min-width: 576px) {
+            .card-header {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-header {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        .card-header.bg-secondary {
+            background: linear-gradient(135deg, #6c757d, #939ba3) !important;
+        }
+
+        .card-header.bg-secondary h5 {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 576px) {
+            .card-header.bg-secondary h5 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-header.bg-secondary h5 {
+                font-size: 1.1rem;
+            }
+        }
+
+        .card-body {
+            padding: 0.75rem;
+        }
+
+        @media (min-width: 576px) {
+            .card-body {
+                padding: 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-body {
+                padding: 1.2rem;
+            }
+        }
+
+        /* ===== STYLING UNTUK RINGKASAN RAB - YANG DIPERBAIKI ===== */
+        .ringkasan-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .ringkasan-label {
+            font-size: 0.9rem;
+            color: #6c7383;
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .ringkasan-label.fw-bold {
+            color: #2c2e3f;
+            font-weight: 700;
+        }
+
+        .ringkasan-input {
+            width: 60%;
+        }
+
+        .ringkasan-input .rab-form-control {
+            height: 42px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+        }
+
+        .ringkasan-input .rab-form-control.text-primary {
+            color: #9a55ff !important;
+            border-color: #9a55ff;
+            background-color: #f9f7ff;
+        }
+
+        .ringkasan-divider {
+            margin: 15px 0;
+            border-top: 1px dashed #e9ecef;
+        }
+
+        /* Tombol aksi - tetap di dalam card */
+        .aksi-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .aksi-btn {
+            flex: 1;
+            min-width: 120px;
+            height: 45px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .aksi-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ringkasan-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .ringkasan-label {
+                min-width: auto;
+            }
+
+            .ringkasan-input {
+                width: 100%;
+            }
+
+            .aksi-buttons {
+                flex-direction: column;
+            }
+
+            .aksi-btn {
+                width: 100%;
+            }
+        }
+
+        /* Table styling */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .table {
+            min-width: 1000px;
+            width: 100%;
+        }
+
+        @media (min-width: 1200px) {
+            .table {
+                min-width: 100%;
+            }
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            padding: 0.5rem 0.25rem;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .table thead th {
+                font-size: 0.7rem;
+                padding: 0.6rem 0.4rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table thead th {
+                font-size: 0.8rem;
+                padding: 0.75rem;
+            }
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.7rem;
+            padding: 0.5rem 0.25rem;
+        }
+
+        @media (min-width: 576px) {
+            .table tbody td {
+                font-size: 0.75rem;
+                padding: 0.6rem 0.4rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table tbody td {
+                font-size: 0.85rem;
+                padding: 0.75rem;
+            }
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Table bordered */
+        .table-bordered {
+            border: 1px solid #e9ecef;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #e9ecef;
+        }
+
+        /* Table primary */
+        .table-primary {
+            background: linear-gradient(135deg, #f6f9ff, #f0f4ff) !important;
+            color: #2c2e3f;
+        }
+
+        .table-primary th {
+            color: #9a55ff;
+        }
+
+        /* Input readonly styling */
+        input[readonly].form-control,
+        input[readonly].rab-form-control {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        /* Card shadow */
+        .shadow-sm {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
+        }
+
+        /* Typography */
+        h3.text-dark {
+            font-size: 1.1rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        @media (min-width: 576px) {
+            h3.text-dark {
+                font-size: 1.2rem !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            h3.text-dark {
+                font-size: 1.3rem !important;
+            }
+        }
+
+        @media (min-width: 992px) {
+            h3.text-dark {
+                font-size: 1.5rem !important;
+            }
+        }
+
+        /* Text end input */
+        .text-end input {
+            text-align: right;
+        }
+
+        /* Icon styling */
+        .mdi {
+            vertical-align: middle;
+        }

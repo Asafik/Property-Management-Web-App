@@ -212,8 +212,13 @@ Route::get(
 
 Route::get('/dashboard-cash-pengajuan', [CashController::class, 'index'])->name('marketing.cash_pengajuan');
 
+
+//bank
 Route::get('/master-data-bank', [BankController::class, 'index'])->name('bank.index');
 Route::post('/master-data-bank/store', [BankController::class, 'store'])->name('bank.store');
+Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
+Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
+Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
 
 Route::get('/dashboard-akad-cash', function () {
     return view('marketing.akad_cash');
@@ -229,10 +234,14 @@ Route::get('/dashboard-cash-dokument-legal', function () {
 // });
 Route::get('/dashboard-lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
 Route::get('/lokasi-data', [LokasiController::class, 'lokasiData']); // Untuk JSON
-
+//promo
 Route::get('/dashboard-promo', [PromoController::class, 'index'])->name('promo.index');
 Route::post('/dashboard-promo/store', [PromoController::class, 'store'])->name('promo.store');
-
+Route::get('/dashboard-promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
+Route::put('/dashboard-promo/{id}', [PromoController::class, 'update'])->name('promo.update');
+Route::delete('/dashboard-promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
+Route::get('/dashboard-promo/{id}', [PromoController::class, 'show'])->name('promo.show');
+Route::get('/dashboard-promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
 // Route::get('/dashboard-promo', function () {
 //     return view('promo.promo');
 // });
@@ -253,8 +262,18 @@ Route::get('/dashboard-servis', function () {
 // Route::get('/dashboard-dokument', function () {
 //     return view('dokument.dokument');
 // });
-Route::get('/dashboard-dokument', [LandBankDocumentController::class, 'index'])->name('dokument.index');
-Route::post('/dashboard-dokument/store', [LandBankDocumentController::class, 'store'])->name('document-types.store');
+Route::get('/dashboard-dokument', [LandBankDocumentController::class, 'index'])
+    ->name('dokument.index');
+Route::post('/dashboard-dokument/store', [LandBankDocumentController::class, 'store'])
+    ->name('document-types.store');
+Route::get('/dashboard-dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])
+    ->name('document-types.edit');
+Route::put('/dashboard-dokument/{id}/update', [LandBankDocumentController::class, 'update'])
+    ->name('document-types.update');
+Route::delete('/dashboard-dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])
+    ->name('document-types.destroy');
+
+
 
 
 Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
