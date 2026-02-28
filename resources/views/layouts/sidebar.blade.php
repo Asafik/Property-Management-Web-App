@@ -119,7 +119,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard-tamu">
+                    <a class="nav-link" href="{{ route('customer.tamu') }}">
                         Tamu / Prospek
                     </a>
                 </li>
