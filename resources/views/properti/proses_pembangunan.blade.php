@@ -212,7 +212,7 @@
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
-        /* ===== FILE UPLOAD MODERN STYLING ===== */
+        /* ===== FILE UPLOAD MODERN STYLING (DARI HALAMAN CASH) ===== */
         .file-upload-modern {
             position: relative;
             width: 100%;
@@ -356,14 +356,6 @@
 
         .file-preview-btn i {
             font-size: 0.9rem;
-        }
-
-        /* Dokumen container */
-        .dokumen-container {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            width: 100%;
         }
 
         /* ===== TABLE COLUMN WIDTH ADJUSTMENTS ===== */
@@ -799,18 +791,25 @@
                                                         <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
                                                         <td>{{ $item->keterangan }}</td>
                                                         <td>
-                                                            @foreach ($item->documents as $doc)
-                                                                <a href="{{ asset('storage/' . $doc->file_path) }}"
-                                                                    target="_blank"
-                                                                    class="btn btn-success btn-sm w-100 mt-1">
-                                                                    <i class="mdi mdi-eye me-1"></i>Lihat File
-                                                                </a>
-                                                            @endforeach
+                                                            @php
+                                                                $documents = $item->documents;
+                                                            @endphp
+                                                            @if ($documents->count() > 0)
+                                                                @foreach ($documents as $doc)
+                                                                    <a href="{{ asset('storage/' . $doc->file_path) }}"
+                                                                        target="_blank"
+                                                                        class="file-preview-btn">
+                                                                        <i class="mdi mdi-eye"></i>
+                                                                        <span>Lihat</span>
+                                                                    </a>
+                                                                @endforeach
+                                                            @else
+                                                                <span class="text-muted">-</span>
+                                                            @endif
                                                         </td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})"
-                                                                title="Hapus">
+                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})" title="Hapus">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </button>
                                                         </td>
@@ -826,18 +825,16 @@
                                         <tfoot class="bg-light">
                                             <tr>
                                                 <th colspan="6" class="text-end">SUB TOTAL {{ strtoupper($key) }}</th>
-                                                <th><input type="text" id="subtotal-{{ $key }}"
-                                                        class="rab-form-control rab-form-control-sm text-end fw-bold"
-                                                        readonly></th>
-                                                <th colspan="2"></th>
-
+                                                <th colspan="3">
+                                                    <input type="text" id="subtotal-{{ $key }}"
+                                                        class="rab-form-control rab-form-control-sm text-end fw-bold" readonly>
+                                                </th>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             @endforeach
@@ -900,37 +897,38 @@
 
                             <hr>
 
-
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="fw-bold">TOTAL FINAL</span>
+                                <input type="text" class="rab-form-control text-end fw-bold text-primary"
+                                    value="Rp {{ number_format($finalPrice, 0, ',', '.') }}" readonly>
+                            </div>
 
                             {{-- Tombol aksi --}}
                             <div class="d-flex flex-wrap gap-2">
-                                {{-- Simpan --}}
                                 <button type="submit" class="rab-btn rab-btn-success flex-grow-1">
                                     <i class="mdi mdi-content-save me-1"></i>Simpan
                                 </button>
 
-                                {{-- Cetak RAB --}}
-                                <a href="{{ route('cetak.rab', $unit->id) }}" target="_blank"
+                                <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
                                     class="rab-btn rab-btn-primary flex-grow-1">
                                     <i class="mdi mdi-printer me-1"></i>Cetak RAB
                                 </a>
 
-                                {{-- ACC RAB --}}
                                 <button type="button" class="rab-btn rab-btn-warning flex-grow-1 acc-btn"
-                                    data-id="{{ $unit->id }}">
+                                    data-id="{{ $selectedUnit->id }}">
                                     <i class="mdi mdi-check me-1"></i>ACC RAB
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </form>
     </div>
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('unitSelect');
@@ -970,137 +968,147 @@
             let config = kategoriMap[kategori];
             let tbody = document.getElementById(config.body);
 
+            // Hapus row "Belum ada data" jika ada
+            if (tbody.querySelector('tr td[colspan="9"]')) {
+                tbody.innerHTML = '';
+            }
+
             let nomor = tbody.querySelectorAll("tr").length + 1;
             let kode = config.prefix + "." + nomor;
 
             let row = `
-
-        <tr>
-            <td class="text-center">${kode}</td>
-
-            <td>
-                <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
-                <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
-                <input type="text" name="items[${indexItem}][uraian]" 
-                       class="form-control form-control-sm" required>
-            </td>
-
-            <td>
-                <input type="number" step="0.01"
-                       name="items[${indexItem}][volume]" 
-                       class="form-control form-control-sm volume" required>
-            </td>
-
-            <td>
-                <input type="text"
-                       name="items[${indexItem}][satuan]" 
-                       class="form-control form-control-sm" required>
-            </td>
-
-            <td>
-                <input type="number" step="0.01"
-                       name="items[${indexItem}][harga_satuan]" 
-                       class="form-control form-control-sm harga-satuan" required>
-            </td>
-
-            <td class="text-end">
-                <input type="text"
-                       name="items[${indexItem}][total]" 
-                       class="form-control form-control-sm text-end total-item"
-                       readonly>
-            </td>
-
-            <td>
-                <input type="text"
-                       name="items[${indexItem}][keterangan]" 
-                       class="form-control form-control-sm">
-            </td>
-
-            <td>
-                <input type="file"
-                       name="items[${indexItem}][dokumentasi]"
-                       class="form-control form-control-sm"
-                       accept="image/*,.pdf">
-            </td>
-
-           <td class="text-center">
-        <button type="button"
-                class="btn btn-outline-danger btn-sm"
-                onclick="hapusItem(this, '${kategori}')"
-                title="Hapus">
-            <i class="mdi mdi-delete"></i>
-        </button>
-    </td>
-        </tr>
-        `;
+                <tr>
+                    <td class="text-center">${kode}</td>
+                    <td>
+                        <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
+                        <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
+                        <input type="text" name="items[${indexItem}][uraian]"
+                               class="form-control form-control-sm" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01"
+                               name="items[${indexItem}][volume]"
+                               class="form-control form-control-sm volume" required>
+                    </td>
+                    <td>
+                        <input type="text"
+                               name="items[${indexItem}][satuan]"
+                               class="form-control form-control-sm" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01"
+                               name="items[${indexItem}][harga_satuan]"
+                               class="form-control form-control-sm harga-satuan" required>
+                    </td>
+                    <td class="text-end">
+                        <input type="text"
+                               name="items[${indexItem}][total]"
+                               class="form-control form-control-sm text-end total-item"
+                               readonly>
+                    </td>
+                    <td>
+                        <input type="text"
+                               name="items[${indexItem}][keterangan]"
+                               class="form-control form-control-sm">
+                    </td>
+                    <td>
+                        <div class="file-upload-modern">
+                            <input type="file"
+                                   name="items[${indexItem}][dokumentasi]"
+                                   id="file-${indexItem}"
+                                   class="file-upload-input"
+                                   accept="image/*,.pdf"
+                                   onchange="handleFileSelect(this, ${indexItem})">
+                            <div class="file-upload-label" id="label-${indexItem}">
+                                <i class="mdi mdi-cloud-upload"></i>
+                                <div class="file-upload-info">
+                                    <span id="fileName-${indexItem}">Pilih file</span>
+                                    <small>Max 2MB</small>
+                                </div>
+                                <span class="file-upload-size" id="fileSize-${indexItem}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-outline-danger btn-sm"
+                                onclick="hapusItem(this, '${kategori}')">
+                            <i class="mdi mdi-delete"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
 
             tbody.insertAdjacentHTML('beforeend', row);
             indexItem++;
             hitungSemua();
         }
-   function hapusItem(button, kategori, itemId = null) {
-    // SweetAlert konfirmasi
-    Swal.fire({
-        title: 'Yakin ingin menghapus item ini?',
-        text: "Data yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            if (itemId) {
-                // Row sudah tersimpan di DB → hapus via AJAX
-                $.ajax({
-                    url: '/properti/progress/item/' + itemId,
-                    type: 'DELETE',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $(button).closest('tr').remove(); // hapus row di tabel
-                            updateNomor(kategori);
-                            hitungSemua();
 
-                            // Notifikasi sukses SweetAlert
-                            Swal.fire(
-                                'Dihapus!',
-                                response.message,
-                                'success'
-                            );
-                        }
-                    },
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                        Swal.fire(
-                            'Error!',
-                            'Terjadi kesalahan saat menghapus item.',
-                            'error'
-                        );
-                    }
-                });
+        function handleFileSelect(input, index) {
+            const file = input.files[0];
+            const label = document.getElementById(`label-${index}`);
+            const fileNameSpan = document.getElementById(`fileName-${index}`);
+            const fileSizeSpan = document.getElementById(`fileSize-${index}`);
+
+            if (file) {
+                fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+
+                if (file.size < 1024 * 1024) {
+                    fileSizeSpan.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                } else {
+                    fileSizeSpan.textContent = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+                }
+
+                label.classList.add('file-selected');
             } else {
-                // Row baru, belum ada di DB → hapus langsung dari DOM
-                $(button).closest('tr').remove();
-
-                updateNomor(kategori);
-                hitungSemua();
-
-                Swal.fire(
-                    'Dihapus!',
-                    'Item baru berhasil dihapus dari tabel.',
-                    'success'
-                );
+                fileNameSpan.textContent = 'Pilih file';
+                fileSizeSpan.textContent = '';
+                label.classList.remove('file-selected');
             }
         }
-    });
-}
-        /* ============================= */
-        /* UPDATE NOMOR & KODE */
-        /* ============================= */
+
+        function hapusItem(button, kategori, itemId = null) {
+            Swal.fire({
+                title: 'Yakin ingin menghapus item ini?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (itemId) {
+                        // Row sudah tersimpan di DB → hapus via AJAX
+                        $.ajax({
+                            url: '/properti/progress/item/' + itemId,
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    $(button).closest('tr').remove();
+                                    updateNomor(kategori);
+                                    hitungSemua();
+                                    Swal.fire('Dihapus!', response.message, 'success');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'Terjadi kesalahan saat menghapus item.', 'error');
+                            }
+                        });
+                    } else {
+                        // Row baru, belum ada di DB → hapus langsung
+                        $(button).closest('tr').remove();
+                        updateNomor(kategori);
+                        hitungSemua();
+                        Swal.fire('Dihapus!', 'Item baru berhasil dihapus dari tabel.', 'success');
+                    }
+                }
+            });
+        }
 
         function updateNomor(kategori) {
             let config = kategoriMap[kategori];
@@ -1177,30 +1185,40 @@
         document.querySelectorAll('.acc-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 let unitId = this.dataset.id;
-                if (!confirm('Apakah yakin ACC RAB untuk unit ini?')) return;
 
-                fetch(`/properti/progress/acc-ajax/${unitId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            const progressText = document.querySelector(`#progress-text-${unitId}`);
-                            if (progressText) progressText.textContent = data.construction_progress;
-                        } else {
-                            alert('Gagal: ' + data.message);
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('Terjadi error pada request AJAX.');
-                    });
+                Swal.fire({
+                    title: 'ACC RAB',
+                    text: 'Apakah yakin ACC RAB untuk unit ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#9a55ff',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, ACC!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/properti/progress/acc-ajax/${unitId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Berhasil!', data.message, 'success');
+                                } else {
+                                    Swal.fire('Gagal!', data.message, 'error');
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                Swal.fire('Error!', 'Terjadi error pada request AJAX.', 'error');
+                            });
+                    }
+                });
             });
         });
     </script>

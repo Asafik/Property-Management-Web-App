@@ -35,9 +35,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('marketing.jual-unit') }}">Jual Unit</a>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('marketing.tambah_customer') }}">Tambah Customer</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('marketing.list_pengajuan') }}"> Customer Booking</a>
                     <li class="nav-item">
                     <li class="nav-item">
@@ -112,10 +109,12 @@
         </a>
         <div class="collapse" id="customer">
             <ul class="nav flex-column sub-menu">
-
+                  <li class="nav-item">
+                        <a class="nav-link" href="{{ route('customer.tambah_customer') }}">Tambah Customer</a>
+                    </li>
                 <li class="nav-item">
                     <a class="nav-link" href="dashboard-customer">
-                        Customer (Sudah Beli)
+                        Customer
                     </a>
                 </li>
 

@@ -15,7 +15,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customerId = $this->generateCustomerId();
-        return view('marketing.tambah_customer', compact('customerId'));
+        return view('customer.tambah_customer', compact('customerId'));
     }
 
 public function store(Request $request)
