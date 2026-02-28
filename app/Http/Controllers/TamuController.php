@@ -88,29 +88,18 @@ class TamuController extends Controller
 
         return back()->with('success', 'Follow up berhasil disimpan.');
     }
-    public function convert($id)
-    {
-        $guest = Guest::with(['project', 'unit'])->findOrFail($id);
+public function convert($id)
+{
+    $guest = Guest::findOrFail($id);
 
-        if ($guest->status === 'converted') {
-            return back()->with('error', 'Tamu sudah dikonversi.');
-        }
-
-        Customer::create([
-            'guest_id' => $guest->id,   // ✅ INI YANG KURANG
-            'full_name' => $guest->name,
-            'phone' => $guest->phone,
-            'email' => $guest->email,
-            'land_bank_id' => $guest->land_bank_id,
-            'unit_id' => $guest->unit_id,
-        ]);
-
-        $guest->update([
-            'status' => 'converted'
-        ]);
-
-        return back()->with('success', 'Tamu berhasil dikonversi menjadi customer.');
+    if ($guest->status === 'converted') {
+        return back()->with('error', 'Tamu sudah dikonversi.');
     }
+
+    return redirect()->route('customer.create', [
+        'guest_id' => $guest->id
+    ]);
+}
     public function update(Request $request, $id)
     {
         $request->validate([

@@ -283,7 +283,7 @@ Route::get('/dashboard-pengaturan', function () {
 
 Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
 Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
-
+Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
 Route::get('/dashboard-customer', function () {
     return view('customer.customer');
 });

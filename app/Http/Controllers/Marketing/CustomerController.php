@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\CustomerDocument;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Guest;
 
 class CustomerController extends Controller
 {
@@ -21,6 +22,7 @@ class CustomerController extends Controller
 public function store(Request $request)
 {
     $request->validate([
+        'guest_id' => 'nullable|exists:guests,id',
         'full_name' => 'required|string|max:255',
         'phone' => 'nullable|string|max:20',
         'email' => 'nullable|email',
@@ -35,6 +37,15 @@ public function store(Request $request)
     DB::beginTransaction();
 
     try {
+          // 🔎 Jika berasal dari convert guest
+        if ($request->guest_id) {
+
+            $guest = Guest::findOrFail($request->guest_id);
+
+            if ($guest->status === 'converted') {
+                return back()->with('error', 'Guest sudah dikonversi sebelumnya.');
+            }
+        }
 
         // 1️⃣ Simpan customer
         $customer = Customer::create([
@@ -120,7 +131,12 @@ public function store(Request $request)
                 ]);
             }
         }
-
+        // 3️⃣ Update Guest jika convert
+        if ($request->guest_id) {
+            $guest->update([
+                'status' => 'converted'
+            ]);
+        }
         DB::commit();
 
         return redirect()->back()->with('success', 'Customer berhasil disimpan');
@@ -171,5 +187,15 @@ public function search(Request $request)
 
     return response()->json($customers);
 }
+public function create(Request $request)
+{
+    $customerId = $this->generateCustomerId();
+    $guest = null;
 
+    if ($request->guest_id) {
+        $guest = Guest::find($request->guest_id);
+    }
+
+    return view('customer.tambah_customer', compact('customerId', 'guest'));
+}
 }
