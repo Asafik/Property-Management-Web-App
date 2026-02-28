@@ -31,4 +31,16 @@ class Promo extends Model
 
     return $value;
 }
+public function getFormattedValueAttribute()
+{
+    if ($this->value_percent) {
+        return $this->value_percent . '%';
+    }
+
+    if ($this->value_nominal) {
+        return 'Rp ' . number_format($this->value_nominal, 0, ',', '.');
+    }
+
+    return $this->value_text;
+}
 }
