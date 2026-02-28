@@ -3,570 +3,7 @@
 @section('title', 'Manajemen Promo - Property Management App')
 
 @section('content')
-    <style>
-        /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN BANK ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            min-height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        /* Outline Buttons */
-        .btn-outline-warning {
-            background: transparent;
-            border: 1px solid #ffc107;
-            color: #ffc107;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #dc3545;
-            color: #dc3545;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        /* Badge Styling */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        .badge-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.7rem;
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-        }
-
-        .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-        }
-
-        .badge-gradient-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-        }
-
-        .badge-gradient-secondary {
-            background: linear-gradient(135deg, #6c757d, #a5b3cb);
-            color: #ffffff;
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* ===== PAGINATION STYLING ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* ===== MODAL STYLING ===== */
-        .modal-content {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .modal-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #9a55ff;
-        }
-
-        .modal-body {
-            padding: 1.2rem;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1rem;
-            border-radius: 0 0 16px 16px;
-        }
-
-        .modal-form-group {
-            margin-bottom: 1rem;
-        }
-
-        .modal-form-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-            display: block;
-        }
-
-        .modal-form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            width: 100%;
-        }
-
-        .modal-form-control:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                min-height: 38px;
-            }
-        }
-
-        /* DataTables Custom Styling */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            cursor: pointer;
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-
-        /* Empty State Styling */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: #d0d4db;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h5 {
-            color: #6c7383;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state p {
-            color: #a5b3cb;
-            margin-bottom: 1.5rem;
-        }
-    </style>
-
+<link rel="stylesheet" href="{{ asset('assets/css/promo/promo.css') }}">
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Dashboard -->
         <div class="row mb-3 mb-sm-3 mb-md-4">
@@ -590,16 +27,6 @@
                 </div>
             </div>
         </div>
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <!-- Tabel Data Promo -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
@@ -632,7 +59,7 @@
                                         <label class="form-label">
                                             <i class="mdi mdi-magnify me-1"></i>Cari Promo
                                         </label>
-                                        <input type="text" class="form-control" placeholder="Cari nama promo...">
+                                        <input type="text" class="form-control" id="searchMobile" placeholder="Cari nama promo...">
                                     </div>
 
                                     <div class="row g-2">
@@ -640,7 +67,7 @@
                                             <label class="form-label">
                                                 <i class="mdi mdi-shape-outline me-1"></i>Kategori
                                             </label>
-                                            <select class="form-control">
+                                            <select class="form-control" id="kategoriMobile">
                                                 <option value="">Semua</option>
                                                 <option value="promo">Promo Diskon</option>
                                                 <option value="biaya">Biaya Tambahan</option>
@@ -651,7 +78,7 @@
                                             <label class="form-label">
                                                 <i class="mdi mdi-counter me-1"></i>Tampil
                                             </label>
-                                            <select class="form-control">
+                                            <select class="form-control" id="lengthMobile">
                                                 <option value="10">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
@@ -662,12 +89,12 @@
 
                                     <div class="row g-2 mt-2">
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-primary w-100">
+                                            <button type="button" class="btn btn-gradient-primary w-100" id="filterMobile">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-secondary w-100">
+                                            <button type="button" class="btn btn-gradient-secondary w-100" id="resetMobile">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </button>
                                         </div>
@@ -681,13 +108,13 @@
                                             <label class="form-label">
                                                 <i class="mdi mdi-magnify me-1"></i>Cari Promo
                                             </label>
-                                            <input type="text" class="form-control" placeholder="Cari nama promo...">
+                                            <input type="text" class="form-control" id="searchDesktop" placeholder="Cari nama promo...">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">
                                                 <i class="mdi mdi-shape-outline me-1"></i>Kategori
                                             </label>
-                                            <select class="form-control">
+                                            <select class="form-control" id="kategoriDesktop">
                                                 <option value="">Semua</option>
                                                 <option value="promo">Promo Diskon</option>
                                                 <option value="biaya">Biaya Tambahan</option>
@@ -698,7 +125,7 @@
                                             <label class="form-label">
                                                 <i class="mdi mdi-counter me-1"></i>Tampil
                                             </label>
-                                            <select class="form-control">
+                                            <select class="form-control" id="lengthDesktop">
                                                 <option value="10">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
@@ -706,13 +133,13 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2">
-                                            <button type="button" class="btn btn-gradient-primary w-100">
+                                            <button type="button" class="btn btn-gradient-primary w-100" id="filterDesktop">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-md-2">
                                             <button type="button" class="btn btn-gradient-secondary w-100 btn-icon-only"
-                                                title="Reset">
+                                                title="Reset" id="resetDesktop">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
                                         </div>
@@ -749,18 +176,37 @@
                                                 </div>
                                             </td>
                                             <td>{{ $p->category }}</td>
-                                            <td>{{ $p->type }}</td>
-                                            <td>{{ $p->value }}</td>
-                                            <td>{{ $p->duration_days }} hari</td>
-                                            <td><span class="badge badge-gradient-success"><i
-                                                        class="mdi mdi-check-circle me-1"></i>{{ $p->status }}</span>
+                                            <td>{{ $p->type == 'persen' ? 'Persentase' : 'Nominal' }}</td>
+                                            <td>
+                                                @if($p->type == 'persen')
+                                                    {{ $p->value }}%
+                                                @else
+                                                    Rp {{ number_format($p->value, 0, ',', '.') }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $p->duration_days ? $p->duration_days . ' hari' : 'Selalu' }}</td>
+                                            <td>
+                                                @if($p->status == 'aktif')
+                                                    <span class="badge badge-gradient-success">
+                                                        <i class="mdi mdi-check-circle me-1"></i>Aktif
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-gradient-secondary">
+                                                        <i class="mdi mdi-close-circle me-1"></i>Tidak Aktif
+                                                    </span>
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-1">
-                                                    <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                                    <button class="btn btn-outline-warning btn-sm btn-edit"
+                                                        title="Edit"
+                                                        data-id="{{ $p->id }}">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </button>
-                                                    <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                    <button class="btn btn-outline-danger btn-sm btn-delete"
+                                                        title="Hapus"
+                                                        data-id="{{ $p->id }}"
+                                                        data-name="{{ $p->name }}">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
                                                 </div>
@@ -840,28 +286,27 @@
                         <i class="mdi mdi-tag-plus me-2" style="color: #9a55ff;"></i>
                         Tambah Promo / Biaya Baru
                     </h5>
-                    <button type="button" class="btn-close" onclick="$('#modalTambahPromo').modal('hide')"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('promo.store') }}" method="POST">
+                    <form action="{{ route('promo.store') }}" method="POST" id="formTambahPromo">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-tag me-1"></i>Nama Promo
+                                        <i class="mdi mdi-tag me-1"></i>Nama Promo <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="name" class="modal-form-control"
+                                    <input type="text" name="name" class="modal-form-control" required
                                         placeholder="Contoh: Diskon Early Bird">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori <span class="text-danger">*</span>
                                     </label>
-                                    <select class="modal-form-control" name="category">
+                                    <select class="modal-form-control" name="category" required>
                                         <option value="promo">Promo Diskon</option>
                                         <option value="biaya">Biaya Tambahan</option>
                                         <option value="fasilitas">Fasilitas</option>
@@ -874,9 +319,9 @@
                             <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calculator me-1"></i>Tipe
+                                        <i class="mdi mdi-calculator me-1"></i>Tipe <span class="text-danger">*</span>
                                     </label>
-                                    <select class="modal-form-control" name="type" id="tipePromo">
+                                    <select class="modal-form-control" name="type" id="tipePromo" required>
                                         <option value="persen">Persentase (%)</option>
                                         <option value="nominal">Nominal (Rp)</option>
                                     </select>
@@ -885,18 +330,18 @@
                             <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-currency-usd me-1"></i>Nilai
+                                        <i class="mdi mdi-currency-usd me-1"></i>Nilai <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="value" class="modal-form-control" id="nilaiPromo"
+                                    <input type="text" name="value" class="modal-form-control" id="nilaiPromo" required
                                         placeholder="Contoh: 10 atau 500000">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calendar me-1"></i>Berlaku
+                                        <i class="mdi mdi-calendar me-1"></i>Berlaku <span class="text-danger">*</span>
                                     </label>
-                                    <select class="modal-form-control" name="validity_period" id="berlaku">
+                                    <select class="modal-form-control" name="validity_period" id="berlaku" required>
                                         <option value="selalu">Selalu</option>
                                         <option value="periode">Periode Tertentu</option>
                                     </select>
@@ -908,7 +353,7 @@
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calendar-start me-1"></i>Tanggal Mulai
+                                        <i class="mdi mdi-calendar-start me-1"></i>Tanggal Mulai <span class="text-danger">*</span>
                                     </label>
                                     <input type="date" name="start_date" class="modal-form-control">
                                 </div>
@@ -916,35 +361,39 @@
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calendar-end me-1"></i>Tanggal Berakhir
+                                        <i class="mdi mdi-calendar-end me-1"></i>Tanggal Berakhir <span class="text-danger">*</span>
                                     </label>
                                     <input type="date" name="end_date" class="modal-form-control">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar me-1"></i>Status
-                                </label>
-                                <select class="modal-form-control" name="status" id="statusPromo">
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak_aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-note-text me-1"></i>Keterangan
+                                        <i class="mdi mdi-flag me-1"></i>Status <span class="text-danger">*</span>
                                     </label>
-                                    <textarea name="description" class="modal-form-control" rows="3" placeholder="Deskripsi promo..."></textarea>
+                                    <select class="modal-form-control" name="status" required>
+                                        <option value="aktif">Aktif</option>
+                                        <option value="tidak_aktif">Tidak Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="modal-form-group">
+                                    <label>
+                                        <i class="mdi mdi-note-text me-1"></i>Keterangan <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea name="description" class="modal-form-control" rows="3" required placeholder="Deskripsi promo..."></textarea>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-gradient-primary">Simpan</button>
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-gradient-primary">Simpan</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -960,30 +409,29 @@
                         <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
                         Edit Promo
                     </h5>
-                    <button type="button" class="btn-close" onclick="$('#modalEditPromo').modal('hide')"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="#" method="POST">
+                    <form action="" method="POST" id="formEditPromo">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-tag me-1"></i>Nama Promo
+                                        <i class="mdi mdi-tag me-1"></i>Nama Promo <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="nama_promo" class="modal-form-control"
-                                        value="Diskon 10% Early Bird">
+                                    <input type="text" name="name" class="modal-form-control" id="editNama" required
+                                        placeholder="Contoh: Diskon Early Bird">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori <span class="text-danger">*</span>
                                     </label>
-                                    <select class="modal-form-control" name="kategori">
-                                        <option value="promo" selected>Promo Diskon</option>
+                                    <select class="modal-form-control" name="category" id="editKategori" required>
+                                        <option value="promo">Promo Diskon</option>
                                         <option value="biaya">Biaya Tambahan</option>
                                         <option value="fasilitas">Fasilitas</option>
                                     </select>
@@ -995,10 +443,10 @@
                             <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calculator me-1"></i>Tipe
+                                        <i class="mdi mdi-calculator me-1"></i>Tipe <span class="text-danger">*</span>
                                     </label>
-                                    <select class="modal-form-control" name="tipe">
-                                        <option value="persen" selected>Persentase (%)</option>
+                                    <select class="modal-form-control" name="type" id="editTipe" required>
+                                        <option value="persen">Persentase (%)</option>
                                         <option value="nominal">Nominal (Rp)</option>
                                     </select>
                                 </div>
@@ -1006,57 +454,70 @@
                             <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-currency-usd me-1"></i>Nilai
+                                        <i class="mdi mdi-currency-usd me-1"></i>Nilai <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="nilai" class="modal-form-control" value="10">
+                                    <input type="text" name="value" class="modal-form-control" id="editNilai" required
+                                        placeholder="Contoh: 10 atau 500000">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calendar me-1"></i>Berlaku
+                                        <i class="mdi mdi-calendar me-1"></i>Berlaku <span class="text-danger">*</span>
                                     </label>
-                                    <select class="modal-form-control" name="berlaku">
+                                    <select class="modal-form-control" name="validity_period" id="editBerlaku" required>
                                         <option value="selalu">Selalu</option>
-                                        <option value="periode" selected>Periode Tertentu</option>
+                                        <option value="periode">Periode Tertentu</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="editPeriodeContainer" style="display: none;">
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calendar-start me-1"></i>Tanggal Mulai
+                                        <i class="mdi mdi-calendar-start me-1"></i>Tanggal Mulai <span class="text-danger">*</span>
                                     </label>
-                                    <input type="date" name="tanggal_mulai" class="modal-form-control"
-                                        value="2026-03-01">
+                                    <input type="date" name="start_date" class="modal-form-control" id="editStart">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-calendar-end me-1"></i>Tanggal Berakhir
+                                        <i class="mdi mdi-calendar-end me-1"></i>Tanggal Berakhir <span class="text-danger">*</span>
                                     </label>
-                                    <input type="date" name="tanggal_berakhir" class="modal-form-control"
-                                        value="2026-03-31">
+                                    <input type="date" name="end_date" class="modal-form-control" id="editEnd">
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="modal-form-group">
                                     <label>
-                                        <i class="mdi mdi-note-text me-1"></i>Keterangan
+                                        <i class="mdi mdi-flag me-1"></i>Status <span class="text-danger">*</span>
                                     </label>
-                                    <textarea name="keterangan" class="modal-form-control" rows="3">Diskon khusus untuk pembelian early bird</textarea>
+                                    <select class="modal-form-control" name="status" id="editStatus" required>
+                                        <option value="aktif">Aktif</option>
+                                        <option value="tidak_aktif">Tidak Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="modal-form-group">
+                                    <label>
+                                        <i class="mdi mdi-note-text me-1"></i>Keterangan <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea name="description" class="modal-form-control" rows="3" id="editDeskripsi" required placeholder="Deskripsi promo..."></textarea>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-gradient-primary">Update</button>
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-gradient-primary">Update</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -1067,6 +528,43 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(document).ready(function() {
+                // Tampilkan SweetAlert untuk session success (default)
+                @if (session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                @endif
+
+                // Tampilkan SweetAlert untuk session error (default)
+                @if (session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: '{{ session('error') }}',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                @endif
+
+                // Tampilkan SweetAlert untuk error validasi (default)
+                @if ($errors->any())
+                    let errorMessage = '';
+                    @foreach ($errors->all() as $error)
+                        errorMessage += '• {{ $error }}\n';
+                    @endforeach
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: errorMessage,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                @endif
+
                 // Cek apakah ada data promo
                 var hasData = {{ $promo->count() > 0 ? 'true' : 'false' }};
 
@@ -1091,8 +589,10 @@
                 }
 
                 // Format Rupiah untuk input nilai jika tipe nominal
-                $('#tipePromo').change(function() {
-                    let nilaiInput = $('#nilaiPromo');
+                $('#tipePromo, #editTipe').change(function() {
+                    let isEdit = $(this).attr('id') === 'editTipe';
+                    let nilaiInput = isEdit ? $('#editNilai') : $('#nilaiPromo');
+
                     if ($(this).val() === 'nominal') {
                         nilaiInput.attr('placeholder', 'Contoh: 500000');
                     } else {
@@ -1101,8 +601,11 @@
                 });
 
                 // Format Rupiah on input (hanya untuk modal)
-                $('#nilaiPromo').on('input', function() {
-                    if ($('#tipePromo').val() === 'nominal') {
+                $('#nilaiPromo, #editNilai').on('input', function() {
+                    let isEdit = $(this).attr('id') === 'editNilai';
+                    let tipeSelect = isEdit ? $('#editTipe') : $('#tipePromo');
+
+                    if (tipeSelect.val() === 'nominal') {
                         let nilai = this.value.replace(/\D/g, '');
                         if (nilai) {
                             let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
@@ -1111,57 +614,281 @@
                     }
                 });
 
-                // Handle edit button click (demo)
-                $('.btn-outline-warning').click(function() {
-                    let row = $(this).closest('tr');
-                    let namaPromo = row.find('td:eq(1) span.fw-bold').text();
-
-                    Swal.fire({
-                        title: 'Edit Promo',
-                        text: 'Fitur edit untuk "' + namaPromo + '" akan segera tersedia',
-                        icon: 'info',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
+                // Toggle periode container
+                $('#berlaku').change(function() {
+                    if ($(this).val() === 'periode') {
+                        $('#periodeContainer').slideDown();
+                    } else {
+                        $('#periodeContainer').slideUp();
+                    }
                 });
 
-                // Handle delete button click (demo)
-                $('.btn-outline-danger').click(function() {
-                    let row = $(this).closest('tr');
-                    let namaPromo = row.find('td:eq(1) span.fw-bold').text();
+                $('#editBerlaku').change(function() {
+                    if ($(this).val() === 'periode') {
+                        $('#editPeriodeContainer').slideDown();
+                    } else {
+                        $('#editPeriodeContainer').slideUp();
+                    }
+                });
 
+                // Handle form tambah promo
+                $('#formTambahPromo').on('submit', function(e) {
+                    e.preventDefault();
+
+                    let form = $(this);
+
+                    // Tampilkan loading
                     Swal.fire({
-                        title: 'Hapus Promo?',
-                        text: "Promo " + namaPromo + " akan dihapus",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
+                        title: 'Menyimpan...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'POST',
+                        data: form.serialize(),
+                        success: function(response) {
+                            Swal.close();
+
+                            // Tampilkan notifikasi sukses (default)
                             Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Promo telah dihapus.',
                                 icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Promo berhasil ditambahkan',
                                 timer: 2000,
                                 showConfirmButton: false
+                            }).then(() => {
+                                $('#modalTambahPromo').modal('hide');
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.close();
+
+                            let errors = xhr.responseJSON.errors;
+                            let errorMessage = '';
+
+                            if (errors) {
+                                $.each(errors, function(key, value) {
+                                    errorMessage += '• ' + value[0] + '\n';
+                                });
+                            } else {
+                                errorMessage = 'Terjadi kesalahan saat menyimpan data';
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                text: errorMessage,
+                                confirmButtonColor: '#3085d6'
                             });
                         }
                     });
                 });
-            });
-        </script>
-        <script>
-            document.getElementById('berlaku').addEventListener('change', function() {
-                let periodeContainer = document.getElementById('periodeContainer');
 
-                if (this.value === 'periode') {
-                    periodeContainer.style.display = 'flex';
-                } else {
-                    periodeContainer.style.display = 'none';
-                }
+                // Handle edit button click
+                $('.btn-edit').click(function() {
+                    let id = $(this).data('id');
+
+                    // Tampilkan loading
+                    Swal.fire({
+                        title: 'Memuat...',
+                        text: 'Mengambil data promo',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Ambil data via AJAX
+                    $.ajax({
+                        url: '/dashboard-promo/get/' + id,
+                        type: 'GET',
+                        success: function(response) {
+                            Swal.close();
+
+                            if (response.success) {
+                                let promo = response.data;
+
+                                // Isi form edit
+                                $('#editNama').val(promo.name);
+                                $('#editKategori').val(promo.category);
+                                $('#editTipe').val(promo.type);
+                                $('#editNilai').val(promo.value_formatted || promo.value);
+                                $('#editBerlaku').val(promo.validity_period);
+                                $('#editStatus').val(promo.status);
+                                $('#editDeskripsi').val(promo.description);
+
+                                if (promo.validity_period === 'periode') {
+                                    $('#editStart').val(promo.start_date);
+                                    $('#editEnd').val(promo.end_date);
+                                    $('#editPeriodeContainer').show();
+                                } else {
+                                    $('#editPeriodeContainer').hide();
+                                }
+
+                                // Set action form
+                                $('#formEditPromo').attr('action', '/dashboard-promo/' + id);
+
+                                // Tampilkan modal
+                                $('#modalEditPromo').modal('show');
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: response.message || 'Gagal mengambil data promo',
+                                    confirmButtonColor: '#3085d6'
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.close();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Gagal mengambil data promo',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        }
+                    });
+                });
+
+                // Handle form edit promo
+                $('#formEditPromo').on('submit', function(e) {
+                    e.preventDefault();
+
+                    let form = $(this);
+
+                    // Tampilkan loading
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'POST',
+                        data: form.serialize(),
+                        success: function(response) {
+                            Swal.close();
+
+                            // Tampilkan notifikasi sukses (default)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Promo berhasil diperbarui',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                $('#modalEditPromo').modal('hide');
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.close();
+
+                            let errors = xhr.responseJSON.errors;
+                            let errorMessage = '';
+
+                            if (errors) {
+                                $.each(errors, function(key, value) {
+                                    errorMessage += '• ' + value[0] + '\n';
+                                });
+                            } else {
+                                errorMessage = 'Terjadi kesalahan saat menyimpan data';
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                text: errorMessage,
+                                confirmButtonColor: '#3085d6'
+                            });
+                        }
+                    });
+                });
+
+                // Handle delete button click
+                $('.btn-delete').click(function() {
+                    let id = $(this).data('id');
+                    let name = $(this).data('name');
+
+                    Swal.fire({
+                        title: 'Hapus Promo?',
+                        text: `Promo ${name} akan dihapus`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Tampilkan loading
+                            Swal.fire({
+                                title: 'Menghapus...',
+                                text: 'Mohon tunggu sebentar',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            $.ajax({
+                                url: '/dashboard-promo/' + id,
+                                type: 'DELETE',
+                                data: {
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function(response) {
+                                    Swal.close();
+
+                                    if (response.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Berhasil!',
+                                            text: response.message,
+                                            timer: 2000,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Gagal!',
+                                            text: response.message,
+                                            confirmButtonColor: '#3085d6'
+                                        });
+                                    }
+                                },
+                                error: function(xhr) {
+                                    Swal.close();
+
+                                    let message = 'Terjadi kesalahan';
+                                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                                        message = xhr.responseJSON.message;
+                                    }
+
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal!',
+                                        text: message,
+                                        confirmButtonColor: '#3085d6'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
             });
         </script>
     @endpush

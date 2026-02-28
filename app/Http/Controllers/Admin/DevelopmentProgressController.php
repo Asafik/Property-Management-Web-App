@@ -55,112 +55,97 @@ class DevelopmentProgressController extends Controller
         return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'land_bank_unit_id' => 'required|exists:land_bank_units,id',
-            'items' => 'nullable|array',
-            'items.*.kategori' => 'required|string',
-            'items.*.kode' => 'required|string',
-            'items.*.uraian' => 'required|string',
-            'items.*.volume' => 'required|numeric',
-            'items.*.satuan' => 'required|string',
-            'items.*.harga_satuan' => 'required|numeric',
-            'items.*.keterangan' => 'nullable|string',
-            'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'land_bank_unit_id' => 'required|exists:land_bank_units,id',
+        'items' => 'nullable|array',
+        'items.*.kategori' => 'required|string',
+        'items.*.kode' => 'required|string',
+        'items.*.uraian' => 'required|string',
+        'items.*.volume' => 'required|numeric',
+        'items.*.satuan' => 'required|string',
+        'items.*.harga_satuan' => 'required|numeric',
+        'items.*.keterangan' => 'nullable|string',
+        'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
 
-        DB::beginTransaction();
+    DB::beginTransaction();
 
-        try {
+    try {
 
-            $progress = DevelopmentProgress::firstOrCreate(
-                ['land_bank_unit_id' => $request->land_bank_unit_id],
-                ['title' => $request->title ?? 'Progress Baru']
-            );
+        $progress = DevelopmentProgress::firstOrCreate(
+            ['land_bank_unit_id' => $request->land_bank_unit_id],
+            ['title' => $request->title ?? 'Progress Baru']
+        );
 
-            $lastKategori = null;
+        $lastKategori = null;
 
-            foreach ($request->items ?? [] as $index => $item) {
+        foreach ($request->items ?? [] as $index => $item) {
 
-                // 1️⃣ Simpan item dulu
-                $progressItem = $progress->items()->create([
-                    'kategori'     => $item['kategori'],
-                    'kode'         => $item['kode'],
-                    'uraian'       => $item['uraian'],
-                    'volume'       => $item['volume'],
-                    'satuan'       => $item['satuan'],
-                    'harga_satuan' => $item['harga_satuan'],
-                    'total'        => $item['volume'] * $item['harga_satuan'],
-                    'keterangan'   => $item['keterangan'] ?? null,
+            // 🔥 INI YANG WAJIB ADA
+            $lastKategori = strtolower(trim($item['kategori']));
+
+            $progressItem = $progress->items()->create([
+                'kategori'     => $item['kategori'],
+                'kode'         => $item['kode'],
+                'uraian'       => $item['uraian'],
+                'volume'       => $item['volume'],
+                'satuan'       => $item['satuan'],
+                'harga_satuan' => $item['harga_satuan'],
+                'total'        => $item['volume'] * $item['harga_satuan'],
+                'keterangan'   => $item['keterangan'] ?? null,
+            ]);
+
+            if ($request->hasFile("items.$index.dokumentasi")) {
+                $file = $request->file("items.$index.dokumentasi");
+                $filePath = $file->store('progress_dokumentasi', 'public');
+
+                $progressItem->documents()->create([
+                    'file_path' => $filePath,
                 ]);
-
-                // 2️⃣ Jika ada file → simpan ke tabel documents
-                if ($request->hasFile("items.$index.dokumentasi")) {
-
-                    $file = $request->file("items.$index.dokumentasi");
-
-                    $filePath = $file->store('progress_dokumentasi', 'public');
-
-                    $progressItem->documents()->create([
-                        'file_path' => $filePath,
-                    ]);
-                }
             }
-
-            // ===============================
-            // 3️⃣ Mapping kategori → progress enum
-            // ===============================
-            $kategoriMapping = [
-                'persiapan' => 'belum_mulai',
-                'pondasi'   => 'pondasi',
-                'struktur'  => 'dinding',
-                'dinding'   => 'dinding',
-                'atap'      => 'atap',
-                'finishing' => 'finishing',
-                'selesai'   => 'selesai',
-            ];
-
-            $progressEnum = $kategoriMapping[$lastKategori] ?? 'belum_mulai';
-
-            $unit = LandBankUnit::findOrFail($request->land_bank_unit_id);
-            $unit->construction_progress = $progressEnum;
-
-            // Jika tahap finishing → status ready
-            if ($progressEnum === 'finishing') {
-                $unit->status = 'ready';
-            }
-
-            // Update harga jual jika diisi
-            if ($request->filled('price')) {
-                $unit->price = $request->price;
-            }
-
-            $unit->save();
-
-            DB::commit();
-
-            Log::info("RAB & Dokumentasi berhasil disimpan", [
-                'unit_id' => $request->land_bank_unit_id,
-                'progress_enum' => $progressEnum,
-                'user_id' => auth()->id() ?? null,
-            ]);
-
-            return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');
-        } catch (\Exception $e) {
-
-            DB::rollBack();
-
-            Log::error("Gagal menyimpan RAB & Dokumentasi", [
-                'unit_id' => $request->land_bank_unit_id ?? null,
-                'error_message' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString(),
-                'user_id' => auth()->id() ?? null,
-            ]);
-
-            return back()->with('error', 'Terjadi kesalahan, cek log.');
         }
+
+        // ===============================
+        // Mapping kategori → progress enum
+        // ===============================
+        $kategoriMapping = [
+            'persiapan' => 'belum_mulai',
+            'pondasi'   => 'pondasi',
+            'struktur'  => 'dinding',
+            'dinding'   => 'dinding',
+            'atap'      => 'atap',
+            'finishing' => 'finishing',
+            'selesai'   => 'selesai',
+        ];
+
+        $progressEnum = $kategoriMapping[$lastKategori] ?? 'belum_mulai';
+
+        $unit = LandBankUnit::findOrFail($request->land_bank_unit_id);
+        $unit->construction_progress = $progressEnum;
+
+        if ($progressEnum === 'finishing') {
+            $unit->status = 'ready';
+        }
+
+        if ($request->filled('price')) {
+            $unit->price = $request->price;
+        }
+
+        $unit->save();
+
+        DB::commit();
+
+        return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()->with('error', 'Terjadi kesalahan, cek log.');
     }
+}
 
 
     public function accAjax($unitId)

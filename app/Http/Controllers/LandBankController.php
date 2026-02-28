@@ -157,7 +157,7 @@ public function store(Request $request)
         DB::commit();
 
         return redirect()->route('properti')
-            ->with('success', 'Data properti berhasil disimpan');
+            ->with('success', 'Data properti berhasil disimpan dan menunggu verifikasi disemua tanah');
 
     } catch (\Exception $e) {
 

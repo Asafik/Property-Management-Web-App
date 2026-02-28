@@ -173,7 +173,37 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="cash-card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="cash-text-primary mb-3">
+                                            <i class="mdi mdi-ticket-percent me-2"></i>
+                                            Gunakan Promo
+                                        </h6>
 
+                                        <div class="cash-form-group">
+                                            <select class="cash-form-control" name="promo_id" id="promoSelect">
+                                                <option value="">-- Tanpa Promo --</option>
+
+                                                @foreach ($promos as $promo)
+                                                    <option value="{{ $promo->id }}" data-type="{{ $promo->type }}"
+                                                        data-value="{{ $promo->value }}">
+
+                                                        {{ $promo->name }} -
+
+                                                        @if ($promo->type == 'persen')
+                                                            {{ $promo->value }}%
+                                                        @elseif (is_numeric($promo->value))
+                                                            Rp {{ number_format((float) $promo->value, 0, ',', '.') }}
+                                                        @else
+                                                            {{ $promo->value }}
+                                                        @endif
+
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Summary Diskon & Total -->
                                 <div class="row mt-2">
                                     <div class="col-md-4">
@@ -776,5 +806,28 @@
                 showConfirmButton: false
             });
         @endif
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const input = document.getElementById('hargaNego');
+
+            input.addEventListener('keyup', function() {
+
+                let angka = this.value.replace(/[^,\d]/g, '');
+                let split = angka.split(',');
+                let sisa = split[0].length % 3;
+                let rupiah = split[0].substr(0, sisa);
+                let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                this.value = rupiah;
+            });
+
+        });
     </script>
 @endpush

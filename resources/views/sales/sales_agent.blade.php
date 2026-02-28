@@ -7,6 +7,7 @@
 /* ===== MODERN FORM STYLING UNTUK SALES ===== */
 .sales-form-group {
     margin-bottom: 1rem;
+    position: relative;
 }
 
 .sales-form-group label {
@@ -35,6 +36,40 @@
     border-color: #9a55ff;
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
     outline: none;
+}
+
+/* Password Input Container */
+.password-input-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-container .sales-form-control {
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: #9a55ff;
+}
+
+.toggle-password i {
+    font-size: 1.2rem;
 }
 
 select.sales-form-control {
@@ -342,95 +377,100 @@ input, select, textarea, button {
                     <span class="sales-badge sales-badge-secondary">* Wajib</span>
                 </div>
                 <div class="card-body">
-                  <form action="{{ route('agency.store') }}" method="POST">
-@csrf
+                    <form action="{{ route('agency.store') }}" method="POST">
+                        @csrf
 
-<!-- Alert -->
-<div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4">
-    <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
-    <span>Data sales akan digunakan untuk penugasan unit dan komisi penjualan.</span>
-</div>
+                        <!-- Alert -->
+                        <div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4">
+                            <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
+                            <span>Data sales akan digunakan untuk penugasan unit dan komisi penjualan.</span>
+                        </div>
 
-<div class="sales-row">
+                        <div class="sales-row">
 
-    <!-- Nama -->
-    <div class="sales-col-md-6">
-        <div class="sales-form-group">
-            <label>Nama Lengkap *</label>
-            <input type="text" name="name" class="sales-form-control" required>
-        </div>
-    </div>
+                            <!-- Nama -->
+                            <div class="sales-col-md-6">
+                                <div class="sales-form-group">
+                                    <label>Nama Lengkap *</label>
+                                    <input type="text" name="name" class="sales-form-control" value="{{ old('name') }}" required>
+                                </div>
+                            </div>
 
-    <!-- Username -->
-    <div class="sales-col-md-6">
-        <div class="sales-form-group">
-            <label>Username *</label>
-            <input type="text" name="username" class="sales-form-control" required>
-        </div>
-    </div>
+                            <!-- Username -->
+                            <div class="sales-col-md-6">
+                                <div class="sales-form-group">
+                                    <label>Username *</label>
+                                    <input type="text" name="username" class="sales-form-control" value="{{ old('username') }}" required>
+                                </div>
+                            </div>
 
-</div>
+                        </div>
 
-<div class="sales-row">
+                        <div class="sales-row">
 
-    <!-- Password -->
-    <div class="sales-col-md-6">
-        <div class="sales-form-group">
-            <label>Password *</label>
-            <input type="password" name="password" class="sales-form-control" required>
-        </div>
-    </div>
+                            <!-- Password dengan Toggle -->
+                            <div class="sales-col-md-6">
+                                <div class="sales-form-group">
+                                    <label>Password *</label>
+                                    <div class="password-input-container">
+                                        <input type="password" name="password" id="password" class="sales-form-control" required>
+                                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                                            <i class="mdi mdi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-    <!-- Nomor HP -->
-    <div class="sales-col-md-6">
-        <div class="sales-form-group">
-            <label>Nomor HP *</label>
-            <input type="text" name="phone" class="sales-form-control" required>
-        </div>
-    </div>
+                            <!-- Nomor HP -->
+                            <div class="sales-col-md-6">
+                                <div class="sales-form-group">
+                                    <label>Nomor HP *</label>
+                                    <input type="text" name="phone" class="sales-form-control" value="{{ old('phone') }}" required>
+                                </div>
+                            </div>
 
-</div>
+                        </div>
 
-<!-- Role hidden (agency) -->
-<input type="hidden" name="role" value="agency">
+                        <!-- Role hidden (agency) -->
+                        <input type="hidden" name="role" value="agency">
 
-<!-- Alamat -->
-<div class="sales-row">
-    <div class="sales-col-12">
-        <div class="sales-form-group">
-            <label>Alamat *</label>
-            <textarea name="address" class="sales-form-control" required></textarea>
-        </div>
-    </div>
-</div>
+                        <!-- Alamat -->
+                        <div class="sales-row">
+                            <div class="sales-col-12">
+                                <div class="sales-form-group">
+                                    <label>Alamat *</label>
+                                    <textarea name="address" class="sales-form-control" required>{{ old('address') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
 
-<hr class="sales-hr">
+                        <hr class="sales-hr">
 
-<!-- Tombol -->
-<div class="sales-btn-group mt-4">
-    <a href="{{ url('/agency') }}" class="sales-btn sales-btn-secondary">
-        <i class="mdi mdi-arrow-left me-2"></i>Kembali
-    </a>
+                        <!-- Tombol -->
+                        <div class="sales-btn-group mt-4">
+                            <a href="{{ url('/agency') }}" class="sales-btn sales-btn-secondary">
+                                <i class="mdi mdi-arrow-left me-2"></i>Kembali
+                            </a>
 
-    <div style="margin-left:auto;">
-        <button type="reset" class="sales-btn sales-btn-outline-secondary me-2">
-            Reset
-        </button>
+                            <div style="margin-left:auto;">
+                                <button type="reset" class="sales-btn sales-btn-outline-secondary me-2">
+                                    Reset
+                                </button>
 
-        <button type="submit" class="sales-btn sales-btn-primary">
-            Simpan Sales
-        </button>
-    </div>
-</div>
+                                <button type="submit" class="sales-btn sales-btn-primary">
+                                    Simpan Sales
+                                </button>
+                            </div>
+                        </div>
 
-</form>
-
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
 @push('scripts')
 @if(session('success'))
 <script>
@@ -438,7 +478,8 @@ Swal.fire({
     icon: 'success',
     title: 'Berhasil!',
     text: '{{ session('success') }}',
-    confirmButtonColor: '#9a55ff'
+    timer: 2000,
+    showConfirmButton: false
 });
 </script>
 @endif
@@ -452,9 +493,25 @@ Swal.fire({
 });
 </script>
 @endif
-    <script>
-document.addEventListener("DOMContentLoaded", function() {
 
+<script>
+// Fungsi untuk toggle password
+function togglePassword(inputId, button) {
+    const passwordInput = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('mdi-eye');
+        icon.classList.add('mdi-eye-off');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('mdi-eye-off');
+        icon.classList.add('mdi-eye');
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
     const form = document.querySelector("form[action='{{ route('agency.store') }}']");
 
     form.addEventListener("submit", function(e) {
@@ -475,7 +532,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
-
 });
 </script>
 @endpush
