@@ -521,7 +521,7 @@
                         <td>{{ $pelunasan ? \Carbon\Carbon::parse($pelunasan->payment_date)->translatedFormat('d F Y') : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Status</td>
+                        <td>Status Pembayaran</td>
                         <td>:</td>
                         <td>
                             <span class="badge-status {{ $badgeClass }}" id="statusBadge">{{ $status }}</span>

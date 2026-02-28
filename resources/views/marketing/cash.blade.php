@@ -557,10 +557,14 @@
 
                     <!-- Tombol Aksi -->
                     <div class="d-flex flex-column gap-2">
-                        <button onclick="window.open('{{ route('cetak.invoice_cash', $booking->id) }}', '_blank')"
+                        <button
+                            onclick="handleInvoice(
+                                '{{ route('cetak.invoice_cash', $booking->id) }}',
+                                '{{ route('cetak.invoice_wa', $booking->id) }}'
+                            )"
                             class="cash-btn cash-btn-primary w-100">
                             <i class="mdi mdi-printer me-2"></i>
-                            Cetak Invoice
+                            Cetak & Kirim WA
                         </button>
 
                         <button class="cash-btn cash-btn-info w-100">
@@ -640,6 +644,17 @@
 @endpush
 
 @push('scripts')
+<script>
+function handleInvoice(printUrl, waUrl) {
+    // buka cetak di tab baru
+    window.open(printUrl, '_blank');
+
+    // redirect ke WA setelah 1 detik
+    setTimeout(() => {
+        window.location.href = waUrl;
+    }, 1000);
+}
+</script>
     <script>
         $(document).ready(function() {
             // Fungsi format rupiah

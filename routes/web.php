@@ -99,6 +99,8 @@ Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
 // Route untuk halaman web (dengan 2 tab)
 Route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])
     ->name('cetak.invoice_cash');
+    Route::get('/invoice/{id}/wa', [InvoiceController::class, 'sendToWa'])
+    ->name('cetak.invoice_wa');
 
 // Route untuk download PDF Cash Awal
 Route::get('/dashboard-cetak-invoice-cash/{booking}/pdf', [InvoiceController::class, 'cetakPdf'])
