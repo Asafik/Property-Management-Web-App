@@ -33,15 +33,15 @@
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                    <h5 class="card-title mb-2 mb-md-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                         Daftar Sales Agent
                     </h5>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('agency.create') }}" class="btn btn-sm btn-gradient-primary">
+                    <div class="ms-auto">
+                        <a href="{{ route('agency.create') }}" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;">
                             <i class="mdi mdi-plus me-1"></i>
-                            <span class="d-none d-sm-inline">Tambah Sales</span>
+                            <span>Tambah Sales</span>
                         </a>
                     </div>
                 </div>
@@ -59,20 +59,20 @@
                             <div class="d-block d-md-none">
                                 <form method="GET" action="{{ route('agency.index') }}">
                                     <div class="mb-3">
-                                        <label class="form-label">
+                                        <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
                                             Cari Sales
                                         </label>
                                         <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama / username sales...">
+                                            placeholder="Cari nama / username sales..." style="height: 45px;">
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">
+                                        <label class="form-label fw-semibold">
                                             <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
                                             Tampil per Halaman
                                         </label>
-                                        <select class="form-control" name="per_page">
+                                        <select class="form-control" name="per_page" style="height: 45px;">
                                             <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
                                             <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
                                             <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
@@ -81,12 +81,12 @@
 
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100">
+                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -120,13 +120,15 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-gradient-primary w-100">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
 
                                         <div class="col-md-1">
-                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100" title="Reset">
+                                            <label class="form-label invisible">Reset</label>
+                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -309,17 +311,17 @@ document.addEventListener("DOMContentLoaded", function() {
         $('#tableAgent').DataTable({
             responsive: true,
             ordering: true,
-            paging: false,           // Matikan pagination DataTables
-            info: false,              // Matikan info DataTables
-            searching: false,         // Matikan search DataTables
-            lengthChange: false,      // Matikan length change
+            paging: false,
+            info: false,
+            searching: false,
+            lengthChange: false,
             destroy: true,
             language: {
                 emptyTable: "Data agent belum tersedia",
                 zeroRecords: "Data tidak ditemukan",
             },
             columnDefs: [
-                { orderable: false, targets: [5] } // Kolom aksi tidak bisa diurutkan
+                { orderable: false, targets: [5] }
             ]
         });
     }

@@ -33,14 +33,15 @@
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                    <h5 class="card-title mb-2 mb-md-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                         Daftar Bank
                     </h5>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-gradient-primary" onclick="$('#modalTambahBank').modal('show')">
-                            <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah Bank</span>
+                    <div class="ms-auto">
+                        <button class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahBank').modal('show')">
+                            <i class="mdi mdi-plus me-1"></i>
+                            <span>Tambah Bank</span>
                         </button>
                     </div>
                 </div>
@@ -58,46 +59,45 @@
                             <div class="d-block d-md-none">
                                 <form method="GET" action="{{ route('bank.index') }}">
                                     <div class="mb-3">
-                                        <label class="form-label">
+                                        <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
                                             Cari Bank
                                         </label>
                                         <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama bank...">
+                                            placeholder="Cari nama bank..." style="height: 45px;">
                                     </div>
 
                                     <div class="row g-2 mb-3">
                                         <div class="col-6">
-                                            <label class="form-label">
+                                            <label class="form-label fw-semibold">
                                                 <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
                                             </label>
-                                            <select class="form-control" name="status">
+                                            <select class="form-control" name="status" style="height: 45px;">
                                                 <option value="">Semua</option>
                                                 <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
                                                 <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Non-Aktif</option>
                                             </select>
                                         </div>
                                         <div class="col-6">
-                                            <label class="form-label">
+                                            <label class="form-label fw-semibold">
                                                 <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
                                             </label>
-                                            <select class="form-control" name="per_page">
+                                            <select class="form-control" name="per_page" style="height: 45px;">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
                                                 <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                                <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
-                                                <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100">
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -135,21 +135,22 @@
                                             </label>
                                             <select class="form-control" name="per_page">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
                                                 <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                                <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
-                                                <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-gradient-primary w-100">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
+                                            <label class="form-label invisible">Reset</label>
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
                                     </div>
@@ -445,10 +446,10 @@ $(document).ready(function() {
         $('#tableBank').DataTable({
             responsive: true,
             ordering: true,
-            paging: false,           // Matikan pagination DataTables
-            info: false,              // Matikan info DataTables
-            searching: false,         // Matikan search DataTables
-            lengthChange: false,      // Matikan length change
+            paging: false,
+            info: false,
+            searching: false,
+            lengthChange: false,
             destroy: true,
             language: {
                 emptyTable: "Data bank belum tersedia",
@@ -484,7 +485,7 @@ $(document).ready(function() {
     // ===== HANDLE FORM TAMBAH BANK =====
     $('#formTambahBank').on('submit', function(e) {
         e.preventDefault();
-        this.submit(); // Submit biasa karena sudah pakai redirect
+        this.submit();
     });
 
     // ===== HANDLE EDIT BUTTON CLICK =====
@@ -512,7 +513,6 @@ $(document).ready(function() {
                 $('#editNumber').val(bank.number);
                 $('#editStatus').val(bank.is_active);
 
-                // Set action form
                 $('#formEditBank').attr('action', '/master-data-bank/' + id);
 
                 $('#modalEditBank').modal('show');
@@ -534,7 +534,7 @@ $(document).ready(function() {
     // ===== HANDLE FORM EDIT BANK =====
     $('#formEditBank').on('submit', function(e) {
         e.preventDefault();
-        this.submit(); // Submit biasa karena sudah pakai redirect
+        this.submit();
     });
 
     // ===== HANDLE DELETE BUTTON CLICK =====
@@ -553,7 +553,7 @@ $(document).ready(function() {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit(); // Submit form biasa
+                form.submit();
             }
         });
     });

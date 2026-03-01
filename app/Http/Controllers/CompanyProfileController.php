@@ -11,75 +11,63 @@ class CompanyProfileController extends Controller
     /**
      * Display a listing of the resource.
      */
-public function index()
-{
-    $companies = CompanyProfile::withCount('landBanks')->get();
-
-    return view('pt.pt', compact('companies'));
-}
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        $query = CompanyProfile::query();
+
+        // Filter search by name
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        // Jumlah tampil per halaman (default 10, opsi: 10, 15, 25)
+        $perPage = $request->input('per_page', 10);
+
+        // Ambil data dengan pagination dan eager loading landBanks count
+        $companies = $query->withCount('landBanks')
+                          ->latest()
+                          ->paginate($perPage)
+                          ->withQueryString();
+
+        return view('pt.pt', compact('companies'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-
-public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'address' => 'nullable|string|max:500',
-        'phone' => 'nullable|string|max:20',
-    ], [
-        'name.required' => 'Nama PT wajib diisi!',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-
-        CompanyProfile::create([
-            'name' => $request->name,
-            'address' => $request->address,
-            'phone' => $request->phone,
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'phone' => 'nullable|string|max:20',
+        ], [
+            'name.required' => 'Nama PT wajib diisi!',
         ]);
 
-        DB::commit();
+        DB::beginTransaction();
 
-        return redirect()
-            ->route('company-profile.index')
-            ->with('success', 'Company profile berhasil ditambahkan.');
+        try {
 
-    } catch (\Exception $e) {
+            CompanyProfile::create([
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone' => $request->phone,
+            ]);
 
-        DB::rollBack();
+            DB::commit();
 
-        return redirect()
-            ->back()
-            ->withInput()
-            ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-    }
-}
-    /**
-     * Display the specified resource.
-     */
-    public function show(CompanyProfile $companyProfile)
-    {
-        //
-    }
+            return redirect()
+                ->route('company-profile.index')
+                ->with('success', 'Company profile berhasil ditambahkan.');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CompanyProfile $companyProfile)
-    {
-        //
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -94,13 +82,12 @@ public function store(Request $request)
         ], [
             'name.required' => 'Nama PT wajib diisi!',
         ]);
-        
-        $companyProfile->update($request->only(['name', 'address', 'phone']));  
+
+        $companyProfile->update($request->only(['name', 'address', 'phone']));
+
         return redirect()
             ->route('company-profile.index')
             ->with('success', 'Company profile berhasil diperbarui.');
-
-        //
     }
 
     /**
@@ -108,19 +95,19 @@ public function store(Request $request)
      */
     public function destroy(CompanyProfile $companyProfile)
     {
-        //
         CompanyProfile::destroy($companyProfile->id);
+
         return redirect()
             ->route('company-profile.index')
             ->with('success', 'Company profile berhasil dihapus.');
-
     }
-    public function getProjects($id)
-{
-    $company = CompanyProfile::with([
-        'landBanks.units' // pastikan relasi units ada
-    ])->findOrFail($id);
 
-    return response()->json($company);
-}
+    public function getProjects($id)
+    {
+        $company = CompanyProfile::with([
+            'landBanks.units' // pastikan relasi units ada
+        ])->findOrFail($id);
+
+        return response()->json($company);
+    }
 }
