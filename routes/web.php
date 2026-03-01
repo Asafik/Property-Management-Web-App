@@ -32,6 +32,7 @@ use App\Http\Controllers\LandBankDocumentController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiteplanController;
 use App\Http\Controllers\PromoController;
+use App\Http\Controllers\TamuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -285,14 +286,22 @@ Route::get('/dashboard-pengaturan', function () {
 
 Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
 Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
-
+Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
 Route::get('/dashboard-customer', function () {
     return view('customer.customer');
 });
 
-Route::get('/dashboard-tamu', function () {
-    return view('customer.tamu');
-});
+// Route::get('/dashboard-tamu', function () {
+//     return view('customer.tamu');
+// });
+Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
+Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('customer.tamu.store');
+Route::post('/customer/guest/follow-up', [TamuController::class, 'followUp'])->name('customer.tamu.followup');
+Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
+    ->name('costomer.guests.convert');
+Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
+Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
+
 
 Route::get('/dashboard-customer-profil-cash', function () {
     return view('customer.customer_profil_cash');
