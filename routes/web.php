@@ -33,6 +33,10 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiteplanController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\TamuController;
+use App\Http\Controllers\AkadController;
+use App\Http\Controllers\DocumentLegalController;
+use App\Http\Controllers\DokumentLegalPersiapanController;
+use App\Http\Controllers\SerahTerimaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -276,6 +280,8 @@ Route::put('/dashboard-dokument/{id}/update', [LandBankDocumentController::class
 Route::delete('/dashboard-dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])
     ->name('document-types.destroy');
 
+Route::get('/dashboard-dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
+Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
 
 
 
@@ -302,7 +308,13 @@ Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
 Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
 Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
 
+Route::get('/akad/akad-cash/{booking}', [AkadController::class, 'index'])->name('akad.cash');
+Route::post('/akad/akad-cash/{booking}/store', [AkadController::class, 'store'])->name('akad.cash.store');
+Route::get('/akad/akad-cash/serah-terima/{booking}', [SerahTerimaController::class, 'index'])->name('booking.serah-terima');
 
+
+Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
+Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
 Route::get('/dashboard-customer-profil-cash', function () {
     return view('customer.customer_profil_cash');
 });

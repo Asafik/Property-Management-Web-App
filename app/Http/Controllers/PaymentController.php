@@ -36,13 +36,19 @@ public function store(Request $request)
 
     $payment->save();
 
-    // Update status booking menjadi 'completed'
-    $booking = \App\Models\Booking::find($request->booking_id);
+    // Update status booking menjadi 'cash_process'
+    $booking = \App\Models\Booking::with('unit')->find($request->booking_id);
     if ($booking) {
-        $booking->status = 'completed';
+        $booking->status = 'cash_process';
         $booking->save();
+
+        // Update status unit menjadi 'sold'
+        if ($booking->unit) {
+            $booking->unit->status = 'sold';
+            $booking->unit->save();
+        }
     }
 
-    return redirect()->back()->with('success', 'Pembayaran berhasil dibuat dan status booking diupdate!');
+    return redirect()->back()->with('success', 'Pembayaran berhasil dibuat, status booking diupdate, dan unit ditandai sold!');
 }
 }

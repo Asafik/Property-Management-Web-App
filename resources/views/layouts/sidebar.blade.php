@@ -182,13 +182,29 @@
         </div>
     </li>
     <!-- MENU Dokument -->
-    <li class="nav-item">
-        <a class="nav-link" href="dashboard-dokument">
+    {{-- <li class="nav-item">
+        <a class="nav-link" href="{{route('dokument.index')}}">
             <span class="menu-title">Dokument</span>
             <i class="mdi mdi-account-cog menu-icon"></i>
         </a>
+    </li> --}}
+<li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dokument" aria-expanded="false" aria-controls="dokument">
+            <span class="menu-title">Document</span>
+            <i class="menu-arrow"></i>
+            <i class="mdi mdi-account-cog menu-icon"></i>
+        </a>
+        <div class="collapse" id="dokument">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('dokument.index')}}">Document Tanah Induk (LandBank)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('dokument.persiapan')}}">Document Pecah Tanah Induk ke Unit</a>
+                </li>
+            </ul>
+        </div>
     </li>
-
 
     <!-- MENU INVENTORY UNIT -->
     <li class="nav-item">

@@ -571,11 +571,41 @@
                             <i class="mdi mdi-whatsapp me-2"></i>
                             Kirim Invoice
                         </button>
+                       @if ($booking->status == 'cash_process')
+    <a href="{{ route('akad.cash', $booking->id) }}"
+        class="cash-btn cash-btn-outline-warning w-100 text-center d-inline-block">
+        <i class="mdi mdi-handshake-outline me-2"></i>
+        Lanjut ke Akad
+    </a>
+@elseif ($booking->status == 'akad')
+    <button class="cash-btn cash-btn-outline-success w-100" disabled>
+        <i class="mdi mdi-check-circle-outline me-2"></i>
+        Sudah Akad
+    </button>
+@else
+    <button class="cash-btn cash-btn-outline-warning w-100" disabled>
+        <i class="mdi mdi-clock-outline me-2"></i>
+        Menunggu Pelunasan
+    </button>
+@endif
+@if($booking->status == 'akad')
+    <a href="{{ route('cash.document.legal', $booking->id) }}"
+       class="cash-btn cash-btn-outline-warning w-100">
+       <i class="mdi mdi-file-certificate-outline me-2"></i>
+       Persiapan Document Legal - {{ $booking->customer->name }}
+    </a>
+@elseif($booking->status == 'legal_done')
+    <button class="cash-btn cash-btn-outline-success w-100" disabled>
+        <i class="mdi mdi-check-circle-outline me-2"></i>
+        Legal Document Selesai
+    </button>
+@else
+    <button class="cash-btn cash-btn-outline-warning w-100" disabled>
+        <i class="mdi mdi-clock-outline me-2"></i>
+        Menunggu Proses Legal
+    </button>
+@endif
 
-                        <button class="cash-btn cash-btn-outline-warning w-100">
-                            <i class="mdi mdi-key me-2"></i>
-                            Serah Terima Kunci
-                        </button>
 
                         <button class="cash-btn cash-btn-outline-secondary w-100">
                             <i class="mdi mdi-arrow-left me-2"></i>
@@ -644,17 +674,17 @@
 @endpush
 
 @push('scripts')
-<script>
-function handleInvoice(printUrl, waUrl) {
-    // buka cetak di tab baru
-    window.open(printUrl, '_blank');
+    <script>
+        function handleInvoice(printUrl, waUrl) {
+            // buka cetak di tab baru
+            window.open(printUrl, '_blank');
 
-    // redirect ke WA setelah 1 detik
-    setTimeout(() => {
-        window.location.href = waUrl;
-    }, 1000);
-}
-</script>
+            // redirect ke WA setelah 1 detik
+            setTimeout(() => {
+                window.location.href = waUrl;
+            }, 1000);
+        }
+    </script>
     <script>
         $(document).ready(function() {
             // Fungsi format rupiah
