@@ -313,6 +313,10 @@ Route::post('/akad/akad-cash/{booking}/store', [AkadController::class, 'store'])
 Route::get('/akad/akad-cash/serah-terima/{booking}', [SerahTerimaController::class, 'index'])->name('booking.serah-terima');
 
 
+Route::get('/akad-serah-unit', function () {
+    return view('marketing.serah_unit');
+});
+
 Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
 Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
 Route::get('/dashboard-customer-profil-cash', function () {
