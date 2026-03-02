@@ -32,9 +32,9 @@ class DokumentLegalPersiapanController extends Controller
         $perPage = $request->input('per_page', 10);
 
         // Ambil data dokumen
-        $documents = $query->latest()->paginate($perPage)->withQueryString();
+        $documentTypes = $query->latest()->paginate($perPage)->withQueryString();
 
-        return view('dokument.dokument', compact('documents'));
+        return view('dokument.dokument-persiapan', compact('documentTypes'));
     }
 
     public function store(Request $request, $bookingId)
