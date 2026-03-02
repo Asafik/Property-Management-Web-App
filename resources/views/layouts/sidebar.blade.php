@@ -194,6 +194,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('dokument.persiapan')}}">Document Pecah Tanah Induk ke Unit</a>
                 </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="dashboard-data-dokument-cash-legal">Data Dokument Cash Legal</a>
+                </li>
             </ul>
         </div>
     </li>

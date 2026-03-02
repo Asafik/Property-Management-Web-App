@@ -8,23 +8,70 @@ use App\Models\Promo;
 
 class ListPengajuanController extends Controller
 {
-    public function index()
-    {
-        // Total booking dengan status pengajuan (atau active kalau pakai itu)
-        $totalPengajuan = Booking::where('status', 'active')->count();
+    public function index(Request $request)
+{
+    // Query builder untuk bookings dengan relasi
+    $query = Booking::with([
+        'customer',
+        'unit',
+        'sales'
+    ]);
 
-        // Ambil semua booking + relasi
-        $bookings = Booking::with([
-            'customer',
-            'unit',
-            'sales'
-        ])->latest()->get();
-
-        return view('marketing.list_pengajuan', compact(
-            'totalPengajuan',
-            'bookings'
-        ));
+    // Filter Pencarian (customer, booking code, unit)
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('booking_code', 'like', "%{$search}%")
+              ->orWhereHas('customer', function($customer) use ($search) {
+                  $customer->where('full_name', 'like', "%{$search}%");
+              })
+              ->orWhereHas('unit', function($unit) use ($search) {
+                  $unit->where('block', 'like', "%{$search}%")
+                       ->orWhere('unit_number', 'like', "%{$search}%");
+              });
+        });
     }
+
+    // Filter Status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // Filter Metode Pembayaran
+    if ($request->filled('metode')) {
+        $query->where('purchase_type', $request->metode);
+    }
+
+    // Ambil data marketing untuk dropdown filter
+    $marketing = \App\Models\Employee::All();
+                
+
+    // Jumlah tampil per halaman
+    $perPage = $request->input('per_page', 10);
+
+    // Ambil data dengan pagination
+    $bookings = $query->latest()->paginate($perPage)->withQueryString();
+
+    // Total booking dengan status pengajuan (untuk statistik)
+    $totalPengajuan = Booking::where('status', 'active')->count();
+
+    // Total untuk statistik lainnya (opsional)
+    $totalKpr = Booking::where('purchase_type', 'kpr')->count();
+    $totalCash = Booking::where('purchase_type', 'cash')->count();
+    $totalLunas = Booking::whereIn('status', ['completed', 'cash_process'])->count();
+
+    // Ambil data marketing untuk dropdown filter
+    $marketing = \App\Models\Employee::where('role', 'marketing')->get(); // Sesuaikan dengan model dan kondisi Anda
+
+    return view('marketing.list_pengajuan', compact(
+        'totalPengajuan',
+        'totalKpr',
+        'totalCash',
+        'totalLunas',
+        'bookings',
+        'marketing'
+    ));
+}
 
  public function show($id)
 {

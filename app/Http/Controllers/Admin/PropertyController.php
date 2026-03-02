@@ -60,47 +60,41 @@ public function kavlingindex(Request $request)
 {
     $query = LandBank::where('legal_status', 'verified');
 
-    // Filter search by name
+    // Filter Search Nama
     if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where('name', 'like', "%{$search}%");
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
 
-    // Filter by type (zoning)
+    // Filter Type (zoning)
     if ($request->filled('type')) {
         $query->where('zoning', $request->type);
     }
-
-    // Filter by location (city)
-    if ($request->filled('location')) {
-        $query->where('city', 'like', "%{$request->location}%");
-    }
-
-    // Filter by status
+    // Filter Status
     if ($request->filled('status')) {
-        $query->where('status', $request->status);
+        if ($request->status == 'sold') {
+            $query->where('status', 'sold');
+        } elseif ($request->status == 'booking') {
+            $query->where('status', 'booking');
+        } elseif ($request->status == 'available') {
+            // Ini masalahnya: di tabel pakai @else, artinya semua yang bukan sold & booking
+            // Jadi harus disesuaikan dengan nilai status di database untuk "Tersedia"
+            $query->whereNotIn('status', ['sold', 'booking']);
+        }
     }
 
-    // Jumlah tampil per halaman (default 10, opsi: 10, 25, 50, 100)
+    // Show per page
     $perPage = $request->input('per_page', 10);
 
-    // Ambil data dengan pagination
     $lands = $query->latest()->paginate($perPage)->withQueryString();
 
-    // Untuk filter dropdown (opsional, bisa diambil dari database)
+    // Untuk dropdown filter
     $types = LandBank::where('legal_status', 'verified')
                 ->whereNotNull('zoning')
                 ->distinct()
                 ->orderBy('zoning')
                 ->pluck('zoning');
 
-    $locations = LandBank::where('legal_status', 'verified')
-                ->whereNotNull('city')
-                ->distinct()
-                ->orderBy('city')
-                ->pluck('city');
-
-    return view('properti.kavling', compact('lands', 'types', 'locations'));
+    return view('properti.kavling', compact('lands', 'types'));
 }
 
 }
