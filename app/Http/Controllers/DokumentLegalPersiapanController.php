@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,28 +37,32 @@ class DokumentLegalPersiapanController extends Controller
         return view('dokument.dokument', compact('documents'));
     }
 
-    // Simpan dokumen yang diupload
     public function store(Request $request, $bookingId)
-    {
-        $documents = Document::all();
+{
+    $documents = Document::all();
 
-        foreach ($documents as $doc) {
-            $inputName = 'document_' . $doc->id;
-            if ($request->hasFile($inputName)) {
-                $file = $request->file($inputName);
-                
-                // Simpan file ke folder storage/app/public/documents
-                $path = $file->store('documents', 'public');
+    foreach ($documents as $doc) {
+        $inputName = 'document_' . $doc->id;
+        if ($request->hasFile($inputName)) {
+            $file = $request->file($inputName);
+            
+            // Simpan file ke folder storage/app/public/documents
+            $path = $file->store('documents', 'public');
 
-                // Simpan informasi file ke database
-                $doc->uploads()->create([
-                    'booking_id' => $bookingId,
-                    'file_name' => $file->getClientOriginalName(),
-                    'file_path' => $path,
-                ]);
-            }
+            // Simpan informasi file ke database
+            $doc->uploads()->create([
+                'booking_id' => $bookingId,
+                'file_name'  => $file->getClientOriginalName(),
+                'file_path'  => $path,
+            ]);
         }
-
-        return redirect()->back()->with('success', 'Dokumen berhasil diupload!');
     }
+
+    // Update status booking menjadi 'legal_done'
+    $booking = Booking::findOrFail($bookingId);
+    $booking->status = 'legal_done';
+    $booking->save();
+
+    return redirect()->back()->with('success', 'Dokumen berhasil diupload dan status booking diperbarui!');
+}
 }

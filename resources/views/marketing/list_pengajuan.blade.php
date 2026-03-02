@@ -942,12 +942,14 @@
                                     <!-- Baris 4: Button Filter & Reset -->
                                     <div class="row filter-row">
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                            <button type="button"
+                                                class="btn btn-gradient-primary w-100 btn-filter-reset">
                                                 <i class="mdi mdi-filter-outline"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                            <button type="button"
+                                                class="btn btn-gradient-secondary w-100 btn-filter-reset">
                                                 <i class="mdi mdi-refresh"></i> Reset
                                             </button>
                                         </div>
@@ -1025,7 +1027,8 @@
                                         <!-- Button Filter -->
                                         <div class="col-md-1 filter-col">
                                             <label class="form-label" style="visibility: hidden;">Filter</label>
-                                            <button type="button" class="btn btn-gradient-primary w-100 btn-filter-reset" title="Filter">
+                                            <button type="button" class="btn btn-gradient-primary w-100 btn-filter-reset"
+                                                title="Filter">
                                                 <i class="mdi mdi-filter-outline"></i>
                                             </button>
                                         </div>
@@ -1033,7 +1036,8 @@
                                         <!-- Button Reset -->
                                         <div class="col-md-1 filter-col">
                                             <label class="form-label" style="visibility: hidden;">Reset</label>
-                                            <button type="button" class="btn btn-gradient-secondary w-100 btn-filter-reset" title="Reset">
+                                            <button type="button"
+                                                class="btn btn-gradient-secondary w-100 btn-filter-reset" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
                                         </div>
@@ -1083,31 +1087,38 @@
                                             </td>
                                             <td>
                                                 @if ($booking->purchase_type == 'kpr')
-                                                    <span class="badge badge-info badge-sm"><i class="mdi mdi-bank me-1"></i>KPR</span>
+                                                    <span class="badge badge-info badge-sm"><i
+                                                            class="mdi mdi-bank me-1"></i>KPR</span>
                                                 @else
-                                                    <span class="badge badge-success badge-sm"><i class="mdi mdi-cash me-1"></i>Cash</span>
+                                                    <span class="badge badge-success badge-sm"><i
+                                                            class="mdi mdi-cash me-1"></i>Cash</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @switch($booking->status)
                                                     @case('active')
-                                                        <span class="badge badge-warning badge-sm"><i class="mdi mdi-clock-outline me-1"></i>Active</span>
+                                                        <span class="badge badge-warning badge-sm"><i
+                                                                class="mdi mdi-clock-outline me-1"></i>Active</span>
                                                     @break
 
                                                     @case('akad')
-                                                        <span class="badge badge-primary badge-sm"><i class="mdi mdi-handshake me-1"></i>Akad</span>
+                                                        <span class="badge badge-primary badge-sm"><i
+                                                                class="mdi mdi-handshake me-1"></i>Akad</span>
                                                     @break
 
-                                                    @case('lunas')
-                                                        <span class="badge badge-success badge-sm"><i class="mdi mdi-check-circle me-1"></i>Lunas</span>
+                                                    @case('cash_process')
+                                                        <span class="badge badge-success badge-sm"><i
+                                                                class="mdi mdi-check-circle me-1"></i>Lunas</span>
                                                     @break
 
-                                                    @case('ditolak')
-                                                        <span class="badge badge-danger badge-sm"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
+                                                    @case('cancelled')
+                                                        <span class="badge badge-danger badge-sm"><i
+                                                                class="mdi mdi-close-circle me-1"></i>Ditolak</span>
                                                     @break
 
                                                     @default
-                                                        <span class="badge badge-secondary badge-sm"><i class="mdi mdi-information-outline me-1"></i>{{ ucfirst($booking->status) }}</span>
+                                                        <span class="badge badge-secondary badge-sm"><i
+                                                                class="mdi mdi-information-outline me-1"></i>{{ ucfirst($booking->status) }}</span>
                                                 @endswitch
                                             </td>
                                             <td>
@@ -1115,8 +1126,11 @@
                                                     $progress = match ($booking->status) {
                                                         'active' => 25,
                                                         'survey' => 40,
+                                                        'lanjut_kpr' => 50, 
+                                                        'cash_process' => 60, 
                                                         'akad' => 80,
                                                         'completed' => 100,
+                                                        'cancelled' => 0, 
                                                         default => 10,
                                                     };
                                                 @endphp
@@ -1133,7 +1147,8 @@
                                                 {{ $booking->sales->name ?? '-' }}
                                             </td>
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                                <div
+                                                    class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
                                                     {{-- Proses KPR / Cash --}}
                                                     @if ($booking->purchase_type == 'kpr')
                                                         <a href="{{ route('pengajuan.show', $booking->id) }}"
@@ -1153,7 +1168,8 @@
                                                     </a>
 
                                                     {{-- Edit --}}
-                                                    <a href="#" class="btn btn-outline-warning btn-sm" title="Edit">
+                                                    <a href="#" class="btn btn-outline-warning btn-sm"
+                                                        title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
 
@@ -1161,7 +1177,8 @@
                                                     <form action="#" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                            title="Hapus">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </form>
