@@ -742,378 +742,196 @@
             </div>
         </div>
 
-        <!-- Form Serah Terima Unit -->
-        <div class="row mt-4">
-            <!-- Kolom Kiri: Form Utama -->
-            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="mdi mdi-key me-2 text-primary"></i>
-                            Form Serah Terima Unit
-                        </h5>
+      <form action="{{ route('serah-terima.store', $booking->id) }}" 
+      method="POST" 
+      enctype="multipart/form-data">
+@csrf
 
-                        <!-- Alert Info -->
-                        <div class="serah-alert serah-alert-success" role="alert">
-                            <i class="mdi mdi-information-outline me-2"></i>
-                            Unit siap diserahkan kepada customer. Pastikan semua checklist terpenuhi.
-                        </div>
+<div class="row mt-4">
 
-                        <!-- Informasi Serah Terima -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>Tanggal Serah Terima</label>
-                                    <input type="date" class="serah-form-control" value="2025-03-01">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>No. BAST</label>
-                                    <input type="text" class="serah-form-control" value="BAST/03/2025/001" readonly>
-                                </div>
-                            </div>
-                        </div>
+    <!-- ================= LEFT ================= -->
+    <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+        <div class="card">
+            <div class="card-body">
 
-                        <div class="serah-form-group">
-                            <label>Lokasi Serah Terima</label>
-                            <select class="serah-form-control">
-                                <option value="site" selected>Di Site / Proyek</option>
-                                <option value="kantor">Di Kantor Marketing</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                        </div>
+                <h5 class="card-title">
+                    <i class="mdi mdi-key me-2 text-primary"></i>
+                    Form Serah Terima Unit
+                </h5>
 
-                        <hr class="my-3">
+                <!-- Informasi -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Tanggal Serah Terima</label>
+                        <input type="date"
+                               name="tanggal_serah_terima"
+                               class="form-control"
+                               value="{{ date('Y-m-d') }}">
+                    </div>
 
-                        <!-- Checklist Kondisi Unit -->
-                        <h6 class="mb-3 text-primary">
-                            <i class="mdi mdi-checkbox-marked-circle me-2"></i>
-                            Checklist Kondisi Unit
-                        </h6>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="listrik" checked>
-                                        <label class="form-check-label" for="listrik">
-                                            Listrik berfungsi normal
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="air" checked>
-                                        <label class="form-check-label" for="air">
-                                            Air mengalir lancar
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="pintu" checked>
-                                        <label class="form-check-label" for="pintu">
-                                            Pintu & jendela berfungsi baik
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="kunci" checked>
-                                        <label class="form-check-label" for="kunci">
-                                            Kunci lengkap (pintu utama, pagar)
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="dinding">
-                                        <label class="form-check-label" for="dinding">
-                                            Dinding & plafon (ada retak?)
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-warning">Periksa</span>
-                                </div>
-
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="lantai" checked>
-                                        <label class="form-check-label" for="lantai">
-                                            Lantai keramik baik
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="wc" checked>
-                                        <label class="form-check-label" for="wc">
-                                            Kloset & sanitasi berfungsi
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-
-                                <div class="serah-checklist-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="meteran" checked>
-                                        <label class="form-check-label" for="meteran">
-                                            Meteran listrik & air terpasang
-                                        </label>
-                                    </div>
-                                    <span class="badge bg-success small">OK</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="my-3">
-
-                        <!-- Dokumen yang Diserahkan -->
-                        <h6 class="mb-3 text-primary">
-                            <i class="mdi mdi-file-document me-2"></i>
-                            Dokumen yang Diserahkan
-                        </h6>
-
-                        <div class="serah-dokumen-card">
-                            <div class="serah-dokumen-info">
-                                <i class="mdi mdi-key-variant"></i>
-                                <span>Kunci Unit (3 buah)</span>
-                            </div>
-                            <div class="serah-dokumen-status">
-                                <span class="badge bg-success">Sudah</span>
-                                <input type="checkbox" checked disabled style="opacity: 0.5;">
-                            </div>
-                        </div>
-
-                        <div class="serah-dokumen-card">
-                            <div class="serah-dokumen-info">
-                                <i class="mdi mdi-file-document"></i>
-                                <span>Akta Jual Beli (AJB)</span>
-                            </div>
-                            <div class="serah-dokumen-status">
-                                <span class="badge bg-success">Sudah</span>
-                                <input type="checkbox" checked disabled style="opacity: 0.5;">
-                            </div>
-                        </div>
-
-                        <div class="serah-dokumen-card">
-                            <div class="serah-dokumen-info">
-                                <i class="mdi mdi-certificate"></i>
-                                <span>Sertifikat Hak Milik (SHM)</span>
-                            </div>
-                            <div class="serah-dokumen-status">
-                                <span class="badge bg-warning">Proses</span>
-                                <input type="checkbox">
-                            </div>
-                        </div>
-
-                        <div class="serah-dokumen-card">
-                            <div class="serah-dokumen-info">
-                                <i class="mdi mdi-file-document-box"></i>
-                                <span>IMB / PBG</span>
-                            </div>
-                            <div class="serah-dokumen-status">
-                                <span class="badge bg-success">Sudah</span>
-                                <input type="checkbox" checked disabled style="opacity: 0.5;">
-                            </div>
-                        </div>
-
-                        <div class="serah-dokumen-card">
-                            <div class="serah-dokumen-info">
-                                <i class="mdi mdi-book-open-variant"></i>
-                                <span>Buku Panduan & Garansi</span>
-                            </div>
-                            <div class="serah-dokumen-status">
-                                <span class="badge bg-success">Sudah</span>
-                                <input type="checkbox" checked disabled style="opacity: 0.5;">
-                            </div>
-                        </div>
-
-                        <hr class="my-3">
-
-                        <!-- Upload Dokumentasi -->
-                        <h6 class="mb-3 text-primary">
-                            <i class="mdi mdi-camera me-2"></i>
-                            Dokumentasi Serah Terima
-                        </h6>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>Foto 1: Serah Terima Kunci</label>
-                                    <div class="serah-file-upload-modern">
-                                        <input type="file" id="foto1" accept=".jpg,.jpeg,.png">
-                                        <div class="serah-file-label-modern">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="serah-file-info-modern">
-                                                <span>Upload Foto</span>
-                                                <small>Customer terima kunci</small>
-                                            </div>
-                                            <span class="serah-file-size"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>Foto 2: Kondisi Unit</label>
-                                    <div class="serah-file-upload-modern">
-                                        <input type="file" id="foto2" accept=".jpg,.jpeg,.png">
-                                        <div class="serah-file-label-modern">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="serah-file-info-modern">
-                                                <span>Upload Foto</span>
-                                                <small>Tampak depan unit</small>
-                                            </div>
-                                            <span class="serah-file-size"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="serah-form-group">
-                            <label>Catatan Serah Terima</label>
-                            <textarea class="serah-form-control" rows="2"
-                                placeholder="Contoh: Unit dalam kondisi baik, listrik dan air sudah aktif, kunci sudah diterima customer">Unit dalam kondisi baik, customer sudah cek seluruh ruangan dan menyatakan puas.</textarea>
-                        </div>
+                    <div class="col-md-6">
+                        <label>No. BAST</label>
+                        <input type="text"
+                               name="no_bast"
+                               class="form-control"
+                               value="{{ $noBast ?? 'Auto Generate' }}"
+                               readonly>
                     </div>
                 </div>
-            </div>
 
-            <!-- Kolom Kanan: Tanda Tangan & Aksi -->
-            <div class="col-12 col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="mdi mdi-signature me-2 text-primary"></i>
-                            Tanda Tangan & Persetujuan
-                        </h5>
+                <div class="mt-3">
+                    <label>Lokasi Serah Terima</label>
+                    <select name="lokasi_serah_terima" class="form-control">
+                        <option value="site">Di Site / Proyek</option>
+                        <option value="kantor">Di Kantor Marketing</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
 
-                        <!-- Tanda Tangan Customer -->
-                        <div class="serah-form-group">
-                            <label>Tanda Tangan Customer</label>
-                            <div class="serah-signature-area" onclick="alert('Demo: Modal tanda tangan akan muncul')">
-                                <i class="mdi mdi-draw"></i>
-                                <span>Klik untuk tanda tangan</span>
-                                <small class="text-muted mt-2">{{ $booking->customer->full_name ?? 'Ngebug boy' }}</small>
+                <hr>
+
+                <!-- ================= CHECKLIST ================= -->
+                <h6 class="text-primary">Checklist Kondisi Unit</h6>
+
+                @php
+                    $items = [
+                        'Listrik berfungsi normal',
+                        'Air mengalir lancar',
+                        'Pintu & jendela berfungsi baik',
+                        'Kunci lengkap (pintu utama, pagar)',
+                        'Dinding & plafon',
+                        'Lantai keramik baik',
+                        'Kloset & sanitasi berfungsi',
+                        'Meteran listrik & air terpasang'
+                    ];
+                @endphp
+
+                <div class="row">
+                    @foreach($items as $index => $item)
+                        <div class="col-md-6 mb-2">
+                            <input type="hidden" 
+                                   name="items[{{ $index }}][name]" 
+                                   value="{{ $item }}">
+
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       name="items[{{ $index }}][checked]"
+                                       value="1"
+                                       class="form-check-input">
+                                <label class="form-check-label">
+                                    {{ $item }}
+                                </label>
                             </div>
                         </div>
+                    @endforeach
+                </div>
 
-                        <!-- Tanda Tangan Marketing -->
-                        <div class="serah-form-group">
-                            <label>Tanda Tangan Marketing</label>
-                            <div class="serah-signature-area" onclick="alert('Demo: Modal tanda tangan akan muncul')">
-                                <i class="mdi mdi-draw"></i>
-                                <span>Klik untuk tanda tangan</span>
-                                <small class="text-muted mt-2">Ahmad Rizki</small>
-                            </div>
-                        </div>
+                <hr>
 
-                        <!-- Saksi (opsional) -->
-                        <div class="serah-form-group">
-                            <label>Saksi (opsional)</label>
-                            <input type="text" class="serah-form-control" placeholder="Nama saksi">
-                        </div>
+                <!-- ================= DOKUMEN ================= -->
+                <h6 class="text-primary">Dokumen yang Diserahkan</h6>
 
-                        <hr class="my-3">
+                @php
+                    $documents = [
+                        'Kunci Unit (3 buah)',
+                        'Akta Jual Beli (AJB)',
+                        'Sertifikat Hak Milik (SHM)',
+                        'IMB / PBG',
+                        'Buku Panduan & Garansi'
+                    ];
+                @endphp
 
-                        <!-- Checkbox Persetujuan -->
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="setuju" checked>
-                            <label class="form-check-label" for="setuju">
-                                Saya menyatakan bahwa unit telah diterima dalam kondisi baik dan sesuai dengan perjanjian.
+                @foreach($documents as $index => $doc)
+                    <div class="mb-2">
+                        <input type="hidden"
+                               name="documents[{{ $index }}][name]"
+                               value="{{ $doc }}">
+
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   name="documents[{{ $index }}][submitted]"
+                                   value="1"
+                                   class="form-check-input">
+                            <label class="form-check-label">
+                                {{ $doc }}
                             </label>
                         </div>
+                    </div>
+                @endforeach
 
-                        <hr class="my-3">
+                <hr>
 
-                        <!-- Ringkasan & Timeline -->
-                        <h6 class="mb-3 text-primary">
-                            <i class="mdi mdi-timeline-clock me-2"></i>
-                            Timeline Transaksi
-                        </h6>
+                <!-- ================= UPLOAD ================= -->
+                <h6 class="text-primary">Dokumentasi Serah Terima</h6>
 
-                        <div class="serah-timeline">
-                            <div class="serah-timeline-item">
-                                <div class="serah-timeline-icon">
-                                    <i class="mdi mdi-check-circle text-success"></i>
-                                </div>
-                                <div class="serah-timeline-content">
-                                    <span class="serah-timeline-text">Booking & Bayar Booking Fee</span>
-                                    <span class="serah-timeline-date">10 Februari 2025</span>
-                                </div>
-                            </div>
-                            <div class="serah-timeline-item">
-                                <div class="serah-timeline-icon">
-                                    <i class="mdi mdi-check-circle text-success"></i>
-                                </div>
-                                <div class="serah-timeline-content">
-                                    <span class="serah-timeline-text">Pelunasan Pembayaran</span>
-                                    <span class="serah-timeline-date">20 Februari 2025</span>
-                                </div>
-                            </div>
-                            <div class="serah-timeline-item">
-                                <div class="serah-timeline-icon">
-                                    <i class="mdi mdi-check-circle text-success"></i>
-                                </div>
-                                <div class="serah-timeline-content">
-                                    <span class="serah-timeline-text">Proses Akad Cash</span>
-                                    <span class="serah-timeline-date">25 Februari 2025</span>
-                                </div>
-                            </div>
-                            <div class="serah-timeline-item">
-                                <div class="serah-timeline-icon">
-                                    <i class="mdi mdi-progress-clock text-primary"></i>
-                                </div>
-                                <div class="serah-timeline-content">
-                                    <span class="serah-timeline-text">Serah Terima Unit</span>
-                                    <span class="serah-timeline-date">1 Maret 2025 (Sekarang)</span>
-                                </div>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Foto Serah Terima Kunci</label>
+                        <input type="file"
+                               name="foto_serah_kunci"
+                               class="form-control">
+                    </div>
 
-                        <hr class="my-3">
-
-                        <!-- Tombol Aksi -->
-                        <div class="d-flex flex-column gap-2">
-                            <button class="serah-btn serah-btn-success w-100">
-                                <i class="mdi mdi-check-decagram me-2"></i>
-                                Proses Serah Terima
-                            </button>
-
-                            <button class="serah-btn serah-btn-primary w-100">
-                                <i class="mdi mdi-printer me-2"></i>
-                                Cetak BAST
-                            </button>
-
-                            <button class="serah-btn serah-btn-primary w-100"
-                                style="background: linear-gradient(135deg, #25D366, #128C7E);">
-                                <i class="mdi mdi-whatsapp me-2"></i>
-                                Kirim Notifikasi WhatsApp
-                            </button>
-
-                            <button class="serah-btn serah-btn-outline-secondary w-100">
-                                <i class="mdi mdi-arrow-left me-2"></i>
-                                Kembali ke Akad Cash
-                            </button>
-                        </div>
+                    <div class="col-md-6">
+                        <label>Foto Kondisi Unit</label>
+                        <input type="file"
+                               name="foto_kondisi_unit"
+                               class="form-control">
                     </div>
                 </div>
+
+                <div class="mt-3">
+                    <label>Catatan</label>
+                    <textarea name="catatan"
+                              class="form-control"
+                              rows="3"></textarea>
+                </div>
+
             </div>
         </div>
+    </div>
+
+    <!-- ================= RIGHT ================= -->
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    <i class="mdi mdi-signature me-2 text-primary"></i>
+                    Persetujuan
+                </h5>
+
+                <div class="mb-3">
+                    <label>Saksi (Opsional)</label>
+                    <input type="text"
+                           name="saksi"
+                           class="form-control">
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox"
+                           name="persetujuan"
+                           value="1"
+                           class="form-check-input"
+                           required>
+                    <label class="form-check-label">
+                        Saya menyatakan unit diterima dalam kondisi baik.
+                    </label>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success w-100">
+                    <i class="mdi mdi-check-decagram me-2"></i>
+                    Proses Serah Terima
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</form>
     </div>
 
     @push('scripts')

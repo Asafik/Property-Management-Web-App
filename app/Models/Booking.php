@@ -76,4 +76,8 @@ public function finalPayment()
 {
     return $this->hasOne(Payment::class)->latestOfMany();
 }
+public function serahTerima()
+{
+    return $this->hasOne(SerahTerima::class);
+}
 }
