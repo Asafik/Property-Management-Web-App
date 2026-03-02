@@ -39,7 +39,7 @@ public function store(Request $request)
     // Update status booking menjadi 'cash_process'
     $booking = \App\Models\Booking::with('unit')->find($request->booking_id);
     if ($booking) {
-        $booking->status = 'cash_process';
+        $booking->status_cash = 'done';
         $booking->save();
 
         // Update status unit menjadi 'sold'

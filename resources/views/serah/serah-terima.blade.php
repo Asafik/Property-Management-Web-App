@@ -1,4 +1,4 @@
-@extends('layouts.app') <!-- jika kamu menggunakan layout -->
+@extends('layouts.partial.app') <!-- jika kamu menggunakan layout -->
 
 @section('title', 'Halaman Serah Terima')
 

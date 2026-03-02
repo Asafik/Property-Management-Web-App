@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class BookingController extends Controller
 {
     //
-    public function updateNego(Request $request, $id)
+public function updateNego(Request $request, $id)
 {
     // Validasi input
     $request->validate([
@@ -22,15 +22,16 @@ class BookingController extends Controller
 
     // Update harga nego
     $booking->harga_nego = $hargaNego;
-    $booking->save();
 
-    // Optional: simpan log negosiasi di payment atau notes
-    // $booking->notes = "Harga nego diperbarui: Rp " . number_format($hargaNego,0,',','.');
-    // $booking->save();
+    // Update status_cash menjadi 'process'
+    $booking->status_cash = 'process';
+
+    // Simpan perubahan
+    $booking->save();
 
     // Flash message
     return redirect()
         ->route('marketing.cash', $booking->id)
-        ->with('success', 'Harga negosiasi berhasil diperbarui!');
+        ->with('success', 'Harga negosiasi berhasil diperbarui dan status cash diupdate!');
 }
 }
