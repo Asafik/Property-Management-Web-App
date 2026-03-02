@@ -1007,9 +1007,9 @@
                             <i class="mdi mdi-account-tie me-1"></i>Marketing
                         </label>
                         <select name="marketing_id" class="form-control">
-                            <option value="">Semua</option>
+                            <option value="">Semua Marketing</option>
                             @foreach($marketing as $m)
-                                <option value="{{ $m->id }}" {{ request('marketing_id') == $m->id ? 'selected' : '' }}>
+                                <option value="{{ $m->id }}" {{ request('employee_id') == $m->id ? 'selected' : '' }}>
                                     {{ $m->name }}
                                 </option>
                             @endforeach
