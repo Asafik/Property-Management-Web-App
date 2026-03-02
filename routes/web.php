@@ -317,6 +317,10 @@ Route::get('/akad-serah-unit', function () {
     return view('marketing.serah_unit');
 });
 
+Route::get('/dashboard-data-dokument-cash-legal', function () {
+    return view('dokument.data_dokument_cash');
+});
+
 Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
 Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
 Route::get('/dashboard-customer-profil-cash', function () {
