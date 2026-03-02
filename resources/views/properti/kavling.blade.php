@@ -627,15 +627,6 @@ h4.text-dark {
                                                     <option value="Tanah">Tanah</option>
                                                 </select>
                                             </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                                </label>
-                                                <select id="filterLokasiMobile" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Jakarta">Jakarta</option>
-                                                </select>
-                                            </div>
                                         </div>
 
                                         <!-- Baris 3: Status & Tampil -->
