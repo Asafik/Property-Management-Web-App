@@ -962,7 +962,7 @@
     </div>
 
     <!-- Tombol Serah Terima Unit -->
-    @if ($booking->status === 'akad')
+    @if ($booking->status_akad === 'done')
         <div class="mt-3">
             <a href="{{ route('booking.serah-terima', $booking->id) }}" 
                class="btn btn-primary w-100">

@@ -373,7 +373,7 @@
                     <div class="text-center mb-4" id="badgeCashAwal">
                         <span class="cash-badge cash-badge-success" style="font-size: 14px;">
                             <i class="mdi mdi-check-circle me-1"></i>
-                            Cash Keras - Belum Lunas
+                            Cash Keras - Lunas
                         </span>
                     </div>
                     <div class="text-center mb-4" id="badgeKonversi" style="display: none;">
@@ -571,40 +571,45 @@
                             <i class="mdi mdi-whatsapp me-2"></i>
                             Kirim Invoice
                         </button>
-                       @if ($booking->status == 'cash_process')
-    <a href="{{ route('akad.cash', $booking->id) }}"
-        class="cash-btn cash-btn-outline-warning w-100 text-center d-inline-block">
-        <i class="mdi mdi-handshake-outline me-2"></i>
-        Lanjut ke Akad
-    </a>
-@elseif ($booking->status == 'akad')
-    <button class="cash-btn cash-btn-outline-success w-100" disabled>
-        <i class="mdi mdi-check-circle-outline me-2"></i>
-        Sudah Akad
-    </button>
-@else
-    <button class="cash-btn cash-btn-outline-warning w-100" disabled>
-        <i class="mdi mdi-clock-outline me-2"></i>
-        Menunggu Pelunasan
-    </button>
-@endif
-@if($booking->status == 'akad')
-    <a href="{{ route('cash.document.legal', $booking->id) }}"
-       class="cash-btn cash-btn-outline-warning w-100">
-       <i class="mdi mdi-file-certificate-outline me-2"></i>
-       Persiapan Document Legal - {{ $booking->customer->name }}
-    </a>
-@elseif($booking->status == 'legal_done')
-    <button class="cash-btn cash-btn-outline-success w-100" disabled>
-        <i class="mdi mdi-check-circle-outline me-2"></i>
-        Legal Document Selesai
-    </button>
-@else
-    <button class="cash-btn cash-btn-outline-warning w-100" disabled>
-        <i class="mdi mdi-clock-outline me-2"></i>
-        Menunggu Proses Legal
-    </button>
-@endif
+                        {{-- Tombol Cash --}}
+                        @if ($booking->status_cash == 'process')
+                            <a href="{{ route('akad.cash', $booking->id) }}"
+                                class="cash-btn cash-btn-outline-warning w-100">
+                                <i class="mdi mdi-handshake-outline me-2"></i> Lanjut ke Akad
+                            </a>
+                        @elseif($booking->status_cash == 'done')
+                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                <i class="mdi mdi-check-circle-outline me-2"></i> Cash Keras - Sudah Lunas
+                            </button>
+                        @else
+                            <button class="cash-btn cash-btn-outline-warning w-100" disabled>
+                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Pembayaran
+                            </button>
+                        @endif
+
+                        {{-- Tombol Akad --}}
+                        @if ($booking->status_akad == 'done')
+                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                <i class="mdi mdi-check-circle-outline me-2"></i> Sudah Akad
+                            </button>
+                        @else
+                            <button class="cash-btn cash-btn-outline-warning w-100" disabled>
+                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Akad
+                            </button>
+                        @endif
+
+                        {{-- Tombol Legal --}}
+                        @if ($booking->status_legal == 'done')
+                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                <i class="mdi mdi-check-circle-outline me-2"></i> Legal Document Selesai
+                            </button>
+                        @else
+                            <a href="{{ route('cash.document.legal', $booking->id) }}"
+                                class="cash-btn cash-btn-outline-warning w-100">
+                                <i class="mdi mdi-file-certificate-outline me-2"></i> Persiapan Document Legal -
+                                {{ $booking->customer->name }}
+                            </a>
+                        @endif
 
 
                         <button class="cash-btn cash-btn-outline-secondary w-100">
@@ -736,7 +741,7 @@
                     );
                 } else {
                     $('#badgeCashAwal').html(
-                        `<span class="cash-badge cash-badge-success"><i class="mdi mdi-check-circle me-1"></i>Cash Keras - Belum Lunas</span>`
+                        `<span class="cash-badge cash-badge-success"><i class="mdi mdi-check-circle me-1"></i>Cash Keras - Lunas</span>`
                     );
                 }
 

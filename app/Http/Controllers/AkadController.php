@@ -6,18 +6,19 @@ use App\Models\Booking;
 use App\Models\Akad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+
 class AkadController extends Controller
 {
     public function index(Booking $booking)
     {
-        // Optional: validasi biar nggak bisa akses kalau belum lunas
-        if ($booking->status !== 'cash_process' && $booking->status !== 'akad') {
+        // Validasi: hanya bisa akses jika cash sudah dalam proses atau sudah lunas
+        if ($booking->status_cash !== 'process' && $booking->status_cash !== 'done') {
             return redirect()->back()->with('error', 'Booking belum bisa masuk tahap akad.');
         }
 
         return view('marketing.akad_cash', compact('booking'));
     }
-  public function store(Request $request, Booking $booking)
+   public function store(Request $request, Booking $booking)
 {
     try {
         // Log request masuk
@@ -26,8 +27,8 @@ class AkadController extends Controller
             'request' => $request->all()
         ]);
 
-        // Validasi status booking
-        if ($booking->status !== 'cash_process' && $booking->status !== 'akad') {
+        // Validasi: hanya bisa akad jika cash sudah process atau done
+        if (!in_array($booking->status_cash, ['process', 'done'])) {
             Log::warning('Booking belum lunas', ['booking_id' => $booking->id]);
             return redirect()->back()->with('error', 'Booking belum lunas.');
         }
@@ -44,14 +45,15 @@ class AkadController extends Controller
             'status_pembayaran' => 'nullable|string'
         ]);
 
+        // Upload dokumen jika ada
         $filePath = null;
         if ($request->hasFile('dokumen')) {
             $filePath = $request->file('dokumen')->store('dokumen_akad', 'public');
             Log::info('Dokumen akad diupload', ['file' => $filePath]);
         }
 
-        // Jika form Selesai
-        if ($request->has('tanggal_akad')) {
+        // ===== FORM SELESAI =====
+        if ($request->filled('tanggal_akad')) {
             $noAkad = $request->no_akad ?? 'AKD-' . date('Y') . '-' . str_pad(Akad::count() + 1, 4, '0', STR_PAD_LEFT);
 
             Akad::create([
@@ -63,17 +65,21 @@ class AkadController extends Controller
                 'status' => 'selesai'
             ]);
 
+            // Update status akad di booking
             $booking->update([
-                'status' => 'akad'
+                'status_akad' => 'done'
             ]);
 
-            Log::info('Akad selesai berhasil diproses', ['booking_id' => $booking->id, 'no_akad' => $noAkad]);
+            Log::info('Akad selesai berhasil diproses', [
+                'booking_id' => $booking->id,
+                'no_akad' => $noAkad
+            ]);
 
             return redirect()->route('dashboard_cash')->with('success', 'Akad selesai berhasil diproses.');
         }
 
-        // Jika form Batal
-        if ($request->has('alasan_batal')) {
+        // ===== FORM BATAL =====
+        if ($request->filled('alasan_batal')) {
             Akad::create([
                 'booking_id' => $booking->id,
                 'no_akad' => null,
@@ -84,8 +90,9 @@ class AkadController extends Controller
                 'tindakan' => $request->tindakan
             ]);
 
+            // Update status akad di booking
             $booking->update([
-                'status' => 'batal'
+                'status_akad' => 'cancelled'
             ]);
 
             Log::info('Akad dibatalkan', [
@@ -98,7 +105,6 @@ class AkadController extends Controller
         }
 
         Log::warning('Form tidak lengkap atau tidak valid', ['booking_id' => $booking->id]);
-
         return redirect()->back()->with('error', 'Form tidak lengkap atau tidak valid.');
     } catch (\Exception $e) {
         Log::error('Error saat store akad', [
