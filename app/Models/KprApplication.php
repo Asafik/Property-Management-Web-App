@@ -10,18 +10,21 @@ class KprApplication extends Model
         'unit_id',
         'customer_id',
         'booking_id',
-        'bank_id',
+        'banks_id',
         'sales_id',
         'harga_unit',
         'dp',
         'tenor',
-        'estimasi_cicilan',
+        'jumlah_pinjaman',
+        'bunga',
+        'estimasi_angsuran',
         'status',
         'submitted_at',
         'approved_at',
         'rejected_at',
         'akad_at',
-        'catatan'
+        'catatan',
+        'berita_acara'
     ];
 
     // relasi
@@ -37,11 +40,15 @@ class KprApplication extends Model
 
     public function bank()
     {
-        return $this->belongsTo(Banks::class);
+        return $this->belongsTo(Banks::class, 'banks_id');
     }
 
     public function sales()
     {
         return $this->belongsTo(Employee::class, 'sales_id');
     }
+    public function documents()
+{
+    return $this->hasMany(KprDocument::class);
+}
 }

@@ -90,7 +90,7 @@ Route::put('/bookings/{booking}/update-nego', [BookingController::class, 'update
     ->name('bookings.updateNego');
 Route::get('/dashboard-approved', fn() => view('marketing.approved'));
 Route::get('/dashboard-akad', fn() => view('marketing.akad'));
-Route::get('/dashboard-vertifikasi-kpr', fn() => view('marketing.vertifikasi_kpr'));
+
 Route::get('/dashboard-survey', fn() => view('marketing.survey'));
 
 
@@ -337,7 +337,8 @@ Route::get('/dashboard-customer-profil-kpr', function () {
 
 Route::get('/dashboard/customer-kpr', [TransaksiKPRController::class, 'index'])->name('customer.kpr');
 Route::get('/transaksi/kpr/{booking}/approve', [TransaksiKPRController::class, 'approve'])->name('transaksi.kpr.approve');
-
+Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])
+    ->name('kpr.verifikasi.store');
 });
 
 

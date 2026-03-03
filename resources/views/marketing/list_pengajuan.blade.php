@@ -864,191 +864,237 @@
                     </div>
                     <div class="card-body">
                         <!-- Filter Section - SEJAJAR SEPERTI MARKETING JUAL UNIT -->
-                       <div class="filter-card">
-    <div class="card-body">
-        <h6 class="card-title mb-3" style="font-size: 1rem;">
-            <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-        </h6>
+                        <div class="filter-card">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                    <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                </h6>
 
-        <!-- FILTER UNTUK MOBILE -->
-        <div class="d-block d-md-none">
-            <form method="GET" action="{{ url('marketing/list-pengajuan') }}">
-                <!-- Baris 1: Pencarian -->
-                <div class="row filter-row">
-                    <div class="col-12">
-                        <label class="form-label">
-                            <i class="mdi mdi-magnify me-1"></i>Pencarian
-                        </label>
-                        <input type="text" name="search" class="form-control" value="{{ request('search') }}"
-                            placeholder="Cari customer, no booking, unit...">
-                    </div>
-                </div>
+                                <!-- FILTER UNTUK MOBILE -->
+                                <div class="d-block d-md-none">
+                                    <form method="GET" action="{{ url('marketing/list-pengajuan') }}">
+                                        <!-- Baris 1: Pencarian -->
+                                        <div class="row filter-row">
+                                            <div class="col-12">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" name="search" class="form-control"
+                                                    value="{{ request('search') }}"
+                                                    placeholder="Cari customer, no booking, unit...">
+                                            </div>
+                                        </div>
 
-                <!-- Baris 2: Status & Metode -->
-                <div class="row filter-row">
-                    <div class="col-6">
-                        <label class="form-label">
-                            <i class="mdi mdi-chart-arc me-1"></i>Status
-                        </label>
-                        <select name="status" class="form-control">
-                            <option value="">Semua Status</option>
-                            <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="pengajuan" {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
-                            <option value="verifikasi" {{ request('status') == 'verifikasi' ? 'selected' : '' }}>Verifikasi</option>
-                            <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Survey</option>
-                            <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Akad</option>
-                            <option value="cair" {{ request('status') == 'cair' ? 'selected' : '' }}>Cair</option>
-                            <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
-                            <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">
-                            <i class="mdi mdi-cash-multiple me-1"></i>Metode
-                        </label>
-                        <select name="metode" class="form-control">
-                            <option value="">Semua Metode</option>
-                            <option value="kpr" {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
-                            <option value="cash" {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
-                        </select>
-                    </div>
-                </div>
+                                        <!-- Baris 2: Status & Metode -->
+                                        <div class="row filter-row">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select name="status" class="form-control">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="draft"
+                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="pengajuan"
+                                                        {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan
+                                                    </option>
+                                                    <option value="verifikasi"
+                                                        {{ request('status') == 'verifikasi' ? 'selected' : '' }}>
+                                                        Verifikasi</option>
+                                                    <option value="survey"
+                                                        {{ request('status') == 'survey' ? 'selected' : '' }}>Survey
+                                                    </option>
+                                                    <option value="akad"
+                                                        {{ request('status') == 'akad' ? 'selected' : '' }}>Akad</option>
+                                                    <option value="cair"
+                                                        {{ request('status') == 'cair' ? 'selected' : '' }}>Cair</option>
+                                                    <option value="lunas"
+                                                        {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                    <option value="ditolak"
+                                                        {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-cash-multiple me-1"></i>Metode
+                                                </label>
+                                                <select name="metode" class="form-control">
+                                                    <option value="">Semua Metode</option>
+                                                    <option value="kpr"
+                                                        {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
+                                                    <option value="cash"
+                                                        {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                <!-- Baris 3: Marketing & Tampil -->
-                <div class="row filter-row">
-                    <div class="col-6">
-                        <label class="form-label">
-                            <i class="mdi mdi-account-tie me-1"></i>Marketing
-                        </label>
-                        <select name="marketing_id" class="form-control">
-                            <option value="">Semua Marketing</option>
-                            @foreach($marketing as $m)
-                                <option value="{{ $m->id }}" {{ request('employee_id') == $m->id ? 'selected' : '' }}>
-                                    {{ $m->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">
-                            <i class="mdi mdi-counter me-1"></i>Tampil
-                        </label>
-                        <select name="per_page" class="form-control">
-                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
-                </div>
+                                        <!-- Baris 3: Marketing & Tampil -->
+                                        <div class="row filter-row">
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-account-tie me-1"></i>Marketing
+                                                </label>
+                                                <select name="marketing_id" class="form-control">
+                                                    <option value="">Semua Marketing</option>
+                                                    @foreach ($marketing as $m)
+                                                        <option value="{{ $m->id }}"
+                                                            {{ request('employee_id') == $m->id ? 'selected' : '' }}>
+                                                            {{ $m->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="per_page" class="form-control">
+                                                    <option value="10"
+                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25"
+                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50"
+                                                        {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100"
+                                                        {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                <!-- Baris 4: Button Filter & Reset -->
-                <div class="row filter-row">
-                    <div class="col-6">
-                        <button type="submit" class="btn btn-gradient-primary w-100 btn-filter-reset">
-                            <i class="mdi mdi-filter-outline"></i> Filter
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <a href="{{ url('marketing/list-pengajuan') }}" class="btn btn-gradient-secondary w-100 btn-filter-reset">
-                            <i class="mdi mdi-refresh"></i> Reset
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
+                                        <!-- Baris 4: Button Filter & Reset -->
+                                        <div class="row filter-row">
+                                            <div class="col-6">
+                                                <button type="submit"
+                                                    class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                    <i class="mdi mdi-filter-outline"></i> Filter
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="{{ url('marketing/list-pengajuan') }}"
+                                                    class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                    <i class="mdi mdi-refresh"></i> Reset
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
 
-        <!-- FILTER UNTUK TABLET & DESKTOP - SEJAJAR -->
-        <div class="d-none d-md-block">
-            <form method="GET" action="{{ url('marketing/list-pengajuan') }}">
-                <div class="row g-1 align-items-end">
-                    <!-- Pencarian (lebih besar) -->
-                    <div class="col-md-3 filter-col">
-                        <label class="form-label">
-                            <i class="mdi mdi-magnify me-1"></i>Pencarian
-                        </label>
-                        <input type="text" name="search" class="form-control" value="{{ request('search') }}"
-                            placeholder="Cari customer, no booking, unit...">
-                    </div>
+                                <!-- FILTER UNTUK TABLET & DESKTOP - SEJAJAR -->
+                                <div class="d-none d-md-block">
+                                    <form method="GET" action="{{ url('marketing/list-pengajuan') }}">
+                                        <div class="row g-1 align-items-end">
+                                            <!-- Pencarian (lebih besar) -->
+                                            <div class="col-md-3 filter-col">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                </label>
+                                                <input type="text" name="search" class="form-control"
+                                                    value="{{ request('search') }}"
+                                                    placeholder="Cari customer, no booking, unit...">
+                                            </div>
 
-                    <!-- Status -->
-                    <div class="col-md-2 filter-col">
-                        <label class="form-label">
-                            <i class="mdi mdi-chart-arc me-1"></i>Status
-                        </label>
-                        <select name="status" class="form-control">
-                            <option value="">Semua Status</option>
-                            <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="pengajuan" {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
-                            <option value="verifikasi" {{ request('status') == 'verifikasi' ? 'selected' : '' }}>Verifikasi</option>
-                            <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Survey</option>
-                            <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Akad</option>
-                            <option value="cair" {{ request('status') == 'cair' ? 'selected' : '' }}>Cair</option>
-                            <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
-                            <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                        </select>
-                    </div>
+                                            <!-- Status -->
+                                            <div class="col-md-2 filter-col">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                </label>
+                                                <select name="status" class="form-control">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="draft"
+                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="pengajuan"
+                                                        {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan
+                                                    </option>
+                                                    <option value="verifikasi"
+                                                        {{ request('status') == 'verifikasi' ? 'selected' : '' }}>
+                                                        Verifikasi</option>
+                                                    <option value="survey"
+                                                        {{ request('status') == 'survey' ? 'selected' : '' }}>Survey
+                                                    </option>
+                                                    <option value="akad"
+                                                        {{ request('status') == 'akad' ? 'selected' : '' }}>Akad</option>
+                                                    <option value="cair"
+                                                        {{ request('status') == 'cair' ? 'selected' : '' }}>Cair</option>
+                                                    <option value="lunas"
+                                                        {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                    <option value="ditolak"
+                                                        {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                    <!-- Metode (diperkecil) -->
-                    <div class="col-md-1 filter-col">
-                        <label class="form-label">
-                            <i class="mdi mdi-cash-multiple me-1"></i>Metode
-                        </label>
-                        <select name="metode" class="form-control">
-                            <option value="">Semua</option>
-                            <option value="kpr" {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
-                            <option value="cash" {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
-                        </select>
-                    </div>
+                                            <!-- Metode (diperkecil) -->
+                                            <div class="col-md-1 filter-col">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-cash-multiple me-1"></i>Metode
+                                                </label>
+                                                <select name="metode" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    <option value="kpr"
+                                                        {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
+                                                    <option value="cash"
+                                                        {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
+                                                </select>
+                                            </div>
 
-                    <!-- Marketing (diperkecil) -->
-                    <div class="col-md-2 filter-col">
-                        <label class="form-label">
-                            <i class="mdi mdi-account-tie me-1"></i>Marketing
-                        </label>
-                        <select name="marketing_id" class="form-control">
-                            <option value="">Semua Marketing</option>
-                            @foreach($marketing as $m)
-                                <option value="{{ $m->id }}" {{ request('employee_id') == $m->id ? 'selected' : '' }}>
-                                    {{ $m->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                                            <!-- Marketing (diperkecil) -->
+                                            <div class="col-md-2 filter-col">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-account-tie me-1"></i>Marketing
+                                                </label>
+                                                <select name="marketing_id" class="form-control">
+                                                    <option value="">Semua Marketing</option>
+                                                    @foreach ($marketing as $m)
+                                                        <option value="{{ $m->id }}"
+                                                            {{ request('employee_id') == $m->id ? 'selected' : '' }}>
+                                                            {{ $m->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
-                    <!-- Tampil (diperkecil) -->
-                    <div class="col-md-1 filter-col">
-                        <label class="form-label">
-                            <i class="mdi mdi-counter me-1"></i>Tampil
-                        </label>
-                        <select name="per_page" class="form-control">
-                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
+                                            <!-- Tampil (diperkecil) -->
+                                            <div class="col-md-1 filter-col">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="per_page" class="form-control">
+                                                    <option value="10"
+                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25"
+                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50"
+                                                        {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100"
+                                                        {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
 
-                    <!-- Button Filter -->
-                    <div class="col-md-1 filter-col">
-                        <label class="form-label" style="visibility: hidden;">Filter</label>
-                        <button type="submit" class="btn btn-gradient-primary w-100 btn-filter-reset" title="Filter">
-                            <i class="mdi mdi-filter-outline"></i>
-                        </button>
-                    </div>
+                                            <!-- Button Filter -->
+                                            <div class="col-md-1 filter-col">
+                                                <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                <button type="submit"
+                                                    class="btn btn-gradient-primary w-100 btn-filter-reset"
+                                                    title="Filter">
+                                                    <i class="mdi mdi-filter-outline"></i>
+                                                </button>
+                                            </div>
 
-                    <!-- Button Reset -->
-                    <div class="col-md-1 filter-col">
-                        <label class="form-label" style="visibility: hidden;">Reset</label>
-                        <a href="{{ url('marketing/list-pengajuan') }}" class="btn btn-gradient-secondary w-100 btn-filter-reset" title="Reset">
-                            <i class="mdi mdi-refresh"></i>
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+                                            <!-- Button Reset -->
+                                            <div class="col-md-1 filter-col">
+                                                <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                <a href="{{ url('marketing/list-pengajuan') }}"
+                                                    class="btn btn-gradient-secondary w-100 btn-filter-reset"
+                                                    title="Reset">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Tabel DENGAN ICON DI SEMUA KOLOM -->
                         <div class="table-responsive">
@@ -1146,12 +1192,15 @@
                                             <td class="text-center">
                                                 <div
                                                     class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+
                                                     {{-- Proses KPR / Cash --}}
                                                     @if ($booking->purchase_type == 'kpr')
-                                                        <a href="{{ route('pengajuan.show', $booking->id) }}"
-                                                            class="btn btn-outline-primary btn-sm" title="Proses KPR">
-                                                            <i class="mdi mdi-bank"></i>
-                                                        </a>
+                                                        @if (!$booking->kprApplication || $booking->kprApplication->status != 'pengajuan')
+                                                            <a href="{{ route('pengajuan.show', $booking->id) }}"
+                                                                class="btn btn-outline-primary btn-sm" title="Proses KPR">
+                                                                <i class="mdi mdi-bank"></i>
+                                                            </a>
+                                                        @endif
                                                     @else
                                                         <a href="{{ route('marketing.cash', $booking->id) }}"
                                                             class="btn btn-outline-success btn-sm" title="Proses Cash">
@@ -1179,6 +1228,7 @@
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </form>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -1191,19 +1241,22 @@
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan {{ $bookings->firstItem() ?? 0 }} - {{ $bookings->lastItem() ?? 0 }} dari {{ $bookings->total() }} data
+                                Menampilkan {{ $bookings->firstItem() ?? 0 }} - {{ $bookings->lastItem() ?? 0 }} dari
+                                {{ $bookings->total() }} data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
+                                    style="gap: 2px;">
                                     {{-- Previous Page Link --}}
                                     <li class="page-item {{ $bookings->onFirstPage() ? 'disabled' : '' }}">
-                                        <a class="page-link" href="{{ $bookings->previousPageUrl() }}" tabindex="-1" aria-label="Previous">
+                                        <a class="page-link" href="{{ $bookings->previousPageUrl() }}" tabindex="-1"
+                                            aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
 
                                     {{-- Page Links --}}
-                                    @for($i = 1; $i <= $bookings->lastPage(); $i++)
+                                    @for ($i = 1; $i <= $bookings->lastPage(); $i++)
                                         <li class="page-item {{ $i == $bookings->currentPage() ? 'active' : '' }}">
                                             <a class="page-link" href="{{ $bookings->url($i) }}">{{ $i }}</a>
                                         </li>

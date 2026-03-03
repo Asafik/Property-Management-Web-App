@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class TransaksiKPRController extends Controller
@@ -29,8 +30,54 @@ class TransaksiKPRController extends Controller
     }
     public function approve($id)
     {
-        $booking = Booking::with(['customer', 'unit', 'sales','kprApplication'])->findOrFail($id);
+        $booking = Booking::with(['customer', 'unit', 'sales','kprApplication.bank', 'kprApplication.documents'])->findOrFail($id);
 
         return view('marketing.vertifikasi_kpr', compact('booking'));
     }
+    public function storeVerifikasi(Request $request, $bookingId)
+{
+    $booking = Booking::findOrFail($bookingId);
+
+    $request->validate([
+        'catatan' => 'nullable|string',
+        'tindakan' => 'required|string',
+        'berita_acara' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $kpr = $booking->kprApplication;
+
+        // Update status dan catatan
+        if($request->tindakan === 'Lengkapi Dokumen') {
+            $kpr->status = 'dokumen';
+        } elseif($request->tindakan === 'Banding Ulang') {
+            $kpr->status = 'pengajuan';
+        } elseif($request->tindakan === 'Batalkan Transaksi') {
+            $kpr->status = 'rejected';
+            $kpr->rejected_at = now();
+        } elseif($request->tindakan === 'Pindah ke Cash') {
+            $kpr->status = 'approved';
+            $kpr->approved_at = now();
+        } elseif($request->tindakan === 'Ajukan ke Bank Lain') {
+            $kpr->status = 'pengajuan';
+        }
+
+        $kpr->catatan = $request->catatan;
+
+        // Upload berita acara jika ada
+        if($request->hasFile('berita_acara')) {
+            $path = $request->file('berita_acara')->store('kpr/verifikasi', 'public');
+            $kpr->berita_acara = $path;
+        }
+
+        $kpr->save();
+
+        DB::commit();
+        return redirect()->back()->with('success', 'Verifikasi berhasil disimpan!');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return redirect()->back()->withInput()->with('error', $e->getMessage());
+    }
+}
 }

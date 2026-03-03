@@ -7,7 +7,9 @@ use App\Models\Banks;
 use App\Models\LandBankUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
+use App\Models\KprDocument;
 class KprApplicationController extends Controller
 {
     /**
@@ -65,7 +67,6 @@ public function store(Request $request)
         // AMBIL UNIT
         // =============================
         $unit = LandBankUnit::findOrFail($request->unit_id);
-
         $hargaUnit = $unit->price ?? 0;
 
         if ($hargaUnit <= 0) {
@@ -76,47 +77,36 @@ public function store(Request $request)
         $tenor = $request->tenor;
         $bunga = $request->bunga;
 
-        // Pastikan DP tidak lebih besar dari harga
         if ($dp > $hargaUnit) {
             throw new \Exception('DP tidak boleh lebih besar dari harga unit');
         }
 
         // =============================
-        // HITUNG PINJAMAN (BACKEND)
+        // HITUNG PINJAMAN & ANGSURAN
         // =============================
-        $jumlahPinjaman = $hargaUnit - $dp;
-
-        // =============================
-        // HITUNG ANGSURAN (BUNGA FLAT)
-        // =============================
-        $bungaTotal    = $jumlahPinjaman * ($bunga / 100);
-        $totalPinjaman = $jumlahPinjaman + $bungaTotal;
-
+        $jumlahPinjaman   = $hargaUnit - $dp;
+        $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
+        $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
         $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
 
         // =============================
-        // UPLOAD FILE
+        // LOG DEBUG
         // =============================
-        $upload = [];
-        $fileFields = [
-            'slip_gaji',
-            'rekening_koran',
-            'npwp',
-            'sku',
-            'surat_nikah',
-            'ktp_pasangan'
-        ];
-
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
-                $upload[$field] = $request->file($field)->store('kpr', 'public');
-            }
-        }
+        Log::info('Hitung KPR', [
+            'hargaUnit'        => $hargaUnit,
+            'dp'               => $dp,
+            'tenor'            => $tenor,
+            'bunga'            => $bunga,
+            'jumlahPinjaman'   => $jumlahPinjaman,
+            'bungaTotal'       => $bungaTotal,
+            'totalPinjaman'    => $totalPinjaman,
+            'estimasiAngsuran' => $estimasiAngsuran,
+        ]);
 
         // =============================
-        // SIMPAN DATA
+        // SIMPAN DATA KPR
         // =============================
-        KprApplication::create([
+        $kprApplication = KprApplication::create([
             'booking_id'        => $request->booking_id ?? $request->unit_id,
             'customer_id'       => $request->customer_id,
             'unit_id'           => $request->unit_id,
@@ -131,14 +121,31 @@ public function store(Request $request)
             'status_pekerjaan'  => $request->status_pekerjaan,
             'status'            => 'pengajuan',
             'submitted_at'      => now(),
-
-            'slip_gaji'      => $upload['slip_gaji'] ?? null,
-            'rekening_koran' => $upload['rekening_koran'] ?? null,
-            'npwp'           => $upload['npwp'] ?? null,
-            'sku'            => $upload['sku'] ?? null,
-            'surat_nikah'    => $upload['surat_nikah'] ?? null,
-            'ktp_pasangan'   => $upload['ktp_pasangan'] ?? null,
         ]);
+
+        // =============================
+        // UPLOAD FILE & SIMPAN KE KPR DOCUMENTS
+        // =============================
+        $fileFields = [
+            'slip_gaji',
+            'rekening_koran',
+            'npwp',
+            'sku',
+            'surat_nikah',
+            'ktp_pasangan'
+        ];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $path = $request->file($field)->store('kpr', 'public');
+
+                KprDocument::create([
+                    'kpr_application_id' => $kprApplication->id,
+                    'type'               => $field,
+                    'path'               => $path,
+                ]);
+            }
+        }
 
         DB::commit();
 
@@ -149,12 +156,14 @@ public function store(Request $request)
 
         DB::rollBack();
 
+        // LOG ERROR
+        Log::error('Gagal simpan KPR', ['error' => $e->getMessage()]);
+
         return redirect()->back()
             ->withInput()
             ->with('error', $e->getMessage());
     }
 }
-
 
 
 
