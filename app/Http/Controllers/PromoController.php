@@ -10,94 +10,122 @@ use Carbon\Carbon;
 
 class PromoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $promo = Promo::all();
+        $query = Promo::query();
+
+        // Filter search by name
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Filter by type
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Jumlah tampil per halaman (10, 15, 25)
+        $perPage = $request->input('per_page', 10);
+
+        // Ambil data dengan pagination
+        $promo = $query->latest()->paginate($perPage)->withQueryString();
+
         return view('promo.promo', compact('promo'));
     }
 
-public function store(Request $request)
-{
-    Log::info('Request tambah promo masuk', [
-        'request' => $request->all()
-    ]);
-
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'validity_period' => 'required|in:selalu,periode',
-        'type' => 'required|in:persen,nominal',
-        'category' => 'required|in:promo,biaya,fasilitas',
-        'status' => 'required|in:aktif,tidak_aktif',
-        'value' => 'required|string',
-        'start_date' => 'nullable|required_if:validity_period,periode|date',
-        'end_date' => 'nullable|required_if:validity_period,periode|date|after_or_equal:start_date',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-
-        $value = $request->value;
-
-        if ($request->type === 'nominal') {
-            $value = str_replace('.', '', $value);
-        }
-
-        Log::info('Value setelah diproses', [
-            'type' => $request->type,
-            'value' => $value
+    public function store(Request $request)
+    {
+        Log::info('Request tambah promo masuk', [
+            'request' => $request->all()
         ]);
 
-        $durationDays = null;
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'validity_period' => 'required|in:selalu,periode',
+            'type' => 'required|in:persen,nominal',
+            'category' => 'required|in:promo,biaya,fasilitas',
+            'status' => 'required|in:aktif,tidak_aktif',
+            'value' => 'required|string',
+            'start_date' => 'nullable|required_if:validity_period,periode|date',
+            'end_date' => 'nullable|required_if:validity_period,periode|date|after_or_equal:start_date',
+        ]);
 
-        if ($request->validity_period === 'periode') {
-            $start = Carbon::parse($request->start_date);
-            $end   = Carbon::parse($request->end_date);
-            $durationDays = $start->diffInDays($end) + 1;
+        DB::beginTransaction();
 
-            Log::info('Hitung durasi promo', [
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'duration_days' => $durationDays
+        try {
+
+            $value = $request->value;
+
+            if ($request->type === 'nominal') {
+                $value = str_replace('.', '', $value);
+            }
+
+            Log::info('Value setelah diproses', [
+                'type' => $request->type,
+                'value' => $value
             ]);
+
+            $durationDays = null;
+
+            if ($request->validity_period === 'periode') {
+                $start = Carbon::parse($request->start_date);
+                $end   = Carbon::parse($request->end_date);
+                $durationDays = $start->diffInDays($end) + 1;
+
+                Log::info('Hitung durasi promo', [
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'duration_days' => $durationDays
+                ]);
+            }
+
+            $promo = Promo::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'validity_period' => $request->validity_period,
+                'start_date' => $request->validity_period === 'periode' ? $request->start_date : null,
+                'end_date' => $request->validity_period === 'periode' ? $request->end_date : null,
+                'duration_days' => $durationDays,
+                'type' => $request->type,
+                'category' => $request->category,
+                'value' => $value,
+                'status' => $request->status
+            ]);
+
+            DB::commit();
+
+            Log::info('Promo berhasil dibuat', [
+                'promo_id' => $promo->id,
+                'name' => $promo->name
+            ]);
+
+            return redirect()->back()->with('success', 'Promo berhasil ditambahkan');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            Log::error('Gagal menambahkan promo', [
+                'error_message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
+
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan promo');
         }
-
-        $promo = Promo::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'validity_period' => $request->validity_period,
-            'start_date' => $request->validity_period === 'periode' ? $request->start_date : null,
-            'end_date' => $request->validity_period === 'periode' ? $request->end_date : null,
-            'duration_days' => $durationDays,
-            'type' => $request->type,
-            'category' => $request->category,
-            'value' => $value,
-            'status' => $request->status
-        ]);
-
-        DB::commit();
-
-        Log::info('Promo berhasil dibuat', [
-            'promo_id' => $promo->id,
-            'name' => $promo->name
-        ]);
-
-        return redirect()->back()->with('success', 'Promo berhasil ditambahkan');
-
-    } catch (\Exception $e) {
-
-        DB::rollBack();
-
-        Log::error('Gagal menambahkan promo', [
-            'error_message' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ]);
-
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan promo');
     }
-}
 
     public function show($id)
     {

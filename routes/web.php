@@ -294,10 +294,9 @@ Route::get('/dashboard-pengaturan', function () {
 Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
 Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
 Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
-Route::get('/dashboard-customer', function () {
-    return view('customer.customer');
-});
 
+
+Route::get('/dashboard-customer', [CustomerController::class, 'customerData'])->name('customer.data');
 // Route::get('/dashboard-tamu', function () {
 //     return view('customer.tamu');
 // });
@@ -325,8 +324,14 @@ Route::get('/dashboard-data-dokument-cash-legal', function () {
 
 Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
 Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
+
+
 Route::get('/dashboard-customer-profil-cash', function () {
     return view('customer.customer_profil_cash');
+});
+
+Route::get('/dashboard-customer-profil-kpr', function () {
+    return view('customer.customer_profil_kpr');
 });
 
 

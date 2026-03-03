@@ -105,7 +105,7 @@
                         <a class="nav-link" href="{{ route('customer.tambah_customer') }}">Tambah Customer</a>
                     </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard-customer">
+                    <a class="nav-link" href="{{ route('customer.data') }}">
                         Customer
                     </a>
                 </li>

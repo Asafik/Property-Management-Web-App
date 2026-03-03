@@ -566,7 +566,7 @@
                         Total Customer
                         <i class="mdi mdi-account-group float-end" style="font-size: 1.2rem;"></i>
                     </h4>
-                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">248</h2>
+                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalCustomer }}</h2>
                     <h6 class="card-text small">Semua customer</h6>
                 </div>
             </div>
@@ -660,17 +660,6 @@
                                             <option value="profesional">Profesional</option>
                                         </select>
                                     </div>
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="tidak_aktif">Tidak Aktif</option>
-                                            <option value="pending">Pending</option>
-                                        </select>
-                                    </div>
                                 </div>
 
                                 <div class="row g-2 mt-2">
@@ -716,17 +705,6 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="tidak_aktif">Tidak Aktif</option>
-                                            <option value="pending">Pending</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
                                             <i class="mdi mdi-counter me-1"></i>Tampil
                                         </label>
                                         <select class="form-control">
@@ -751,200 +729,63 @@
                         </div>
                     </div>
 
-                    <!-- Tabel Customer -->
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="tableCustomer" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                    <th><i class="mdi mdi-card-account-details me-1"></i>ID Customer</th>
-                                    <th><i class="mdi mdi-account me-1"></i>Nama Customer</th>
-                                    <th><i class="mdi mdi-phone me-1"></i>No. HP</th>
-                                    <th><i class="mdi mdi-briefcase me-1"></i>Pekerjaan</th>
-                                    <th><i class="mdi mdi-home me-1"></i>Alamat</th>
-                                    <th><i class="mdi mdi-flag me-1"></i>Status</th>
-                                    <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Customer 1 -->
-                                <tr>
-                                    <td class="text-center fw-bold">1</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">CUST-2025-001</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2">
-                                                BS
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Budi Santoso</span>
-                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>budi.s@email.com</small>
-                                            </div>
+                   <div class="table-responsive">
+                    <table class="table table-hover" id="tableCustomer" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
+                                <th><i class="mdi mdi-card-account-details me-1"></i>ID Customer</th>
+                                <th><i class="mdi mdi-account me-1"></i>Nama Customer</th>
+                                <th><i class="mdi mdi-phone me-1"></i>No. HP</th>
+                                <th><i class="mdi mdi-briefcase me-1"></i>Pekerjaan</th>
+                                <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($customers as $customer)
+                            <tr>
+                                <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="mdi mdi-card-account-details text-primary" style="font-size: 1.2rem;" title="ID Customer"></i>
+                                        <span>{{ $customer->customer_id }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle avatar-sm me-2">
+                                            {{ strtoupper(substr($customer->full_name, 0, 2)) }}
                                         </div>
-                                    </td>
-                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0812-3456-7890</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-briefcase-outline me-1"></i>Karyawan Swasta
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
-                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
-                                            Jl. Sudirman No. 123, Jakarta
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit" onclick="$('#modalEditCustomer').modal('show')">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus" onclick="confirmDelete()">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
+                                        <div>
+                                            <span class="fw-bold">{{ $customer->full_name }}</span>
+                                            <small class="text-muted d-block">{{ $customer->email }}</small>
                                         </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Customer 2 -->
-                                <tr>
-                                    <td class="text-center fw-bold">2</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">CUST-2025-002</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #ff6b6b, #ee5253);">
-                                                SW
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Siti Wijaya</span>
-                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>siti.w@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0856-7890-1234</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-briefcase-outline me-1"></i>Wirausaha
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
-                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
-                                            Jl. Gatot Subroto No. 45, Jakarta
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Customer 3 -->
-                                <tr>
-                                    <td class="text-center fw-bold">3</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">CUST-2025-003</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">
-                                                AP
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Ahmad Pratama</span>
-                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>ahmad.p@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0813-4567-8901</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-briefcase-outline me-1"></i>PNS
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
-                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
-                                            Perumahan Griya Asri Blok A10, Tangerang
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Customer 4 -->
-                                <tr>
-                                    <td class="text-center fw-bold">4</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">CUST-2025-004</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2" style="background: linear-gradient(135deg, #feca57, #ff9f43);">
-                                                RN
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Rina Nugraha</span>
-                                                <small class="text-muted d-block"><i class="mdi mdi-email-outline me-1" style="font-size: 10px;"></i>rina.n@email.com</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><i class="mdi mdi-phone-outline me-1 text-success"></i>0821-6789-0123</td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-briefcase-outline me-1"></i>Profesional
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <i class="mdi mdi-map-marker me-1 text-danger" style="font-size: 14px;"></i>
-                                        <span class="text-truncate d-inline-block" style="max-width: 120px;">
-                                            Apartemen Taman Rasuna, Jakarta
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </div>
+                                </td>
+                               <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="mdi mdi-whatsapp text-success" style="font-size: 1.2rem;" title="WhatsApp"></i>
+                                        <span>{{ $customer->phone }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark">{{ $customer->job_status ?? '-' }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" title="Hapus">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
                     <!-- Pagination -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
@@ -1188,7 +1029,6 @@
 </div>
 
 @endsection
-
 @push('scripts')
 <script>
 $(document).ready(function() {
@@ -1212,8 +1052,8 @@ $(document).ready(function() {
                 zeroRecords: "Data tidak ditemukan",
             },
             columnDefs: [
-                { targets: 0, orderable: false },
-                { targets: 7, orderable: false }
+                { targets: 0, orderable: false }, // Kolom No
+                { targets: 5, orderable: false }  // Kolom Aksi (index 5)
             ]
         });
     }

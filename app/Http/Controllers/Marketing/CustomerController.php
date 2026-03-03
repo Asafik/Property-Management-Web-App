@@ -198,4 +198,16 @@ public function create(Request $request)
 
     return view('customer.tambah_customer', compact('customerId', 'guest'));
 }
+
+        public function customerData()
+    {
+        $customers = Customer::latest()->get();
+
+        // Hitung total customer
+        $totalCustomer = Customer::count();
+
+        return view('customer.customer', compact('customers', 'totalCustomer'));
+    }
+
+
 }
