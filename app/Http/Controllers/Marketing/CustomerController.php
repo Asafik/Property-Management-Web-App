@@ -199,11 +199,31 @@ public function create(Request $request)
     return view('customer.tambah_customer', compact('customerId', 'guest'));
 }
 
-        public function customerData()
+        public function customerData(Request $request)
     {
-        $customers = Customer::latest()->get();
+        $query = Customer::query();
 
-        // Hitung total customer
+        // Filter Pencarian (name dan customer_id)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                ->orWhere('customer_id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter Pekerjaan
+        if ($request->filled('pekerjaan')) {
+            $query->where('job_status', $request->pekerjaan);
+        }
+
+        // Jumlah tampil per halaman (default 10, opsi: 10, 25, 50, 100)
+        $perPage = $request->input('per_page', 10);
+
+        // Ambil data dengan pagination
+        $customers = $query->latest()->paginate($perPage)->withQueryString();
+
+        // Hitung total customer (untuk statistik)
         $totalCustomer = Customer::count();
 
         return view('customer.customer', compact('customers', 'totalCustomer'));
