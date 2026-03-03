@@ -13,15 +13,20 @@ return new class extends Migration
     {
         Schema::create('promos', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('validity_period')->nullable();
+            $table->string('name');
+            $table->text('description');
+
+            $table->enum('validity_period', ['selalu', 'periode']);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('type')->nullable();
-            $table->string('category')->nullable();
-            $table->string('value')->nullable();
-            $table->string('status')->default('active');
+            $table->integer('duration_days')->nullable(); // ← TAMBAHKAN INI
+
+            $table->enum('type', ['persen', 'nominal']);
+            $table->enum('category', ['promo', 'biaya', 'fasilitas']);
+
+            $table->decimal('value', 15, 2); // ← lebih baik decimal, jangan string
+            $table->enum('status', ['aktif', 'tidak_aktif'])->default('aktif');
+
             $table->timestamps();
         });
     }
