@@ -119,7 +119,7 @@ public function store(Request $request)
             'bunga'             => $bunga,
             'estimasi_angsuran' => round($estimasiAngsuran),
             'status_pekerjaan'  => $request->status_pekerjaan,
-            'status'            => 'pengajuan',
+            'status'            => 'dokumen',
             'submitted_at'      => now(),
         ]);
 

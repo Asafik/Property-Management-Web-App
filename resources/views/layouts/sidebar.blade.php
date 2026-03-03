@@ -170,6 +170,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('customer.kpr')}}">Cicilan / KPR</a>
                 </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{route('kpr.customer-verified')}}">Customer verifikasi dokumen kpr</a>
+                </li>
             </ul>
         </div>
     </li>
