@@ -85,6 +85,10 @@ class LandBankUnitController extends Controller
         ]);
 
 
+    
+        if ($request->area > $land->remaining_area) {
+            return back()->with('error', 'Luas unit melebihi sisa lahan!');
+        }
         $unit_code = $request->block . '.' . $request->unit_number;
 
         if (LandBankUnit::where('unit_code', $unit_code)

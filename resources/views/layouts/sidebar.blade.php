@@ -168,7 +168,7 @@
                     <a class="nav-link" href="#">Penjualan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cicilan / KPR</a>
+                    <a class="nav-link" href="{{route('customer.kpr')}}">Cicilan / KPR</a>
                 </li>
             </ul>
         </div>

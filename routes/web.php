@@ -37,6 +37,7 @@ use App\Http\Controllers\AkadController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
 use App\Http\Controllers\SerahTerimaController;
+use App\Http\Controllers\TransaksiKPRController;
 
 /*
 |--------------------------------------------------------------------------
@@ -328,6 +329,9 @@ Route::get('/dashboard-customer-profil-cash', function () {
     return view('customer.customer_profil_cash');
 });
 
+
+Route::get('/dashboard/customer-kpr', [TransaksiKPRController::class, 'index'])->name('customer.kpr');
+Route::get('/transaksi/kpr/{booking}/approve', [TransaksiKPRController::class, 'approve'])->name('transaksi.kpr.approve');
 
 });
 
