@@ -49,28 +49,50 @@ public function store(Request $request)
 
     try {
 
-        // VALIDASI DULU
+        // =============================
+        // VALIDASI
+        // =============================
         $request->validate([
             'customer_id' => 'required',
-            'unit_id' => 'required',
-            'banks_id' => 'required',
-            'dp' => 'required|numeric',
-            'tenor' => 'required|numeric',
-            'bunga' => 'required|numeric',
+            'unit_id'     => 'required',
+            'banks_id'    => 'required',
+            'dp'          => 'required|numeric|min:0',
+            'tenor'       => 'required|numeric|min:1',
+            'bunga'       => 'required|numeric|min:0',
         ]);
 
-        // ambil unit
+        // =============================
+        // AMBIL UNIT
+        // =============================
         $unit = LandBankUnit::findOrFail($request->unit_id);
 
-        // harga unit dari database
         $hargaUnit = $unit->price ?? 0;
 
         if ($hargaUnit <= 0) {
             throw new \Exception('Harga unit tidak ditemukan');
         }
 
-        // hitung pinjaman
-        $jumlahPinjaman = $request->jumlah_pinjaman ?? ($hargaUnit - $request->dp);
+        $dp    = $request->dp;
+        $tenor = $request->tenor;
+        $bunga = $request->bunga;
+
+        // Pastikan DP tidak lebih besar dari harga
+        if ($dp > $hargaUnit) {
+            throw new \Exception('DP tidak boleh lebih besar dari harga unit');
+        }
+
+        // =============================
+        // HITUNG PINJAMAN (BACKEND)
+        // =============================
+        $jumlahPinjaman = $hargaUnit - $dp;
+
+        // =============================
+        // HITUNG ANGSURAN (BUNGA FLAT)
+        // =============================
+        $bungaTotal    = $jumlahPinjaman * ($bunga / 100);
+        $totalPinjaman = $jumlahPinjaman + $bungaTotal;
+
+        $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
 
         // =============================
         // UPLOAD FILE
@@ -92,35 +114,36 @@ public function store(Request $request)
         }
 
         // =============================
-        // SIMPAN
+        // SIMPAN DATA
         // =============================
-       KprApplication::create([
-    'booking_id' => $request->booking_id ?? $request->unit_id, // pastikan booking_id dikirim dari form
-    'customer_id' => $request->customer_id,
-    'unit_id' => $request->unit_id,
-    'banks_id' => $request->banks_id,
-    'produk_kpr' => $request->produk_kpr,
-    'harga_unit' => $hargaUnit,
-    'jumlah_pinjaman' => $jumlahPinjaman,
-    'dp' => $request->dp,
-    'tenor' => $request->tenor,
-    'bunga' => $request->bunga,
-    'estimasi_angsuran' => $request->estimasi_angsuran,
-    'status_pekerjaan' => $request->status_pekerjaan,
-    'status' => 'pengajuan',
-    'submitted_at' => now(),
+        KprApplication::create([
+            'booking_id'        => $request->booking_id ?? $request->unit_id,
+            'customer_id'       => $request->customer_id,
+            'unit_id'           => $request->unit_id,
+            'banks_id'          => $request->banks_id,
+            'produk_kpr'        => $request->produk_kpr,
+            'harga_unit'        => $hargaUnit,
+            'jumlah_pinjaman'   => $jumlahPinjaman,
+            'dp'                => $dp,
+            'tenor'             => $tenor,
+            'bunga'             => $bunga,
+            'estimasi_angsuran' => round($estimasiAngsuran),
+            'status_pekerjaan'  => $request->status_pekerjaan,
+            'status'            => 'pengajuan',
+            'submitted_at'      => now(),
 
-    'slip_gaji' => $upload['slip_gaji'] ?? null,
-    'rekening_koran' => $upload['rekening_koran'] ?? null,
-    'npwp' => $upload['npwp'] ?? null,
-    'sku' => $upload['sku'] ?? null,
-    'surat_nikah' => $upload['surat_nikah'] ?? null,
-    'ktp_pasangan' => $upload['ktp_pasangan'] ?? null,
-]);
+            'slip_gaji'      => $upload['slip_gaji'] ?? null,
+            'rekening_koran' => $upload['rekening_koran'] ?? null,
+            'npwp'           => $upload['npwp'] ?? null,
+            'sku'            => $upload['sku'] ?? null,
+            'surat_nikah'    => $upload['surat_nikah'] ?? null,
+            'ktp_pasangan'   => $upload['ktp_pasangan'] ?? null,
+        ]);
 
         DB::commit();
 
-        return redirect()->back()->with('success', 'Pengajuan KPR berhasil disimpan');
+        return redirect()->back()
+            ->with('success', 'Pengajuan KPR berhasil disimpan');
 
     } catch (\Throwable $e) {
 
@@ -128,7 +151,7 @@ public function store(Request $request)
 
         return redirect()->back()
             ->withInput()
-            ->with('error', $e->getMessage()); // kirim pesan error
+            ->with('error', $e->getMessage());
     }
 }
 

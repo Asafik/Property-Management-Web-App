@@ -188,7 +188,7 @@ public function store(Request $request)
         $doc = LandBankDocument::findOrFail($id);
 
         $doc->update([
-            'status' => 'terverifikasi'
+            'status' => 'verified'
         ]);
 
         return back()->with('success', 'Dokumen berhasil diverifikasi');

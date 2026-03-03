@@ -655,7 +655,7 @@
         {{-- ================= PROGRESS ================= --}}
         @php
             $total = $land->documents->count();
-            $verified = $land->documents->where('status', 'terverifikasi')->count();
+            $verified = $land->documents->where('status', 'verified')->count();
             $percent = $total > 0 ? ($verified / $total) * 100 : 0;
         @endphp
 
