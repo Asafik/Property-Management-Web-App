@@ -640,91 +640,109 @@
 
                             <!-- FILTER UNTUK MOBILE -->
                             <div class="d-block d-md-none">
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="mdi mdi-magnify me-1"></i>Cari Customer
-                                    </label>
-                                    <input type="text" class="form-control" placeholder="Cari nama, ID, no. HP...">
-                                </div>
-
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-briefcase me-1"></i>Pekerjaan
+                                <form method="GET" action="{{ route('customer.data') }}">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>Cari Customer
                                         </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="karyawan">Karyawan Swasta</option>
-                                            <option value="pns">PNS</option>
-                                            <option value="wirausaha">Wirausaha</option>
-                                            <option value="profesional">Profesional</option>
-                                        </select>
+                                        <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Cari nama, ID..." style="height: 45px;">
                                     </div>
-                                </div>
 
-                                <div class="row g-2 mt-2">
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-briefcase me-1" style="color: #9a55ff;"></i>Pekerjaan
+                                            </label>
+                                           <select name="pekerjaan" class="form-control" >
+                                                <option value="">Semua</option>
+                                                <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
+                                                <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
+                                                <option value="Wiraswasta" {{ request('pekerjaan') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
+                                                <option value="Ibu Rumah Tangga" {{ request('pekerjaan') == 'Ibu Rumah Tangga' ? 'selected' : '' }}>Ibu Rumah Tangga</option>
+                                                <option value="Pensiunan" {{ request('pekerjaan') == 'Pensiunan' ? 'selected' : '' }}>Pensiunan</option>
+                                                <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="col-6 d-flex align-items-end">
-                                        <button type="button" class="btn btn-gradient-secondary w-100">
-                                            <i class="mdi mdi-refresh me-1"></i> Reset
-                                        </button>
+
+                                    <div class="row g-2 mt-2">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
+                                            </label>
+                                            <select name="per_page" class="form-control" style="height: 45px;">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 d-flex align-items-end">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+
+                                    <div class="row g-2 mt-2">
+                                        <div class="col-12">
+                                            <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
 
                             <!-- FILTER UNTUK TABLET & DESKTOP -->
                             <div class="d-none d-md-block">
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-md-3">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Cari Customer
-                                        </label>
-                                        <input type="text" class="form-control" placeholder="Nama, ID, No. HP...">
+                                <form method="GET" action="{{ route('customer.data') }}">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>Cari Customer
+                                            </label>
+                                            <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Nama, ID...">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-briefcase me-1" style="color: #9a55ff;"></i>Pekerjaan
+                                            </label>
+                                           <select name="pekerjaan" class="form-control" >
+                                                <option value="">Semua</option>
+                                                <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
+                                                <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
+                                                <option value="Wiraswasta" {{ request('pekerjaan') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
+                                                <option value="Ibu Rumah Tangga" {{ request('pekerjaan') == 'Ibu Rumah Tangga' ? 'selected' : '' }}>Ibu Rumah Tangga</option>
+                                                <option value="Pensiunan" {{ request('pekerjaan') == 'Pensiunan' ? 'selected' : '' }}>Pensiunan</option>
+                                                <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
+                                            </label>
+                                            <select name="per_page" class="form-control">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <label class="form-label invisible">Reset</label>
+                                            <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-briefcase me-1"></i>Pekerjaan
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="karyawan">Karyawan Swasta</option>
-                                            <option value="pns">PNS</option>
-                                            <option value="wirausaha">Wirausaha</option>
-                                            <option value="profesional">Profesional</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-gradient-primary w-100">
-                                            <i class="mdi mdi-filter"></i>
-                                        </button>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-gradient-secondary w-100" title="Reset">
-                                            <i class="mdi mdi-refresh"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -791,22 +809,39 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                         <div class="pagination-info mb-2 mb-sm-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan 1 - 4 dari 248 data
+                            Menampilkan {{ $customers->firstItem() ?? 0 }} - {{ $customers->lastItem() ?? 0 }} dari {{ $customers->total() }} data
                         </div>
                         <div>
                             <nav>
                                 <ul class="pagination">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1"><i class="mdi mdi-chevron-left"></i></a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#"><i class="mdi mdi-chevron-right"></i></a>
-                                    </li>
+                                    {{-- Previous Page Link --}}
+                                    @if($customers->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1"><i class="mdi mdi-chevron-left"></i></a>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $customers->previousPageUrl() }}"><i class="mdi mdi-chevron-left"></i></a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Page Links --}}
+                                    @for($i = 1; $i <= $customers->lastPage(); $i++)
+                                        <li class="page-item {{ $i == $customers->currentPage() ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $customers->url($i) }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+
+                                    {{-- Next Page Link --}}
+                                    @if($customers->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $customers->nextPageUrl() }}"><i class="mdi mdi-chevron-right"></i></a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#"><i class="mdi mdi-chevron-right"></i></a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </nav>
                         </div>
