@@ -3,93 +3,44 @@
 @section('title', 'Dashboard - Property Management App')
 
 @section('content')
+    <!-- CRITICAL CSS - INLINE AGAR CEPAT -->
     <style>
-        /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN KAVLING ===== */
+        /* Critical CSS - Minimal untuk tampilan awal */
         .card {
             transition: all 0.3s ease;
             margin-bottom: 1rem;
         }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
         .card-header {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
             border-bottom: 1px solid #e9ecef;
             padding: 0.75rem;
         }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
         .card-body {
             padding: 0.75rem;
         }
-
         @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
+            .card-header { padding: 1rem; }
+            .card-body { padding: 1rem; }
         }
-
         @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
+            .card-header { padding: 1.2rem; }
+            .card-body { padding: 1.2rem; }
         }
-
-        /* Card Title */
         .card-title {
             font-size: 0.9rem;
             font-weight: 600;
             color: #9a55ff;
             margin-bottom: 0;
         }
+        @media (min-width: 576px) { .card-title { font-size: 1rem; } }
+        @media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
 
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== STATISTICS CARDS ===== */
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(135deg, #6a82fb, #4e6aff) !important;
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-        }
-
-        .bg-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-        }
-
-        .card-img-holder {
-            position: relative;
-            overflow: hidden;
-        }
-
+        /* Statistics Cards */
+        .bg-gradient-primary { background: linear-gradient(135deg, #da8cff, #9a55ff) !important; }
+        .bg-gradient-info { background: linear-gradient(135deg, #6a82fb, #4e6aff) !important; }
+        .bg-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c) !important; }
+        .bg-gradient-danger { background: linear-gradient(135deg, #dc3545, #e4606d) !important; }
+        .card-img-holder { position: relative; overflow: hidden; }
         .card-img-absolute {
             position: absolute;
             right: 0;
@@ -99,7 +50,7 @@
             height: auto;
         }
 
-        /* ===== FILTER SECTION - DIPERBESAR ===== */
+        /* Filter Card Minimal */
         .filter-card {
             background: linear-gradient(135deg, #f9f7ff, #f2ecff);
             border-radius: 12px;
@@ -107,356 +58,75 @@
             margin-bottom: 1.25rem;
         }
 
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            min-height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        /* Outline Buttons */
-        .btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
+        /* Table Minimal */
+        .table-responsive { overflow-x: auto; }
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             color: #9a55ff;
-            padding: 0.4rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.8rem 0.5rem;
+        }
+        .table tbody td {
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #e9ecef;
         }
 
-        .btn-outline-primary:hover {
+        /* Pagination Minimal */
+        .pagination { margin: 0; gap: 3px; }
+        .page-item .page-link {
+            border: 1px solid #e9ecef;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            color: #6c7383;
+            background: #fff;
+            border-radius: 6px;
+            min-width: 32px;
+            text-align: center;
+        }
+        .page-item.active .page-link {
             background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            border-color: transparent;
+            color: #fff;
         }
 
-        /* Badge Styling */
+        /* Text colors */
+        .text-primary { color: #9a55ff !important; }
+        .text-info { color: #17a2b8 !important; }
+        .text-danger { color: #dc3545 !important; }
+        .text-success { color: #28a745 !important; }
+        .text-warning { color: #ffc107 !important; }
+        .fw-bold { font-weight: 600 !important; }
+        .text-muted { color: #a5b3cb !important; }
+
+        /* Badge Minimal */
         .badge {
             padding: 0.35rem 0.6rem;
             font-size: 0.75rem;
             font-weight: 600;
             border-radius: 30px;
             display: inline-block;
-            white-space: nowrap;
         }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #fff; }
+        .badge-gradient-warning { background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f; }
+        .badge-gradient-danger { background: linear-gradient(135deg, #dc3545, #e4606d); color: #fff; }
+        .badge-gradient-info { background: linear-gradient(135deg, #17a2b8, #5bc0de); color: #fff; }
 
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        .badge-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.7rem;
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-        }
-
-        .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-        }
-
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        /* Kolom No lebih rapat */
-        .table thead th:first-child {
-            padding-left: 0.75rem;
-            width: 60px;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.75rem;
-            font-weight: 500;
-            width: 60px;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
+        /* Buttons Minimal */
+        .btn {
             font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
         }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* Nama properti - lebih rapat dengan nomor */
-        .table tbody td:nth-child(2) {
-            padding-left: 0.3rem;
-        }
-
-        .table tbody td .d-flex.align-items-center {
-            gap: 0.5rem;
-        }
-
-        /* Text colors */
-        .text-primary {
-            color: #9a55ff !important;
-        }
-
-        .text-info {
-            color: #17a2b8 !important;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .text-success {
-            color: #28a745 !important;
-        }
-
-        .text-warning {
-            color: #ffc107 !important;
-        }
-
-        .fw-bold {
-            font-weight: 600 !important;
-        }
-
-        .text-muted {
-            color: #a5b3cb !important;
-        }
-
-        /* ===== PAGINATION STYLING - DIPERKECIL ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; border-radius: 6px; }
+        .btn-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff); color: #fff; }
+        .btn-gradient-secondary { background: #6c757d; color: #fff; }
+        .btn-outline-primary {
+            background: transparent;
+            border: 1px solid #9a55ff;
             color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        /* Info text pagination */
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
+            padding: 0.4rem 0.75rem;
         }
 
         /* Typography */
@@ -466,93 +136,122 @@
             color: #2c2e3f !important;
             margin-bottom: 0.5rem !important;
         }
+        @media (max-width: 576px) { h3.text-dark { font-size: 1.2rem !important; } }
 
-        @media (min-width: 576px) {
-            h3.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            h3.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        /* Badge dengan icon */
-        .badge i {
-            font-size: 0.8rem;
-            margin-right: 4px;
-        }
-
-        /* Hover effect untuk icon aksi */
-        .btn-outline-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Responsive untuk mobile */
-        @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                min-height: 38px;
-            }
-
-            h3.text-dark {
-                font-size: 1.2rem !important;
-            }
-        }
-
-        /* DataTables Custom Styling */
-        .dataTables_filter {
-            display: none !important;
-        }
-
-        .dataTables_length {
-            display: none !important;
-        }
-
-        .dataTables_paginate {
-            display: none !important;
-        }
-
-        .dataTables_info {
-            display: none !important;
-        }
-
-        /* Sorting indicator */
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            cursor: pointer;
-        }
-
-        /* Icon styling */
-        .mdi {
-            vertical-align: middle;
+        /* Loading indicator untuk non-critical CSS */
+        .css-loaded .card:hover,
+        .css-loaded .btn:hover,
+        .css-loaded .page-item .page-link:hover,
+        .css-loaded .table tbody tr:hover {
+            transition: all 0.3s ease;
         }
     </style>
 
+    <!-- NON-CRITICAL CSS - LOAD ASYNC -->
+    <link rel="preload" href="{{ asset('css/dashboard-non-critical.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ asset('css/dashboard-non-critical.css') }}"></noscript>
+
+    <!-- ATAU jika mau tetap inline tapi di defer -->
+    <script>
+        // Load non-critical CSS setelah page load
+        window.addEventListener('load', function() {
+            var style = document.createElement('style');
+            style.textContent = `
+                /* Non-critical CSS - Hover effects, animations, etc */
+                .card:hover {
+                    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+                }
+                .btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                }
+                .btn-gradient-secondary:hover {
+                    background: #5a6268 !important;
+                }
+                .btn-outline-primary:hover {
+                    background: linear-gradient(to right, #da8cff, #9a55ff);
+                    color: #ffffff;
+                    border-color: transparent;
+                }
+                .table tbody tr:hover {
+                    background-color: #f8f9fa;
+                }
+                .page-item .page-link:hover {
+                    background-color: #f8f9fa;
+                    border-color: #9a55ff;
+                    color: #9a55ff;
+                    transform: translateY(-1px);
+                }
+                .page-item.active .page-link {
+                    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+                }
+                .form-control:focus,
+                .form-select:focus {
+                    border-color: #9a55ff;
+                    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+                    outline: none;
+                }
+                .filter-card .form-label {
+                    color: #9a55ff !important;
+                    letter-spacing: 0.3px;
+                    font-family: 'Nunito', sans-serif;
+                }
+                @media (min-width: 576px) {
+                    .table thead th {
+                        font-size: 0.85rem;
+                        padding: 0.9rem 0.6rem;
+                    }
+                    .table tbody td {
+                        font-size: 0.9rem;
+                        padding: 0.9rem 0.6rem;
+                    }
+                }
+                @media (min-width: 768px) {
+                    .table thead th {
+                        font-size: 0.9rem;
+                        padding: 1rem 0.75rem;
+                    }
+                    .table tbody td {
+                        font-size: 0.95rem;
+                        padding: 1rem 0.75rem;
+                    }
+                }
+                /* DataTables Custom Styling */
+                .dataTables_filter,
+                .dataTables_length,
+                .dataTables_paginate,
+                .dataTables_info {
+                    display: none !important;
+                }
+                .mdi {
+                    vertical-align: middle;
+                }
+                .badge i {
+                    font-size: 0.8rem;
+                    margin-right: 4px;
+                }
+                .btn-outline-primary:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                @media (max-width: 576px) {
+                    .filter-card .form-label {
+                        font-size: 0.8rem;
+                    }
+                    .filter-card .form-control,
+                    .filter-card .form-select,
+                    .filter-card .btn {
+                        font-size: 0.8rem;
+                        min-height: 38px;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.classList.add('css-loaded');
+        });
+    </script>
+
+    <!-- HTML CONTENT - TANPA UBAH LAYOUT -->
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Dashboard -->
         <div class="row mb-3 mb-sm-3 mb-md-4">
@@ -840,7 +539,7 @@
                             </div>
                         </div>
 
-                        <!-- Tabel Data - 1 Data Saja -->
+                        <!-- Tabel Data -->
                         <div class="table-responsive">
                             <table id="tableDashboard" class="table table-hover" style="width:100%">
                                 <thead>
@@ -859,14 +558,12 @@
                                 <tbody>
                                     @foreach ($landBank as $item)
                                         <tr>
-                                            {{-- Nomor --}}
                                             <td class="text-center fw-bold">
                                                 <span class="badge bg-light text-dark">
                                                     {{ $loop->iteration }}
                                                 </span>
                                             </td>
 
-                                            {{-- Nama Project --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-home-variant text-primary me-2"
@@ -884,7 +581,6 @@
                                                     <span class="fw-bold">{{ $item->companyProfile->name ?? '-' }}</span>
                                                 </div>
                                             </td>
-                                            {{-- Tipe --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-home-city text-info me-2"
@@ -893,7 +589,6 @@
                                                 </div>
                                             </td>
 
-                                            {{-- Lokasi (Desktop) --}}
                                             <td class="d-none d-md-table-cell">
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-map-marker text-danger me-2"
@@ -902,7 +597,6 @@
                                                 </div>
                                             </td>
 
-                                            {{-- Harga --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-currency-usd text-success me-2"
@@ -913,7 +607,6 @@
                                                 </div>
                                             </td>
 
-                                            {{-- Status --}}
                                             <td>
                                                 @if ($item->status == 'ready')
                                                     <span class="badge badge-gradient-success">
@@ -930,7 +623,6 @@
                                                 @endif
                                             </td>
 
-                                            {{-- Action --}}
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <a href="javascript:void(0)"
@@ -957,7 +649,7 @@
                             </table>
                         </div>
 
-                        <!-- Pagination UI - DIPERKECIL SEPERTI HALAMAN PROPERTI -->
+                        <!-- Pagination UI -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
@@ -995,102 +687,91 @@
             Geser untuk melihat konten lainnya
         </div>
     </div>
-@endsection
-<!-- Modal Detail Landbank -->
-<div class="modal fade" id="modalDetailLandbank" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow">
 
-            <!-- HEADER -->
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-eye me-2"></i>Detail Landbank
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+    <!-- Modal Detail Landbank -->
+    <div class="modal fade" id="modalDetailLandbank" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="mdi mdi-eye me-2"></i>Detail Landbank
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
 
-            <!-- BODY -->
-            <div class="modal-body">
-
-                <!-- INFORMASI UTAMA -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <div class="row g-3">
-
-                            <div class="col-md-6">
-                                <label class="text-muted small">Nama Proyek</label>
-                                <h6 id="detailName" class="fw-bold mb-0"></h6>
+                <div class="modal-body">
+                    <!-- INFORMASI UTAMA -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Nama Proyek</label>
+                                    <h6 id="detailName" class="fw-bold mb-0"></h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Perusahaan</label>
+                                    <h6 id="detailCompany" class="fw-bold mb-0"></h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Tipe / Zoning</label>
+                                    <h6 id="detailZoning" class="mb-0"></h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Status</label>
+                                    <h6 id="detailStatus" class="mb-0"></h6>
+                                </div>
+                                <div class="col-12">
+                                    <label class="text-muted small">Lokasi</label>
+                                    <p id="detailAddress" class="mb-0"></p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="text-muted small">Harga Perolehan</label>
+                                    <h5 class="text-success fw-bold mb-0">
+                                        Rp <span id="detailPrice"></span>
+                                    </h5>
+                                </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="text-muted small">Perusahaan</label>
-                                <h6 id="detailCompany" class="fw-bold mb-0"></h6>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="text-muted small">Tipe / Zoning</label>
-                                <h6 id="detailZoning" class="mb-0"></h6>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="text-muted small">Status</label>
-                                <h6 id="detailStatus" class="mb-0"></h6>
-                            </div>
-
-                            <div class="col-12">
-                                <label class="text-muted small">Lokasi</label>
-                                <p id="detailAddress" class="mb-0"></p>
-                            </div>
-
-                            <div class="col-12">
-                                <label class="text-muted small">Harga Perolehan</label>
-                                <h5 class="text-success fw-bold mb-0">
-                                    Rp <span id="detailPrice"></span>
-                                </h5>
-                            </div>
-
                         </div>
                     </div>
-                </div>
-                <!-- PROGRESS + BOOKING PER UNIT -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-light fw-bold">
-                        <i class="mdi mdi-view-list me-2 text-success"></i>
-                        Detail Unit & Progress
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="tableUnitsModal">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Unit</th>
-                                        <th>Progress Stage</th>
-                                        <th>Progress (%)</th>
-                                        <th>Booking</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="unitsModalBody">
-                                    <!-- Isi otomatis via JS -->
-                                </tbody>
-                            </table>
+
+                    <!-- PROGRESS + BOOKING PER UNIT -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light fw-bold">
+                            <i class="mdi mdi-view-list me-2 text-success"></i>
+                            Detail Unit & Progress
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="tableUnitsModal">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Unit</th>
+                                            <th>Progress Stage</th>
+                                            <th>Progress (%)</th>
+                                            <th>Booking</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="unitsModalBody">
+                                        <!-- Isi otomatis via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        Tutup
+                    </button>
+                </div>
             </div>
-
-            <!-- FOOTER -->
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                    Tutup
-                </button>
-            </div>
-
         </div>
     </div>
-</div>
+@endsection
+
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1098,7 +779,6 @@
 
             buttons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // Basic Data LandBank
                     document.getElementById('detailName').innerText = this.dataset.name;
                     document.getElementById('detailCompany').innerText = this.dataset.company;
                     document.getElementById('detailZoning').innerText = this.dataset.zoning;
@@ -1106,7 +786,6 @@
                     document.getElementById('detailPrice').innerText = this.dataset.price;
                     document.getElementById('detailStatus').innerText = this.dataset.status;
 
-                    // Parse units JSON
                     const units = JSON.parse(this.dataset.units || '[]');
 
                     let html = '';
@@ -1119,31 +798,31 @@
                                 'akad': 'Akad',
                                 'legal_done': 'Legal Selesai',
                                 'completed': 'Selesai',
-                                'lanjut_kpr': 'Melanjutkan KPR' // jangan tampilkan
+                                'lanjut_kpr': 'Melanjutkan KPR'
                             };
 
                             html += `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${unit.unit_name}</td>
-                                <td>${unit.progress?.stage ?? '-'}</td>
-                                <td>
-                                    <div class="progress" style="height:8px;">
-                                        <div class="progress-bar bg-success" style="width:${unit.progress?.percentage ?? 0}%"></div>
-                                    </div>
-                                    <small>${unit.progress?.percentage ?? 0}%</small>
-                                </td>
-                                <td>${unit.booking?.customer_name ?? '-'}</td>
-                                <td>${statusLabelMap[unit.booking?.status] ?? '-'}</td>
-                            </tr>
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${unit.unit_name}</td>
+                                    <td>${unit.progress?.stage ?? '-'}</td>
+                                    <td>
+                                        <div class="progress" style="height:8px;">
+                                            <div class="progress-bar bg-success" style="width:${unit.progress?.percentage ?? 0}%"></div>
+                                        </div>
+                                        <small>${unit.progress?.percentage ?? 0}%</small>
+                                    </td>
+                                    <td>${unit.booking?.customer_name ?? '-'}</td>
+                                    <td>${statusLabelMap[unit.booking?.status] ?? '-'}</td>
+                                </tr>
                             `;
                         });
                     } else {
                         html = `
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">Belum ada unit</td>
-                    </tr>
-                `;
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Belum ada unit</td>
+                            </tr>
+                        `;
                     }
 
                     document.getElementById('unitsModalBody').innerHTML = html;
@@ -1151,9 +830,9 @@
             });
         });
     </script>
+
     <script>
         $(document).ready(function() {
-            // Inisialisasi DataTables - hanya untuk sorting
             let table = $('#tableDashboard').DataTable({
                 responsive: true,
                 paging: false,

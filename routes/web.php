@@ -133,10 +133,10 @@ Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->n
 */
 
 // list properti
-Route::get('/properti', [PropertyController::class, 'index'])->name('properti-all');
+Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
 
 // tambah properti
-Route::get('/properti-create', [LandBankController::class, 'index'])->name('properti');
+Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
 Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
 Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
 
