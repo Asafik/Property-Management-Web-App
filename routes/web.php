@@ -339,7 +339,9 @@ Route::get('/dashboard-customer-profil-kpr', function () {
 Route::get('/dashboard/customer-kpr', [TransaksiKPRController::class, 'index'])->name('customer.kpr');
 Route::get('/transaksi/kpr/{booking}/approve', [TransaksiKPRController::class, 'approve'])->name('transaksi.kpr.approve');
 Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])->name('kpr.verifikasi.store');
+
 Route::get('/transaksi/kpr/verified', [TransaksiKPRController::class, 'verified'])->name('kpr.customer-verified');
+
 Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::class, 'survey'])->name('kpr.survey');
 Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Banks;
 use App\Models\KprApplication;
 use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
@@ -13,31 +14,44 @@ class TransaksiKPRController extends Controller
 {
     //
 
-    public function index(Request $request)
+        public function index(Request $request)
     {
         $query = Booking::with(['customer', 'unit', 'sales'])
-            ->where('purchase_type', 'kpr'); // sesuaikan dengan kolom kamu
+            ->where('purchase_type', 'kpr');
 
-        // 🔍 Search customer
         if ($request->filled('search')) {
             $search = $request->search;
-
             $query->whereHas('customer', function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%");
             });
         }
 
-        $bookings = $query->latest()->paginate(10);
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $perPage = $request->input('per_page', 10);
+
+        // Validasi nilai per_page
+        $allowedPerPage = [10, 15, 25];
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 10;
+        }
+
+        $bookings = $query->latest()->paginate($perPage);
+        $bookings->appends($request->query());
 
         return view('transaksi.customer-kpr', compact('bookings'));
     }
+
+
     public function approve($id)
     {
         $booking = Booking::with(['customer', 'unit', 'sales', 'kprApplication.bank', 'kprApplication.documents'])->findOrFail($id);
 
         return view('marketing.vertifikasi_kpr', compact('booking'));
     }
-  
+
 public function storeVerifikasi(Request $request, $bookingId)
 {
     DB::beginTransaction();
@@ -122,19 +136,50 @@ public function storeVerifikasi(Request $request, $bookingId)
         return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan. Silakan coba lagi.');
     }
 }
-    public function verified()
-    {
-        // Ambil data KPR yang status dokumennya 'verified'
-        $kprApplications = KprApplication::with(['customer', 'unit', 'bank'])
-            ->where('status', 'dokumen')
-            ->get();
+    public function verified(Request $request)
+{
+    $query = KprApplication::with(['customer', 'unit', 'bank'])
+        ->where('status', 'dokumen');
 
-        return view('transaksi.kpr-verified', compact('kprApplications'));
+    // Filter search
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->whereHas('customer', function ($q) use ($search) {
+            $q->where('full_name', 'like', "%$search%");
+        });
     }
+
+    // Filter bank
+    if ($request->filled('bank_name')) {
+        $query->where('bank_name', $request->bank_name);
+    }
+
+    // Filter unit
+    if ($request->filled('unit_code')) {
+        $query->where('unit_code', $request->unit_code);
+    }
+
+    // Pagination
+    $perPage = $request->input('per_page', 10);
+    $allowedPerPage = [10, 25, 50];
+    if (!in_array($perPage, $allowedPerPage)) {
+        $perPage = 10;
+    }
+
+    $kprApplications = $query->latest()->paginate($perPage);
+    $kprApplications->appends($request->query());
+
+    // Data untuk dropdown filter
+    $banks = Banks::all();
+
+    return view('transaksi.kpr-verified', compact('kprApplications', 'banks',));
+}
+
+
     public function survey($id)
     {
         $application = KprApplication::with(['customer', 'unit', 'bank'])->findOrFail($id);
-        
+
     $surveyors = Employee::where('role', 'surveyor')->get();
         // arahkan ke halaman survey dengan data KPR
         return view('marketing.survey', compact('application', 'surveyors'));
@@ -145,5 +190,5 @@ public function storeVerifikasi(Request $request, $bookingId)
     return view('marketing.akad', compact('application'));
 }
 
-    
+
 }

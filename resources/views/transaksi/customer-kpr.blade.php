@@ -93,17 +93,33 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
     border-radius: 8px;
-    height: auto;
-    min-height: 40px;
+    height: 40px;
     border: 1px solid #e0e4e9;
 }
 
 .filter-card .btn {
     padding: 0.5rem 0.75rem;
     font-size: 0.85rem;
-    min-height: 40px;
+    height: 40px;
     border-radius: 8px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icon-only buttons untuk desktop */
+.btn-icon-only {
+    width: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only i {
+    font-size: 1.2rem;
+    margin: 0;
 }
 
 /* Form Controls */
@@ -115,7 +131,7 @@
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
-    height: auto;
+    height: 40px;
 }
 
 @media (min-width: 576px) {
@@ -170,6 +186,7 @@
     padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
     border-radius: 6px;
+    height: 32px;
 }
 
 .btn-gradient-primary {
@@ -357,64 +374,7 @@ h3.text-dark {
     }
 }
 
-/* DataTables Custom Styling - Hanya muncul jika ada data */
-.has-data .dataTables_wrapper {
-    padding: 0;
-}
-
-.has-data .dataTables_filter {
-    display: none !important;
-}
-
-.has-data .dataTables_length {
-    display: none !important;
-}
-
-.has-data .dataTables_info {
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    color: #6c7383;
-}
-
-.has-data .dataTables_paginate {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.has-data .dataTables_paginate .paginate_button {
-    padding: 0.35rem 0.7rem;
-    margin: 0 2px;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    color: #6c7383;
-    background: #ffffff;
-    font-size: 0.75rem;
-    cursor: pointer;
-    display: inline-block;
-}
-
-@media (min-width: 576px) {
-    .has-data .dataTables_paginate .paginate_button {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-}
-
-.has-data .dataTables_paginate .paginate_button.current {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    border-color: transparent;
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-}
-
-.has-data .dataTables_paginate .paginate_button:hover {
-    background: #f8f9fa;
-    border-color: #9a55ff;
-    color: #9a55ff !important;
-}
-
-/* Pagination styling lama - untuk Laravel pagination */
+/* Pagination styling */
 .pagination {
     margin: 0;
     gap: 3px;
@@ -463,6 +423,12 @@ h3.text-dark {
     .pagination-info {
         font-size: 0.85rem;
     }
+}
+
+/* Kolom filter dengan padding minimal */
+.filter-col {
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 /* Aksi button styling */
@@ -607,11 +573,11 @@ h3.text-dark {
                                 </form>
                             </div>
 
-                            <!-- DESKTOP VERSION -->
+                            <!-- DESKTOP VERSION - BUTTON ICON SAJA -->
                             <div class="d-none d-md-block">
                                 <form method="GET" action="{{ route('customer.kpr') }}">
                                     <div class="row g-2 align-items-end">
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
                                                 Cari Customer
@@ -620,7 +586,7 @@ h3.text-dark {
                                                 placeholder="Cari nama customer...">
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-3 filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
                                             </label>
@@ -632,7 +598,7 @@ h3.text-dark {
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-2 filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
                                             </label>
@@ -643,17 +609,17 @@ h3.text-dark {
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1 filter-col">
                                             <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            <button type="submit" class="btn btn-gradient-primary w-100 btn-icon-only" title="Filter">
+                                                <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
 
-                                        <div class="col-md-2">
+                                        <div class="col-md-1 filter-col">
                                             <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('customer.kpr') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            <a href="{{ route('customer.kpr') }}" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -752,7 +718,7 @@ h3.text-dark {
                         </table>
                     </div>
 
-                    <!-- PAGINATION SECTION - Tampil jika ada data (menggunakan Laravel pagination) -->
+                    <!-- PAGINATION SECTION - Tampil jika ada data -->
                     @if($bookings->count() > 0)
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                         <!-- Info Menampilkan Data -->
@@ -767,7 +733,7 @@ h3.text-dark {
                             data customer KPR
                         </div>
 
-                        <!-- Pagination Links (Laravel) -->
+                        <!-- Pagination Links -->
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                 {{-- Previous Page Link --}}

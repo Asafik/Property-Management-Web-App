@@ -1084,12 +1084,6 @@
                                     <i class="mdi mdi-floor-plan me-1"></i>
                                     <span class="d-none d-sm-inline">Denah Unit</span>
                                 </button>
-
-                                <button type="button" class="btn btn-outline-primary" id="btnLandMapView"
-                                    onclick="switchView('landmap')">
-                                    <i class="mdi mdi-map me-1"></i>
-                                    <span class="d-none d-sm-inline">Site Plan</span>
-                                </button>
                             </div>
                         </div>
 
@@ -1180,13 +1174,13 @@
                                                         ];
                                                         $progress = $progressMap[$status] ?? 0;
 
-                                                        
+
                                                         $barWidth = $status === 'belum_mulai' ? 100 : $progress;
                                                     @endphp
 
                                                     <div class="progress rounded-pill"
                                                         style="height:22px; background:#f1f1f1;">
-                                                        <div class="progress-bar 
+                                                        <div class="progress-bar
                                                             d-flex align-items-center justify-content-center
                                                             fw-semibold text-white
                                                             @if ($status === 'belum_mulai') bg-danger
@@ -1570,30 +1564,56 @@
                             </div>
                         </div>
 
-                        <!-- SITE PLAN VIEW (STATIK) -->
-                        <div id="landmapView" style="display: none;">
-                            <div class="denah-container text-center py-4">
-
-                                <h4 class="mb-3">Site Plan</h4>
-
-                                <div class="siteplan-wrapper">
-                                    @include('layouts.partial.sitepland')
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Pagination -->
+                        <!-- Pagination dengan styling yang sama -->
+                        @if($units->count() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
                                 Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }}
                                 dari {{ $units->total() }} data
                             </div>
-                            <div>
-                                {{ $units->links('pagination::bootstrap-5') }}
-                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                    {{-- Previous Page Link --}}
+                                    @if($units->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $units->previousPageUrl() }}" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Page Links --}}
+                                    @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if($units->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $units->nextPageUrl() }}" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -2339,7 +2359,6 @@
             document.getElementById('tableView').style.display = 'none';
             document.getElementById('gridView').style.display = 'none';
             document.getElementById('denahView').style.display = 'none';
-            document.getElementById('landmapView').style.display = 'none';
 
             // reset active button
             document.querySelectorAll('.btn-group .btn').forEach(btn => {
@@ -2356,9 +2375,6 @@
             } else if (view === 'denah') {
                 document.getElementById('denahView').style.display = 'block';
                 document.getElementById('btnDenahView').classList.add('active');
-            } else if (view === 'landmap') {
-                document.getElementById('landmapView').style.display = 'block';
-                document.getElementById('btnLandMapView').classList.add('active');
             }
         }
         $(document).ready(function() {

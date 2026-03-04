@@ -167,6 +167,20 @@
             border-radius: 0 10px 10px 0;
         }
 
+        /* Input Group dengan satuan di kiri */
+        .survey-input-group.satuan-kiri .survey-input-group-prepend {
+            order: 0;
+        }
+
+        .survey-input-group.satuan-kiri .survey-input-group-prepend .survey-input-group-text {
+            border-radius: 10px 0 0 10px;
+            border-right: none;
+        }
+
+        .survey-input-group.satuan-kiri .survey-form-control {
+            border-radius: 0 10px 10px 0;
+        }
+
         /* Button Styling */
         .survey-btn {
             font-size: 0.8rem;
@@ -701,7 +715,7 @@
         </div>
     </div>
 
-   
+
 
 <!-- Row untuk Survey -->
 <div class="row mt-4">
@@ -787,31 +801,34 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="survey-form-group">
                                 <label>Luas Tanah</label>
-                                <div class="survey-input-group">
+                                <div class="survey-input-group satuan-kiri">
+                                    <div class="survey-input-group-prepend">
+                                        <span class="survey-input-group-text">m²</span>
+                                    </div>
                                     <input type="text" class="survey-form-control" name="luas_tanah"
                                         value="{{ $application->luas_tanah ?? '' }}">
-                                    <div class="survey-input-group-prepend">
-                                        <span class="survey-input-group-text">m²</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="survey-form-group">
                                 <label>Luas Bangunan</label>
-                                <div class="survey-input-group">
-                                    <input type="text" class="survey-form-control" name="luas_bangunan"
-                                        value="{{ $application->luas_bangunan ?? '' }}">
+                                <div class="survey-input-group satuan-kiri">
                                     <div class="survey-input-group-prepend">
                                         <span class="survey-input-group-text">m²</span>
                                     </div>
+                                    <input type="text" class="survey-form-control" name="luas_bangunan"
+                                        value="{{ $application->luas_bangunan ?? '' }}">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="survey-form-group">
                                 <label>Kondisi Bangunan</label>
                                 <select class="survey-form-control" name="kondisi_bangunan">
@@ -828,23 +845,38 @@
 
                     <hr class="my-3">
 
-                    <!-- Checklist Kondisi Unit -->
+                    <!-- Checklist Kondisi Unit - Dengan layout 2 kolom (kiri-kanan) -->
                     <div class="mb-4">
                         <h6 class="mb-3 fw-bold" style="color: #9a55ff;">
                             <i class="mdi mdi-checkbox-marked-outline me-2"></i>
                             Checklist Kondisi Unit
                         </h6>
 
-                        @foreach (['listrik'=>'Instalasi Listrik','air'=>'PDAM / Air Bersih','akses'=>'Akses Jalan','sertifikat'=>'Sertifikat Sesuai','shm'=>'SHM / SHGB','imb'=>'IMB'] as $field => $label)
-                            <div class="survey-checkbox-wrapper">
-                                <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}" name="{{ $field }}"
-                                    {{ $application->$field ? 'checked' : '' }}>
-                                <label class="survey-checkbox-label" for="{{ $field }}">
-                                    <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                    <span class="survey-check-text">{{ $label }}</span>
-                                </label>
-                            </div>
-                        @endforeach
+                        <div class="row">
+                            @php
+                                $checklistItems = [
+                                    'listrik' => 'Instalasi Listrik',
+                                    'air' => 'PDAM / Air Bersih',
+                                    'akses' => 'Akses Jalan',
+                                    'sertifikat' => 'Sertifikat Sesuai',
+                                    'shm' => 'SHM / SHGB',
+                                    'imb' => 'IMB'
+                                ];
+                            @endphp
+
+                            @foreach ($checklistItems as $field => $label)
+                                <div class="col-md-6 mb-2">
+                                    <div class="survey-checkbox-wrapper">
+                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}" name="{{ $field }}"
+                                            {{ $application->$field ? 'checked' : '' }}>
+                                        <label class="survey-checkbox-label" for="{{ $field }}">
+                                            <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                            <span class="survey-check-text">{{ $label }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
 
                     <hr class="my-3">
@@ -899,12 +931,12 @@
                         <div class="col-md-6">
                             <div class="survey-form-group">
                                 <label>Persentase Kelayakan</label>
-                                <div class="survey-input-group">
-                                    <input type="text" class="survey-form-control" name="persentase_kelayakan"
-                                        value="{{ $application->persentase_kelayakan ?? '' }}">
+                                <div class="survey-input-group satuan-kiri">
                                     <div class="survey-input-group-prepend">
                                         <span class="survey-input-group-text">%</span>
                                     </div>
+                                    <input type="text" class="survey-form-control" name="persentase_kelayakan"
+                                        value="{{ $application->persentase_kelayakan ?? '' }}">
                                 </div>
                             </div>
                         </div>

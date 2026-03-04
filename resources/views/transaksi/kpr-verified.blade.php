@@ -142,6 +142,12 @@ select.kpr-terverifikasi-form-control {
     margin: 0;
 }
 
+/* Kolom filter dengan padding minimal */
+.filter-col {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
 /* ===== BUTTON STYLING ===== */
 .btn {
     font-size: 0.85rem;
@@ -314,6 +320,58 @@ select.kpr-terverifikasi-form-control {
     border: 1px solid #e9ecef;
 }
 
+/* ===== PAGINATION STYLING ===== */
+.pagination {
+    margin: 0;
+    gap: 3px;
+}
+
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    min-width: 36px;
+    text-align: center;
+    text-decoration: none;
+}
+
+@media (min-width: 576px) {
+    .page-item .page-link {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
+    }
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.page-item .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff;
+    transform: translateY(-1px);
+}
+
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+
 /* Text colors */
 .text-primary { color: #9a55ff !important; }
 .text-info { color: #17a2b8 !important; }
@@ -342,6 +400,16 @@ select.kpr-terverifikasi-form-control {
 
     h3.text-dark {
         font-size: 1.2rem !important;
+    }
+
+    .pagination-info {
+        font-size: 0.75rem;
+    }
+
+    .page-item .page-link {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+        min-width: 30px;
     }
 }
 
@@ -428,7 +496,7 @@ h3.text-dark {
                 </div>
 
                 <div class="card-body">
-                    <!-- FILTER SECTION - UI ONLY, TANPA ROUTE -->
+                    <!-- FILTER SECTION -->
                     <div class="filter-card mb-4">
                         <div class="card-body">
                             <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -438,7 +506,7 @@ h3.text-dark {
 
                             <!-- MOBILE VERSION -->
                             <div class="d-block d-md-none">
-                                <form method="GET" action="#">
+                                <form method="GET" action="{{ route('kpr.customer-verified') }}">
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
@@ -462,19 +530,6 @@ h3.text-dark {
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-home me-1" style="color: #9a55ff;"></i>Unit Rumah
-                                            </label>
-                                            <select class="form-control" name="unit_id" style="height: 45px;">
-                                                <option value="">Semua Unit</option>
-                                                @foreach($units ?? [] as $unit)
-                                                    <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>
-                                                        {{ $unit->unit_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
                                     </div>
 
                                     <div class="row g-2 mb-3">
@@ -492,12 +547,12 @@ h3.text-dark {
 
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="#" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                            <a href="{{ route('kpr.customer-verified') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -507,9 +562,9 @@ h3.text-dark {
 
                             <!-- DESKTOP VERSION - Icon Only Buttons -->
                             <div class="d-none d-md-block">
-                                <form method="GET" action="#">
+                                <form method="GET" action="{{ route('kpr.customer-verified') }}">
                                     <div class="row g-2 align-items-end">
-                                        <div class="col-md-3">
+                                        <div class="col-md-5 filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
                                                 Cari Customer
@@ -518,7 +573,7 @@ h3.text-dark {
                                                 placeholder="Cari nama customer...">
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-4 filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-bank me-1" style="color: #9a55ff;"></i>Bank
                                             </label>
@@ -532,21 +587,7 @@ h3.text-dark {
                                             </select>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-home me-1" style="color: #9a55ff;"></i>Unit Rumah
-                                            </label>
-                                            <select class="form-control" name="unit_id">
-                                                <option value="">Semua Unit</option>
-                                                @foreach($units ?? [] as $unit)
-                                                    <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>
-                                                        {{ $unit->unit_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-1">
+                                        <div class="col-md-1 filter-col">
                                             <label class="form-label">
                                                 <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
                                             </label>
@@ -557,16 +598,16 @@ h3.text-dark {
                                             </select>
                                         </div>
 
-                                        <div class="col-md-1">
+                                        <div class="col-md-1 filter-col">
                                             <label class="form-label invisible">Filter</label>
-                                            <button type="button" class="btn btn-gradient-primary w-100 btn-icon-only" title="Filter">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 btn-icon-only" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
 
-                                        <div class="col-md-1">
+                                        <div class="col-md-1 filter-col">
                                             <label class="form-label invisible">Reset</label>
-                                            <a href="#" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset">
+                                            <a href="{{ route('kpr.customer-verified') }}" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -594,7 +635,7 @@ h3.text-dark {
                             <tbody>
                                 @forelse($kprApplications as $index => $application)
                                 <tr>
-                                    <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                    <td class="text-center fw-bold">{{ $kprApplications->firstItem() + $index }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <i class="mdi mdi-account text-primary me-2" style="font-size: 1.2rem;"></i>
@@ -672,6 +713,65 @@ h3.text-dark {
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- PAGINATION SECTION -->
+                    @if($kprApplications->count() > 0)
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                        <!-- Info Menampilkan Data -->
+                        <div class="pagination-info mb-2 mb-sm-0">
+                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
+                            Menampilkan
+                            <span class="fw-bold">{{ $kprApplications->firstItem() }}</span>
+                            -
+                            <span class="fw-bold">{{ $kprApplications->lastItem() }}</span>
+                            dari
+                            <span class="fw-bold">{{ $kprApplications->total() }}</span>
+                            data KPR terverifikasi
+                        </div>
+
+                        <!-- Pagination Links -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                {{-- Previous Page Link --}}
+                                @if($kprApplications->onFirstPage())
+                                    <li class="page-item disabled">
+                                        <span class="page-link" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $kprApplications->previousPageUrl() }}" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- Page Links --}}
+                                @foreach ($kprApplications->getUrlRange(1, $kprApplications->lastPage()) as $page => $url)
+                                    <li class="page-item {{ $kprApplications->currentPage() == $page ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                    </li>
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if($kprApplications->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $kprApplications->nextPageUrl() }}" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled">
+                                        <span class="page-link" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
