@@ -22,7 +22,7 @@
                         <!-- Info Customer -->
                         <div class="flex-grow-1">
                             <h4 class="mb-1">{{ $booking->customer->full_name ?? '-' }}</h4>
-                            <p class="text-muted mb-0">Booking ID: $booking->booking_code ?? '-'</p>
+                            <p class="text-muted mb-0">Booking ID: {{$booking->booking_code ?? '-'}}</p>
                         </div>
 
                         <!-- Info Unit -->

@@ -262,6 +262,13 @@
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
+                                        <label>Nama Unit</label>
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->unit_name ?? '-' }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
+                                    <div class="pengajuan-form-group">
                                         <label>Type Unit</label>
                                         <input type="text" class="pengajuan-form-control"
                                             value="{{ $booking->unit->type ?? '-' }}" readonly>

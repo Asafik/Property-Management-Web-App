@@ -80,4 +80,5 @@ public function serahTerima()
 {
     return $this->hasOne(SerahTerima::class);
 }
+
 }

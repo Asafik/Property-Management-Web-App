@@ -37,6 +37,7 @@ use App\Http\Controllers\AkadController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
 use App\Http\Controllers\SerahTerimaController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
 
 /*
@@ -341,6 +342,9 @@ Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::clas
 Route::get('/transaksi/kpr/verified', [TransaksiKPRController::class, 'verified'])->name('kpr.customer-verified');
 Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::class, 'survey'])->name('kpr.survey');
 Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
+
+Route::get('/dashboard/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
+Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
 });
 
 

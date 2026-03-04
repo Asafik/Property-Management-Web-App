@@ -857,7 +857,7 @@
                                     @csrf
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                         data-bs-target="#confirmModal">
-                                        <i class="mdi mdi-check-all me-1"></i> Setujui Semua
+                                        <i class="mdi mdi-check-all me-1"></i> Simpan Pengajuan
                                     </button>
                                 </form>
                             </div>
