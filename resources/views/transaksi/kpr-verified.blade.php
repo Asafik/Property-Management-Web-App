@@ -1,58 +1,751 @@
 @extends('layouts.partial.app')
 
+@section('title', 'Daftar Customer KPR Terverifikasi - Property Management App')
+
 @section('content')
-    <div class="container mt-5">
-        <h3 class="mb-4">Daftar Customer KPR Terverifikasi</h3>
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Nama Customer</th>
-                        <th>Unit Rumah</th>
-                        <th>Bank</th>
-                        <th>Status Dokumen</th>
-                        <th>Tanggal Verifikasi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($kprApplications as $index => $application)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $application->customer->full_name ?? '-' }}</td>
-                            <td>{{ $application->unit->unit_name ?? '-' }} // {{ $application->unit->type ?? '' }} //
-                                {{ $application->unit->unit_code ?? '-' }}</td>
-                            <td>{{ $application->bank->bank_name ?? '-' }}</td>
-                            <td>
-                                @if ($application->status === 'dokumen')
-                                    <span class="badge bg-success">Terverifikasi</span>
-                                @else
-                                    <span class="badge bg-warning text-dark">{{ ucfirst($application->status) }}</span>
-                                @endif
-                            </td>
-                            <td>{{ $application->updated_at->format('d M Y') }}</td>
-                            <td>
-                                @if ($application->unit->type === 'komersil')
-                                    <!-- Button untuk lanjut ke akad -->
-                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn btn-success btn-sm">
-                                        Lanjut ke Akad
-                                    </a>
-                                @else
-                                    <!-- Button untuk lanjut ke survey -->
-                                    <a href="{{ route('kpr.survey', $application->id) }}" class="btn btn-primary btn-sm">
-                                        Lanjut ke Survey
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada data KPR terverifikasi.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+<style>
+/* ===== MODERN FORM STYLING UNTUK KPR TERVERIFIKASI ===== */
+.kpr-terverifikasi-form-group {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .kpr-terverifikasi-form-group {
+        margin-bottom: 1.2rem;
+    }
+}
+
+.kpr-terverifikasi-form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .kpr-terverifikasi-form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
+.kpr-terverifikasi-form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    width: 100%;
+    font-family: 'Nunito', sans-serif;
+}
+
+@media (min-width: 576px) {
+    .kpr-terverifikasi-form-control {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+}
+
+@media (min-width: 768px) {
+    .kpr-terverifikasi-form-control {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+.kpr-terverifikasi-form-control:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+
+.kpr-terverifikasi-form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+select.kpr-terverifikasi-form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2rem;
+}
+
+.kpr-terverifikasi-form-control-sm {
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    border-radius: 6px;
+}
+
+@media (min-width: 576px) {
+    .kpr-terverifikasi-form-control-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
+    }
+}
+
+/* ===== FILTER SECTION ===== */
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-card .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.3px;
+}
+
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    height: 45px;
+    border: 1px solid #e0e4e9;
+}
+
+.filter-card .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    height: 45px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Icon-only buttons untuk desktop */
+.btn-icon-only {
+    width: 45px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only i {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* ===== BUTTON STYLING ===== */
+.btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    border: none;
+}
+
+@media (min-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.2rem;
+        border-radius: 10px;
+    }
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-sm {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
+
+.btn-gradient-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+}
+
+.btn-gradient-primary:hover {
+    background: linear-gradient(to right, #c77cff, #8a45e6) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4) !important;
+}
+
+.btn-gradient-secondary {
+    background: #6c757d !important;
+    color: #ffffff !important;
+}
+
+.btn-gradient-secondary:hover {
+    background: #5a6268 !important;
+}
+
+.btn-gradient-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+    color: #ffffff !important;
+}
+
+.btn-gradient-success:hover {
+    background: linear-gradient(135deg, #218838, #4cae4c) !important;
+}
+
+.btn-gradient-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+    color: #2c2e3f !important;
+}
+
+.btn-gradient-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
+    color: #ffffff !important;
+}
+
+.btn-gradient-danger {
+    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+    color: #ffffff !important;
+}
+
+/* ===== BADGE STYLING ===== */
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .badge {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+    }
+}
+
+.badge-gradient-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+    color: #ffffff;
+}
+
+.badge-gradient-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+}
+
+.badge-gradient-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de);
+    color: #ffffff;
+}
+
+.badge-gradient-primary {
+    background: linear-gradient(135deg, #9a55ff, #da8cff);
+    color: #ffffff;
+}
+
+/* ===== TABLE STYLING ===== */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    margin-bottom: 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.8rem 0.5rem;
+    white-space: nowrap;
+}
+
+@media (min-width: 576px) {
+    .table thead th {
+        font-size: 0.85rem;
+        padding: 0.9rem 0.6rem;
+    }
+}
+
+.table tbody td {
+    vertical-align: middle;
+    font-size: 0.85rem;
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #2c2e3f;
+}
+
+@media (min-width: 576px) {
+    .table tbody td {
+        font-size: 0.9rem;
+        padding: 0.9rem 0.6rem;
+    }
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table-bordered {
+    border: 1px solid #e9ecef;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #e9ecef;
+}
+
+/* Text colors */
+.text-primary { color: #9a55ff !important; }
+.text-info { color: #17a2b8 !important; }
+.text-success { color: #28a745 !important; }
+.text-warning { color: #ffc107 !important; }
+.text-danger { color: #dc3545 !important; }
+.text-muted { color: #a5b3cb !important; }
+.fw-bold { font-weight: 600 !important; }
+
+/* Icon styling */
+.mdi {
+    vertical-align: middle;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    .table tbody td {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    h3.text-dark {
+        font-size: 1.2rem !important;
+    }
+}
+
+h3.text-dark {
+    font-size: 1.3rem !important;
+    font-weight: 700;
+    color: #2c2e3f !important;
+    margin-bottom: 0.5rem !important;
+}
+
+@media (min-width: 576px) {
+    h3.text-dark {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    h3.text-dark {
+        font-size: 1.7rem !important;
+    }
+}
+
+/* Info Unit Styling */
+.unit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.unit-name {
+    font-weight: 600;
+    color: #2c2e3f;
+}
+
+.unit-code {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+.unit-code i {
+    font-size: 0.7rem;
+    margin-right: 2px;
+}
+
+/* Row gap */
+.row.gap-3 {
+    gap: 1rem !important;
+}
+</style>
+
+<div class="container-fluid p-2 p-sm-3 p-md-4">
+    <!-- Header Dashboard -->
+    <div class="row mb-3 mb-sm-3 mb-md-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-dark mb-1">
+                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>
+                            Daftar Customer KPR Terverifikasi
+                        </h3>
+                        <p class="text-muted mb-0">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Kelola customer KPR yang telah terverifikasi dokumennya
+                        </p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-file-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Tabel Data KPR Terverifikasi -->
+    <div class="row mt-2 mt-sm-2 mt-md-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
+                        Daftar Customer KPR Terverifikasi
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <!-- FILTER SECTION - UI ONLY, TANPA ROUTE -->
+                    <div class="filter-card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
+                                Filter Data KPR Terverifikasi
+                            </h6>
+
+                            <!-- MOBILE VERSION -->
+                            <div class="d-block d-md-none">
+                                <form method="GET" action="#">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                            Cari Customer
+                                        </label>
+                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                            placeholder="Cari nama customer..." style="height: 45px;">
+                                    </div>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-bank me-1" style="color: #9a55ff;"></i>Bank
+                                            </label>
+                                            <select class="form-control" name="bank_id" style="height: 45px;">
+                                                <option value="">Semua Bank</option>
+                                                @foreach($banks ?? [] as $bank)
+                                                    <option value="{{ $bank->id }}" {{ request('bank_id') == $bank->id ? 'selected' : '' }}>
+                                                        {{ $bank->bank_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-home me-1" style="color: #9a55ff;"></i>Unit Rumah
+                                            </label>
+                                            <select class="form-control" name="unit_id" style="height: 45px;">
+                                                <option value="">Semua Unit</option>
+                                                @foreach($units ?? [] as $unit)
+                                                    <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>
+                                                        {{ $unit->unit_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
+                                            </label>
+                                            <select class="form-control" name="per_page" style="height: 45px;">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="#" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- DESKTOP VERSION - Icon Only Buttons -->
+                            <div class="d-none d-md-block">
+                                <form method="GET" action="#">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                                Cari Customer
+                                            </label>
+                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                                placeholder="Cari nama customer...">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-bank me-1" style="color: #9a55ff;"></i>Bank
+                                            </label>
+                                            <select class="form-control" name="bank_id">
+                                                <option value="">Semua Bank</option>
+                                                @foreach($banks ?? [] as $bank)
+                                                    <option value="{{ $bank->id }}" {{ request('bank_id') == $bank->id ? 'selected' : '' }}>
+                                                        {{ $bank->bank_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-home me-1" style="color: #9a55ff;"></i>Unit Rumah
+                                            </label>
+                                            <select class="form-control" name="unit_id">
+                                                <option value="">Semua Unit</option>
+                                                @foreach($units ?? [] as $unit)
+                                                    <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>
+                                                        {{ $unit->unit_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
+                                            </label>
+                                            <select class="form-control" name="per_page">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="button" class="btn btn-gradient-primary w-100 btn-icon-only" title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="form-label invisible">Reset</label>
+                                            <a href="#" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABEL DATA -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="tableKprTerverifikasi" data-use-datatables="{{ $kprApplications->count() > 0 ? 'true' : 'false' }}">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5%">No</th>
+                                    <th width="15%">Nama Customer</th>
+                                    <th width="15%">Unit Rumah</th>
+                                    <th width="10%">Unit</th>
+                                    <th width="12%">Bank</th>
+                                    <th width="10%">Status Dokumen</th>
+                                    <th width="10%">Tanggal Verifikasi</th>
+                                    <th class="text-center" width="23%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($kprApplications as $index => $application)
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-account text-primary me-2" style="font-size: 1.2rem;"></i>
+                                            <span class="fw-bold">{{ $application->customer->full_name ?? '-' }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="unit-info">
+                                            <span class="unit-name">
+                                                <i class="mdi mdi-home text-success me-1" style="font-size: 1rem;"></i>
+                                                {{ $application->unit->unit_name ?? '-' }}
+                                            </span>
+                                            <span class="unit-code">
+                                                <i class="mdi mdi-tag-outline text-info me-1" style="font-size: 0.8rem;"></i>
+                                                {{ $application->unit->type ?? '' }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-tag text-info me-2" style="font-size: 1rem;"></i>
+                                            <span class="badge bg-light text-dark">
+                                                {{ $application->unit->unit_code ?? '-' }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-bank text-warning me-2" style="font-size: 1rem;"></i>
+                                            {{ $application->bank->bank_name ?? '-' }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if ($application->status === 'dokumen')
+                                            <span class="badge badge-gradient-success">
+                                                <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                            </span>
+                                        @else
+                                            <span class="badge badge-gradient-warning">
+                                                <i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($application->status) }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-calendar text-primary me-1"></i>
+                                            {{ \Carbon\Carbon::parse($application->updated_at)->format('d M Y') }}
+                                        </div>
+                                    </td>
+                                     <td class="text-center">
+                                        @if ($application->unit->type === 'komersil')
+                                            <a href="{{ route('kpr.akad', $application->id) }}"
+                                               class="btn btn-sm btn-gradient-success"
+                                               title="Lanjut ke Akad">
+                                                <i class="mdi mdi-handshake me-1"></i> Lanjut ke Akad
+                                            </a>
+                                        @else
+                                            <a href="{{ route('kpr.survey', $application->id) }}"
+                                               class="btn btn-sm btn-gradient-info"
+                                               title="Lanjut ke Survey">
+                                                <i class="mdi mdi-clipboard-text me-1"></i> Lanjut ke Survey
+                                            </a>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-5">
+                                        <i class="mdi mdi-file-check-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                        <p class="mt-2 mb-0">Tidak ada data KPR terverifikasi.</p>
+                                        <p class="text-muted small">Belum ada customer yang terverifikasi dokumen KPR-nya.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tombol Kembali -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-start">
+                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
+                            <i class="mdi mdi-arrow-left me-1"></i>
+                            Kembali ke Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    // Inisialisasi DataTables hanya jika ada data
+    const tableElement = document.getElementById('tableKprTerverifikasi');
+    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
+        // Destroy existing DataTable if any
+        if ($.fn.DataTable.isDataTable('#tableKprTerverifikasi')) {
+            $('#tableKprTerverifikasi').DataTable().destroy();
+        }
+
+        // Initialize DataTable with minimal features
+        $('#tableKprTerverifikasi').DataTable({
+            responsive: true,
+            ordering: true,
+            paging: false,
+            info: false,
+            searching: false,
+            lengthChange: false,
+            destroy: true,
+            language: {
+                emptyTable: "Data KPR terverifikasi belum tersedia",
+                zeroRecords: "Data tidak ditemukan",
+            },
+            columnDefs: [
+                { orderable: false, targets: [7] } // Kolom aksi tidak bisa diurutkan
+            ]
+        });
+    }
+
+    // Sweet Alert untuk session success/error
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ session('error') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+});
+</script>
+@endpush
