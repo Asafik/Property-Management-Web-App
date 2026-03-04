@@ -386,7 +386,8 @@
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
                                         <label>Estimasi Angsuran</label>
-                                        <input type="number" class="pengajuan-form-control" name="estimasi_angsuran" placeholder="Estimasi Angsuran akan di perhitungkan secara otomatis oleh sistem"
+                                        <input type="number" class="pengajuan-form-control" name="estimasi_angsuran"
+                                            placeholder="Estimasi Angsuran akan di perhitungkan secara otomatis oleh sistem"
                                             id="angsuran" readonly>
                                     </div>
                                 </div>
@@ -412,6 +413,8 @@
                             <div class="pengajuan-row">
                                 @php
                                     $uploadFields = [
+                                        'ktp' => 'KTP', // ditambahkan
+                                        'kk' => 'KK', // ditambahkan
                                         'slip_gaji' => 'Slip Gaji',
                                         'rekening_koran' => 'Rekening Koran',
                                         'npwp' => 'NPWP',
@@ -457,7 +460,6 @@
 
     {{-- Script untuk File Upload --}}
     @push('scripts')
-    
         <script>
             // File upload modern preview
             document.addEventListener('DOMContentLoaded', function() {

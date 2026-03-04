@@ -134,7 +134,9 @@ public function store(Request $request)
             'npwp',
             'sku',
             'surat_nikah',
-            'ktp_pasangan'
+            'ktp_pasangan',
+            'kk',
+            'ktp'
         ];
 
         foreach ($fileFields as $field) {

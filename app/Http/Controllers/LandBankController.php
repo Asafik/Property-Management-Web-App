@@ -41,7 +41,7 @@ public function store(Request $request)
             'volume_fill'      => 'nullable|numeric',
             'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
 
-            'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:2048',
             'documents.*.number' => 'nullable|string|max:255',
         ]);
 
