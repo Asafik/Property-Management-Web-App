@@ -36,6 +36,7 @@ use App\Http\Controllers\TamuController;
 use App\Http\Controllers\AkadController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
+use App\Http\Controllers\RABDeadlineController;
 use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
@@ -345,10 +346,11 @@ Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])-
 
 Route::get('/dashboard/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
 Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
+// Route::get('/dashboard-dedline-rab', function () {
+//     return view('properti.dedline_rab');
+
+Route::get('/rab-deadline/{progressId}', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
 });
 
 
-Route::get('/dashboard-dedline-rab', function () {
-    return view('properti.dedline_rab');
-});
 
