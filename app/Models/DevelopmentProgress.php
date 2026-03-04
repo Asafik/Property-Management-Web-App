@@ -21,7 +21,11 @@ class DevelopmentProgress extends Model
     }
 
     public function items()
-{
-    return $this->hasMany(DevelopmentProgressItem::class, 'development_progress_id');
-}
+    {
+        return $this->hasMany(DevelopmentProgressItem::class, 'development_progress_id');
+    }
+    public function deadlines()
+    {
+        return $this->hasMany(\App\Models\RabDeadline::class, 'development_progress_id');
+    }
 }
