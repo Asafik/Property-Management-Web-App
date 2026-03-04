@@ -9,13 +9,43 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-
-    public function index(){
+    public function index()
+    {
         $totalProperty = LandBank::count();
         $totalCustomer = Customer::count();
         $totalPayments = Payment::count();
+        $totalUnit = \App\Models\LandBankUnit::count();
 
-        $landBank = LandBank::all();
-        return view('dashboard', compact('totalProperty', 'totalCustomer','totalPayments', 'landBank'));
+        $landBank = LandBank::with([
+            'companyProfile',
+            'units.activeBooking.customer', // Booking terakhir + customer
+            'units.progress',               // Progress pembangunan
+        ])->get()->map(function($lb) {
+
+            // Tambahkan array unit lengkap dengan progress dan booking
+            $lb->units_detail = $lb->units->map(function($unit) {
+    return [
+        'unit_name' => $unit->unit_name ?? $unit->unit_number ?? '-',
+        'progress'  => $unit->progress ? [
+            'stage'      => $unit->progress->stage ?? '-',
+            'percentage' => $unit->progress->percentage ?? 0,
+        ] : null,
+        'booking'   => $unit->activeBooking ? [
+            'customer_name' => optional($unit->activeBooking->customer)->full_name ?? 'Customer',
+            'status'        => $unit->activeBooking->status ?? '-',
+        ] : null,
+    ];
+});
+
+return $lb;
+        });
+
+        return view('dashboard', compact(
+            'totalProperty',
+            'totalCustomer',
+            'totalPayments',
+            'totalUnit',
+            'landBank'
+        ));
     }
 }

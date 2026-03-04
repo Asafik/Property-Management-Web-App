@@ -573,63 +573,125 @@
         </div>
 
         <!-- Statistics Cards -->
-        <div class="row g-2 g-sm-2 g-md-3">
-            <!-- Mobile: 2 cards per row, Tablet: 2 cards per row, Desktop: 4 cards per row -->
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-primary card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+
+            <!-- Total Proyek -->
+            <div class="col">
+                <div class="card bg-gradient-primary card-img-holder text-white h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Total Proyek / Tanah Induk
-                            <i class="mdi mdi-office-building float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalProperty }}</h2>
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-normal" style="min-height:40px;">
+                                    Total Proyek / Tanah Induk
+                                </h6>
+                                <i class="mdi mdi-office-building" style="font-size:1.3rem;"></i>
+                            </div>
+
+                            <h2 class="fw-bold mb-0">
+                                {{ $totalProperty }}
+                            </h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-info card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
+
+            <!-- Total Unit -->
+            <div class="col">
+                <div class="card bg-gradient-warning card-img-holder text-white h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Total Customer
-                            <i class="mdi mdi-account-group float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalCustomer }}</h2>
-                        <h6 class="card-text small"></h6>
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-normal" style="min-height:40px;">
+                                    Total Unit
+                                </h6>
+                                <i class="mdi mdi-home-city" style="font-size:1.3rem;"></i>
+                            </div>
+
+                            <h2 class="fw-bold mb-0">
+                                {{ $totalUnit }}
+                            </h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-success card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
+
+            <!-- Total Customer -->
+            <div class="col">
+                <div class="card bg-gradient-info card-img-holder text-white h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Transaksi
-                            <i class="mdi mdi-cash-multiple float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalPayments }}</h2>
-                        <h6 class="card-text small">Bulan ini</h6>
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-normal" style="min-height:40px;">
+                                    Total Customer
+                                </h6>
+                                <i class="mdi mdi-account-group" style="font-size:1.3rem;"></i>
+                            </div>
+
+                            <h2 class="fw-bold mb-0">
+                                {{ $totalCustomer }}
+                            </h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-danger card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
+
+            <!-- Transaksi -->
+            <div class="col">
+                <div class="card bg-gradient-success card-img-holder text-white h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Pendapatan
-                            <i class="mdi mdi-currency-usd float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">Rp 0</h2>
-                        <h6 class="card-text small"></h6>
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-normal" style="min-height:40px;">
+                                    Transaksi
+                                </h6>
+                                <i class="mdi mdi-cash-multiple" style="font-size:1.3rem;"></i>
+                            </div>
+
+                            <h2 class="fw-bold mb-0">
+                                {{ $totalPayments }}
+                            </h2>
+
+                            <small class="opacity-75">Bulan ini</small>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Pendapatan -->
+            <div class="col">
+                <div class="card bg-gradient-danger card-img-holder text-white h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
+                            alt="circle-image" />
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-normal" style="min-height:40px;">
+                                    Pendapatan
+                                </h6>
+                                <i class="mdi mdi-currency-usd" style="font-size:1.3rem;"></i>
+                            </div>
+
+                            <h2 class="fw-bold mb-0">
+                                Rp 0
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Tabel Data -->
@@ -785,6 +847,7 @@
                                     <tr>
                                         <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
                                         <th><i class="mdi mdi-home me-1"></i>Nama Proyek / Tanah Induk</th>
+                                        <th><i class="mdi mdi-domain me-1"></i>Nama Perusahaan</th>
                                         <th><i class="mdi mdi-shape-outline me-1"></i>Tipe</th>
                                         <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker me-1"></i>Lokasi
                                         </th>
@@ -811,10 +874,16 @@
                                                     <span class="fw-bold">{{ $item->name ?? '-' }}</span>
                                                 </div>
                                                 <small class="text-muted d-block d-md-none">
-                                                    <i class="mdi mdi-map-marker me-1"></i> {{$item->unit->type ?? '-'}}
+                                                    <i class="mdi mdi-map-marker me-1"></i> {{ $item->unit->type ?? '-' }}
                                                 </small>
                                             </td>
-
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-domain-variant text-primary me-2"
+                                                        style="font-size: 1rem;"></i>
+                                                    <span class="fw-bold">{{ $item->companyProfile->name ?? '-' }}</span>
+                                                </div>
+                                            </td>
                                             {{-- Tipe --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -864,15 +933,20 @@
                                             {{-- Action --}}
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <a href=""
-                                                        class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip"
-                                                        title="Detail">
+                                                    <a href="javascript:void(0)"
+                                                        class="btn btn-outline-primary btn-sm btn-detail"
+                                                        data-bs-toggle="modal" data-bs-target="#modalDetailLandbank"
+                                                        data-name="{{ $item->name }}"
+                                                        data-company="{{ $item->companyProfile->name ?? '-' }}"
+                                                        data-zoning="{{ $item->zoning ?? '-' }}"
+                                                        data-address="{{ $item->address ?? '-' }}"
+                                                        data-price="{{ number_format($item->acquisition_price ?? 0, 0, ',', '.') }}"
+                                                        data-status="{{ ucfirst($item->status) }}"
+                                                        data-units='@json($item->units_detail)'>
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-
-                                                    <a href=""
-                                                        class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip"
-                                                        title="Edit">
+                                                    <a href="" class="btn btn-outline-primary btn-sm"
+                                                        data-bs-toggle="tooltip" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
                                                 </div>
@@ -922,8 +996,161 @@
         </div>
     </div>
 @endsection
+<!-- Modal Detail Landbank -->
+<div class="modal fade" id="modalDetailLandbank" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
 
+            <!-- HEADER -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-eye me-2"></i>Detail Landbank
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <!-- INFORMASI UTAMA -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="text-muted small">Nama Proyek</label>
+                                <h6 id="detailName" class="fw-bold mb-0"></h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="text-muted small">Perusahaan</label>
+                                <h6 id="detailCompany" class="fw-bold mb-0"></h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="text-muted small">Tipe / Zoning</label>
+                                <h6 id="detailZoning" class="mb-0"></h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="text-muted small">Status</label>
+                                <h6 id="detailStatus" class="mb-0"></h6>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="text-muted small">Lokasi</label>
+                                <p id="detailAddress" class="mb-0"></p>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="text-muted small">Harga Perolehan</label>
+                                <h5 class="text-success fw-bold mb-0">
+                                    Rp <span id="detailPrice"></span>
+                                </h5>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- PROGRESS + BOOKING PER UNIT -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light fw-bold">
+                        <i class="mdi mdi-view-list me-2 text-success"></i>
+                        Detail Unit & Progress
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="tableUnitsModal">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Unit</th>
+                                        <th>Progress Stage</th>
+                                        <th>Progress (%)</th>
+                                        <th>Booking</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="unitsModalBody">
+                                    <!-- Isi otomatis via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    Tutup
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn-detail');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Basic Data LandBank
+                    document.getElementById('detailName').innerText = this.dataset.name;
+                    document.getElementById('detailCompany').innerText = this.dataset.company;
+                    document.getElementById('detailZoning').innerText = this.dataset.zoning;
+                    document.getElementById('detailAddress').innerText = this.dataset.address;
+                    document.getElementById('detailPrice').innerText = this.dataset.price;
+                    document.getElementById('detailStatus').innerText = this.dataset.status;
+
+                    // Parse units JSON
+                    const units = JSON.parse(this.dataset.units || '[]');
+
+                    let html = '';
+                    if (units.length > 0) {
+                        units.forEach((unit, index) => {
+                            let statusLabelMap = {
+                                'active': 'Aktif',
+                                'cancelled': 'Dibatalkan',
+                                'cash_process': 'Proses Cash',
+                                'akad': 'Akad',
+                                'legal_done': 'Legal Selesai',
+                                'completed': 'Selesai',
+                                'lanjut_kpr': 'Melanjutkan KPR' // jangan tampilkan
+                            };
+
+                            html += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${unit.unit_name}</td>
+                                <td>${unit.progress?.stage ?? '-'}</td>
+                                <td>
+                                    <div class="progress" style="height:8px;">
+                                        <div class="progress-bar bg-success" style="width:${unit.progress?.percentage ?? 0}%"></div>
+                                    </div>
+                                    <small>${unit.progress?.percentage ?? 0}%</small>
+                                </td>
+                                <td>${unit.booking?.customer_name ?? '-'}</td>
+                                <td>${statusLabelMap[unit.booking?.status] ?? '-'}</td>
+                            </tr>
+                            `;
+                        });
+                    } else {
+                        html = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Belum ada unit</td>
+                    </tr>
+                `;
+                    }
+
+                    document.getElementById('unitsModalBody').innerHTML = html;
+                });
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Inisialisasi DataTables - hanya untuk sorting
