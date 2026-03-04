@@ -50,7 +50,7 @@
             height: auto;
         }
 
-        /* Filter Card Minimal */
+        /* Filter Card */
         .filter-card {
             background: linear-gradient(135deg, #f9f7ff, #f2ecff);
             border-radius: 12px;
@@ -58,34 +58,297 @@
             margin-bottom: 1.25rem;
         }
 
-        /* Table Minimal */
-        .table-responsive { overflow-x: auto; }
+        .filter-card .card-body {
+            padding: 1rem !important;
+        }
+
+        .filter-card .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9a55ff !important;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-card .form-control,
+        .filter-card .form-select {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            height: auto;
+            min-height: 40px;
+            border: 1px solid #e0e4e9;
+        }
+
+        .filter-card .btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            min-height: 40px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Form Controls */
+        .form-control,
+        .form-select {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+            color: #2c2e3f;
+            height: auto;
+        }
+
+        @media (min-width: 576px) {
+            .form-control,
+            .form-select {
+                padding: 0.7rem 1rem;
+                font-size: 0.95rem;
+                border-radius: 10px;
+            }
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #9a55ff;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+            outline: none;
+        }
+
+        /* Form Label */
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9a55ff !important;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.3px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* Buttons */
+        .btn {
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            border: none;
+        }
+
+        @media (min-width: 576px) {
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.2rem;
+                border-radius: 10px;
+            }
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+
+        .btn-gradient-primary {
+            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-secondary {
+            background: #6c757d !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-secondary:hover {
+            background: #5a6268 !important;
+        }
+
+        .btn-outline-primary {
+            background: transparent;
+            border: 1px solid #9a55ff;
+            color: #9a55ff;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
         .table thead th {
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             color: #9a55ff;
             font-weight: 600;
             font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
             padding: 0.8rem 0.5rem;
-        }
-        .table tbody td {
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
+            white-space: nowrap;
         }
 
-        /* Pagination Minimal */
-        .pagination { margin: 0; gap: 3px; }
+        @media (min-width: 576px) {
+            .table thead th {
+                font-size: 0.85rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table thead th {
+                font-size: 0.9rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.85rem;
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #2c2e3f;
+        }
+
+        @media (min-width: 576px) {
+            .table tbody td {
+                font-size: 0.9rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table tbody td {
+                font-size: 0.95rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin: 0;
+            gap: 3px;
+        }
+
         .page-item .page-link {
             border: 1px solid #e9ecef;
             padding: 0.35rem 0.7rem;
             font-size: 0.75rem;
             color: #6c7383;
             background: #fff;
-            border-radius: 6px;
+            border-radius: 6px !important;
             min-width: 32px;
             text-align: center;
+            transition: all 0.2s ease;
         }
+
+        @media (min-width: 576px) {
+            .page-item .page-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                min-width: 36px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .page-item .page-link {
+                padding: 0.45rem 0.9rem;
+                font-size: 0.85rem;
+                min-width: 40px;
+            }
+        }
+
         .page-item.active .page-link {
             background: linear-gradient(to right, #da8cff, #9a55ff);
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        }
+
+        .page-item .page-link:hover {
+            background-color: #f8f9fa;
+            border-color: #9a55ff;
+            color: #9a55ff;
+            transform: translateY(-1px);
+        }
+
+        .pagination-info {
+            font-size: 0.8rem;
+            color: #6c7383;
+        }
+
+        @media (min-width: 576px) {
+            .pagination-info {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .pagination-info {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Badge */
+        .badge {
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .badge {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        .badge-gradient-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #fff;
+        }
+
+        .badge-gradient-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .badge-gradient-danger {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: #fff;
+        }
+
+        .badge-gradient-info {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
             color: #fff;
         }
 
@@ -98,37 +361,6 @@
         .fw-bold { font-weight: 600 !important; }
         .text-muted { color: #a5b3cb !important; }
 
-        /* Badge Minimal */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-        }
-        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #fff; }
-        .badge-gradient-warning { background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f; }
-        .badge-gradient-danger { background: linear-gradient(135deg, #dc3545, #e4606d); color: #fff; }
-        .badge-gradient-info { background: linear-gradient(135deg, #17a2b8, #5bc0de); color: #fff; }
-
-        /* Buttons Minimal */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            border: none;
-        }
-        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; border-radius: 6px; }
-        .btn-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff); color: #fff; }
-        .btn-gradient-secondary { background: #6c757d; color: #fff; }
-        .btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
-            color: #9a55ff;
-            padding: 0.4rem 0.75rem;
-        }
-
         /* Typography */
         h3.text-dark {
             font-size: 1.3rem !important;
@@ -138,6 +370,20 @@
         }
         @media (max-width: 576px) { h3.text-dark { font-size: 1.2rem !important; } }
 
+        /* Button icon-only untuk reset */
+        .btn-icon-only {
+            width: 40px;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon-only i {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
         /* Loading indicator untuk non-critical CSS */
         .css-loaded .card:hover,
         .css-loaded .btn:hover,
@@ -145,111 +391,23 @@
         .css-loaded .table tbody tr:hover {
             transition: all 0.3s ease;
         }
+
+        /* DataTables Custom Styling */
+        .dataTables_filter,
+        .dataTables_length,
+        .dataTables_paginate,
+        .dataTables_info {
+            display: none !important;
+        }
+
+        .mdi {
+            vertical-align: middle;
+        }
     </style>
 
     <!-- NON-CRITICAL CSS - LOAD ASYNC -->
     <link rel="preload" href="{{ asset('css/dashboard-non-critical.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{ asset('css/dashboard-non-critical.css') }}"></noscript>
-
-    <!-- ATAU jika mau tetap inline tapi di defer -->
-    <script>
-        // Load non-critical CSS setelah page load
-        window.addEventListener('load', function() {
-            var style = document.createElement('style');
-            style.textContent = `
-                /* Non-critical CSS - Hover effects, animations, etc */
-                .card:hover {
-                    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-                }
-                .btn:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-                }
-                .btn-gradient-secondary:hover {
-                    background: #5a6268 !important;
-                }
-                .btn-outline-primary:hover {
-                    background: linear-gradient(to right, #da8cff, #9a55ff);
-                    color: #ffffff;
-                    border-color: transparent;
-                }
-                .table tbody tr:hover {
-                    background-color: #f8f9fa;
-                }
-                .page-item .page-link:hover {
-                    background-color: #f8f9fa;
-                    border-color: #9a55ff;
-                    color: #9a55ff;
-                    transform: translateY(-1px);
-                }
-                .page-item.active .page-link {
-                    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-                }
-                .form-control:focus,
-                .form-select:focus {
-                    border-color: #9a55ff;
-                    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-                    outline: none;
-                }
-                .filter-card .form-label {
-                    color: #9a55ff !important;
-                    letter-spacing: 0.3px;
-                    font-family: 'Nunito', sans-serif;
-                }
-                @media (min-width: 576px) {
-                    .table thead th {
-                        font-size: 0.85rem;
-                        padding: 0.9rem 0.6rem;
-                    }
-                    .table tbody td {
-                        font-size: 0.9rem;
-                        padding: 0.9rem 0.6rem;
-                    }
-                }
-                @media (min-width: 768px) {
-                    .table thead th {
-                        font-size: 0.9rem;
-                        padding: 1rem 0.75rem;
-                    }
-                    .table tbody td {
-                        font-size: 0.95rem;
-                        padding: 1rem 0.75rem;
-                    }
-                }
-                /* DataTables Custom Styling */
-                .dataTables_filter,
-                .dataTables_length,
-                .dataTables_paginate,
-                .dataTables_info {
-                    display: none !important;
-                }
-                .mdi {
-                    vertical-align: middle;
-                }
-                .badge i {
-                    font-size: 0.8rem;
-                    margin-right: 4px;
-                }
-                .btn-outline-primary:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                }
-                @media (max-width: 576px) {
-                    .filter-card .form-label {
-                        font-size: 0.8rem;
-                    }
-                    .filter-card .form-control,
-                    .filter-card .form-select,
-                    .filter-card .btn {
-                        font-size: 0.8rem;
-                        min-height: 38px;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-            document.body.classList.add('css-loaded');
-        });
-    </script>
 
     <!-- HTML CONTENT - TANPA UBAH LAYOUT -->
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -257,15 +415,20 @@
         <div class="row mb-3 mb-sm-3 mb-md-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-view-dashboard me-2" style="color: #9a55ff;"></i>
-                            Dashboard
-                        </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Selamat datang di dashboard manajemen properti
-                        </p>
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-dark mb-1">
+                                <i class="mdi mdi-view-dashboard me-2" style="color: #9a55ff;"></i>
+                                Dashboard
+                            </h3>
+                            <p class="text-muted mb-0">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Selamat datang di dashboard manajemen properti
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-view-dashboard" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -273,14 +436,12 @@
 
         <!-- Statistics Cards -->
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
-
             <!-- Total Proyek -->
             <div class="col">
                 <div class="card bg-gradient-primary card-img-holder text-white h-100 shadow-sm">
                     <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="mb-0 fw-normal" style="min-height:40px;">
@@ -288,7 +449,6 @@
                                 </h6>
                                 <i class="mdi mdi-office-building" style="font-size:1.3rem;"></i>
                             </div>
-
                             <h2 class="fw-bold mb-0">
                                 {{ $totalProperty }}
                             </h2>
@@ -303,7 +463,6 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="mb-0 fw-normal" style="min-height:40px;">
@@ -311,7 +470,6 @@
                                 </h6>
                                 <i class="mdi mdi-home-city" style="font-size:1.3rem;"></i>
                             </div>
-
                             <h2 class="fw-bold mb-0">
                                 {{ $totalUnit }}
                             </h2>
@@ -326,7 +484,6 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="mb-0 fw-normal" style="min-height:40px;">
@@ -334,7 +491,6 @@
                                 </h6>
                                 <i class="mdi mdi-account-group" style="font-size:1.3rem;"></i>
                             </div>
-
                             <h2 class="fw-bold mb-0">
                                 {{ $totalCustomer }}
                             </h2>
@@ -349,7 +505,6 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="mb-0 fw-normal" style="min-height:40px;">
@@ -357,11 +512,9 @@
                                 </h6>
                                 <i class="mdi mdi-cash-multiple" style="font-size:1.3rem;"></i>
                             </div>
-
                             <h2 class="fw-bold mb-0">
                                 {{ $totalPayments }}
                             </h2>
-
                             <small class="opacity-75">Bulan ini</small>
                         </div>
                     </div>
@@ -374,7 +527,6 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                             alt="circle-image" />
-
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="mb-0 fw-normal" style="min-height:40px;">
@@ -382,7 +534,6 @@
                                 </h6>
                                 <i class="mdi mdi-currency-usd" style="font-size:1.3rem;"></i>
                             </div>
-
                             <h2 class="fw-bold mb-0">
                                 Rp 0
                             </h2>
@@ -390,149 +541,132 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Tabel Data -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div
-                        class="card-header bg-white d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
-                        <h4 class="card-title">
-                            <i class="mdi mdi-format-list-bulleted me-2"></i>
+                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                             Daftar Properti Terbaru
-                        </h4>
+                        </h5>
                     </div>
+
                     <div class="card-body">
-                        <!-- Filter Section - DIPERBESAR -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="filter-card">
-                                    <div class="card-body">
-                                        <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                            <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                        </h6>
+                        <!-- FILTER SECTION - SAMA PERSIS DENGAN HALAMAN PT (TAPI PAKAI JAVASCRIPT) -->
+                        <div class="filter-card mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                    <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
+                                    Filter Data Properti
+                                </h6>
 
-                                        <!-- FILTER UNTUK MOBILE -->
-                                        <div class="d-block d-md-none">
-                                            <div class="mb-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                </label>
-                                                <input type="text" id="searchInputMobile" class="form-control"
-                                                    placeholder="Cari nama properti...">
-                                            </div>
+                                <!-- FILTER UNTUK MOBILE -->
+                                <div class="d-block d-md-none">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                            Pencarian
+                                        </label>
+                                        <input type="text" id="searchInputMobile" class="form-control"
+                                            placeholder="Cari nama properti..." style="height: 45px;">
+                                    </div>
 
-                                            <div class="row g-2">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                    </label>
-                                                    <select id="filterTypeMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="Rumah">Rumah</option>
-                                                        <option value="Apartemen">Apartemen</option>
-                                                        <option value="Ruko">Ruko</option>
-                                                        <option value="Tanah">Tanah</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                                    </label>
-                                                    <select id="filterLokasiMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="Jakarta">Jakarta</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-shape-outline me-1" style="color: #9a55ff;"></i>
+                                                Type
+                                            </label>
+                                            <select id="filterTypeMobile" class="form-control" style="height: 45px;">
+                                                <option value="">Semua</option>
+                                                <option value="Rumah">Rumah</option>
+                                                <option value="Apartemen">Apartemen</option>
+                                                <option value="Ruko">Ruko</option>
+                                                <option value="Tanah">Tanah</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-map-marker me-1" style="color: #9a55ff;"></i>
+                                                Lokasi
+                                            </label>
+                                            <select id="filterLokasiMobile" class="form-control" style="height: 45px;">
+                                                <option value="">Semua</option>
+                                                <option value="Jakarta">Jakarta</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-                                            <div class="row g-2 mt-2">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-counter me-1"></i>Tampil
-                                                    </label>
-                                                    <select id="showDataMobile" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button" id="filterDataMobile"
-                                                        class="btn btn-gradient-primary w-100" style="margin-top: 24px;">
-                                                        <i class="mdi mdi-filter-outline me-1"></i> Filter
-                                                    </button>
-                                                </div>
-                                            </div>
+                                    <div class="row g-2 mt-2">
+                                        <div class="col-6">
+                                            <button type="button" id="filterDataMobile"
+                                                class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" id="resetFilterMobile"
+                                                class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                            <div class="row mt-2">
-                                                <div class="col-12">
-                                                    <button type="button" id="resetFilterMobile"
-                                                        class="btn btn-gradient-secondary w-100">
-                                                        <i class="mdi mdi-refresh me-1"></i> Reset
-                                                    </button>
-                                                </div>
-                                            </div>
+                                <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                <div class="d-none d-md-block">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                                Pencarian
+                                            </label>
+                                            <input type="text" id="searchInput" class="form-control"
+                                                placeholder="Cari nama properti...">
                                         </div>
 
-                                        <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                        <div class="d-none d-md-block">
-                                            <div class="row g-2 align-items-end">
-                                                <div class="col-md-3">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                    </label>
-                                                    <input type="text" id="searchInput" class="form-control"
-                                                        placeholder="Cari nama properti...">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                    </label>
-                                                    <select id="filterType" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="Rumah">Rumah</option>
-                                                        <option value="Apartemen">Apartemen</option>
-                                                        <option value="Ruko">Ruko</option>
-                                                        <option value="Tanah">Tanah</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                                    </label>
-                                                    <select id="filterLokasi" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="Jakarta">Jakarta</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-counter me-1"></i>Tampil
-                                                    </label>
-                                                    <select id="showData" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <button type="button" id="filterData"
-                                                        class="btn btn-gradient-primary w-100" title="Filter Data">
-                                                        <i class="mdi mdi-filter-outline"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <button type="button" id="resetFilter"
-                                                        class="btn btn-gradient-secondary w-100" title="Reset Filter">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-shape-outline me-1" style="color: #9a55ff;"></i>
+                                                Type
+                                            </label>
+                                            <select id="filterType" class="form-control">
+                                                <option value="">Semua</option>
+                                                <option value="Rumah">Rumah</option>
+                                                <option value="Apartemen">Apartemen</option>
+                                                <option value="Ruko">Ruko</option>
+                                                <option value="Tanah">Tanah</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-map-marker me-1" style="color: #9a55ff;"></i>
+                                                Lokasi
+                                            </label>
+                                            <select id="filterLokasi" class="form-control">
+                                                <option value="">Semua</option>
+                                                <option value="Jakarta">Jakarta</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="button" id="filterData"
+                                                class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="form-label invisible">Reset</label>
+                                            <button type="button" id="resetFilter"
+                                                class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-icon-only" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -544,15 +678,14 @@
                             <table id="tableDashboard" class="table table-hover" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                        <th><i class="mdi mdi-home me-1"></i>Nama Proyek / Tanah Induk</th>
-                                        <th><i class="mdi mdi-domain me-1"></i>Nama Perusahaan</th>
-                                        <th><i class="mdi mdi-shape-outline me-1"></i>Tipe</th>
-                                        <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                        </th>
-                                        <th><i class="mdi mdi-currency-usd me-1"></i>Harga di peroleh</th>
-                                        <th><i class="mdi mdi-calendar-clock me-1"></i>Status</th>
-                                        <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                        <th class="text-center" width="5%">No</th>
+                                        <th width="20%">Nama Proyek / Tanah Induk</th>
+                                        <th width="15%">Nama Perusahaan</th>
+                                        <th width="10%">Tipe</th>
+                                        <th width="20%" class="d-none d-md-table-cell">Lokasi</th>
+                                        <th width="15%">Harga di peroleh</th>
+                                        <th width="10%">Status</th>
+                                        <th class="text-center" width="5%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -637,10 +770,6 @@
                                                         data-units='@json($item->units_detail)'>
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-                                                    <a href="" class="btn btn-outline-primary btn-sm"
-                                                        data-bs-toggle="tooltip" title="Edit">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -649,33 +778,16 @@
                             </table>
                         </div>
 
-                        <!-- Pagination UI -->
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
+                        <!-- Pagination UI - TETAP PAKAI PAGINATION YANG SUDAH ADA -->
+                        {{-- <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 dari 156 data
+                                Menampilkan {{ $landBank->count() }} dari {{ $landBank->total() }} data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                    style="gap: 2px;">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
+                                {{ $landBank->links() }}
                             </nav>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -773,6 +885,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.btn-detail');
@@ -846,8 +959,82 @@
                 },
                 columnDefs: [{
                     orderable: false,
-                    targets: [0, 6]
+                    targets: [0, 7]
                 }]
+            });
+
+            // Filter functionality
+            function filterTable() {
+                let searchValue = $('#searchInput').val().toLowerCase() || $('#searchInputMobile').val().toLowerCase();
+                let typeValue = $('#filterType').val() || $('#filterTypeMobile').val();
+                let locationValue = $('#filterLokasi').val() || $('#filterLokasiMobile').val();
+
+                table.rows().every(function() {
+                    let row = this.data();
+                    let rowNode = this.node();
+                    let show = true;
+
+                    // Search filter
+                    if (searchValue) {
+                        let rowText = '';
+                        for (let i = 1; i <= 2; i++) {
+                            rowText += row[i] ? row[i].toLowerCase() : '';
+                        }
+                        if (!rowText.includes(searchValue)) {
+                            show = false;
+                        }
+                    }
+
+                    // Type filter
+                    if (show && typeValue) {
+                        let type = $(rowNode).find('td:eq(3) span').text();
+                        if (type.toLowerCase() !== typeValue.toLowerCase()) {
+                            show = false;
+                        }
+                    }
+
+                    // Location filter
+                    if (show && locationValue) {
+                        let location = $(rowNode).find('td:eq(4) span').text();
+                        if (location.toLowerCase() !== locationValue.toLowerCase()) {
+                            show = false;
+                        }
+                    }
+
+                    if (show) {
+                        $(rowNode).show();
+                    } else {
+                        $(rowNode).hide();
+                    }
+                });
+
+                // Update info
+                let visibleCount = table.rows(':visible').count();
+                $('.pagination-info').html(`<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${visibleCount} dari ${table.rows().count()} data`);
+            }
+
+            function resetFilter() {
+                $('#searchInput, #searchInputMobile').val('');
+                $('#filterType, #filterTypeMobile').val('');
+                $('#filterLokasi, #filterLokasiMobile').val('');
+
+                table.rows().show();
+                $('.pagination-info').html(`<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${table.rows().count()} dari ${table.rows().count()} data`);
+            }
+
+            // Desktop filter
+            $('#filterData').click(filterTable);
+            $('#resetFilter').click(resetFilter);
+
+            // Mobile filter
+            $('#filterDataMobile').click(filterTable);
+            $('#resetFilterMobile').click(resetFilter);
+
+            // Enter key on search input
+            $('#searchInput, #searchInputMobile').keypress(function(e) {
+                if (e.which == 13) {
+                    filterTable();
+                }
             });
         });
     </script>
