@@ -45,15 +45,18 @@
 
 
         <!-- MENU PROPERTI DENGAN SUB-MENU -->
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#properti" aria-expanded="false"
-                aria-controls="properti">
+       <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#properti"
+                    aria-expanded="{{ request()->routeIs('properti*') ? 'true' : 'false' }}"
+                    aria-controls="properti">
                 <span class="menu-title">Tanah Induk (Land Bank)</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-office-building menu-icon"></i>
             </a>
-            <div class="collapse" id="properti">
+
+            <div class="collapse {{ request()->routeIs('properti*') ? 'show' : '' }}" id="properti">
                 <ul class="nav flex-column sub-menu">
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('properti-all') ? 'active' : '' }}"
                             href="{{ route('properti-all') }}">
@@ -67,17 +70,25 @@
                             Tambah Tanah (LandBank)
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('kavling.index') }}">Tambah Kavling</a>
+                        <a class="nav-link {{ request()->routeIs('kavling.*') ? 'active' : '' }}"
+                            href="{{ route('kavling.index') }}">
+                            Tambah Kavling
+                        </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('lokasi.index') }}">Lokasi</a>
+                        <a class="nav-link {{ request()->routeIs('lokasi.*') ? 'active' : '' }}"
+                            href="{{ route('lokasi.index') }}">
+                            Lokasi
+                        </a>
                     </li>
 
                 </ul>
             </div>
-        </li>
+
+            </li>
 
         <!-- MENU CUSTOMER DENGAN SUB-MENU -->
         <li class="nav-item">
@@ -161,13 +172,13 @@
             <div class="collapse" id="dokument">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dokument.index') }}">Document Tanah Induk (LandBank)</a>
+                        <a class="nav-link" href="{{ route('dokument.index') }}">Tanah Induk (LandBank)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dokument.persiapan') }}">Document Pecah Tanah Induk ke Unit</a>
+                        <a class="nav-link" href="{{ route('dokument.persiapan') }}">Pecah Tanah Induk Unit</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/data-dokument-cash-legal">Data Dokument Cash Legal</a>
+                        <a class="nav-link" href="/data-dokument-cash-legal">Data Cash Legal</a>
                     </li>
                 </ul>
             </div>
