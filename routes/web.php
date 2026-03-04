@@ -374,7 +374,12 @@ Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->na
 // Route::get('/dashboard-dedline-rab', function () {
 //     return view('properti.dedline_rab');
 
-Route::get('/rab-deadline/{progressId}', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
+// Route::get('/rab-deadline/{progressId}', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
+
+Route::get('/rab-deadline', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
+
+
+
 });
 
 

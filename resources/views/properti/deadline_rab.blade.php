@@ -665,7 +665,7 @@
                     <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Deadline per Tahapan Pekerjaan - {{ $progress->nama_proyek ?? 'Proyek' }}
+                            Deadline per Tahapan Pekerjaan
                         </h5>
                     </div>
 
@@ -680,14 +680,14 @@
 
                                 <!-- FILTER UNTUK MOBILE -->
                                 <div class="d-block d-md-none">
-                                    <form method="GET" action="{{ route('rab.deadline.index', $progress->id) }}">
+                                    <form method="GET" action="">
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">
                                                 <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
                                                 Cari Pekerjaan
                                             </label>
                                             <input type="text" class="form-control" name="search"
-                                                placeholder="Cari pekerjaan..." value="{{ request('search') }}" style="height: 45px;">
+                                                placeholder="Cari pekerjaan..." style="height: 45px;">
                                         </div>
 
                                         <div class="mb-3">
@@ -696,10 +696,10 @@
                                             </label>
                                             <select class="form-control" name="status" style="height: 45px;">
                                                 <option value="">Semua</option>
-                                                <option value="on-time" {{ request('status') == 'on-time' ? 'selected' : '' }}>On Time</option>
-                                                <option value="warning" {{ request('status') == 'warning' ? 'selected' : '' }}>H-7 / H-3</option>
-                                                <option value="danger" {{ request('status') == 'danger' ? 'selected' : '' }}>Overdue / H-1</option>
-                                                <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Selesai</option>
+                                                <option value="on-time">On Time</option>
+                                                <option value="warning">H-7 / H-3</option>
+                                                <option value="danger">Overdue / H-1</option>
+                                                <option value="success">Selesai</option>
                                             </select>
                                         </div>
 
@@ -708,21 +708,21 @@
                                                 <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil per Halaman
                                             </label>
                                             <select class="form-control" name="per_page" style="height: 45px;">
-                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                                <option value="25">25</option>
                                             </select>
                                         </div>
 
                                         <div class="row g-2">
                                             <div class="col-6">
-                                                <button type="submit"
+                                                <button type="button"
                                                     class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
                                                     <i class="mdi mdi-filter me-1"></i> Filter
                                                 </button>
                                             </div>
                                             <div class="col-6">
-                                                <a href="{{ route('rab.deadline.index', $progress->id) }}"
+                                                <a href="#"
                                                     class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
                                                     <i class="mdi mdi-refresh me-1"></i> Reset
                                                 </a>
@@ -733,7 +733,7 @@
 
                                 <!-- FILTER UNTUK TABLET & DESKTOP -->
                                 <div class="d-none d-md-block">
-                                    <form method="GET" action="{{ route('rab.deadline.index', $progress->id) }}">
+                                    <form method="GET" action="">
                                         <div class="row g-2 align-items-end">
                                             <div class="col-md-4">
                                                 <label class="form-label">
@@ -741,7 +741,7 @@
                                                     Cari Pekerjaan
                                                 </label>
                                                 <input type="text" class="form-control" name="search"
-                                                    placeholder="Nama pekerjaan..." value="{{ request('search') }}">
+                                                    placeholder="Nama pekerjaan...">
                                             </div>
 
                                             <div class="col-md-2">
@@ -750,10 +750,10 @@
                                                 </label>
                                                 <select class="form-control" name="status">
                                                     <option value="">Semua</option>
-                                                    <option value="on-time" {{ request('status') == 'on-time' ? 'selected' : '' }}>On Time</option>
-                                                    <option value="warning" {{ request('status') == 'warning' ? 'selected' : '' }}>H-7 / H-3</option>
-                                                    <option value="danger" {{ request('status') == 'danger' ? 'selected' : '' }}>Overdue / H-1</option>
-                                                    <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Selesai</option>
+                                                    <option value="on-time">On Time</option>
+                                                    <option value="warning">H-7 / H-3</option>
+                                                    <option value="danger">Overdue / H-1</option>
+                                                    <option value="success">Selesai</option>
                                                 </select>
                                             </div>
 
@@ -762,15 +762,15 @@
                                                     <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil per Halaman
                                                 </label>
                                                 <select class="form-control" name="per_page">
-                                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="25">25</option>
                                                 </select>
                                             </div>
 
                                             <div class="col-md-2">
                                                 <label class="form-label invisible">Filter</label>
-                                                <button type="submit"
+                                                <button type="button"
                                                     class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
                                                     <i class="mdi mdi-filter me-1"></i> Filter
                                                 </button>
@@ -778,8 +778,8 @@
 
                                             <div class="col-md-1">
                                                 <label class="form-label invisible">Reset</label>
-                                                <a href="{{ route('rab.deadline.index', $progress->id) }}"
-                                                    class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center"
+                                                <a href="#"
+                                                    class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-icon-only"
                                                     title="Reset">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
@@ -794,36 +794,10 @@
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <div class="d-flex flex-wrap gap-2">
-                                    <span class="badge bg-info">On Track:
-                                        {{ collect($kategoriList)->filter(function($k) use ($progress) {
-                                            $items = $progress->items ? $progress->items->where('kategori', $k) : collect();
-                                            $deadline = $progress->deadlines ? $progress->deadlines->where('kategori', $k)->first() : null;
-                                            $sisaHari = $deadline && $deadline->target_selesai ? now()->diffInDays($deadline->target_selesai, false) : null;
-                                            return $items->avg('progress') < 100 && $sisaHari !== null && $sisaHari > 7;
-                                        })->count() }}
-                                    </span>
-                                    <span class="badge bg-warning">Mendekati Deadline:
-                                        {{ collect($kategoriList)->filter(function($k) use ($progress) {
-                                            $items = $progress->items ? $progress->items->where('kategori', $k) : collect();
-                                            $deadline = $progress->deadlines ? $progress->deadlines->where('kategori', $k)->first() : null;
-                                            $sisaHari = $deadline && $deadline->target_selesai ? now()->diffInDays($deadline->target_selesai, false) : null;
-                                            return $items->avg('progress') < 100 && $sisaHari !== null && $sisaHari <= 7 && $sisaHari > 0;
-                                        })->count() }}
-                                    </span>
-                                    <span class="badge bg-danger">Terlambat:
-                                        {{ collect($kategoriList)->filter(function($k) use ($progress) {
-                                            $items = $progress->items ? $progress->items->where('kategori', $k) : collect();
-                                            $deadline = $progress->deadlines ? $progress->deadlines->where('kategori', $k)->first() : null;
-                                            $sisaHari = $deadline && $deadline->target_selesai ? now()->diffInDays($deadline->target_selesai, false) : null;
-                                            return $items->avg('progress') < 100 && $sisaHari !== null && $sisaHari < 0;
-                                        })->count() }}
-                                    </span>
-                                    <span class="badge bg-success">Selesai:
-                                        {{ collect($kategoriList)->filter(function($k) use ($progress) {
-                                            $items = $progress->items ? $progress->items->where('kategori', $k) : collect();
-                                            return $items->avg('progress') == 100;
-                                        })->count() }}
-                                    </span>
+                                    <span class="badge bg-info">On Track: 3</span>
+                                    <span class="badge bg-warning">Mendekati Deadline: 2</span>
+                                    <span class="badge bg-danger">Terlambat: 1</span>
+                                    <span class="badge bg-success">Selesai: 2</span>
                                 </div>
                             </div>
                         </div>
@@ -845,236 +819,354 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $filteredKategori = collect($kategoriList);
+                                    <!-- Data 1 - Pekerjaan Pondasi -->
+                                    <tr>
+                                        <td class="text-center fw-bold">1</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Pondasi
+                                            <br>
+                                            <small class="text-muted">8 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>01 Mar 2024</td>
+                                        <td>15 Mar 2024</td>
+                                        <td>15 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="pondasi"
+                                                        data-mulai="2024-03-01"
+                                                        data-selesai="2024-03-15">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                        // Apply search filter
-                                        if (request('search')) {
-                                            $search = strtolower(request('search'));
-                                            $filteredKategori = $filteredKategori->filter(function($kategori) use ($search) {
-                                                return str_contains(strtolower($kategori), $search);
-                                            });
-                                        }
+                                    <!-- Data 2 - Pekerjaan Struktur -->
+                                    <tr>
+                                        <td class="text-center fw-bold">2</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Struktur
+                                            <br>
+                                            <small class="text-muted">12 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 75%"></div>
+                                            </div>
+                                            <small class="fw-bold">75%</small>
+                                        </td>
+                                        <td>16 Mar 2024</td>
+                                        <td>30 Apr 2024</td>
+                                        <td>46 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-15</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="struktur"
+                                                        data-mulai="2024-03-16"
+                                                        data-selesai="2024-04-30">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                        // Apply status filter
-                                        if (request('status')) {
-                                            $statusFilter = request('status');
-                                            $filteredKategori = $filteredKategori->filter(function($kategori) use ($progress, $statusFilter) {
-                                                $items = $progress->items ? $progress->items->where('kategori', $kategori) : collect();
-                                                $deadline = $progress->deadlines ? $progress->deadlines->where('kategori', $kategori)->first() : null;
-                                                $progressPercent = $items->count() > 0 ? round($items->avg('progress'), 0) : 0;
-                                                $sisaHari = $deadline && $deadline->target_selesai ? now()->diffInDays($deadline->target_selesai, false) : null;
+                                    <!-- Data 3 - Pekerjaan Dinding -->
+                                    <tr>
+                                        <td class="text-center fw-bold">3</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Dinding
+                                            <br>
+                                            <small class="text-muted">10 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 60%"></div>
+                                            </div>
+                                            <small class="fw-bold">60%</small>
+                                        </td>
+                                        <td>01 Apr 2024</td>
+                                        <td>15 Mei 2024</td>
+                                        <td>45 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-20</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="dinding"
+                                                        data-mulai="2024-04-01"
+                                                        data-selesai="2024-05-15">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                                $statusLabel = 'On Track';
-                                                if ($progressPercent == 100) $statusLabel = 'Selesai';
-                                                elseif ($sisaHari !== null && $sisaHari < 0) $statusLabel = 'Terlambat';
-                                                elseif ($sisaHari !== null && $sisaHari <= 7) $statusLabel = 'Mendekati Deadline';
+                                    <!-- Data 4 - Pekerjaan Atap -->
+                                    <tr>
+                                        <td class="text-center fw-bold">4</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Atap
+                                            <br>
+                                            <small class="text-muted">6 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-warning" style="width: 40%"></div>
+                                            </div>
+                                            <small class="fw-bold">40%</small>
+                                        </td>
+                                        <td>16 Apr 2024</td>
+                                        <td>10 Mei 2024</td>
+                                        <td>25 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-warning">H-3</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning badge-gradient-warning">Mendekati Deadline</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="atap"
+                                                        data-mulai="2024-04-16"
+                                                        data-selesai="2024-05-10">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                                if ($statusFilter == 'success' && $statusLabel != 'Selesai') return false;
-                                                if ($statusFilter == 'danger' && $statusLabel != 'Terlambat') return false;
-                                                if ($statusFilter == 'warning' && $statusLabel != 'Mendekati Deadline') return false;
-                                                if ($statusFilter == 'on-time' && $statusLabel != 'On Track') return false;
+                                    <!-- Data 5 - Pekerjaan Instalasi Listrik -->
+                                    <tr>
+                                        <td class="text-center fw-bold">5</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Instalasi Listrik
+                                            <br>
+                                            <small class="text-muted">5 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-warning" style="width: 30%"></div>
+                                            </div>
+                                            <small class="fw-bold">30%</small>
+                                        </td>
+                                        <td>20 Apr 2024</td>
+                                        <td>05 Mei 2024</td>
+                                        <td>16 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-warning">H-2</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning badge-gradient-warning">Mendekati Deadline</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="listrik"
+                                                        data-mulai="2024-04-20"
+                                                        data-selesai="2024-05-05">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                                return true;
-                                            });
-                                        }
+                                    <!-- Data 6 - Pekerjaan Plafon -->
+                                    <tr>
+                                        <td class="text-center fw-bold">6</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Plafon
+                                            <br>
+                                            <small class="text-muted">4 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-danger" style="width: 25%"></div>
+                                            </div>
+                                            <small class="fw-bold">25%</small>
+                                        </td>
+                                        <td>25 Mar 2024</td>
+                                        <td>20 Apr 2024</td>
+                                        <td>27 hari</td>
+                                        <td>
+                                            <span class="text-danger fw-bold">Lewat 4 hari</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-danger badge-gradient-danger">Terlambat</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="plafon"
+                                                        data-mulai="2024-03-25"
+                                                        data-selesai="2024-04-20">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                        // Pagination
-                                        $perPage = request('per_page', 10);
-                                        $currentPage = request('page', 1);
-                                        $totalItems = $filteredKategori->count();
-                                        $lastPage = ceil($totalItems / $perPage);
-                                        $offset = ($currentPage - 1) * $perPage;
+                                    <!-- Data 7 - Pekerjaan Finishing -->
+                                    <tr>
+                                        <td class="text-center fw-bold">7</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Finishing
+                                            <br>
+                                            <small class="text-muted">9 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>21 Apr 2024</td>
+                                        <td>05 Mei 2024</td>
+                                        <td>15 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="finishing"
+                                                        data-mulai="2024-04-21"
+                                                        data-selesai="2024-05-05">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                        $paginatedKategori = $filteredKategori->slice($offset, $perPage)->values();
-                                    @endphp
-
-                                    @forelse ($paginatedKategori as $index => $kategori)
-                                        @php
-                                            // Filter items berdasarkan kategori dengan aman
-                                            $items = collect();
-                                            if ($progress->items && $progress->items->count() > 0) {
-                                                $items = $progress->items->filter(function($item) use ($kategori) {
-                                                    return isset($item->kategori) && $item->kategori == $kategori;
-                                                });
-                                            }
-
-                                            $totalItem = $items->count();
-                                            $progressPercent = $totalItem > 0 ? round($items->avg('progress'), 0) : 0;
-
-                                            // Filter deadlines berdasarkan kategori
-                                            $deadline = null;
-                                            if ($progress->deadlines && $progress->deadlines->count() > 0) {
-                                                $deadline = $progress->deadlines->first(function($d) use ($kategori) {
-                                                    return isset($d->kategori) && $d->kategori == $kategori;
-                                                });
-                                            }
-
-                                            $mulai = $deadline->target_mulai ?? null;
-                                            $selesai = $deadline->target_selesai ?? null;
-
-                                            // Hitung durasi dengan aman
-                                            $durasi = 0;
-                                            if ($mulai && $selesai) {
-                                                try {
-                                                    $durasi = \Carbon\Carbon::parse($mulai)->diffInDays(\Carbon\Carbon::parse($selesai)) + 1;
-                                                } catch (\Exception $e) {
-                                                    $durasi = 0;
-                                                }
-                                            }
-
-                                            // Hitung sisa hari dengan aman
-                                            $sisaHari = null;
-                                            if ($selesai) {
-                                                try {
-                                                    $sisaHari = now()->diffInDays(\Carbon\Carbon::parse($selesai), false);
-                                                } catch (\Exception $e) {
-                                                    $sisaHari = null;
-                                                }
-                                            }
-
-                                            // STATUS LOGIC
-                                            $statusLabel = 'On Track';
-                                            $badgeClass = 'info';
-
-                                            if ($progressPercent == 100) {
-                                                $statusLabel = 'Selesai';
-                                                $badgeClass = 'success';
-                                            } elseif ($sisaHari !== null && $sisaHari < 0) {
-                                                $statusLabel = 'Terlambat';
-                                                $badgeClass = 'danger';
-                                            } elseif ($sisaHari !== null && $sisaHari <= 7) {
-                                                $statusLabel = 'Mendekati Deadline';
-                                                $badgeClass = 'warning';
-                                            }
-                                        @endphp
-
-                                        <tr>
-                                            <td class="text-center fw-bold">{{ $offset + $loop->iteration }}</td>
-
-                                            <td class="fw-bold text-uppercase">
-                                                {{ ucfirst($kategori) }}
-                                                <br>
-                                                <small class="text-muted">{{ $totalItem }} item</small>
-                                            </td>
-
-                                            <td>
-                                                <div class="progress" style="height: 6px;">
-                                                    <div class="progress-bar bg-{{ $badgeClass }}"
-                                                        style="width: {{ $progressPercent }}%">
-                                                    </div>
-                                                </div>
-                                                <small class="fw-bold">{{ $progressPercent }}%</small>
-                                            </td>
-
-                                            <td>
-                                                @if($mulai)
-                                                    {{ \Carbon\Carbon::parse($mulai)->format('d M Y') }}
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                @if($selesai)
-                                                    {{ \Carbon\Carbon::parse($selesai)->format('d M Y') }}
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                @if($durasi > 0)
-                                                    {{ $durasi }} hari
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                @if($sisaHari !== null)
-                                                    @if($sisaHari < 0)
-                                                        <span class="text-danger fw-bold">Lewat {{ abs($sisaHari) }} hari</span>
-                                                    @else
-                                                        <span class="fw-bold">H-{{ $sisaHari }}</span>
-                                                    @endif
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                <span class="badge bg-{{ $badgeClass }} badge-gradient-{{ $badgeClass }}">
-                                                    {{ $statusLabel }}
-                                                </span>
-                                            </td>
-
-                                            <td class="text-center">
-                                                <div class="aksi-buttons">
-                                                    <button type="button"
-                                                            class="btn btn-outline-warning btn-sm btn-edit-deadline"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#editDeadlineModal"
-                                                            data-kategori="{{ $kategori }}"
-                                                            data-mulai="{{ $mulai }}"
-                                                            data-selesai="{{ $selesai }}">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                        <span class="d-none d-sm-inline ms-1">Edit</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center py-4">
-                                                <i class="mdi mdi-information-outline" style="font-size: 2rem; color: #9a55ff;"></i>
-                                                <p class="mt-2 text-muted">Tidak ada data deadline</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
+                                    <!-- Data 8 - Pekerjaan Landscape -->
+                                    <tr>
+                                        <td class="text-center fw-bold">8</td>
+                                        <td class="fw-bold text-uppercase">
+                                            Pekerjaan Landscape
+                                            <br>
+                                            <small class="text-muted">6 item</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-info" style="width: 10%"></div>
+                                            </div>
+                                            <small class="fw-bold">10%</small>
+                                        </td>
+                                        <td>06 Mei 2024</td>
+                                        <td>20 Jun 2024</td>
+                                        <td>46 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-25</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal"
+                                                        data-kategori="landscape"
+                                                        data-mulai="2024-05-06"
+                                                        data-selesai="2024-06-20">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Pagination UI -->
-                        @if($totalItems > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1 text-primary"></i>
                                 Menampilkan
-                                <span class="fw-bold">{{ $offset + 1 }}</span>
+                                <span class="fw-bold">1</span>
                                 -
-                                <span class="fw-bold">{{ min($offset + $perPage, $totalItems) }}</span>
+                                <span class="fw-bold">8</span>
                                 dari
-                                <span class="fw-bold">{{ $totalItems }}</span>
+                                <span class="fw-bold">8</span>
                                 tahapan pekerjaan
                             </div>
 
-                            @if($lastPage > 1)
                             <nav aria-label="Page navigation">
                                 <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                    <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
-                                        <a class="page-link" href="{{ route('rab.deadline.index', $progress->id) }}?page={{ $currentPage-1 }}&search={{ request('search') }}&status={{ request('status') }}&per_page={{ request('per_page') }}" aria-label="Previous">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
 
-                                    @for($i = 1; $i <= $lastPage; $i++)
-                                        <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
-                                            <a class="page-link" href="{{ route('rab.deadline.index', $progress->id) }}?page={{ $i }}&search={{ request('search') }}&status={{ request('status') }}&per_page={{ request('per_page') }}">{{ $i }}</a>
-                                        </li>
-                                    @endfor
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
 
-                                    <li class="page-item {{ $currentPage == $lastPage ? 'disabled' : '' }}">
-                                        <a class="page-link" href="{{ route('rab.deadline.index', $progress->id) }}?page={{ $currentPage+1 }}&search={{ request('search') }}&status={{ request('status') }}&per_page={{ request('per_page') }}" aria-label="Next">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" aria-label="Next">
                                             <i class="mdi mdi-chevron-right"></i>
                                         </a>
                                     </li>
                                 </ul>
                             </nav>
-                            @endif
                         </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -1084,7 +1176,7 @@
         <div class="modal fade" id="editDeadlineModal" tabindex="-1" aria-labelledby="editDeadlineModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="{{ route('rab-deadline.store') }}" method="POST" id="formEditDeadline">
+                    <form id="formEditDeadline" method="POST">
                         @csrf
                         <div class="modal-header">
                             <h5 class="modal-title" id="editDeadlineModalLabel">
@@ -1094,7 +1186,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="hidden" name="development_progress_id" value="{{ $progress->id }}">
                             <input type="hidden" name="kategori" id="editKategori" value="">
 
                             <div class="mb-3">
@@ -1122,7 +1213,7 @@
                             <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
                                 <i class="mdi mdi-close me-1"></i> Batal
                             </button>
-                            <button type="submit" class="btn btn-gradient-primary">
+                            <button type="button" class="btn btn-gradient-primary">
                                 <i class="mdi mdi-content-save me-1"></i> Simpan
                             </button>
                         </div>
@@ -1137,7 +1228,7 @@
                 <div class="card">
                     <div class="card-body p-3">
                         <div class="d-flex flex-column flex-sm-row justify-content-start gap-2">
-                            <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
+                            <a href="#" class="btn btn-gradient-secondary">
                                 <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
                             </a>
                         </div>
@@ -1152,58 +1243,26 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // Sweet Alert untuk session
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: "{{ session('success') }}",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            @endif
-
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: "{{ session('error') }}",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            @endif
-
             // Handle edit button click
-            $('.btn-edit-deadline').on('click', function() {
+            $('.btn-outline-warning').on('click', function() {
                 let kategori = $(this).data('kategori');
                 let mulai = $(this).data('mulai');
                 let selesai = $(this).data('selesai');
 
-                // Format tanggal untuk input date
-                if (mulai && mulai != '' && mulai != null) {
-                    let date = new Date(mulai);
-                    if (!isNaN(date.getTime())) {
-                        mulai = date.toISOString().split('T')[0];
-                    } else {
-                        mulai = '';
-                    }
-                } else {
-                    mulai = '';
-                }
-
-                if (selesai && selesai != '' && selesai != null) {
-                    let date = new Date(selesai);
-                    if (!isNaN(date.getTime())) {
-                        selesai = date.toISOString().split('T')[0];
-                    } else {
-                        selesai = '';
-                    }
-                } else {
-                    selesai = '';
-                }
+                // Format kategori untuk display
+                let kategoriDisplay = '';
+                if (kategori === 'pondasi') kategoriDisplay = 'Pekerjaan Pondasi';
+                else if (kategori === 'struktur') kategoriDisplay = 'Pekerjaan Struktur';
+                else if (kategori === 'dinding') kategoriDisplay = 'Pekerjaan Dinding';
+                else if (kategori === 'atap') kategoriDisplay = 'Pekerjaan Atap';
+                else if (kategori === 'listrik') kategoriDisplay = 'Instalasi Listrik';
+                else if (kategori === 'plafon') kategoriDisplay = 'Pekerjaan Plafon';
+                else if (kategori === 'finishing') kategoriDisplay = 'Pekerjaan Finishing';
+                else if (kategori === 'landscape') kategoriDisplay = 'Pekerjaan Landscape';
+                else kategoriDisplay = kategori.charAt(0).toUpperCase() + kategori.slice(1);
 
                 $('#editKategori').val(kategori);
-                $('#editKategoriDisplay').val(kategori.charAt(0).toUpperCase() + kategori.slice(1));
+                $('#editKategoriDisplay').val(kategoriDisplay);
                 $('#editTargetMulai').val(mulai);
                 $('#editTargetSelesai').val(selesai);
 
@@ -1231,34 +1290,30 @@
                 }
             }
 
-            // Validasi form sebelum submit
-            $('#formEditDeadline').on('submit', function(e) {
-                let mulai = $('#editTargetMulai').val();
-                let selesai = $('#editTargetSelesai').val();
-
-                if (!mulai || !selesai) {
-                    e.preventDefault();
+            // Demo alert untuk notifikasi
+            $('.btn-gradient-primary').on('click', function() {
+                if ($(this).closest('.modal-footer').length) {
+                    // Ini adalah tombol simpan di modal
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Peringatan',
-                        text: 'Harap isi target mulai dan target selesai',
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Data deadline berhasil disimpan',
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    return false;
+                    $('#editDeadlineModal').modal('hide');
                 }
+            });
 
-                if (new Date(mulai) > new Date(selesai)) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Peringatan',
-                        text: 'Target mulai tidak boleh lebih besar dari target selesai',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    return false;
-                }
+            // Demo alert untuk filter
+            $('.btn-gradient-primary:contains("Filter")').on('click', function() {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Demo',
+                    text: 'Filter akan diterapkan',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
             });
         });
     </script>

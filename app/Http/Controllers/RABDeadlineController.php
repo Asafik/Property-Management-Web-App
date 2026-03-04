@@ -12,28 +12,35 @@ class RABDeadlineController extends Controller
     /**
      * Display deadline untuk progress tertentu
      */
-    public function index($progressId)
+
+      public function index()
     {
-        try {
-            $progress = DevelopmentProgress::with(['deadlines', 'items'])
-                        ->findOrFail($progressId);
-
-            $kategoriList = [
-                'persiapan',
-                'pondasi',
-                'struktur',
-                'dinding',
-                'atap',
-                'finishing',
-                'lainnya'
-            ];
-
-            return view('properti.deadline_rab', compact('progress', 'kategoriList'));
-
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan: ' . $e->getMessage());
-        }
+        return view('properti.deadline_rab');
     }
+
+
+    // public function index($progressId)
+    // {
+    //     try {
+    //         $progress = DevelopmentProgress::with(['deadlines', 'items'])
+    //                     ->findOrFail($progressId);
+
+    //         $kategoriList = [
+    //             'persiapan',
+    //             'pondasi',
+    //             'struktur',
+    //             'dinding',
+    //             'atap',
+    //             'finishing',
+    //             'lainnya'
+    //         ];
+
+    //         return view('properti.deadline_rab', compact('progress', 'kategoriList'));
+
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()->with('error', 'Data tidak ditemukan: ' . $e->getMessage());
+    //     }
+    // }
 
     /**
      * Store deadline baru
