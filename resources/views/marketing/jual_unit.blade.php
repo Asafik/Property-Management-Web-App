@@ -1180,7 +1180,7 @@
                                                         ];
                                                         $progress = $progressMap[$status] ?? 0;
 
-                                                        // jika belum mulai, kasih minimal width supaya text terlihat
+                                                        
                                                         $barWidth = $status === 'belum_mulai' ? 100 : $progress;
                                                     @endphp
 

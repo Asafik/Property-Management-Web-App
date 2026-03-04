@@ -20,6 +20,7 @@
         z-index: 2;
     }
 
+
     .verifikasi-file-upload .verifikasi-file-label {
         display: flex;
         flex-direction: column;
