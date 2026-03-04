@@ -148,43 +148,50 @@ class DevelopmentProgressController extends Controller
 }
 
 
-    public function accAjax($unitId)
-    {
-        try {
-            // Ambil unit
-            $unit = LandBankUnit::findOrFail($unitId);
+public function accAjax($unitId)
+{
+    try {
+        // Ambil unit
+        $unit = LandBankUnit::findOrFail($unitId);
 
-            // Update progress unit
-            $unit->construction_progress = 'selesai';
-            $unit->status = 'ready';
-            $unit->save();
+        // Ambil progress terkait
+        $progress = $unit->progress; // hasOne(DevelopmentProgress)
 
-            // Ambil progress terkait
-            $progress = $unit->progress; // hasOne(DevelopmentProgress)
+        $totalAnggaran = 0;
 
-            if ($progress) {
-                // Hitung total dari semua item
-                $totalAnggaran = $progress->items()->sum('total');
+        if ($progress) {
+            // Hitung total dari semua item
+            $totalAnggaran = $progress->items()->sum('total');
 
-                // Update kolom total_anggaran di tabel utama
-                $progress->total_anggaran = $totalAnggaran;
-                $progress->status = 'completed'; // opsional, bisa set completed
-                $progress->save();
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'RAB berhasil di-ACC dan total anggaran diperbarui',
-                'construction_progress' => $unit->construction_progress,
-                'total_anggaran' => $progress->total_anggaran ?? 0,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal: ' . $e->getMessage(),
-            ]);
+            // Update kolom total_anggaran di tabel utama progress
+            $progress->total_anggaran = $totalAnggaran;
+            $progress->status = 'completed';
+            $progress->save();
         }
+
+        
+        $unit->price = $unit->price + $totalAnggaran;
+
+        // Update progress unit
+        $unit->construction_progress = 'selesai';
+        $unit->status = 'ready';
+        $unit->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'RAB berhasil di-ACC dan harga unit diperbarui',
+            'construction_progress' => $unit->construction_progress,
+            'total_anggaran' => $totalAnggaran,
+            'price_baru' => $unit->price,
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal: ' . $e->getMessage(),
+        ]);
     }
+}
 
 
     public function uploadDocumentation(Request $request, $itemId)

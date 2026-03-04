@@ -551,7 +551,11 @@
             </div>
         </div>
     </div>
-
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
     <!-- Row untuk Progress dan Detail -->
     <div class="row mt-4">
         <!-- Kolom Kiri: Progress Timeline -->
@@ -624,7 +628,7 @@
                                         style="width: 35px; height: 35px;">
                                         <i class="mdi mdi-home" style="font-size: 18px;"></i>
                                     </div>
-                                    <span class="d-block text-primary small fw-medium">Akad</span>
+                                    <span class="d-block text-primary small fw-medium">Survey</span>
                                     <small class="text-primary d-none d-sm-block">Progress</small>
                                 </div>
                             </div>
@@ -1013,21 +1017,6 @@
                     }
                 });
             });
-
-            // Handler untuk tombol-tombol aksi
-            const btnSimpan = document.querySelector('.survey-btn-success');
-            if (btnSimpan) {
-                btnSimpan.addEventListener('click', function() {
-                    alert('Hasil survey disimpan');
-                });
-            }
-
-            const btnSelesaikan = document.querySelector('.survey-btn-primary');
-            if (btnSelesaikan) {
-                btnSelesaikan.addEventListener('click', function() {
-                    alert('Survey selesai, lanjut ke tahap berikutnya');
-                });
-            }
         });
     </script>
 @endpush

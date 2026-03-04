@@ -25,9 +25,26 @@ class SurveyController extends Controller
         DB::beginTransaction();
 
         try {
+
+            $request->merge([
+                // Bersihkan angka
+                'appraisal_value'      => preg_replace('/[^0-9]/', '', $request->appraisal_value),
+                'luas_tanah'           => preg_replace('/[^0-9]/', '', $request->luas_tanah),
+                'luas_bangunan'        => preg_replace('/[^0-9]/', '', $request->luas_bangunan),
+                'persentase_kelayakan' => preg_replace('/[^0-9.]/', '', $request->persentase_kelayakan),
+
+                // Normalisasi checkbox
+                'listrik'    => $request->has('listrik') ? 1 : 0,
+                'air'        => $request->has('air') ? 1 : 0,
+                'akses'      => $request->has('akses') ? 1 : 0,
+                'sertifikat' => $request->has('sertifikat') ? 1 : 0,
+                'shm'        => $request->has('shm') ? 1 : 0,
+                'imb'        => $request->has('imb') ? 1 : 0,
+            ]);
+
             $kpr = KprApplication::findOrFail($kprId);
 
-            // Validasi input survey
+            // ✅ Validasi input survey
             $request->validate([
                 'appraisal_value' => 'nullable|numeric',
                 'luas_tanah' => 'nullable|numeric',
@@ -73,18 +90,14 @@ class SurveyController extends Controller
             }
 
             // Update status survey selesai
-            $kpr->status = 'analisa'; // misal lanjut ke analisa bank setelah survey
+            $kpr->status = 'analisa';
             $kpr->save();
 
             DB::commit();
 
-            Log::info('Survey KPR berhasil disimpan', [
-                'kpr_id' => $kpr->id,
-                'user_id' => auth()->id()
-            ]);
-
             return redirect()->back()->with('success', 'Hasil survey berhasil disimpan!');
         } catch (\Throwable $e) {
+
             DB::rollBack();
 
             Log::error('Gagal menyimpan survey KPR', [
@@ -93,7 +106,9 @@ class SurveyController extends Controller
                 'error_message' => $e->getMessage()
             ]);
 
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan. Silakan coba lagi.');
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $e->getMessage()); // 🔥 sementara tampilkan error asli
         }
     }
 }
