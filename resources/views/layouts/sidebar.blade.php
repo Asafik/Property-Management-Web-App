@@ -14,7 +14,7 @@
             </a>
         </li>
 
-      
+
         <li class="nav-item">
             <a class="nav-link" href="{{route('dashboard')}}">
                 <span class="menu-title">Dashboard</span>
@@ -217,14 +217,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('promo.index') }}">
                             <span class="menu-title">Promo</span>
-                           
+
                         </a>
                     </li>
                     <!-- MENU Pt -->
                     <li class="nav-item">
                         <a class="nav-link" href="dashboard-pt">
                             <span class="menu-title">PT</span>
-                           
+
                         </a>
                     </li>
 
@@ -232,7 +232,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="dashboard-servis">
                             <span class="menu-title">Servis</span>
-                         
+
                         </a>
                     </li>
 
@@ -240,7 +240,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('bank.index') }}">
                             <span class="menu-title">Data Bank</span>
-                           
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard-dedline-rab">
+                            <span class="menu-title">Dedline RAB</span>
+
                         </a>
                     </li>
 

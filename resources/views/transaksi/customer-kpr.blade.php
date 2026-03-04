@@ -4,104 +4,10 @@
 
 @section('content')
 <style>
-/* ===== MODERN FORM STYLING UNTUK CUSTOMER KPR ===== */
-.customer-kpr-form-group {
-    margin-bottom: 1rem;
-}
-
-@media (min-width: 768px) {
-    .customer-kpr-form-group {
-        margin-bottom: 1.2rem;
-    }
-}
-
-.customer-kpr-form-group label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-@media (min-width: 768px) {
-    .customer-kpr-form-group label {
-        font-size: 0.85rem;
-        margin-bottom: 0.4rem;
-    }
-}
-
-.customer-kpr-form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.5rem 0.6rem;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-    font-family: 'Nunito', sans-serif;
-}
-
-@media (min-width: 576px) {
-    .customer-kpr-form-control {
-        padding: 0.6rem 0.75rem;
-        font-size: 0.85rem;
-        border-radius: 10px;
-    }
-}
-
-@media (min-width: 768px) {
-    .customer-kpr-form-control {
-        padding: 0.7rem 0.8rem;
-        font-size: 0.9rem;
-    }
-}
-
-.customer-kpr-form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-.customer-kpr-form-control[readonly] {
-    background-color: #f8f9fa;
-    cursor: not-allowed;
-}
-
-select.customer-kpr-form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 12px;
-    padding-right: 2rem;
-}
-
-.customer-kpr-form-control-sm {
-    height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-    line-height: 1.5;
-    border-radius: 6px;
-}
-
-@media (min-width: 576px) {
-    .customer-kpr-form-control-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-        border-radius: 8px;
-    }
-}
-
-/* ===== CARD STYLING ===== */
+/* ===== CSS SAMA PERSIS DENGAN HALAMAN YANG ANDA BERIKAN ===== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
-    border-radius: 16px !important;
-    border: 1px solid #e9ecef !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
 }
 
 .card:hover {
@@ -111,34 +17,67 @@ select.customer-kpr-form-control {
 .card-header {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border-bottom: 1px solid #e9ecef;
-    padding: 1rem 1.2rem;
-    border-radius: 16px 16px 0 0 !important;
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-header {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-header {
+        padding: 1.2rem;
+    }
 }
 
 .card-body {
-    padding: 1.2rem;
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
 }
 
 @media (min-width: 768px) {
     .card-body {
-        padding: 1.5rem;
+        padding: 1.2rem;
     }
 }
 
 /* Card Title */
 .card-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #9a55ff;
     margin-bottom: 0;
+}
+
+@media (min-width: 576px) {
+    .card-title {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-title {
+        font-size: 1.1rem;
+    }
 }
 
 /* ===== FILTER SECTION ===== */
 .filter-card {
     background: linear-gradient(135deg, #f9f7ff, #f2ecff);
     border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.filter-card .card-body {
+    padding: 1rem !important;
 }
 
 .filter-card .form-label {
@@ -151,22 +90,59 @@ select.customer-kpr-form-control {
 
 .filter-card .form-control,
 .filter-card .form-select {
-    padding: 0.6rem 0.75rem;
+    padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
     border-radius: 8px;
-    height: 45px;
+    height: auto;
+    min-height: 40px;
     border: 1px solid #e0e4e9;
 }
 
 .filter-card .btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    height: 45px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    min-height: 40px;
     border-radius: 8px;
     font-weight: 600;
 }
 
-/* ===== BUTTON STYLING ===== */
+/* Form Controls */
+.form-control, .form-select {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    height: auto;
+}
+
+@media (min-width: 576px) {
+    .form-control, .form-select {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+
+/* Form Label */
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Button Styling */
 .btn {
     font-size: 0.85rem;
     padding: 0.6rem 1rem;
@@ -201,12 +177,6 @@ select.customer-kpr-form-control {
     color: #ffffff !important;
 }
 
-.btn-gradient-primary:hover {
-    background: linear-gradient(to right, #c77cff, #8a45e6) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4) !important;
-}
-
 .btn-gradient-secondary {
     background: #6c757d !important;
     color: #ffffff !important;
@@ -221,37 +191,22 @@ select.customer-kpr-form-control {
     color: #ffffff !important;
 }
 
+.btn-gradient-danger {
+    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+    color: #ffffff !important;
+}
+
 .btn-gradient-warning {
     background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
     color: #2c2e3f !important;
 }
 
-/* Outline Buttons */
-.btn-outline-warning {
-    background: transparent;
-    border: 1px solid #ffc107;
-    color: #ffc107;
+.btn-gradient-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
+    color: #ffffff !important;
 }
 
-.btn-outline-warning:hover {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-    border-color: transparent;
-}
-
-.btn-outline-danger {
-    background: transparent;
-    border: 1px solid #dc3545;
-    color: #dc3545;
-}
-
-.btn-outline-danger:hover {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-/* ===== BADGE STYLING ===== */
+/* Badge Styling */
 .badge {
     padding: 0.35rem 0.6rem;
     font-size: 0.75rem;
@@ -268,6 +223,13 @@ select.customer-kpr-form-control {
     }
 }
 
+@media (min-width: 768px) {
+    .badge {
+        padding: 0.45rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
 .badge-gradient-success {
     background: linear-gradient(135deg, #28a745, #5cb85c);
     color: #ffffff;
@@ -278,12 +240,17 @@ select.customer-kpr-form-control {
     color: #2c2e3f;
 }
 
+.badge-gradient-info {
+    background: linear-gradient(135deg, #17a2b8, #5bc0de);
+    color: #ffffff;
+}
+
 /* ===== TABLE STYLING ===== */
 .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border-radius: 12px;
-    margin-bottom: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
 }
 
 .table {
@@ -311,6 +278,25 @@ select.customer-kpr-form-control {
     }
 }
 
+@media (min-width: 768px) {
+    .table thead th {
+        font-size: 0.9rem;
+        padding: 1rem 0.75rem;
+    }
+}
+
+/* Kolom No lebih rapat */
+.table thead th:first-child {
+    padding-left: 0.75rem;
+    width: 60px;
+}
+
+.table tbody td:first-child {
+    padding-left: 0.75rem;
+    font-weight: 500;
+    width: 60px;
+}
+
 .table tbody td {
     vertical-align: middle;
     font-size: 0.85rem;
@@ -326,20 +312,109 @@ select.customer-kpr-form-control {
     }
 }
 
+@media (min-width: 768px) {
+    .table tbody td {
+        font-size: 0.95rem;
+        padding: 1rem 0.75rem;
+    }
+}
+
 .table tbody tr:hover {
     background-color: #f8f9fa;
 }
 
-.table-bordered {
-    border: 1px solid #e9ecef;
+/* Icon dalam tabel */
+.table tbody td i {
+    font-size: 1rem;
 }
 
-.table-bordered th,
-.table-bordered td {
-    border: 1px solid #e9ecef;
+/* Text colors */
+.text-primary { color: #9a55ff !important; }
+.text-info { color: #17a2b8 !important; }
+.text-danger { color: #dc3545 !important; }
+.text-success { color: #28a745 !important; }
+.text-warning { color: #ffc107 !important; }
+.fw-bold { font-weight: 600 !important; }
+.text-muted { color: #a5b3cb !important; }
+
+/* Typography */
+h3.text-dark {
+    font-size: 1.3rem !important;
+    font-weight: 700;
+    color: #2c2e3f !important;
+    margin-bottom: 0.5rem !important;
 }
 
-/* ===== PAGINATION STYLING ===== */
+@media (min-width: 576px) {
+    h3.text-dark {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    h3.text-dark {
+        font-size: 1.7rem !important;
+    }
+}
+
+/* DataTables Custom Styling - Hanya muncul jika ada data */
+.has-data .dataTables_wrapper {
+    padding: 0;
+}
+
+.has-data .dataTables_filter {
+    display: none !important;
+}
+
+.has-data .dataTables_length {
+    display: none !important;
+}
+
+.has-data .dataTables_info {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #6c7383;
+}
+
+.has-data .dataTables_paginate {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.has-data .dataTables_paginate .paginate_button {
+    padding: 0.35rem 0.7rem;
+    margin: 0 2px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    color: #6c7383;
+    background: #ffffff;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+@media (min-width: 576px) {
+    .has-data .dataTables_paginate .paginate_button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+
+.has-data .dataTables_paginate .paginate_button.current {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.has-data .dataTables_paginate .paginate_button:hover {
+    background: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff !important;
+}
+
+/* Pagination styling lama - untuk Laravel pagination */
 .pagination {
     margin: 0;
     gap: 3px;
@@ -390,17 +465,21 @@ select.customer-kpr-form-control {
     }
 }
 
-/* Text colors */
-.text-primary { color: #9a55ff !important; }
-.text-muted { color: #a5b3cb !important; }
-.fw-bold { font-weight: 600 !important; }
-
-/* Icon styling */
-.mdi {
-    vertical-align: middle;
+/* Aksi button styling */
+.aksi-buttons {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-/* Responsive */
+.aksi-buttons .btn-sm {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+/* Responsive untuk mobile */
 @media (max-width: 576px) {
     .table thead th {
         font-size: 0.75rem;
@@ -413,7 +492,7 @@ select.customer-kpr-form-control {
     }
 
     .filter-card {
-        padding: 1rem;
+        padding: 0.75rem;
     }
 
     .filter-card .form-label {
@@ -424,92 +503,12 @@ select.customer-kpr-form-control {
     .filter-card .form-select,
     .filter-card .btn {
         font-size: 0.8rem;
-        height: 40px;
+        min-height: 38px;
     }
 
     h3.text-dark {
         font-size: 1.2rem !important;
     }
-}
-
-h3.text-dark {
-    font-size: 1.3rem !important;
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
-}
-
-@media (min-width: 576px) {
-    h3.text-dark {
-        font-size: 1.5rem !important;
-    }
-}
-
-@media (min-width: 768px) {
-    h3.text-dark {
-        font-size: 1.7rem !important;
-    }
-}
-
-/* Modal Styling */
-.modal-content {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 16px 16px 0 0;
-}
-
-.modal-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #9a55ff;
-}
-
-.modal-body {
-    padding: 1.2rem;
-}
-
-.modal-footer {
-    border-top: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 0 0 16px 16px;
-}
-
-.modal-form-group {
-    margin-bottom: 1rem;
-}
-
-.modal-form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-.modal-form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-}
-
-.modal-form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
 }
 </style>
 
@@ -665,7 +664,7 @@ h3.text-dark {
 
                     <!-- TABEL DATA -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tableCustomerKPR" {{ $bookings->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle" id="tableCustomerKPR">
                             <thead>
                                 <tr>
                                     <th class="text-center" width="5%">No</th>
@@ -753,7 +752,7 @@ h3.text-dark {
                         </table>
                     </div>
 
-                    <!-- PAGINATION SECTION - Tampil jika ada data -->
+                    <!-- PAGINATION SECTION - Tampil jika ada data (menggunakan Laravel pagination) -->
                     @if($bookings->count() > 0)
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                         <!-- Info Menampilkan Data -->
@@ -768,7 +767,7 @@ h3.text-dark {
                             data customer KPR
                         </div>
 
-                        <!-- Pagination Links -->
+                        <!-- Pagination Links (Laravel) -->
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                 {{-- Previous Page Link --}}
@@ -838,33 +837,6 @@ h3.text-dark {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables hanya jika ada data
-    const tableElement = document.getElementById('tableCustomerKPR');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        // Destroy existing DataTable if any
-        if ($.fn.DataTable.isDataTable('#tableCustomerKPR')) {
-            $('#tableCustomerKPR').DataTable().destroy();
-        }
-
-        // Initialize DataTable with minimal features
-        $('#tableCustomerKPR').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data customer KPR belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [7] } // Kolom aksi tidak bisa diurutkan
-            ]
-        });
-    }
-
     // Sweet Alert untuk session success/error
     @if(session('success'))
         Swal.fire({

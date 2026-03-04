@@ -348,4 +348,7 @@ Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->na
 });
 
 
+Route::get('/dashboard-dedline-rab', function () {
+    return view('properti.dedline_rab');
+});
 
