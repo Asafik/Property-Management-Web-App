@@ -457,6 +457,7 @@
 
     {{-- Script untuk File Upload --}}
     @push('scripts')
+    
         <script>
             // File upload modern preview
             document.addEventListener('DOMContentLoaded', function() {

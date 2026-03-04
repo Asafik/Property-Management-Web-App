@@ -55,9 +55,10 @@ public function store(Request $request)
         // VALIDASI
         // =============================
         $request->validate([
-            'customer_id' => 'required',
-            'unit_id'     => 'required',
-            'banks_id'    => 'required',
+            'booking_id' => 'required|exists:bookings,id',
+            'customer_id' => 'required|exists:customers,id',
+            'unit_id'     => 'required|exists:land_bank_units,id',
+            'banks_id'    => 'required|exists:banks,id',
             'dp'          => 'required|numeric|min:0',
             'tenor'       => 'required|numeric|min:1',
             'bunga'       => 'required|numeric|min:0',
@@ -90,24 +91,10 @@ public function store(Request $request)
         $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
 
         // =============================
-        // LOG DEBUG
-        // =============================
-        Log::info('Hitung KPR', [
-            'hargaUnit'        => $hargaUnit,
-            'dp'               => $dp,
-            'tenor'            => $tenor,
-            'bunga'            => $bunga,
-            'jumlahPinjaman'   => $jumlahPinjaman,
-            'bungaTotal'       => $bungaTotal,
-            'totalPinjaman'    => $totalPinjaman,
-            'estimasiAngsuran' => $estimasiAngsuran,
-        ]);
-
-        // =============================
         // SIMPAN DATA KPR
         // =============================
         $kprApplication = KprApplication::create([
-            'booking_id'        => $request->booking_id ?? $request->unit_id,
+            'booking_id'        => $request->booking_id,
             'customer_id'       => $request->customer_id,
             'unit_id'           => $request->unit_id,
             'banks_id'          => $request->banks_id,
@@ -124,7 +111,22 @@ public function store(Request $request)
         ]);
 
         // =============================
-        // UPLOAD FILE & SIMPAN KE KPR DOCUMENTS
+        // UPDATE BOOKING
+        // =============================
+        $booking = Booking::where('id', $request->booking_id)
+            ->where('unit_id', $request->unit_id)
+            ->firstOrFail();
+
+        $booking->purchase_type = 'kpr';
+        $booking->status_cash   = 'pending';
+        $booking->status_akad   = 'pending';
+        $booking->status_legal  = 'pending';
+        $booking->status        = 'lanjut_kpr';
+
+        $booking->save();
+
+        // =============================
+        // UPLOAD FILE DOKUMEN
         // =============================
         $fileFields = [
             'slip_gaji',
@@ -156,8 +158,9 @@ public function store(Request $request)
 
         DB::rollBack();
 
-        // LOG ERROR
-        Log::error('Gagal simpan KPR', ['error' => $e->getMessage()]);
+        Log::error('Gagal simpan KPR', [
+            'error' => $e->getMessage()
+        ]);
 
         return redirect()->back()
             ->withInput()
