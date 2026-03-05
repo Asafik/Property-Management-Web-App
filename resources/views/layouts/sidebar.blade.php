@@ -37,7 +37,7 @@
                             <a class="nav-link" href="{{ route('marketing.jual-unit') }}">Jual Unit</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('marketing.list_pengajuan') }}">Customer Booking</a>
+                            <a class="nav-link" href="{{ route('marketing.list_pengajuan') }}">User Booking</a>
                         </li>
                     </ul>
                 </div>
@@ -94,24 +94,24 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#customer" aria-expanded="false"
                 aria-controls="customer">
-                <span class="menu-title">Customer</span>
+                <span class="menu-title">User</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-account-group menu-icon"></i>
             </a>
             <div class="collapse" id="customer">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('customer.tambah_customer') }}">Tambah Customer</a>
+                        <a class="nav-link" href="{{ route('customer.tambah_customer') }}">Tambah User</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('customer.data') }}">
-                            Data Customer
+                            Data User
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('customer.tamu') }}">
-                            Tamu / Prospek
+                            Prospek
                         </a>
                     </li>
 
@@ -132,10 +132,10 @@
                 <a class="nav-link" href="{{ route('customer.kpr') }}">Cicilan / KPR</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('kpr.customer-verified') }}">Customer verifikasi dokumen kpr</a>
+                <a class="nav-link" href="{{ route('kpr.customer-verified') }}">User verifikasi dokumen kpr</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('customer.kpr.survey') }}">Customer Acc kpr</a>
+                <a class="nav-link" href="{{ route('customer.kpr.survey') }}">User Acc kpr</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/approved">Approved</a>

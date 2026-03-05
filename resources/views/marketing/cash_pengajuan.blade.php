@@ -585,7 +585,7 @@
 
                             <hr class="pengajuan-hr">
 
-                            <!-- Upload Dokumen -->
+                            <!-- Upload Dokumen Pendukung -->
                             <div class="pengajuan-section-title">
                                 <i class="fas fa-file-upload me-2" style="color: #9a55ff;"></i>
                                 Upload Dokumen Pendukung
@@ -597,8 +597,6 @@
                                     $uploadFields = [
                                         'ktp' => 'KTP Customer',
                                         'npwp' => 'NPWP',
-                                        'bukti_bayar' => 'Bukti Pembayaran DP',
-                                        'surat_booking' => 'Surat Booking',
                                         'surat_perjanjian' => 'Surat Perjanjian'
                                     ];
                                 @endphp

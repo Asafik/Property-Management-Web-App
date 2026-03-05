@@ -369,7 +369,7 @@ Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])-
 Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
 
 Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
- 
+
 
 // Route::get('/dashboard-dedline-rab', function () {
 //     return view('properti.dedline_rab');
@@ -378,6 +378,9 @@ Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->na
 
 Route::get('/rab-deadline', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
 
+Route::get('/survey-komersil', function () {
+    return view('marketing.survey_komersil');
+});
 
 
 });
