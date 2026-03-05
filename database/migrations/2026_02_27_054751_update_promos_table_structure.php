@@ -9,14 +9,31 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+//     public function up(): void
+// {
+//     Schema::table('promos', function (Blueprint $table) {
+
+//         // Hapus kolom lama
+//         $table->dropColumn('value');
+
+//         // Tambah kolom baru yang jelas tipe datanya
+//         $table->decimal('value_nominal', 15, 2)->nullable();
+//         $table->integer('value_percent')->nullable();
+//         $table->string('value_text')->nullable();
+
+//     });
+// }
+
+public function up(): void
 {
     Schema::table('promos', function (Blueprint $table) {
 
-        // Hapus kolom lama
-        $table->dropColumn('value');
+        // cek dulu sebelum drop
+        if (Schema::hasColumn('promos', 'value')) {
+            $table->dropColumn('value');
+        }
 
-        // Tambah kolom baru yang jelas tipe datanya
+        // kolom baru
         $table->decimal('value_nominal', 15, 2)->nullable();
         $table->integer('value_percent')->nullable();
         $table->string('value_text')->nullable();
