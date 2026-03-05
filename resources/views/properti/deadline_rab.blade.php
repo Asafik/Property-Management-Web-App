@@ -260,6 +260,36 @@
             border-color: transparent;
         }
 
+        .btn-outline-success {
+            background: transparent;
+            border: 1px solid #28a745;
+            color: #28a745;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-success:hover {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .btn-outline-purple {
+            background: transparent;
+            border: 1px solid #9a55ff;
+            color: #9a55ff;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+
+        .btn-outline-purple:hover {
+            background: linear-gradient(135deg, #9a55ff, #b47aff);
+            color: #ffffff;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.2);
+        }
+
         /* Badge Styling */
         .badge {
             padding: 0.35rem 0.6rem;
@@ -446,44 +476,6 @@
             }
         }
 
-        /* Deadline specific styling */
-        .deadline-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-        }
-
-        .deadline-date {
-            font-weight: 600;
-            color: #2c2e3f;
-        }
-
-        .deadline-countdown {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            display: inline-block;
-            width: fit-content;
-        }
-
-        .deadline-countdown.danger {
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.2);
-        }
-
-        .deadline-countdown.warning {
-            background: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-            border: 1px solid rgba(255, 193, 7, 0.2);
-        }
-
-        .deadline-countdown.success {
-            background: rgba(40, 167, 69, 0.1);
-            color: #28a745;
-            border: 1px solid rgba(40, 167, 69, 0.2);
-        }
-
         /* Progress bar styling */
         .progress {
             height: 6px;
@@ -574,6 +566,66 @@
             white-space: nowrap;
         }
 
+        /* Unit badge styling */
+        .unit-badge-cluster {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .unit-badge-cluster i {
+            font-size: 0.8rem;
+        }
+
+        .unit-cluster-mawar {
+            background: linear-gradient(135deg, #fce4e4, #f8d7da);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .unit-cluster-melati {
+            background: linear-gradient(135deg, #e3f2fd, #d1e9ff);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+        }
+
+        .unit-cluster-kenanga {
+            background: linear-gradient(135deg, #f3e5f5, #e9d5f0);
+            color: #9a55ff;
+            border: 1px solid rgba(154, 85, 255, 0.2);
+        }
+
+        .unit-cluster-cempaka {
+            background: linear-gradient(135deg, #e8f5e9, #d4edda);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .unit-cluster-anggrek {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #fd7e14;
+            border: 1px solid rgba(253, 126, 20, 0.2);
+        }
+
+        .unit-number {
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Unit container untuk center */
+        .unit-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* Modal styling */
         .modal-content {
             border: none;
@@ -599,6 +651,28 @@
         .modal-footer {
             border-top: 1px solid #e9ecef;
             padding: 1rem 1.5rem;
+        }
+
+        /* Modal table styling */
+        .modal-table {
+            margin-bottom: 0;
+        }
+
+        .modal-table th {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            padding: 0.8rem 0.5rem;
+        }
+
+        .modal-table td {
+            vertical-align: middle;
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #e9ecef;
         }
 
         /* Responsive untuk mobile */
@@ -642,30 +716,30 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-clock-alert me-2" style="color: #9a55ff;"></i>
-                                Deadline RAB per Pekerjaan
+                                <i class="mdi mdi-clock-alert-outline me-2" style="color: #9a55ff;"></i>
+                                Deadline RAB per Unit
                             </h3>
                             <p class="text-muted mb-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Monitor deadline setiap tahapan pekerjaan pembangunan
+                                Monitor deadline setiap tahapan pekerjaan per unit
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
-                            <i class="mdi mdi-clock-alert" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                            <i class="mdi mdi-clock-alert-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabel Deadline per Pekerjaan -->
+        <!-- Tabel Deadline per Unit -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Deadline per Tahapan Pekerjaan
+                            Deadline per Unit
                         </h5>
                     </div>
 
@@ -675,7 +749,7 @@
                             <div class="card-body">
                                 <h6 class="card-title mb-3" style="font-size: 1rem;">
                                     <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                    Filter Deadline
+                                    Filter Unit
                                 </h6>
 
                                 <!-- FILTER UNTUK MOBILE -->
@@ -684,22 +758,23 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">
                                                 <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Pekerjaan
+                                                Cari Unit
                                             </label>
                                             <input type="text" class="form-control" name="search"
-                                                placeholder="Cari pekerjaan..." style="height: 45px;">
+                                                placeholder="Cari unit..." style="height: 45px;">
                                         </div>
 
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
+                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Cluster
                                             </label>
-                                            <select class="form-control" name="status" style="height: 45px;">
-                                                <option value="">Semua</option>
-                                                <option value="on-time">On Time</option>
-                                                <option value="warning">H-7 / H-3</option>
-                                                <option value="danger">Overdue / H-1</option>
-                                                <option value="success">Selesai</option>
+                                            <select class="form-control" name="cluster" style="height: 45px;">
+                                                <option value="">Semua Cluster</option>
+                                                <option value="mawar">Cluster Mawar</option>
+                                                <option value="melati">Cluster Melati</option>
+                                                <option value="kenanga">Cluster Kenanga</option>
+                                                <option value="cempaka">Cluster Cempaka</option>
+                                                <option value="anggrek">Cluster Anggrek</option>
                                             </select>
                                         </div>
 
@@ -738,22 +813,23 @@
                                             <div class="col-md-4">
                                                 <label class="form-label">
                                                     <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                    Cari Pekerjaan
+                                                    Cari Unit
                                                 </label>
                                                 <input type="text" class="form-control" name="search"
-                                                    placeholder="Nama pekerjaan...">
+                                                    placeholder="Nama unit...">
                                             </div>
 
                                             <div class="col-md-2">
                                                 <label class="form-label">
-                                                    <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
+                                                    <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Cluster
                                                 </label>
-                                                <select class="form-control" name="status">
+                                                <select class="form-control" name="cluster">
                                                     <option value="">Semua</option>
-                                                    <option value="on-time">On Time</option>
-                                                    <option value="warning">H-7 / H-3</option>
-                                                    <option value="danger">Overdue / H-1</option>
-                                                    <option value="success">Selesai</option>
+                                                    <option value="mawar">Cluster Mawar</option>
+                                                    <option value="melati">Cluster Melati</option>
+                                                    <option value="kenanga">Cluster Kenanga</option>
+                                                    <option value="cempaka">Cluster Cempaka</option>
+                                                    <option value="anggrek">Cluster Anggrek</option>
                                                 </select>
                                             </div>
 
@@ -802,79 +878,45 @@
                             </div>
                         </div>
 
-                        <!-- TABEL DATA DEADLINE PER PEKERJAAN -->
+                        <!-- TABEL DATA UNIT -->
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle" id="tableDeadline">
+                            <table class="table table-hover align-middle" id="tableUnit">
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">No</th>
-                                        <th width="20%">Tahapan Pekerjaan</th>
-                                        <th width="10%">Progress</th>
+                                        <th class="text-center" width="15%">Unit</th>
+                                        <th width="15%">Progress Keseluruhan</th>
                                         <th width="12%">Target Mulai</th>
                                         <th width="12%">Target Selesai</th>
                                         <th width="8%">Durasi</th>
                                         <th width="10%">Sisa Waktu</th>
-                                        <th width="10%">Status</th>
-                                        <th class="text-center" width="13%">Aksi</th>
+                                        <th width="13%">Status</th>
+                                        <th class="text-center" width="10%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Data 1 - Pekerjaan Pondasi -->
+                                    <!-- Unit 1 - Cluster Mawar - Blok A.1 -->
                                     <tr>
                                         <td class="text-center fw-bold">1</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Pondasi
-                                            <br>
-                                            <small class="text-muted">8 item</small>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">A.1</span>
+                                                <span class="unit-badge-cluster unit-cluster-mawar">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Mawar
+                                                </span>
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                                <div class="progress-bar bg-success" style="width: 92%"></div>
                                             </div>
-                                            <small class="fw-bold">100%</small>
+                                            <small class="fw-bold">92%</small>
+                                            <br>
+                                            <small class="text-muted">(11/12 item selesai)</small>
                                         </td>
                                         <td>01 Mar 2024</td>
-                                        <td>15 Mar 2024</td>
-                                        <td>15 hari</td>
-                                        <td>
-                                            <span class="fw-bold text-success">Selesai</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="aksi-buttons">
-                                                <button type="button"
-                                                        class="btn btn-outline-warning btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="pondasi"
-                                                        data-mulai="2024-03-01"
-                                                        data-selesai="2024-03-15">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Data 2 - Pekerjaan Struktur -->
-                                    <tr>
-                                        <td class="text-center fw-bold">2</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Struktur
-                                            <br>
-                                            <small class="text-muted">12 item</small>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-primary" style="width: 75%"></div>
-                                            </div>
-                                            <small class="fw-bold">75%</small>
-                                        </td>
-                                        <td>16 Mar 2024</td>
-                                        <td>30 Apr 2024</td>
-                                        <td>46 hari</td>
+                                        <td>20 Jun 2024</td>
+                                        <td>112 hari</td>
                                         <td>
                                             <span class="fw-bold">H-15</span>
                                         </td>
@@ -886,190 +928,43 @@
                                                 <button type="button"
                                                         class="btn btn-outline-warning btn-sm"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="struktur"
-                                                        data-mulai="2024-03-16"
-                                                        data-selesai="2024-04-30">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
                                                 </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Data 3 - Pekerjaan Dinding -->
-                                    <tr>
-                                        <td class="text-center fw-bold">3</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Dinding
-                                            <br>
-                                            <small class="text-muted">10 item</small>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-primary" style="width: 60%"></div>
-                                            </div>
-                                            <small class="fw-bold">60%</small>
-                                        </td>
-                                        <td>01 Apr 2024</td>
-                                        <td>15 Mei 2024</td>
-                                        <td>45 hari</td>
-                                        <td>
-                                            <span class="fw-bold">H-20</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info badge-gradient-info">On Track</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="aksi-buttons">
                                                 <button type="button"
-                                                        class="btn btn-outline-warning btn-sm"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="dinding"
-                                                        data-mulai="2024-04-01"
-                                                        data-selesai="2024-05-15">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="A.1"
+                                                        data-cluster="Cluster Mawar">
+                                                    <i class="mdi mdi-eye-outline"></i>
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
 
-                                    <!-- Data 4 - Pekerjaan Atap -->
+                                    <!-- Unit 2 - Cluster Melati - Blok B.2 -->
                                     <tr>
-                                        <td class="text-center fw-bold">4</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Atap
-                                            <br>
-                                            <small class="text-muted">6 item</small>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-warning" style="width: 40%"></div>
-                                            </div>
-                                            <small class="fw-bold">40%</small>
-                                        </td>
-                                        <td>16 Apr 2024</td>
-                                        <td>10 Mei 2024</td>
-                                        <td>25 hari</td>
-                                        <td>
-                                            <span class="fw-bold text-warning">H-3</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-warning badge-gradient-warning">Mendekati Deadline</span>
-                                        </td>
+                                        <td class="text-center fw-bold">2</td>
                                         <td class="text-center">
-                                            <div class="aksi-buttons">
-                                                <button type="button"
-                                                        class="btn btn-outline-warning btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="atap"
-                                                        data-mulai="2024-04-16"
-                                                        data-selesai="2024-05-10">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
-                                                </button>
+                                            <div class="unit-container">
+                                                <span class="unit-number">B.2</span>
+                                                <span class="unit-badge-cluster unit-cluster-melati">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Melati
+                                                </span>
                                             </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Data 5 - Pekerjaan Instalasi Listrik -->
-                                    <tr>
-                                        <td class="text-center fw-bold">5</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Instalasi Listrik
-                                            <br>
-                                            <small class="text-muted">5 item</small>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-warning" style="width: 30%"></div>
-                                            </div>
-                                            <small class="fw-bold">30%</small>
-                                        </td>
-                                        <td>20 Apr 2024</td>
-                                        <td>05 Mei 2024</td>
-                                        <td>16 hari</td>
-                                        <td>
-                                            <span class="fw-bold text-warning">H-2</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-warning badge-gradient-warning">Mendekati Deadline</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="aksi-buttons">
-                                                <button type="button"
-                                                        class="btn btn-outline-warning btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="listrik"
-                                                        data-mulai="2024-04-20"
-                                                        data-selesai="2024-05-05">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Data 6 - Pekerjaan Plafon -->
-                                    <tr>
-                                        <td class="text-center fw-bold">6</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Plafon
-                                            <br>
-                                            <small class="text-muted">4 item</small>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-danger" style="width: 25%"></div>
-                                            </div>
-                                            <small class="fw-bold">25%</small>
-                                        </td>
-                                        <td>25 Mar 2024</td>
-                                        <td>20 Apr 2024</td>
-                                        <td>27 hari</td>
-                                        <td>
-                                            <span class="text-danger fw-bold">Lewat 4 hari</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-danger badge-gradient-danger">Terlambat</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="aksi-buttons">
-                                                <button type="button"
-                                                        class="btn btn-outline-warning btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="plafon"
-                                                        data-mulai="2024-03-25"
-                                                        data-selesai="2024-04-20">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Data 7 - Pekerjaan Finishing -->
-                                    <tr>
-                                        <td class="text-center fw-bold">7</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Finishing
-                                            <br>
-                                            <small class="text-muted">9 item</small>
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 6px;">
                                                 <div class="progress-bar bg-success" style="width: 100%"></div>
                                             </div>
                                             <small class="fw-bold">100%</small>
+                                            <br>
+                                            <small class="text-muted">(12/12 item selesai)</small>
                                         </td>
-                                        <td>21 Apr 2024</td>
-                                        <td>05 Mei 2024</td>
-                                        <td>15 hari</td>
+                                        <td>01 Mar 2024</td>
+                                        <td>15 Mei 2024</td>
+                                        <td>76 hari</td>
                                         <td>
                                             <span class="fw-bold text-success">Selesai</span>
                                         </td>
@@ -1081,34 +976,235 @@
                                                 <button type="button"
                                                         class="btn btn-outline-warning btn-sm"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="finishing"
-                                                        data-mulai="2024-04-21"
-                                                        data-selesai="2024-05-05">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="B.2"
+                                                        data-cluster="Cluster Melati">
+                                                    <i class="mdi mdi-eye-outline"></i>
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
 
-                                    <!-- Data 8 - Pekerjaan Landscape -->
+                                    <!-- Unit 3 - Cluster Kenanga - Blok C.1 -->
                                     <tr>
-                                        <td class="text-center fw-bold">8</td>
-                                        <td class="fw-bold text-uppercase">
-                                            Pekerjaan Landscape
-                                            <br>
-                                            <small class="text-muted">6 item</small>
+                                        <td class="text-center fw-bold">3</td>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">C.1</span>
+                                                <span class="unit-badge-cluster unit-cluster-kenanga">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Kenanga
+                                                </span>
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-info" style="width: 10%"></div>
+                                                <div class="progress-bar bg-warning" style="width: 65%"></div>
                                             </div>
-                                            <small class="fw-bold">10%</small>
+                                            <small class="fw-bold">65%</small>
+                                            <br>
+                                            <small class="text-muted">(8/12 item selesai)</small>
                                         </td>
-                                        <td>06 Mei 2024</td>
-                                        <td>20 Jun 2024</td>
-                                        <td>46 hari</td>
+                                        <td>15 Mar 2024</td>
+                                        <td>30 Jun 2024</td>
+                                        <td>108 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-warning">H-5</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning badge-gradient-warning">Mendekati Deadline</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="C.1"
+                                                        data-cluster="Cluster Kenanga">
+                                                    <i class="mdi mdi-eye-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Unit 4 - Cluster Cempaka - Blok D.2 -->
+                                    <tr>
+                                        <td class="text-center fw-bold">4</td>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">D.2</span>
+                                                <span class="unit-badge-cluster unit-cluster-cempaka">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Cempaka
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 45%"></div>
+                                            </div>
+                                            <small class="fw-bold">45%</small>
+                                            <br>
+                                            <small class="text-muted">(5/12 item selesai)</small>
+                                        </td>
+                                        <td>01 Apr 2024</td>
+                                        <td>15 Jul 2024</td>
+                                        <td>106 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-20</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="D.2"
+                                                        data-cluster="Cluster Cempaka">
+                                                    <i class="mdi mdi-eye-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Unit 5 - Cluster Anggrek - Blok E.1 -->
+                                    <tr>
+                                        <td class="text-center fw-bold">5</td>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">E.1</span>
+                                                <span class="unit-badge-cluster unit-cluster-anggrek">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Anggrek
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-danger" style="width: 30%"></div>
+                                            </div>
+                                            <small class="fw-bold">30%</small>
+                                            <br>
+                                            <small class="text-muted">(4/12 item selesai)</small>
+                                        </td>
+                                        <td>01 Feb 2024</td>
+                                        <td>30 Mei 2024</td>
+                                        <td>120 hari</td>
+                                        <td>
+                                            <span class="text-danger fw-bold">Lewat 5 hari</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-danger badge-gradient-danger">Terlambat</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="E.1"
+                                                        data-cluster="Cluster Anggrek">
+                                                    <i class="mdi mdi-eye-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Unit 6 - Cluster Mawar - Blok A.3 -->
+                                    <tr>
+                                        <td class="text-center fw-bold">6</td>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">A.3</span>
+                                                <span class="unit-badge-cluster unit-cluster-mawar">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Mawar
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                            <br>
+                                            <small class="text-muted">(12/12 item selesai)</small>
+                                        </td>
+                                        <td>01 Mar 2024</td>
+                                        <td>10 Jun 2024</td>
+                                        <td>102 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="A.3"
+                                                        data-cluster="Cluster Mawar">
+                                                    <i class="mdi mdi-eye-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Unit 7 - Cluster Melati - Blok B.4 -->
+                                    <tr>
+                                        <td class="text-center fw-bold">7</td>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">B.4</span>
+                                                <span class="unit-badge-cluster unit-cluster-melati">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Melati
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 75%"></div>
+                                            </div>
+                                            <small class="fw-bold">75%</small>
+                                            <br>
+                                            <small class="text-muted">(9/12 item selesai)</small>
+                                        </td>
+                                        <td>15 Mar 2024</td>
+                                        <td>15 Jul 2024</td>
+                                        <td>123 hari</td>
                                         <td>
                                             <span class="fw-bold">H-25</span>
                                         </td>
@@ -1120,12 +1216,64 @@
                                                 <button type="button"
                                                         class="btn btn-outline-warning btn-sm"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#editDeadlineModal"
-                                                        data-kategori="landscape"
-                                                        data-mulai="2024-05-06"
-                                                        data-selesai="2024-06-20">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="B.4"
+                                                        data-cluster="Cluster Melati">
+                                                    <i class="mdi mdi-eye-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Unit 8 - Cluster Kenanga - Blok C.3 -->
+                                    <tr>
+                                        <td class="text-center fw-bold">8</td>
+                                        <td class="text-center">
+                                            <div class="unit-container">
+                                                <span class="unit-number">C.3</span>
+                                                <span class="unit-badge-cluster unit-cluster-kenanga">
+                                                    <i class="mdi mdi-flower-outline"></i> Cluster Kenanga
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 55%"></div>
+                                            </div>
+                                            <small class="fw-bold">55%</small>
+                                            <br>
+                                            <small class="text-muted">(7/12 item selesai)</small>
+                                        </td>
+                                        <td>01 Apr 2024</td>
+                                        <td>30 Jul 2024</td>
+                                        <td>121 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-30</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="aksi-buttons">
+                                                <button type="button"
+                                                        class="btn btn-outline-warning btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editDeadlineModal">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-sm btn-view-detail"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailUnitModal"
+                                                        data-unit="C.3"
+                                                        data-cluster="Cluster Kenanga">
+                                                    <i class="mdi mdi-eye-outline"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -1144,7 +1292,7 @@
                                 <span class="fw-bold">8</span>
                                 dari
                                 <span class="fw-bold">8</span>
-                                tahapan pekerjaan
+                                unit
                             </div>
 
                             <nav aria-label="Page navigation">
@@ -1172,6 +1320,247 @@
             </div>
         </div>
 
+        <!-- Modal Detail Unit -->
+        <div class="modal fade" id="detailUnitModal" tabindex="-1" aria-labelledby="detailUnitModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailUnitModalLabel">
+                            <i class="mdi mdi-home-outline me-2" style="color: #9a55ff;"></i>
+                            Detail Pekerjaan Unit <span id="detailUnitNumber"></span> - <span id="detailUnitCluster"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table modal-table">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="25%">Pekerjaan</th>
+                                        <th width="10%">Progress</th>
+                                        <th width="12%">Target Mulai</th>
+                                        <th width="12%">Target Selesai</th>
+                                        <th width="8%">Durasi</th>
+                                        <th width="10%">Sisa Waktu</th>
+                                        <th width="10%">Status</th>
+                                        <th class="text-center" width="8%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Pekerjaan Pondasi -->
+                                    <tr>
+                                        <td class="text-center fw-bold">1</td>
+                                        <td class="fw-bold">Pekerjaan Pondasi</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>01 Mar 2024</td>
+                                        <td>15 Mar 2024</td>
+                                        <td>15 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Pekerjaan Struktur -->
+                                    <tr>
+                                        <td class="text-center fw-bold">2</td>
+                                        <td class="fw-bold">Pekerjaan Struktur</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>16 Mar 2024</td>
+                                        <td>30 Apr 2024</td>
+                                        <td>46 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Pekerjaan Dinding -->
+                                    <tr>
+                                        <td class="text-center fw-bold">3</td>
+                                        <td class="fw-bold">Pekerjaan Dinding</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>01 Apr 2024</td>
+                                        <td>15 Mei 2024</td>
+                                        <td>45 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Pekerjaan Atap -->
+                                    <tr>
+                                        <td class="text-center fw-bold">4</td>
+                                        <td class="fw-bold">Pekerjaan Atap</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>16 Apr 2024</td>
+                                        <td>10 Mei 2024</td>
+                                        <td>25 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Instalasi Listrik -->
+                                    <tr>
+                                        <td class="text-center fw-bold">5</td>
+                                        <td class="fw-bold">Instalasi Listrik</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            </div>
+                                            <small class="fw-bold">100%</small>
+                                        </td>
+                                        <td>20 Apr 2024</td>
+                                        <td>05 Mei 2024</td>
+                                        <td>16 hari</td>
+                                        <td>
+                                            <span class="fw-bold text-success">Selesai</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success badge-gradient-success">Selesai</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Pekerjaan Plafon -->
+                                    <tr>
+                                        <td class="text-center fw-bold">6</td>
+                                        <td class="fw-bold">Pekerjaan Plafon</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 80%"></div>
+                                            </div>
+                                            <small class="fw-bold">80%</small>
+                                        </td>
+                                        <td>25 Mar 2024</td>
+                                        <td>20 Jun 2024</td>
+                                        <td>88 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-10</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Pekerjaan Finishing -->
+                                    <tr>
+                                        <td class="text-center fw-bold">7</td>
+                                        <td class="fw-bold">Pekerjaan Finishing</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 60%"></div>
+                                            </div>
+                                            <small class="fw-bold">60%</small>
+                                        </td>
+                                        <td>21 Apr 2024</td>
+                                        <td>15 Jul 2024</td>
+                                        <td>86 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-25</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Pekerjaan Landscape -->
+                                    <tr>
+                                        <td class="text-center fw-bold">8</td>
+                                        <td class="fw-bold">Pekerjaan Landscape</td>
+                                        <td>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 40%"></div>
+                                            </div>
+                                            <small class="fw-bold">40%</small>
+                                        </td>
+                                        <td>06 Mei 2024</td>
+                                        <td>30 Jul 2024</td>
+                                        <td>86 hari</td>
+                                        <td>
+                                            <span class="fw-bold">H-30</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info badge-gradient-info">On Track</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-warning btn-sm">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i> Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal Edit Deadline -->
         <div class="modal fade" id="editDeadlineModal" tabindex="-1" aria-labelledby="editDeadlineModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -1180,7 +1569,7 @@
                         @csrf
                         <div class="modal-header">
                             <h5 class="modal-title" id="editDeadlineModalLabel">
-                                <i class="mdi mdi-clock-edit me-2" style="color: #9a55ff;"></i>
+                                <i class="mdi mdi-clock-edit-outline me-2" style="color: #9a55ff;"></i>
                                 Edit Deadline Pekerjaan
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1243,30 +1632,81 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
+            // Handle view detail button click
+            $('.btn-view-detail').on('click', function() {
+                let unit = $(this).data('unit');
+                let cluster = $(this).data('cluster');
+
+                $('#detailUnitNumber').text(unit);
+                $('#detailUnitCluster').text(cluster);
+            });
+
             // Handle edit button click
             $('.btn-outline-warning').on('click', function() {
-                let kategori = $(this).data('kategori');
-                let mulai = $(this).data('mulai');
-                let selesai = $(this).data('selesai');
+                // Cek apakah ini tombol edit di modal detail atau di tabel utama
+                if ($(this).closest('#detailUnitModal').length) {
+                    // Ini tombol edit di modal detail
+                    let row = $(this).closest('tr');
+                    let pekerjaan = row.find('td:eq(1)').text().trim();
+                    let targetMulai = row.find('td:eq(3)').text().trim();
+                    let targetSelesai = row.find('td:eq(4)').text().trim();
 
-                // Format kategori untuk display
-                let kategoriDisplay = '';
-                if (kategori === 'pondasi') kategoriDisplay = 'Pekerjaan Pondasi';
-                else if (kategori === 'struktur') kategoriDisplay = 'Pekerjaan Struktur';
-                else if (kategori === 'dinding') kategoriDisplay = 'Pekerjaan Dinding';
-                else if (kategori === 'atap') kategoriDisplay = 'Pekerjaan Atap';
-                else if (kategori === 'listrik') kategoriDisplay = 'Instalasi Listrik';
-                else if (kategori === 'plafon') kategoriDisplay = 'Pekerjaan Plafon';
-                else if (kategori === 'finishing') kategoriDisplay = 'Pekerjaan Finishing';
-                else if (kategori === 'landscape') kategoriDisplay = 'Pekerjaan Landscape';
-                else kategoriDisplay = kategori.charAt(0).toUpperCase() + kategori.slice(1);
+                    // Konversi format tanggal
+                    let mulaiParts = targetMulai.split(' ');
+                    let selesaiParts = targetSelesai.split(' ');
 
-                $('#editKategori').val(kategori);
-                $('#editKategoriDisplay').val(kategoriDisplay);
-                $('#editTargetMulai').val(mulai);
-                $('#editTargetSelesai').val(selesai);
+                    let bulanMapping = {
+                        'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Mei': '05', 'Jun': '06',
+                        'Jul': '07', 'Agu': '08', 'Sep': '09', 'Okt': '10', 'Nov': '11', 'Des': '12'
+                    };
 
-                hitungDurasi();
+                    let mulaiFormat = '';
+                    let selesaiFormat = '';
+
+                    if (mulaiParts.length === 3) {
+                        let hari = mulaiParts[0].padStart(2, '0');
+                        let bulan = bulanMapping[mulaiParts[1]] || '01';
+                        let tahun = mulaiParts[2];
+                        mulaiFormat = `${tahun}-${bulan}-${hari}`;
+                    }
+
+                    if (selesaiParts.length === 3) {
+                        let hari = selesaiParts[0].padStart(2, '0');
+                        let bulan = bulanMapping[selesaiParts[1]] || '01';
+                        let tahun = selesaiParts[2];
+                        selesaiFormat = `${tahun}-${bulan}-${hari}`;
+                    }
+
+                    $('#editKategori').val(pekerjaan.toLowerCase().replace(/ /g, '_'));
+                    $('#editKategoriDisplay').val(pekerjaan);
+                    $('#editTargetMulai').val(mulaiFormat);
+                    $('#editTargetSelesai').val(selesaiFormat);
+
+                    hitungDurasi();
+
+                    // Tutup modal detail
+                    $('#detailUnitModal').modal('hide');
+
+                    // Buka modal edit setelah delay
+                    setTimeout(function() {
+                        $('#editDeadlineModal').modal('show');
+                    }, 500);
+
+                } else {
+                    // Ini tombol edit di tabel utama
+                    let row = $(this).closest('tr');
+                    let unit = row.find('.unit-number').text();
+                    let cluster = row.find('.unit-badge-cluster').text().trim();
+
+                    $('#editKategori').val('unit_' + unit.replace('.', '_'));
+                    $('#editKategoriDisplay').val('Unit ' + unit + ' - ' + cluster);
+                    $('#editTargetMulai').val('');
+                    $('#editTargetSelesai').val('');
+
+                    hitungDurasi();
+
+                    $('#editDeadlineModal').modal('show');
+                }
             });
 
             // Hitung durasi saat tanggal berubah
@@ -1289,32 +1729,6 @@
                     $('#durasiText').text('0 hari');
                 }
             }
-
-            // Demo alert untuk notifikasi
-            $('.btn-gradient-primary').on('click', function() {
-                if ($(this).closest('.modal-footer').length) {
-                    // Ini adalah tombol simpan di modal
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Data deadline berhasil disimpan',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#editDeadlineModal').modal('hide');
-                }
-            });
-
-            // Demo alert untuk filter
-            $('.btn-gradient-primary:contains("Filter")').on('click', function() {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Demo',
-                    text: 'Filter akan diterapkan',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            });
         });
     </script>
 @endpush
