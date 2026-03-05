@@ -10,37 +10,78 @@
             transition: all 0.3s ease;
             margin-bottom: 1rem;
         }
+
         .card-header {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
             border-bottom: 1px solid #e9ecef;
             padding: 0.75rem;
         }
+
         .card-body {
             padding: 0.75rem;
         }
+
         @media (min-width: 576px) {
-            .card-header { padding: 1rem; }
-            .card-body { padding: 1rem; }
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
         }
+
         @media (min-width: 768px) {
-            .card-header { padding: 1.2rem; }
-            .card-body { padding: 1.2rem; }
+            .card-header {
+                padding: 1.2rem;
+            }
+
+            .card-body {
+                padding: 1.2rem;
+            }
         }
+
         .card-title {
             font-size: 0.9rem;
             font-weight: 600;
             color: #9a55ff;
             margin-bottom: 0;
         }
-        @media (min-width: 576px) { .card-title { font-size: 1rem; } }
-        @media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
+
+        @media (min-width: 576px) {
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-title {
+                font-size: 1.1rem;
+            }
+        }
 
         /* Statistics Cards */
-        .bg-gradient-primary { background: linear-gradient(135deg, #da8cff, #9a55ff) !important; }
-        .bg-gradient-info { background: linear-gradient(135deg, #6a82fb, #4e6aff) !important; }
-        .bg-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c) !important; }
-        .bg-gradient-danger { background: linear-gradient(135deg, #dc3545, #e4606d) !important; }
-        .card-img-holder { position: relative; overflow: hidden; }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        }
+
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #6a82fb, #4e6aff) !important;
+        }
+
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+        }
+
+        .bg-gradient-danger {
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+        }
+
+        .card-img-holder {
+            position: relative;
+            overflow: hidden;
+        }
+
         .card-img-absolute {
             position: absolute;
             right: 0;
@@ -102,6 +143,7 @@
         }
 
         @media (min-width: 576px) {
+
             .form-control,
             .form-select {
                 padding: 0.7rem 1rem;
@@ -353,13 +395,33 @@
         }
 
         /* Text colors */
-        .text-primary { color: #9a55ff !important; }
-        .text-info { color: #17a2b8 !important; }
-        .text-danger { color: #dc3545 !important; }
-        .text-success { color: #28a745 !important; }
-        .text-warning { color: #ffc107 !important; }
-        .fw-bold { font-weight: 600 !important; }
-        .text-muted { color: #a5b3cb !important; }
+        .text-primary {
+            color: #9a55ff !important;
+        }
+
+        .text-info {
+            color: #17a2b8 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .fw-bold {
+            font-weight: 600 !important;
+        }
+
+        .text-muted {
+            color: #a5b3cb !important;
+        }
 
         /* Typography */
         h3.text-dark {
@@ -368,7 +430,12 @@
             color: #2c2e3f !important;
             margin-bottom: 0.5rem !important;
         }
-        @media (max-width: 576px) { h3.text-dark { font-size: 1.2rem !important; } }
+
+        @media (max-width: 576px) {
+            h3.text-dark {
+                font-size: 1.2rem !important;
+            }
+        }
 
         /* Button icon-only untuk reset */
         .btn-icon-only {
@@ -406,8 +473,11 @@
     </style>
 
     <!-- NON-CRITICAL CSS - LOAD ASYNC -->
-    <link rel="preload" href="{{ asset('css/dashboard-non-critical.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ asset('css/dashboard-non-critical.css') }}"></noscript>
+    <link rel="preload" href="{{ asset('css/dashboard-non-critical.css') }}" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="{{ asset('css/dashboard-non-critical.css') }}">
+    </noscript>
 
     <!-- HTML CONTENT - TANPA UBAH LAYOUT -->
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -547,7 +617,8 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <div
+                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                             Daftar Properti Terbaru
@@ -664,7 +735,8 @@
                                         <div class="col-md-1">
                                             <label class="form-label invisible">Reset</label>
                                             <button type="button" id="resetFilter"
-                                                class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-icon-only" title="Reset">
+                                                class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-icon-only"
+                                                title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
                                         </div>
@@ -685,7 +757,8 @@
                                         <th width="20%" class="d-none d-md-table-cell">Lokasi</th>
                                         <th width="15%">Harga di peroleh</th>
                                         <th width="10%">Status</th>
-                                        <th class="text-center" width="5%">Aksi</th>
+                                        <th width="15%">Unit</th>
+                                 
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -755,21 +828,19 @@
                                                     </span>
                                                 @endif
                                             </td>
-
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="javascript:void(0)"
-                                                        class="btn btn-outline-primary btn-sm btn-detail"
-                                                        data-bs-toggle="modal" data-bs-target="#modalDetailLandbank"
-                                                        data-name="{{ $item->name }}"
-                                                        data-company="{{ $item->companyProfile->name ?? '-' }}"
-                                                        data-zoning="{{ $item->zoning ?? '-' }}"
-                                                        data-address="{{ $item->address ?? '-' }}"
-                                                        data-price="{{ number_format($item->acquisition_price ?? 0, 0, ',', '.') }}"
-                                                        data-status="{{ ucfirst($item->status) }}"
-                                                        data-units='@json($item->units_detail)'>
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </a>
+                                            <td>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @if (!empty($item->units_detail))
+                                                        @foreach ($item->units_detail as $unit)
+                                                            <span class="badge bg-info text-white">
+                                                                    {{ $unit['unit_code'] ?? '-' }} /
+                                                                    {{ $unit['type'] ?? '-'}} /
+                                                                    {{ $unit['unit_name'] ?? '-'}}
+                                                            </span> 
+                                                        @endforeach
+                                                    @else
+                                                        <span class="text-muted">Belum ada unit</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -859,6 +930,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama Unit</th>
+                                            <th>Type Unit</th>
                                             <th>Progress Stage</th>
                                             <th>Progress (%)</th>
                                             <th>Booking</th>
@@ -918,12 +990,13 @@
                                 <tr>
                                     <td>${index + 1}</td>
                                     <td>${unit.unit_name}</td>
-                                    <td>${unit.progress?.stage ?? '-'}</td>
+                                    <td>${unit.type}</td>
+                                    <td>${unit.construction_progress?.stage ?? '-'}</td>
                                     <td>
                                         <div class="progress" style="height:8px;">
-                                            <div class="progress-bar bg-success" style="width:${unit.progress?.percentage ?? 0}%"></div>
+                                            <div class="progress-bar bg-success" style="width:${unit.construction_progress?.percentage ?? 0}%"></div>
                                         </div>
-                                        <small>${unit.progress?.percentage ?? 0}%</small>
+                                        <small>${unit.construction_progress?.percentage ?? 0}%</small>
                                     </td>
                                     <td>${unit.booking?.customer_name ?? '-'}</td>
                                     <td>${statusLabelMap[unit.booking?.status] ?? '-'}</td>
@@ -965,7 +1038,8 @@
 
             // Filter functionality
             function filterTable() {
-                let searchValue = $('#searchInput').val().toLowerCase() || $('#searchInputMobile').val().toLowerCase();
+                let searchValue = $('#searchInput').val().toLowerCase() || $('#searchInputMobile').val()
+                    .toLowerCase();
                 let typeValue = $('#filterType').val() || $('#filterTypeMobile').val();
                 let locationValue = $('#filterLokasi').val() || $('#filterLokasiMobile').val();
 
@@ -1010,7 +1084,9 @@
 
                 // Update info
                 let visibleCount = table.rows(':visible').count();
-                $('.pagination-info').html(`<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${visibleCount} dari ${table.rows().count()} data`);
+                $('.pagination-info').html(
+                    `<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${visibleCount} dari ${table.rows().count()} data`
+                    );
             }
 
             function resetFilter() {
@@ -1019,7 +1095,9 @@
                 $('#filterLokasi, #filterLokasiMobile').val('');
 
                 table.rows().show();
-                $('.pagination-info').html(`<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${table.rows().count()} dari ${table.rows().count()} data`);
+                $('.pagination-info').html(
+                    `<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${table.rows().count()} dari ${table.rows().count()} data`
+                    );
             }
 
             // Desktop filter

@@ -25,8 +25,10 @@ class DashboardController extends Controller
             // Tambahkan array unit lengkap dengan progress dan booking
             $lb->units_detail = $lb->units->map(function($unit) {
     return [
+        'type' => $unit->type ?? $unit->type ?? '-',
+        'unit_code' => $unit->unit_code ?? $unit->unit_code ?? '-',
         'unit_name' => $unit->unit_name ?? $unit->unit_number ?? '-',
-        'progress'  => $unit->progress ? [
+        'construction_progress'  => $unit->construction_progress ? [
             'stage'      => $unit->progress->stage ?? '-',
             'percentage' => $unit->progress->percentage ?? 0,
         ] : null,
