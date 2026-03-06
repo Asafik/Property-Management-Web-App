@@ -382,6 +382,14 @@ Route::get('/survey-komersil', function () {
     return view('marketing.survey_komersil');
 });
 
+Route::get('/devisi', function () {
+    return view('master_data.devisi');
+});
+
+Route::get('/posisi', function () {
+    return view('master_data.posisi');
+});
+
 
 });
 

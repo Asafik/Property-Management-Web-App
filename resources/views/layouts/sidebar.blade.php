@@ -258,6 +258,20 @@
                         </a>
                     </li>
 
+                      <li class="nav-item">
+                        <a class="nav-link" href="devisi">
+                            <span class="menu-title">Devisi</span>
+
+                        </a>
+                    </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="posisi">
+                            <span class="menu-title">Posisi</span>
+
+                        </a>
+                    </li>
+
                 </ul>
             </div>
         </li>
