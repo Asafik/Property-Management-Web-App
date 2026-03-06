@@ -14,11 +14,15 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('username')->nullable();
-            $table->string('password')->nullable();
-            $table->string('address')->nullable();
-            $table->enum('role', ['admin', 'superadmin','agency'])->default('agency');
+            $table->string('username')->unique();
+            $table->string('password');
             $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+
+            $table->foreignId('division_id')->constrained();
+            $table->foreignId('position_id')->constrained();
+
+            $table->rememberToken();
             $table->timestamps();
         });
     }

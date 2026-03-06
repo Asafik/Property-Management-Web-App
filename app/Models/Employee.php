@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\LandBankUnit;
+use Illuminate\Notifications\Notifiable;
 
 class Employee extends Authenticatable
 {
+    use Notifiable;
     protected $table = 'employees';
 
     protected $fillable = [
@@ -14,8 +16,9 @@ class Employee extends Authenticatable
         'username',
         'password',
         'address',
-        'role',
         'phone',
+        'division_id',
+        'position_id'
     ];
 
     protected $hidden = [
@@ -23,8 +26,24 @@ class Employee extends Authenticatable
         'remember_token'
     ];
 
-    // relasi
-    public function landbankunits(){
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi
+    |--------------------------------------------------------------------------
+    */
+
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
+
+    public function landbankunits()
+    {
         return $this->hasMany(LandBankUnit::class);
     }
 }

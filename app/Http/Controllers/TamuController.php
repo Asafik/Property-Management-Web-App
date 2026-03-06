@@ -16,7 +16,7 @@ class TamuController extends Controller
     public function index()
     {
         $guests = Guest::with(['project', 'unit', 'employee',])->get();
-        $agents = Employee::where('role', 'agency')->get();
+        $agents = Employee::where('position_id', 4)->get();
         $projects = LandBank::with('units')->get();
         $units = LandBankUnit::all(); // ambil semua unit
         $statuses = [

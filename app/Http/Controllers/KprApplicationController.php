@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
 use App\Models\KprDocument;
+use App\Models\Employee;
+use App\Notifications\BookingNotification;
 class KprApplicationController extends Controller
 {
     /**
@@ -83,7 +85,7 @@ public function store(Request $request)
         }
 
         // =============================
-        // HITUNG PINJAMAN & ANGSURAN
+        // HITUNG PINJAMAN
         // =============================
         $jumlahPinjaman   = $hargaUnit - $dp;
         $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
@@ -122,7 +124,6 @@ public function store(Request $request)
         $booking->status_akad   = 'pending';
         $booking->status_legal  = 'pending';
         $booking->status        = 'lanjut_kpr';
-
         $booking->save();
 
         // =============================
@@ -140,7 +141,9 @@ public function store(Request $request)
         ];
 
         foreach ($fileFields as $field) {
+
             if ($request->hasFile($field)) {
+
                 $path = $request->file($field)->store('kpr', 'public');
 
                 KprDocument::create([
@@ -152,6 +155,15 @@ public function store(Request $request)
         }
 
         DB::commit();
+
+        // =============================
+        // KIRIM NOTIFIKASI KE ADMIN
+        // =============================
+        $admins = Employee::whereRelation('position','name','Admin')->get();
+
+        foreach($admins as $admin){
+            $admin->notify(new BookingNotification($kprApplication));
+        }
 
         return redirect()->back()
             ->with('success', 'Pengajuan KPR berhasil disimpan');

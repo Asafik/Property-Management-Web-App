@@ -7,15 +7,16 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
         $request->validate([
-            'username'=>'required',
-            'password'=>'required'
+            'username' => 'required',
+            'password' => 'required'
         ]);
 
         $credentials = [
@@ -23,19 +24,21 @@ class LoginController extends Controller
             'password' => $request->password
         ];
 
-        if(Auth::attempt($credentials)){
-           return redirect()->route('dashboard');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('dashboard');
         }
 
-        return back()->with('error','Username atau password salah');
+        return back()->with('error', 'Username atau password salah');
     }
 
-public function logout(Request $request)
-{
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+    public function logout(Request $request)
+    {
+        Auth::guard('employee')->logout();
 
-    return redirect('/login');
-}
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
+    }
 }

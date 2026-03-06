@@ -56,7 +56,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','position:manager,admin'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
