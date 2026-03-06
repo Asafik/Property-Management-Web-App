@@ -9,24 +9,39 @@ class BookingNotification extends Notification
 {
     use Queueable;
 
-    protected $kpr;
+    protected $booking;
 
-    public function __construct($kpr)
+    /**
+     * Buat instance notifikasi dengan data booking.
+     */
+    public function __construct($booking)
     {
-        $this->kpr = $kpr;
+        $this->booking = $booking;
     }
 
+    /**
+     * Tentukan channel notifikasi.
+     */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database']; // simpan ke database
     }
 
+    /**
+     * Data yang disimpan di tabel notifications.
+     */
     public function toDatabase($notifiable)
     {
         return [
             'title' => 'Booking Baru',
-            'message' => 'Ada pengajuan KPR baru',
-            'booking_id' => $this->kpr->booking_id
+            'message' => 'Ada pengajuan booking baru',
+            'booking_id' => $this->booking->id ?? null // aman kalau null
         ];
     }
+
+    /**
+     * Optional: Bisa ditampilkan juga di broadcast/email jika mau.
+     */
+    // public function toBroadcast($notifiable) { ... }
+    // public function toMail($notifiable) { ... }
 }

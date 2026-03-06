@@ -13,7 +13,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-
+use App\Notifications\BookingNotification;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UnitsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -183,6 +183,9 @@ public function setCustomer(Request $request, $unitId)
 
     DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
 
+        // =============================
+        // BUAT BOOKING
+        // =============================
         $booking = Booking::create([
             'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
             'unit_id'       => $unit->id,
@@ -193,20 +196,35 @@ public function setCustomer(Request $request, $unitId)
             'status'        => 'active',
         ]);
 
+        // =============================
+        // SIMPAN PAYMENT
+        // =============================
         Payment::create([
             'booking_id'      => $booking->id,
             'type'            => 'dp',
             'amount'          => $bookingFee,
             'payment_date'    => now(),
             'method'          => 'transfer',
-            'reference_number'=> $filePath, // <-- simpan path file di sini
+            'reference_number'=> $filePath, // simpan path file
             'notes'           => 'Bukti transfer booking fee',
         ]);
 
+        // =============================
+        // UPDATE STATUS UNIT
+        // =============================
         $unit->update(['status' => 'booked']);
+
+        // =============================
+        // KIRIM NOTIFIKASI KE ADMIN
+        // =============================
+        $admins = Employee::whereRelation('position','name','Admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new BookingNotification($booking));
+        }
+
     });
 
-    return back()->with('success', 'Booking & bukti transfer berhasil disimpan');
+    return back()->with('success', 'Booking, bukti transfer, dan notifikasi berhasil disimpan');
 }
   // public function setAgency(Request $request, $unitId)
   // {
