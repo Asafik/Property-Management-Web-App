@@ -1219,17 +1219,39 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-1">
-                                                        <button class="btn btn-outline-primary btn-sm" title="Detail">
+                                                        <button class="btn btn-outline-primary btn-sm btnDetailUnit"
+                                                            data-bs-toggle="modal" data-bs-target="#detailUnitModal"
+                                                            data-unit="{{ $unit->unit_code }}"
+                                                            data-block="{{ $unit->block }}"
+                                                            data-type="{{ $unit->type }}"
+                                                            data-address="{{ $unit->landBank->address }}"
+                                                            data-area="{{ $unit->area }}"
+                                                            data-building="{{ $unit->building_area }}"
+                                                            data-price="{{ $unit->price }}"
+                                                            data-direction="{{ $unit->facing }}"
+                                                            data-status="{{ $unit->status }}"
+                                                            data-construction="{{ $unit->construction_progress }}"
+                                                            data-customer="{{ $unit->activeBooking->customer->full_name ?? '-' }}"
+                                                            data-sales="{{ $unit->activeBooking->sales->name ?? '-' }}"
+                                                            data-booking_date="{{ $unit->activeBooking->booking_date ?? '-' }}"
+                                                            data-booking_fee="{{ $unit->activeBooking->booking_fee ?? '-' }}"
+                                                            data-booking_status="{{ $unit->activeBooking->status ?? '-' }}"
+                                                            title="Detail">
+
                                                             <i class="mdi mdi-eye"></i>
                                                         </button>
-                                                        <button onclick="openCustomerModal({{ $unit->id }})"
-                                                            class="btn btn-outline-danger btn-sm" title="Tambah Customer">
-                                                            <i class="mdi mdi-account-plus"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-info btn-sm bukaModal"
-                                                            data-unit="{{ $unit->id }}" title="Pilih Agency">
-                                                            <i class="mdi mdi-office-building"></i>
-                                                        </button>
+                                                        @if (auth()->user()->position_id != 5)
+                                                            <button onclick="openCustomerModal({{ $unit->id }})"
+                                                                class="btn btn-outline-danger btn-sm"
+                                                                title="Tambah Customer">
+                                                                <i class="mdi mdi-account-plus"></i>
+                                                            </button>
+
+                                                            <button class="btn btn-outline-info btn-sm bukaModal"
+                                                                data-unit="{{ $unit->id }}" title="Pilih Agency">
+                                                                <i class="mdi mdi-office-building"></i>
+                                                            </button>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>
@@ -1575,6 +1597,104 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="detailUnitModal" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Detail Unit</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <table class="table table-bordered">
+
+                                            <tr>
+                                                <th>Kode Unit</th>
+                                                <td id="m_unit"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Blok</th>
+                                                <td id="m_block"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Tipe</th>
+                                                <td id="m_type"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Alamat</th>
+                                                <td id="m_address"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Luas Tanah</th>
+                                                <td id="m_area"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Luas Bangunan</th>
+                                                <td id="m_building"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Harga</th>
+                                                <td id="m_price"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Arah Hadap</th>
+                                                <td id="m_direction"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Status</th>
+                                                <td id="m_status"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Status Pembangunan</th>
+                                                <td id="m_construction"></td>
+                                            </tr>
+
+                                        </table>
+                                        <h5 class="mt-3">Detail Booking</h5>
+
+                                        <table class="table table-bordered">
+
+                                            <tr>
+                                                <th width="30%">Customer</th>
+                                                <td id="m_customer"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Sales / Agency</th>
+                                                <td id="m_sales"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Tanggal Booking</th>
+                                                <td id="m_booking_date"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Booking Fee</th>
+                                                <td id="m_booking_fee"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Status Booking</th>
+                                                <td id="m_booking_status"></td>
+                                            </tr>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Pagination dengan styling yang sama -->
                         @if ($units->count() > 0)
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
@@ -1605,7 +1725,8 @@
                                         {{-- Page Links --}}
                                         @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
                                             <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}">
-                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                <a class="page-link"
+                                                    href="{{ $url }}">{{ $page }}</a>
                                             </li>
                                         @endforeach
 
@@ -2005,6 +2126,31 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const detailModal = document.getElementById('detailUnitModal')
+
+        detailModal.addEventListener('show.bs.modal', function(event) {
+
+            let button = event.relatedTarget
+
+            document.getElementById('m_unit').innerText = button.getAttribute('data-unit')
+            document.getElementById('m_block').innerText = button.getAttribute('data-block')
+            document.getElementById('m_type').innerText = button.getAttribute('data-type')
+            document.getElementById('m_address').innerText = button.getAttribute('data-address')
+            document.getElementById('m_area').innerText = button.getAttribute('data-area') + ' m²'
+            document.getElementById('m_building').innerText = button.getAttribute('data-building') + ' m²'
+            document.getElementById('m_price').innerText = 'Rp ' + button.getAttribute('data-price')
+            document.getElementById('m_direction').innerText = button.getAttribute('data-direction')
+            document.getElementById('m_status').innerText = button.getAttribute('data-status')
+            document.getElementById('m_construction').innerText = button.getAttribute('data-construction')
+            document.getElementById('m_customer').innerText = button.getAttribute('data-customer')
+            document.getElementById('m_sales').innerText = button.getAttribute('data-sales')
+            document.getElementById('m_booking_date').innerText = button.getAttribute('data-booking_date')
+            document.getElementById('m_booking_fee').innerText = button.getAttribute('data-booking_fee')
+            document.getElementById('m_booking_status').innerText = button.getAttribute('data-booking_status')
+
+        })
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
