@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\UnitsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Notification;
 
 class SellUnitController extends Controller
 {
@@ -175,6 +176,7 @@ class SellUnitController extends Controller
     {
         $request->validate([
             'customer_id'   => 'required|exists:customers,id',
+           
             'purchase_type' => 'required|in:cash,kpr',
             'booking_fee'   => 'required',
             'bukti_transfer' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
@@ -191,9 +193,6 @@ class SellUnitController extends Controller
 
         DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
 
-            // =============================
-            // BUAT BOOKING
-            // =============================
             $booking = Booking::create([
                 'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
                 'unit_id'       => $unit->id,
@@ -204,31 +203,35 @@ class SellUnitController extends Controller
                 'status'        => 'active',
             ]);
 
-            // =============================
-            // SIMPAN PAYMENT
-            // =============================
             Payment::create([
                 'booking_id'      => $booking->id,
                 'type'            => 'dp',
                 'amount'          => $bookingFee,
                 'payment_date'    => now(),
                 'method'          => 'transfer',
-                'reference_number' => $filePath, // simpan path file
+                'reference_number' => $filePath,
                 'notes'           => 'Bukti transfer booking fee',
             ]);
 
-            // =============================
-            // UPDATE STATUS UNIT
-            // =============================
             $unit->update(['status' => 'booked']);
 
             // =============================
-            // KIRIM NOTIFIKASI KE ADMIN
+            // NOTIFIKASI
             // =============================
-            $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
-            foreach ($admins as $admin) {
-                $admin->notify(new BookingNotification($booking));
+
+            $users = collect();
+
+            // sales
+            $sales = Employee::find($booking->sales_id);
+            if ($sales) {
+                $users->push($sales);
             }
+
+            // admin
+            $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
+            $users = $users->merge($admins);
+
+            Notification::send($users, new BookingNotification($booking));
         });
 
         return back()->with('success', 'Booking, bukti transfer, dan notifikasi berhasil disimpan');
@@ -242,51 +245,73 @@ class SellUnitController extends Controller
 
     //   return back()->with('success', 'Agency berhasil dipasang ke unit');
     // }
-    public function setAgency(Request $request, $unitId)
-    {
-        Log::info('=== UPDATE SALES BOOKING START ===');
-        Log::info('Unit ID: ' . $unitId);
-        Log::info('Request Data:', $request->all());
+public function setAgency(Request $request, $unitId)
+{
+    Log::info('=== UPDATE SALES BOOKING START ===');
+    Log::info('Unit ID: ' . $unitId);
+    Log::info('Request Data:', $request->all());
 
-        try {
+    try {
 
-            $validated = $request->validate([
-                'sales_id'  => 'required|exists:employees,id',
-                'agent_fee' => 'required'
-            ]);
+        $validated = $request->validate([
+            'sales_id'  => 'required|exists:employees,id',
+            'agent_fee' => 'required'
+        ]);
 
-            $unit = LandBankUnit::findOrFail($unitId);
+        $unit = LandBankUnit::findOrFail($unitId);
 
-            $booking = Booking::where('unit_id', $unit->id)
-                ->where('status', 'active')
-                ->first();
+        $booking = Booking::where('unit_id', $unit->id)
+            ->where('status', 'active')
+            ->first();
 
-            if (!$booking) {
-                Log::warning('Booking tidak ditemukan');
-                return back()->with('error', 'Booking untuk unit ini belum dibuat. Silakan buat booking terlebih dahulu.');
-            }
-
-            // Bersihkan format rupiah
-            $agentFee = str_replace(['.', ','], '', $request->agent_fee);
-
-            $booking->update([
-                'sales_id'  => $request->sales_id,
-                'agent_fee' => $agentFee
-            ]);
-
-            Log::info('Sales & Agent Fee berhasil diupdate');
-
-            return back()->with('success', 'Sales & Agent Fee berhasil diupdate');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-
-            Log::error('VALIDATION ERROR', $e->errors());
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-
-            Log::error('GENERAL ERROR: ' . $e->getMessage());
-            return back()->with('error', 'Booking untuk unit ini belum dibuat. Silakan buat booking terlebih dahulu.');
+        if (!$booking) {
+            Log::warning('Booking tidak ditemukan');
+            return back()->with('error', 'Booking untuk unit ini belum dibuat.');
         }
+
+        // Bersihkan format rupiah
+        $agentFee = str_replace(['.', ','], '', $request->agent_fee);
+
+        $booking->update([
+            'sales_id'  => $request->sales_id,
+            'agent_fee' => $agentFee
+        ]);
+
+        Log::info('Sales & Agent Fee berhasil diupdate');
+
+        // =============================
+        // KIRIM NOTIFIKASI
+        // =============================
+
+        $users = collect();
+
+        // SALES YANG DIPILIH
+        $sales = Employee::find($booking->sales_id);
+        if ($sales) {
+            $users->push($sales);
+        }
+
+        // ADMIN
+        $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
+        $users = $users->merge($admins);
+
+        Notification::send($users, new BookingNotification($booking));
+
+        Log::info('Notifikasi berhasil dikirim');
+
+        return back()->with('success', 'Sales & Agent Fee berhasil diupdate');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+
+        Log::error('VALIDATION ERROR', $e->errors());
+        return back()->withErrors($e->errors())->withInput();
+
+    } catch (\Exception $e) {
+
+        Log::error('GENERAL ERROR: ' . $e->getMessage());
+        return back()->with('error', 'Terjadi kesalahan saat update sales.');
     }
+}
     public function exportExcel()
     {
         return Excel::download(new UnitsExport, 'data-unit.xlsx');
