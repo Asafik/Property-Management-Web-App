@@ -55,7 +55,7 @@
             $position = Auth::user()->position->name ?? '';
         @endphp
 
-        @if ($position == 'Legal')
+        @if ($position == 'Legal' || $position == 'Admin')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#properti"
                     aria-expanded="{{ request()->routeIs('properti*') ? 'true' : 'false' }}" aria-controls="properti">
@@ -167,120 +167,118 @@
                 </ul>
             </div>
         </li>
-       @if(Auth::user()->position->name == 'Admin')
-
-<li class="nav-item">
-    <a class="nav-link" data-bs-toggle="collapse" href="#dokument" aria-expanded="false"
-        aria-controls="dokument">
-        <span class="menu-title">Document</span>
-        <i class="menu-arrow"></i>
-        <i class="mdi mdi-account-cog menu-icon"></i>
-    </a>
-    <div class="collapse" id="dokument">
-        <ul class="nav flex-column sub-menu">
+        @if (Auth::user()->position->name == 'Admin')
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('dokument.index') }}">Tanah Induk (LandBank)</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('dokument.persiapan') }}">Pecah Tanah Induk Unit</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/data-dokument-cash-legal">Data Cash Legal</a>
-            </li>
-        </ul>
-    </div>
-</li>
-
-<li class="nav-item">
-    <a class="nav-link" data-bs-toggle="collapse" href="#salesAgent" aria-expanded="false"
-        aria-controls="salesAgent">
-
-        <span class="menu-title">Pengguna</span>
-        <i class="menu-arrow"></i>
-        <i class="mdi mdi-account-tie menu-icon"></i>
-    </a>
-
-    <div class="collapse" id="salesAgent">
-        <ul class="nav flex-column sub-menu">
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('agency.create') }}">
-                    Buat Pengguna
+                <a class="nav-link" data-bs-toggle="collapse" href="#dokument" aria-expanded="false"
+                    aria-controls="dokument">
+                    <span class="menu-title">Document</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-account-cog menu-icon"></i>
                 </a>
+                <div class="collapse" id="dokument">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dokument.index') }}">Tanah Induk (LandBank)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dokument.persiapan') }}">Pecah Tanah Induk Unit</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/data-dokument-cash-legal">Data Cash Legal</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('agency.index') }}">
-                    Data Pengguna
+                <a class="nav-link" data-bs-toggle="collapse" href="#salesAgent" aria-expanded="false"
+                    aria-controls="salesAgent">
+
+                    <span class="menu-title">Pengguna</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-account-tie menu-icon"></i>
                 </a>
+
+                <div class="collapse" id="salesAgent">
+                    <ul class="nav flex-column sub-menu">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('agency.create') }}">
+                                Buat Pengguna
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('agency.index') }}">
+                                Data Pengguna
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
             </li>
 
-        </ul>
-    </div>
-</li>
-
-<!-- MENU MASTER DATA DENGAN SUB-MENU -->
-<li class="nav-item">
-    <a class="nav-link" data-bs-toggle="collapse" href="#master-data" aria-expanded="false"
-        aria-controls="customer">
-        <span class="menu-title">Master Data</span>
-        <i class="menu-arrow"></i>
-        <i class="mdi mdi-wrench menu-icon"></i>
-    </a>
-    <div class="collapse" id="master-data">
-        <ul class="nav flex-column sub-menu">
-
-            <!-- MENU Promo -->
+            <!-- MENU MASTER DATA DENGAN SUB-MENU -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('promo.index') }}">
-                    <span class="menu-title">Promo</span>
+                <a class="nav-link" data-bs-toggle="collapse" href="#master-data" aria-expanded="false"
+                    aria-controls="customer">
+                    <span class="menu-title">Master Data</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-wrench menu-icon"></i>
                 </a>
+                <div class="collapse" id="master-data">
+                    <ul class="nav flex-column sub-menu">
+
+                        <!-- MENU Promo -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('promo.index') }}">
+                                <span class="menu-title">Promo</span>
+                            </a>
+                        </li>
+
+                        <!-- MENU Pt -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="pt">
+                                <span class="menu-title">PT</span>
+                            </a>
+                        </li>
+
+                        <!-- MENU Servis -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="servis">
+                                <span class="menu-title">Servis</span>
+                            </a>
+                        </li>
+
+                        <!-- MENU Master data bank -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('bank.index') }}">
+                                <span class="menu-title">Data Bank</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="rab-deadline">
+                                <span class="menu-title">Dedline RAB</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('master.data.index') }}">
+                                <span class="menu-title">Devisi</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="posisi">
+                                <span class="menu-title">Posisi</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
             </li>
-
-            <!-- MENU Pt -->
-            <li class="nav-item">
-                <a class="nav-link" href="pt">
-                    <span class="menu-title">PT</span>
-                </a>
-            </li>
-
-            <!-- MENU Servis -->
-            <li class="nav-item">
-                <a class="nav-link" href="servis">
-                    <span class="menu-title">Servis</span>
-                </a>
-            </li>
-
-            <!-- MENU Master data bank -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('bank.index') }}">
-                    <span class="menu-title">Data Bank</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="rab-deadline">
-                    <span class="menu-title">Dedline RAB</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('master.data.index') }}">
-                    <span class="menu-title">Devisi</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="posisi">
-                    <span class="menu-title">Posisi</span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
-</li>
-
-@endif        <!-- MENU LAPORAN -->
+        @endif <!-- MENU LAPORAN -->
         <li class="nav-item">
             <a class="nav-link" href="#">
                 <span class="menu-title">Laporan</span>
@@ -289,16 +287,14 @@
         </li>
 
         <!-- MENU PENGATURAN -->
-        @if(Auth::user()->position->name == 'Admin')
-
-<li class="nav-item">
-    <a class="nav-link" href="pengaturan">
-        <span class="menu-title">Pengaturan</span>
-        <i class="mdi mdi-cog menu-icon"></i>
-    </a>
-</li>
-
-@endif
+        @if (Auth::user()->position->name == 'Admin')
+            <li class="nav-item">
+                <a class="nav-link" href="pengaturan">
+                    <span class="menu-title">Pengaturan</span>
+                    <i class="mdi mdi-cog menu-icon"></i>
+                </a>
+            </li>
+        @endif
     </ul>
 </nav>
 <!-- partial -->
