@@ -65,7 +65,13 @@ return new class extends Migration
     // ===== NOTES =====
     $table->text('description')->nullable();
     $table->string('status')->default('draft'); // draft/active
-
+    // ===== CUT & FILL (EARTHWORK) =====
+            $table->decimal('elevasi_awal', 8, 2)->nullable();      // elevasi eksisting
+            $table->decimal('elevasi_rencana', 8, 2)->nullable();   // elevasi setelah grading
+            $table->decimal('volume_cut', 15, 2)->nullable();       // volume galian (m3)
+            $table->decimal('volume_fill', 15, 2)->nullable();      // volume timbunan (m3)
+            $table->enum('status_cut_fill', ['planned', 'proses', 'selesai'])
+                ->default('planned');
     $table->timestamps();
 });
 

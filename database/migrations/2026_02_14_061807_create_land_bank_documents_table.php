@@ -6,27 +6,45 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('land_bank_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('land_bank_id')->constrained()->onDelete('cascade');
-            $table->string('type'); // sertifikat, imb, pbb, siteplan, foto
-            $table->string('file_path');
+
+            // Relation
+            $table->foreignId('land_bank_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            $table->foreignId('document_type_id')
+                  
+                  ->constrained()
+                  ->nullable()
+                  ->cascadeOnDelete();
+
+            // Document Detail
             $table->string('document_number')->nullable();
-            $table->enum('status', ['pending', 'terverifikasi', 'ditolak'])->default('pending');
-            $table->text('catatan_admin')->nullable();
-            $table->integer('revisi_ke')->default(0);
+            $table->string('issuer')->nullable();
+            $table->date('issue_date')->nullable();
+            $table->date('expiry_date')->nullable();
+
+            // File
+            $table->string('file_path');
+
+            // Verification
+            $table->enum('status', [
+                'pending',
+                'verified',
+                'rejected'
+            ])->default('pending');
+
+            $table->text('admin_notes')->nullable();
+            $table->unsignedInteger('revision_number')->default(0);
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('land_bank_documents');

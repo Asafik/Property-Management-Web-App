@@ -354,6 +354,7 @@
             color: #9a55ff !important;
             margin-bottom: 0.4rem;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         .filter-card .form-control,
@@ -361,17 +362,21 @@
             padding: 0.5rem 0.75rem;
             font-size: 0.9rem;
             border-radius: 8px;
-            height: auto;
-            min-height: 40px;
+            height: 40px;
             border: 1px solid #e0e4e9;
+            width: 100%;
         }
 
         .filter-card .btn {
             padding: 0.5rem 0.75rem;
             font-size: 0.85rem;
-            min-height: 40px;
+            height: 40px;
             border-radius: 8px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         /* Form Controls */
@@ -384,7 +389,7 @@
             transition: all 0.2s ease;
             background-color: #ffffff;
             color: #2c2e3f;
-            height: auto;
+            height: 40px;
         }
 
         @media (min-width: 576px) {
@@ -752,23 +757,14 @@
             .filter-card .form-select,
             .filter-card .btn {
                 font-size: 0.8rem;
-                min-height: 38px;
+                height: 38px;
             }
         }
 
         /* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
-        .dataTables_filter {
-            display: none !important;
-        }
-
-        .dataTables_length {
-            display: none !important;
-        }
-
-        .dataTables_paginate {
-            display: none !important;
-        }
-
+        .dataTables_filter,
+        .dataTables_length,
+        .dataTables_paginate,
         .dataTables_info {
             display: none !important;
         }
@@ -785,18 +781,27 @@
             vertical-align: middle;
         }
 
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
+        /* Styling untuk tombol filter dan reset */
+        .btn-filter-reset {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
+            width: 100%;
+            height: 40px;
         }
 
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
+        .btn-filter-reset i {
+            font-size: 1rem;
+        }
+
+        /* Row filter spacing */
+        .filter-row {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
         }
     </style>
 
@@ -894,7 +899,7 @@
                                     <label class="text-muted small">
                                         <i class="mdi mdi-gavel me-1"></i>Status Legal
                                     </label>
-                                    @if ($land->legal_status == 'terverifikasi')
+                                    @if ($land->legal_status == 'verified')
                                         <p class="fw-bold"><span class="badge badge-success"><i
                                                     class="mdi mdi-check-circle me-1"></i>Terverifikasi</span></p>
                                     @else
@@ -975,13 +980,7 @@
                                         <span>Manual Satu per Satu</span>
                                     </a>
                                 </li>
-                                <li class="add-custom-tab-item">
-                                    <a class="add-custom-tab-link" id="generate-tab" data-toggle="tab" href="#generate"
-                                        role="tab" aria-controls="generate" aria-selected="false">
-                                        <i class="mdi mdi-auto-fix"></i>
-                                        <span>Generate Otomatis</span>
-                                    </a>
-                                </li>
+
                                 <li class="add-custom-tab-item">
                                     <a class="add-custom-tab-link" id="import-tab" data-toggle="tab" href="#import"
                                         role="tab" aria-controls="import" aria-selected="false">
@@ -1017,8 +1016,19 @@
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
                                                 <label>Type Unit</label>
-                                                <input type="text" name="type" class="kavling-form-control"
-                                                    placeholder="Cluster Ijen">
+                                                <select name="type" class="kavling-form-control">
+                                                    <option value="">-- Pilih Type --</option>
+                                                    <option value="subsidi">Subsidi</option>
+                                                    <option value="komersil">Komersil</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="kavling-form-group">
+                                                <label>Nama Unit</label>
+                                                <input type="text" name="unit_name" class="kavling-form-control"
+                                                    placeholder="Cluster Mawar">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -1042,6 +1052,21 @@
                                                     placeholder="500.000.000">
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="kavling-form-group">
+                                                <label>Harga IJB (Rp)</label>
+                                                <input type="text" name="ijb_price" class="kavling-form-control"
+                                                    placeholder="500.000.000">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="kavling-form-group">
+                                                <label>Harga AJB (Rp)</label>
+                                                <input type="text" name="ajb_price" class="kavling-form-control"
+                                                    placeholder="500.000.000">
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
                                                 <label>Hadap</label>
@@ -1082,102 +1107,6 @@
                                     </div>
                                 </form>
                             </div>
-
-                            <!-- TAB GENERATE OTOMATIS -->
-                            <div class="add-custom-tab-pane" id="generate" role="tabpanel"
-                                aria-labelledby="generate-tab">
-                                <form action="{{ route('properti.generateKavling', $land->id) }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Jumlah Unit</label>
-                                                <input type="number" name="jumlah_unit" class="kavling-form-control"
-                                                    value="10">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Luas per Unit (m²)</label>
-                                                <input type="number" name="area_per_unit" class="kavling-form-control"
-                                                    value="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Luas Bangunan(m²)</label>
-                                                <input type="number" name="building_area_unit"
-                                                    class="kavling-form-control" placeholder="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga per Unit (Rp)</label>
-                                                <input type="text" name="price_per_unit" class="kavling-form-control"
-                                                    value="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Tipe Unit</label>
-                                                <input type="text" name="type" class="kavling-form-control"
-                                                    placeholder="Cluster Ijen">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Prefix Blok</label>
-                                                <input type="text" name="prefix_block" class="kavling-form-control"
-                                                    value="A">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Nomor Awal</label>
-                                                <input type="number" name="start_number" class="kavling-form-control"
-                                                    value="1">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Hadap Default</label>
-                                                <select name="default_facing" class="kavling-form-control">
-                                                    <option>Utara</option>
-                                                    <option>Selatan</option>
-                                                    <option>Timur</option>
-                                                    <option>Barat</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Posisi Default</label>
-                                                <select name="default_position" class="kavling-form-control">
-                                                    <option>Tengah</option>
-                                                    <option>Hook</option>
-                                                    <option>Sudut</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 d-flex align-items-end">
-                                            <div class="kavling-form-group w-100">
-                                                <button type="submit" class="kavling-btn kavling-btn-primary w-100">
-                                                    <i class="mdi mdi-auto-fix me-1"></i>Generate Unit
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="alert alert-info mt-3">
-                                    <i class="mdi mdi-information-outline me-2"></i>
-                                    Total luas yang akan digunakan:
-                                    <strong>{{ number_format($land->area_used ?? 0, 0, ',', '.') }} m²</strong> dari
-                                    {{ number_format($land->area ?? 0, 0, ',', '.') }} m²
-                                </div>
-                            </div>
-
                             <!-- TAB IMPORT EXCEL -->
                             <div class="add-custom-tab-pane" id="import" role="tabpanel"
                                 aria-labelledby="import-tab">
@@ -1194,33 +1123,47 @@
                                             <div class="kavling-form-group">
                                                 <label>Download Template</label>
                                                 <div>
-                                                    <button class="kavling-btn kavling-btn-outline-success"
-                                                        onclick="alert('Download template excel')">
+                                                    <a href="{{ route('kavling.template') }}"
+                                                        class="kavling-btn kavling-btn-outline-success">
                                                         <i class="mdi mdi-download me-1"></i>Template Kavling.xlsx
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
+                                            <form action="{{ route('kavling.import', $land->id) }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
 
-                                            <div class="kavling-form-group">
-                                                <label>Upload File Excel</label>
-                                                <div class="kavling-file-upload-modern">
-                                                    <input type="file" id="uploadExcel" name="uploadExcel"
-                                                        accept=".xlsx,.xls">
-                                                    <div class="kavling-file-label-modern">
-                                                        <i class="mdi mdi-cloud-upload"></i>
-                                                        <div class="kavling-file-info-modern">
-                                                            <span>Upload File Excel</span>
-                                                            <small>Format: .xlsx, .xls (Max 5MB)</small>
+
+                                                <div class="kavling-form-group">
+                                                    <label>Upload File Excel</label>
+
+                                                    <div class="kavling-file-upload-modern position-relative">
+
+                                                        <!-- Input Asli (Hidden) -->
+                                                        <input type="file" id="uploadExcel" name="file"
+                                                            accept=".xlsx,.xls" required
+                                                            style="opacity:0; position:absolute; inset:0; cursor:pointer;">
+
+                                                        <!-- UI Custom -->
+                                                        <div
+                                                            class="kavling-file-label-modern text-center p-4 border rounded">
+                                                            <i class="mdi mdi-cloud-upload" style="font-size:32px;"></i>
+                                                            <div class="kavling-file-info-modern mt-2">
+                                                                <span id="fileName">Upload File Excel</span>
+                                                                <small class="d-block text-muted">
+                                                                    Format: .xlsx, .xls (Max 5MB)
+                                                                </small>
+                                                            </div>
                                                         </div>
-                                                        <span class="kavling-file-size"></span>
+
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <button class="kavling-btn kavling-btn-primary"
-                                                onclick="alert('Data berhasil diimport')">
-                                                <i class="mdi mdi-import me-1"></i>Import Data
-                                            </button>
+                                                <button class="kavling-btn kavling-btn-primary" type="submit"
+                                                    id="importButton" disabled>
+                                                    <i class="mdi mdi-import me-1"></i>Import Data
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -1231,7 +1174,7 @@
             </div>
         </div>
 
-        <!-- Daftar Unit yang Akan Dibuat -->
+        <!-- Daftar Unit yang Akan Dibuat - FOKUS BAGIAN TABEL DENGAN FILTER -->
         <div class="row">
             <div class="col-12 grid-margin">
                 <div class="card">
@@ -1244,35 +1187,41 @@
                             unit</span>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section - SAMA PERSIS DENGAN PROPERTI -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="filter-card">
-                                    <div class="card-body">
-                                        <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                            <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                        </h6>
+                        <!-- FILTER SECTION - SAMA PERSIS SEPERTI SEBELUMNYA -->
+                      <div class="row">
+                        <div class="col-md-12">
+                            <div class="filter-card">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                    </h6>
 
-                                        <!-- FILTER UNTUK MOBILE -->
-                                        <div class="d-block d-md-none">
-                                            <div class="mb-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                </label>
-                                                <input type="text" id="searchInputMobile" class="form-control"
-                                                    placeholder="Cari blok/unit...">
+                                    <!-- FILTER UNTUK MOBILE -->
+                                    <div class="d-block d-md-none">
+                                        <form method="GET" action="{{ url()->current() }}" id="filterFormMobile">
+                                            <!-- Baris 1: Pencarian -->
+                                            <div class="row filter-row">
+                                                <div class="col-12">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                    </label>
+                                                    <input type="text" name="search" id="searchInputMobile" class="form-control"
+                                                        value="{{ request('search') }}" placeholder="Cari blok/unit...">
+                                                </div>
                                             </div>
 
-                                            <div class="row g-2">
+                                            <!-- Baris 2: Type & Posisi -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-shape-outline me-1"></i>Type
                                                     </label>
-                                                    <select id="filterTypeMobile" class="form-control">
+                                                    <select name="type" id="filterTypeMobile" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}
+                                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                                                    {{ $type }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1282,11 +1231,12 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-map-marker me-1"></i>Posisi
                                                     </label>
-                                                    <select id="filterPosisiMobile" class="form-control">
+                                                    <select name="position" id="filterPosisiMobile" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}
+                                                                <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                                                                    {{ $position }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1294,47 +1244,75 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row g-2 mt-2">
+                                            <!-- Baris 3: Hadap & Tampil -->
+                                            <div class="row filter-row">
+                                                <div class="col-6">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-compass me-1"></i>Hadap
+                                                    </label>
+                                                    <select name="facing" id="filterHadapMobile" class="form-control">
+                                                        <option value="">Semua</option>
+                                                        @foreach ($land->units->pluck('facing')->unique() as $facing)
+                                                            @if ($facing)
+                                                                <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
+                                                                    {{ $facing }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                                 <div class="col-6">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select id="showDataMobile" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
+                                                    <select name="per_page" id="showDataMobile" class="form-control">
+                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                                     </select>
                                                 </div>
+                                            </div>
+
+                                            <!-- Baris 4: Button Filter & Reset -->
+                                            <div class="row filter-row">
                                                 <div class="col-6">
-                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <button type="button" id="resetFilterMobile"
-                                                        class="btn btn-gradient-secondary w-100">
-                                                        <i class="mdi mdi-refresh me-1"></i> Reset
+                                                    <button type="submit" id="filterDataMobile"
+                                                        class="btn btn-gradient-primary btn-filter-reset">
+                                                        <i class="mdi mdi-filter-outline"></i> Filter
                                                     </button>
                                                 </div>
+                                                <div class="col-6">
+                                                    <a href="{{ url()->current() }}" id="resetFilterMobile"
+                                                        class="btn btn-gradient-secondary btn-filter-reset">
+                                                        <i class="mdi mdi-refresh"></i> Reset
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
+                                    </div>
 
-                                        <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                        <div class="d-none d-md-block">
-                                            <div class="row g-2 align-items-end">
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                    <div class="d-none d-md-block">
+                                        <form method="GET" action="{{ url()->current() }}" id="filterForm">
+                                            <div class="row g-2 align-items-end filter-row">
                                                 <div class="col-md-3">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                     </label>
-                                                    <input type="text" id="searchInput" class="form-control"
-                                                        placeholder="Cari blok/unit...">
+                                                    <input type="text" name="search" id="searchInput" class="form-control"
+                                                        value="{{ request('search') }}" placeholder="Cari blok/unit...">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-shape-outline me-1"></i>Type
                                                     </label>
-                                                    <select id="filterType" class="form-control">
+                                                    <select name="type" id="filterType" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}
+                                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                                                    {{ $type }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1344,11 +1322,27 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-map-marker me-1"></i>Posisi
                                                     </label>
-                                                    <select id="filterPosisi" class="form-control">
+                                                    <select name="position" id="filterPosisi" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}
+                                                                <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                                                                    {{ $position }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-compass me-1"></i>Hadap
+                                                    </label>
+                                                    <select name="facing" id="filterHadap" class="form-control">
+                                                        <option value="">Semua</option>
+                                                        @foreach ($land->units->pluck('facing')->unique() as $facing)
+                                                            @if ($facing)
+                                                                <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
+                                                                    {{ $facing }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1358,123 +1352,151 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select id="showData" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
+                                                    <select name="per_page" id="showData" class="form-control">
+                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <button type="button" id="resetFilter"
-                                                        class="btn btn-gradient-secondary w-100 btn-icon-only"
-                                                        title="Reset Filter">
-                                                        <i class="mdi mdi-refresh"></i>
+                                                    <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                    <button type="submit" id="filterData"
+                                                        class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                        <i class="mdi mdi-filter-outline"></i>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <!-- Kolom kosong untuk menjaga keseimbangan -->
+                                                <div class="col-md-1">
+                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                    <a href="{{ url()->current() }}" id="resetFilter"
+                                                        class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                        <i class="mdi mdi-refresh"></i>
+                                                    </a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Tabel Data -->
+                        <!-- Tabel Data dengan Icon LENGKAP - KOLOM DIGABUNG -->
                         <div class="table-responsive">
                             <table id="tableKavling" class="table table-hover" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                        <th><i class="mdi mdi-home me-1"></i>Blok / No</th>
+                                        <th><i class="mdi mdi-home me-1"></i>Unit</th> {{-- GABUNGAN Blok + No Unit --}}
+                                        <th><i class="mdi mdi-format-list-bulleted me-1"></i>Tipe / Nama</th>
+                                        {{-- GABUNGAN Type + Nama Unit --}}
                                         <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
                                         <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
-                                        <th><i class="mdi mdi-format-list-bulleted me-1"></i>Type</th>
                                         <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
-                                        <th><i class="mdi mdi-compass me-1"></i>Hadap</th>
-                                        <th><i class="mdi mdi-map-marker me-1"></i>Posisi</th>
+                                        <th><i class="mdi mdi-file-document me-1"></i>Harga IJB</th>
+                                        <th><i class="mdi mdi-file-document me-1"></i>Harga AJB</th>
+                                        <th><i class="mdi mdi-compass me-1"></i>Hadap / Posisi</th> {{-- GABUNGAN Hadap + Posisi --}}
                                         <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($units as $i => $unit)
                                         <tr>
-                                            <td class="text-center fw-bold">{{ $units->firstItem() + $i }}</td>
+                                            <td class="text-center fw-bold">
+                                                <span
+                                                    class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
+                                            </td>
 
-                                            {{-- BLOK / NO --}}
+                                            {{-- GABUNGAN 1: BLOK + NO UNIT (contoh: A.1) --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home text-primary me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span class="fw-bold">{{ $unit->unit_code }}</span>
+                                                    <i class="mdi mdi-home text-primary me-2"></i>
+                                                    <span class="fw-bold">
+                                                        @php
+                                                            $blok =
+                                                                $unit->block ??
+                                                                (explode('.', $unit->unit_code)[0] ?? '-');
+                                                            $nomor =
+                                                                $unit->unit_number ??
+                                                                (explode('.', $unit->unit_code)[1] ?? '-');
+                                                        @endphp
+                                                        {{ $blok }}.{{ $nomor }}
+                                                    </span>
                                                 </div>
                                             </td>
 
+                                            <td>
+                                                <div style="display: flex; flex-direction: column;">
+                                                    <span style="font-weight: 600; color: #2c2e3f;">
+                                                        <i class="mdi mdi-home-city text-primary me-1"
+                                                            style="font-size: 0.8rem;"></i>
+                                                        {{ $unit->unit_name ?? '-' }}
+                                                    </span>
+                                                    <span style="font-size: 0.9rem; color: #6c757d; margin-top: 2px;">
+                                                        <i class="mdi mdi-format-list-bulleted text-info me-1"
+                                                            style="font-size: 0.7rem;"></i>
+                                                        {{ ucfirst($unit->type ?? '-') }}
+                                                    </span>
+                                                </div>
+                                            </td>
                                             {{-- LUAS TANAH --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-ruler-square text-warning me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span
-                                                        class="text-nowrap">{{ number_format($unit->area, 0, ',', '.') }}
-                                                        m²</span>
+                                                    <i class="mdi mdi-ruler-square text-warning me-2"></i>
+                                                    <span>{{ number_format($unit->area, 0, ',', '.') }} m²</span>
                                                 </div>
                                             </td>
 
                                             {{-- LUAS BANGUNAN --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-domain text-secondary me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span
-                                                        class="text-nowrap">{{ number_format($unit->building_area ?? 0, 0, ',', '.') }}
+                                                    <i class="mdi mdi-domain text-secondary me-2"></i>
+                                                    <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }}
                                                         m²</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- TYPE --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-format-list-bulleted text-info me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span>{{ $unit->type ?? '-' }}</span>
                                                 </div>
                                             </td>
 
                                             {{-- HARGA --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-currency-usd text-success me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span class="text-nowrap">Rp
-                                                        {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                                                    <i class="mdi mdi-currency-usd text-success me-2"></i>
+                                                    <span>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
                                                 </div>
                                             </td>
 
-                                            {{-- HADAP --}}
+                                            {{-- HARGA IJB --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-compass text-info me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span>{{ $unit->facing ?? '-' }}</span>
+                                                    <i class="mdi mdi-file-document text-info me-2"></i>
+                                                    <span>Rp {{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}</span>
                                                 </div>
                                             </td>
 
-                                            {{-- POSISI --}}
+                                            {{-- HARGA AJB --}}
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-map-marker text-danger me-1"
-                                                        style="font-size: 0.9rem;"></i>
-                                                    <span>{{ $unit->position ?? '-' }}</span>
+                                                    <i class="mdi mdi-file-document text-primary me-2"></i>
+                                                    <span>Rp {{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}</span>
+                                                </div>
+                                            </td>
+
+                                            {{-- GABUNGAN 3: HADAP + POSISI --}}
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-compass text-info me-2"></i>
+                                                    <span>
+                                                        @if ($unit->facing || $unit->position)
+                                                            {{ $unit->facing ?? '-' }} / {{ $unit->position ?? '-' }}
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </span>
                                                 </div>
                                             </td>
 
                                             {{-- AKSI --}}
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
+                                                <div class="d-flex justify-content-center gap-2">
                                                     <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
                                                         class="btn btn-outline-primary btn-sm" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
@@ -1500,31 +1522,63 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td class="text-center fw-bold">-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
+                                            <td colspan="10" class="text-center py-4">
+                                                <i class="mdi mdi-information-outline me-2"></i>
+                                                Belum ada unit kavling
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Pagination UI - DIPERKECIL -->
+                        <!-- PAGINATION -->
+                        @if($units->count() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1-{{ $land->units->count() }} dari {{ $land->units->count() }} data
+                                Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} data
                             </div>
-                            <div class="mt-3">
-                                {{ $units->links('pagination::bootstrap-5') }}
-                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                    @if($units->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $units->previousPageUrl() }}" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+
+                                    @if($units->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $units->nextPageUrl() }}" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
                         </div>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -1607,28 +1661,57 @@
                             Denah Kavling
                         </h5>
                     </div>
+
                     <div class="card-body text-center">
-                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
-                            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <div style="background-color:#f8f9fa; padding:20px; border-radius:8px;">
+
+                            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+
                                 @php
                                     $allUnits = $land->units;
+
                                     $blokKavlings = [];
                                     foreach ($allUnits as $unit) {
                                         $blok = explode('.', $unit->unit_code)[0];
-                                        $blokKavlings[$blok][] = $unit->unit_code;
+                                        $blokKavlings[$blok][] = $unit;
                                     }
+
                                     $allBloks = array_keys($blokKavlings);
                                 @endphp
 
                                 @foreach ($allBloks as $blok)
-                                    <div style="margin-bottom: 10px; width: 100%;">
-                                        <strong><i class="mdi mdi-format-columns me-1"></i>{{ $blok }}</strong>
+                                    <div style="margin-bottom:15px; width:100%;">
+                                        @php
+                                            $typesInBlok = collect($blokKavlings[$blok])
+                                                ->pluck('type')
+                                                ->unique()
+                                                ->values()
+                                                ->toArray();
+
+                                            $typeLetters = [];
+
+                                            foreach ($typesInBlok as $type) {
+                                                if ($type == 'subsidi') {
+                                                    $typeLetters[] = 'S';
+                                                } elseif ($type == 'komersil') {
+                                                    $typeLetters[] = 'K';
+                                                }
+                                            }
+
+                                            $labelType = implode(' & ', $typeLetters);
+                                        @endphp
+
+                                        <strong>
+                                            Blok {{ $blok }} - {{ $labelType }}
+                                        </strong>
+
                                         <div
-                                            style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 5px;">
+                                            style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:6px;">
+
                                             @php
                                                 $numbers = [];
-                                                foreach ($blokKavlings[$blok] as $kav) {
-                                                    $num = (int) explode('.', $kav)[1];
+                                                foreach ($blokKavlings[$blok] as $unit) {
+                                                    $num = (int) explode('.', $unit->unit_code)[1];
                                                     $numbers[] = $num;
                                                 }
                                                 $maxNum = max($numbers);
@@ -1636,29 +1719,156 @@
 
                                             @for ($i = 1; $i <= $maxNum; $i++)
                                                 @php
-                                                    $kavCode = $blok . '.' . $i;
-                                                    $exists = in_array($kavCode, $blokKavlings[$blok]);
+                                                    $unitFound = collect($blokKavlings[$blok])->firstWhere(
+                                                        'unit_code',
+                                                        $blok . '.' . $i,
+                                                    );
+
+                                                    $bgColor = '#6c757d';
+                                                    $icon = 'close';
+                                                    $borderStyle = 'none';
+                                                    $extraStyle = '';
+                                                    $typeBadge = '';
+                                                    if ($unitFound) {
+                                                        // =========================
+                                                        // WARNA BERDASARKAN STATUS
+                                                        // =========================
+                                                        switch ($unitFound->status) {
+                                                            case 'sold':
+                                                                $bgColor = '#dc3545';
+                                                                $icon = 'check';
+                                                                break;
+
+                                                            case 'booked':
+                                                                $bgColor = '#ffc107';
+                                                                $icon = 'clock';
+                                                                break;
+
+                                                            case 'draft':
+                                                                $bgColor = '#343a40';
+                                                                $icon = 'pencil';
+                                                                break;
+
+                                                            case 'ready':
+                                                                if ($unitFound->type == 'subsidi') {
+                                                                    $bgColor = '#28a745';
+                                                                    $typeBadge = 'S';
+                                                                } else {
+                                                                    $bgColor = '#0d6efd';
+                                                                    $typeBadge = 'K';
+                                                                }
+                                                                $icon = 'home';
+                                                                break;
+                                                        }
+
+                                                        // =========================
+                                                        // BORDER SELALU IKUT PROGRESS
+                                                        // =========================
+                                                        switch ($unitFound->construction_progress) {
+                                                            case 'belum_mulai':
+                                                                $borderStyle = '2px dashed #000';
+                                                                $extraStyle = 'background-image: repeating-linear-gradient(
+                                                                45deg,
+                                                                rgba(255,255,255,0.2),
+                                                                rgba(255,255,255,0.2) 5px,
+                                                                transparent 5px,
+                                                                transparent 10px
+                                                            );';
+                                                                break;
+
+                                                            case 'pondasi':
+                                                                $borderStyle = '2px solid #000';
+                                                                break;
+
+                                                            case 'dinding':
+                                                                $borderStyle = '3px solid #000';
+                                                                break;
+
+                                                            case 'atap':
+                                                                $borderStyle = '3px double #000';
+                                                                break;
+
+                                                            case 'finishing':
+                                                                $borderStyle = '3px groove #000';
+                                                                break;
+
+                                                            case 'selesai':
+                                                                $borderStyle = '3px solid #155724';
+                                                                break;
+                                                        }
+                                                    }
                                                 @endphp
+
                                                 <span
-                                                    style="background-color: {{ $exists ? '#28a745' : '#6c757d' }}; color: white; padding: 5px 10px; border-radius: 4px;">
-                                                    <i class="mdi mdi-{{ $exists ? 'check' : 'close' }} me-1"></i>
-                                                    {{ $kavCode }}
+                                                    style="
+                                        background-color: {{ $bgColor }};
+                                        color:white;
+                                        padding:6px 10px;
+                                        border-radius:4px;
+                                        font-size:12px;
+                                        border: {{ $borderStyle }};
+                                        {{ $extraStyle }}
+                                        position:relative;
+                                        min-width:60px;
+                                        display:inline-block;
+                                    ">
+
+                                                    @if ($typeBadge)
+                                                        <small
+                                                            style="
+                                                position:absolute;
+                                                top:-6px;
+                                                right:-6px;
+                                                background:#000;
+                                                color:#fff;
+                                                font-size:9px;
+                                                padding:2px 4px;
+                                                border-radius:50%;
+                                            ">
+                                                            {{ $typeBadge }}
+                                                        </small>
+                                                    @endif
+
+                                                    <i class="mdi mdi-{{ $icon }} me-1"></i>
+                                                    {{ $blok . '.' . $i }}
                                                 </span>
                                             @endfor
+
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
-                            <p class="text-muted mt-3 mb-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Preview posisi kavling
-                            </p>
-                            <small class="text-muted">
-                                <span class="badge badge-success me-1"><i class="mdi mdi-check"></i> Hijau</span> = sudah
-                                dibuat,
-                                <span class="badge bg-secondary me-1"><i class="mdi mdi-close"></i> Abu</span> = belum
-                                dibuat
-                            </small>
+
+                            <!-- LEGEND -->
+                            <div class="mt-4 text-start">
+
+                                <h6>Status Penjualan:</h6>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-danger">Sold</span>
+                                    <span class="badge bg-warning text-dark">Booked</span>
+                                    <span class="badge bg-dark">Draft</span>
+                                    <span class="badge bg-success">Ready - Subsidi</span>
+                                    <span class="badge bg-primary">Ready - Komersil</span>
+                                </div>
+
+                                <h6>Progress Pembangunan (Border):</h6>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span style="border:2px dashed #000; padding:4px 8px;">Belum Mulai</span>
+                                    <span style="border:2px solid #000; padding:4px 8px;">Pondasi</span>
+                                    <span style="border:3px solid #000; padding:4px 8px;">Dinding</span>
+                                    <span style="border:3px double #000; padding:4px 8px;">Atap</span>
+                                    <span style="border:3px groove #000; padding:4px 8px;">Finishing</span>
+                                    <span style="border:3px solid #155724; padding:4px 8px;">Selesai</span>
+                                </div>
+
+                                <h6>Tipe Unit:</h6>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-success">S = Subsidi</span>
+                                    <span class="badge bg-primary">K = Komersil</span>
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -1693,6 +1903,32 @@
 
 @push('scripts')
     <script>
+        document.getElementById('uploadExcel').addEventListener('change', function(e) {
+
+            const file = e.target.files[0];
+            const button = document.getElementById('importButton');
+            const fileNameSpan = document.getElementById('fileName');
+
+            if (!file) {
+                button.disabled = true;
+                fileNameSpan.innerText = "Upload File Excel";
+                return;
+            }
+
+            // Validasi size max 5MB
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File maksimal 5MB!");
+                e.target.value = "";
+                button.disabled = true;
+                fileNameSpan.innerText = "Upload File Excel";
+                return;
+            }
+
+            fileNameSpan.innerText = file.name;
+            button.disabled = false;
+        });
+    </script>
+    <script>
         $(document).ready(function() {
             // Simple Tab Functionality
             $('.add-custom-tab-link').on('click', function(e) {
@@ -1706,97 +1942,97 @@
                 $(target).addClass('active');
             });
 
-            // Inisialisasi DataTables - hanya untuk sorting
-            let table = $('#tableKavling').DataTable({
-                responsive: true,
-                paging: false,
-                info: false,
-                searching: false,
-                lengthChange: false,
-                ordering: true,
-                language: {
-                    emptyTable: "Belum ada unit kavling",
-                    zeroRecords: "Data tidak ditemukan",
-                },
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 8]
-                }]
+            // CEK APAKAH TABEL MEMILIKI DATA
+            let hasData = false;
+            $('#tableKavling tbody tr').each(function() {
+                let rowText = $(this).text();
+                if (rowText && !rowText.includes('Belum ada unit kavling')) {
+                    hasData = true;
+                }
             });
 
-            // Fungsi filter manual
-            function filterData() {
-                let searchTerm = '';
-                let typeFilter = '';
-                let posisiFilter = '';
-
-                // Deteksi versi filter yang aktif
-                if ($('#searchInputMobile').is(':visible')) {
-                    searchTerm = $('#searchInputMobile').val().toLowerCase();
-                    typeFilter = $('#filterTypeMobile').val().toLowerCase();
-                    posisiFilter = $('#filterPosisiMobile').val().toLowerCase();
-                } else {
-                    searchTerm = $('#searchInput').val().toLowerCase();
-                    typeFilter = $('#filterType').val().toLowerCase();
-                    posisiFilter = $('#filterPosisi').val().toLowerCase();
-                }
-
-                // Filter menggunakan DataTables
-                $.fn.dataTable.ext.search.push(
-                    function(settings, data, dataIndex) {
-                        let blok = data[1] ? data[1].toLowerCase() : '';
-                        let type = data[4] ? data[4].toLowerCase() : '';
-                        let posisi = data[7] ? data[7].toLowerCase() : '';
-
-                        let matchSearch = searchTerm === '' || blok.includes(searchTerm);
-                        let matchType = typeFilter === '' || type.includes(typeFilter);
-                        let matchPosisi = posisiFilter === '' || posisi.includes(posisiFilter);
-
-                        return matchSearch && matchType && matchPosisi;
-                    }
-                );
-
-                table.draw();
-                $.fn.dataTable.ext.search.pop();
+            // Hancurkan instance DataTables jika sudah ada
+            if ($.fn.DataTable.isDataTable('#tableKavling')) {
+                $('#tableKavling').DataTable().destroy();
             }
 
-            // Event listener untuk filter
-            $('#searchInput, #searchInputMobile').on('keyup', filterData);
-            $('#filterType, #filterTypeMobile').on('change', filterData);
-            $('#filterPosisi, #filterPosisiMobile').on('change', filterData);
-
-            // Fungsi reset filter
-            function resetFilters() {
-                if ($('#searchInputMobile').is(':visible')) {
-                    $('#searchInputMobile').val('');
-                    $('#filterTypeMobile').val('');
-                    $('#filterPosisiMobile').val('');
-                } else {
-                    $('#searchInput').val('');
-                    $('#filterType').val('');
-                    $('#filterPosisi').val('');
-                }
-
-                $.fn.dataTable.ext.search.pop();
-                table.search('').columns().search('').draw();
+            // HANYA inisialisasi DataTables JIKA ADA DATA
+            if (hasData) {
+                console.log('Data ditemukan, menginisialisasi DataTables');
+                let table = $('#tableKavling').DataTable({
+                    responsive: true,
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Belum ada unit kavling",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [{
+                            targets: 0,
+                            orderable: false
+                        }, // Kolom No
+                        {
+                            targets: 9,
+                            orderable: false
+                        } // Kolom Aksi (index ke-9)
+                    ]
+                });
+            } else {
+                console.log('Tabel kosong, DataTables tidak diinisialisasi');
             }
 
-            // Event listener untuk reset
-            $('#resetFilter, #resetFilterMobile').click(resetFilters);
-
-            // Fungsi untuk mengubah jumlah baris (UI only)
-            $('#showData, #showDataMobile').change(function() {
-                let rowCount = $(this).val();
-                alert('Mengubah tampilan menjadi ' + rowCount + ' data per halaman (demo)');
-            });
-
-            // Format Rupiah untuk input harga
-            $('input[name="price"], input[name="price_per_unit"]').on('keyup', function() {
+            // ===== FORMAT RUPIAH UNTUK INPUT HARGA =====
+            // Format tampilan Rupiah saat mengetik
+            $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').on('keyup', function() {
                 let nilai = this.value.replace(/\D/g, '');
                 if (nilai) {
+                    // Batasi panjang karakter untuk block (misal block max 5)
+                    let fieldName = $(this).attr('name');
+                    if (fieldName === 'block' && nilai.length > 5) {
+                        // Block max 5 karakter
+                        this.value = this.value.substring(0, 5);
+                        return;
+                    }
+
                     let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
                     this.value = rupiah;
                 }
+            });
+
+            // Sebelum form disubmit, ubah format Rupiah ke angka biasa
+            $('form').on('submit', function() {
+                $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').each(function() {
+                    let nilai = $(this).val().replace(/\./g, ''); // Hapus semua titik
+                    $(this).val(nilai); // Set ke angka asli (misal 5000000)
+                });
+
+                // Debug: lihat nilai yang dikirim
+                console.log('Form submitted dengan nilai:');
+                console.log('price:', $('input[name="price"]').val());
+                console.log('ijb_price:', $('input[name="ijb_price"]').val());
+                console.log('ajb_price:', $('input[name="ajb_price"]').val());
+
+                return true; // Lanjutkan submit
+            });
+
+            // Validasi block field (max 5 karakter)
+            $('input[name="block"]').on('keyup', function() {
+                let nilai = $(this).val();
+                if (nilai.length > 5) {
+                    $(this).val(nilai.substring(0, 5));
+                    alert('Blok maksimal 5 karakter');
+                }
+            });
+
+            $('#resetFilter, #resetFilterMobile').on('click', function() {
+                $('#searchInput, #searchInputMobile').val('');
+                $('#filterType, #filterTypeMobile').val('');
+                $('#filterPosisi, #filterPosisiMobile').val('');
+                $('#filterHadap, #filterHadapMobile').val('');
+                location.reload();
             });
         });
     </script>

@@ -15,18 +15,23 @@ class LandBankUnit extends Model
         'unit_number',
         'unit_code',
         'type',
+        'unit_name',
         'area',
         'building_area',
         'price',
+        'ijb_price',
+        'ajb_price',
         'facing',
         'position',
         'description',
         'status',
-        'x',
-        'y',
+        'coordinates',
+        'map_scale',
         'construction_progress', // jika ada kolom progress
     ];
-
+    protected $casts = [
+    'coordinates' => 'array',
+    ];
     public function getConstructionProgressPercentageAttribute()
     {
         $map = [
@@ -49,19 +54,6 @@ class LandBankUnit extends Model
     {
         return $this->hasMany(UnitMaterial::class, 'unit_id');
     }
-    public function developmentProgress()
-    {
-        return $this->hasOne(DevelopmentProgress::class);
-    }
-    public function items()
-    {
-        return $this->hasMany(DevelopmentProgressItem::class);
-    }
-
-    public function unit()
-{
-        return $this->belongsTo(LandBankUnit::class, 'land_bank_unit_id');
-    }
     public function progress()
     {
         return $this->hasOne(DevelopmentProgress::class, 'land_bank_unit_id');
@@ -69,6 +61,9 @@ class LandBankUnit extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+    public function items(){
+        return $this->hasMany(DevelopmentProgressItem::class, 'unit_id');
     }
     public function agency()
     {
@@ -80,8 +75,7 @@ class LandBankUnit extends Model
 }
 public function activeBooking()
 {
-    return $this->hasOne(Booking::class, 'unit_id')
-                ->where('status', 'active');
+    return $this->hasOne(Booking::class, 'unit_id')->latestOfMany();
 }
 
 }

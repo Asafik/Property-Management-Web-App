@@ -24,7 +24,6 @@ return new class extends Migration
     'land_bank_units'
     )->cascadeOnDelete();
 
-    // 🔥 RELASI KE PROGRESS
     $table->foreignId('progress_id')->constrained('development_progress')->cascadeOnDelete();
 
     $table->decimal('grand_total', 15,2)->default(0);

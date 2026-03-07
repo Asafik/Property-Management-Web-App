@@ -6,26 +6,48 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Customer;
+use App\Models\CustomerDocument;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Guest;
 
 class CustomerController extends Controller
 {
     public function index()
     {
         $customerId = $this->generateCustomerId();
-        return view('marketing.tambah_customer', compact('customerId'));
+        return view('customer.tambah_customer', compact('customerId'));
     }
 
 public function store(Request $request)
 {
     $request->validate([
+        'guest_id' => 'nullable|exists:guests,id',
         'full_name' => 'required|string|max:255',
         'phone' => 'nullable|string|max:20',
         'email' => 'nullable|email',
+
+        // Validasi file
+        'uploadKtp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'uploadKk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'uploadNpwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'uploadPasangan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
-    try {
+    DB::beginTransaction();
 
+    try {
+          // 🔎 Jika berasal dari convert guest
+        if ($request->guest_id) {
+
+            $guest = Guest::findOrFail($request->guest_id);
+
+            if ($guest->status === 'converted') {
+                return back()->with('error', 'Guest sudah dikonversi sebelumnya.');
+            }
+        }
+
+        // 1️⃣ Simpan customer
         $customer = Customer::create([
             'customer_id' => $this->generateCustomerId(),
             'full_name' => $request->full_name,
@@ -81,16 +103,53 @@ public function store(Request $request)
             'facebook' => $request->facebook,
         ]);
 
+        // 2️⃣ Mapping dokumen
+        $documents = [
+            'uploadKtp' => 'KTP',
+            'uploadKk' => 'Kartu Keluarga',
+            'uploadNpwp' => 'NPWP',
+            'uploadPasangan' => 'KTP Pasangan',
+        ];
+
+        foreach ($documents as $inputName => $docName) {
+
+            if ($request->hasFile($inputName)) {
+
+                $file = $request->file($inputName);
+
+                // bikin nama unik
+                $filename = time().'_'.$file->getClientOriginalName();
+
+                $path = $file->storeAs('customer_documents', $filename, 'public');
+
+                CustomerDocument::create([
+                    'customer_id' => $customer->id,
+                    'document_name' => $docName,
+                    'file' => $path,
+                    'upload_date' => now(),
+                    'status' => 'Pending',
+                ]);
+            }
+        }
+        // 3️⃣ Update Guest jika convert
+        if ($request->guest_id) {
+            $guest->update([
+                'status' => 'converted'
+            ]);
+        }
+        DB::commit();
+
         return redirect()->back()->with('success', 'Customer berhasil disimpan');
 
     } catch (\Exception $e) {
 
-        // simpan error ke log (penting!)
+        DB::rollBack();
+
         Log::error('Error simpan customer: '.$e->getMessage());
 
         return redirect()->back()
             ->withInput()
-            ->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+            ->with('error', 'Terjadi kesalahan saat menyimpan data.');
     }
 }
 
@@ -128,5 +187,47 @@ public function search(Request $request)
 
     return response()->json($customers);
 }
+public function create(Request $request)
+{
+    $customerId = $this->generateCustomerId();
+    $guest = null;
+
+    if ($request->guest_id) {
+        $guest = Guest::find($request->guest_id);
+    }
+
+    return view('customer.tambah_customer', compact('customerId', 'guest'));
+}
+
+        public function customerData(Request $request)
+    {
+        $query = Customer::query();
+
+        // Filter Pencarian (name dan customer_id)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                ->orWhere('customer_id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter Pekerjaan
+        if ($request->filled('pekerjaan')) {
+            $query->where('job_status', $request->pekerjaan);
+        }
+
+        // Jumlah tampil per halaman (default 10, opsi: 10, 25, 50, 100)
+        $perPage = $request->input('per_page', 10);
+
+        // Ambil data dengan pagination
+        $customers = $query->latest()->paginate($perPage)->withQueryString();
+
+        // Hitung total customer (untuk statistik)
+        $totalCustomer = Customer::count();
+
+        return view('customer.customer', compact('customers', 'totalCustomer'));
+    }
+
 
 }

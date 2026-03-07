@@ -10,6 +10,7 @@ class LandBank extends Model
     //
     protected $fillable = [
         'name',
+        'company_profile_id',
         'ceritificate_no',
         'ownership_status',
         'certificate_owner',
@@ -42,7 +43,12 @@ class LandBank extends Model
         'file_pbb',
         'photo',
         'description',
-        'status'
+        'status',
+        'elevasi_awal',
+        'elevasi_rencana',
+        'volume_cut',
+        'volume_fill',
+        'status_cut_fill',
     ];
     public function documents()
     {
@@ -64,4 +70,13 @@ class LandBank extends Model
     return $doc ? $doc->document_number : null;
 }
 
+
+public function companyProfile()
+{
+    return $this->belongsTo(CompanyProfile::class); 
+}
+public function guests()
+{
+    return $this->hasMany(Guest::class);
+}
 }

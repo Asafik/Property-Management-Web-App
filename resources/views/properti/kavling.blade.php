@@ -86,6 +86,7 @@
     color: #9a55ff !important;
     margin-bottom: 0.4rem;
     letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
 .filter-card .form-control,
@@ -93,17 +94,21 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
     border-radius: 8px;
-    height: auto;
-    min-height: 40px;
+    height: 40px;
     border: 1px solid #e0e4e9;
+    width: 100%;
 }
 
 .filter-card .btn {
     padding: 0.5rem 0.75rem;
     font-size: 0.85rem;
-    min-height: 40px;
+    height: 40px;
     border-radius: 8px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 /* Form Controls */
@@ -115,7 +120,7 @@
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
-    height: auto;
+    height: 40px;
 }
 
 @media (min-width: 576px) {
@@ -170,6 +175,7 @@
     padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
     border-radius: 6px;
+    height: 32px;
 }
 
 .btn-gradient-secondary {
@@ -500,7 +506,7 @@ h4.text-dark {
     .filter-card .form-select,
     .filter-card .btn {
         font-size: 0.8rem;
-        min-height: 38px;
+        height: 38px;
     }
 
     h3.text-dark,
@@ -510,18 +516,9 @@ h4.text-dark {
 }
 
 /* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
-.dataTables_filter {
-    display: none !important;
-}
-
-.dataTables_length {
-    display: none !important;
-}
-
-.dataTables_paginate {
-    display: none !important;
-}
-
+.dataTables_filter,
+.dataTables_length,
+.dataTables_paginate,
 .dataTables_info {
     display: none !important;
 }
@@ -536,18 +533,27 @@ h4.text-dark {
     vertical-align: middle;
 }
 
-/* Styling untuk tombol reset icon-only */
-.btn-icon-only {
-    width: 40px;
-    padding: 0.5rem 0;
+/* Styling untuk tombol filter dan reset */
+.btn-filter-reset {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 5px;
+    width: 100%;
+    height: 40px;
 }
 
-.btn-icon-only i {
-    font-size: 1.2rem;
-    margin: 0;
+.btn-filter-reset i {
+    font-size: 1rem;
+}
+
+/* Row filter spacing */
+.filter-row {
+    margin-bottom: 0.5rem;
+}
+
+.filter-row:last-child {
+    margin-bottom: 0;
 }
 </style>
 
@@ -597,122 +603,145 @@ h4.text-dark {
 
                                     <!-- FILTER UNTUK MOBILE -->
                                     <div class="d-block d-md-none">
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                            </label>
-                                            <input type="text" id="searchInputMobile" class="form-control" placeholder="Cari nama properti...">
-                                        </div>
+                                        <form method="GET" action="{{ route('kavling.index') }}">
+                                            <!-- Baris 1: Pencarian -->
+                                            <div class="row filter-row">
+                                                <div class="col-12">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                    </label>
+                                                    <input type="text" name="search" id="searchInputMobile" class="form-control" value="{{ request('search') }}" placeholder="Cari nama properti...">
+                                                </div>
+                                            </div>
 
-                                        <div class="row g-2">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                </label>
-                                                <select id="filterTypeMobile" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Rumah">Rumah</option>
-                                                    <option value="Apartemen">Apartemen</option>
-                                                    <option value="Ruko">Ruko</option>
-                                                    <option value="Tanah">Tanah</option>
-                                                </select>
+                                            <!-- Baris 2: Kategori -->
+                                            <div class="row filter-row">
+                                                <div class="col-6">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                    </label>
+                                                    <select name="type" id="filterTypeMobile" class="form-control">
+                                                        <option value="">Semua Kategori</option>
+                                                        @foreach($types as $type)
+                                                            <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                    </label>
+                                                    <select name="status" id="filterStatusMobile" class="form-control">
+                                                        <option value="">Semua Status</option>
+                                                        <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
+                                                        <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                                        <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                                </label>
-                                                <select id="filterLokasiMobile" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Jakarta">Jakarta</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row g-2 mt-2">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select id="showDataMobile" class="form-control">
-                                                    <option value="10">10</option>
-                                                    <option value="25">25</option>
-                                                    <option value="50">50</option>
-                                                    <option value="100">100</option>
-                                                </select>
+                                            <!-- Baris 3: Tampil -->
+                                            <div class="row filter-row">
+                                                <div class="col-6">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-counter me-1"></i>Tampil
+                                                    </label>
+                                                    <select name="per_page" id="showDataMobile" class="form-control">
+                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="col-6 d-flex align-items-end">
-                                                <button type="button" id="resetFilterMobile" class="btn btn-gradient-secondary w-100">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </button>
+
+                                            <!-- Baris 4: Button Filter & Reset -->
+                                            <div class="row filter-row">
+                                                <div class="col-6">
+                                                    <button type="submit" id="filterDataMobile" class="btn btn-gradient-primary btn-filter-reset">
+                                                        <i class="mdi mdi-filter-outline"></i> Filter
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="{{ route('kavling.index') }}" id="resetFilterMobile" class="btn btn-gradient-secondary btn-filter-reset">
+                                                        <i class="mdi mdi-refresh"></i> Reset
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
 
-                                    <!-- FILTER UNTUK TABLET & DESKTOP - SAMA PERSIS DENGAN PROPERTI -->
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
                                     <div class="d-none d-md-block">
-                                        <div class="row g-2 align-items-end">
-                                            <div class="col-md-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                </label>
-                                                <input type="text" id="searchInput" class="form-control" placeholder="Cari nama properti...">
+                                        <form method="GET" action="{{ route('kavling.index') }}">
+                                            <div class="row g-2 align-items-end filter-row">
+                                                <div class="col-md-3">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
+                                                    </label>
+                                                    <input type="text" name="search" id="searchInput" class="form-control" value="{{ request('search') }}" placeholder="Cari nama properti...">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-shape-outline me-1"></i>Kategori
+                                                    </label>
+                                                    <select name="type" id="filterType" class="form-control">
+                                                        <option value="">Semua Kategori</option>
+                                                        @foreach($types as $type)
+                                                            <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-chart-arc me-1"></i>Status
+                                                    </label>
+                                                    <select name="status" id="filterStatus" class="form-control">
+                                                        <option value="">Semua Status</option>
+                                                        <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
+                                                        <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                                        <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">
+                                                        <i class="mdi mdi-counter me-1"></i>Tampil
+                                                    </label>
+                                                    <select name="per_page" id="showData" class="form-control">
+                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label" style="visibility: hidden;">Filter</label>
+                                                    <button type="submit" id="filterData" class="btn btn-gradient-primary w-100 btn-filter-reset">
+                                                        <i class="mdi mdi-filter-outline"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
+                                                    <a href="{{ route('kavling.index') }}" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-filter-reset">
+                                                        <i class="mdi mdi-refresh"></i> Reset
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                </label>
-                                                <select id="filterType" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Rumah">Rumah</option>
-                                                    <option value="Apartemen">Apartemen</option>
-                                                    <option value="Ruko">Ruko</option>
-                                                    <option value="Tanah">Tanah</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                                </label>
-                                                <select id="filterLokasi" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Jakarta">Jakarta</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select id="showData" class="form-control">
-                                                    <option value="10">10</option>
-                                                    <option value="25">25</option>
-                                                    <option value="50">50</option>
-                                                    <option value="100">100</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                <button type="button" id="resetFilter" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset Filter">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <!-- Kolom kosong untuk menjaga keseimbangan -->
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tabel Data -->
+                    <!-- Tabel Data dengan ICON LENGKAP -->
                     <div class="table-responsive">
                         <table id="tableKavling" class="table table-hover" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
                                     <th><i class="mdi mdi-home me-1"></i>Nama Properti</th>
-                                    <th><i class="mdi mdi-shape-outline me-1"></i>Type</th>
+                                    <th><i class="mdi mdi-shape-outline me-1"></i>Kategori</th>
                                     <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker me-1"></i>Lokasi</th>
                                     <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
                                     <th><i class="mdi mdi-ruler-square me-1"></i>Luas</th>
@@ -831,7 +860,7 @@ h4.text-dark {
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                 <li class="page-item {{ $lands->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $lands->previousPageUrl() }}" tabindex="-1" aria-label="Previous" {{ $lands->onFirstPage() ? 'aria-disabled=true' : '' }}>
+                                    <a class="page-link" href="{{ $lands->previousPageUrl() }}" tabindex="-1" aria-label="Previous">
                                         <i class="mdi mdi-chevron-left"></i>
                                     </a>
                                 </li>
@@ -843,7 +872,7 @@ h4.text-dark {
                                 @endfor
 
                                 <li class="page-item {{ $lands->hasMorePages() ? '' : 'disabled' }}">
-                                    <a class="page-link" href="{{ $lands->nextPageUrl() }}" aria-label="Next" {{ $lands->hasMorePages() ? '' : 'aria-disabled=true' }}>
+                                    <a class="page-link" href="{{ $lands->nextPageUrl() }}" aria-label="Next">
                                         <i class="mdi mdi-chevron-right"></i>
                                     </a>
                                 </li>
@@ -869,11 +898,11 @@ $(document).ready(function() {
     // Inisialisasi DataTables - hanya untuk sorting
     let table = $('#tableKavling').DataTable({
         responsive: true,
-        paging: false,        // MATIKAN pagination DataTables
-        info: false,          // MATIKAN info DataTables
-        searching: false,     // MATIKAN search bawaan
-        lengthChange: false,  // MATIKAN length change
-        ordering: true,       // AKTIFKAN sorting saja
+        paging: false,
+        info: false,
+        searching: false,
+        lengthChange: false,
+        ordering: true,
         language: {
             emptyTable: `
                 <div class="text-center text-muted py-5">
@@ -887,9 +916,11 @@ $(document).ready(function() {
             zeroRecords: "Data tidak ditemukan",
         },
         columnDefs: [
-            { orderable: false, targets: [0, 7] } // Non-aktifkan sorting untuk kolom No dan Aksi
+            { orderable: false, targets: [0, 7] }
         ]
     });
+
+    // Event handler untuk filter bisa ditambahkan nanti
 });
 </script>
 @endpush

@@ -13,6 +13,12 @@
 
     <style>
         /* Style khusus untuk RAB */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background-color: #f5f7fa;
             padding: 20px;
@@ -179,7 +185,7 @@
             color: #6c757d;
         }
 
-        /* Mode cetak */
+        /* ===== MODE CETAK - A4 LANDSCAPE + TIMES NEW ROMAN ===== */
         @media print {
             @page {
                 size: A4 landscape;
@@ -190,16 +196,24 @@
                 background: white;
                 padding: 0;
                 margin: 0;
+                font-family: 'Times New Roman', Times, serif !important;
+            }
+
+            /* PAKSA SEMUA PAKAI TIMES NEW ROMAN SAAT PRINT */
+            body, .rab-content, table, td, th, p, h1, h2, h3, h4, h5, div, span, small, strong, .section-title, .info-box, .footer-note {
+                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .btn-container,
-            .d-print-none {
+            .d-print-none,
+            .alert-info {
                 display: none !important;
             }
 
             .rab-content {
                 padding: 0;
                 box-shadow: none;
+                background: white;
             }
 
             .section-title {
@@ -207,6 +221,7 @@
                 color: white !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .grand-total {
@@ -227,12 +242,32 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 color: #4b49ac;
+                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .watermark-pattern span {
                 opacity: 0.1;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                font-family: 'Times New Roman', Times, serif !important;
+            }
+
+            .info-box {
+                background-color: #f8f9fc !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .subtotal-row {
+                background-color: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Atur lebar tabel lebih proporsional */
+            .rab-table th, .rab-table td {
+                font-size: 11pt;
+                padding: 6px 4px;
             }
         }
 

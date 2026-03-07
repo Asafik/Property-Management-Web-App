@@ -8,35 +8,50 @@
 
     <div class="container-fluid p-3 p-md-4">
         <!-- Header -->
-        <div class="add-row mb-3 mb-md-4">
-            <div class="add-col-12">
-                <h3 class="text-dark fw-bold fs-4 fs-md-3" style="color: #2c2e3f; margin-bottom: 0.25rem;">Tambah Customer
-                    Baru</h3>
-                    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="alert alert-warning">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-                <p class="add-text-muted small" style="margin-bottom: 0;">Input data lengkap customer untuk keperluan booking,
-                    KPR, dan transaksi properti</p>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">
+                                <i class="mdi mdi-account-plus me-2" style="color: #9a55ff;"></i>
+                                Tambah Customer Baru
+                            </h3>
+                            <p class="text-muted mb-0 small">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Input data lengkap customer untuk keperluan booking, KPR, dan transaksi properti
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-account-multiple"
+                                style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-warning">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <!-- Progress Status -->
         <div class="add-row mb-3">
@@ -62,8 +77,11 @@
         </div>
 
         <!-- Form Tambah Customer -->
-        <form action="{{ route('customer.store') }}" method="POST">
+        <form action="{{ route('customer.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @if (isset($guest))
+                <input type="hidden" name="guest_id" value="{{ $guest->id }}">
+            @endif
             <div class="add-row">
                 <div class="add-col-12">
                     <div class="add-card">
@@ -155,6 +173,7 @@
                                                     <div class="add-form-group">
                                                         <label>Nama Lengkap <span class="add-text-danger">*</span></label>
                                                         <input type="text" class="add-form-control" name="full_name"
+                                                            value="{{ old('full_name', $guest->name ?? '') }}"
                                                             placeholder="Sesuai KTP">
                                                         <small class="add-text-muted">Tanpa gelar, sesuai KTP</small>
                                                     </div>
@@ -519,6 +538,7 @@
                                                     <div class="add-form-group">
                                                         <label>No. HP / WA <span class="add-text-danger">*</span></label>
                                                         <input type="text" class="add-form-control" name="phone"
+                                                            value="{{ old('phone', $guest->phone ?? '') }}"
                                                             placeholder="081234567890">
                                                     </div>
                                                 </div>
@@ -582,28 +602,32 @@
                                         <div class="add-custom-tab-pane" id="pekerjaan" role="tabpanel"
                                             aria-labelledby="pekerjaan-tab">
                                             <div class="add-row">
-                                               <div class="add-col-md-6">
-    <div class="add-form-group">
-        <label>Status Pekerjaan</label>
-        <select class="add-form-control" name="job_status" id="jobStatus">
-            <option value="">-- Pilih --</option>
-            <option value="Karyawan Swasta">Karyawan Swasta</option>
-            <option value="PNS">PNS</option>
-            <option value="Wiraswasta">Wiraswasta</option>
-            <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
-            <option value="Pensiunan">Pensiunan</option>
-            <option value="Lainnya">Lainnya</option>
-        </select>
-    </div>
-</div>
+                                                <div class="add-col-md-6">
+                                                    <div class="add-form-group">
+                                                        <label>Status Pekerjaan</label>
+                                                        <select class="add-form-control" name="job_status"
+                                                            id="jobStatus">
+                                                            <option value="">-- Pilih --</option>
+                                                            <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                                            <option value="PNS">PNS</option>
+                                                            <option value="Wiraswasta">Wiraswasta</option>
+                                                            <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                                                            <option value="Pensiunan">Pensiunan</option>
+                                                            <option value="Lainnya">Lainnya</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-<!-- Input tambahan (hidden dulu) -->
-<div class="add-col-md-6" id="jobStatusLainnyaWrapper" style="display: none;">
-    <div class="add-form-group">
-        <label>Masukkan Status Pekerjaan</label>
-        <input type="text" class="add-form-control" id="jobStatusLainnya" name="job_status_lainnya" placeholder="Tulis di sini...">
-    </div>
-</div>
+                                                <!-- Input tambahan (hidden dulu) -->
+                                                <div class="add-col-md-6" id="jobStatusLainnyaWrapper"
+                                                    style="display: none;">
+                                                    <div class="add-form-group">
+                                                        <label>Masukkan Status Pekerjaan</label>
+                                                        <input type="text" class="add-form-control"
+                                                            id="jobStatusLainnya" name="job_status_lainnya"
+                                                            placeholder="Tulis di sini...">
+                                                    </div>
+                                                </div>
                                                 <div class="add-col-md-6">
                                                     <div class="add-form-group">
                                                         <label>Perusahaan</label>
@@ -705,10 +729,11 @@
                                                             <div class="add-file-label">
                                                                 <i class="mdi mdi-cloud-upload"></i>
                                                                 <div class="add-file-info">
-                                                                    <span>Klik untuk upload KTP</span>
+                                                                    <span class="file-name-text">Klik untuk upload
+                                                                        KTP</span>
                                                                     <small>Format: JPG, PNG, PDF (Max 2MB)</small>
                                                                 </div>
-                                                                <span class="add-file-size"></span>
+                                                                <span class="add-file-size file-size-text"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -722,10 +747,11 @@
                                                             <div class="add-file-label">
                                                                 <i class="mdi mdi-cloud-upload"></i>
                                                                 <div class="add-file-info">
-                                                                    <span>Klik untuk upload KK</span>
+                                                                    <span class="file-name-text">Klik untuk upload
+                                                                        KK</span>
                                                                     <small>Format: JPG, PNG, PDF (Max 2MB)</small>
                                                                 </div>
-                                                                <span class="add-file-size"></span>
+                                                                <span class="add-file-size file-size-text"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -741,10 +767,11 @@
                                                             <div class="add-file-label">
                                                                 <i class="mdi mdi-cloud-upload"></i>
                                                                 <div class="add-file-info">
-                                                                    <span>Klik untuk upload NPWP</span>
+                                                                    <span class="file-name-text">Klik untuk upload
+                                                                        NPWP</span>
                                                                     <small>Format: JPG, PNG, PDF (Max 2MB)</small>
                                                                 </div>
-                                                                <span class="add-file-size"></span>
+                                                                <span class="add-file-size file-size-text"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -758,14 +785,16 @@
                                                             <div class="add-file-label">
                                                                 <i class="mdi mdi-cloud-upload"></i>
                                                                 <div class="add-file-info">
-                                                                    <span>Klik untuk upload KTP Pasangan</span>
+                                                                    <span class="file-name-text">Klik untuk upload KTP
+                                                                        Pasangan</span>
                                                                     <small>Format: JPG, PNG, PDF (Max 2MB)</small>
                                                                 </div>
-                                                                <span class="add-file-size"></span>
+                                                                <span class="add-file-size file-size-text"></span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -775,19 +804,25 @@
                                     <!-- Tombol Aksi - Responsif -->
                                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
                                         <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
-                                            <a href="{{ url('/customer') }}"
-                                                class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0">
+
+                                            <!-- KEMBALI KE TAB SEBELUMNYA -->
+                                            <button type="button"
+                                                class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0"
+                                                id="btnPrevGlobal">
                                                 <i class="mdi mdi-arrow-left me-1"></i>Kembali
-                                            </a>
+                                            </button>
+
                                             <button type="reset"
                                                 class="add-btn add-btn-secondary flex-grow-1 flex-sm-grow-0">
                                                 <i class="mdi mdi-refresh me-1"></i>Reset
                                             </button>
-                                        </div>
-                                        <div class="w-100 w-sm-auto">
-                                            <button type="submit" class="add-btn add-btn-primary w-100">
-                                                <i class="mdi mdi-content-save me-1"></i>Simpan Customer
+
+                                            <!-- BUTTON DINAMIS -->
+                                            <button type="button" id="btnNextGlobal"
+                                                class="add-btn add-btn-primary flex-grow-1 flex-sm-grow-0">
+                                                Lanjut <i class="mdi mdi-arrow-right ms-1"></i>
                                             </button>
+
                                         </div>
                                     </div>
                                 </form>
@@ -798,8 +833,8 @@
         </form>
     </div>
 @endsection
-
 @push('scripts')
+    <!-- Script Tab yang sudah ada -->
     <script>
         $(document).ready(function() {
             // Simple Tab Functionality
@@ -819,14 +854,14 @@
             });
         });
     </script>
+
+    <!-- Script Date of Birth yang sudah ada -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
             const dateInput = document.querySelector('input[name="date_birth"]');
             const ageInput = document.querySelector('input[name="age"]');
 
             dateInput.addEventListener('change', function() {
-
                 if (!this.value) {
                     ageInput.value = '';
                     return;
@@ -836,7 +871,6 @@
                 const today = new Date();
 
                 let age = today.getFullYear() - birthDate.getFullYear();
-
                 const monthDiff = today.getMonth() - birthDate.getMonth();
 
                 // Kalau ulang tahun belum lewat tahun ini
@@ -847,48 +881,220 @@
 
                 ageInput.value = age >= 0 ? age : '';
             });
+        });
+    </script>
+
+    <!-- Script Alamat Sama KTP yang sudah ada -->
+    <script>
+        document.getElementById("alamatSamaKTP").addEventListener("change", function() {
+            const isChecked = this.checked;
+
+            const fields = [
+                "provinsi",
+                "kota",
+                "kecamatan",
+                "kelurahan",
+                "rt",
+                "rw",
+                "kodePos",
+                "alamat"
+            ];
+
+            fields.forEach(function(field) {
+                const ktpField = document.getElementById(field + "KTP");
+                const domField = document.getElementById(field + "Domisili");
+
+                if (!ktpField || !domField) return;
+
+                if (isChecked) {
+                    domField.value = ktpField.value;
+
+                    if (domField.tagName === "SELECT") {
+                        domField.disabled = true;
+                    } else {
+                        domField.setAttribute("readonly", true);
+                    }
+
+                } else {
+                    domField.value = "";
+
+                    if (domField.tagName === "SELECT") {
+                        domField.disabled = false;
+                    } else {
+                        domField.removeAttribute("readonly");
+                    }
+                }
+            });
+        });
+    </script>
+
+    <!-- Script Job Status yang sudah ada -->
+    <script>
+        document.getElementById("jobStatus").addEventListener("change", function() {
+            const lainnyaWrapper = document.getElementById("jobStatusLainnyaWrapper");
+
+            if (this.value === "Lainnya") {
+                lainnyaWrapper.style.display = "block";
+            } else {
+                lainnyaWrapper.style.display = "none";
+                document.getElementById("jobStatusLainnya").value = "";
+            }
+        });
+    </script>
+
+    <!-- SCRIPT BARU: Upload File dengan Nama Terbaca -->
+    <script>
+        $(document).ready(function() {
+            // Fungsi untuk handle upload file di tab dokumen
+            $('#dokumen input[type="file"]').on('change', function() {
+                const $fileUpload = $(this).closest('.add-file-upload');
+                const $fileNameSpan = $fileUpload.find('.add-file-info span');
+                const $fileSizeSpan = $fileUpload.find('.add-file-size');
+
+                if (this.files && this.files.length > 0) {
+                    const file = this.files[0];
+
+                    // Tampilkan nama file
+                    $fileNameSpan.text(file.name);
+
+                    // Hitung dan tampilkan ukuran file
+                    let fileSize = file.size;
+                    let sizeText = '';
+
+                    if (fileSize < 1024 * 1024) {
+                        // Kurang dari 1 MB -> Tampilkan dalam KB
+                        sizeText = (fileSize / 1024).toFixed(1) + ' KB';
+                    } else {
+                        // Lebih dari 1 MB -> Tampilkan dalam MB
+                        sizeText = (fileSize / (1024 * 1024)).toFixed(1) + ' MB';
+                    }
+
+                    $fileSizeSpan.text(sizeText);
+
+                    // Tambah class untuk styling (opsional)
+                    $fileUpload.addClass('add-file-selected');
+
+                } else {
+                    // Jika tidak ada file, reset ke teks default
+                    const inputId = $(this).attr('id');
+
+                    switch (inputId) {
+                        case 'uploadKtp':
+                            $fileNameSpan.text('Klik untuk upload KTP');
+                            break;
+                        case 'uploadKk':
+                            $fileNameSpan.text('Klik untuk upload KK');
+                            break;
+                        case 'uploadNpwp':
+                            $fileNameSpan.text('Klik untuk upload NPWP');
+                            break;
+                        case 'uploadPasangan':
+                            $fileNameSpan.text('Klik untuk upload KTP Pasangan');
+                            break;
+                        default:
+                            $fileNameSpan.text('Klik untuk upload file');
+                    }
+
+                    $fileSizeSpan.text('');
+                    $fileUpload.removeClass('add-file-selected');
+                }
+            });
+
 
         });
     </script>
     <script>
-document.getElementById("alamatSamaKTP").addEventListener("change", function () {
-    const isChecked = this.checked;
+        document.addEventListener("DOMContentLoaded", function() {
 
-    const fields = [    
-        "provinsi",
-        "kota",
-        "kecamatan",
-        "kelurahan",
-        "rt",
-        "rw",
-        "kodePos",
-        "alamat"
-    ];
+            const tabLinks = document.querySelectorAll(".add-custom-tab-link");
+            const tabItems = document.querySelectorAll(".add-custom-tab-item");
+            const tabPanes = document.querySelectorAll(".add-custom-tab-pane");
 
-    fields.forEach(function (field) {
-        const ktpField = document.getElementById(field + "KTP");
-        const domField = document.getElementById(field + "Domisili");
+            const btnNext = document.getElementById("btnNextGlobal");
+            const btnPrev = document.getElementById("btnPrevGlobal");
 
-        if (isChecked) {
-            domField.value = ktpField.value;
-            domField.setAttribute("readonly", true);
-        } else {
-            domField.value = "";
-            domField.removeAttribute("readonly");
-        }
-    });
-});
-</script>
-<script>
-document.getElementById("jobStatus").addEventListener("change", function () {
-    const lainnyaWrapper = document.getElementById("jobStatusLainnyaWrapper");
+            const form = btnNext.closest("form");
 
-    if (this.value === "Lainnya") {
-        lainnyaWrapper.style.display = "block";
-    } else {
-        lainnyaWrapper.style.display = "none";
-        document.getElementById("jobStatusLainnya").value = "";
-    }
-});
-</script>
+            function switchTab(targetTab) {
+
+                tabLinks.forEach(tab => tab.classList.remove("active"));
+                tabPanes.forEach(pane => pane.classList.remove("active"));
+
+                targetTab.classList.add("active");
+
+                const targetPane = document.querySelector(targetTab.getAttribute("href"));
+                if (targetPane) targetPane.classList.add("active");
+
+                updateButtonState();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
+
+            function updateButtonState() {
+                const activeTab = document.querySelector(".add-custom-tab-link.active");
+                const currentItem = activeTab.closest(".add-custom-tab-item");
+
+                const isFirst = currentItem.previousElementSibling === null;
+                const isLast = currentItem.nextElementSibling === null;
+
+                // PREV BUTTON
+                btnPrev.disabled = isFirst;
+                btnPrev.classList.toggle("disabled", isFirst);
+
+                // NEXT / SUBMIT BUTTON
+                if (isLast) {
+                    btnNext.innerHTML = 'Simpan Customer <i class="mdi mdi-content-save ms-1"></i>';
+                    btnNext.setAttribute("type", "submit");
+                } else {
+                    btnNext.innerHTML = 'Lanjut <i class="mdi mdi-arrow-right ms-1"></i>';
+                    btnNext.setAttribute("type", "button"); // pastikan selalu button
+                }
+            }
+
+            // NEXT BUTTON
+            btnNext.addEventListener("click", function(e) {
+                e.preventDefault(); // cegah submit default
+
+                if (btnNext.getAttribute("type") === "submit") {
+                    form.submit();
+                    return;
+                }
+
+                const activeTab = document.querySelector(".add-custom-tab-link.active");
+                const currentItem = activeTab.closest(".add-custom-tab-item");
+                const nextItem = currentItem.nextElementSibling;
+
+                if (nextItem) {
+                    const nextTab = nextItem.querySelector(".add-custom-tab-link");
+                    switchTab(nextTab);
+                }
+            });
+
+            // PREV BUTTON
+            btnPrev.addEventListener("click", function() {
+
+                const activeTab = document.querySelector(".add-custom-tab-link.active");
+                const currentItem = activeTab.closest(".add-custom-tab-item");
+                const prevItem = currentItem.previousElementSibling;
+
+                if (prevItem) {
+                    const prevTab = prevItem.querySelector(".add-custom-tab-link");
+                    switchTab(prevTab);
+                }
+            });
+
+            // TAB CLICK MANUAL
+            tabLinks.forEach(tab => {
+                tab.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    switchTab(this);
+                });
+            });
+
+            updateButtonState();
+
+        });
+    </script>
 @endpush
