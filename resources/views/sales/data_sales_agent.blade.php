@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data Sales Agent - Property Management App')
+@section('title', 'Master Data Pengguna - Property Management App')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/bank/bank.css') }}">
@@ -14,11 +14,11 @@
                     <div>
                         <h3 class="text-dark mb-1">
                             <i class="mdi mdi-account-tie me-2" style="color: #9a55ff;"></i>
-                            Master Data Sales Agent
+                            Master Data Pengguna
                         </h3>
                         <p class="text-muted mb-0">
                             <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data agent dan sales untuk mendukung proses penjualan dan transaksi properti
+                            Kelola data pengguna untuk mendukung proses penjualan dan transaksi properti
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -29,19 +29,19 @@
         </div>
     </div>
 
-    <!-- Tabel Data Sales Agent -->
+    <!-- Tabel Data Pengguna -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Sales Agent
+                        Daftar Pengguna
                     </h5>
                     <div class="ms-auto">
                         <a href="{{ route('agency.create') }}" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;">
                             <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah Sales</span>
+                            <span>Tambah Pengguna</span>
                         </a>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                         <div class="card-body">
                             <h6 class="card-title mb-3" style="font-size: 1rem;">
                                 <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data Sales Agent
+                                Filter Data Pengguna
                             </h6>
 
                             <!-- MOBILE VERSION -->
@@ -206,8 +206,8 @@
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-5">
                                         <i class="mdi mdi-account-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data Sales Agent.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data sales agent baru.</p>
+                                        <p class="mt-2 mb-0">Tidak ada data Pengguna.</p>
+                                        <p class="text-muted small">Silahkan tambahkan data Pengguna baru.</p>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -227,7 +227,7 @@
                             <span class="fw-bold">{{ $employees->lastItem() }}</span>
                             dari
                             <span class="fw-bold">{{ $employees->total() }}</span>
-                            data sales agent
+                            data Pengguna
                         </div>
 
                         <!-- Pagination Links -->

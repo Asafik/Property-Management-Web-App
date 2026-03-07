@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Division;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,40 +29,43 @@ class AgencyPropertyController extends Controller
 
         // Ambil data dengan pagination
         $employees = $query->latest()->paginate($perPage)->withQueryString();
-
+    
         return view('sales.data_sales_agent', compact('employees'));
     }
 
     // Menampilkan form tambah sales/agent
     public function create()
     {
-        return view('sales.buat_sales_agent');
+         $divisions = Division::all();
+         $positions = Position::all();
+        return view('sales.buat_sales_agent', compact('divisions','positions'));
     }
 
-    // Menyimpan data baru sales/agent
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'username' => 'required|unique:employees,username',
-            'password' => 'required|min:5',
-            'phone' => 'required',
-            'address' => 'required',
-            'role' => 'required'
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'username' => 'required|unique:employees,username',
+        'password' => 'required|min:5',
+        'phone' => 'required',
+        'address' => 'required',
+        'division_id' => 'required|exists:divisions,id',
+        'position_id' => 'required|exists:positions,id',
+    ]);
 
-        Employee::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'phone' => $request->phone,
-            'address' => $request->address,
-        ]);
+    Employee::create([
+        'name' => $request->name,
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+        'phone' => $request->phone,
+        'address' => $request->address,
+        'division_id' => $request->division_id,
+        'position_id' => $request->position_id,
+    ]);
 
-        return redirect()->route('agency.index')
-            ->with('success', 'Sales berhasil ditambahkan');
-    }
+    return redirect()->route('agency.index')
+        ->with('success', 'Pengguna berhasil ditambahkan');
+}
 
     // Menampilkan form edit sales/agent
     public function edit($id)

@@ -34,6 +34,7 @@ use App\Http\Controllers\SiteplanController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\TamuController;
 use App\Http\Controllers\AkadController;
+use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
 use App\Http\Controllers\RABDeadlineController;
@@ -56,7 +57,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth','position:manager,admin'])->group(function () {
+Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -382,9 +383,13 @@ Route::get('/survey-komersil', function () {
     return view('marketing.survey_komersil');
 });
 
-Route::get('/devisi', function () {
-    return view('master_data.devisi');
-});
+// Route::get('/devisi', function () {
+//     return view('master_data.devisi');
+// });
+Route::get('/master-data/division',[DivisionController::class,'index'])->name('master.data.index');
+Route::post('/master-data/division/store', [DivisionController::class, 'store'])->name('master.data.division.store');
+Route::put('/master-data/division/update/{id}', [DivisionController::class, 'update'])->name('master.data.division.update');
+Route::delete('master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
 
 Route::get('/posisi', function () {
     return view('master_data.posisi');

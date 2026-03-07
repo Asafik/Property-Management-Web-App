@@ -83,112 +83,104 @@
             </li>
 
             <!-- Notifications Dropdown -->
-<li class="nav-item dropdown">
+            <li class="nav-item dropdown">
 
-    <a class="nav-link count-indicator dropdown-toggle" 
-       id="notificationDropdown" 
-       href="#" 
-       data-bs-toggle="dropdown">
+                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
+                    data-bs-toggle="dropdown">
 
-        <i class="mdi mdi-bell-outline"></i>
+                    <i class="mdi mdi-bell-outline"></i>
 
-        @if ($countNotif > 0)
-            <span class="count-symbol bg-danger"></span>
-        @endif
+                    @if ($countNotif > 0)
+                        <span class="count-symbol bg-danger"></span>
+                    @endif
 
-    </a>
+                </a>
 
-    <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list">
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list">
 
-        <h6 class="p-3 mb-0">Notifications</h6>
+                    <h6 class="p-3 mb-0">Notifications</h6>
 
-        <div class="dropdown-divider"></div>
+                    <div class="dropdown-divider"></div>
 
-        @forelse($notifications as $notif)
+                    @forelse($notifications as $notif)
+                        <a class="dropdown-item preview-item" href="{{ $notif->data['url'] ?? '#' }}">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-info">
+                                    <i class="mdi mdi-bell"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <h6 class="preview-subject mb-1">
+                                    {{ $notif->data['title'] ?? 'Notification' }}
+                                </h6>
+                                <p class="text-gray mb-0">
+                                    {{ $notif->data['message'] ?? '-' }}<br>
+                                    <strong>Booking:</strong> {{ $notif->data['booking_code'] ?? '-' }}<br>
+                                    <strong>Unit:</strong> {{ $notif->data['unit_name'] ?? '-' }}<br>
+                                    <strong>Customer:</strong> {{ $notif->data['customer_name'] ?? '-' }}
+                                </p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                    @empty
+                        <p class="p-3 text-center">No Notification</p>
+                    @endforelse
 
-            <a class="dropdown-item preview-item">
-
-                <div class="preview-thumbnail">
-                    <div class="preview-icon bg-info">
-                        <i class="mdi mdi-bell"></i>
-                    </div>
                 </div>
 
-                <div class="preview-item-content">
-                    <h6 class="preview-subject mb-1">
-                        {{ $notif->data['title'] ?? 'Notification' }}
-                    </h6>
-
-                    <p class="text-gray mb-0">
-                        {{ $notif->data['message'] ?? '-' }}
-                    </p>
-                </div>
-
-            </a>
-
-            <div class="dropdown-divider"></div>
-
-        @empty
-
-            <p class="p-3 text-center">No Notification</p>
-
-        @endforelse
-
-    </div>
-
-</li>
+            </li>
 
 
-{{-- AUDIO NOTIFICATION --}}
-<audio id="notifSound">
-    <source src="{{ asset('sound/notif.wav') }}" type="audio/mpeg">
-</audio>
-<script>
-document.addEventListener("click", function () {
+            {{-- AUDIO NOTIFICATION --}}
+            <audio id="notifSound">
+                <source src="{{ asset('sound/notif.wav') }}" type="audio/mpeg">
+            </audio>
+            <script>
+                document.addEventListener("click", function() {
 
-    let audio = document.getElementById("notifSound");
+                    let audio = document.getElementById("notifSound");
 
-    if(audio){
-        audio.play().then(()=>{
-            console.log("Audio diaktifkan");
-        }).catch(err=>{
-            console.log(err);
-        });
-    }
+                    if (audio) {
+                        audio.play().then(() => {
+                            console.log("Audio diaktifkan");
+                        }).catch(err => {
+                            console.log(err);
+                        });
+                    }
 
-}, { once: true });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    let audio = document.getElementById("notifSound");
+                }, {
+                    once: true
+                });
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    let audio = document.getElementById("notifSound");
 
-    if(audio){
-        audio.play().catch(function(error){
-            console.log("Autoplay diblokir browser");
-        });
-    }
-});
-</script>
-<script>
+                    if (audio) {
+                        audio.play().catch(function(error) {
+                            console.log("Autoplay diblokir browser");
+                        });
+                    }
+                });
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
 
-document.addEventListener("DOMContentLoaded", function(){
+                    let notifCount = {{ $countNotif ?? 0 }};
 
-    let notifCount = {{ $countNotif ?? 0 }};
+                    if (notifCount > 0) {
 
-    if(notifCount > 0){
+                        let sound = document.getElementById("notifSound");
 
-        let sound = document.getElementById("notifSound");
+                        // play sound
+                        sound.play().catch(function() {
+                            console.log("Autoplay diblokir browser");
+                        });
 
-        // play sound
-        sound.play().catch(function(){
-            console.log("Autoplay diblokir browser");
-        });
+                    }
 
-    }
-
-});
-
-</script>
+                });
+            </script>
 
             <!-- Profile Dropdown -->
             <li class="nav-item nav-profile dropdown">

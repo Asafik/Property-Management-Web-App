@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Tambah Sales / Agent - Property Management App')
+@section('title', 'Tambah Pengguna / Agent - Property Management App')
 
 @section('content')
 <style>
@@ -358,8 +358,8 @@ input, select, textarea, button {
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h3 class="text-dark fw-bold mb-1">Tambah Sales / Agent</h3>
-                    <p class="text-muted mb-0">Input data sales/agent marketing properti</p>
+                    <h3 class="text-dark fw-bold mb-1">Tambah Pengguna</h3>
+                    <p class="text-muted mb-0">Input data pengguna marketing properti</p>
                 </div>
             </div>
         </div>
@@ -372,7 +372,7 @@ input, select, textarea, button {
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 d-flex align-items-center">
                         <i class="mdi mdi-account-tie me-2 sales-text-primary"></i>
-                        Form Input Data Sales
+                        Form Input Data Pengguna
                     </h4>
                     <span class="sales-badge sales-badge-secondary">* Wajib</span>
                 </div>
@@ -386,7 +386,7 @@ input, select, textarea, button {
                         <!-- Alert -->
                         <div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4">
                             <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
-                            <span>Data sales akan digunakan untuk penugasan unit dan komisi penjualan.</span>
+                            <span>Data pengguna akan digunakan untuk penugasan unit dan komisi penjualan.</span>
                         </div>
 
                         <div class="sales-row">
@@ -434,8 +434,41 @@ input, select, textarea, button {
                             </div>
                         </div>
 
-                        <!-- Role hidden (agency) -->
-                        <input type="hidden" name="role" value="agency">
+                       <div class="sales-row">
+
+    <!-- Division -->
+    <div class="sales-col-md-6">
+        <div class="sales-form-group">
+            <label>Division *</label>
+            <select name="division_id" class="sales-form-control" required>
+                <option value="">-- Pilih Division --</option>
+                @foreach($divisions as $division)
+                    <option value="{{ $division->id }}"
+                        {{ old('division_id', $employee->division_id ?? '') == $division->id ? 'selected' : '' }}>
+                        {{ $division->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+    <!-- Position -->
+    <div class="sales-col-md-6">
+        <div class="sales-form-group">
+            <label>Position *</label>
+            <select name="position_id" class="sales-form-control" required>
+                <option value="">-- Pilih Position --</option>
+                @foreach($positions as $position)
+                    <option value="{{ $position->id }}"
+                        {{ old('position_id', $employee->position_id ?? '') == $position->id ? 'selected' : '' }}>
+                        {{ $position->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+</div>
 
                         <!-- Alamat -->
                         <div class="sales-row">
@@ -461,11 +494,11 @@ input, select, textarea, button {
                                 </button>
 
                                 <button type="submit" class="sales-btn sales-btn-primary">
-                                    {{ isset($employee) ? 'Update Sales' : 'Simpan Sales' }}
+                                    {{ isset($employee) ? 'Update Sales' : 'Simpan Pengguna' }}
                                 </button>
                             </div>
                         </div>
-                    </form>
+             </form>
                 </div>
             </div>
         </div>
@@ -520,7 +553,7 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
 
         Swal.fire({
-            title: 'Simpan Data Sales?',
+            title: 'Simpan Data Pengguna?',
             text: "Pastikan data sudah benar sebelum disimpan.",
             icon: 'question',
             showCancelButton: true,

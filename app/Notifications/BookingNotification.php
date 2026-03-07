@@ -30,14 +30,18 @@ class BookingNotification extends Notification
     /**
      * Data yang disimpan di tabel notifications.
      */
-    public function toDatabase($notifiable)
-    {
-        return [
-            'title' => 'Booking Baru',
-            'message' => 'Ada pengajuan booking baru',
-            'booking_id' => $this->booking->id ?? null // aman kalau null
-        ];
-    }
+  public function toDatabase($notifiable)
+{
+    return [
+        'title' => 'Booking Baru',
+        'message' => 'Ada pengajuan booking baru',
+        'booking_id' => $this->booking->id ?? null,
+        'booking_code' => $this->booking->booking_code ?? '-',
+        'unit_name' => $this->booking->unit->block . ' ' . $this->booking->unit->unit_number ?? '-',
+        'customer_name' => $this->booking->customer->full_name ?? '-',
+        'url' => route('marketing.list_pengajuan', ['booking_id' => $this->booking->id]),
+    ];
+}
 
     /**
      * Optional: Bisa ditampilkan juga di broadcast/email jika mau.
