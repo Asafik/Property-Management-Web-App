@@ -8,9 +8,10 @@
                     <span class="login-status online"></span>
                 </div>
                 <div class="nav-profile-text d-flex flex-column">
-                    <span class="font-weight-bold mb-2">{{ auth()->user()->name }}</span>
+                    <span class="font-weight-bold mb-1">{{ auth()->user()->name }}</span>
+                    <span class="text-muted small">{{ auth()->user()->position->name ?? '-' }}</span>
                 </div>
-                <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+
             </a>
         </li>
 
