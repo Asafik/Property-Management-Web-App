@@ -13,7 +13,9 @@ return new class extends Migration
     {
 Schema::create('customers', function (Blueprint $table) {
     $table->id();
-    $table->string('customer_id')->nullable();
+    $table->foreignId('guest_id')->nullable()->constrained()->nullOnDelete();
+    
+    $table->string('customer_id')->nullable()->unique();
     // DATA PRIBADI
     $table->string('full_name')->nullable();
     $table->string('nickname')->nullable();

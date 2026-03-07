@@ -524,7 +524,7 @@
         }
     </style>
 
-   
+
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Card -->
         <div class="row mb-4">
@@ -896,16 +896,51 @@
                         </div>
 
                         <!-- Pagination Laravel -->
+                       @if($landBanks->count() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan {{ $landBanks->firstItem() ?? 0 }} - {{ $landBanks->lastItem() ?? 0 }} dari
-                                {{ $landBanks->total() }} data
+                                Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari {{ $landBanks->total() }} data
                             </div>
-                            <div class="d-flex justify-content-center">
-                                {{ $landBanks->links('pagination::bootstrap-5') }}
-                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                    @if($landBanks->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $landBanks->previousPageUrl() }}" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    @foreach ($landBanks->getUrlRange(1, $landBanks->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $landBanks->currentPage() == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+
+                                    @if($landBanks->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $landBanks->nextPageUrl() }}" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

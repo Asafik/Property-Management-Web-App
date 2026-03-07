@@ -53,13 +53,48 @@ public function index(Request $request)
     ->pluck('zoning');
     return view('properti.index', compact('landBanks', 'companies', 'categories'));
 }
-public function kavlingindex()
-{
-    $lands = LandBank::where('legal_status', 'verified')
-                ->latest()
-                ->paginate(10);
 
-    return view('properti.kavling', compact('lands'));
+
+
+public function kavlingindex(Request $request)
+{
+    $query = LandBank::where('legal_status', 'verified');
+
+    // Filter Search Nama
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    // Filter Type (zoning)
+    if ($request->filled('type')) {
+        $query->where('zoning', $request->type);
+    }
+    // Filter Status
+    if ($request->filled('status')) {
+        if ($request->status == 'sold') {
+            $query->where('status', 'sold');
+        } elseif ($request->status == 'booking') {
+            $query->where('status', 'booking');
+        } elseif ($request->status == 'available') {
+            // Ini masalahnya: di tabel pakai @else, artinya semua yang bukan sold & booking
+            // Jadi harus disesuaikan dengan nilai status di database untuk "Tersedia"
+            $query->whereNotIn('status', ['sold', 'booking']);
+        }
+    }
+
+    // Show per page
+    $perPage = $request->input('per_page', 10);
+
+    $lands = $query->latest()->paginate($perPage)->withQueryString();
+
+    // Untuk dropdown filter
+    $types = LandBank::where('legal_status', 'verified')
+                ->whereNotNull('zoning')
+                ->distinct()
+                ->orderBy('zoning')
+                ->pluck('zoning');
+
+    return view('properti.kavling', compact('lands', 'types'));
 }
 
 }

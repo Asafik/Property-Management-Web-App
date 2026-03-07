@@ -60,6 +60,7 @@ return new class extends Migration
                 'lanjut_kpr',    // lanjut proses KPR
                 'cash_process',  // proses cash bertahap
                 'akad',          // sudah akad
+                'legal_done', // sudah legal dipecah 
                 'completed'      // selesai/lunas
             ])->default('active');
 

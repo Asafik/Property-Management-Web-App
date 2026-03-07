@@ -16,13 +16,43 @@ class LandBankUnitController extends Controller
     {
         $land = LandBank::findOrFail($land_bank_id);
 
-        $perPage = $request->get('per_page', 10); // default 10
+        // ===== FILTER =====
+        $query = $land->units(); // LANGSUNG, tanpa ->query()
 
-        $units = $land->units()->paginate($perPage)->withQueryString();
+        // Filter search by unit code / block / unit number
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('unit_code', 'like', "%{$search}%")
+                ->orWhere('block', 'like', "%{$search}%")
+                ->orWhere('unit_number', 'like', "%{$search}%")
+                ->orWhere('unit_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by type
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by position
+        if ($request->filled('position')) {
+            $query->where('position', $request->position);
+        }
+
+        // Filter by facing
+        if ($request->filled('facing')) {
+            $query->where('facing', $request->facing);
+        }
+
+        // Jumlah tampil per halaman (default 10, opsi: 10, 25, 50, 100)
+        $perPage = $request->input('per_page', 10);
+
+        // Ambil data dengan pagination
+        $units = $query->paginate($perPage)->withQueryString();
 
         return view('properti.addkavling', compact('land', 'units', 'perPage'));
     }
-
 
 
 
@@ -55,6 +85,10 @@ class LandBankUnitController extends Controller
         ]);
 
 
+    
+        if ($request->area > $land->remaining_area) {
+            return back()->with('error', 'Luas unit melebihi sisa lahan!');
+        }
         $unit_code = $request->block . '.' . $request->unit_number;
 
         if (LandBankUnit::where('unit_code', $unit_code)

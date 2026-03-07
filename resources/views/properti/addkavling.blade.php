@@ -1188,24 +1188,25 @@
                     </div>
                     <div class="card-body">
                         <!-- FILTER SECTION - SAMA PERSIS SEPERTI SEBELUMNYA -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="filter-card">
-                                    <div class="card-body">
-                                        <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                            <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                        </h6>
+                      <div class="row">
+                        <div class="col-md-12">
+                            <div class="filter-card">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-3" style="font-size: 1rem;">
+                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                    </h6>
 
-                                        <!-- FILTER UNTUK MOBILE -->
-                                        <div class="d-block d-md-none">
+                                    <!-- FILTER UNTUK MOBILE -->
+                                    <div class="d-block d-md-none">
+                                        <form method="GET" action="{{ url()->current() }}" id="filterFormMobile">
                                             <!-- Baris 1: Pencarian -->
                                             <div class="row filter-row">
                                                 <div class="col-12">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                     </label>
-                                                    <input type="text" id="searchInputMobile" class="form-control"
-                                                        placeholder="Cari blok/unit...">
+                                                    <input type="text" name="search" id="searchInputMobile" class="form-control"
+                                                        value="{{ request('search') }}" placeholder="Cari blok/unit...">
                                                 </div>
                                             </div>
 
@@ -1215,11 +1216,12 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-shape-outline me-1"></i>Type
                                                     </label>
-                                                    <select id="filterTypeMobile" class="form-control">
+                                                    <select name="type" id="filterTypeMobile" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}
+                                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                                                    {{ $type }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1229,11 +1231,12 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-map-marker me-1"></i>Posisi
                                                     </label>
-                                                    <select id="filterPosisiMobile" class="form-control">
+                                                    <select name="position" id="filterPosisiMobile" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}
+                                                                <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                                                                    {{ $position }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1247,11 +1250,12 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-compass me-1"></i>Hadap
                                                     </label>
-                                                    <select id="filterHadapMobile" class="form-control">
+                                                    <select name="facing" id="filterHadapMobile" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('facing')->unique() as $facing)
                                                             @if ($facing)
-                                                                <option value="{{ $facing }}">{{ $facing }}
+                                                                <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
+                                                                    {{ $facing }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1261,11 +1265,11 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select id="showDataMobile" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
+                                                    <select name="per_page" id="showDataMobile" class="form-control">
+                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1273,39 +1277,42 @@
                                             <!-- Baris 4: Button Filter & Reset -->
                                             <div class="row filter-row">
                                                 <div class="col-6">
-                                                    <button type="button" id="filterDataMobile"
+                                                    <button type="submit" id="filterDataMobile"
                                                         class="btn btn-gradient-primary btn-filter-reset">
                                                         <i class="mdi mdi-filter-outline"></i> Filter
                                                     </button>
                                                 </div>
                                                 <div class="col-6">
-                                                    <button type="button" id="resetFilterMobile"
+                                                    <a href="{{ url()->current() }}" id="resetFilterMobile"
                                                         class="btn btn-gradient-secondary btn-filter-reset">
                                                         <i class="mdi mdi-refresh"></i> Reset
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
+                                    </div>
 
-                                        <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                        <div class="d-none d-md-block">
+                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
+                                    <div class="d-none d-md-block">
+                                        <form method="GET" action="{{ url()->current() }}" id="filterForm">
                                             <div class="row g-2 align-items-end filter-row">
                                                 <div class="col-md-3">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                     </label>
-                                                    <input type="text" id="searchInput" class="form-control"
-                                                        placeholder="Cari blok/unit...">
+                                                    <input type="text" name="search" id="searchInput" class="form-control"
+                                                        value="{{ request('search') }}" placeholder="Cari blok/unit...">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">
                                                         <i class="mdi mdi-shape-outline me-1"></i>Type
                                                     </label>
-                                                    <select id="filterType" class="form-control">
+                                                    <select name="type" id="filterType" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('type')->unique() as $type)
                                                             @if ($type)
-                                                                <option value="{{ $type }}">{{ $type }}
+                                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                                                    {{ $type }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1315,11 +1322,12 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-map-marker me-1"></i>Posisi
                                                     </label>
-                                                    <select id="filterPosisi" class="form-control">
+                                                    <select name="position" id="filterPosisi" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('position')->unique() as $position)
                                                             @if ($position)
-                                                                <option value="{{ $position }}">{{ $position }}
+                                                                <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                                                                    {{ $position }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1329,11 +1337,12 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-compass me-1"></i>Hadap
                                                     </label>
-                                                    <select id="filterHadap" class="form-control">
+                                                    <select name="facing" id="filterHadap" class="form-control">
                                                         <option value="">Semua</option>
                                                         @foreach ($land->units->pluck('facing')->unique() as $facing)
                                                             @if ($facing)
-                                                                <option value="{{ $facing }}">{{ $facing }}
+                                                                <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
+                                                                    {{ $facing }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -1343,33 +1352,34 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select id="showData" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
+                                                    <select name="per_page" id="showData" class="form-control">
+                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                    <button type="button" id="filterData"
+                                                    <button type="submit" id="filterData"
                                                         class="btn btn-gradient-primary w-100 btn-filter-reset">
                                                         <i class="mdi mdi-filter-outline"></i>
                                                     </button>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <button type="button" id="resetFilter"
+                                                    <a href="{{ url()->current() }}" id="resetFilter"
                                                         class="btn btn-gradient-secondary w-100 btn-filter-reset">
                                                         <i class="mdi mdi-refresh"></i>
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                         <!-- Tabel Data dengan Icon LENGKAP - KOLOM DIGABUNG -->
                         <div class="table-responsive">
@@ -1522,32 +1532,53 @@
                             </table>
                         </div>
 
+                        <!-- PAGINATION -->
+                        @if($units->count() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 dari 156 data
+                                Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                    style="gap: 2px;">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                    @if($units->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $units->previousPageUrl() }}" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+
+                                    @if($units->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $units->nextPageUrl() }}" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
                                 </ul>
                             </nav>
                         </div>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -1994,11 +2025,6 @@
                     $(this).val(nilai.substring(0, 5));
                     alert('Blok maksimal 5 karakter');
                 }
-            });
-
-            // Filter functionality (placeholder)
-            $('#filterData, #filterDataMobile').on('click', function() {
-                alert('Fitur filter sedang dalam pengembangan');
             });
 
             $('#resetFilter, #resetFilterMobile').on('click', function() {

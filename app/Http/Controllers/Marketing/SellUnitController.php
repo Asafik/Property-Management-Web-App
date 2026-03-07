@@ -13,7 +13,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-
+use App\Notifications\BookingNotification;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UnitsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -105,9 +105,30 @@ public function index(Request $request)
     // =========================
     $projects = LandBank::select('id','name')->orderBy('name')->get();
     $customers = Customer::latest()->get();
-    $agencies = Employee::where('role', 'agency')->latest()->get();
+   $agencies = Employee::where('position_id', 4)->latest()->get();
     $types = LandBankUnit::select('type')->distinct()->pluck('type');
 
+$unitPaths = [
+    'A.1' => 'M16.77 101.2h44.35v24.11h-44.35v-24.11z', // path statik A.1
+    'A.2' => 'M16.77 126.1h44.35v26.86h-44.35v-26.86z', // contoh
+    'B.1' => 'M126.5 70.05h48.66v47.34c0 4.78-3.53 8.2-7.77 8.2h-40.89v-55.54z',
+    // tambahkan semua unit...
+];
+
+// ambil unit dari DB
+$unitsForSvg = (clone $statsQuery)->get(['id','unit_code','status','type']); // pastikan ada kolom tipe
+
+// set warna sesuai tipe
+// Tentukan warna berdasarkan status & type
+foreach ($unitsForSvg as $unit) {
+    if ($unit->type === 'komersil' && $unit->status === 'ready') {
+        $unit->fillColor = '#2675BB'; // biru
+    } elseif ($unit->status === 'ready') {
+        $unit->fillColor = '#CE2A2E'; // merah
+    } else {
+        $unit->fillColor = '#0DA351'; // hijau default
+    }
+}
     // =========================
     // RETURN VIEW
     // =========================
@@ -124,7 +145,10 @@ public function index(Request $request)
         'customers',
         'agencies',
         'projects',
-        'types'
+        'types',
+        'unitsForSvg',
+        'unitPaths'
+
     ));
 }
   
@@ -159,6 +183,9 @@ public function setCustomer(Request $request, $unitId)
 
     DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
 
+        // =============================
+        // BUAT BOOKING
+        // =============================
         $booking = Booking::create([
             'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
             'unit_id'       => $unit->id,
@@ -169,20 +196,35 @@ public function setCustomer(Request $request, $unitId)
             'status'        => 'active',
         ]);
 
+        // =============================
+        // SIMPAN PAYMENT
+        // =============================
         Payment::create([
             'booking_id'      => $booking->id,
             'type'            => 'dp',
             'amount'          => $bookingFee,
             'payment_date'    => now(),
             'method'          => 'transfer',
-            'reference_number'=> $filePath, // <-- simpan path file di sini
+            'reference_number'=> $filePath, // simpan path file
             'notes'           => 'Bukti transfer booking fee',
         ]);
 
+        // =============================
+        // UPDATE STATUS UNIT
+        // =============================
         $unit->update(['status' => 'booked']);
+
+        // =============================
+        // KIRIM NOTIFIKASI KE ADMIN
+        // =============================
+        $admins = Employee::whereRelation('position','name','Admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new BookingNotification($booking));
+        }
+
     });
 
-    return back()->with('success', 'Booking & bukti transfer berhasil disimpan');
+    return back()->with('success', 'Booking, bukti transfer, dan notifikasi berhasil disimpan');
 }
   // public function setAgency(Request $request, $unitId)
   // {

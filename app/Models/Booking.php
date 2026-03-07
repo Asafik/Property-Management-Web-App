@@ -19,14 +19,25 @@ class Booking extends Model
         'booking_date',
         'purchase_type',
         'status',
+        'status_cash',
+        'status_akad',
+        'status_legal',
         'notes',
     ];
+    protected $casts = [
+    'booking_date' => 'date',
+    'dp_date' => 'date',
+    'pelunasan_date' => 'date',
+    'akad_date' => 'date',
+    'serah_terima_date' => 'date',
+];
     
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    
 
     // Booking -> Unit
     public function unit()
@@ -57,4 +68,17 @@ class Booking extends Model
     {
         return $this->hasMany(Payment::class, 'booking_id');
     }
+    public function akad()
+{
+    return $this->hasOne(Akad::class);
+}
+public function finalPayment()
+{
+    return $this->hasOne(Payment::class)->latestOfMany();
+}
+public function serahTerima()
+{
+    return $this->hasOne(SerahTerima::class);
+}
+
 }

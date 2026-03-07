@@ -23,34 +23,35 @@
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
-                            <i class="mdi mdi-account-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                            <i class="mdi mdi-account-multiple"
+                                style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-          @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
 
-                @if ($errors->any())
-                    <div class="alert alert-warning">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+        @if ($errors->any())
+            <div class="alert alert-warning">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <!-- Progress Status -->
         <div class="add-row mb-3">
@@ -78,6 +79,9 @@
         <!-- Form Tambah Customer -->
         <form action="{{ route('customer.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @if (isset($guest))
+                <input type="hidden" name="guest_id" value="{{ $guest->id }}">
+            @endif
             <div class="add-row">
                 <div class="add-col-12">
                     <div class="add-card">
@@ -169,6 +173,7 @@
                                                     <div class="add-form-group">
                                                         <label>Nama Lengkap <span class="add-text-danger">*</span></label>
                                                         <input type="text" class="add-form-control" name="full_name"
+                                                            value="{{ old('full_name', $guest->name ?? '') }}"
                                                             placeholder="Sesuai KTP">
                                                         <small class="add-text-muted">Tanpa gelar, sesuai KTP</small>
                                                     </div>
@@ -533,6 +538,7 @@
                                                     <div class="add-form-group">
                                                         <label>No. HP / WA <span class="add-text-danger">*</span></label>
                                                         <input type="text" class="add-form-control" name="phone"
+                                                            value="{{ old('phone', $guest->phone ?? '') }}"
                                                             placeholder="081234567890">
                                                     </div>
                                                 </div>
@@ -797,28 +803,28 @@
 
                                     <!-- Tombol Aksi - Responsif -->
                                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-    <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
+                                        <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto">
 
-        <!-- KEMBALI KE TAB SEBELUMNYA -->
-        <button type="button"
-            class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0"
-            id="btnPrevGlobal">
-            <i class="mdi mdi-arrow-left me-1"></i>Kembali
-        </button>
+                                            <!-- KEMBALI KE TAB SEBELUMNYA -->
+                                            <button type="button"
+                                                class="add-btn add-btn-outline-secondary flex-grow-1 flex-sm-grow-0"
+                                                id="btnPrevGlobal">
+                                                <i class="mdi mdi-arrow-left me-1"></i>Kembali
+                                            </button>
 
-        <button type="reset"
-            class="add-btn add-btn-secondary flex-grow-1 flex-sm-grow-0">
-            <i class="mdi mdi-refresh me-1"></i>Reset
-        </button>
+                                            <button type="reset"
+                                                class="add-btn add-btn-secondary flex-grow-1 flex-sm-grow-0">
+                                                <i class="mdi mdi-refresh me-1"></i>Reset
+                                            </button>
 
-        <!-- BUTTON DINAMIS -->
-        <button type="button" id="btnNextGlobal"
-            class="add-btn add-btn-primary flex-grow-1 flex-sm-grow-0">
-            Lanjut <i class="mdi mdi-arrow-right ms-1"></i>
-        </button>
+                                            <!-- BUTTON DINAMIS -->
+                                            <button type="button" id="btnNextGlobal"
+                                                class="add-btn add-btn-primary flex-grow-1 flex-sm-grow-0">
+                                                Lanjut <i class="mdi mdi-arrow-right ms-1"></i>
+                                            </button>
 
-    </div>
-</div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                     </div>
@@ -882,6 +888,7 @@
     <script>
         document.getElementById("alamatSamaKTP").addEventListener("change", function() {
             const isChecked = this.checked;
+
             const fields = [
                 "provinsi",
                 "kota",
@@ -897,12 +904,25 @@
                 const ktpField = document.getElementById(field + "KTP");
                 const domField = document.getElementById(field + "Domisili");
 
+                if (!ktpField || !domField) return;
+
                 if (isChecked) {
                     domField.value = ktpField.value;
-                    domField.setAttribute("readonly", true);
+
+                    if (domField.tagName === "SELECT") {
+                        domField.disabled = true;
+                    } else {
+                        domField.setAttribute("readonly", true);
+                    }
+
                 } else {
                     domField.value = "";
-                    domField.removeAttribute("readonly");
+
+                    if (domField.tagName === "SELECT") {
+                        domField.disabled = false;
+                    } else {
+                        domField.removeAttribute("readonly");
+                    }
                 }
             });
         });
@@ -983,100 +1003,98 @@
 
         });
     </script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
 
-    const tabLinks = document.querySelectorAll(".add-custom-tab-link");
-    const tabItems = document.querySelectorAll(".add-custom-tab-item");
-    const tabPanes = document.querySelectorAll(".add-custom-tab-pane");
+            const tabLinks = document.querySelectorAll(".add-custom-tab-link");
+            const tabItems = document.querySelectorAll(".add-custom-tab-item");
+            const tabPanes = document.querySelectorAll(".add-custom-tab-pane");
 
-    const btnNext = document.getElementById("btnNextGlobal");
-    const btnPrev = document.getElementById("btnPrevGlobal");
+            const btnNext = document.getElementById("btnNextGlobal");
+            const btnPrev = document.getElementById("btnPrevGlobal");
 
-    const form = btnNext.closest("form");
+            const form = btnNext.closest("form");
 
-    function switchTab(targetTab) {
+            function switchTab(targetTab) {
 
-        tabLinks.forEach(tab => tab.classList.remove("active"));
-        tabPanes.forEach(pane => pane.classList.remove("active"));
+                tabLinks.forEach(tab => tab.classList.remove("active"));
+                tabPanes.forEach(pane => pane.classList.remove("active"));
 
-        targetTab.classList.add("active");
+                targetTab.classList.add("active");
 
-        const targetPane = document.querySelector(targetTab.getAttribute("href"));
-        if (targetPane) targetPane.classList.add("active");
+                const targetPane = document.querySelector(targetTab.getAttribute("href"));
+                if (targetPane) targetPane.classList.add("active");
 
-        updateButtonState();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+                updateButtonState();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
 
-    function updateButtonState() {
+            function updateButtonState() {
+                const activeTab = document.querySelector(".add-custom-tab-link.active");
+                const currentItem = activeTab.closest(".add-custom-tab-item");
 
-        const activeTab = document.querySelector(".add-custom-tab-link.active");
-        const currentItem = activeTab.closest(".add-custom-tab-item");
+                const isFirst = currentItem.previousElementSibling === null;
+                const isLast = currentItem.nextElementSibling === null;
 
-        const isFirst = currentItem.previousElementSibling === null;
-        const isLast = currentItem.nextElementSibling === null;
+                // PREV BUTTON
+                btnPrev.disabled = isFirst;
+                btnPrev.classList.toggle("disabled", isFirst);
 
-        // === HANDLE PREV BUTTON ===
-        if (isFirst) {
-            btnPrev.disabled = true;
-            btnPrev.classList.add("disabled");
-        } else {
-            btnPrev.disabled = false;
-            btnPrev.classList.remove("disabled");
-        }
+                // NEXT / SUBMIT BUTTON
+                if (isLast) {
+                    btnNext.innerHTML = 'Simpan Customer <i class="mdi mdi-content-save ms-1"></i>';
+                    btnNext.setAttribute("type", "submit");
+                } else {
+                    btnNext.innerHTML = 'Lanjut <i class="mdi mdi-arrow-right ms-1"></i>';
+                    btnNext.setAttribute("type", "button"); // pastikan selalu button
+                }
+            }
 
-        // === HANDLE NEXT / SUBMIT BUTTON ===
-        if (isLast) {
-            btnNext.innerHTML = 'Simpan Customer <i class="mdi mdi-content-save ms-1"></i>';
-            btnNext.setAttribute("type", "submit");
-        } else {
-            btnNext.innerHTML = 'Lanjut <i class="mdi mdi-arrow-right ms-1"></i>';
-            btnNext.setAttribute("type", "button");
-        }
-    }
+            // NEXT BUTTON
+            btnNext.addEventListener("click", function(e) {
+                e.preventDefault(); // cegah submit default
 
-    // NEXT BUTTON
-    btnNext.addEventListener("click", function () {
+                if (btnNext.getAttribute("type") === "submit") {
+                    form.submit();
+                    return;
+                }
 
-        if (btnNext.getAttribute("type") === "submit") {
-            form.submit();
-            return;
-        }
+                const activeTab = document.querySelector(".add-custom-tab-link.active");
+                const currentItem = activeTab.closest(".add-custom-tab-item");
+                const nextItem = currentItem.nextElementSibling;
 
-        const activeTab = document.querySelector(".add-custom-tab-link.active");
-        const currentItem = activeTab.closest(".add-custom-tab-item");
-        const nextItem = currentItem.nextElementSibling;
+                if (nextItem) {
+                    const nextTab = nextItem.querySelector(".add-custom-tab-link");
+                    switchTab(nextTab);
+                }
+            });
 
-        if (nextItem) {
-            const nextTab = nextItem.querySelector(".add-custom-tab-link");
-            switchTab(nextTab);
-        }
-    });
+            // PREV BUTTON
+            btnPrev.addEventListener("click", function() {
 
-    // PREV BUTTON
-    btnPrev.addEventListener("click", function () {
+                const activeTab = document.querySelector(".add-custom-tab-link.active");
+                const currentItem = activeTab.closest(".add-custom-tab-item");
+                const prevItem = currentItem.previousElementSibling;
 
-        const activeTab = document.querySelector(".add-custom-tab-link.active");
-        const currentItem = activeTab.closest(".add-custom-tab-item");
-        const prevItem = currentItem.previousElementSibling;
+                if (prevItem) {
+                    const prevTab = prevItem.querySelector(".add-custom-tab-link");
+                    switchTab(prevTab);
+                }
+            });
 
-        if (prevItem) {
-            const prevTab = prevItem.querySelector(".add-custom-tab-link");
-            switchTab(prevTab);
-        }
-    });
+            // TAB CLICK MANUAL
+            tabLinks.forEach(tab => {
+                tab.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    switchTab(this);
+                });
+            });
 
-    // TAB CLICK MANUAL
-    tabLinks.forEach(tab => {
-        tab.addEventListener("click", function (e) {
-            e.preventDefault();
-            switchTab(this);
+            updateButtonState();
+
         });
-    });
-
-    updateButtonState();
-
-});
-</script>
+    </script>
 @endpush

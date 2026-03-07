@@ -7,8 +7,12 @@ use App\Models\LandBankUnit;
 class Customer extends Model
 {
     //
-    protected $fillable = [
+protected $fillable = [
     'customer_id',
+    'guest_id',
+    'land_bank_id',   // ✅ tambahin ini
+    'unit_id',        // ✅ tambahin ini
+
     'full_name',
     'nickname',
     'nik',
@@ -32,9 +36,10 @@ class Customer extends Model
 
     'phone','home_phone','email','office_email',
 
-    'job_status','company_name','main_income','side_income','npwp', 'job_status_lainnya',
+    'job_status','company_name','main_income','side_income','npwp','job_status_lainnya',
 
-    'domicile_province','domicile_city','domicile_subdistrict','domicile_village','domicile_rt','domicile_rw','domicile_postal_code','domicile_address',
+    'domicile_province','domicile_city','domicile_subdistrict','domicile_village',
+    'domicile_rt','domicile_rw','domicile_postal_code','domicile_address',
 ];
 public function units()
 {
@@ -43,6 +48,14 @@ public function units()
 public function documents()
 {
     return $this->hasMany(CustomerDocument::class);
+}
+public function landBank()
+{
+    return $this->belongsTo(LandBank::class);
+}
+public function guest()
+{
+    return $this->belongsTo(Guest::class);
 }
 
 }

@@ -3,8 +3,9 @@
 @section('title', 'Master Data Bank - Property Management App')
 
 @section('content')
+
 <style>
-/* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN DASHBOARD ===== */
+    /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN DASHBOARD ===== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
@@ -584,6 +585,136 @@ h3.text-dark {
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
     outline: none;
 }
+
+.pagination {
+    margin: 0;
+    gap: 3px;
+}
+
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
+}
+
+@media (min-width: 576px) {
+    .page-item .page-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 36px;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-item .page-link {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
+    }
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+
+.page-item .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff;
+    transform: translateY(-1px);
+}
+
+/* Info text pagination */
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* Typography */
+h3.text-dark {
+    font-size: 1.3rem !important;
+    font-weight: 700;
+    color: #2c2e3f !important;
+    margin-bottom: 0.5rem !important;
+}
+
+@media (min-width: 576px) {
+    h3.text-dark {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    h3.text-dark {
+        font-size: 1.7rem !important;
+    }
+}
+
+/* Badge dengan icon */
+.badge i {
+    font-size: 0.8rem;
+    margin-right: 4px;
+}
+
+/* Hover effect untuk icon aksi */
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 576px) {
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    .table tbody td {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.3rem;
+    }
+
+    .filter-card {
+        padding: 0.75rem;
+    }
+
+    .filter-card .form-label {
+        font-size: 0.8rem;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select,
+    .filter-card .btn {
+        font-size: 0.8rem;
+        min-height: 38px;
+    }
+
+    h3.text-dark {
+        font-size: 1.2rem !important;
+    }
+}
+
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -614,127 +745,151 @@ h3.text-dark {
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                    <h5 class="card-title mb-2 mb-md-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                         Daftar Bank
                     </h5>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-gradient-primary" onclick="$('#modalTambahBank').modal('show')">
-                            <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah Bank</span>
+                    <div class="ms-auto">
+                        <button class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahBank').modal('show')">
+                            <i class="mdi mdi-plus me-1"></i>
+                            <span>Tambah Bank</span>
                         </button>
                     </div>
                 </div>
+
                 <div class="card-body">
-                    <!-- Filter Section -->
-                    <div class="filter-card">
+                    <!-- FILTER SECTION - Selalu tampil -->
+                    <div class="filter-card mb-4">
                         <div class="card-body">
                             <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1"></i>Filter Data
+                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
+                                Filter Data Bank
                             </h6>
 
-                            <!-- FILTER UNTUK MOBILE -->
+                            <!-- MOBILE VERSION -->
                             <div class="d-block d-md-none">
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="mdi mdi-magnify me-1"></i>Cari Bank
-                                    </label>
-                                    <input type="text" class="form-control" placeholder="Cari nama bank...">
-                                </div>
-
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
+                                <form method="GET" action="{{ route('bank.index') }}">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                            Cari Bank
                                         </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="nonaktif">Non-Aktif</option>
-                                        </select>
+                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                            placeholder="Cari nama bank..." style="height: 45px;">
                                     </div>
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                </div>
 
-                                <div class="row g-2 mt-2">
-                                    <div class="col-12 d-flex align-items-end">
-                                        <button type="button" class="btn btn-gradient-secondary w-100">
-                                            <i class="mdi mdi-refresh me-1"></i> Reset
-                                        </button>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
+                                            </label>
+                                            <select class="form-control" name="status" style="height: 45px;">
+                                                <option value="">Semua</option>
+                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Non-Aktif</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
+                                            </label>
+                                            <select class="form-control" name="per_page" style="height: 45px;">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
 
-                            <!-- FILTER UNTUK TABLET & DESKTOP -->
+                            <!-- DESKTOP VERSION -->
                             <div class="d-none d-md-block">
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-md-4">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Cari Bank
-                                        </label>
-                                        <input type="text" class="form-control" placeholder="Cari nama bank...">
+                                <form method="GET" action="{{ route('bank.index') }}">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-4">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                                Cari Bank
+                                            </label>
+                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                                placeholder="Cari nama bank...">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
+                                            </label>
+                                            <select class="form-control" name="status">
+                                                <option value="">Semua</option>
+                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Non-Aktif</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
+                                            </label>
+                                            <select class="form-control" name="per_page">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible">Reset</label>
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="nonaktif">Non-Aktif</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label" style="visibility: hidden;">Reset</label>
-                                        <button type="button" class="btn btn-gradient-secondary w-100">
-                                            <i class="mdi mdi-refresh me-1"></i> Reset
-                                        </button>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tabel Bank -->
+                    <!-- TABEL DATA -->
                     <div class="table-responsive">
-                        <table class="table table-hover" id="tableBank" style="width:100%">
+                        <table class="table table-hover align-middle" id="tableBank" {{ $banks->count() > 0 ? 'data-use-datatables=true' : '' }}>
                             <thead>
                                 <tr>
-                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                    <th><i class="mdi mdi-bank me-1"></i>Nama Bank</th>
-                                    <th><i class="mdi mdi-credit-card me-1"></i>Kode Bank</th>
-                                    <th><i class="mdi mdi-flag me-1"></i>Status</th>
-                                    <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                    <th class="text-center" width="5%">No</th>
+                                    <th width="25%">Nama Bank</th>
+                                    <th width="25%">Pemilik Rekening</th>
+                                    <th width="20%">Status</th>
+                                    <th class="text-center" width="15%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($banks as $bank)
+                                @forelse($banks as $bank)
                                 <tr>
                                     <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-bank text-primary me-2" style="font-size: 1rem;"></i>
+                                            <i class="mdi mdi-bank text-primary me-2" style="font-size: 1.2rem;"></i>
                                             <span class="fw-bold">{{ $bank->bank_name }}</span>
                                         </div>
                                     </td>
@@ -752,58 +907,104 @@ h3.text-dark {
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            <button class="btn btn-outline-primary btn-sm" title="Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
+                                            <button class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $bank->id }}">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Nonaktifkan">
-                                                <i class="mdi mdi-close-circle"></i>
-                                            </button>
+                                            <form action="{{ route('bank.destroy', $bank->id) }}" method="POST" class="d-inline formDelete">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" title="Hapus" data-name="{{ $bank->bank_name }}">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        <i class="mdi mdi-bank-off" style="font-size: 3rem; opacity: 0.3;"></i>
+                                        <p class="mt-2 mb-0">Tidak ada data bank yang tersedia.</p>
+                                        <p class="text-muted small">Silahkan tambahkan data bank baru.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Pagination UI -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
+                    <!-- PAGINATION SECTION - Tampil jika ada data -->
+                    @if($banks->count() > 0)
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                        <!-- Info Menampilkan Data -->
                         <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan 1 - {{ $banks->count() }} dari {{ $banks->count() }} data
+                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
+                            Menampilkan
+                            <span class="fw-bold">{{ $banks->firstItem() }}</span>
+                            -
+                            <span class="fw-bold">{{ $banks->lastItem() }}</span>
+                            dari
+                            <span class="fw-bold">{{ $banks->total() }}</span>
+                            data bank
                         </div>
+
+                        <!-- Pagination Links -->
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
-                                        <i class="mdi mdi-chevron-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <i class="mdi mdi-chevron-right"></i>
-                                    </a>
-                                </li>
+                                {{-- Previous Page Link --}}
+                                @if($banks->onFirstPage())
+                                    <li class="page-item disabled">
+                                        <span class="page-link" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $banks->previousPageUrl() }}" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- Page Links --}}
+                                @foreach ($banks->getUrlRange(1, $banks->lastPage()) as $page => $url)
+                                    <li class="page-item {{ $banks->currentPage() == $page ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                    </li>
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if($banks->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $banks->nextPageUrl() }}" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled">
+                                        <span class="page-link" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                @endif
                             </ul>
                         </nav>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Aksi Bawah -->
+    <!-- Tombol Kembali -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-body p-3">
                     <div class="d-flex flex-column flex-sm-row justify-content-start">
                         <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
+                            <i class="mdi mdi-arrow-left me-1"></i>
+                            Kembali ke Dashboard
                         </a>
                     </div>
                 </div>
@@ -824,7 +1025,7 @@ h3.text-dark {
                 <button type="button" class="btn-close" onclick="$('#modalTambahBank').modal('hide')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('bank.store') }}" method="POST">
+                <form action="{{ route('bank.store') }}" method="POST" id="formTambahBank">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
@@ -832,7 +1033,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-bank me-1"></i>Nama Bank
                                 </label>
-                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: Bank Central Asia">
+                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: Bank Central Asia" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -840,7 +1041,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
                                 </label>
-                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: Andi Sukma ">
+                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: Andi Sukma" required>
                             </div>
                         </div>
                     </div>
@@ -851,7 +1052,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
                                 </label>
-                                <input type="number" name="number" class="modal-form-control" placeholder="Contoh: 1234567890">
+                                <input type="number" name="number" class="modal-form-control" placeholder="Contoh: 1234567890" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -859,15 +1060,83 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-flag me-1"></i>Status
                                 </label>
-                                <select class="modal-form-control" name="is_active">
+                                <select class="modal-form-control" name="is_active" required>
                                     <option value="1">Aktif</option>
                                     <option value="0">Non-Aktif</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-gradient-primary">Simpan</button>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahBank').modal('hide')">Batal</button>
+                <button type="submit" form="formTambahBank" class="btn btn-gradient-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT BANK -->
+<div class="modal fade" id="modalEditBank" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
+                    Edit Bank
+                </h5>
+                <button type="button" class="btn-close" onclick="$('#modalEditBank').modal('hide')" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="formEditBank">
+                    @csrf
+                    @method('PUT')
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-bank me-1"></i>Nama Bank
+                                </label>
+                                <input type="text" name="bank_name" id="editBankName" class="modal-form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
+                                </label>
+                                <input type="text" name="account_holder" id="editAccountHolder" class="modal-form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                         <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
+                                </label>
+                                <input type="number" name="number" id="editNumber" class="modal-form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="modal-form-group">
+                                <label>
+                                    <i class="mdi mdi-flag me-1"></i>Status
+                                </label>
+                                <select class="modal-form-control" name="is_active" id="editStatus" required>
+                                    <option value="1">Aktif</option>
+                                    <option value="0">Non-Aktif</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditBank').modal('hide')">Batal</button>
+                <button type="submit" form="formEditBank" class="btn btn-gradient-primary">Update</button>
             </div>
         </div>
     </div>
@@ -875,39 +1144,131 @@ h3.text-dark {
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables - hanya untuk sorting
-    let table = $('#tableBank').DataTable({
-        responsive: true,
-        paging: false,
-        info: false,
-        searching: false,
-        lengthChange: false,
-        ordering: true,
-        language: {
-            emptyTable: "Data bank belum tersedia",
-            zeroRecords: "Data tidak ditemukan",
-        },
-        columnDefs: [
-            { orderable: false, targets: [4] } // Non-aktifkan sorting untuk kolom Aksi (index ke-4)
-        ]
+    // Inisialisasi DataTables hanya jika ada data
+    const tableElement = document.getElementById('tableBank');
+    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
+        // Destroy existing DataTable if any
+        if ($.fn.DataTable.isDataTable('#tableBank')) {
+            $('#tableBank').DataTable().destroy();
+        }
+
+        // Initialize DataTable with minimal features
+        $('#tableBank').DataTable({
+            responsive: true,
+            ordering: true,
+            paging: false,
+            info: false,
+            searching: false,
+            lengthChange: false,
+            destroy: true,
+            language: {
+                emptyTable: "Data bank belum tersedia",
+                zeroRecords: "Data tidak ditemukan",
+            },
+            columnDefs: [
+                { orderable: false, targets: [4] } // Kolom aksi tidak bisa diurutkan
+            ]
+        });
+    }
+
+    // Sweet Alert untuk session success/error
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ session('error') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    // ===== HANDLE FORM TAMBAH BANK =====
+    $('#formTambahBank').on('submit', function(e) {
+        e.preventDefault();
+        this.submit();
     });
 
-    // Tooltips
-    $('[data-toggle="tooltip"]').tooltip();
+    // ===== HANDLE EDIT BUTTON CLICK =====
+    $('.btnEdit').click(function() {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: '/master-data-bank/' + id + '/edit',
+            type: 'GET',
+            success: function(response) {
+                Swal.close();
+
+                let bank = response;
+                $('#editBankName').val(bank.bank_name);
+                $('#editAccountHolder').val(bank.account_holder);
+                $('#editNumber').val(bank.number);
+                $('#editStatus').val(bank.is_active);
+
+                $('#formEditBank').attr('action', '/master-data-bank/' + id);
+
+                $('#modalEditBank').modal('show');
+            },
+            error: function() {
+                Swal.close();
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal mengambil data bank',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    });
+
+    // ===== HANDLE FORM EDIT BANK =====
+    $('#formEditBank').on('submit', function(e) {
+        e.preventDefault();
+        this.submit();
+    });
+
+    // ===== HANDLE DELETE BUTTON CLICK =====
+    $('.btnDelete').click(function() {
+        let form = $(this).closest('.formDelete');
+        let bankName = $(this).data('name');
+
+        Swal.fire({
+            title: 'Hapus Bank?',
+            text: "Bank " + bankName + " akan dihapus",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
 });
-
-function exportTable(type) {
-    const msg = type === 'excel' ? 'Excel' : 'PDF';
-    Swal.fire({
-        icon: 'info',
-        title: 'Export ' + msg,
-        text: 'Fitur export sedang dalam pengembangan',
-        timer: 2000,
-        showConfirmButton: false
-    });
-}
 </script>
 @endpush

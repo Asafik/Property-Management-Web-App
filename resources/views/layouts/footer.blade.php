@@ -7,7 +7,7 @@
 
 <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center text-muted">
     Version {{ config('app.version') ?? '1.0.0' }} 
-    • Developed with <i class="mdi mdi-heart text-danger"></i>
+    • Developed with PT Aleena Mandiri Group <i class="mdi mdi-heart text-danger"></i>
 </span>
   </div>
 </footer>

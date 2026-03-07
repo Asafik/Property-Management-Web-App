@@ -39,6 +39,7 @@ return new class extends Migration
     // ======================
     // DATA FINANSIAL
     // ======================
+    $table->string('no_sp3k')->nullable();
     $table->decimal('harga_unit', 15, 0)->nullable();
     $table->decimal('dp', 15, 0)->nullable();
     $table->decimal('jumlah_pinjaman', 15, 0)->nullable();

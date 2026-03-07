@@ -75,5 +75,8 @@ public function companyProfile()
 {
     return $this->belongsTo(CompanyProfile::class); 
 }
-
+public function guests()
+{
+    return $this->hasMany(Guest::class);
+}
 }

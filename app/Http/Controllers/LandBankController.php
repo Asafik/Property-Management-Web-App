@@ -41,7 +41,7 @@ public function store(Request $request)
             'volume_fill'      => 'nullable|numeric',
             'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
 
-            'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:2048',
             'documents.*.number' => 'nullable|string|max:255',
         ]);
 
@@ -157,7 +157,7 @@ public function store(Request $request)
         DB::commit();
 
         return redirect()->route('properti')
-            ->with('success', 'Data properti berhasil disimpan');
+            ->with('success', 'Data properti berhasil disimpan dan menunggu verifikasi disemua tanah');
 
     } catch (\Exception $e) {
 
@@ -188,7 +188,7 @@ public function store(Request $request)
         $doc = LandBankDocument::findOrFail($id);
 
         $doc->update([
-            'status' => 'terverifikasi'
+            'status' => 'verified'
         ]);
 
         return back()->with('success', 'Dokumen berhasil diverifikasi');

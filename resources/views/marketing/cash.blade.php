@@ -173,7 +173,37 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="cash-card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="cash-text-primary mb-3">
+                                            <i class="mdi mdi-ticket-percent me-2"></i>
+                                            Gunakan Promo
+                                        </h6>
 
+                                        <div class="cash-form-group">
+                                            <select class="cash-form-control" name="promo_id" id="promoSelect">
+                                                <option value="">-- Tanpa Promo --</option>
+
+                                                @foreach ($promos as $promo)
+                                                    <option value="{{ $promo->id }}" data-type="{{ $promo->type }}"
+                                                        data-value="{{ $promo->value }}">
+
+                                                        {{ $promo->name }} -
+
+                                                        @if ($promo->type == 'persen')
+                                                            {{ $promo->value }}%
+                                                        @elseif (is_numeric($promo->value))
+                                                            Rp {{ number_format((float) $promo->value, 0, ',', '.') }}
+                                                        @else
+                                                            {{ $promo->value }}
+                                                        @endif
+
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Summary Diskon & Total -->
                                 <div class="row mt-2">
                                     <div class="col-md-4">
@@ -343,7 +373,7 @@
                     <div class="text-center mb-4" id="badgeCashAwal">
                         <span class="cash-badge cash-badge-success" style="font-size: 14px;">
                             <i class="mdi mdi-check-circle me-1"></i>
-                            Cash Keras - Belum Lunas
+                            Cash Keras - Lunas
                         </span>
                     </div>
                     <div class="text-center mb-4" id="badgeKonversi" style="display: none;">
@@ -527,21 +557,60 @@
 
                     <!-- Tombol Aksi -->
                     <div class="d-flex flex-column gap-2">
-                        <button onclick="window.open('{{ route('cetak.invoice_cash', $booking->id) }}', '_blank')"
+                        <button
+                            onclick="handleInvoice(
+                                '{{ route('cetak.invoice_cash', $booking->id) }}',
+                                '{{ route('cetak.invoice_wa', $booking->id) }}'
+                            )"
                             class="cash-btn cash-btn-primary w-100">
                             <i class="mdi mdi-printer me-2"></i>
-                            Cetak Invoice
+                            Cetak & Kirim WA
                         </button>
 
                         <button class="cash-btn cash-btn-info w-100">
                             <i class="mdi mdi-whatsapp me-2"></i>
                             Kirim Invoice
                         </button>
+                        {{-- Tombol Cash --}}
+                        @if ($booking->status_cash == 'process')
+                            <a href="{{ route('akad.cash', $booking->id) }}"
+                                class="cash-btn cash-btn-outline-warning w-100">
+                                <i class="mdi mdi-handshake-outline me-2"></i> Lanjut ke Akad
+                            </a>
+                        @elseif($booking->status_cash == 'done')
+                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                <i class="mdi mdi-check-circle-outline me-2"></i> Cash Keras - Sudah Lunas
+                            </button>
+                        @else
+                            <button class="cash-btn cash-btn-outline-warning w-100" disabled>
+                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Pembayaran
+                            </button>
+                        @endif
 
-                        <button class="cash-btn cash-btn-outline-warning w-100">
-                            <i class="mdi mdi-key me-2"></i>
-                            Serah Terima Kunci
-                        </button>
+                        {{-- Tombol Akad --}}
+                        @if ($booking->status_akad == 'done')
+                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                <i class="mdi mdi-check-circle-outline me-2"></i> Sudah Akad
+                            </button>
+                        @else
+                            <button class="cash-btn cash-btn-outline-warning w-100" disabled>
+                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Akad
+                            </button>
+                        @endif
+
+                        {{-- Tombol Legal --}}
+                        @if ($booking->status_legal == 'done')
+                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                <i class="mdi mdi-check-circle-outline me-2"></i> Legal Document Selesai
+                            </button>
+                        @else
+                            <a href="{{ route('cash.document.legal', $booking->id) }}"
+                                class="cash-btn cash-btn-outline-warning w-100">
+                                <i class="mdi mdi-file-certificate-outline me-2"></i> Persiapan Document Legal -
+                                {{ $booking->customer->name }}
+                            </a>
+                        @endif
+
 
                         <button class="cash-btn cash-btn-outline-secondary w-100">
                             <i class="mdi mdi-arrow-left me-2"></i>
@@ -611,6 +680,17 @@
 
 @push('scripts')
     <script>
+        function handleInvoice(printUrl, waUrl) {
+            // buka cetak di tab baru
+            window.open(printUrl, '_blank');
+
+            // redirect ke WA setelah 1 detik
+            setTimeout(() => {
+                window.location.href = waUrl;
+            }, 1000);
+        }
+    </script>
+    <script>
         $(document).ready(function() {
             // Fungsi format rupiah
             function formatRupiah(angka) {
@@ -661,7 +741,7 @@
                     );
                 } else {
                     $('#badgeCashAwal').html(
-                        `<span class="cash-badge cash-badge-success"><i class="mdi mdi-check-circle me-1"></i>Cash Keras - Belum Lunas</span>`
+                        `<span class="cash-badge cash-badge-success"><i class="mdi mdi-check-circle me-1"></i>Cash Keras - Lunas</span>`
                     );
                 }
 
@@ -776,5 +856,28 @@
                 showConfirmButton: false
             });
         @endif
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const input = document.getElementById('hargaNego');
+
+            input.addEventListener('keyup', function() {
+
+                let angka = this.value.replace(/[^,\d]/g, '');
+                let split = angka.split(',');
+                let sisa = split[0].length % 3;
+                let rupiah = split[0].substr(0, sisa);
+                let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                this.value = rupiah;
+            });
+
+        });
     </script>
 @endpush

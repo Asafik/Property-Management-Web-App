@@ -7,7 +7,9 @@ use App\Models\Banks;
 use App\Models\LandBankUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
+use App\Models\KprDocument;
 class KprApplicationController extends Controller
 {
     /**
@@ -49,89 +51,124 @@ public function store(Request $request)
 
     try {
 
-        // VALIDASI DULU
+        // =============================
+        // VALIDASI
+        // =============================
         $request->validate([
-            'customer_id' => 'required',
-            'unit_id' => 'required',
-            'banks_id' => 'required',
-            'dp' => 'required|numeric',
-            'tenor' => 'required|numeric',
-            'bunga' => 'required|numeric',
+            'booking_id' => 'required|exists:bookings,id',
+            'customer_id' => 'required|exists:customers,id',
+            'unit_id'     => 'required|exists:land_bank_units,id',
+            'banks_id'    => 'required|exists:banks,id',
+            'dp'          => 'required|numeric|min:0',
+            'tenor'       => 'required|numeric|min:1',
+            'bunga'       => 'required|numeric|min:0',
         ]);
 
-        // ambil unit
+        // =============================
+        // AMBIL UNIT
+        // =============================
         $unit = LandBankUnit::findOrFail($request->unit_id);
-
-        // harga unit dari database
         $hargaUnit = $unit->price ?? 0;
 
         if ($hargaUnit <= 0) {
             throw new \Exception('Harga unit tidak ditemukan');
         }
 
-        // hitung pinjaman
-        $jumlahPinjaman = $request->jumlah_pinjaman ?? ($hargaUnit - $request->dp);
+        $dp    = $request->dp;
+        $tenor = $request->tenor;
+        $bunga = $request->bunga;
+
+        if ($dp > $hargaUnit) {
+            throw new \Exception('DP tidak boleh lebih besar dari harga unit');
+        }
 
         // =============================
-        // UPLOAD FILE
+        // HITUNG PINJAMAN & ANGSURAN
         // =============================
-        $upload = [];
+        $jumlahPinjaman   = $hargaUnit - $dp;
+        $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
+        $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
+        $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
+
+        // =============================
+        // SIMPAN DATA KPR
+        // =============================
+        $kprApplication = KprApplication::create([
+            'booking_id'        => $request->booking_id,
+            'customer_id'       => $request->customer_id,
+            'unit_id'           => $request->unit_id,
+            'banks_id'          => $request->banks_id,
+            'produk_kpr'        => $request->produk_kpr,
+            'harga_unit'        => $hargaUnit,
+            'jumlah_pinjaman'   => $jumlahPinjaman,
+            'dp'                => $dp,
+            'tenor'             => $tenor,
+            'bunga'             => $bunga,
+            'estimasi_angsuran' => round($estimasiAngsuran),
+            'status_pekerjaan'  => $request->status_pekerjaan,
+            'status'            => 'dokumen',
+            'submitted_at'      => now(),
+        ]);
+
+        // =============================
+        // UPDATE BOOKING
+        // =============================
+        $booking = Booking::where('id', $request->booking_id)
+            ->where('unit_id', $request->unit_id)
+            ->firstOrFail();
+
+        $booking->purchase_type = 'kpr';
+        $booking->status_cash   = 'pending';
+        $booking->status_akad   = 'pending';
+        $booking->status_legal  = 'pending';
+        $booking->status        = 'lanjut_kpr';
+
+        $booking->save();
+
+        // =============================
+        // UPLOAD FILE DOKUMEN
+        // =============================
         $fileFields = [
             'slip_gaji',
             'rekening_koran',
             'npwp',
             'sku',
             'surat_nikah',
-            'ktp_pasangan'
+            'ktp_pasangan',
+            'kk',
+            'ktp'
         ];
 
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
-                $upload[$field] = $request->file($field)->store('kpr', 'public');
+                $path = $request->file($field)->store('kpr', 'public');
+
+                KprDocument::create([
+                    'kpr_application_id' => $kprApplication->id,
+                    'type'               => $field,
+                    'path'               => $path,
+                ]);
             }
         }
 
-        // =============================
-        // SIMPAN
-        // =============================
-       KprApplication::create([
-    'booking_id' => $request->booking_id ?? $request->unit_id, // pastikan booking_id dikirim dari form
-    'customer_id' => $request->customer_id,
-    'unit_id' => $request->unit_id,
-    'banks_id' => $request->banks_id,
-    'produk_kpr' => $request->produk_kpr,
-    'harga_unit' => $hargaUnit,
-    'jumlah_pinjaman' => $jumlahPinjaman,
-    'dp' => $request->dp,
-    'tenor' => $request->tenor,
-    'bunga' => $request->bunga,
-    'estimasi_angsuran' => $request->estimasi_angsuran,
-    'status_pekerjaan' => $request->status_pekerjaan,
-    'status' => 'pengajuan',
-    'submitted_at' => now(),
-
-    'slip_gaji' => $upload['slip_gaji'] ?? null,
-    'rekening_koran' => $upload['rekening_koran'] ?? null,
-    'npwp' => $upload['npwp'] ?? null,
-    'sku' => $upload['sku'] ?? null,
-    'surat_nikah' => $upload['surat_nikah'] ?? null,
-    'ktp_pasangan' => $upload['ktp_pasangan'] ?? null,
-]);
-
         DB::commit();
 
-        return redirect()->back()->with('success', 'Pengajuan KPR berhasil disimpan');
+        return redirect()->back()
+            ->with('success', 'Pengajuan KPR berhasil disimpan');
 
     } catch (\Throwable $e) {
 
         DB::rollBack();
 
+        Log::error('Gagal simpan KPR', [
+            'error' => $e->getMessage()
+        ]);
+
         return redirect()->back()
             ->withInput()
-            ->with('error', $e->getMessage()); // kirim pesan error
+            ->with('error', $e->getMessage());
     }
 }
-
 
 
 

@@ -401,7 +401,10 @@
                             <h2 class="fw-bold mb-2" style="color: #1e293b;">Masuk ke Akun</h2>
                             <p class="text-muted">Silakan login untuk mengakses dashboard</p>
                         </div>
-                        @if(session('error'))
+
+                        
+                            @if(session('error'))
+
                             <div class="alert-modern" role="alert">
                                 <i class="mdi mdi-alert-circle"></i>
                                 <div>{{ session('error') }}</div>
@@ -460,7 +463,7 @@
                                 Login ke Dashboard
                             </button>
 
-                            
+
 
                         </form>
 

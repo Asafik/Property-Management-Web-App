@@ -655,7 +655,7 @@
         {{-- ================= PROGRESS ================= --}}
         @php
             $total = $land->documents->count();
-            $verified = $land->documents->where('status', 'terverifikasi')->count();
+            $verified = $land->documents->where('status', 'verified')->count();
             $percent = $total > 0 ? ($verified / $total) * 100 : 0;
         @endphp
 
@@ -857,7 +857,7 @@
                                     @csrf
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                         data-bs-target="#confirmModal">
-                                        <i class="mdi mdi-check-all me-1"></i> Setujui Semua
+                                        <i class="mdi mdi-check-all me-1"></i> Simpan dokument
                                     </button>
                                 </form>
                             </div>
