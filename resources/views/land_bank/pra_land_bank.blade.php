@@ -1232,7 +1232,7 @@
                         btn.disabled = false;
                     }, {
                         enableHighAccuracy: true,
-                        timeout: 10000,
+                        timeout: 100000,
                         maximumAge: 0
                     }
                 );
