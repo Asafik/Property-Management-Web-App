@@ -396,7 +396,13 @@ Route::get('/posisi', function () {
 });
 
 
+
+
+
 });
 
+Route::get('/pra-land-bank', function () {
+    return view('land_bank.pra_land_bank');
+});
 
 
