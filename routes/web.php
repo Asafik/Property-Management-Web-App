@@ -37,6 +37,7 @@ use App\Http\Controllers\AkadController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
+use App\Http\Controllers\PraLandBankController;
 use App\Http\Controllers\RABDeadlineController;
 use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\SurveyController;
@@ -138,6 +139,8 @@ Route::get('/all-properti', [PropertyController::class, 'index'])->name('propert
 
 // tambah properti
 Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
+Route::get('/create-pralandbank', [PraLandBankController::class, 'index'])->name('pra-landbank');
+Route::post('/properti/pra-landbank/store', [PraLandBankController::class, 'store'])->name('pra-landbanks.store');
 Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
 Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
 
@@ -401,8 +404,5 @@ Route::get('/posisi', function () {
 
 });
 
-Route::get('/pra-land-bank', function () {
-    return view('land_bank.pra_land_bank');
-});
 
 
