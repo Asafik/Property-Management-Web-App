@@ -46,20 +46,25 @@
     </div>
 </div>
 
-{{-- JavaScript Local --}}
+{{-- URUTAN SCRIPT YANG BENAR --}}
+<!-- jQuery pertama (wajib) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap 4 (bukan 5!) untuk template -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Template vendor scripts -->
 <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
 <script src="{{ asset('admin/assets/vendors/chart.js/chart.umd.js') }}"></script>
 <script src="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+
+<!-- Template custom scripts (urutan penting) -->
 <script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script>
+<script src="{{ asset('admin/assets/js/hoverable-collapse.js') }}"></script>  <!-- WAJIB untuk collapse -->
 <script src="{{ asset('admin/assets/js/misc.js') }}"></script>
 <script src="{{ asset('admin/assets/js/settings.js') }}"></script>
 <script src="{{ asset('admin/assets/js/todolist.js') }}"></script>
 <script src="{{ asset('admin/assets/js/jquery.cookie.js') }}"></script>
-
-{{-- jQuery (required untuk banyak library) --}}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>    
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>    
 
 {{-- DataTables JS --}}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
