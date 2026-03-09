@@ -355,17 +355,18 @@
             }
         }
 
-        /* Modern Checkbox */
+        /* Modern Checkbox - Sama persis dengan template */
         .pratanah-checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            justify-content: flex-start;
             margin-top: 0.5rem;
         }
 
         .pratanah-checkbox-wrapper {
             position: relative;
-            min-width: 120px;
+            min-width: 140px;
             flex: 1 1 auto;
         }
 
@@ -379,13 +380,28 @@
         .pratanah-checkbox-label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 0.6rem 1rem;
+            gap: 10px;
+            padding: 0.75rem 1.2rem;
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             border: 2px solid #e9ecef;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pratanah-checkbox-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(154, 85, 255, 0.1), rgba(218, 140, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
         .pratanah-checkbox-wrapper:hover .pratanah-checkbox-label {
@@ -394,19 +410,30 @@
             box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
         }
 
+        .pratanah-checkbox-wrapper:hover .pratanah-checkbox-label::before {
+            opacity: 1;
+        }
+
         .pratanah-check-icon {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             color: #d0d4db;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
         }
 
         .pratanah-checkbox-input:checked+.pratanah-checkbox-label {
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
         }
 
         .pratanah-checkbox-input:checked+.pratanah-checkbox-label .pratanah-check-icon {
             color: #9a55ff;
+            transform: scale(1.1);
+            filter: drop-shadow(0 4px 8px rgba(154, 85, 255, 0.4));
+            animation: pratanahCheckPulse 0.3s ease;
         }
 
         .pratanah-checkbox-input:checked+.pratanah-checkbox-label .pratanah-check-text {
@@ -414,7 +441,43 @@
             font-weight: 600;
         }
 
-        /* Modern File Upload */
+        .pratanah-check-text {
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.9rem;
+            color: #2c2e3f;
+        }
+
+        .pratanah-check-text::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            transition: width 0.3s ease;
+        }
+
+        .pratanah-checkbox-input:checked+.pratanah-checkbox-label .pratanah-check-text::before {
+            width: 100%;
+        }
+
+        @keyframes pratanahCheckPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Modern File Upload - Sama persis dengan template */
         .pratanah-file-upload-modern {
             position: relative;
             width: 100%;
@@ -470,25 +533,41 @@
             border-radius: 50%;
         }
 
+        .pratanah-file-upload-modern .pratanah-file-info-modern {
+            flex: 1;
+            width: 100%;
+        }
+
         .pratanah-file-upload-modern .pratanah-file-info-modern span {
             display: block;
             font-weight: 600;
             color: #2c2e3f;
             font-size: 0.8rem;
+            word-break: break-word;
         }
 
         .pratanah-file-upload-modern .pratanah-file-info-modern small {
             color: #6c7383;
             font-size: 0.65rem;
+            display: block;
+            margin-top: 2px;
         }
 
-        .pratanah-file-upload-modern .pratanah-file-size {
+        .pratanah-file-upload-modern .pratanah-file-label-modern .pratanah-file-size {
             font-size: 0.7rem;
             color: #9a55ff;
             font-weight: 600;
             background: rgba(154, 85, 255, 0.1);
             padding: 4px 10px;
             border-radius: 20px;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
+
+        @media (min-width: 576px) {
+            .pratanah-file-upload-modern .pratanah-file-label-modern .pratanah-file-size {
+                margin-top: 0;
+            }
         }
 
         /* Badge Status */
@@ -622,24 +701,24 @@
 
     <div class="container-fluid px-2 px-md-3 px-lg-4">
         <div class="row">
-            <div class="col-12 grid-margin">
-                <div class="pratanah-card shadow-sm">
-                    <div class="pratanah-card-body p-3 p-md-4 p-lg-5">
+            <div class="col-12">
+                <div class="pratanah-card">
+                    <div class="pratanah-card-body p-3 p-md-4">
 
+                        {{-- HEADER --}}
                         <h4 class="pratanah-section-title">
                             <i class="fas fa-hand-holding-usd me-2"></i>
                             Form Pra Tanah / Pra Pelepasan
                         </h4>
 
                         {{-- ALERT INFO --}}
-                        <div class="pratanah-alert pratanah-alert-info d-flex align-items-center flex-wrap" role="alert">
+                        <div class="pratanah-alert pratanah-alert-info d-flex align-items-center flex-wrap mb-3">
                             <i class="fas fa-info-circle me-2"></i>
                             <span>Data tanah yang masih dalam tahap penawaran/negosiasi sebelum pembelian resmi</span>
                         </div>
 
                         {{-- STATUS TANAH --}}
-                        <div class="pratanah-alert pratanah-alert-warning d-flex align-items-center flex-wrap mb-4"
-                            role="alert">
+                        <div class="pratanah-alert pratanah-alert-warning d-flex align-items-center flex-wrap mb-4">
                             <i class="fas fa-exclamation-triangle me-2"></i>
                             <span>Status: <strong>Pra Pelepasan</strong> - Belum dilakukan pembelian, masih dalam proses
                                 penawaran</span>
@@ -647,6 +726,7 @@
 
                         <form action="{{ route('pra-landbanks.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+
                             {{-- ================= SECTION 1: INFORMASI SUMBER ================= --}}
                             <h5 class="pratanah-section-title">
                                 <i class="fas fa-user-tie me-2"></i>
@@ -657,24 +737,20 @@
                             <div class="pratanah-row">
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Nama Makelar/Broker <span
-                                                class="pratanah-text-danger">*</span></label>
-                                        <input type="text" name="land_source" class="pratanah-form-control"
-                                            placeholder="Nama Makelar/Broker">
+                                        <label class="pratanah-form-label">Nama Makelar/Broker <span class="pratanah-text-danger">*</span></label>
+                                        <input type="text" name="land_source" class="pratanah-form-control" placeholder="Nama Makelar/Broker">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Perusahaan Makelar/Broker</label>
-                                        <input type="text" name="broker_company" class="pratanah-form-control"
-                                            placeholder="Perusahaan Makelar">
+                                        <input type="text" name="broker_company" class="pratanah-form-control" placeholder="Perusahaan Makelar">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">No. Telepon/WhatsApp</label>
-                                        <input type="text" name="owner_contact" class="pratanah-form-control"
-                                            placeholder="No WhatsApp">
+                                        <input type="text" name="owner_contact" class="pratanah-form-control" placeholder="No WhatsApp">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-md-6">
@@ -696,77 +772,68 @@
                             <div class="pratanah-row">
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Nama Tanah/Lokasi <span
-                                                class="pratanah-text-danger">*</span></label>
-                                        <input type="text" name="land_name" class="pratanah-form-control">
+                                        <label class="pratanah-form-label">Nama Tanah/Lokasi <span class="pratanah-text-danger">*</span></label>
+                                        <input type="text" name="land_name" class="pratanah-form-control" placeholder="Contoh: Tanah Kavling Jember">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Nama Pemilik Tanah</label>
-                                        <input type="text" name="land_owner" class="pratanah-form-control">
+                                        <input type="text" name="land_owner" class="pratanah-form-control" placeholder="Nama Pemilik">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="pratanah-form-group">
-                                <label class="pratanah-form-label">Alamat/Lokasi Tanah <span
-                                        class="pratanah-text-danger">*</span></label>
-                                <input type="text" name="address" class="pratanah-form-control">
+                                <label class="pratanah-form-label">Alamat/Lokasi Tanah <span class="pratanah-text-danger">*</span></label>
+                                <input type="text" name="address" class="pratanah-form-control" placeholder="Alamat lengkap tanah">
                             </div>
 
                             <div class="pratanah-row">
                                 <div class="pratanah-col-sm-6 pratanah-col-md-3">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Kelurahan/Desa</label>
-                                        <input type="text" name="village" class="pratanah-form-control">
+                                        <input type="text" name="village" class="pratanah-form-control" placeholder="Kelurahan">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-sm-6 pratanah-col-md-3">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Kecamatan</label>
-                                        <input type="text" name="district" class="pratanah-form-control">
+                                        <input type="text" name="district" class="pratanah-form-control" placeholder="Kecamatan">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-sm-6 pratanah-col-md-3">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Kota/Kabupaten</label>
-                                        <input type="text" name="city" value="Jember"
-                                            class="pratanah-form-control">
+                                        <input type="text" name="city" value="Jember" class="pratanah-form-control">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-sm-6 pratanah-col-md-3">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Provinsi</label>
-                                        <input type="text" name="province" value="Jawa Timur"
-                                            class="pratanah-form-control">
+                                        <input type="text" name="province" value="Jawa Timur" class="pratanah-form-control">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="pratanah-row">
-                                <div class="pratanah-col-sm-6 pratanah-col-md-3">
+                                <div class="pratanah-col-sm-6 pratanah-col-md-4">
                                     <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Luas Tanah (m²) <span
-                                                class="pratanah-text-danger">*</span></label>
-                                        <input type="number" name="area" class="pratanah-form-control">
+                                        <label class="pratanah-form-label">Luas Tanah (m²) <span class="pratanah-text-danger">*</span></label>
+                                        <input type="number" name="area" class="pratanah-form-control" placeholder="Contoh: 1000">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="pratanah-row">
-                                <div class="pratanah-col-md-3">
+                                <div class="pratanah-col-sm-6 pratanah-col-md-4">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Lebar Jalan (m)</label>
-                                        <input type="number" name="road_width" class="pratanah-form-control"
-                                            placeholder="Contoh: 6">
+                                        <input type="number" name="road_width" class="pratanah-form-control" placeholder="Contoh: 6">
                                     </div>
                                 </div>
-
-                                <div class="pratanah-col-md-3">
+                                <div class="pratanah-col-sm-6 pratanah-col-md-4">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Jenis Jalan</label>
                                         <select name="road_type" class="pratanah-form-control">
-                                            <option value="">Pilih</option>
+                                            <option value="">Pilih Jenis Jalan</option>
                                             <option value="aspal">Aspal</option>
                                             <option value="beton">Beton</option>
                                             <option value="paving">Paving</option>
@@ -792,7 +859,7 @@
                                             <div class="pratanah-input-group-prepend">
                                                 <span class="pratanah-input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" name="offer_price" class="pratanah-form-control">
+                                            <input type="text" name="offer_price" class="pratanah-form-control" placeholder="0">
                                         </div>
                                     </div>
                                 </div>
@@ -803,15 +870,10 @@
                                             <div class="pratanah-input-group-prepend">
                                                 <span class="pratanah-input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" name="estimated_price" class="pratanah-form-control">
+                                            <input type="text" name="estimated_price" class="pratanah-form-control" placeholder="0">
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-
-                            <div class="pratanah-row">
-
                                 <div class="pratanah-col-md-4">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Status Negosiasi</label>
@@ -843,7 +905,7 @@
                                 <div class="pratanah-col-md-4">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Petugas Survey</label>
-                                        <input type="text" name="survey_by" class="pratanah-form-control">
+                                        <input type="text" name="survey_by" class="pratanah-form-control" placeholder="Nama Petugas">
                                     </div>
                                 </div>
                                 <div class="pratanah-col-md-4">
@@ -853,7 +915,7 @@
                                             <option value="belum">Belum Survey</option>
                                             <option value="sesuai">Sesuai</option>
                                             <option value="tidak_sesuai">Tidak Sesuai</option>
-                                            <option value="survey_ulang">Survey Ulang</option>
+                                            <option value="survey_ulang">Perlu Survey Ulang</option>
                                         </select>
                                     </div>
                                 </div>
@@ -861,7 +923,7 @@
 
                             <div class="pratanah-form-group">
                                 <label class="pratanah-form-label">Catatan Survey</label>
-                                <textarea name="notes" class="pratanah-form-control"></textarea>
+                                <textarea name="notes" class="pratanah-form-control" rows="3" placeholder="Catatan hasil survey..."></textarea>
                             </div>
 
                             <hr class="pratanah-hr">
@@ -875,10 +937,9 @@
                             <div class="pratanah-row">
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Status Kejelasan Tanah <span
-                                                class="pratanah-text-danger">*</span></label>
+                                        <label class="pratanah-form-label">Status Kejelasan Tanah <span class="pratanah-text-danger">*</span></label>
                                         <select name="land_status" class="pratanah-form-control">
-                                            <option value="clear">Clear & Clean</option>
+                                            <option value="clear">Clear & Clean (Bebas Sengketa)</option>
                                             <option value="checking">Dalam Pengecekan</option>
                                             <option value="problem">Bermasalah</option>
                                         </select>
@@ -888,100 +949,137 @@
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Keterangan Masalah (jika ada)</label>
-                                        <input type="text" name="land_issue" class="pratanah-form-control">
+                                        <input type="text" name="land_issue" class="pratanah-form-control" placeholder="Jelaskan masalah jika ada">
                                     </div>
                                 </div>
                             </div>
 
                             <hr class="pratanah-hr">
 
-                            {{-- ================= SECTION 6: PERIZINAN & TATA RUANG ================= --}}
+                            {{-- ================= SECTION 6: PERIZINAN & FASILITAS ================= --}}
                             <h5 class="pratanah-section-title">
                                 <i class="fas fa-file-signature me-2"></i>
-                                6. Perizinan & Tata Ruang
+                                6. Perizinan & Fasilitas
                             </h5>
-                            <div class="pratanah-row">
 
-                                <div class="pratanah-col-md-3">
-                                    <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Fasilitas Sekitar</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="facility_school"
-                                                value="1" id="facility_school">
-                                            <label class="form-check-label" for="facility_school">
-                                                Dekat Sekolah
-                                            </label>
-                                        </div>
+                            {{-- Fasilitas Sekitar dengan Modern Checkbox --}}
+                            <div class="mt-3">
+                                <label class="pratanah-form-label d-block text-start">Fasilitas Sekitar</label>
+
+                                <div class="pratanah-checkbox-group">
+                                    <div class="pratanah-checkbox-wrapper">
+                                        <input type="checkbox" class="pratanah-checkbox-input" name="facility_school" id="facility_school" value="1">
+                                        <label class="pratanah-checkbox-label" for="facility_school">
+                                            <i class="fas fa-check-circle pratanah-check-icon"></i>
+                                            <span class="pratanah-check-text">Sekolah</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="pratanah-checkbox-wrapper">
+                                        <input type="checkbox" class="pratanah-checkbox-input" name="facility_hospital" id="facility_hospital" value="1">
+                                        <label class="pratanah-checkbox-label" for="facility_hospital">
+                                            <i class="fas fa-check-circle pratanah-check-icon"></i>
+                                            <span class="pratanah-check-text">Rumah Sakit</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="pratanah-checkbox-wrapper">
+                                        <input type="checkbox" class="pratanah-checkbox-input" name="facility_market" id="facility_market" value="1">
+                                        <label class="pratanah-checkbox-label" for="facility_market">
+                                            <i class="fas fa-check-circle pratanah-check-icon"></i>
+                                            <span class="pratanah-check-text">Pasar</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="pratanah-checkbox-wrapper">
+                                        <input type="checkbox" class="pratanah-checkbox-input" name="facility_transport" id="facility_transport" value="1">
+                                        <label class="pratanah-checkbox-label" for="facility_transport">
+                                            <i class="fas fa-check-circle pratanah-check-icon"></i>
+                                            <span class="pratanah-check-text">Transportasi Umum</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="pratanah-checkbox-wrapper">
+                                        <input type="checkbox" class="pratanah-checkbox-input" name="facility_mall" id="facility_mall" value="1">
+                                        <label class="pratanah-checkbox-label" for="facility_mall">
+                                            <i class="fas fa-check-circle pratanah-check-icon"></i>
+                                            <span class="pratanah-check-text">Mall</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="pratanah-checkbox-wrapper">
+                                        <input type="checkbox" class="pratanah-checkbox-input" name="facility_bank" id="facility_bank" value="1">
+                                        <label class="pratanah-checkbox-label" for="facility_bank">
+                                            <i class="fas fa-check-circle pratanah-check-icon"></i>
+                                            <span class="pratanah-check-text">Bank/ATM</span>
+                                        </label>
                                     </div>
                                 </div>
-
-                                <div class="pratanah-col-md-3">
-                                    <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">&nbsp;</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="facility_hospital"
-                                                value="1" id="facility_hospital">
-                                            <label class="form-check-label" for="facility_hospital">
-                                                Dekat Rumah Sakit
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pratanah-col-md-3">
-                                    <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">&nbsp;</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="facility_market"
-                                                value="1" id="facility_market">
-                                            <label class="form-check-label" for="facility_market">
-                                                Dekat Pasar
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pratanah-col-md-3">
-                                    <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">&nbsp;</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="facility_transport"
-                                                value="1" id="facility_transport">
-                                            <label class="form-check-label" for="facility_transport">
-                                                Dekat Transportasi Umum
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
-                            <div class="pratanah-row">
+
+                            <div class="pratanah-row mt-3">
                                 <div class="pratanah-col-md-4">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Zonasi/Peruntukan</label>
-                                        <input type="text" name="zoning" class="pratanah-form-control">
+                                        <input type="text" name="zoning" class="pratanah-form-control" placeholder="Contoh: Perumahan, Komersial">
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="pratanah-row">
+                            {{-- Upload Dokumen dengan Modern File Upload --}}
+                            <div class="mt-3">
+                                <label class="pratanah-form-label d-block text-start">Upload Dokumen Pendukung</label>
 
-                                <div class="pratanah-col-md-6">
-                                    <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Upload Sertifikat</label>
-                                        <input type="file" name="file_certificate" class="pratanah-form-control"
-                                            accept=".pdf,.jpg,.jpeg,.png">
+                                <div class="pratanah-row">
+                                    <div class="pratanah-col-md-4">
+                                        <div class="pratanah-form-group">
+                                            <label class="pratanah-form-label">Upload Sertifikat</label>
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="file_certificate" accept=".pdf,.jpg,.jpeg,.png">
+                                                <div class="pratanah-file-label-modern">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span>Upload Sertifikat</span>
+                                                        <small>PDF, JPG, PNG (Max: 2MB)</small>
+                                                    </div>
+                                                    <span class="pratanah-file-size"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pratanah-col-md-4">
+                                        <div class="pratanah-form-group">
+                                            <label class="pratanah-form-label">Upload PBB</label>
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="file_pbb" accept=".pdf,.jpg,.jpeg,.png">
+                                                <div class="pratanah-file-label-modern">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span>Upload PBB</span>
+                                                        <small>PDF, JPG, PNG (Max: 2MB)</small>
+                                                    </div>
+                                                    <span class="pratanah-file-size"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pratanah-col-md-4">
+                                        <div class="pratanah-form-group">
+                                            <label class="pratanah-form-label">Upload Foto Lokasi</label>
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="photo[]" multiple accept=".jpg,.jpeg,.png">
+                                                <div class="pratanah-file-label-modern">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span>Upload Foto</span>
+                                                        <small>JPG, PNG (Max: 2MB per file)</small>
+                                                    </div>
+                                                    <span class="pratanah-file-size"></span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="pratanah-col-md-6">
-                                    <div class="pratanah-form-group">
-                                        <label class="pratanah-form-label">Upload Foto Lokasi</label>
-                                        <input type="file" name="photo[]" class="pratanah-form-control" multiple
-                                            accept=".jpg,.jpeg,.png">
-                                    </div>
-                                </div>
-
                             </div>
 
                             <hr class="pratanah-hr">
@@ -996,37 +1094,36 @@
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Latitude</label>
-                                        <input type="text" name="lat" id="latitude">
+                                        <input type="text" name="lat" id="latitude" class="pratanah-form-control" value="-8.1727" readonly>
                                     </div>
                                 </div>
                                 <div class="pratanah-col-md-6">
                                     <div class="pratanah-form-group">
                                         <label class="pratanah-form-label">Longitude</label>
-                                        <input type="text" name="lng" id="longitude">
+                                        <input type="text" name="lng" id="longitude" class="pratanah-form-control" value="113.7000" readonly>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mt-3 pratanah-map-container">
-                                <div id="map"></div>
+                                <div id="map" style="height: 350px;"></div>
                             </div>
+
                             <div class="mt-2 text-end">
-                                <button type="button" id="btnLokasiSaya"
-                                    class="pratanah-btn pratanah-btn-outline-primary pratanah-btn-sm">
+                                <button type="button" id="btnLokasiSaya" class="pratanah-btn pratanah-btn-outline-primary pratanah-btn-sm">
                                     <i class="fas fa-location-dot me-1"></i>Gunakan Lokasi Saya
                                 </button>
-                                <button type="button" id="btnCariJember"
-                                    class="pratanah-btn pratanah-btn-outline-primary pratanah-btn-sm">
+                                <button type="button" id="btnCariJember" class="pratanah-btn pratanah-btn-outline-primary pratanah-btn-sm">
                                     <i class="fas fa-map-pin me-1"></i>Pusatkan ke Jember
                                 </button>
                             </div>
 
                             <hr class="pratanah-hr">
 
-                            {{-- ================= SECTION 8: REKOMENDASI ================= --}}
+                            {{-- ================= SECTION 8: STATUS & PRIORITAS ================= --}}
                             <h5 class="pratanah-section-title">
-                                <i class="fas fa-thumbs-up me-2"></i>
-                                8. Kesimpulan & Rekomendasi
+                                <i class="fas fa-tags me-2"></i>
+                                8. Status & Prioritas
                             </h5>
 
                             <div class="pratanah-row">
@@ -1056,23 +1153,27 @@
 
                             <div class="pratanah-form-group">
                                 <label class="pratanah-form-label">Catatan & Kesimpulan</label>
-                                <textarea name="notes" class="pratanah-form-control"></textarea>
+                                <textarea name="notes" class="pratanah-form-control" rows="3" placeholder="Catatan kesimpulan..."></textarea>
                             </div>
 
                             <hr class="pratanah-hr">
 
                             {{-- ================= BUTTON ================= --}}
                             <div class="pratanah-btn-group mt-4">
-                                <button type="submit" class="pratanah-btn pratanah-btn-primary">
-                                    <i class="fas fa-check-circle me-2"></i>Simpan Data Pra Tanah
-                                </button>
+                                <a href="" class="pratanah-btn pratanah-btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Kembali
+                                </a>
+                                <div class="btn-right">
+                                    <button type="submit" class="pratanah-btn pratanah-btn-primary">
+                                        <i class="fas fa-check-circle me-2"></i>Simpan Data Pra Tanah
+                                    </button>
+                                </div>
                             </div>
+                        </form>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 
@@ -1087,41 +1188,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Format rupiah untuk input harga
-            document.querySelectorAll('input[placeholder*="000"]').forEach(input => {
+            document.querySelectorAll('input[placeholder*="000"], input[name="offer_price"], input[name="estimated_price"]').forEach(input => {
                 input.addEventListener('input', function(e) {
                     let value = this.value.replace(/\D/g, '');
                     if (value) {
                         value = parseInt(value).toLocaleString('id-ID');
                         this.value = value;
-                    }
-                });
-            });
-
-            // File upload preview
-            document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
-                input.addEventListener('change', function(e) {
-                    const fileName = e.target.files[0]?.name;
-                    const fileSize = e.target.files[0]?.size;
-                    const label = this.closest('.pratanah-file-upload-modern').querySelector(
-                        '.pratanah-file-info-modern span');
-                    const sizeSpan = this.closest('.pratanah-file-upload-modern').querySelector(
-                        '.pratanah-file-size');
-
-                    if (fileName) {
-                        label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                            '...' : fileName;
-                        if (fileSize) {
-                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                            sizeSpan.textContent = sizeInMB + ' MB';
-                        }
-                    } else {
-                        const defaultText = this.closest('.pratanah-file-upload-modern')
-                            .querySelector('.pratanah-file-info-modern small')
-                            ?.previousElementSibling;
-                        if (defaultText) {
-                            defaultText.textContent = 'Upload File Pendukung';
-                        }
-                        if (sizeSpan) sizeSpan.textContent = '';
                     }
                 });
             });
@@ -1163,10 +1235,7 @@
 
             // Event ketika map di-click
             map.on('click', function(e) {
-                const {
-                    lat,
-                    lng
-                } = e.latlng;
+                const { lat, lng } = e.latlng;
                 marker.setLatLng([lat, lng]);
                 latInput.value = lat.toFixed(6);
                 lngInput.value = lng.toFixed(6);
@@ -1252,15 +1321,33 @@
                 metric: true
             }).addTo(map);
 
-            // Tambahkan tile layer tambahan untuk pilihan (opsional)
-            const baseLayers = {
-                "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-                "Satellite": L.tileLayer(
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                ) // Ganti dengan URL satelit jika ada
-            };
+            // File upload preview untuk modern file upload
+            document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
+                input.addEventListener('change', function(e) {
+                    const fileName = e.target.files[0]?.name;
+                    const fileSize = e.target.files[0]?.size;
+                    const label = this.closest('.pratanah-file-upload-modern').querySelector(
+                        '.pratanah-file-info-modern span');
+                    const sizeSpan = this.closest('.pratanah-file-upload-modern').querySelector(
+                        '.pratanah-file-size');
 
-            L.control.layers(baseLayers).addTo(map);
+                    if (fileName) {
+                        label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
+                        if (fileSize) {
+                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                            sizeSpan.textContent = sizeInMB + ' MB';
+                        }
+                    } else {
+                        // Reset ke teks awal
+                        const parentDiv = this.closest('.pratanah-file-upload-modern');
+                        const defaultText = parentDiv.querySelector('.pratanah-file-info-modern span');
+                        if (defaultText) {
+                            defaultText.textContent = 'Upload File';
+                        }
+                        if (sizeSpan) sizeSpan.textContent = '';
+                    }
+                });
+            });
         });
     </script>
 @endpush
