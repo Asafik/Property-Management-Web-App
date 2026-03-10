@@ -34,6 +34,7 @@ use App\Http\Controllers\SiteplanController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\TamuController;
 use App\Http\Controllers\AkadController;
+use App\Http\Controllers\CustomerKPRRijectedController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
@@ -217,6 +218,9 @@ Route::get(
 )->name('pengajuan.show');
 
 Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('pengajuan.store');
+Route::get('/kpr/serah-terima/{id}', [KprApplicationController::class, 'serahTerima'])->name('kpr.serahterima');
+Route::get('/kpr/pecah-legal/{id}', [KprApplicationController::class, 'pecahLegal'])
+    ->name('kpr.pecahlegal');
 Route::get(
     '/pengajuan/search-customer',
     [CustomerController::class, 'search']
@@ -371,7 +375,7 @@ Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])-
 
 // Route untuk Customer KPR ACC (Survey)
 Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
-
+Route::get('/customer-kpr-rijected', [CustomerKPRRijectedController::class, 'index'])->name('customer.kpr.rijected');
 Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
 
 

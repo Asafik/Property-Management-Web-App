@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Daftar Customer KPR Terverifikasi - Property Management App')
+@section('title', 'Daftar Customer KPR Rijected - Property Management App')
 
 @section('content')
 
@@ -568,11 +568,11 @@
                         <div>
                             <h3 class="text-dark mb-1">
                                 <i class="mdi mdi-home-account me-2" style="color: #9a55ff;"></i>
-                                Daftar Customer KPR Terverifikasi
+                                Daftar Customer KPR Rijected
                             </h3>
                             <p class="text-muted mb-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Kelola data customer KPR yang telah terverifikasi
+                                Kelola data customer KPR yang telah rijected
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
@@ -591,7 +591,7 @@
                         class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Data Customer KPR Terverifikasi
+                            Data Customer KPR Rijected
                         </h5>
                     </div>
 
@@ -668,6 +668,7 @@
                                         <th width="15%">Bank</th>
                                         <th width="12%">Status Dokumen</th>
                                         <th width="12%">Tgl Verifikasi</th>
+                                        <th width="12%">Alasan Riject</th>
                                         <th class="text-center" width="18%">Aksi</th>
                                     </tr>
                                 </thead>
@@ -722,6 +723,10 @@
                                                     <span class="badge badge-gradient-primary">
                                                         <i class="mdi mdi-handshake me-1"></i>Akad
                                                     </span>
+                                                @elseif ($application->status === 'rejected')
+                                                    <span class="badge badge-gradient-danger">
+                                                        <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                    </span>
                                                 @else
                                                     <span class="badge badge-gradient-secondary">
                                                         <i
@@ -736,16 +741,14 @@
                                                 </div>
                                             </td>
                                             <td>
+                                                 <div class="d-flex align-items-center">
+                                                    
+                                                    {{ $application->catatan?? '-'}}
+                                                </div>
+                                            </td>
+                                            <td>
                                                 <div class="aksi-buttons">
-
-                                                    @if ($application->unit->jenis === 'subsidi')
-                                                        <a href="{{ route('kpr.pecahlegal', $application->id) }}"
-                                                            class="btn btn-gradient-warning btn-sm">
-                                                            <i
-                                                                class="mdi mdi-file-document-edit-outline me-1"></i>Persiapan
-                                                            Pecah Legal Unit
-                                                        </a>
-                                                    @elseif ($application->unit->jenis === 'komersil')
+                                                    @if ($application->unit->type === 'komersil')
                                                         @if ($application->status === 'survey')
                                                             <a href="{{ route('kpr.survey', $application->id) }}"
                                                                 class="btn btn-outline-purple btn-sm">
@@ -757,8 +760,12 @@
                                                                 <i class="mdi mdi-handshake me-1"></i>Lanjut ke Akad
                                                             </a>
                                                         @endif
+                                                    @else
+                                                        <a href="{{ route('kpr.survey', $application->id) }}"
+                                                            class="btn btn-outline-purple btn-sm">
+                                                            <i class="mdi mdi-map-marker me-1"></i>Lanjut ke Survey
+                                                        </a>
                                                     @endif
-
                                                 </div>
                                             </td>
                                         </tr>

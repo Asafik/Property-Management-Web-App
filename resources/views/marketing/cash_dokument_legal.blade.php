@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Upload Dokumen - Property Management App')
+@section('title', 'Cash Upload Dokumen - Property Management App')
 
 @section('content')
     <style>

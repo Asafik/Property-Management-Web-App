@@ -160,16 +160,7 @@
                         <a class="nav-link" href="{{ route('customer.kpr.survey') }}">User Acc kpr</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/approved">Approved</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/akad">Akad</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/survey">Survey</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/verifikasi-kpr">Vertifikasi KPR</a>
+                        <a class="nav-link" href="{{ route('customer.kpr.rijected') }}">User Rijected kpr</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('marketing.cash_pengajuan') }}">Cash Pengajuan</a>
