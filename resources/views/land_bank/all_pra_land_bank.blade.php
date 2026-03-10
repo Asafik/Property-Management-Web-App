@@ -323,53 +323,6 @@
             color: #6c7383;
         }
 
-        /* ===== ACTION BUTTONS DENGAN TEXT ===== */
-        .action-text {
-            display: inline-block;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 6px;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .action-text-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: white;
-        }
-
-        .action-text-primary:hover {
-            background: linear-gradient(135deg, #8a45e6, #c77cff);
-            color: white;
-            text-decoration: none;
-        }
-
-        .action-text-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: white;
-        }
-
-        .action-text-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .action-text-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: white;
-        }
-
-        .action-text-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: white;
-        }
-
-        .action-text-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
         /* DataTables Custom Styling */
         .dataTables_filter,
         .dataTables_length,
@@ -575,6 +528,33 @@
         .filter-row:last-child {
             margin-bottom: 0;
         }
+
+        /* Action button styles */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin: 0 2px;
+        }
+
+        .btn-action i {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .btn-action-info {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: white;
+        }
+
+        .btn-action-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
     </style>
 
 
@@ -606,8 +586,8 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white">
-                        <h4 class="card-title">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2"></i>
                             Daftar Semua Pra Tanah
                         </h4>
@@ -802,7 +782,7 @@
                             </div>
                         </div>
 
-                        <!-- Tabel Data DENGAN ICON DI SEMUA KOLOM -->
+                        <!-- Tabel Data -->
                         <div class="table-responsive">
                             <table id="tablePraTanah" class="table table-hover" style="width:100%">
                                 <thead>
@@ -811,13 +791,15 @@
                                         <th><i class="mdi mdi-home-variant"></i> NAMA TANAH</th>
                                         <th><i class="mdi mdi-account-tie"></i> MAKELAR</th>
                                         <th><i class="mdi mdi-map-marker"></i> LOKASI</th>
-                                        <th><i class="mdi mdi-currency-usd"></i>HARGA NEGOSIASI</th>
+                                        <th><i class="mdi mdi-currency-usd"></i> NEGOSIASI</th>
                                         <th><i class="mdi mdi-handshake"></i> STATUS</th>
+                                        <th><i class="mdi mdi-clipboard-check"></i> KELAYAKAN</th>
+                                        <th><i class="mdi mdi-search-web"></i> SURVEY</th>
                                         <th class="text-center"><i class="mdi mdi-cog"></i> AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($praLandBank as $item)
+                                    @forelse ($praLandBank ?? [] as $item)
                                         <tr>
                                             <td class="text-center fw-bold">
                                                 <span class="badge bg-light text-dark">{{ $loop->iteration }}</span>
@@ -844,42 +826,72 @@
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-currency-usd text-success me-2"></i>
                                                     <span class="fw-bold">
-                                                        Rp {{ number_format($item->estimated_price, 0, ',', '.') }}
+                                                        Rp {{ number_format($item->estimated_price ?? 0, 0, ',', '.') }}
                                                     </span>
                                                 </div>
-                                                <small class="text-muted">Dari Rp {{ number_format($item->offer_price, 0, ',', '.') }}</small>
+                                                <small class="text-muted">Dari Rp {{ number_format($item->offer_price ?? 0, 0, ',', '.') }}</small>
                                             </td>
                                             <td>
-                                                <span class="badge badge-gradient-warning"><i
-                                                        class="mdi mdi-clock-outline me-1"></i>{{$item->status ?? '-'}}</span>
+                                                @if(($item->negotiation_status ?? '') == 'deal')
+                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Sudah Deal</span>
+                                                @elseif(($item->negotiation_status ?? '') == 'almost_deal')
+                                                    <span class="badge badge-gradient-info"><i class="mdi mdi-check me-1"></i>Hampir Deal</span>
+                                                @elseif(($item->negotiation_status ?? '') == 'cancel')
+                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Batal</span>
+                                                @else
+                                                    <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Masih Negosiasi</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(($item->land_status ?? '') == 'clear')
+                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Clear & Clean</span>
+                                                @elseif(($item->land_status ?? '') == 'problem')
+                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-alert-circle me-1"></i>Bermasalah</span>
+                                                @else
+                                                    <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Dalam Pengecekan</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(($item->survey_result ?? '') == 'sesuai')
+                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Sesuai</span>
+                                                @elseif(($item->survey_result ?? '') == 'tidak_sesuai')
+                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Tidak Sesuai</span>
+                                                @else
+                                                    <span class="badge badge-gradient-secondary"><i class="mdi mdi-clock-outline me-1"></i>Belum Survey</span>
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-1">
-                                                    <a href="#" class="btn btn-gradient-info btn-sm"
-                                                        title="Lihat Detail">
+                                                    <a href="#" class="btn-action btn-action-info" title="Lihat Detail">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-                                                    <a href="#" class="btn btn-gradient-warning btn-sm"
-                                                        title="Edit">
+                                                    <a href="#" class="btn-action btn-action-warning" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="9" class="text-center py-5">
+                                                <i class="mdi mdi-information-outline" style="font-size: 3rem; color: #ccc;"></i>
+                                                <p class="mt-2 text-muted">Belum ada data pra tanah</p>
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Pagination -->
+                        @if(($praLandBank->count() ?? 0) > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 - 6 dari 6 data
+                                Menampilkan 1 - {{ $praLandBank->count() }} dari {{ $praLandBank->count() }} data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                    style="gap: 2px;">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
                                     <li class="page-item disabled">
                                         <span class="page-link" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
@@ -896,6 +908,7 @@
                                 </ul>
                             </nav>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -963,28 +976,33 @@
             });
 
             // ===========================================
-            // 3. DATATABLES (optional - untuk sorting)
+            // 3. DATATABLES - HANYA JIKA ADA DATA
             // ===========================================
-            $('#tablePraTanah').DataTable({
-                paging: false,
-                info: false,
-                searching: false,
-                lengthChange: false,
-                ordering: true,
-                language: {
-                    emptyTable: "Tidak ada data tersedia",
-                    zeroRecords: "Data tidak ditemukan",
-                },
-                columnDefs: [{
-                        orderable: false,
-                        targets: [0]
-                    }, // Kolom No
-                    {
-                        orderable: false,
-                        targets: [8]
-                    } // Kolom Aksi
-                ]
-            });
+            @if(($praLandBank->count() ?? 0) > 0)
+                // Hancurkan instance DataTables jika sudah ada
+                if ($.fn.DataTable.isDataTable('#tablePraTanah')) {
+                    $('#tablePraTanah').DataTable().destroy();
+                }
+
+                // Inisialisasi DataTables hanya jika ada data
+                $('#tablePraTanah').DataTable({
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Tidak ada data tersedia",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [
+                        {
+                            targets: [0, 8], // Kolom No dan Aksi
+                            orderable: false
+                        }
+                    ]
+                });
+            @endif
         });
     </script>
 @endpush
