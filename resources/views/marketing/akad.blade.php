@@ -265,7 +265,7 @@
                     </div>
                     <small class="konfirmasi-text-muted">Bisa berbeda dari pengajuan</small>
                 </div>
-                
+
             </div>
              <div class="col-md-4">
                 <div class="konfirmasi-form-group">
@@ -279,7 +279,7 @@
                     </div>
                     <small class="konfirmasi-text-muted">Bisa berbeda dari pengajuan</small>
                 </div>
-                
+
             </div>
             <div class="col-md-4">
                 <div class="konfirmasi-form-group">
