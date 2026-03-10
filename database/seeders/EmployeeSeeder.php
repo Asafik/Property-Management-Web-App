@@ -34,11 +34,7 @@ class EmployeeSeeder extends Seeder
                 'username' => 'ahmad',
                 'password' => Hash::make('password'),
                 'division_id' => 4,
-<<<<<<< HEAD
                 'position_id' => 4,
-=======
-                'position_id' => 3,
->>>>>>> 3ac7ffed7768fbc3176a7e544439f55b8c064f83
                 'phone' => '08123456787',
                 'address' => 'Situbondo'
             ],
