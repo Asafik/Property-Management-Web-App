@@ -136,7 +136,7 @@ Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->n
 
 // list properti
 Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
-
+Route::get('/all-pra-landbank', [PraLandBankController::class, 'indexpra'])->name('pralandbank.all');
 // tambah properti
 Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
 Route::get('/create-pralandbank', [PraLandBankController::class, 'index'])->name('pra-landbank');
@@ -398,7 +398,9 @@ Route::get('/posisi', function () {
     return view('master_data.posisi');
 });
 
-
+// Route::get('/all-pra-landbank', function () {
+//     return view('land_bank.all_pra_land_bank');
+// });
 
 
 

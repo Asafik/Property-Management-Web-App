@@ -69,6 +69,12 @@
 
                 <div class="collapse {{ request()->routeIs('properti*') ? 'show' : '' }}" id="properti">
                     <ul class="nav flex-column sub-menu">
+                         <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('pralandbank.all') ? 'active' : '' }}"
+                                href="{{ route('pralandbank.all') }}">
+                                Semua Tanah Pra Land Bank
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('properti-all') ? 'active' : '' }}"
@@ -76,6 +82,7 @@
                                 Semua Tanah
                             </a>
                         </li>
+
                          <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('pra-landbank') ? 'active' : '' }}"
                                 href="{{ route('pra-landbank') }}">
