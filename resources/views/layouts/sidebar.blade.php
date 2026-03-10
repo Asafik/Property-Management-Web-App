@@ -79,7 +79,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('properti-all') ? 'active' : '' }}"
                                 href="{{ route('properti-all') }}">
-                                Semua Tanah
+                                Semua Tanah Pasca Land Bank
                             </a>
                         </li>
 
@@ -126,9 +126,6 @@
             <div class="collapse" id="customer">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('customer.tambah_customer') }}">Tambah User</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('customer.data') }}">
                             Data User
                         </a>
@@ -136,7 +133,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('customer.tamu') }}">
-                            Prospek
+                           Data User Prospek
                         </a>
                     </li>
 

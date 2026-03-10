@@ -1015,15 +1015,21 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
-                                                <label>Type Unit</label>
-                                                <select name="type" class="kavling-form-control">
-                                                    <option value="">-- Pilih Type --</option>
+                                                <label>Jenis Unit</label>
+                                                <select name="jenis" class="kavling-form-control">
+                                                    <option value="">-- Pilih Jenis --</option>
                                                     <option value="subsidi">Subsidi</option>
                                                     <option value="komersil">Komersil</option>
                                                 </select>
                                             </div>
                                         </div>
-
+                                        <div class="col-md-2">
+                                            <div class="kavling-form-group">
+                                                <label>Type Unit</label>
+                                                <input type="text" name="type" class="kavling-form-control"
+                                                    placeholder="60/80">
+                                            </div>
+                                        </div>
                                         <div class="col-md-2">
                                             <div class="kavling-form-group">
                                                 <label>Nama Unit</label>
@@ -1391,6 +1397,7 @@
                                         <th><i class="mdi mdi-format-list-bulleted me-1"></i>Tipe / Nama</th>
                                         {{-- GABUNGAN Type + Nama Unit --}}
                                         <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
+                                        <th><i class="mdi mdi-alert-box me-1">Jenis Unit</i></th>
                                         <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
                                         <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
                                         <th><i class="mdi mdi-file-document me-1"></i>Harga IJB</th>
@@ -1444,6 +1451,12 @@
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-ruler-square text-warning me-2"></i>
                                                     <span>{{ number_format($unit->area, 0, ',', '.') }} m²</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-ruler-square text-warning me-2"></i>
+                                                    <span>{{$unit->jenis ?? '-'}}</span>
                                                 </div>
                                             </td>
 
@@ -1884,10 +1897,6 @@
                             <a href="{{ url('/properti/verifikasi-legal') }}" class="kavling-btn kavling-btn-light me-2">
                                 <i class="mdi mdi-arrow-left me-1"></i>Kembali
                             </a>
-                            <button class="kavling-btn kavling-btn-secondary"
-                                onclick="alert('Draft kavling berhasil disimpan')">
-                                <i class="mdi mdi-content-save me-1"></i>Simpan Draft
-                            </button>
                         </div>
                         <div class="d-flex flex-wrap gap-2">
                             <button class="kavling-btn kavling-btn-success" onclick="alert('Kavling berhasil disimpan.')">

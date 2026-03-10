@@ -14,6 +14,7 @@ class LandBankUnit extends Model
         'block',
         'unit_number',
         'unit_code',
+        'jenis',
         'type',
         'unit_name',
         'area',

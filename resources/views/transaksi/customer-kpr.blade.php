@@ -748,23 +748,44 @@
                                                     {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
                                                 </div>
                                             </td>
-                                            <td class="text-center">
-                                                @if ($booking->kpr?->documents)
-                                                    <a href="{{ asset('storage/' . $booking->kpr->documents) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="mdi mdi-file"></i> Lihat Dokumen
-                                                    </a>
+                                            <td class="text-center" style="white-space: normal; max-width:350px;">
 
-                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                        class="btn btn-sm btn-gradient-success">
-                                                        <i class="mdi mdi-check"></i> Approve
-                                                    </a>
+                                                @php
+                                                    $documents = json_decode(
+                                                        $booking->kprApplication?->documents,
+                                                        true,
+                                                    );
+                                                @endphp
+
+                                                @if ($documents && count($documents) > 0)
+                                                    <div class="d-flex flex-wrap justify-content-center gap-1">
+
+                                                        @foreach ($documents as $doc)
+                                                            <a href="{{ asset('storage/' . $doc['path']) }}"
+                                                                target="_blank" class="btn btn-sm btn-info">
+
+                                                                <i class="mdi mdi-file"></i>
+                                                                {{ ucwords(str_replace('_', ' ', $doc['type'])) }}
+
+                                                            </a>
+                                                        @endforeach
+
+                                                    </div>
+
+                                                    <div class="mt-2">
+                                                        <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
+                                                            class="btn btn-sm btn-success">
+                                                            <i class="mdi mdi-check"></i> Approve
+                                                        </a>
+                                                    </div>
                                                 @else
                                                     <span class="text-muted">Belum Upload</span>
                                                 @endif
+
                                             </td>
                                         </tr>
                                     @empty
+
                                         <tr>
                                             <td colspan="8" class="text-center text-muted py-5">
                                                 <i class="mdi mdi-account-off" style="font-size: 3rem; opacity: 0.3;"></i>

@@ -72,6 +72,7 @@ class LandBankUnitController extends Controller
         $request->validate([
             'block'         => 'required|string|max:5',
             'unit_number'   => 'required|string|max:5',
+            'jenis'         => 'required|string|max:255',
             'type'          => 'required|string|max:50',
             'unit_name'     => 'nullable|string|max:255',
             'area'          => 'required|numeric|min:1',
@@ -104,6 +105,7 @@ class LandBankUnitController extends Controller
             'block'        => $request->block,
             'unit_number'  => $request->unit_number,
             'unit_code'    => $unit_code,
+            'jenis'        => $request->jenis,
             'type'         => $request->type,
             'unit_name'    => $request->unit_name,
             'area'         => $request->area,

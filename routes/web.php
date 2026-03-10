@@ -318,7 +318,7 @@ Route::get('/customer/create-customer', [CustomerController::class, 'index'])->n
 Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
 Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
 
-Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');// Route::get('/dashboard-tamu', function () {
+Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');
 
 Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
 Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('customer.tamu.store');

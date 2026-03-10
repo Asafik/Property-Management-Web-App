@@ -1928,13 +1928,19 @@
                                                 <button type="button" class="btn btn-sm btn-success pilihCustomer"
                                                     data-id="{{ $c->id }}" data-type="cash"
                                                     style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                                    <i class="mdi mdi-cash me-1"></i>Cash
+                                                    <i class="mdi mdi-cash me-1"></i>Cash Keras
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-info pilihCustomer"
+                                                    data-id="{{ $c->id }}" data-type="cash-tempo"
+                                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                                    <i class="mdi mdi-cash-multiple me-1"></i>Cash Tempo
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-primary pilihCustomer"
                                                     data-id="{{ $c->id }}" data-type="kpr"
                                                     style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                                     <i class="mdi mdi-bank me-1"></i>KPR
                                                 </button>
+                                                
                                             </div>
                                         </td>
                                     </tr>
