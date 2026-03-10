@@ -1049,22 +1049,6 @@
                                     </div>
                                     <div class="pratanah-col-md-4">
                                         <div class="pratanah-form-group">
-                                            <label class="pratanah-form-label">Upload PBB</label>
-                                            <div class="pratanah-file-upload-modern">
-                                                <input type="file" name="file_pbb" accept=".pdf,.jpg,.jpeg,.png">
-                                                <div class="pratanah-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <div class="pratanah-file-info-modern">
-                                                        <span>Upload PBB</span>
-                                                        <small>PDF, JPG, PNG (Max: 2MB)</small>
-                                                    </div>
-                                                    <span class="pratanah-file-size"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="pratanah-col-md-4">
-                                        <div class="pratanah-form-group">
                                             <label class="pratanah-form-label">Upload Foto Lokasi</label>
                                             <div class="pratanah-file-upload-modern">
                                                 <input type="file" name="photo[]" multiple accept=".jpg,.jpeg,.png">
@@ -1176,7 +1160,6 @@
         </div>
     </div>
 @endsection
-
 @push('scripts')
     {{-- Leaflet CSS & JS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

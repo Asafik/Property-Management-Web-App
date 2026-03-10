@@ -27,6 +27,8 @@ class PraLandbank extends Model
         'zoning',
         'road_width',
         'road_type',
-        'status'
+        'status',
+        'file_certificate',
+        'photo'
     ];
 }
