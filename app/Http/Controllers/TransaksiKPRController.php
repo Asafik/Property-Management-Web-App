@@ -176,14 +176,14 @@ public function storeVerifikasi(Request $request, $bookingId)
 }
 
 
-    public function survey($id)
-    {
-        $application = KprApplication::with(['customer', 'unit', 'bank'])->findOrFail($id);
+public function survey($id)
+{
+    $application = KprApplication::with(['customer', 'unit', 'bank'])->findOrFail($id);
 
-    $surveyors = Employee::where('role', 'surveyor')->get();
-        // arahkan ke halaman survey dengan data KPR
-        return view('marketing.survey', compact('application', 'surveyors'));
-    }
+    $surveyors = Employee::where('position_id', 3)->get();
+
+    return view('marketing.survey', compact('application', 'surveyors'));
+}
     public function akad($id)
 {
     $application = KprApplication::with(['customer', 'unit.agency', 'bank'])->findOrFail($id);
