@@ -323,14 +323,6 @@
             color: #6c7383;
         }
 
-        /* DataTables Custom Styling */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
         /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM ===== */
         .select2-container--bootstrap-5 .select2-selection {
             border: 1px solid #e9ecef !important;
@@ -435,40 +427,6 @@
             background: #7a3fcc;
         }
 
-        /* Status indicator */
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .status-indicator.success {
-            background: #28a745;
-            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
-        }
-
-        .status-indicator.warning {
-            background: #ffc107;
-            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
-        }
-
-        .status-indicator.danger {
-            background: #dc3545;
-            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
-        }
-
-        .status-indicator.primary {
-            background: #9a55ff;
-            box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.2);
-        }
-
-        .status-indicator.secondary {
-            background: #6c757d;
-            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.2);
-        }
-
         /* Responsive untuk mobile */
         @media (max-width: 576px) {
             .table thead th {
@@ -557,6 +515,9 @@
         }
     </style>
 
+    <!-- DataTables Responsive CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Card -->
@@ -586,7 +547,7 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-white">
                         <h4 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2"></i>
                             Daftar Semua Pra Tanah
@@ -632,33 +593,6 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Baris 2: Status Tanah & Survey -->
-                                            <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-clipboard-check me-1"></i>Status Tanah
-                                                    </label>
-                                                    <select name="land_status" id="filterStatusTanahMobile"
-                                                        class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="clear">Clear & Clean</option>
-                                                        <option value="checking">Dalam Pengecekan</option>
-                                                        <option value="problem">Bermasalah</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-search-web me-1"></i>Survey
-                                                    </label>
-                                                    <select name="survey_result" id="filterSurveyMobile"
-                                                        class="form-control">
-                                                        <option value="">Semua</option>
-                                                        <option value="belum">Belum Survey</option>
-                                                        <option value="sesuai">Sudah Survey</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
                                             <!-- Baris 3: Tampil -->
                                             <div class="row filter-row">
                                                 <div class="col-6">
@@ -697,7 +631,7 @@
                                                 <div class="row g-2 align-items-end filter-row">
 
                                                     <!-- Search -->
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <label class="form-label">
                                                             <i class="mdi mdi-magnify me-1"></i>Pencarian
                                                         </label>
@@ -706,7 +640,7 @@
                                                     </div>
 
                                                     <!-- FILTER STATUS NEGOSIASI -->
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-3">
                                                         <label class="form-label">
                                                             <i class="mdi mdi-handshake me-1"></i>Status Negosiasi
                                                         </label>
@@ -720,33 +654,8 @@
                                                         </select>
                                                     </div>
 
-                                                    <!-- Status Tanah -->
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">
-                                                            <i class="mdi mdi-clipboard-check me-1"></i>Status Tanah
-                                                        </label>
-                                                        <select name="land_status" class="form-control">
-                                                            <option value="">Semua</option>
-                                                            <option value="clear">Clear & Clean</option>
-                                                            <option value="checking">Dalam Pengecekan</option>
-                                                            <option value="problem">Bermasalah</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Survey -->
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">
-                                                            <i class="mdi mdi-search-web me-1"></i>Survey
-                                                        </label>
-                                                        <select name="survey_result" class="form-control">
-                                                            <option value="">Semua</option>
-                                                            <option value="belum">Belum Survey</option>
-                                                            <option value="sesuai">Sudah Survey</option>
-                                                        </select>
-                                                    </div>
-
                                                     <!-- Show -->
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-2">
                                                         <label class="form-label">
                                                             <i class="mdi mdi-counter me-1"></i>Tampil
                                                         </label>
@@ -759,10 +668,10 @@
                                                     </div>
 
                                                     <!-- Filter Button -->
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-2">
                                                         <button type="button" onclick="alert('Filter demo UI')"
                                                             class="btn btn-gradient-primary w-100">
-                                                            <i class="mdi mdi-filter-outline"></i>
+                                                            <i class="mdi mdi-filter-outline"></i> Filter
                                                         </button>
                                                     </div>
 
@@ -784,17 +693,15 @@
 
                         <!-- Tabel Data -->
                         <div class="table-responsive">
-                            <table id="tablePraTanah" class="table table-hover" style="width:100%">
+                            <table id="tablePraTanah" class="table table-hover nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center"><i class="mdi mdi-counter"></i> NO</th>
                                         <th><i class="mdi mdi-home-variant"></i> NAMA TANAH</th>
                                         <th><i class="mdi mdi-account-tie"></i> MAKELAR</th>
                                         <th><i class="mdi mdi-map-marker"></i> LOKASI</th>
-                                        <th><i class="mdi mdi-currency-usd"></i> NEGOSIASI</th>
+                                        <th><i class="mdi mdi-currency-usd"></i> HARGA NEGOSIASI</th>
                                         <th><i class="mdi mdi-handshake"></i> STATUS</th>
-                                        <th><i class="mdi mdi-clipboard-check"></i> KELAYAKAN</th>
-                                        <th><i class="mdi mdi-search-web"></i> SURVEY</th>
                                         <th class="text-center"><i class="mdi mdi-cog"></i> AKSI</th>
                                     </tr>
                                 </thead>
@@ -819,7 +726,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <i class="mdi mdi-map-marker text-danger me-2"></i>
-                                                    <span>{{ $item->address ?? '-' }}</span>
+                                                    <span>{{ Str::limit($item->address ?? '-', 30) }}</span>
                                                 </div>
                                             </td>
                                             <td>
@@ -829,7 +736,6 @@
                                                         Rp {{ number_format($item->estimated_price ?? 0, 0, ',', '.') }}
                                                     </span>
                                                 </div>
-                                                <small class="text-muted">Dari Rp {{ number_format($item->offer_price ?? 0, 0, ',', '.') }}</small>
                                             </td>
                                             <td>
                                                 @if(($item->negotiation_status ?? '') == 'deal')
@@ -840,24 +746,6 @@
                                                     <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Batal</span>
                                                 @else
                                                     <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Masih Negosiasi</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if(($item->land_status ?? '') == 'clear')
-                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Clear & Clean</span>
-                                                @elseif(($item->land_status ?? '') == 'problem')
-                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-alert-circle me-1"></i>Bermasalah</span>
-                                                @else
-                                                    <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Dalam Pengecekan</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if(($item->survey_result ?? '') == 'sesuai')
-                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Sesuai</span>
-                                                @elseif(($item->survey_result ?? '') == 'tidak_sesuai')
-                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Tidak Sesuai</span>
-                                                @else
-                                                    <span class="badge badge-gradient-secondary"><i class="mdi mdi-clock-outline me-1"></i>Belum Survey</span>
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -873,7 +761,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="9" class="text-center py-5">
+                                            <td colspan="7" class="text-center py-5">
                                                 <i class="mdi mdi-information-outline" style="font-size: 3rem; color: #ccc;"></i>
                                                 <p class="mt-2 text-muted">Belum ada data pra tanah</p>
                                             </td>
@@ -923,7 +811,14 @@
 @endsection
 
 @push('scripts')
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         $(document).ready(function() {
             // ===========================================
@@ -976,7 +871,7 @@
             });
 
             // ===========================================
-            // 3. DATATABLES - HANYA JIKA ADA DATA
+            // 3. DATATABLES RESPONSIVE - HANYA JIKA ADA DATA
             // ===========================================
             @if(($praLandBank->count() ?? 0) > 0)
                 // Hancurkan instance DataTables jika sudah ada
@@ -984,20 +879,21 @@
                     $('#tablePraTanah').DataTable().destroy();
                 }
 
-                // Inisialisasi DataTables hanya jika ada data
+                // Inisialisasi DataTables Responsive
                 $('#tablePraTanah').DataTable({
                     paging: false,
                     info: false,
                     searching: false,
                     lengthChange: false,
                     ordering: true,
+                    responsive: true,
                     language: {
                         emptyTable: "Tidak ada data tersedia",
                         zeroRecords: "Data tidak ditemukan",
                     },
                     columnDefs: [
                         {
-                            targets: [0, 8], // Kolom No dan Aksi
+                            targets: [0, 6], // Kolom No dan Aksi
                             orderable: false
                         }
                     ]
