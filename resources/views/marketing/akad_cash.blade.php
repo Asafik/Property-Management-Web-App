@@ -611,63 +611,58 @@
                         @endphp
 
                         <div class="row g-2 g-md-0">
-                         @foreach ($steps as $key => $label)
-    @php
-        $index = array_search($key, $statusOrder);
+                            @foreach ($steps as $key => $label)
+                                @php
+                                    $index = array_search($key, $statusOrder);
+                                    $isCompleted = $index < $currentIndex;
+                                    $isActive = $index == $currentIndex;
 
-        // Step dianggap selesai jika index < currentIndex
-        $isCompleted = $index < $currentIndex;
+                                    if ($key == 'akad' && $booking->status === 'akad') {
+                                        $isCompleted = true;
+                                        $isActive = false;
+                                    }
+                                @endphp
 
-        // Step aktif jika index == currentIndex
-        $isActive = $index == $currentIndex;
+                                <div class="col text-center mb-3 mb-md-0">
+                                    <div class="step {{ $isCompleted ? 'completed' : ($isActive ? 'active' : '') }}">
+                                        <div class="step-icon
+                                            {{ $isCompleted ? 'bg-success text-white' : ($isActive ? 'bg-warning text-white' : 'bg-light text-muted') }}
+                                            rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
+                                            style="width: 35px; height: 35px;">
 
-        // Khusus: jika step 'akad' dan status 'akad', langsung completed
-        if ($key == 'akad' && $booking->status === 'akad') {
-            $isCompleted = true;
-            $isActive = false;
-        }
-    @endphp
+                                            @if ($isCompleted)
+                                                <i class="mdi mdi-check"></i>
+                                            @elseif($isActive)
+                                                @if($key == 'akad')
+                                                    <i class="mdi mdi-handshake"></i>
+                                                @elseif($key == 'completed')
+                                                    <i class="mdi mdi-certificate"></i>
+                                                @else
+                                                    <i class="mdi mdi-cash"></i>
+                                                @endif
+                                            @else
+                                                <i class="mdi mdi-cash"></i>
+                                            @endif
+                                        </div>
 
-    <div class="col text-center mb-3 mb-md-0">
-        <div class="step {{ $isCompleted ? 'completed' : ($isActive ? 'active' : '') }}">
-            <div class="step-icon 
-                {{ $isCompleted ? 'bg-success text-white' : ($isActive ? 'bg-warning text-white' : 'bg-light text-muted') }}
-                rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                style="width: 35px; height: 35px;">
+                                        <span class="d-block
+                                            {{ $isCompleted ? 'text-success' : ($isActive ? 'text-warning' : 'text-muted') }}
+                                            small fw-medium">
+                                            {{ $label }}
+                                        </span>
 
-                @if ($isCompleted)
-                    <i class="mdi mdi-check"></i>
-                @elseif($isActive)
-                    @if($key == 'akad')
-                        <i class="mdi mdi-handshake"></i>
-                    @elseif($key == 'completed')
-                        <i class="mdi mdi-certificate"></i>
-                    @else
-                        <i class="mdi mdi-cash"></i>
-                    @endif
-                @else
-                    <i class="mdi mdi-cash"></i>
-                @endif
-            </div>
-
-            <span class="d-block 
-                {{ $isCompleted ? 'text-success' : ($isActive ? 'text-warning' : 'text-muted') }}
-                small fw-medium">
-                {{ $label }}
-            </span>
-
-            <small class="text-muted d-none d-sm-block">
-                @if ($key == 'active' && $booking->booking_date)
-                    {{ $booking->booking_date->format('d M Y') }}
-                @elseif($isCompleted || $isActive)
-                    {{ $booking->updated_at->format('d M Y') }}
-                @else
-                    Menunggu
-                @endif
-            </small>
-        </div>
-    </div>
-@endforeach
+                                        <small class="text-muted d-none d-sm-block">
+                                            @if ($key == 'active' && $booking->booking_date)
+                                                {{ $booking->booking_date->format('d M Y') }}
+                                            @elseif($isCompleted || $isActive)
+                                                {{ $booking->updated_at->format('d M Y') }}
+                                            @else
+                                                Menunggu
+                                            @endif
+                                        </small>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -743,8 +738,11 @@
             </div>
         </div>
 
-       <form id="formAkad" action="{{ route('akad.cash.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="formAkad" action="{{ route('akad.cash.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
+
+            <!-- Hidden input untuk status akad - SEKARANG DI DALAM FORM -->
+            <input type="hidden" name="status_akad" id="statusAkad" value="">
 
             <!-- Row untuk Konfirmasi Akad -->
             <div class="row mt-4">
@@ -766,7 +764,7 @@
                             <!-- Pilihan Status Akad -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
-                                    <div class="card akad-option-card bg-success text-white" id="pilihSelesai">
+                                    <div class="card akad-option-card bg-success text-white" id="pilihSelesai" onclick="setStatus('selesai')">
                                         <div class="card-body text-center py-4">
                                             <i class="mdi mdi-check-decagram" style="font-size: 48px;"></i>
                                             <h5 class="mt-3 text-white">AKAD SELESAI</h5>
@@ -775,7 +773,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="card akad-option-card bg-danger text-white" id="pilihBatal">
+                                    <div class="card akad-option-card bg-danger text-white" id="pilihBatal" onclick="setStatus('batal')">
                                         <div class="card-body text-center py-4">
                                             <i class="mdi mdi-close-octagon" style="font-size: 48px;"></i>
                                             <h5 class="mt-3 text-white">AKAD BATAL</h5>
@@ -800,14 +798,14 @@
                                         <div class="akad-form-group">
                                             <label>No. Akad</label>
                                             <input type="text" name="no_akad" class="akad-form-control"
-                                                value="AKAD/CASH/2025/002">
+                                                value="AKAD/CASH/{{ date('Y') }}/{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label>Tanggal Akad</label>
                                             <input type="date" name="tanggal_akad" class="akad-form-control"
-                                                value="2025-02-25">
+                                                value="{{ date('Y-m-d') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -820,8 +818,9 @@
                                                 <div class="akad-input-group-prepend">
                                                     <span class="akad-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="akad-form-control" value="435.000.000"
-                                                    readonly>
+                                                <input type="text" class="akad-form-control"
+                                                       value="{{ number_format($booking->unit->price - $booking->unit->harga_nego, 0, ',', '.') }}"
+                                                       readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -839,13 +838,22 @@
                                 <!-- Upload Dokumen Akad -->
                                 <div class="akad-form-group">
                                     <label>Upload Dokumen Akad</label>
-                                    <input type="file" name="dokumen" class="akad-form-control"
-                                        accept=".jpg,.jpeg,.png,.pdf">
+                                    <div class="akad-file-upload-modern">
+                                        <input type="file" name="dokumen" id="uploadAkad" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="akad-file-label-modern">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="akad-file-info-modern">
+                                                <span>Upload Dokumen Akad</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                            </div>
+                                            <span class="akad-file-size"></span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="akad-form-group">
                                     <label>Catatan Akad</label>
-                                    <textarea name="catatan" class="akad-form-control" rows="2" placeholder="Catatan proses akad...">Akad selesai, pembayaran lunas</textarea>
+                                    <textarea name="catatan" class="akad-form-control" rows="2" placeholder="Catatan proses akad..."></textarea>
                                 </div>
                             </div>
 
@@ -887,16 +895,14 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="akad-tindakan-card">
-                                            <input type="radio" name="tindakan" id="tindakanRefund" value="refund"
-                                                checked>
+                                            <input type="radio" name="tindakan" id="tindakanRefund" value="refund" checked>
                                             <label class="akad-tindakan-label" for="tindakanRefund">
                                                 <div class="akad-tindakan-icon"><i class="mdi mdi-cash-refund"></i></div>
                                                 <div class="akad-tindakan-content">
                                                     <span class="akad-tindakan-title">Refund DP</span>
                                                     <span class="akad-tindakan-desc">Kembalikan uang muka</span>
                                                 </div>
-                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i>
-                                                </div>
+                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i></div>
                                             </label>
                                         </div>
                                     </div>
@@ -909,8 +915,7 @@
                                                     <span class="akad-tindakan-title">DP Hangus</span>
                                                     <span class="akad-tindakan-desc">Sesuai perjanjian</span>
                                                 </div>
-                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i>
-                                                </div>
+                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i></div>
                                             </label>
                                         </div>
                                     </div>
@@ -931,159 +936,190 @@
                 <!-- Kolom Kanan: Info & Ringkasan (tidak ikut form) -->
                 <div class="col-12 col-lg-4">
                     <div class="card h-100">
-                       <div class="card-body">
-    <h5 class="card-title"><i class="mdi mdi-information me-2 text-primary"></i>Informasi Akad</h5>
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="mdi mdi-information me-2 text-primary"></i>Informasi Akad</h5>
 
-    @php
-        $totalDibayar = $booking->payments->sum('amount');
-        $sisaPembayaran = $booking->unit->price - $totalDibayar;
-        $statusLunas = $sisaPembayaran <= 0;
-    @endphp
+                            @php
+                                $totalDibayar = $booking->payments->sum('amount');
+                                $sisaPembayaran = $booking->unit->price - $totalDibayar;
+                                $statusLunas = $sisaPembayaran <= 0;
+                            @endphp
 
-    <div class="d-flex justify-content-between mb-2">
-        <span class="text-muted">Total Dibayar</span>
-        <span class="fw-medium">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</span>
-    </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Total Dibayar</span>
+                                <span class="fw-medium">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</span>
+                            </div>
 
-    <div class="d-flex justify-content-between mb-2">
-        <span class="text-muted">Sisa Pembayaran</span>
-        <span class="fw-medium text-primary">Rp {{ number_format(max($sisaPembayaran, 0), 0, ',', '.') }}</span>
-    </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Sisa Pembayaran</span>
+                                <span class="fw-medium text-primary">Rp {{ number_format(max($sisaPembayaran, 0), 0, ',', '.') }}</span>
+                            </div>
 
-    <div class="d-flex justify-content-between mb-2">
-        <span class="text-muted">Status</span>
-        <span class="fw-medium">
-            @if ($statusLunas)
-                <span class="badge bg-success">Lunas</span>
-            @else
-                <span class="badge bg-warning">Belum Lunas</span>
-            @endif
-        </span>
-    </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Status</span>
+                                <span class="fw-medium">
+                                    @if ($statusLunas)
+                                        <span class="badge bg-success">Lunas</span>
+                                    @else
+                                        <span class="badge bg-warning">Belum Lunas</span>
+                                    @endif
+                                </span>
+                            </div>
 
-    <!-- Tombol Serah Terima Unit -->
-    @if ($booking->status_akad === 'done')
-        <div class="mt-3">
-            <a href="{{ route('booking.serah-terima', $booking->id) }}" 
-               class="btn btn-primary w-100">
-               <i class="mdi mdi-key me-1"></i> Serah Terima Unit
-            </a>
-        </div>
-    @endif
-</div>
+                            @if ($booking->status_akad === 'done')
+                                <div class="mt-3">
+                                    <a href="{{ route('booking.serah-terima', $booking->id) }}"
+                                       class="btn btn-primary w-100">
+                                       <i class="mdi mdi-key me-1"></i> Serah Terima Unit
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </form>
     </div>
+@endsection
 
-    @push('scripts')
-        <script>
-            // SweetAlert konfirmasi submit
-$('#formAkad').on('submit', function(e) {
-    e.preventDefault();
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function setStatus(status) {
+        document.getElementById('statusAkad').value = status;
 
-    Swal.fire({
-        title: 'Simpan Konfirmasi Akad?',
-        text: "Pastikan data akad sudah benar.",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#9a55ff',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, Simpan',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
+        if (status === 'selesai') {
+            document.getElementById('formSelesai').style.display = 'block';
+            document.getElementById('formBatal').style.display = 'none';
+            document.getElementById('pilihSelesai').classList.add('border', 'border-white', 'border-3');
+            document.getElementById('pilihBatal').classList.remove('border', 'border-white', 'border-3');
+        } else {
+            document.getElementById('formBatal').style.display = 'block';
+            document.getElementById('formSelesai').style.display = 'none';
+            document.getElementById('pilihBatal').classList.add('border', 'border-white', 'border-3');
+            document.getElementById('pilihSelesai').classList.remove('border', 'border-white', 'border-3');
+        }
+    }
 
-            Swal.fire({
-                title: 'Menyimpan...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
+    document.addEventListener('DOMContentLoaded', function() {
+        const alasanBatal = document.getElementById('alasanBatal');
+        if (alasanBatal) {
+            alasanBatal.addEventListener('change', function() {
+                const alasanLainnya = document.getElementById('alasanLainnya');
+                if (this.value === 'Lainnya') {
+                    alasanLainnya.style.display = 'block';
+                } else {
+                    alasanLainnya.style.display = 'none';
                 }
             });
-
-            this.submit();
         }
-    });
-});
-@if(session('success'))
-Swal.fire({
-    icon: 'success',
-    title: 'Berhasil!',
-    text: '{{ session("success") }}',
-    confirmButtonColor: '#9a55ff'
-});
-@endif
 
-@if(session('error'))
-Swal.fire({
-    icon: 'error',
-    title: 'Terjadi Kesalahan',
-    text: '{{ session("error") }}',
-    confirmButtonColor: '#9a55ff'
-});
-@endif
-            $(document).ready(function() {
-                // Pilih Akad Selesai
-                $('#pilihSelesai').click(function() {
-                    $('#formSelesai').slideDown();
-                    $('#formBatal').slideUp();
-                    $('#pilihSelesai').addClass('border border-white border-3');
-                    $('#pilihBatal').removeClass('border border-white border-3');
-                });
+        const uploadAkad = document.getElementById('uploadAkad');
+        if (uploadAkad) {
+            uploadAkad.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                const fileSize = e.target.files[0]?.size;
+                const label = this.closest('.akad-file-upload-modern').querySelector('.akad-file-info-modern span');
+                const sizeSpan = this.closest('.akad-file-upload-modern').querySelector('.akad-file-size');
 
-                // Pilih Akad Batal
-                $('#pilihBatal').click(function() {
-                    $('#formBatal').slideDown();
-                    $('#formSelesai').slideUp();
-                    $('#pilihBatal').addClass('border border-white border-3');
-                    $('#pilihSelesai').removeClass('border border-white border-3');
-                });
-
-                // Tampilkan input alasan lainnya
-                $('#alasanBatal').change(function() {
-                    if ($(this).val() === 'Lainnya') {
-                        $('#alasanLainnya').slideDown();
-                    } else {
-                        $('#alasanLainnya').slideUp();
+                if (fileName) {
+                    label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
+                    if (fileSize) {
+                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                        sizeSpan.textContent = sizeInMB + ' MB';
                     }
-                });
-
-                // MODERN FILE UPLOAD - Menampilkan nama file dan ukuran
-                $('#uploadAkad').change(function(e) {
-                    const fileName = e.target.files[0]?.name;
-                    const fileSize = e.target.files[0]?.size;
-                    const label = $(this).closest('.akad-file-upload-modern').find(
-                        '.akad-file-info-modern span');
-                    const sizeSpan = $(this).closest('.akad-file-upload-modern').find('.akad-file-size');
-
-                    if (fileName) {
-                        // Tampilkan nama file (potong jika terlalu panjang)
-                        label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-
-                        // Hitung dan tampilkan ukuran file dalam MB
-                        if (fileSize) {
-                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                            sizeSpan.text(sizeInMB + ' MB');
-                        }
-                    } else {
-                        // Reset ke teks awal jika tidak ada file
-                        label.text('Upload Dokumen Akad');
-                        sizeSpan.text('');
-                    }
-                });
-
-                // Format Rupiah untuk input harga
-                $('input[value*="000"]').on('input', function() {
-                    let nilai = this.value.replace(/\D/g, '');
-                    if (nilai) {
-                        let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
-                        this.value = rupiah;
-                    }
-                });
+                } else {
+                    label.textContent = 'Upload Dokumen Akad';
+                    sizeSpan.textContent = '';
+                }
             });
-        </script>
-    @endpush
-@endsection
+        }
+
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#9a55ff'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#9a55ff'
+            });
+        @endif
+    });
+
+    document.getElementById('formAkad').addEventListener('submit', function(e) {
+        const status = document.getElementById('statusAkad').value;
+
+        if (!status) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Pilih Status Akad',
+                text: 'Silakan pilih AKAD SELESAI atau AKAD BATAL terlebih dahulu',
+                confirmButtonColor: '#9a55ff'
+            });
+            return false;
+        }
+
+        if (status === 'selesai') {
+            const tanggal = document.querySelector('input[name="tanggal_akad"]').value;
+            if (!tanggal) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tanggal Akad Harus Diisi',
+                    text: 'Silakan isi tanggal akad',
+                    confirmButtonColor: '#9a55ff'
+                });
+                return false;
+            }
+        }
+
+        if (status === 'batal') {
+            const alasan = document.querySelector('select[name="alasan_batal"]').value;
+            if (!alasan) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Alasan Pembatalan Harus Dipilih',
+                    text: 'Silakan pilih alasan pembatalan',
+                    confirmButtonColor: '#9a55ff'
+                });
+                return false;
+            }
+        }
+
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Simpan Konfirmasi Akad?',
+            text: "Pastikan data akad sudah benar.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#9a55ff',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Simpan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        e.target.submit();
+                    }
+                });
+            }
+        });
+    });
+</script>
+@endpush

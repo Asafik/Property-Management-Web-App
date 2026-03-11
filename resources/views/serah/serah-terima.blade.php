@@ -383,9 +383,9 @@
         }
 
         .serah-checklist-item input[type="checkbox"]:checked + .check-label {
-            border-color: #28a745;
-            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
         }
 
         .check-icon {
@@ -405,7 +405,7 @@
         }
 
         .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-icon {
-            color: #28a745;
+            color: #9a55ff;
             transform: scale(1.1);
             animation: checkPulse 0.3s ease;
         }
@@ -418,7 +418,7 @@
         }
 
         .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-text {
-            color: #28a745;
+            color: #9a55ff;
         }
 
         @keyframes checkPulse {
@@ -469,9 +469,9 @@
         }
 
         .serah-doc-item input[type="checkbox"]:checked + .doc-label {
-            border-color: #28a745;
-            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
-            border-left: 4px solid #28a745;
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
+            border-left: 4px solid #9a55ff;
         }
 
         .doc-icon {
@@ -490,8 +490,8 @@
         }
 
         .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-icon {
-            background: rgba(40, 167, 69, 0.1);
-            color: #28a745;
+            background: rgba(154, 85, 255, 0.2);
+            color: #9a55ff;
         }
 
         .doc-text {
@@ -501,7 +501,7 @@
         }
 
         .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-text {
-            color: #28a745;
+            color: #9a55ff;
             font-weight: 600;
         }
 
@@ -515,7 +515,7 @@
         }
 
         .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-badge {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
+            background: linear-gradient(135deg, #9a55ff, #da8cff);
             color: white;
         }
 

@@ -242,9 +242,9 @@ Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name
 Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
 Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
 
-Route::get('/dashboard-akad-cash', function () {
-    return view('marketing.akad_cash');
-});
+// Route::get('/dashboard-akad-cash', function () {
+//     return view('marketing.akad_cash');
+// });
 
 Route::get('/dashboard-cash-dokument-legal', function () {
     return view('marketing.cash_dokument_legal');
