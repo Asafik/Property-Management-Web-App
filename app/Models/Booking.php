@@ -80,5 +80,8 @@ public function serahTerima()
 {
     return $this->hasOne(SerahTerima::class);
 }
-
+public function documentUploads()
+{
+    return $this->hasMany(DocumentUpload::class);
+}
 }

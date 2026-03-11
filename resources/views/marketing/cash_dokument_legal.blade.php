@@ -396,7 +396,8 @@
                             <div class="flex-grow-1">
                                 <h5 class="mb-1 text-dark">{{ $booking->customer->full_name ?? '-' }}</h5>
                                 <p class="text-muted mb-0">{{ $booking->unit->landBank->name ?? '-' }} -
-                                    {{ $booking->unit->type ?? '-' }} / {{ $booking->unit->unit_code ?? '-' }}</p>
+                                    {{ $booking->unit->type ?? '-' }} / {{ $booking->unit->unit_code ?? '-' }}
+                                    {{ $booking->unit->jenis ?? '-' }}</p>
                             </div>
                         </div>
                     </div>
@@ -477,6 +478,27 @@
     </div>
 
     @push('scripts')
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#3085d6'
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#d33'
+                });
+            </script>
+        @endif
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // File upload preview untuk semua input file

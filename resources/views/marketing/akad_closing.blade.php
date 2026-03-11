@@ -467,8 +467,8 @@
 
                         <!-- Info Customer -->
                         <div class="flex-grow-1">
-                            <h4 class="mb-1">BUDI SANTOSO</h4>
-                            <p class="text-muted mb-0">Booking ID: BK-2025-001</p>
+                            <h4 class="mb-1">{{ $kpr->customer->full_name ?? '-' }}</h4>
+                            <p class="text-muted mb-0">Booking ID: {{ $kpr->booking->booking_code ?? '-' }}</p>
                         </div>
 
                         <!-- Info Unit -->
@@ -476,16 +476,16 @@
                             <div class="d-flex flex-wrap gap-3">
                                 <div>
                                     <small class="text-muted d-block">Unit</small>
-                                    <span class="fw-medium">Tipe 36/72</span>
+                                    <span class="fw-medium">Tipe {{ $kpr->unit->type ?? '-' }}</span>
                                 </div>
                                 <div>
                                     <small class="text-muted d-block">Blok/No</small>
-                                    <span class="fw-medium">A.1</span>
+                                    <span class="fw-medium">{{ $kpr->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div>
                                     <small class="text-muted d-block">Harga Unit</small>
                                     <span class="fw-medium text-primary">
-                                        Rp 350.000.000
+                                        Rp {{ number_format($kpr->unit->price, 0, ',', '.') }}
                                     </span>
                                 </div>
                             </div>
@@ -529,7 +529,8 @@
                                         <i class="mdi mdi-check" style="font-size: 18px;"></i>
                                     </div>
                                     <span class="d-block text-success small fw-medium">Diajukan</span>
-                                    <small class="text-muted d-none d-sm-block">10 Mar</small>
+                                    <small
+                                        class="text-muted d-none d-sm-block">{{ \Carbon\Carbon::parse($kpr->submitted_at)->translatedFormat('d F Y') }}</small>
                                 </div>
                             </div>
                             <div class="col-2 col-md text-center mb-3 mb-md-0">
@@ -539,7 +540,8 @@
                                         <i class="mdi mdi-check" style="font-size: 18px;"></i>
                                     </div>
                                     <span class="d-block text-success small fw-medium">Verifikasi</span>
-                                    <small class="text-muted d-none d-sm-block">12 Mar</small>
+                                    <small
+                                        class="text-muted d-none d-sm-block">{{ \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') }}</small>
                                 </div>
                             </div>
                             <div class="col-2 col-md text-center mb-3 mb-md-0">
@@ -549,7 +551,8 @@
                                         <i class="mdi mdi-check" style="font-size: 18px;"></i>
                                     </div>
                                     <span class="d-block text-success small fw-medium">Survey</span>
-                                    <small class="text-muted d-none d-sm-block">15 Mar</small>
+                                    <small
+                                        class="text-muted d-none d-sm-block">{{ \Carbon\Carbon::parse($kpr->booking->survey_at)->translatedFormat('d F Y') }}</small>
                                 </div>
                             </div>
                             <div class="col-2 col-md text-center mt-2 mt-md-0">
@@ -566,9 +569,9 @@
                                 <div class="step">
                                     <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
                                         style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-cash-check" style="font-size: 18px;"></i>
+                                        <i class="mdi mdi-home" style="font-size: 18px;"></i>
                                     </div>
-                                    <span class="d-block text-muted small fw-medium">Cair</span>
+                                    <span class="d-block text-muted small fw-medium">Serah Terima Unit</span>
                                     <small class="text-muted d-none d-sm-block">Menunggu</small>
                                 </div>
                             </div>
@@ -590,22 +593,22 @@
                     <div class="detail-info">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Bank Tujuan</span>
-                            <span class="fw-medium">BANK MANDIRI</span>
+                            <span class="fw-medium">{{ $kpr->bank->bank_name ?? '-' }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Jumlah Pinjaman</span>
                             <span class="fw-medium">
-                                Rp 280.000.000
+                                Rp {{ number_format($kpr->jumlah_pinjaman ?? 0, 0, ',', '.') }}
                             </span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Tenor</span>
-                            <span class="fw-medium">15 Tahun</span>
+                            <span class="fw-medium">{{ $kpr->tenor }} Tahun</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Angsuran/bln</span>
                             <span class="fw-medium text-primary">
-                                Rp 2.350.000
+                                Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}
                             </span>
                         </div>
                     </div>
@@ -619,8 +622,8 @@
                                 <i class="mdi mdi-account-tie text-primary"></i>
                             </div>
                             <div>
-                                <span class="fw-medium d-block">AHMAD SYAIFUL</span>
-                                <small class="text-muted">Marketing</small>
+                                <span class="fw-medium d-block">{{ $kpr->sales->name ?? '-' }}</span>
+                                <small class="text-muted">{{ $kpr->sales->position->name ?? '-' }}</small>
                             </div>
                         </div>
                     </div>
@@ -655,122 +658,43 @@
                                     <th style="width:15%">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                            <span>KTP</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">Lengkap</span>
-                                    </td>
-                                    <td>
-                                        <small>10 Mar 2025</small>
-                                    </td>
-                                    <td>
-                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                            <span>KK</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">Lengkap</span>
-                                    </td>
-                                    <td>
-                                        <small>10 Mar 2025</small>
-                                    </td>
-                                    <td>
-                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                            <span>NPWP</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">Lengkap</span>
-                                    </td>
-                                    <td>
-                                        <small>11 Mar 2025</small>
-                                    </td>
-                                    <td>
-                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                            <span>Slip Gaji</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">Lengkap</span>
-                                    </td>
-                                    <td>
-                                        <small>12 Mar 2025</small>
-                                    </td>
-                                    <td>
-                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                            <span>Rekening Koran</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">Lengkap</span>
-                                    </td>
-                                    <td>
-                                        <small>12 Mar 2025</small>
-                                    </td>
-                                    <td>
-                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                            <span>Surat Nikah</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">Lengkap</span>
-                                    </td>
-                                    <td>
-                                        <small>11 Mar 2025</small>
-                                    </td>
-                                    <td>
-                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
+                           <tbody>
+@foreach ($kpr->documents as $doc)
+<tr>
+    <td>
+        <div class="d-flex align-items-center">
+            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
+            <span>{{ strtoupper($doc->type) }}</span>
+        </div>
+    </td>
+
+    <td>
+        @if ($doc->path)
+            <span class="badge bg-success">Lengkap</span>
+        @else
+            <span class="badge bg-danger">Belum Upload</span>
+        @endif
+    </td>
+
+    <td>
+        <small>
+            {{ \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y') }}
+        </small>
+    </td>
+
+    <td>
+        @if ($doc->path)
+            <a href="{{ asset('storage/'.$doc->path) }}" target="_blank"
+                class="btn btn-sm btn-outline-primary">
+                <i class="mdi mdi-eye"></i>
+            </a>
+        @else
+            <span class="text-muted">-</span>
+        @endif
+    </td>
+</tr>
+@endforeach
+</tbody>
                         </table>
                     </div>
 
@@ -902,7 +826,8 @@
 
                         <!-- Tombol Pilih Selesai / Tunda -->
                         <div class="d-flex gap-2 mb-3">
-                            <button type="button" id="pilihSelesai" class="konfirmasi-btn konfirmasi-btn-outline-success">
+                            <button type="button" id="pilihSelesai"
+                                class="konfirmasi-btn konfirmasi-btn-outline-success">
                                 Selesai Akad
                             </button>
                             <button type="button" id="pilihTunda" class="konfirmasi-btn konfirmasi-btn-outline-warning">
@@ -924,13 +849,15 @@
                                 <div class="col-md-6">
                                     <div class="konfirmasi-form-group">
                                         <label>Tanggal Akad</label>
-                                        <input type="date" class="konfirmasi-form-control" name="tanggal_akad" value="2025-03-20">
+                                        <input type="date" class="konfirmasi-form-control" name="tanggal_akad"
+                                            value="2025-03-20">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="konfirmasi-form-group">
                                         <label>Lokasi Akad</label>
-                                        <input type="text" class="konfirmasi-form-control" name="lokasi_akad" value="Kantor Notaris Siti, SH">
+                                        <input type="text" class="konfirmasi-form-control" name="lokasi_akad"
+                                            value="Kantor Notaris Siti, SH">
                                     </div>
                                 </div>
                             </div>
@@ -939,13 +866,15 @@
                                 <div class="col-md-6">
                                     <div class="konfirmasi-form-group">
                                         <label>Nama Notaris</label>
-                                        <input type="text" class="konfirmasi-form-control" name="nama_notaris" value="Siti Nurhaliza, SH">
+                                        <input type="text" class="konfirmasi-form-control" name="nama_notaris"
+                                            value="Siti Nurhaliza, SH">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="konfirmasi-form-group">
                                         <label>Nomor Akad</label>
-                                        <input type="text" class="konfirmasi-form-control" name="nomor_akad" value="AKD/2025/03/123">
+                                        <input type="text" class="konfirmasi-form-control" name="nomor_akad"
+                                            value="AKD/2025/03/123">
                                     </div>
                                 </div>
                             </div>
@@ -966,7 +895,8 @@
 
                             <div class="konfirmasi-form-group">
                                 <label>Catatan Akad</label>
-                                <textarea class="konfirmasi-form-control" name="catatan" rows="2" placeholder="Contoh: Proses akad selesai, dokumen lengkap"></textarea>
+                                <textarea class="konfirmasi-form-control" name="catatan" rows="2"
+                                    placeholder="Contoh: Proses akad selesai, dokumen lengkap"></textarea>
                             </div>
                         </div>
 
@@ -993,7 +923,8 @@
 
                             <div class="konfirmasi-form-group">
                                 <label>Catatan / Keterangan</label>
-                                <textarea class="konfirmasi-form-control" name="catatan_masalah" rows="3" placeholder="Jelaskan detail penundaan..."></textarea>
+                                <textarea class="konfirmasi-form-control" name="catatan_masalah" rows="3"
+                                    placeholder="Jelaskan detail penundaan..."></textarea>
                             </div>
 
                             <hr class="my-3">
@@ -1001,7 +932,8 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <div class="konfirmasi-tindakan-card">
-                                        <input type="radio" name="tindakan" id="tindakanJadwalUlang" value="Jadwal Ulang" checked>
+                                        <input type="radio" name="tindakan" id="tindakanJadwalUlang"
+                                            value="Jadwal Ulang" checked>
                                         <label class="konfirmasi-tindakan-label" for="tindakanJadwalUlang">
                                             <div class="konfirmasi-tindakan-icon">
                                                 <i class="mdi mdi-calendar-clock"></i>
@@ -1018,7 +950,8 @@
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <div class="konfirmasi-tindakan-card">
-                                        <input type="radio" name="tindakan" id="tindakanLengkapi" value="Lengkapi Dokumen">
+                                        <input type="radio" name="tindakan" id="tindakanLengkapi"
+                                            value="Lengkapi Dokumen">
                                         <label class="konfirmasi-tindakan-label" for="tindakanLengkapi">
                                             <div class="konfirmasi-tindakan-icon">
                                                 <i class="mdi mdi-file-document-edit"></i>
@@ -1130,52 +1063,56 @@
 @endsection
 
 @push('scripts')
-<!-- JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('#pilihSelesai').click(function() {
-        $('#formSelesai').slideDown();
-        $('#formTunda').slideUp();
-        $('#statusAkadInput').val('completed');
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#pilihSelesai').click(function() {
+                $('#formSelesai').slideDown();
+                $('#formTunda').slideUp();
+                $('#statusAkadInput').val('completed');
 
-        // Ubah style tombol
-        $(this).removeClass('konfirmasi-btn-outline-success').addClass('konfirmasi-btn-success');
-        $('#pilihTunda').removeClass('konfirmasi-btn-warning').addClass('konfirmasi-btn-outline-warning');
-    });
+                // Ubah style tombol
+                $(this).removeClass('konfirmasi-btn-outline-success').addClass('konfirmasi-btn-success');
+                $('#pilihTunda').removeClass('konfirmasi-btn-warning').addClass(
+                    'konfirmasi-btn-outline-warning');
+            });
 
-    $('#pilihTunda').click(function() {
-        $('#formTunda').slideDown();
-        $('#formSelesai').slideUp();
-        $('#statusAkadInput').val('problem');
+            $('#pilihTunda').click(function() {
+                $('#formTunda').slideDown();
+                $('#formSelesai').slideUp();
+                $('#statusAkadInput').val('problem');
 
-        // Ubah style tombol
-        $(this).removeClass('konfirmasi-btn-outline-warning').addClass('konfirmasi-btn-warning');
-        $('#pilihSelesai').removeClass('konfirmasi-btn-success').addClass('konfirmasi-btn-outline-success');
-    });
+                // Ubah style tombol
+                $(this).removeClass('konfirmasi-btn-outline-warning').addClass('konfirmasi-btn-warning');
+                $('#pilihSelesai').removeClass('konfirmasi-btn-success').addClass(
+                    'konfirmasi-btn-outline-success');
+            });
 
-    // Modern file upload menampilkan nama dan ukuran
-    $('input[type="file"]').change(function(e) {
-        const file = e.target.files[0];
-        if(file) {
-            const sizeInMB = (file.size / (1024*1024)).toFixed(2);
-            $(this).closest('.verifikasi-file-upload').find('.verifikasi-file-info span').text(file.name);
-            $(this).closest('.verifikasi-file-upload').find('.verifikasi-file-info small').text(sizeInMB + ' MB');
-        } else {
-            // Reset ke teks awal
-            const parent = $(this).closest('.verifikasi-file-upload');
-            const label = parent.find('.verifikasi-file-info span');
-            const small = parent.find('.verifikasi-file-info small');
+            // Modern file upload menampilkan nama dan ukuran
+            $('input[type="file"]').change(function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                    $(this).closest('.verifikasi-file-upload').find('.verifikasi-file-info span').text(file
+                        .name);
+                    $(this).closest('.verifikasi-file-upload').find('.verifikasi-file-info small').text(
+                        sizeInMB + ' MB');
+                } else {
+                    // Reset ke teks awal
+                    const parent = $(this).closest('.verifikasi-file-upload');
+                    const label = parent.find('.verifikasi-file-info span');
+                    const small = parent.find('.verifikasi-file-info small');
 
-            if (parent.find('input[name="dokumen_akad"]').length) {
-                label.text('Upload Dokumen Akad');
-                small.text('Format: JPG, PNG, PDF (Max 5MB)');
-            } else {
-                label.text('Upload Dokumen Pendukung');
-                small.text('Format: JPG, PNG, PDF (Max 5MB)');
-            }
-        }
-    });
-});
-</script>
+                    if (parent.find('input[name="dokumen_akad"]').length) {
+                        label.text('Upload Dokumen Akad');
+                        small.text('Format: JPG, PNG, PDF (Max 5MB)');
+                    } else {
+                        label.text('Upload Dokumen Pendukung');
+                        small.text('Format: JPG, PNG, PDF (Max 5MB)');
+                    }
+                }
+            });
+        });
+    </script>
 @endpush
