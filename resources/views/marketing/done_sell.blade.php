@@ -415,7 +415,7 @@
                             </div>
                             <div class="mt-3 mt-sm-0">
                                 <span class="badge badge-success p-2" style="font-size: 1rem;">
-                                    <i class="mdi mdi-home me-1"></i> {{$unit->unit_code ?? '-'}}
+                                    <i class="mdi mdi-home me-1"></i> {{ $unit->unit_code ?? '-' }}
                                 </span>
                             </div>
                         </div>
@@ -441,27 +441,28 @@
                                 <div class="info-box mb-3">
                                     <div class="info-row">
                                         <span class="info-label">Nama Unit</span>
-                                        <span class="info-value fw-bold">Tipe {{$unit->type ?? '-'}} - {{$unit->unit_name ?? '-'}}</span>
+                                        <span class="info-value fw-bold">Tipe {{ $unit->type ?? '-' }} -
+                                            {{ $unit->unit_name ?? '-' }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Blok / No</span>
-                                        <span class="info-value">{{$unit->unit_code ?? '-'}}</span>
+                                        <span class="info-value">{{ $unit->unit_code ?? '-' }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Luas Tanah</span>
-                                        <span class="info-value">{{$unit->area ?? '-'}} m²</span>
+                                        <span class="info-value">{{ $unit->area ?? '-' }} m²</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Luas Bangunan</span>
-                                        <span class="info-value">{{$unit->building_area ?? '-'}} m²</span>
+                                        <span class="info-value">{{ $unit->building_area ?? '-' }} m²</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Hadap</span>
-                                        <span class="info-value">{{$unit->facing ?? '-'}}</span>
+                                        <span class="info-value">{{ $unit->facing ?? '-' }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Posisi</span>
-                                        <span class="info-value">{{$unit->position ?? '-'}}</span>
+                                        <span class="info-value">{{ $unit->position ?? '-' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -470,19 +471,21 @@
                                 <div class="info-box mb-3">
                                     <div class="info-row">
                                         <span class="info-label">Lokasi</span>
-                                        <span class="info-value">{{$unit->landBank->address ?? '-'}}</span>
+                                        <span class="info-value">{{ $unit->landBank->address ?? '-' }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Koordinat</span>
-                                        <span class="info-value">{{$unit->landBank->lat ?? '-'}}, {{$unit->landBank->lng ?? '-'}}</span>
+                                        <span class="info-value">{{ $unit->landBank->lat ?? '-' }},
+                                            {{ $unit->landBank->lng ?? '-' }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Zonasi</span>
-                                        <span class="info-value">{{$unit->landBank->zoing ?? '-'}}</span>
+                                        <span class="info-value">{{ $unit->landBank->zoning ?? '-' }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Lebar Jalan</span>
-                                        <span class="info-value">6 m (Aspal)</span>
+                                        <span class="info-value">{{ $unit->landBank->road_width ?? '-' }}m
+                                            ({{ $unit->landBank->road_type ?? '-' }})</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Listrik</span>
@@ -518,35 +521,35 @@
                                 <i class="mdi mdi-account" style="font-size: 35px;"></i>
                             </div>
                             <div>
-                                <h4 class="mb-1">BUDI SANTOSO</h4>
-                                <p class="text-muted mb-0">Booking ID: BK-2025-001</p>
+                                <h4 class="mb-1">{{ $unit->activeBooking->customer->full_name ?? '-' }}</h4>
+                                <p class="text-muted mb-0">Booking ID: {{ $unit->activeBooking->booking_code ?? '-' }}</p>
                             </div>
                         </div>
 
                         <div class="detail-card">
                             <div class="info-row">
                                 <span class="info-label">NIK</span>
-                                <span class="info-value">3512345678901234</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->nik ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">NPWP</span>
-                                <span class="info-value">12.345.678.9-012.345</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->npwp ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">No. HP</span>
-                                <span class="info-value">0812-3456-7890</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->phone ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Email</span>
-                                <span class="info-value">budi.santoso@gmail.com</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->email ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Alamat</span>
-                                <span class="info-value">Jl. Kenangan No. 45, Jember</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->address ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Pekerjaan</span>
-                                <span class="info-value">Karyawan Swasta</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->job_status }}</span>
                             </div>
                         </div>
                     </div>
@@ -634,121 +637,237 @@
                     </div>
                     <div class="card-body">
                         <div class="price-summary">
-                            <div class="price-row">
-                                <span>Harga Unit</span>
-                                <span class="fw-bold">Rp 350.000.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>DP (20%)</span>
-                                <span>Rp 70.000.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Pokok Pinjaman KPR</span>
-                                <span>Rp 280.000.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Bunga (7.5% x 15 thn)</span>
-                                <span>Rp 122.500.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Total Pinjaman + Bunga</span>
-                                <span>Rp 402.500.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Biaya BPHTB</span>
-                                <span>Rp 5.000.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Biaya PNBP</span>
-                                <span>Rp 1.500.000</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Biaya Notaris</span>
-                                <span>Rp 3.500.000</span>
-                            </div>
-                            <div class="price-row total">
-                                <span>TOTAL BIAYA</span>
-                                <span>Rp 362.500.000</span>
-                            </div>
+
+                            @php
+                                $purchaseType =
+                                    $unit->activeBooking?->purchase_type ?? ($unit->purchase_type ?? 'cash');
+                                $dpAmount = $unit->activeBooking?->booking_fee ?? 0;
+                                $remaining = ($unit->price ?? 0) - $dpAmount;
+                            @endphp
+
+                            @if ($purchaseType == 'cash')
+                                <div class="price-row">
+                                    <span>Harga Unit</span>
+                                    <span class="fw-bold">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>DP</span>
+                                    <span>Rp {{ number_format($dpAmount, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row total">
+                                    <span>Sisa Bayar</span>
+                                    <span class="fw-bold">Rp {{ number_format($remaining, 0, ',', '.') }}</span>
+                                </div>
+                            @elseif($unit->purchase_type == 'kpr')
+                                <!-- KPR -->
+                                <div class="price-row">
+                                    <span>Harga Unit</span>
+                                    <span class="fw-bold">Rp {{ number_format($unit->price, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>DP ({{ $unit->activeBooking->booking_fee_percent ?? 20 }}%)</span>
+                                    <span>Rp {{ number_format($unit->activeBooking->booking_fee, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Pokok Pinjaman KPR</span>
+                                    <span>Rp {{ number_format($unit->loan_principal ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Bunga ({{ $unit->interest_rate ?? 7.5 }}% x {{ $unit->loan_years ?? 15 }}
+                                        thn)</span>
+                                    <span>Rp {{ number_format($unit->loan_interest ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Total Pinjaman + Bunga</span>
+                                    <span>Rp
+                                        {{ number_format(($unit->loan_principal ?? 0) + ($unit->loan_interest ?? 0), 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Biaya BPHTB</span>
+                                    <span>Rp {{ number_format($unit->bphtb_fee ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Biaya PNBP</span>
+                                    <span>Rp {{ number_format($unit->pnbp_fee ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Biaya Notaris</span>
+                                    <span>Rp {{ number_format($unit->notary_fee ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="price-row total">
+                                    <span>TOTAL BIAYA</span>
+                                    <span>Rp
+                                        {{ number_format(
+                                            ($unit->loan_principal ?? 0) +
+                                                ($unit->loan_interest ?? 0) +
+                                                ($unit->bphtb_fee ?? 0) +
+                                                ($unit->pnbp_fee ?? 0) +
+                                                ($unit->notary_fee ?? 0),
+                                            0,
+                                            ',',
+                                            '.',
+                                        ) }}</span>
+                                </div>
+                            @endif
+
                         </div>
 
-                        <div class="mt-3">
-                            <div class="info-row">
-                                <span class="info-label">Bank Pencairan</span>
-                                <span class="info-value">BANK MANDIRI</span>
+                        @if ($unit->purchase_type == 'kpr')
+                            <!-- Info Bank / Sertifikat hanya untuk KPR -->
+                            <div class="mt-3">
+                                <div class="info-row">
+                                    <span class="info-label">Bank Pencairan</span>
+                                    <span class="info-value">{{ $unit->bank_name ?? 'BANK MANDIRI' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">No. Referensi</span>
+                                    <span class="info-value">{{ $unit->bank_reference ?? 'SK/2025/03/1234' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Tanggal Cair</span>
+                                    <span class="info-value">{{ $unit->disbursement_date ?? '25 Maret 2025' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">No. Sertifikat</span>
+                                    <span class="info-value">{{ $unit->certificate_number ?? 'SHM 12345/Jember' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Atas Nama</span>
+                                    <span class="info-value">{{ $unit->owner_name ?? 'BUDI SANTOSO' }}</span>
+                                </div>
                             </div>
-                            <div class="info-row">
-                                <span class="info-label">No. Referensi</span>
-                                <span class="info-value">SK/2025/03/1234</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Tanggal Cair</span>
-                                <span class="info-value">25 Maret 2025</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">No. Sertifikat</span>
-                                <span class="info-value">SHM 12345/Jember</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Atas Nama</span>
-                                <span class="info-value">BUDI SANTOSO</span>
-                            </div>
-                        </div>
+                        @endif
+
                     </div>
                 </div>
             </div>
 
             <!-- Kanan: Riwayat Transaksi (Timeline) -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title">
-                            <i class="mdi mdi-timeline-text me-2 text-primary"></i>
-                            RIWAYAT TRANSAKSI LENGKAP
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="timeline-completed">
-                            <div class="timeline-item">
-                                <div class="timeline-date">10 Maret 2025</div>
-                                <div class="timeline-title">Pengajuan KPR</div>
-                                <div class="timeline-desc">Customer mengajukan KPR ke Bank Mandiri</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">12 Maret 2025</div>
-                                <div class="timeline-title">Verifikasi Dokumen</div>
-                                <div class="timeline-desc">Dokumen dinyatakan lengkap</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">15 Maret 2025</div>
-                                <div class="timeline-title">Survey</div>
-                                <div class="timeline-desc">Survey lapangan & appraisal - Nilai Rp 355 Juta</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">20 Maret 2025</div>
-                                <div class="timeline-title">Akad</div>
-                                <div class="timeline-desc">Akad kredit di Kantor Notaris Siti, SH</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">25 Maret 2025</div>
-                                <div class="timeline-title">Closing</div>
-                                <div class="timeline-desc">Dana cair Rp 280 Juta, serah terima unit</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">26 Maret 2025</div>
-                                <div class="timeline-title">Selesai</div>
-                                <div class="timeline-desc">Unit resmi menjadi milik customer</div>
-                            </div>
-                        </div>
+         @php
+    $purchaseType = $unit->activeBooking?->purchase_type ?? 'cash';
+@endphp
 
-                        <div class="mt-3 text-center">
-                            <span class="badge badge-success p-2">
-                                <i class="mdi mdi-check-circle me-1"></i> STATUS: SELESAI (LUNAS)
-                            </span>
+<div class="col-md-6">
+    <div class="card h-100">
+        <div class="card-header bg-white">
+            <h5 class="card-title">
+                <i class="mdi mdi-timeline-text me-2 text-primary"></i>
+                RIWAYAT TRANSAKSI LENGKAP
+            </h5>
+        </div>
+
+        <div class="card-body">
+            <div class="timeline-completed">
+
+                {{-- ===================== CASH ===================== --}}
+                @if($purchaseType == 'cash')
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            {{ $unit->activeBooking?->created_at?->format('d M Y') }}
+                        </div>
+                        <div class="timeline-title">Booking Unit</div>
+                        <div class="timeline-desc">
+                            Customer melakukan booking unit
                         </div>
                     </div>
-                </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            {{ $unit->activeBooking?->created_at?->format('d M Y') }}
+                        </div>
+                        <div class="timeline-title">Pembayaran DP</div>
+                        <div class="timeline-desc">
+                            DP dibayarkan sebesar
+                            Rp {{ number_format($unit->activeBooking?->booking_fee ?? 0,0,',','.') }}
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            {{ $unit->activeBooking?->updated_at?->format('d M Y') }}
+                        </div>
+                        <div class="timeline-title">Pelunasan</div>
+                        <div class="timeline-desc">
+                            Customer melakukan pelunasan pembayaran unit
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            {{ $unit->activeBooking?->updated_at?->format('d M Y') }}
+                        </div>
+                        <div class="timeline-title">Serah Terima Unit</div>
+                        <div class="timeline-desc">
+                            Unit resmi diserahkan kepada customer
+                        </div>
+                    </div>
+
+                {{-- ===================== KPR ===================== --}}
+                @elseif($purchaseType == 'kpr')
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">10 Maret 2025</div>
+                        <div class="timeline-title">Pengajuan KPR</div>
+                        <div class="timeline-desc">
+                            Customer mengajukan KPR ke Bank
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">12 Maret 2025</div>
+                        <div class="timeline-title">Verifikasi Dokumen</div>
+                        <div class="timeline-desc">
+                            Dokumen dinyatakan lengkap
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">15 Maret 2025</div>
+                        <div class="timeline-title">Survey & Appraisal</div>
+                        <div class="timeline-desc">
+                            Bank melakukan survey dan penilaian properti
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">20 Maret 2025</div>
+                        <div class="timeline-title">Akad Kredit</div>
+                        <div class="timeline-desc">
+                            Akad kredit dilakukan di notaris
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">25 Maret 2025</div>
+                        <div class="timeline-title">Pencairan Dana</div>
+                        <div class="timeline-desc">
+                            Bank mencairkan dana KPR
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">26 Maret 2025</div>
+                        <div class="timeline-title">Serah Terima Unit</div>
+                        <div class="timeline-desc">
+                            Unit resmi menjadi milik customer
+                        </div>
+                    </div>
+
+                @endif
+
             </div>
+
+            <div class="mt-3 text-center">
+                <span class="badge badge-success p-2">
+                    <i class="mdi mdi-check-circle me-1"></i>
+                    STATUS: {{ strtoupper($unit->activeBooking?->status ?? 'SELESAI') }}
+                </span>
+            </div>
+
+        </div>
+    </div>
+</div>
         </div>
 
         <!-- Row: Informasi Tambahan -->
@@ -789,16 +908,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <small class="text-muted d-block">Catatan:</small>
-                                <p class="mb-0">Unit sudah diserahkan ke customer dalam kondisi baik. Kunci unit (2 set), buku STNK, dan dokumen lainnya sudah diterima customer.</p>
+                                <p class="mb-0">Unit sudah diserahkan ke customer dalam kondisi baik. Kunci unit (2 set),
+                                    buku STNK, dan dokumen lainnya sudah diterima customer.</p>
                             </div>
-                            <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                                <button class="btn btn-outline-primary btn-sm me-2">
-                                    <i class="mdi mdi-printer me-1"></i> Cetak Laporan
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="mdi mdi-email me-1"></i> Kirim ke Email
-                                </button>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

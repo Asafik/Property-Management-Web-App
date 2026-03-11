@@ -117,22 +117,22 @@
             }
         }
 
-        .badge.badge-success {
+        .badge.bg-success {
             background: linear-gradient(135deg, #28a745, #5cb85c) !important;
             color: #ffffff;
         }
 
-        .badge.badge-warning {
+        .badge.bg-warning {
             background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
             color: #2c2e3f;
         }
 
-        .badge.badge-primary {
+        .badge.bg-primary {
             background: linear-gradient(135deg, #9a55ff, #da8cff) !important;
             color: #ffffff;
         }
 
-        .badge.badge-info {
+        .badge.bg-info {
             background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
             color: #ffffff;
         }
@@ -331,160 +331,192 @@
             color: #721c24;
         }
 
-        /* ===== CHECKLIST STYLING ===== */
-        .serah-checklist-item {
+        /* ===== CHECKLIST STYLING - MODERN ===== */
+        .serah-checklist-wrapper {
             display: flex;
-            align-items: center;
-            padding: 0.75rem;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s ease;
-        }
-
-        .serah-checklist-item:hover {
-            background: #f8f9fa;
-            border-color: #9a55ff;
-        }
-
-        .serah-checklist-item .form-check {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            margin: 0;
-        }
-
-        .serah-checklist-item .form-check-input {
-            margin-right: 1rem;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .serah-checklist-item .form-check-input:checked {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-
-        .serah-checklist-item .form-check-label {
-            flex: 1;
-            cursor: pointer;
-            font-weight: 500;
-            color: #2c2e3f;
-        }
-
-        .serah-checklist-item .badge {
-            margin-left: 0.5rem;
-        }
-
-        /* ===== TIMELINE STYLING ===== */
-        .serah-timeline {
-            margin-top: 0.5rem;
-        }
-
-        .serah-timeline-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .serah-timeline-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .serah-timeline-icon {
-            width: 24px;
-            text-align: center;
-        }
-
-        .serah-timeline-icon i {
-            font-size: 1rem;
-        }
-
-        .serah-timeline-content {
-            flex: 1;
-        }
-
-        .serah-timeline-text {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #2c2e3f;
-        }
-
-        .serah-timeline-date {
-            display: block;
-            font-size: 0.7rem;
-            color: #6c7383;
-        }
-
-        /* ===== DOKUMEN CARD ===== */
-        .serah-dokumen-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .serah-dokumen-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .serah-dokumen-info i {
-            font-size: 1.5rem;
-            color: #9a55ff;
-        }
-
-        .serah-dokumen-info span {
-            font-weight: 500;
-            color: #2c2e3f;
-        }
-
-        .serah-dokumen-status {
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 0.5rem;
         }
 
-        /* ===== TANDA TANGAN ===== */
-        .serah-signature-area {
-            border: 2px dashed #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            background: #f8f9fa;
+        .serah-checklist-item {
+            position: relative;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .serah-checklist-item {
+                width: calc(50% - 0.25rem);
+            }
+        }
+
+        .serah-checklist-item .form-check {
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .serah-checklist-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .serah-checklist-item .check-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-height: 150px;
+            min-height: 60px;
+        }
+
+        .serah-checklist-item .check-label:hover {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
+        }
+
+        .serah-checklist-item input[type="checkbox"]:checked + .check-label {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+        }
+
+        .check-icon {
+            width: 30px;
+            height: 30px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            background: white;
+            border-radius: 8px;
+            color: #d0d4db;
+            transition: all 0.3s ease;
         }
 
-        .serah-signature-area:hover {
+        .check-icon i {
+            font-size: 1.4rem;
+        }
+
+        .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-icon {
+            color: #28a745;
+            transform: scale(1.1);
+            animation: checkPulse 0.3s ease;
+        }
+
+        .check-text {
+            flex: 1;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.9rem;
+        }
+
+        .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-text {
+            color: #28a745;
+        }
+
+        @keyframes checkPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* Dokumen Checklist Modern */
+        .serah-doc-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .serah-doc-item {
+            position: relative;
+        }
+
+        .serah-doc-item .form-check {
+            margin: 0;
+            padding: 0;
+        }
+
+        .serah-doc-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .serah-doc-item .doc-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .serah-doc-item .doc-label:hover {
             border-color: #9a55ff;
-            background: #f1f0ff;
+            background: #f8f9fa;
+            transform: translateX(5px);
         }
 
-        .serah-signature-area i {
-            font-size: 3rem;
+        .serah-doc-item input[type="checkbox"]:checked + .doc-label {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+            border-left: 4px solid #28a745;
+        }
+
+        .doc-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(154, 85, 255, 0.1);
+            border-radius: 8px;
             color: #9a55ff;
-            margin-bottom: 0.5rem;
         }
 
-        .serah-signature-area span {
-            color: #6c7383;
+        .doc-icon i {
+            font-size: 1.2rem;
+        }
+
+        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-icon {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .doc-text {
+            flex: 1;
+            font-weight: 500;
+            color: #2c2e3f;
+        }
+
+        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-text {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .doc-badge {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-badge {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: white;
         }
 
         /* ===== TEXT COLORS ===== */
@@ -553,6 +585,48 @@
             background: #6c757d;
             color: #ffffff;
             transform: translateY(-2px);
+        }
+
+        /* ===== TIMELINE STEPS (BAWAAN) ===== */
+        .timeline-steps {
+            margin-top: 1rem;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .step.completed .step-icon {
+            background-color: #28a745 !important;
+            color: white;
+        }
+
+        .step.active .step-icon {
+            background-color: #007bff !important;
+            color: white;
+        }
+
+        .step small {
+            display: block;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .detail-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
         }
     </style>
 
@@ -624,52 +698,44 @@
                             </div>
                         </div>
 
-                        <!-- Timeline Steps -->
-                        <div class="row g-2 g-md-0">
-                            <div class="col text-center mb-3 mb-md-0">
-                                <div class="step completed">
-                                    <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-check"></i>
+                        <!-- Timeline Steps (Bawaan) -->
+                        <div class="timeline-steps">
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    <div class="step completed">
+                                        <div class="step-icon">
+                                            <i class="mdi mdi-check"></i>
+                                        </div>
+                                        <span>Booking</span>
+                                        <small>{{ $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('j F Y') : '-' }}</small>
                                     </div>
-                                    <span class="d-block text-success small fw-medium">Booking</span>
-                                    <small class="text-muted d-none d-sm-block">
-                                        {{ $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('j F Y') : '-' }}
-                                    </small>
                                 </div>
-                            </div>
-                            <div class="col text-center mb-3 mb-md-0">
-                                <div class="step completed">
-                                    <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-check"></i>
+                                <div class="col-3 text-center">
+                                    <div class="step completed">
+                                        <div class="step-icon">
+                                            <i class="mdi mdi-check"></i>
+                                        </div>
+                                        <span>Pelunasan</span>
+                                        <small>{{ $booking->pelunasan_date ? \Carbon\Carbon::parse($booking->pelunasan_date)->translatedFormat('j F Y') : '-' }}</small>
                                     </div>
-                                    <span class="d-block text-success small fw-medium">Pelunasan</span>
-                                    <small class="text-muted d-none d-sm-block">
-                                        {{ $booking->pelunasan_date ? \Carbon\Carbon::parse($booking->pelunasan_date)->translatedFormat('j F Y') : '-' }}
-                                    </small>
                                 </div>
-                            </div>
-                            <div class="col text-center mb-3 mb-md-0">
-                                <div class="step completed">
-                                    <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-check"></i>
+                                <div class="col-3 text-center">
+                                    <div class="step completed">
+                                        <div class="step-icon">
+                                            <i class="mdi mdi-check"></i>
+                                        </div>
+                                        <span>Akad</span>
+                                        <small>{{ $booking->akad_date ? \Carbon\Carbon::parse($booking->akad_date)->translatedFormat('j F Y') : '-' }}</small>
                                     </div>
-                                    <span class="d-block text-success small fw-medium">Akad</span>
-                                    <small class="text-muted d-none d-sm-block">
-                                        {{ $booking->akad_date ? \Carbon\Carbon::parse($booking->akad_date)->translatedFormat('j F Y') : '-' }}
-                                    </small>
                                 </div>
-                            </div>
-                            <div class="col text-center">
-                                <div class="step active">
-                                    <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-key"></i>
+                                <div class="col-3 text-center">
+                                    <div class="step active">
+                                        <div class="step-icon">
+                                            <i class="mdi mdi-key"></i>
+                                        </div>
+                                        <span>Serah Terima</span>
+                                        <small>Sedang Proses</small>
                                     </div>
-                                    <span class="d-block text-primary small fw-medium">Serah Terima</span>
-                                    <small class="text-muted d-none d-sm-block">Sedang Proses</small>
                                 </div>
                             </div>
                         </div>
@@ -709,11 +775,11 @@
                                 </span>
                             </div>
                        <div class="d-flex justify-content-between mb-2">
-    <span class="text-muted">Status</span>
-    <span class="badge bg-success">
-        {{ $booking->status_cash === 'done' ? 'Lunas' : ($booking->status_cash === 'process' ? 'Proses' : 'Belum Lunas') }}
-    </span>
-</div>
+                            <span class="text-muted">Status</span>
+                            <span class="badge bg-success">
+                                {{ $booking->status_cash === 'done' ? 'Lunas' : ($booking->status_cash === 'process' ? 'Proses' : 'Belum Lunas') }}
+                            </span>
+                        </div>
                         </div>
 
                         <hr class="my-3">
@@ -742,8 +808,8 @@
             </div>
         </div>
 
-      <form action="{{ route('serah-terima.store', $booking->id) }}" 
-      method="POST" 
+      <form action="{{ route('serah-terima.store', $booking->id) }}"
+      method="POST"
       enctype="multipart/form-data">
 @csrf
 
@@ -762,26 +828,30 @@
                 <!-- Informasi -->
                 <div class="row">
                     <div class="col-md-6">
-                        <label>Tanggal Serah Terima</label>
-                        <input type="date"
-                               name="tanggal_serah_terima"
-                               class="form-control"
-                               value="{{ date('Y-m-d') }}">
+                        <div class="serah-form-group">
+                            <label>Tanggal Serah Terima</label>
+                            <input type="date"
+                                   name="tanggal_serah_terima"
+                                   class="serah-form-control"
+                                   value="{{ date('Y-m-d') }}">
+                        </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label>No. BAST</label>
-                        <input type="text"
-                               name="no_bast"
-                               class="form-control"
-                               value="{{ $noBast ?? 'Auto Generate' }}"
-                               readonly>
+                        <div class="serah-form-group">
+                            <label>No. BAST</label>
+                            <input type="text"
+                                   name="no_bast"
+                                   class="serah-form-control"
+                                   value="{{ $noBast ?? 'Auto Generate' }}"
+                                   readonly>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-3">
+                <div class="serah-form-group">
                     <label>Lokasi Serah Terima</label>
-                    <select name="lokasi_serah_terima" class="form-control">
+                    <select name="lokasi_serah_terima" class="serah-form-control">
                         <option value="site">Di Site / Proyek</option>
                         <option value="kantor">Di Kantor Marketing</option>
                         <option value="lainnya">Lainnya</option>
@@ -790,8 +860,8 @@
 
                 <hr>
 
-                <!-- ================= CHECKLIST ================= -->
-                <h6 class="text-primary">Checklist Kondisi Unit</h6>
+                <!-- ================= CHECKLIST MODERN ================= -->
+                <h6 class="text-primary mb-3">Checklist Kondisi Unit</h6>
 
                 @php
                     $items = [
@@ -799,27 +869,30 @@
                         'Air mengalir lancar',
                         'Pintu & jendela berfungsi baik',
                         'Kunci lengkap (pintu utama, pagar)',
-                        'Dinding & plafon',
+                        'Dinding & plafon baik',
                         'Lantai keramik baik',
                         'Kloset & sanitasi berfungsi',
                         'Meteran listrik & air terpasang'
                     ];
                 @endphp
 
-                <div class="row">
+                <div class="serah-checklist-wrapper">
                     @foreach($items as $index => $item)
-                        <div class="col-md-6 mb-2">
-                            <input type="hidden" 
-                                   name="items[{{ $index }}][name]" 
-                                   value="{{ $item }}">
-
+                        <div class="serah-checklist-item">
                             <div class="form-check">
+                                <input type="hidden"
+                                       name="items[{{ $index }}][name]"
+                                       value="{{ $item }}">
                                 <input type="checkbox"
                                        name="items[{{ $index }}][checked]"
                                        value="1"
+                                       id="item_{{ $index }}"
                                        class="form-check-input">
-                                <label class="form-check-label">
-                                    {{ $item }}
+                                <label for="item_{{ $index }}" class="check-label">
+                                    <span class="check-icon">
+                                        <i class="mdi mdi-check-circle"></i>
+                                    </span>
+                                    <span class="check-text">{{ $item }}</span>
                                 </label>
                             </div>
                         </div>
@@ -828,63 +901,90 @@
 
                 <hr>
 
-                <!-- ================= DOKUMEN ================= -->
-                <h6 class="text-primary">Dokumen yang Diserahkan</h6>
+                <!-- ================= DOKUMEN MODERN ================= -->
+                <h6 class="text-primary mb-3">Dokumen yang Diserahkan</h6>
 
                 @php
                     $documents = [
-                        'Kunci Unit (3 buah)',
-                        'Akta Jual Beli (AJB)',
-                        'Sertifikat Hak Milik (SHM)',
-                        'IMB / PBG',
-                        'Buku Panduan & Garansi'
+                        ['name' => 'Kunci Unit (3 buah)', 'icon' => 'key'],
+                        ['name' => 'Akta Jual Beli (AJB)', 'icon' => 'file-document-outline'],
+                        ['name' => 'Sertifikat Hak Milik (SHM)', 'icon' => 'file-certificate'],
+                        ['name' => 'IMB / PBG', 'icon' => 'file-document'],
+                        ['name' => 'Buku Panduan & Garansi', 'icon' => 'book-open']
                     ];
                 @endphp
 
-                @foreach($documents as $index => $doc)
-                    <div class="mb-2">
-                        <input type="hidden"
-                               name="documents[{{ $index }}][name]"
-                               value="{{ $doc }}">
-
-                        <div class="form-check">
-                            <input type="checkbox"
-                                   name="documents[{{ $index }}][submitted]"
-                                   value="1"
-                                   class="form-check-input">
-                            <label class="form-check-label">
-                                {{ $doc }}
-                            </label>
+                <div class="serah-doc-wrapper">
+                    @foreach($documents as $index => $doc)
+                        <div class="serah-doc-item">
+                            <div class="form-check">
+                                <input type="hidden"
+                                       name="documents[{{ $index }}][name]"
+                                       value="{{ $doc['name'] }}">
+                                <input type="checkbox"
+                                       name="documents[{{ $index }}][submitted]"
+                                       value="1"
+                                       id="doc_{{ $index }}"
+                                       class="form-check-input">
+                                <label for="doc_{{ $index }}" class="doc-label">
+                                    <span class="doc-icon">
+                                        <i class="mdi mdi-{{ $doc['icon'] }}"></i>
+                                    </span>
+                                    <span class="doc-text">{{ $doc['name'] }}</span>
+                                    <span class="doc-badge">Wajib</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
 
                 <hr>
 
-                <!-- ================= UPLOAD ================= -->
-                <h6 class="text-primary">Dokumentasi Serah Terima</h6>
+                <!-- ================= UPLOAD MODERN ================= -->
+                <h6 class="text-primary mb-3">Dokumentasi Serah Terima</h6>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <label>Foto Serah Terima Kunci</label>
-                        <input type="file"
-                               name="foto_serah_kunci"
-                               class="form-control">
+                        <div class="serah-form-group">
+                            <label>Foto Serah Terima Kunci</label>
+                            <div class="serah-file-upload-modern">
+                                <input type="file" name="foto_serah_kunci" accept=".jpg,.jpeg,.png">
+                                <div class="serah-file-label-modern">
+                                    <i class="mdi mdi-cloud-upload"></i>
+                                    <div class="serah-file-info-modern">
+                                        <span>Upload Foto Kunci</span>
+                                        <small>Format: JPG, PNG (Max 5MB)</small>
+                                    </div>
+                                    <span class="serah-file-size"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label>Foto Kondisi Unit</label>
-                        <input type="file"
-                               name="foto_kondisi_unit"
-                               class="form-control">
+                        <div class="serah-form-group">
+                            <label>Foto Kondisi Unit</label>
+                            <div class="serah-file-upload-modern">
+                                <input type="file" name="foto_kondisi_unit" accept=".jpg,.jpeg,.png">
+                                <div class="serah-file-label-modern">
+                                    <i class="mdi mdi-cloud-upload"></i>
+                                    <div class="serah-file-info-modern">
+                                        <span>Upload Foto Unit</span>
+                                        <small>Format: JPG, PNG (Max 5MB)</small>
+                                    </div>
+                                    <span class="serah-file-size"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-3">
+                <div class="serah-form-group">
                     <label>Catatan</label>
                     <textarea name="catatan"
-                              class="form-control"
-                              rows="3"></textarea>
+                              class="serah-form-control"
+                              rows="3"
+                              placeholder="Tambahkan catatan jika ada..."></textarea>
                 </div>
 
             </div>
@@ -901,29 +1001,47 @@
                     Persetujuan
                 </h5>
 
-                <div class="mb-3">
+                <div class="serah-form-group">
                     <label>Saksi (Opsional)</label>
                     <input type="text"
                            name="saksi"
-                           class="form-control">
+                           class="serah-form-control"
+                           placeholder="Nama saksi">
                 </div>
 
-                <div class="form-check mb-3">
-                    <input type="checkbox"
-                           name="persetujuan"
-                           value="1"
-                           class="form-check-input"
-                           required>
-                    <label class="form-check-label">
-                        Saya menyatakan unit diterima dalam kondisi baik.
-                    </label>
+                <div class="serah-form-group">
+                    <div class="serah-checklist-item" style="width: 100%;">
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   name="persetujuan"
+                                   value="1"
+                                   id="persetujuan"
+                                   class="form-check-input"
+                                   required>
+                            <label for="persetujuan" class="check-label">
+                                <span class="check-icon">
+                                    <i class="mdi mdi-check-circle"></i>
+                                </span>
+                                <span class="check-text">Saya menyatakan unit diterima dalam kondisi baik.</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
+
+                <hr>
 
                 <button type="submit"
-                        class="btn btn-success w-100">
+                        class="serah-btn serah-btn-success w-100">
                     <i class="mdi mdi-check-decagram me-2"></i>
                     Proses Serah Terima
                 </button>
+
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Pastikan semua checklist terisi
+                    </small>
+                </div>
 
             </div>
         </div>
@@ -933,50 +1051,35 @@
 
 </form>
     </div>
-
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                // File upload preview untuk semua input file
-                $('.serah-file-upload-modern input[type="file"]').change(function(e) {
-                    const fileName = e.target.files[0]?.name;
-                    const fileSize = e.target.files[0]?.size;
-                    const label = $(this).closest('.serah-file-upload-modern').find(
-                        '.serah-file-info-modern span');
-                    const sizeSpan = $(this).closest('.serah-file-upload-modern').find('.serah-file-size');
-
-                    if (fileName) {
-                        label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-                        if (fileSize) {
-                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                            sizeSpan.text(sizeInMB + ' MB');
-                        }
-                    } else {
-                        label.text('Upload Foto');
-                        sizeSpan.text('');
-                    }
-                });
-
-                // Checklist item styling
-                $('.serah-checklist-item .form-check-input').change(function() {
-                    const badge = $(this).closest('.serah-checklist-item').find('.badge');
-                    if ($(this).is(':checked')) {
-                        badge.removeClass('bg-warning').addClass('bg-success').text('OK');
-                    } else {
-                        badge.removeClass('bg-success').addClass('bg-warning').text('Periksa');
-                    }
-                });
-
-                // Dokumen checklist
-                $('.serah-dokumen-status input[type="checkbox"]').change(function() {
-                    const badge = $(this).closest('.serah-dokumen-status').find('.badge');
-                    if ($(this).is(':checked')) {
-                        badge.removeClass('bg-warning').addClass('bg-success').text('Sudah');
-                    } else {
-                        badge.removeClass('bg-success').addClass('bg-warning').text('Belum');
-                    }
-                });
-            });
-        </script>
-    @endpush
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            // File upload preview untuk semua input file
+            $('.serah-file-upload-modern input[type="file"]').change(function(e) {
+                const fileName = e.target.files[0]?.name;
+                const fileSize = e.target.files[0]?.size;
+                const label = $(this).closest('.serah-file-upload-modern').find(
+                    '.serah-file-info-modern span');
+                const sizeSpan = $(this).closest('.serah-file-upload-modern').find('.serah-file-size');
+
+                if (fileName) {
+                    label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+                    if (fileSize) {
+                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                        sizeSpan.text(sizeInMB + ' MB').show();
+                    }
+                } else {
+                    const parent = $(this).closest('.serah-file-upload-modern');
+                    if (parent.find('input[name="foto_serah_kunci"]').length) {
+                        label.text('Upload Foto Kunci');
+                    } else {
+                        label.text('Upload Foto Unit');
+                    }
+                    sizeSpan.text('').hide();
+                }
+            });
+        });
+    </script>
+@endpush
