@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Akad;
+use App\Models\KprApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -115,5 +116,11 @@ class AkadController extends Controller
 
         return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses akad. Silakan coba lagi.');
     }
+}
+public function akadKPR($id)
+{
+    $kpr = KprApplication::with(['customer','unit','bank','sales','documents'])->findOrFail($id);
+
+    return view('marketing.akad_closing', compact('kpr'));
 }
 }

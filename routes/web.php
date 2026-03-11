@@ -37,6 +37,7 @@ use App\Http\Controllers\AkadController;
 use App\Http\Controllers\CustomerKPRRijectedController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\DocumentLegalController;
+use App\Http\Controllers\DocumentPersiapanPecahLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
 use App\Http\Controllers\PraLandBankController;
 use App\Http\Controllers\RABDeadlineController;
@@ -309,6 +310,10 @@ Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'dest
 // Route untuk Dokument Legal Persiapan
 Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])
     ->name('dokument.persiapan');
+    Route::post('/documents/persiapan-pecah-legal', [DocumentPersiapanPecahLegalController::class, 'store'])
+    ->name('documents.storePersiapanPecahLegal');
+    Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])
+    ->name('documents.destroy');
 
 Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])
     ->name('document_legal.store');
@@ -341,11 +346,9 @@ Route::post('/akad/akad-cash/serah-terima/{booking}/store', [SerahTerimaControll
 //     return view('marketing.serah_unit');
 // });
 
-
-Route::get('/data-dokument-cash-legal', function () {
-    return view('dokument.data_dokument_cash');
-});
-
+Route::get('/data-dokument/user/persiapan/legal', [DocumentPersiapanPecahLegalController::class, 'index'])->name('document.user.persiapan-legal');
+Route::get('/document-legal/detail/{booking}', [DocumentPersiapanPecahLegalController::class,'detail'])
+->name('document_legal.detail');
 Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
 Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
 
@@ -371,6 +374,7 @@ Route::get('/transaksi/kpr/verified', [TransaksiKPRController::class, 'verified'
 Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::class, 'survey'])->name('kpr.survey');
 
 Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
+Route::get('/transaksi/kpr/akad-kpr/{id}', [AkadController::class, 'akadkpr'])->name('kpr.approve');
 
 // Route untuk Customer KPR ACC (Survey)
 Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');

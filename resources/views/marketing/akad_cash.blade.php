@@ -743,7 +743,7 @@
             </div>
         </div>
 
-        <form action="{{ route('akad.cash.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
+       <form id="formAkad" action="{{ route('akad.cash.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- Row untuk Konfirmasi Akad -->
@@ -979,6 +979,52 @@
 
     @push('scripts')
         <script>
+            // SweetAlert konfirmasi submit
+$('#formAkad').on('submit', function(e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Simpan Konfirmasi Akad?',
+        text: "Pastikan data akad sudah benar.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#9a55ff',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            Swal.fire({
+                title: 'Menyimpan...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            this.submit();
+        }
+    });
+});
+@if(session('success'))
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil!',
+    text: '{{ session("success") }}',
+    confirmButtonColor: '#9a55ff'
+});
+@endif
+
+@if(session('error'))
+Swal.fire({
+    icon: 'error',
+    title: 'Terjadi Kesalahan',
+    text: '{{ session("error") }}',
+    confirmButtonColor: '#9a55ff'
+});
+@endif
             $(document).ready(function() {
                 // Pilih Akad Selesai
                 $('#pilihSelesai').click(function() {

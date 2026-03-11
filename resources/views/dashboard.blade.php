@@ -844,14 +844,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-info btn-show-landbank"
-                                                    data-name="{{ $item->name }}"
-                                                    data-company="{{ $item->companyProfile->name ?? '-' }}"
-                                                    data-zoning="{{ $item->zoning }}"
-                                                    data-address="{{ $item->address }}"
-                                                    data-price="Rp {{ number_format($item->acquisition_price ?? 0, 0, ',', '.') }}"
-                                                    data-status="{{ $item->status }}"
-                                                    data-units='@json($item->units_detail)'>
+                                                <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#modalDetailLandbank{{ $item->id }}">
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
                                             </td>
@@ -862,116 +856,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="modal fade" id="modalDetailLandbank" tabindex="-1">
-                            <div class="modal-dialog modal-xl modal-dialog-centered">
-                                <div class="modal-content shadow border-0">
 
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title">
-                                            <i class="mdi mdi-home-city me-2"></i>Detail Landbank
-                                        </h5>
-                                        <button type="button" class="btn-close btn-close-white"
-                                            data-bs-dismiss="modal"></button>
-                                    </div>
-
-                                    <div class="modal-body">
-
-                                        <!-- INFO LAND BANK -->
-                                        <div class="row mb-4">
-
-                                            <div class="col-md-4">
-                                                <label class="text-muted">Nama</label>
-                                                <div class="fw-bold" id="detailName"></div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label class="text-muted">Perusahaan</label>
-                                                <div id="detailCompany"></div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label class="text-muted">Zoning</label>
-                                                <div id="detailZoning"></div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <label class="text-muted">Alamat</label>
-                                                <div id="detailAddress"></div>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="text-muted">Harga Akuisisi</label>
-                                                <div class="fw-bold text-success" id="detailPrice"></div>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="text-muted">Status</label>
-                                                <div id="detailStatus"></div>
-                                            </div>
-
-                                        </div>
-
-
-                                        <!-- STAT CARD -->
-                                        <div class="row text-center mb-4">
-
-                                            <div class="col-md-4">
-                                                <div class="card shadow-sm border-0">
-                                                    <div class="card-body">
-                                                        <h6>Total Unit</h6>
-                                                        <h3 id="totalUnit">0</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="card shadow-sm border-0">
-                                                    <div class="card-body">
-                                                        <h6>Unit Ready</h6>
-                                                        <h3 class="text-success" id="readyUnit">0</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="card shadow-sm border-0">
-                                                    <div class="card-body">
-                                                        <h6>Unit Sold</h6>
-                                                        <h3 class="text-danger" id="soldUnit">0</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-
-                                        <!-- TABLE UNIT -->
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-striped">
-
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Unit</th>
-                                                        <th>Type</th>
-                                                        <th>Progress</th>
-                                                        <th>%</th>
-                                                        <th>Customer</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody id="unitsModalBody">
-                                                </tbody>
-
-                                            </table>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
                         <!-- Pagination UI - TETAP PAKAI PAGINATION YANG SUDAH ADA -->
                         {{-- <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
@@ -994,190 +879,176 @@
         </div>
     </div>
 
-    <!-- Modal Detail Landbank -->
-    <div class="modal fade" id="modalDetailLandbank" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-eye me-2"></i>Detail Landbank
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
+    @foreach ($landBank as $item)
+        <div class="modal fade" id="modalDetailLandbank{{ $item->id }}" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow">
 
-                <div class="modal-body">
-                    <!-- INFORMASI UTAMA -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="text-muted small">Nama Proyek</label>
-                                    <h6 id="detailName" class="fw-bold mb-0"></h6>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="text-muted small">Perusahaan</label>
-                                    <h6 id="detailCompany" class="fw-bold mb-0"></h6>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="text-muted small">Tipe / Zoning</label>
-                                    <h6 id="detailZoning" class="mb-0"></h6>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="text-muted small">Status</label>
-                                    <h6 id="detailStatus" class="mb-0"></h6>
-                                </div>
-                                <div class="col-12">
-                                    <label class="text-muted small">Lokasi</label>
-                                    <p id="detailAddress" class="mb-0"></p>
-                                </div>
-                                <div class="col-12">
-                                    <label class="text-muted small">Harga Perolehan</label>
-                                    <h5 class="text-success fw-bold mb-0">
-                                        Rp <span id="detailPrice"></span>
-                                    </h5>
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="mdi mdi-eye me-2"></i>Detail Landbank
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- INFORMASI UTAMA -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Nama Proyek</label>
+                                        <h6 class="fw-bold mb-0">
+                                            {{ $item->name }}
+                                        </h6>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Perusahaan</label>
+                                        <h6 class="fw-bold mb-0">
+                                            {{ $item->companyProfile->name ?? '-' }}
+                                        </h6>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Tipe / Zoning</label>
+                                        <h6 class="mb-0">
+                                            {{ $item->zoning }}
+                                        </h6>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Status</label>
+                                        <span class="badge bg-success">
+                                            {{ $item->status }}
+                                        </span>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="text-muted small">Lokasi</label>
+                                        <p class="mb-0">
+                                            {{ $item->address }}
+                                        </p>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="text-muted small">Harga Perolehan</label>
+                                        <h5 class="text-success fw-bold mb-0">
+                                            Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}
+                                        </h5>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- PROGRESS + BOOKING PER UNIT -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-light fw-bold">
-                            <i class="mdi mdi-view-list me-2 text-success"></i>
-                            Detail Unit & Progress
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0" id="tableUnitsModal">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Unit</th>
-                                            <th>Type Unit</th>
-                                            <th>Progress Stage</th>
-                                            <th>Progress (%)</th>
-                                            <th>Booking</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="unitsModalBody">
-                                        <!-- Isi otomatis via JS -->
-                                    </tbody>
-                                </table>
+                        <!-- DETAIL UNIT -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-light fw-bold">
+                                <i class="mdi mdi-view-list me-2 text-success"></i>
+                                Detail Unit & Progress
+                            </div>
+
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Unit</th>
+                                                <th>Type Unit</th>
+                                                <th>Progress Pembangunan</th>
+                                                <th>Booking</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+
+                                        @foreach ($landBank as $landBank)
+                                            <tbody>
+                                                @foreach ($landBank->units as $item)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+
+                                                        <td>{{ $item->unit_name ?? '-' }}</td>
+
+                                                        <td>{{ $item->type }}</td>
+
+                                                        <td>
+                                                            @switch($item->construction_progress)
+                                                                @case('belum_mulai')
+                                                                    <span class="badge bg-secondary">Belum Mulai</span>
+                                                                @break
+
+                                                                @case('pondasi')
+                                                                    <span class="badge bg-info">Pondasi</span>
+                                                                @break
+
+                                                                @case('dinding')
+                                                                    <span class="badge bg-primary">Dinding</span>
+                                                                @break
+
+                                                                @case('atap')
+                                                                    <span class="badge bg-warning text-dark">Atap</span>
+                                                                @break
+
+                                                                @case('finishing')
+                                                                    <span class="badge bg-dark">Finishing</span>
+                                                                @break
+
+                                                                @case('selesai')
+                                                                    <span class="badge bg-success">Selesai</span>
+                                                                @break
+
+                                                                @default
+                                                                    <span class="badge bg-light text-dark">-</span>
+                                                            @endswitch
+                                                        </td>
+                                                        <td>
+                                                            @if ($item->activeBooking && $item->activeBooking->customer)
+                                                                <span class="badge bg-success">
+                                                                    {{ $item->activeBooking->customer->full_name }}
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-secondary">
+                                                                    Belum Booking
+                                                                </span>
+                                                            @endif
+                                                        </td>
+
+                                                        <td>
+                                                            <span class="badge bg-info">
+                                                                {{ $item->status }}
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        @endforeach
+
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                        Tutup
-                    </button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                            Tutup
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
+    @endforeach
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-document.addEventListener("click", function(e){
-
-    const btn = e.target.closest(".btn-show-landbank");
-    if(!btn) return;
-
-    // =========================
-    // DETAIL LANDBANK
-    // =========================
-    document.getElementById("detailName").innerText = btn.dataset.name || "-";
-    document.getElementById("detailCompany").innerText = btn.dataset.company || "-";
-    document.getElementById("detailZoning").innerText = btn.dataset.zoning || "-";
-    document.getElementById("detailAddress").innerText = btn.dataset.address || "-";
-    document.getElementById("detailPrice").innerText = btn.dataset.price || "-";
-    document.getElementById("detailStatus").innerText = btn.dataset.status || "-";
-
-    const units = JSON.parse(btn.dataset.units || "[]");
-
-    const statusLabelMap = {
-        'active': 'Aktif',
-        'cancelled': 'Dibatalkan',
-        'cash_process': 'Proses Cash',
-        'akad': 'Akad',
-        'legal_done': 'Legal Selesai',
-        'completed': 'Selesai',
-        'lanjut_kpr': 'Melanjutkan KPR'
-    };
-
-    const soldStatus = ['akad','completed'];
-
-    let html = "";
-    let ready = 0;
-    let sold = 0;
-
-    if(units.length > 0){
-
-        units.forEach((unit,index)=>{
-
-            let bookingStatus = unit.booking?.status ?? null;
-
-            if(soldStatus.includes(bookingStatus)){
-                sold++;
-            }else{
-                ready++;
-            }
-
-            html += `
-<tr>
-<td>${index+1}</td>
-<td>${unit.unit_code ?? '-'}</td>
-<td>${unit.type ?? '-'}</td>
-<td>${unit.construction_progress?.stage ?? '-'}</td>
-
-<td>
-<div class="progress" style="height:8px">
-<div class="progress-bar bg-success" style="width:${unit.construction_progress?.percentage ?? 0}%"></div>
-</div>
-<small>${unit.construction_progress?.percentage ?? 0}%</small>
-</td>
-
-<td>${unit.booking?.customer_name ?? '-'}</td>
-<td>${statusLabelMap[unit.booking?.status] ?? '-'}</td>
-</tr>
-`;
-        });
-
-    }else{
-
-        html = `
-<tr>
-<td colspan="7" class="text-center text-muted">Belum ada unit</td>
-</tr>
-`;
-
-    }
-
-    // =========================
-    // TABLE UNIT
-    // =========================
-    document.getElementById("unitsModalBody").innerHTML = html;
-
-    // =========================
-    // STATISTIK
-    // =========================
-    document.getElementById("totalUnit").innerText = units.length;
-    document.getElementById("readyUnit").innerText = ready;
-    document.getElementById("soldUnit").innerText = sold;
-
-    // =========================
-    // SHOW MODAL
-    // =========================
-    const modal = new bootstrap.Modal(document.getElementById("modalDetailLandbank"));
-    modal.show();
-
-});
-</script>
-
     <script>
         $(document).ready(function() {
             let table = $('#tableDashboard').DataTable({

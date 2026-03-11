@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
+    protected $fillable = [
+        'name',
+        'description',
+        'required',
+        'accept',
+        'icon',
+    ];
     //
     public function uploads()
 {

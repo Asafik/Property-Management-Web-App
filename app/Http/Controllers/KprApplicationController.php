@@ -205,7 +205,12 @@ public function store(Request $request)
 }
 public function pecahLegal($id)
 {
-    $application = KprApplication::with(['customer','unit','bank'])->findOrFail($id);
+    $application = KprApplication::with([
+        'customer',
+        'unit',
+        'bank',
+        'documents'
+    ])->findOrFail($id);
 
     return view('pecah_legal.pecah_legal_kpr', compact('application'));
 }

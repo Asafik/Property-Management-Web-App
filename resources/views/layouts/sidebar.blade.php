@@ -165,6 +165,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('marketing.cash_pengajuan') }}">Cash Pengajuan</a>
                     </li>
+                    
                 </ul>
             </div>
         </li>
@@ -185,7 +186,7 @@
                             <a class="nav-link" href="{{ route('dokument.persiapan') }}">Pecah Tanah Induk Unit</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/data-dokument-cash-legal">Data Cash Legal</a>
+                            <a class="nav-link" href="{{route('document.user.persiapan-legal')}}">Data User Persiapan Pecah Legal</a>
                         </li>
                     </ul>
                 </div>
