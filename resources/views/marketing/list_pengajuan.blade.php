@@ -1193,19 +1193,29 @@
                                                 <div
                                                     class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
-                                                    {{-- Proses KPR / Cash --}}
-                                                    @if ($booking->purchase_type == 'kpr')
-                                                        @if (!$booking->kprApplication || $booking->kprApplication->status != 'pengajuan')
-                                                            <a href="{{ route('pengajuan.show', $booking->id) }}"
-                                                                class="btn btn-outline-primary btn-sm" title="Proses KPR">
-                                                                <i class="mdi mdi-bank"></i>
+
+                                                    {{-- Proses KPR / Cash / Completed --}}
+                                                    @if ($booking->status === 'completed')
+                                                        <a href="{{ route('unit.selesai', $booking->id) }}"
+                                                            class="btn btn-success btn-sm" title="Unit Selesai">
+                                                            <i class="mdi mdi-check-decagram"></i>
+                                                        </a>
+                                                    @else
+                                                        @if ($booking->purchase_type == 'kpr')
+                                                            @if (!$booking->kprApplication || $booking->kprApplication->status != 'pengajuan')
+                                                                <a href="{{ route('pengajuan.show', $booking->id) }}"
+                                                                    class="btn btn-outline-primary btn-sm"
+                                                                    title="Proses KPR">
+                                                                    <i class="mdi mdi-bank"></i>
+                                                                </a>
+                                                            @endif
+                                                        @else
+                                                            <a href="{{ route('marketing.cash', $booking->id) }}"
+                                                                class="btn btn-outline-success btn-sm"
+                                                                title="Proses Cash">
+                                                                <i class="mdi mdi-cash"></i>
                                                             </a>
                                                         @endif
-                                                    @else
-                                                        <a href="{{ route('marketing.cash', $booking->id) }}"
-                                                            class="btn btn-outline-success btn-sm" title="Proses Cash">
-                                                            <i class="mdi mdi-cash"></i>
-                                                        </a>
                                                     @endif
 
                                                     {{-- Detail --}}

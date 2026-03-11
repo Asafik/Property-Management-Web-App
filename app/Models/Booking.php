@@ -22,6 +22,8 @@ class Booking extends Model
         'status_cash',
         'status_akad',
         'status_legal',
+        'akad_date',
+        'serah_terima_date',
         'notes',
     ];
     protected $casts = [

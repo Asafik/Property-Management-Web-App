@@ -68,7 +68,9 @@ class AkadController extends Controller
 
             // Update status akad di booking
             $booking->update([
-                'status_akad' => 'done'
+                'status_akad' => 'done',
+                'akad_date' => now()
+
             ]);
 
             Log::info('Akad selesai berhasil diproses', [
