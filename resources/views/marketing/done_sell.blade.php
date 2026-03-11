@@ -415,7 +415,7 @@
                             </div>
                             <div class="mt-3 mt-sm-0">
                                 <span class="badge badge-success p-2" style="font-size: 1rem;">
-                                    <i class="mdi mdi-home me-1"></i> UNIT A.1
+                                    <i class="mdi mdi-home me-1"></i> {{$unit->unit_code ?? '-'}}
                                 </span>
                             </div>
                         </div>
@@ -441,27 +441,27 @@
                                 <div class="info-box mb-3">
                                     <div class="info-row">
                                         <span class="info-label">Nama Unit</span>
-                                        <span class="info-value fw-bold">Tipe 36/72 - Cluster Mawar</span>
+                                        <span class="info-value fw-bold">Tipe {{$unit->type ?? '-'}} - {{$unit->unit_name ?? '-'}}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Blok / No</span>
-                                        <span class="info-value">A.1</span>
+                                        <span class="info-value">{{$unit->unit_code ?? '-'}}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Luas Tanah</span>
-                                        <span class="info-value">72 m²</span>
+                                        <span class="info-value">{{$unit->area ?? '-'}} m²</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Luas Bangunan</span>
-                                        <span class="info-value">36 m²</span>
+                                        <span class="info-value">{{$unit->building_area ?? '-'}} m²</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Hadap</span>
-                                        <span class="info-value">Selatan</span>
+                                        <span class="info-value">{{$unit->facing ?? '-'}}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Posisi</span>
-                                        <span class="info-value">Hook (Corner)</span>
+                                        <span class="info-value">{{$unit->position ?? '-'}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -470,15 +470,15 @@
                                 <div class="info-box mb-3">
                                     <div class="info-row">
                                         <span class="info-label">Lokasi</span>
-                                        <span class="info-value">Jl. Mawar No. 123, Kel. Sumbersari, Kec. Sumbersari, Jember, Jawa Timur 68121</span>
+                                        <span class="info-value">{{$unit->landBank->address ?? '-'}}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Koordinat</span>
-                                        <span class="info-value">-8.1727, 113.7000</span>
+                                        <span class="info-value">{{$unit->landBank->lat ?? '-'}}, {{$unit->landBank->lng ?? '-'}}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Zonasi</span>
-                                        <span class="info-value">Perumahan</span>
+                                        <span class="info-value">{{$unit->landBank->zoing ?? '-'}}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Lebar Jalan</span>

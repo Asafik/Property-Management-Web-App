@@ -406,10 +406,11 @@ Route::get('/posisi', function () {
 });
 
 
-Route::get('/done', function () {
-    return view('marketing.done_sell');
-});
-
+// Route::get('/done', function () {
+//     return view('marketing.done_sell');
+// });
+Route::get('customer/unit/booking/done/{bookingId}', [SerahTerimaController::class, 'SellDone'])
+     ->name('unit.selesai');
 
 // Route halaman pengaturan
 Route::get('/pengaturan', [CompanySettingController::class, 'index'])->name('setting.index');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Serah_Terima;
 use App\Models\SerahTerima;
+use App\Models\LandBankUnit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 class SerahTerimaController extends Controller
@@ -15,7 +16,9 @@ public function index($id)
 {
     // Ambil semua booking, bisa diubah sesuai kebutuhan (misal pagination)
    $booking = Booking::with('customer', 'unit')->find($id); // ambil 1 booking
-return view('serah.serah-terima', compact('booking'));
+    $item = $booking->unit; // Ini instance LandBankUnit
+   
+return view('serah.serah-terima', compact('booking', 'item'));
 }
 
 
@@ -105,7 +108,8 @@ public function store(Request $request, Booking $booking)
 
         // Update Status Booking
         $booking->update([
-            'status' => 'completed'
+            'status' => 'completed',
+            'serah_terima_date' => now()
         ]);
 
         Log::info('Status booking diupdate ke completed', [
@@ -118,8 +122,8 @@ public function store(Request $request, Booking $booking)
             'booking_id' => $booking->id,
             'no_bast' => $noBast
         ]);
-
-        return redirect()->back()->with('success', 'Serah terima berhasil diproses.');
+        return redirect()->route('unit.selesai')
+                 ->with('success', 'Serah terima berhasil diproses.');
 
     } catch (\Exception $e) {
 
@@ -135,6 +139,21 @@ public function store(Request $request, Booking $booking)
 
         return back()->with('error', 'Terjadi kesalahan saat proses serah terima.');
     }
+}
+
+
+public function SellDone($bookingId)
+{
+    // Ambil booking beserta unit dan customer
+    $booking = Booking::with('unit', 'customer')->find($bookingId);
+
+    if (!$booking) {
+        abort(404, 'Booking tidak ditemukan');
+    }
+
+    $unit = $booking->unit; // ambil unit terkait
+
+    return view('marketing.done_sell', compact('booking', 'unit'));
 }
 
 }
