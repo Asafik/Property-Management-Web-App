@@ -26,11 +26,14 @@ class DatabaseSeeder extends Seeder
     // }
 
     public function run(): void
-{
-    $this->call([
-        DivisionSeeder::class,
-        PositionSeeder::class,
-        EmployeeSeeder::class,
-    ]);
-}
+    {
+        $this->call([
+            DivisionSeeder::class,
+            PositionSeeder::class,
+            EmployeeSeeder::class,
+            CompanyProfileSeeder::class,
+            BankSeeder::class,
+            CompanySettingSeeder::class,
+        ]);
+    }
 }

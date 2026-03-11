@@ -5,6 +5,66 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/pt/pt.css') }}">
 
+<style>
+/* Style untuk alamat dengan ellipsis */
+.address-cell {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+}
+
+.address-cell i {
+    flex-shrink: 0;
+    margin-right: 5px;
+}
+
+.address-cell span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Tooltip custom */
+.address-tooltip {
+    position: relative;
+}
+
+.address-tooltip:hover::after {
+    content: attr(data-full-address);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #2c2e3f;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: normal;
+    max-width: 400px;
+    min-width: 250px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    pointer-events: none;
+    word-wrap: break-word;
+    margin-bottom: 5px;
+}
+
+.address-tooltip:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 20px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2c2e3f transparent transparent transparent;
+    transform: rotate(180deg);
+    margin-bottom: -5px;
+    z-index: 1000;
+}
+</style>
+
 <div class="container-fluid p-2 p-sm-3 p-md-4">
     <!-- Header Dashboard -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
@@ -39,7 +99,7 @@
                         Daftar Perusahaan (PT)
                     </h5>
                     <div class="ms-auto">
-                        <button type="button" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" data-bs-toggle="modal" data-bs-target="#modalTambahPT">
+                        <button type="button" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahPT').modal('show')">
                             <i class="mdi mdi-plus me-1"></i>
                             <span>Tambah PT</span>
                         </button>
@@ -47,7 +107,7 @@
                 </div>
 
                 <div class="card-body">
-                    <!-- Filter Section - Selalu tampil -->
+                    <!-- Filter Section -->
                     <div class="filter-card mb-4">
                         <div class="card-body">
                             <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -144,10 +204,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" width="5%">No</th>
-                                    <th width="20%">Nama PT</th>
-                                    <th width="30%">Alamat</th>
-                                    <th width="15%">No. HP</th>
-                                    <th class="text-center" width="15%">Jumlah Project</th>
+                                    <th width="25%">Nama PT</th>
+                                    <th width="35%">Alamat</th>
+                                    <th width="20%">No. Telepon</th>
                                     <th class="text-center" width="15%">Aksi</th>
                                 </tr>
                             </thead>
@@ -162,31 +221,34 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                        {{ $item->address ?? '-' }}
+                                        @if($item->address)
+                                        <div class="d-flex align-items-center address-cell address-tooltip" data-full-address="{{ $item->address }}">
+                                            <i class="mdi mdi-map-marker text-danger me-1 flex-shrink-0"></i>
+                                            <span>{{ $item->address }}</span>
+                                        </div>
+                                        @else
+                                        <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                     <td>
-                                        <i class="mdi mdi-whatsapp text-success me-1"></i>
-                                        {{ $item->phone ?? '-' }}
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success project-badge" data-id="{{ $item->id }}" style="cursor:pointer; padding: 0.5rem 1rem;">
-                                            <i class="mdi mdi-file-document me-1"></i>
-                                            {{ $item->land_banks_count }} Project
-                                        </span>
+                                        @if($item->phone)
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-whatsapp text-success me-1"></i>
+                                            {{ $item->phone }}
+                                        </div>
+                                        @else
+                                        <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-outline-warning btn-sm btnEdit"
-                                                title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPT"
-                                                data-id="{{ $item->id }}" data-name="{{ $item->name }}"
-                                                data-address="{{ $item->address }}" data-phone="{{ $item->phone }}">
+                                            <button type="button" class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $item->id }}">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
-                                            <form action="{{ route('company-profile.destroy', $item->id) }}" method="POST" class="formDelete">
+                                            <form action="{{ route('company-profile.destroy', $item->id) }}" method="POST" class="d-inline formDelete">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" data-name="{{ $item->name }}">
+                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" title="Hapus" data-name="{{ $item->name }}">
                                                     <i class="mdi mdi-delete"></i>
                                                 </button>
                                             </form>
@@ -195,7 +257,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
+                                    <td colspan="5" class="text-center text-muted py-5">
                                         <i class="mdi mdi-domain-off" style="font-size: 3rem; opacity: 0.3;"></i>
                                         <p class="mt-2 mb-0">Tidak ada data PT yang tersedia.</p>
                                         <p class="text-muted small">Silahkan tambahkan data PT baru.</p>
@@ -206,7 +268,7 @@
                         </table>
                     </div>
 
-                    <!-- Pagination UI - Tampil jika ada data -->
+                    <!-- Pagination -->
                     @if($companies->count() > 0)
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                         <div class="pagination-info mb-2 mb-sm-0">
@@ -267,7 +329,7 @@
         </div>
     </div>
 
-    <!-- Tombol Aksi Bawah -->
+    <!-- Tombol Kembali -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
@@ -284,18 +346,18 @@
 </div>
 
 <!-- MODAL TAMBAH PT -->
-<div class="modal fade" id="modalTambahPT" tabindex="-1" aria-labelledby="modalTambahPTLabel" aria-hidden="true">
+<div class="modal fade" id="modalTambahPT" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahPTLabel">
+                <h5 class="modal-title">
                     <i class="mdi mdi-domain-plus me-2" style="color: #9a55ff;"></i>
                     Tambah PT Baru
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="$('#modalTambahPT').modal('hide')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formTambahPT" action="{{ route('company-profile.store') }}" method="POST">
+                <form action="{{ route('company-profile.store') }}" method="POST" id="formTambahPT">
                     @csrf
                     <div class="row">
                         <div class="col-md-12">
@@ -323,7 +385,7 @@
                         <div class="col-md-12">
                             <div class="modal-form-group">
                                 <label>
-                                    <i class="mdi mdi-phone me-1"></i>No. HP
+                                    <i class="mdi mdi-phone me-1"></i>No. Telepon
                                 </label>
                                 <input type="text" name="phone" class="modal-form-control" placeholder="Contoh: 081234567890">
                             </div>
@@ -332,7 +394,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahPT').modal('hide')">Batal</button>
                 <button type="submit" form="formTambahPT" class="btn btn-gradient-primary">Simpan</button>
             </div>
         </div>
@@ -340,18 +402,18 @@
 </div>
 
 <!-- MODAL EDIT PT -->
-<div class="modal fade" id="modalEditPT" tabindex="-1" aria-labelledby="modalEditPTLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditPT" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalEditPTLabel">
+                <h5 class="modal-title">
                     <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
                     Edit PT
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" onclick="$('#modalEditPT').modal('hide')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formEditPT" method="POST">
+                <form action="" method="POST" id="formEditPT">
                     @csrf
                     @method('PUT')
                     <div class="row">
@@ -375,7 +437,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="modal-form-group">
-                                <label>No. HP</label>
+                                <label>No. Telepon</label>
                                 <input type="text" name="phone" id="editPhone" class="modal-form-control">
                             </div>
                         </div>
@@ -383,29 +445,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditPT').modal('hide')">Batal</button>
                 <button type="submit" form="formEditPT" class="btn btn-gradient-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL PROJECTS -->
-<div class="modal fade" id="modalProjects" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-domain"></i> Daftar Project
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="projectContent">
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary"></div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -416,15 +457,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables hanya jika ada data
+    // Inisialisasi DataTables
     const tableElement = document.getElementById('tablePT');
     if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        // Destroy existing DataTable if any
         if ($.fn.DataTable.isDataTable('#tablePT')) {
             $('#tablePT').DataTable().destroy();
         }
 
-        // Initialize DataTable with minimal features
         $('#tablePT').DataTable({
             responsive: true,
             ordering: true,
@@ -438,130 +477,136 @@ $(document).ready(function() {
                 zeroRecords: "Data tidak ditemukan",
             },
             columnDefs: [
-                { orderable: false, targets: [5] } // Kolom aksi tidak bisa diurutkan
+                { orderable: false, targets: [4] }
             ]
         });
     }
 
-    // Sweet Alert untuk Delete Confirmation
-    $('.btnDelete').on('click', function() {
+    // ===== HANDLE FORM TAMBAH PT =====
+    $('#formTambahPT').on('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        this.submit();
+    });
+
+    // ===== HANDLE EDIT BUTTON CLICK =====
+    $('.btnEdit').click(function() {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: '/master-data-pt/' + id + '/edit',
+            type: 'GET',
+            success: function(response) {
+                Swal.close();
+
+                let pt = response;
+                $('#editName').val(pt.name);
+                $('#editAddress').val(pt.address);
+                $('#editPhone').val(pt.phone);
+
+                $('#formEditPT').attr('action', '/master-data-pt/' + id);
+
+                $('#modalEditPT').modal('show');
+            },
+            error: function() {
+                Swal.close();
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal mengambil data PT',
+                    confirmButtonColor: '#9a55ff',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+
+    // ===== HANDLE FORM EDIT PT =====
+    $('#formEditPT').on('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        this.submit();
+    });
+
+    // ===== HANDLE DELETE BUTTON CLICK =====
+    $('.btnDelete').click(function() {
         let form = $(this).closest('.formDelete');
         let companyName = $(this).data('name');
 
         Swal.fire({
-            title: 'Yakin mau hapus?',
-            text: companyName + " akan dihapus!",
+            title: 'Hapus PT?',
+            text: "PT " + companyName + " akan dihapus",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, hapus!',
+            confirmButtonText: 'Ya, Hapus',
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
                 form.submit();
             }
         });
     });
-
-    // Handle Edit Button
-    $('.btnEdit').on('click', function() {
-        let id = $(this).data('id');
-        let name = $(this).data('name');
-        let address = $(this).data('address');
-        let phone = $(this).data('phone');
-
-        $('#editName').val(name);
-        $('#editAddress').val(address);
-        $('#editPhone').val(phone);
-        $('#formEditPT').attr('action', '/dashboard-pt/' + id);
-    });
-
-    // Handle Project Badge Click
-    $(document).on('click', '.project-badge', function() {
-        let companyId = $(this).data('id');
-
-        $('#modalProjects').modal('show');
-        $('#projectContent').html(`
-            <div class="text-center py-4">
-                <div class="spinner-border text-primary" role="status"></div>
-            </div>
-        `);
-
-        $.get('/company/' + companyId + '/projects', function(response) {
-            let html = '';
-
-            if(response.name) {
-                html += `<h5 class="mb-3">${escapeHtml(response.name)}</h5>`;
-            }
-
-            if (!response.land_banks || response.land_banks.length === 0) {
-                html += `<div class="alert alert-warning">Tidak ada project</div>`;
-            } else {
-                response.land_banks.forEach(function(project) {
-                    html += `
-                        <div class="card mb-3">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <strong>${escapeHtml(project.name)}</strong>
-                                <span class="badge bg-info">${project.units.length} Unit</span>
-                            </div>
-                            <div class="card-body">
-                    `;
-
-                    if (project.units && project.units.length > 0) {
-                        html += `<ul class="list-group">`;
-                        project.units.forEach(function(unit) {
-                            html += `
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>${escapeHtml(unit.unit_name)}</strong><br>
-                                        <small class="text-muted">
-                                            Code: ${escapeHtml(unit.unit_code)} |
-                                            Type: ${escapeHtml(unit.type)} |
-                                            Progress: ${escapeHtml(unit.construction_progress)}
-                                        </small>
-                                    </div>
-                                </li>
-                            `;
-                        });
-                        html += `</ul>`;
-                    } else {
-                        html += `<small class="text-muted">Belum ada unit</small>`;
-                    }
-
-                    html += `</div></div>`;
-                });
-            }
-
-            $('#projectContent').html(html);
-        }).fail(function() {
-            $('#projectContent').html('<div class="alert alert-danger">Gagal memuat data project.</div>');
-        });
-    });
-
-    function escapeHtml(text) {
-        return $('<div>').text(text).html();
-    }
 });
 
-// Sweet Alert untuk session
+// Sweet Alert session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
 @if(session('success'))
     Swal.fire({
         icon: 'success',
         title: 'Berhasil!',
         text: "{{ session('success') }}",
-        timer: 2000,
-        showConfirmButton: false
+        timer: 3000,
+        timerProgressBar: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
     });
 @endif
 
+// Sweet Alert session error - TANPA TIMER (pakai tombol OK)
 @if(session('error'))
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: "{{ session('error') }}",
-        timer: 2000,
-        showConfirmButton: false
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
     });
 @endif
 </script>

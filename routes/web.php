@@ -43,6 +43,7 @@ use App\Http\Controllers\RABDeadlineController;
 use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
+use App\Http\Controllers\CompanySettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -314,9 +315,7 @@ Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::cla
 
 
 Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
-Route::get('/pengaturan', function () {
-    return view('setting.setting');
-});
+
 
 Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
 Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
@@ -403,9 +402,14 @@ Route::get('/posisi', function () {
 });
 
 
-Route::get('/akad-closing', function () {
-    return view('marketing.akad_closing');
+Route::get('/done', function () {
+    return view('marketing.done_sell');
 });
+
+
+// Route halaman pengaturan
+Route::get('/pengaturan', [CompanySettingController::class, 'index'])->name('setting.index');
+Route::post('/pengaturan', [CompanySettingController::class, 'update'])->name('setting.update');
 
 // Route::get('/all-pra-landbank', function () {
 //     return view('land_bank.all_pra_land_bank');

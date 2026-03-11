@@ -715,6 +715,37 @@ h3.text-dark {
     }
 }
 
+/* Fix untuk tombol aksi */
+.action-buttons {
+    position: relative;
+    z-index: 10;
+}
+
+.btn-outline-warning, .btn-outline-danger {
+    position: relative;
+    z-index: 15;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* DataTables wrapper styling */
+.dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Pastikan tabel tetap terlihat */
+.table {
+    width: 100% !important;
+    margin-bottom: 0;
+}
+
+/* Fix untuk DataTables di mobile */
+@media (max-width: 768px) {
+    .dataTables_wrapper .table {
+        width: 100% !important;
+    }
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -893,7 +924,7 @@ h3.text-dark {
                                             <span class="fw-bold">{{ $bank->bank_name }}</span>
                                         </div>
                                     </td>
-                                    <td>{{ $bank->account_holder }}</td>
+                                    <td>{{ $bank->account_holder ?? '-' }}</td>
                                     <td>
                                         @if($bank->is_active)
                                             <span class="badge badge-gradient-success">
@@ -906,7 +937,7 @@ h3.text-dark {
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
+                                        <div class="d-flex justify-content-center gap-1 action-buttons">
                                             <button class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $bank->id }}">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
@@ -1033,7 +1064,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-bank me-1"></i>Nama Bank
                                 </label>
-                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: Bank Central Asia" required>
+                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: BCA" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1041,7 +1072,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
                                 </label>
-                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: Andi Sukma" required>
+                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: PT Griya Ainaya Sejahtera" required>
                             </div>
                         </div>
                     </div>
@@ -1052,7 +1083,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
                                 </label>
-                                <input type="number" name="number" class="modal-form-control" placeholder="Contoh: 1234567890" required>
+                                <input type="text" name="number" class="modal-form-control" placeholder="Contoh: 1234567890" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1117,7 +1148,7 @@ h3.text-dark {
                                 <label>
                                     <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
                                 </label>
-                                <input type="number" name="number" id="editNumber" class="modal-form-control" required>
+                                <input type="text" name="number" id="editNumber" class="modal-form-control" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1144,9 +1175,10 @@ h3.text-dark {
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables hanya jika ada data
+    // Inisialisasi DataTables untuk semua perangkat
     const tableElement = document.getElementById('tableBank');
     if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
         // Destroy existing DataTable if any
@@ -1169,40 +1201,35 @@ $(document).ready(function() {
             },
             columnDefs: [
                 { orderable: false, targets: [4] } // Kolom aksi tidak bisa diurutkan
-            ]
+            ],
+            // Fix untuk mobile
+            autoWidth: false,
+            deferRender: true
         });
     }
-
-    // Sweet Alert untuk session success/error
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: "{{ session('success') }}",
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
-
-    @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: "{{ session('error') }}",
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
 
     // ===== HANDLE FORM TAMBAH BANK =====
     $('#formTambahBank').on('submit', function(e) {
         e.preventDefault();
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         this.submit();
     });
 
     // ===== HANDLE EDIT BUTTON CLICK =====
-    $('.btnEdit').click(function() {
+    // Gunakan event delegation untuk menangani klik di semua elemen
+    $(document).on('click', '.btnEdit', function() {
         let id = $(this).data('id');
+
+        console.log('Edit clicked for ID:', id); // Debug
 
         Swal.fire({
             title: 'Memuat...',
@@ -1229,30 +1256,27 @@ $(document).ready(function() {
 
                 $('#modalEditBank').modal('show');
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 Swal.close();
+                console.error('Error:', error); // Debug
 
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
                     text: 'Gagal mengambil data bank',
-                    timer: 2000,
-                    showConfirmButton: false
+                    confirmButtonColor: '#9a55ff',
+                    confirmButtonText: 'OK'
                 });
             }
         });
     });
 
-    // ===== HANDLE FORM EDIT BANK =====
-    $('#formEditBank').on('submit', function(e) {
-        e.preventDefault();
-        this.submit();
-    });
-
     // ===== HANDLE DELETE BUTTON CLICK =====
-    $('.btnDelete').click(function() {
+    $(document).on('click', '.btnDelete', function() {
         let form = $(this).closest('.formDelete');
         let bankName = $(this).data('name');
+
+        console.log('Delete clicked for:', bankName); // Debug
 
         Swal.fire({
             title: 'Hapus Bank?',
@@ -1265,10 +1289,58 @@ $(document).ready(function() {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
                 form.submit();
             }
         });
     });
+
+    // ===== HANDLE FORM EDIT BANK =====
+    $('#formEditBank').on('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        this.submit();
+    });
 });
+
+// Sweet Alert untuk session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 3000,
+        timerProgressBar: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
+@endif
+
+// Sweet Alert untuk session error - TANPA TIMER (pakai tombol OK)
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
+    });
+@endif
 </script>
 @endpush
