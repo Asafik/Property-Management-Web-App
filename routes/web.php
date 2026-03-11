@@ -276,11 +276,14 @@ Route::get('/promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo
 // Route::get('/dashboard-pt', function () {
 //     return view('pt.pt');
 // });
+
+
 Route::get('/pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
 Route::post('/pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
+Route::get('/pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
+Route::put('/pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
 Route::delete('/pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
 Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
-Route::put('/pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
 
 Route::get('/servis', function () {
     return view('servis.servis');
@@ -307,6 +310,8 @@ Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'
 Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])
     ->name('document-types.destroy');
 
+
+
 // Route untuk Dokument Legal Persiapan
 Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])
     ->name('dokument.persiapan');
@@ -322,11 +327,12 @@ Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::cla
 Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
 
 
-Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
-Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
-Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
-
+// Halaman daftar customer (LIST)
 Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');
+Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
+Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
+// Route::get('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
+
 
 Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
 Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('customer.tamu.store');
@@ -396,10 +402,13 @@ Route::get('/survey-komersil', function () {
 // Route::get('/devisi', function () {
 //     return view('master_data.devisi');
 // });
-Route::get('/master-data/division',[DivisionController::class,'index'])->name('master.data.index');
+
+
+// MASTER DATA DIVISION
+Route::get('/master-data/division', [DivisionController::class, 'index'])->name('master.data.division.index');
 Route::post('/master-data/division/store', [DivisionController::class, 'store'])->name('master.data.division.store');
 Route::put('/master-data/division/update/{id}', [DivisionController::class, 'update'])->name('master.data.division.update');
-Route::delete('master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
+Route::delete('/master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
 
 Route::get('/posisi', function () {
     return view('master_data.posisi');

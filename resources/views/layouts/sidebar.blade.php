@@ -165,7 +165,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('marketing.cash_pengajuan') }}">Cash Pengajuan</a>
                     </li>
-                    
+
                 </ul>
             </div>
         </li>
@@ -265,8 +265,8 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('master.data.index') }}">
+                       <li class="nav-item">
+                            <a class="nav-link" href="{{ route('master.data.division.index') }}">
                                 <span class="menu-title">Devisi</span>
                             </a>
                         </li>

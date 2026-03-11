@@ -63,6 +63,38 @@
     margin-bottom: -5px;
     z-index: 1000;
 }
+
+/* Fix untuk tombol aksi di mobile */
+.action-buttons {
+    position: relative;
+    z-index: 10;
+}
+
+.btn-outline-warning, .btn-outline-danger {
+    position: relative;
+    z-index: 15;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* DataTables wrapper styling */
+.dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Pastikan tabel tetap terlihat */
+.table {
+    width: 100% !important;
+    margin-bottom: 0;
+}
+
+/* Fix untuk DataTables di mobile */
+@media (max-width: 768px) {
+    .dataTables_wrapper .table {
+        width: 100% !important;
+    }
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -241,7 +273,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
+                                        <div class="d-flex justify-content-center gap-1 action-buttons">
                                             <button type="button" class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $item->id }}">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
@@ -478,7 +510,10 @@ $(document).ready(function() {
             },
             columnDefs: [
                 { orderable: false, targets: [4] }
-            ]
+            ],
+            // Fix untuk mobile
+            autoWidth: false,
+            deferRender: true
         });
     }
 
@@ -499,7 +534,7 @@ $(document).ready(function() {
     });
 
     // ===== HANDLE EDIT BUTTON CLICK =====
-    $('.btnEdit').click(function() {
+    $(document).on('click', '.btnEdit', function() {
         let id = $(this).data('id');
 
         Swal.fire({
@@ -512,7 +547,7 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: '/master-data-pt/' + id + '/edit',
+            url: '/pt/' + id + '/edit',
             type: 'GET',
             success: function(response) {
                 Swal.close();
@@ -522,12 +557,13 @@ $(document).ready(function() {
                 $('#editAddress').val(pt.address);
                 $('#editPhone').val(pt.phone);
 
-                $('#formEditPT').attr('action', '/master-data-pt/' + id);
+                $('#formEditPT').attr('action', '/pt/' + id);
 
                 $('#modalEditPT').modal('show');
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 Swal.close();
+                console.error('Error:', error);
 
                 Swal.fire({
                     icon: 'error',
@@ -557,7 +593,7 @@ $(document).ready(function() {
     });
 
     // ===== HANDLE DELETE BUTTON CLICK =====
-    $('.btnDelete').click(function() {
+    $(document).on('click', '.btnDelete', function() {
         let form = $(this).closest('.formDelete');
         let companyName = $(this).data('name');
 
@@ -586,7 +622,7 @@ $(document).ready(function() {
     });
 });
 
-// Sweet Alert session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
+// Sweet Alert session success
 @if(session('success'))
     Swal.fire({
         icon: 'success',
@@ -599,7 +635,7 @@ $(document).ready(function() {
     });
 @endif
 
-// Sweet Alert session error - TANPA TIMER (pakai tombol OK)
+// Sweet Alert session error
 @if(session('error'))
     Swal.fire({
         icon: 'error',

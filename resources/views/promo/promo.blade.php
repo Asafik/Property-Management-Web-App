@@ -4,6 +4,41 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/promo/promo.css') }}">
+
+<style>
+/* Fix untuk tombol aksi di mobile */
+.action-buttons {
+    position: relative;
+    z-index: 10;
+}
+
+.btn-outline-warning, .btn-outline-danger {
+    position: relative;
+    z-index: 15;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* DataTables wrapper styling */
+.dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Pastikan tabel tetap terlihat */
+.table {
+    width: 100% !important;
+    margin-bottom: 0;
+}
+
+/* Fix untuk DataTables di mobile */
+@media (max-width: 768px) {
+    .dataTables_wrapper .table {
+        width: 100% !important;
+    }
+}
+</style>
+
 <div class="container-fluid p-2 p-sm-3 p-md-4">
     <!-- Header Dashboard -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
@@ -56,7 +91,7 @@
 
                             <!-- MOBILE VERSION -->
                             <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('promo.index') }}">
+                                <form method="GET" action="{{ route('promo.index') }}" id="filterFormMobile">
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
@@ -129,7 +164,7 @@
 
                             <!-- DESKTOP VERSION -->
                             <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('promo.index') }}">
+                                <form method="GET" action="{{ route('promo.index') }}" id="filterFormDesktop">
                                     <div class="row g-2 align-items-end">
                                         <div class="col-md-3">
                                             <label class="form-label">
@@ -242,7 +277,7 @@
                                             @endif
                                         </div>
                                     </td>
-                                   <td>
+                                    <td>
                                         <div class="d-flex align-items-center gap-2">
                                             @if($item->type == 'persen')
                                                 <i class="mdi mdi-percent text-warning" style="font-size: 1.2rem;"></i>
@@ -260,7 +295,7 @@
                                             <span class="fw-bold">Rp {{ number_format($item->value, 0, ',', '.') }}</span>
                                         @endif
                                     </td>
-                                   <td>
+                                    <td>
                                         @if($item->validity_period == 'selalu')
                                             <span class="badge bg-info">Selalu</span>
                                         @else
@@ -283,7 +318,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
+                                        <div class="d-flex justify-content-center gap-1 action-buttons">
                                             <button class="btn btn-outline-warning btn-sm btn-edit" title="Edit" data-id="{{ $item->id }}">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
@@ -636,7 +671,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables hanya jika ada data
+    // Inisialisasi DataTables
     const tableElement = document.getElementById('tablePromo');
     if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
         if ($.fn.DataTable.isDataTable('#tablePromo')) {
@@ -657,30 +692,43 @@ $(document).ready(function() {
             },
             columnDefs: [
                 { orderable: false, targets: [7] }
-            ]
+            ],
+            autoWidth: false,
+            deferRender: true
         });
     }
 
-    // Sweet Alert untuk session
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: "{{ session('success') }}",
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
+    // ===== HANDLE FORM TAMBAH PROMO =====
+    $('#formTambahPromo').on('submit', function(e) {
+        e.preventDefault();
 
-    @if(session('error'))
         Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: "{{ session('error') }}",
-            timer: 2000,
-            showConfirmButton: false
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
-    @endif
+
+        this.submit();
+    });
+
+    // ===== HANDLE FORM EDIT PROMO =====
+    $('#formEditPromo').on('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Menyimpan...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        this.submit();
+    });
 
     // Toggle periode container
     $('#berlaku').change(function() {
@@ -729,14 +777,25 @@ $(document).ready(function() {
         }
     });
 
-    // Handle Edit Button
+    // ===== HANDLE EDIT BUTTON CLICK =====
     $(document).on('click', '.btn-edit', function() {
         let id = $(this).data('id');
 
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         $.ajax({
-            url: '/dashboard-promo/get/' + id,
+            url: '/promo/get/' + id,
             type: 'GET',
             success: function(response) {
+                Swal.close();
+
                 if (response.success) {
                     let promo = response.data;
 
@@ -758,17 +817,26 @@ $(document).ready(function() {
                         $('#editStart, #editEnd').prop('required', false);
                     }
 
-                    $('#formEditPromo').attr('action', '/dashboard-promo/' + id);
+                    $('#formEditPromo').attr('action', '/promo/' + id);
                     $('#modalEditPromo').modal('show');
                 }
             },
-            error: function() {
-                Swal.fire('Error', 'Gagal mengambil data promo', 'error');
+            error: function(xhr, status, error) {
+                Swal.close();
+                console.error('Error:', error);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal mengambil data promo',
+                    confirmButtonColor: '#9a55ff',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
 
-    // Handle Delete Button
+    // ===== HANDLE DELETE BUTTON CLICK =====
     $(document).on('click', '.btn-delete', function() {
         let form = $(this).closest('.form-delete');
         let name = $(this).data('name');
@@ -784,10 +852,71 @@ $(document).ready(function() {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
                 form.submit();
             }
         });
     });
+
+    // Filter form submit with loading
+    $('#filterFormMobile, #filterFormDesktop').on('submit', function() {
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    });
+
+    // Reset button with loading
+    $('a[href="{{ route('promo.index') }}"]').on('click', function(e) {
+        e.preventDefault();
+        let href = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        window.location.href = href;
+    });
 });
+
+// Sweet Alert untuk session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 3000,
+        timerProgressBar: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
+@endif
+
+// Sweet Alert untuk session error - TANPA TIMER (pakai tombol OK)
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
+    });
+@endif
 </script>
 @endpush

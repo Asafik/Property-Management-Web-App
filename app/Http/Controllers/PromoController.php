@@ -190,15 +190,14 @@ class PromoController extends Controller
             $promo = Promo::findOrFail($id);
             $promo->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Promo berhasil dihapus'
-            ]);
+            return redirect()
+                ->route('promo.index')
+                ->with('success', 'Promo berhasil dihapus');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menghapus promo: ' . $e->getMessage()
-            ], 500);
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menghapus promo: ' . $e->getMessage());
         }
     }
 

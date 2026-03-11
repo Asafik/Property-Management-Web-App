@@ -194,6 +194,72 @@
             color: #ffffff !important;
         }
 
+        /* Outline Buttons */
+        .btn-outline-primary {
+            background: transparent;
+            border: 1px solid #9a55ff;
+            color: #9a55ff;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .btn-outline-success {
+            background: transparent;
+            border: 1px solid #28a745;
+            color: #28a745;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-success:hover {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .btn-outline-warning {
+            background: transparent;
+            border: 1px solid #ffc107;
+            color: #ffc107;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-warning:hover {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+            border-color: transparent;
+        }
+
+        .btn-outline-danger {
+            background: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-danger:hover {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .btn-outline-info {
+            background: transparent;
+            border: 1px solid #17a2b8;
+            color: #17a2b8;
+            padding: 0.4rem 0.75rem;
+        }
+
+        .btn-outline-info:hover {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
         /* Badge Styling */
         .badge {
             padding: 0.35rem 0.6rem;
@@ -323,108 +389,73 @@
             color: #6c7383;
         }
 
-        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM ===== */
-        .select2-container--bootstrap-5 .select2-selection {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 0.8rem !important;
-            min-height: 40px !important;
-            font-family: 'Nunito', sans-serif !important;
-            background-color: #ffffff !important;
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
         }
 
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            color: #2c2e3f !important;
-            font-size: 0.9rem !important;
-            line-height: 1.5 !important;
-            padding-left: 0 !important;
+        .btn-outline-warning, .btn-outline-info {
+            position: relative;
+            z-index: 15;
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid;
+            background: transparent;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
         }
 
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-            height: 38px !important;
-            right: 10px !important;
+        .btn-outline-warning {
+            border-color: #ffc107;
+            color: #ffc107;
         }
 
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
-            border-color: #9a55ff transparent transparent transparent !important;
+        .btn-outline-warning:hover {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
         }
 
-        .select2-container--bootstrap-5 .select2-selection:hover {
-            border-color: #9a55ff !important;
+        .btn-outline-info {
+            border-color: #17a2b8;
+            color: #17a2b8;
         }
 
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-        .select2-container--bootstrap-5.select2-container--open .select2-selection {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
+        .btn-outline-info:hover {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: #ffffff;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
         }
 
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #e9ecef !important;
-            border-radius: 8px !important;
-            overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        .btn-outline-warning i, .btn-outline-info i {
+            margin: 0;
+            font-size: 1rem;
         }
 
-        .select2-container--bootstrap-5 .select2-results__option {
-            padding: 0.6rem 0.8rem !important;
-            font-size: 0.9rem !important;
-            font-family: 'Nunito', sans-serif !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem !important;
-            font-family: 'Nunito', sans-serif !important;
-            margin: 0.5rem !important;
-            width: calc(100% - 1rem) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
-            color: #a5b3cb !important;
-        }
-
-        /* Paksa hanya 5 item yang tampil di Select2 */
-        .select2-limited-items .select2-results__options {
-            max-height: 200px !important;
-            overflow-y: auto !important;
-        }
-
-        /* Styling scrollbar */
-        .select2-limited-items .select2-results__options::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
+        /* Count badge */
+        .count-badge {
+            background-color: rgba(154, 85, 255, 0.1);
+            color: #9a55ff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
         }
 
         /* Responsive untuk mobile */
@@ -487,37 +518,33 @@
             margin-bottom: 0;
         }
 
-        /* Action button styles */
-        .btn-action {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            margin: 0 2px;
+        /* DataTables wrapper styling */
+        .dataTables_wrapper {
+            width: 100%;
+            overflow-x: auto;
         }
 
-        .btn-action i {
-            margin: 0;
-            font-size: 1rem;
+        /* Pastikan tabel tetap terlihat */
+        .table {
+            width: 100% !important;
+            margin-bottom: 0;
         }
 
-        .btn-action-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: white;
+        /* Fix untuk DataTables di mobile */
+        @media (max-width: 768px) {
+            .dataTables_wrapper .table {
+                width: 100% !important;
+            }
         }
 
-        .btn-action-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
+        /* Info text */
+        .info-text {
+            color: #6c7383;
+            font-size: 0.8rem;
+            margin-left: 5px;
         }
     </style>
 
-    <!-- DataTables Responsive CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Card -->
@@ -529,6 +556,7 @@
                             <h4 class="mb-1 fw-bold text-dark">
                                 <i class="mdi mdi-hand-holding me-2" style="color: #9a55ff;"></i>
                                 Semua Pra Tanah / Pra Landbank
+                                <span class="count-badge">{{ $praLandBank->total() ?? 0 }} Data</span>
                             </h4>
                             <p class="mb-0 text-muted small">
                                 <i class="mdi mdi-information-outline me-1"></i>
@@ -582,8 +610,7 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-handshake me-1"></i>Status Negosiasi
                                                     </label>
-                                                    <select name="negotiation_status" id="filterNegosiasiMobile"
-                                                        class="form-control select2-mobile">
+                                                    <select id="filterNegosiasiMobile" class="form-control">
                                                         <option value="">Semua Status</option>
                                                         <option value="negotiation">Masih Negosiasi</option>
                                                         <option value="almost_deal">Hampir Deal</option>
@@ -599,7 +626,7 @@
                                                     <label class="form-label">
                                                         <i class="mdi mdi-counter me-1"></i>Tampil
                                                     </label>
-                                                    <select name="show" id="showDataMobile" class="form-control">
+                                                    <select id="showDataMobile" class="form-control">
                                                         <option value="10">10</option>
                                                         <option value="25">25</option>
                                                         <option value="50">50</option>
@@ -644,8 +671,7 @@
                                                         <label class="form-label">
                                                             <i class="mdi mdi-handshake me-1"></i>Status Negosiasi
                                                         </label>
-                                                        <select name="negotiation_status" id="filterCompany"
-                                                            class="form-control select2-desktop">
+                                                        <select name="negotiation_status" class="form-control">
                                                             <option value="">Semua Status</option>
                                                             <option value="negotiation">Masih Negosiasi</option>
                                                             <option value="almost_deal">Hampir Deal</option>
@@ -667,15 +693,15 @@
                                                         </select>
                                                     </div>
 
-                                                    <!-- Filter Button -->
+                                                    <!-- Filter Button (Icon Only) -->
                                                     <div class="col-md-2">
                                                         <button type="button" onclick="alert('Filter demo UI')"
                                                             class="btn btn-gradient-primary w-100">
-                                                            <i class="mdi mdi-filter-outline"></i> Filter
+                                                            <i class="mdi mdi-filter-outline"></i>
                                                         </button>
                                                     </div>
 
-                                                    <!-- Reset Button -->
+                                                    <!-- Reset Button (Icon Only) -->
                                                     <div class="col-md-1">
                                                         <a href="#" onclick="window.location.reload()"
                                                             class="btn btn-gradient-secondary w-100">
@@ -693,45 +719,43 @@
 
                         <!-- Tabel Data -->
                         <div class="table-responsive">
-                            <table id="tablePraTanah" class="table table-hover nowrap" style="width:100%">
+                            <table id="tablePraTanah" class="table table-hover align-middle" style="width:100%" {{ $praLandBank->count() > 0 ? 'data-use-datatables=true' : '' }}>
                                 <thead>
                                     <tr>
-                                        <th class="text-center"><i class="mdi mdi-counter"></i> NO</th>
-                                        <th><i class="mdi mdi-home-variant"></i> NAMA TANAH</th>
-                                        <th><i class="mdi mdi-account-tie"></i> MAKELAR</th>
-                                        <th><i class="mdi mdi-map-marker"></i> LOKASI</th>
-                                        <th><i class="mdi mdi-currency-usd"></i> HARGA NEGOSIASI</th>
-                                        <th><i class="mdi mdi-handshake"></i> STATUS</th>
-                                        <th class="text-center"><i class="mdi mdi-cog"></i> AKSI</th>
+                                        <th class="text-center" width="5%"><i class="mdi mdi-counter"></i> NO</th>
+                                        <th width="20%"><i class="mdi mdi-home-variant"></i> NAMA TANAH</th>
+                                        <th width="15%"><i class="mdi mdi-account-tie"></i> MAKELAR</th>
+                                        <th width="25%"><i class="mdi mdi-map-marker"></i> LOKASI</th>
+                                        <th width="15%"><i class="mdi mdi-currency-usd"></i> HARGA NEGOSIASI</th>
+                                        <th width="10%"><i class="mdi mdi-handshake"></i> STATUS</th>
+                                        <th class="text-center" width="10%"><i class="mdi mdi-cog"></i> AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($praLandBank ?? [] as $item)
                                         <tr>
-                                            <td class="text-center fw-bold">
-                                                <span class="badge bg-light text-dark">{{ $loop->iteration }}</span>
-                                            </td>
+                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home-variant text-primary me-2"></i>
+                                                    <i class="mdi mdi-home-variant text-primary me-2" style="font-size: 1.2rem;"></i>
                                                     <span class="fw-bold">{{ $item->land_name ?? '-' }}</span>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-account-tie text-info me-2"></i>
+                                                    <i class="mdi mdi-account-tie text-info me-2" style="font-size: 1.2rem;"></i>
                                                     <span>{{ $item->land_source ?? '-' }}</span>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-map-marker text-danger me-2"></i>
+                                                    <i class="mdi mdi-map-marker text-danger me-2" style="font-size: 1.2rem;"></i>
                                                     <span>{{ Str::limit($item->address ?? '-', 30) }}</span>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-currency-usd text-success me-2"></i>
+                                                    <i class="mdi mdi-currency-usd text-success me-2" style="font-size: 1.2rem;"></i>
                                                     <span class="fw-bold">
                                                         Rp {{ number_format($item->estimated_price ?? 0, 0, ',', '.') }}
                                                     </span>
@@ -749,21 +773,24 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
-                                                    <a href="#" class="btn-action btn-action-info" title="Lihat Detail">
+                                                <div class="action-buttons">
+                                                    <!-- BUTTON EYE (INFO) -->
+                                                    <button class="btn btn-outline-info btn-sm" title="Lihat Detail">
                                                         <i class="mdi mdi-eye"></i>
-                                                    </a>
-                                                    <a href="#" class="btn-action btn-action-warning" title="Edit">
+                                                    </button>
+                                                    <!-- BUTTON EDIT (WARNING) -->
+                                                    <button class="btn btn-outline-warning btn-sm" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center py-5">
-                                                <i class="mdi mdi-information-outline" style="font-size: 3rem; color: #ccc;"></i>
-                                                <p class="mt-2 text-muted">Belum ada data pra tanah</p>
+                                            <td colspan="7" class="text-center text-muted py-5">
+                                                <i class="mdi mdi-hand-holding" style="font-size: 3rem; opacity: 0.3;"></i>
+                                                <p class="mt-2 mb-0">Tidak ada data pra tanah yang tersedia.</p>
+                                                <p class="text-muted small">Silahkan tambahkan data pra tanah baru.</p>
                                             </td>
                                         </tr>
                                     @endforelse
@@ -772,28 +799,16 @@
                         </div>
 
                         <!-- Pagination -->
-                        @if(($praLandBank->count() ?? 0) > 0)
+                        @if($praLandBank->count() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                             <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 - {{ $praLandBank->count() }} dari {{ $praLandBank->count() }} data
+                                <i class="mdi mdi-information-outline me-1 text-primary"></i>
+                                Menampilkan <span class="fw-bold">{{ $praLandBank->firstItem() }}</span> -
+                                <span class="fw-bold">{{ $praLandBank->lastItem() }}</span> dari
+                                <span class="fw-bold">{{ $praLandBank->total() }}</span> data
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                    <li class="page-item active">
-                                        <a class="page-link" href="#">1</a>
-                                    </li>
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
-                                </ul>
+                                {{ $praLandBank->onEachSide(1)->links('pagination::bootstrap-5') }}
                             </nav>
                         </div>
                         @endif
@@ -811,56 +826,11 @@
 @endsection
 
 @push('scripts')
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         $(document).ready(function() {
             // ===========================================
-            // 1. SELECT2 UNTUK FILTER
-            // ===========================================
-            $('.select2-desktop').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: 'Semua Status',
-                allowClear: true,
-                minimumResultsForSearch: 0,
-                dropdownCssClass: 'select2-limited-items',
-                language: {
-                    noResults: function() {
-                        return "Data tidak ditemukan";
-                    },
-                    searching: function() {
-                        return "Mencari...";
-                    }
-                }
-            });
-
-            $('.select2-mobile').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: 'Semua Status',
-                allowClear: true,
-                minimumResultsForSearch: 0,
-                dropdownCssClass: 'select2-limited-items',
-                dropdownParent: $('.select2-mobile').parent(),
-                language: {
-                    noResults: function() {
-                        return "Data tidak ditemukan";
-                    },
-                    searching: function() {
-                        return "Mencari...";
-                    }
-                }
-            });
-
-            // ===========================================
-            // 2. FILTER MOBILE (demo)
+            // 1. FILTER MOBILE (demo)
             // ===========================================
             $('#filterDataMobile').on('click', function() {
                 alert('Filter akan diterapkan (demo UI)');
@@ -871,9 +841,9 @@
             });
 
             // ===========================================
-            // 3. DATATABLES RESPONSIVE - HANYA JIKA ADA DATA
+            // 2. DATATABLES RESPONSIVE - HANYA JIKA ADA DATA
             // ===========================================
-            @if(($praLandBank->count() ?? 0) > 0)
+            @if($praLandBank->count() > 0)
                 // Hancurkan instance DataTables jika sudah ada
                 if ($.fn.DataTable.isDataTable('#tablePraTanah')) {
                     $('#tablePraTanah').DataTable().destroy();
@@ -896,7 +866,9 @@
                             targets: [0, 6], // Kolom No dan Aksi
                             orderable: false
                         }
-                    ]
+                    ],
+                    autoWidth: false,
+                    deferRender: true
                 });
             @endif
         });

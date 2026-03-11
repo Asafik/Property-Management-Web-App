@@ -724,7 +724,7 @@
                                 penawaran</span>
                         </div>
 
-                        <form action="{{ route('pra-landbanks.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="formPraTanah" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             {{-- ================= SECTION 1: INFORMASI SUMBER ================= --}}
@@ -923,7 +923,7 @@
 
                             <div class="pratanah-form-group">
                                 <label class="pratanah-form-label">Catatan Survey</label>
-                                <textarea name="notes" class="pratanah-form-control" rows="3" placeholder="Catatan hasil survey..."></textarea>
+                                <textarea name="survey_notes" class="pratanah-form-control" rows="3" placeholder="Catatan hasil survey..."></textarea>
                             </div>
 
                             <hr class="pratanah-hr">
@@ -1097,9 +1097,6 @@
                                 <button type="button" id="btnLokasiSaya" class="pratanah-btn pratanah-btn-outline-primary pratanah-btn-sm">
                                     <i class="fas fa-location-dot me-1"></i>Gunakan Lokasi Saya
                                 </button>
-                                <button type="button" id="btnCariJember" class="pratanah-btn pratanah-btn-outline-primary pratanah-btn-sm">
-                                    <i class="fas fa-map-pin me-1"></i>Pusatkan ke Jember
-                                </button>
                             </div>
 
                             <hr class="pratanah-hr">
@@ -1137,7 +1134,7 @@
 
                             <div class="pratanah-form-group">
                                 <label class="pratanah-form-label">Catatan & Kesimpulan</label>
-                                <textarea name="notes" class="pratanah-form-control" rows="3" placeholder="Catatan kesimpulan..."></textarea>
+                                <textarea name="kesimpulan" class="pratanah-form-control" rows="3" placeholder="Catatan kesimpulan..."></textarea>
                             </div>
 
                             <hr class="pratanah-hr">
@@ -1148,7 +1145,7 @@
                                     <i class="fas fa-arrow-left me-2"></i>Kembali
                                 </a>
                                 <div class="btn-right">
-                                    <button type="submit" class="pratanah-btn pratanah-btn-primary">
+                                    <button type="submit" class="pratanah-btn pratanah-btn-primary" id="btnSimpan">
                                         <i class="fas fa-check-circle me-2"></i>Simpan Data Pra Tanah
                                     </button>
                                 </div>
@@ -1161,6 +1158,9 @@
     </div>
 @endsection
 @push('scripts')
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     {{-- Leaflet CSS & JS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1238,7 +1238,7 @@
             latInput.addEventListener('change', updateMarkerFromInput);
             lngInput.addEventListener('change', updateMarkerFromInput);
 
-            // Tombol Gunakan Lokasi Saya
+            // Tombol Gunakan Lokasi Saya - TANPA ALERT (HANYA UPDATE MARKER)
             document.getElementById('btnLokasiSaya').addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     alert('Browser Anda tidak mendukung geolocation.');
@@ -1263,6 +1263,8 @@
 
                         btn.innerHTML = originalText;
                         btn.disabled = false;
+
+                        // TIDAK ADA ALERT - Hanya update marker
                     },
                     function(error) {
                         let errorMessage = 'Gagal mendapatkan lokasi. ';
@@ -1279,7 +1281,9 @@
                             default:
                                 errorMessage += 'Terjadi kesalahan.';
                         }
+
                         alert(errorMessage);
+
                         btn.innerHTML = originalText;
                         btn.disabled = false;
                     }, {
@@ -1288,14 +1292,6 @@
                         maximumAge: 0
                     }
                 );
-            });
-
-            // Tombol Pusatkan ke Jember
-            document.getElementById('btnCariJember').addEventListener('click', function() {
-                marker.setLatLng([defaultLat, defaultLng]);
-                map.setView([defaultLat, defaultLng], 13);
-                latInput.value = defaultLat;
-                lngInput.value = defaultLng;
             });
 
             // Tambahkan kontrol skala
@@ -1330,6 +1326,85 @@
                         if (sizeSpan) sizeSpan.textContent = '';
                     }
                 });
+            });
+
+            // ================= FORM SUBMIT DENGAN SWEETALERT =================
+            const form = document.getElementById('formPraTanah');
+            const btnSimpan = document.getElementById('btnSimpan');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Tampilkan loading SweetAlert
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Buat FormData untuk upload file
+                const formData = new FormData(form);
+
+                // Kirim data dengan fetch
+                fetch('{{ route("pra-landbanks.store") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Tutup loading
+                    Swal.close();
+
+                    if (data.success) {
+                        // Tampilkan notifikasi sukses dengan SweetAlert (timer 3 detik + progress bar)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'Data Pra Tanah berhasil disimpan',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#9a55ff'
+                        }).then((result) => {
+                            // Reset form jika ingin
+                            form.reset();
+                        });
+                    } else {
+                        // Tampilkan notifikasi error dengan SweetAlert
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan saat menyimpan data',
+                            confirmButtonColor: '#9a55ff',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Tutup loading
+                    Swal.close();
+
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan koneksi',
+                        confirmButtonColor: '#9a55ff',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            });
+
+            // Tombol kembali
+            document.querySelector('.pratanah-btn-secondary').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.history.back();
             });
         });
     </script>
