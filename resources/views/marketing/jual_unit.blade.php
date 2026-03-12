@@ -2125,7 +2125,22 @@
             </div>
         </div>
     </div>
-
+<div class="modal fade" id="myModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detail Unit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Unit Code: <span class="unit-code"></span></p>
+        <p>Status: <span class="unit-status"></span></p>
+        <p>Posisi: <span class="unit-pos"></span></p>
+        <p>Ukuran: <span class="unit-size"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
         @csrf
@@ -2689,19 +2704,20 @@ return "gray"
 /* ===============================
 CLICK UNIT
 =============================== */
+canvas.on('mouse:down', function(e){
+    if(e.target){
 
-canvas.on('mouse:down',function(e){
+        // Isi konten modal dengan data unit
+        document.querySelector('#myModal .unit-code').textContent = e.target.unitCode;
+        document.querySelector('#myModal .unit-status').textContent = e.target.status;
+        document.querySelector('#myModal .unit-pos').textContent = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
+        document.querySelector('#myModal .unit-size').textContent = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
 
-if(e.target){
-
-alert(
-"Unit : "+e.target.unitCode+
-"\nStatus : "+e.target.status
-)
-
-}
-
-})
+        // Tampilkan modal
+        const modal = new bootstrap.Modal(document.getElementById('myModal'));
+        modal.show();
+    }
+});
 
 
 /* ===============================
