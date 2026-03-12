@@ -125,7 +125,7 @@ class SellUnitController extends Controller
         ];
 
         // ambil unit dari DB
-        $unitsForSvg = (clone $statsQuery)->get(['id', 'unit_code', 'status', 'type', 'pos_x', 'pos_y']); // pastikan ada kolom tipe
+        $unitsForSvg = (clone $statsQuery)->get(['id', 'unit_code', 'status', 'type','pos_x','pos_y']); // pastikan ada kolom tipe
 
         // set warna sesuai tipe
         // Tentukan warna berdasarkan status & type
@@ -172,70 +172,70 @@ class SellUnitController extends Controller
     //   return back()->with('success', 'Customer berhasil dipasang ke unit');
     // }
 
-    public function setCustomer(Request $request, $unitId)
-    {
-        $request->validate([
-            'customer_id'   => 'required|exists:customers,id',
+public function setCustomer(Request $request, $unitId)
+{
+    $request->validate([
+        'customer_id'   => 'required|exists:customers,id',
+        'purchase_type' => 'required|in:cash,kpr',
+        'booking_fee'   => 'required',
+        'bukti_transfer'=> 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
 
-            'purchase_type' => 'required|in:cash,kpr',
-            'booking_fee'   => 'required',
-            'bukti_transfer' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    $unit = LandBankUnit::findOrFail($unitId);
+
+    // CEK STATUS UNIT
+    if ($unit->status === 'sold' || $unit->status === 'booked') {
+        return response()->json([
+            'message' => 'Unit ini sudah tidak tersedia untuk booking.'
+        ], 422); // status 422 agar ajax masuk error
+    }
+
+    // Bersihkan format rupiah
+    $bookingFee = str_replace('.', '', $request->booking_fee);
+
+    // Upload file
+    $filePath = $request->file('bukti_transfer')
+        ->store('payments/booking_fee', 'public');
+
+    DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
+
+        $booking = Booking::create([
+            'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
+            'unit_id'       => $unit->id,
+            'customer_id'   => $request->customer_id,
+            'booking_date'  => now(),
+            'purchase_type' => $request->purchase_type,
+            'booking_fee'   => $bookingFee,
+            'status'        => 'active',
         ]);
 
-        $unit = LandBankUnit::findOrFail($unitId);
+        Payment::create([
+            'booking_id'      => $booking->id,
+            'type'            => 'dp',
+            'amount'          => $bookingFee,
+            'payment_date'    => now(),
+            'method'          => 'transfer',
+            'reference_number'=> $filePath,
+            'notes'           => 'Bukti transfer booking fee',
+        ]);
 
-        // Bersihkan format rupiah
-        $bookingFee = str_replace('.', '', $request->booking_fee);
+        $unit->update(['status' => 'booked']);
 
-        // Upload file
-        $filePath = $request->file('bukti_transfer')
-            ->store('payments/booking_fee', 'public');
+        // NOTIFIKASI
+        $users = collect();
+        $sales = Employee::find($booking->sales_id);
+        if ($sales) $users->push($sales);
 
-        DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
+        $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
+        $users = $users->merge($admins);
 
-            $booking = Booking::create([
-                'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
-                'unit_id'       => $unit->id,
-                'customer_id'   => $request->customer_id,
-                'booking_date'  => now(),
-                'purchase_type' => $request->purchase_type,
-                'booking_fee'   => $bookingFee,
-                'status'        => 'active',
-            ]);
+        Notification::send($users, new BookingNotification($booking));
+    });
 
-            Payment::create([
-                'booking_id'      => $booking->id,
-                'type'            => 'dp',
-                'amount'          => $bookingFee,
-                'payment_date'    => now(),
-                'method'          => 'transfer',
-                'reference_number' => $filePath,
-                'notes'           => 'Bukti transfer booking fee',
-            ]);
-
-            $unit->update(['status' => 'booked']);
-
-            // =============================
-            // NOTIFIKASI
-            // =============================
-
-            $users = collect();
-
-            // sales
-            $sales = Employee::find($booking->sales_id);
-            if ($sales) {
-                $users->push($sales);
-            }
-
-            // admin
-            $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
-            $users = $users->merge($admins);
-
-            Notification::send($users, new BookingNotification($booking));
-        });
-
-        return back()->with('success', 'Booking, bukti transfer, dan notifikasi berhasil disimpan');
-    }
+    return response()->json([
+        'message' => 'Booking berhasil disimpan'
+    ], 200);
+}
     // public function setAgency(Request $request, $unitId)
     // {
     //   $unit = LandBankUnit::findOrFail($unitId);
@@ -245,71 +245,73 @@ class SellUnitController extends Controller
 
     //   return back()->with('success', 'Agency berhasil dipasang ke unit');
     // }
-    public function setAgency(Request $request, $unitId)
-    {
-        Log::info('=== UPDATE SALES BOOKING START ===');
-        Log::info('Unit ID: ' . $unitId);
-        Log::info('Request Data:', $request->all());
+public function setAgency(Request $request, $unitId)
+{
+    Log::info('=== UPDATE SALES BOOKING START ===');
+    Log::info('Unit ID: ' . $unitId);
+    Log::info('Request Data:', $request->all());
 
-        try {
+    try {
 
-            $validated = $request->validate([
-                'sales_id'  => 'required|exists:employees,id',
-                'agent_fee' => 'required'
-            ]);
+        $validated = $request->validate([
+            'sales_id'  => 'required|exists:employees,id',
+            'agent_fee' => 'required'
+        ]);
 
-            $unit = LandBankUnit::findOrFail($unitId);
+        $unit = LandBankUnit::findOrFail($unitId);
 
-            $booking = Booking::where('unit_id', $unit->id)
-                ->where('status', 'active')
-                ->first();
+        $booking = Booking::where('unit_id', $unit->id)
+            ->where('status', 'active')
+            ->first();
 
-            if (!$booking) {
-                Log::warning('Booking tidak ditemukan');
-                return back()->with('error', 'Booking untuk unit ini belum dibuat.');
-            }
-
-            // Bersihkan format rupiah
-            $agentFee = str_replace(['.', ','], '', $request->agent_fee);
-
-            $booking->update([
-                'sales_id'  => $request->sales_id,
-                'agent_fee' => $agentFee
-            ]);
-
-            Log::info('Sales & Agent Fee berhasil diupdate');
-
-            // =============================
-            // KIRIM NOTIFIKASI
-            // =============================
-
-            $users = collect();
-
-            // SALES YANG DIPILIH
-            $sales = Employee::find($booking->sales_id);
-            if ($sales) {
-                $users->push($sales);
-            }
-
-            // ADMIN
-            $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
-            $users = $users->merge($admins);
-
-            Notification::send($users, new BookingNotification($booking));
-
-            Log::info('Notifikasi berhasil dikirim');
-
-            return back()->with('success', 'Sales & Agent Fee berhasil diupdate');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-
-            Log::error('VALIDATION ERROR', $e->errors());
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-
-            Log::error('GENERAL ERROR: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat update sales.');
+        if (!$booking) {
+            Log::warning('Booking tidak ditemukan');
+            return back()->with('error', 'Booking untuk unit ini belum dibuat.');
         }
+
+        // Bersihkan format rupiah
+        $agentFee = str_replace(['.', ','], '', $request->agent_fee);
+
+        $booking->update([
+            'sales_id'  => $request->sales_id,
+            'agent_fee' => $agentFee
+        ]);
+
+        Log::info('Sales & Agent Fee berhasil diupdate');
+
+        // =============================
+        // KIRIM NOTIFIKASI
+        // =============================
+
+        $users = collect();
+
+        // SALES YANG DIPILIH
+        $sales = Employee::find($booking->sales_id);
+        if ($sales) {
+            $users->push($sales);
+        }
+
+        // ADMIN
+        $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
+        $users = $users->merge($admins);
+
+        Notification::send($users, new BookingNotification($booking));
+
+        Log::info('Notifikasi berhasil dikirim');
+
+        return back()->with('success', 'Sales & Agent Fee berhasil diupdate');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+
+        Log::error('VALIDATION ERROR', $e->errors());
+        return back()->withErrors($e->errors())->withInput();
+
+    } catch (\Exception $e) {
+
+        Log::error('GENERAL ERROR: ' . $e->getMessage());
+        return back()->with('error', 'Terjadi kesalahan saat update sales.');
     }
+}
     public function exportExcel()
     {
         return Excel::download(new UnitsExport, 'data-unit.xlsx');
@@ -328,20 +330,22 @@ class SellUnitController extends Controller
     //     return view('exports.units_pdf', compact('units'));
     // }
     public function savePosition(Request $request)
-    {
+{
 
-        foreach ($request->units as $unit) {
+    foreach ($request->units as $unit) {
 
-            LandBankUnit::where('id', $unit['id'])->update([
-                'pos_x' => $unit['pos_x'],
-                'pos_y' => $unit['pos_y'],
-                'width' => $unit['width'],   // pastikan kolom ini ada di DB
-                'height' => $unit['height']  // pastikan kolom ini ada di DB
-            ]);
-        }
+       LandBankUnit::where('id',$unit['id'])->update([
+    'pos_x' => $unit['pos_x'],
+    'pos_y' => $unit['pos_y'],
+    'width' => $unit['width'],   // pastikan kolom ini ada di DB
+    'height' => $unit['height']  // pastikan kolom ini ada di DB
+]);
 
-        return response()->json([
-            'success' => true
-        ]);
     }
+
+    return response()->json([
+        'success' => true
+    ]);
+
+}
 }

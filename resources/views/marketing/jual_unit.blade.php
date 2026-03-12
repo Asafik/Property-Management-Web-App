@@ -704,7 +704,7 @@
             background: linear-gradient(135deg, #f0fff4, #e6f7e6);
         }
 
-        /* ===== SITEPLAN STYLING - FIXED SIZE + SCROLL ===== */
+        /* ===== SITEPLAN STYLING - RESPONSIVE ===== */
         .siteplan-scroll-container {
             width: 100%;
             overflow-x: auto;
@@ -1118,7 +1118,7 @@
                         <!-- Toggle View -->
                         <div class="d-flex justify-content-end mb-3">
                             <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary active" id="btnTableView"
+                                <button type="button" class="btn btn-outline-primary" id="btnTableView"
                                     onclick="switchView('table')">
                                     <i class="mdi mdi-view-list me-1"></i>
                                     <span class="d-none d-sm-inline">Table</span>
@@ -1135,7 +1135,7 @@
                                     <i class="mdi mdi-floor-plan me-1"></i>
                                     <span class="d-none d-sm-inline">Denah Unit</span>
                                 </button>
-                                <button type="button" class="btn btn-outline-primary" id="btnSitePlandView"
+                                <button type="button" class="btn btn-outline-primary active" id="btnSitePlandView"
                                     onclick="switchView('sitepland')">
                                     <i class="mdi mdi-floor-plan me-1"></i>
                                     <span class="d-none d-sm-inline">Siteplan</span>
@@ -1144,7 +1144,7 @@
                         </div>
 
                         <!-- TABLE VIEW DENGAN ICON DI SEMUA KOLOM -->
-                        <div id="tableView">
+                        <div id="tableView" style="display: none;">
                             <div class="table-responsive">
                                 <table class="table table-hover" id="unitTable" style="width:100%">
                                     <thead>
@@ -1598,11 +1598,11 @@
                             </div>
                         </div>
 
-                        <!-- SITEPLAN VIEW - FIXED SIZE + SCROLLABLE -->
-                        <div id="sitePlandView" style="display:block;">
+                        <!-- SITEPLAN VIEW - RESPONSIVE -->
+                        <div id="sitePlandView" style="display: block;">
                             <div class="denah-container" style="padding: 1rem;">
                                 <div class="siteplan-scroll-container">
-                                    <canvas id="siteplanCanvas" width="1200" height="800"></canvas>
+                                    <canvas id="siteplanCanvas"></canvas>
                                 </div>
 
                                 <!-- Tombol Simpan Posisi Unit - HANYA DI TAB SITEPLAN -->
@@ -2155,6 +2155,24 @@
         </div>
     </div>
 
+    <!-- Modal Detail Unit Klik (myModal) -->
+    <div class="modal fade" id="myModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Unit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Unit Code: <span class="unit-code"></span></p>
+                    <p>Status: <span class="unit-status"></span></p>
+                    <p>Posisi: <span class="unit-pos"></span></p>
+                    <p>Ukuran: <span class="unit-size"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
         @csrf
@@ -2194,26 +2212,15 @@
             })
         }
 
-        // ========== SITEPLAN CANVAS - FIXED SIZE ==========
+        // ========== SITEPLAN CANVAS - SATU SCRIPT ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
         const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
 
-        // Set fixed canvas size
-        canvas.setWidth(1200);
-        canvas.setHeight(800);
-
-        // Load background image dengan ukuran tetap
+        // Load background image
         fabric.Image.fromURL(siteplanImage, function(img) {
-            // Skala gambar agar muat di canvas 1200x800
-            const scaleX = 1200 / img.width;
-            const scaleY = 800 / img.height;
-            const scale = Math.min(scaleX, scaleY);
-
-            img.scale(scale);
-            img.set({
-                left: (1200 - img.width * scale) / 2,
-                top: (800 - img.height * scale) / 2
-            });
+            // Set canvas size sesuai ukuran asli gambar
+            canvas.setWidth(img.width);
+            canvas.setHeight(img.height);
 
             canvas.setBackgroundImage(img, function() {
                 // Load unit dari database dengan posisi absolut
@@ -2240,6 +2247,9 @@
                 @endforeach
 
                 canvas.renderAll();
+            }, {
+                originX: 'left',
+                originY: 'top'
             });
         });
 
@@ -2252,17 +2262,17 @@
             return "gray";
         }
 
-        // ========== DOUBLE CLICK HANDLER UNTUK DETAIL SEDERHANA ==========
-        canvas.on('mouse:dblclick', function(e) {
+        // ========== KLICK UNIT UNTUK DETAIL SEDERHANA ==========
+        canvas.on('mouse:down', function(e) {
             if (e.target && e.target.unitId) {
-                // Isi modal sederhana
-                document.getElementById('simple_unit_code').innerText = e.target.unitCode || '-';
-                document.getElementById('simple_status').innerText = e.target.status || '-';
-                document.getElementById('simple_posisi').innerText = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
-                document.getElementById('simple_ukuran').innerText = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
+                // Isi modal dengan data unit
+                document.querySelector('#myModal .unit-code').textContent = e.target.unitCode || '-';
+                document.querySelector('#myModal .unit-status').textContent = e.target.status || '-';
+                document.querySelector('#myModal .unit-pos').textContent = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
+                document.querySelector('#myModal .unit-size').textContent = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
 
                 // Tampilkan modal
-                const modal = new bootstrap.Modal(document.getElementById('detailUnitModalSimple'));
+                const modal = new bootstrap.Modal(document.getElementById('myModal'));
                 modal.show();
             }
         });
@@ -2340,11 +2350,6 @@
                 document.getElementById('btnSitePlandView').classList.add('active');
             }
         }
-
-        // Set default view ke siteplan
-        document.addEventListener('DOMContentLoaded', function() {
-            switchView('sitepland');
-        });
 
         // ========== SISANYA TETAP SAMA PERSIS ==========
         $(document).ready(function() {
@@ -2465,6 +2470,7 @@
                     return;
                 }
 
+                // VALIDASI FILE UPLOAD - WAJIB UNTUK CASH DAN KPR
                 if (!buktiTransfer) {
                     Swal.fire({
                         icon: 'warning',
@@ -2474,6 +2480,7 @@
                     return;
                 }
 
+                // Validasi ukuran file (max 2MB)
                 if (buktiTransfer.size > 2 * 1024 * 1024) {
                     Swal.fire({
                         icon: 'error',
@@ -2483,6 +2490,7 @@
                     return;
                 }
 
+                // Validasi tipe file
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
                 if (!allowedTypes.includes(buktiTransfer.type)) {
                     Swal.fire({
@@ -2508,6 +2516,7 @@
                     cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Buat FormData
                         let formData = new FormData();
                         formData.append('_token', '{{ csrf_token() }}');
                         formData.append('customer_id', customerId);
@@ -2515,9 +2524,9 @@
                         formData.append('booking_fee', bookingFee);
                         formData.append('bukti_transfer', buktiTransfer);
 
-                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(
-                            ':unitId', unitId);
+                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 
+                        // Tampilkan loading
                         Swal.fire({
                             title: 'Memproses...',
                             text: 'Harap tunggu',
@@ -2527,6 +2536,7 @@
                             }
                         });
 
+                        // Kirim via AJAX
                         $.ajax({
                             url: actionUrl,
                             type: 'POST',
@@ -2538,22 +2548,18 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil!',
-                                    text: 'Customer berhasil dipilih',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
-                                });
+                                    text: response.message || 'Customer berhasil dipilih',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => location.reload());
                             },
                             error: function(xhr) {
                                 let errorMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                if (xhr.responseJSON && xhr.responseJSON.message)
                                     errorMsg = xhr.responseJSON.message;
-                                } else if (xhr.responseJSON && xhr.responseJSON
-                                    .errors) {
-                                    errorMsg = Object.values(xhr.responseJSON.errors)
-                                        .join('\n');
-                                }
+                                else if (xhr.responseJSON && xhr.responseJSON.errors)
+                                    errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
+
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
@@ -2628,8 +2634,7 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
-                                    text: xhr.responseJSON?.message ||
-                                        'Terjadi kesalahan'
+                                    text: xhr.responseJSON?.message || 'Terjadi kesalahan'
                                 });
                             }
                         });

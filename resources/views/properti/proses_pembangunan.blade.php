@@ -3,7 +3,7 @@
 @section('title', 'RAB Pembangunan - Property Management App')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/cetak/rab.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/cetak/rab.css') }}">
 
     <div class="container-fluid p-4">
         <!-- Header -->
@@ -159,6 +159,7 @@
                                                 <th>HARGA</th>
                                                 <th>TOTAL</th>
                                                 <th>KETERANGAN</th>
+                                                <th>DEADLINE</th>
                                                 <th>DOKUMENTASI</th>
                                                 <th>AKSI</th>
                                             </tr>
@@ -176,14 +177,18 @@
                                                         <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
                                                         <td>{{ $item->keterangan }}</td>
                                                         <td>
+                                                            <input type="date" name="deadline[{{ $item->id }}]"
+                                                                class="form-control form-control-sm"
+                                                                value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
+                                                        </td>
+                                                        <td>
                                                             @php
                                                                 $documents = $item->documents;
                                                             @endphp
                                                             @if ($documents->count() > 0)
                                                                 @foreach ($documents as $doc)
                                                                     <a href="{{ asset('storage/' . $doc->file_path) }}"
-                                                                        target="_blank"
-                                                                        class="file-preview-btn">
+                                                                        target="_blank" class="file-preview-btn">
                                                                         <i class="mdi mdi-eye"></i>
                                                                         <span>Lihat</span>
                                                                     </a>
@@ -194,7 +199,8 @@
                                                         </td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})" title="Hapus">
+                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})"
+                                                                title="Hapus">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </button>
                                                         </td>
@@ -202,7 +208,7 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="9" class="text-center text-muted">Belum ada progress
+                                                    <td colspan="10" class="text-center text-muted">Belum ada progress
                                                         untuk kategori ini</td>
                                                 </tr>
                                             @endif
@@ -210,9 +216,10 @@
                                         <tfoot class="bg-light">
                                             <tr>
                                                 <th colspan="6" class="text-end">SUB TOTAL {{ strtoupper($key) }}</th>
-                                                <th colspan="3">
+                                                <th colspan="4">
                                                     <input type="text" id="subtotal-{{ $key }}"
-                                                        class="rab-form-control rab-form-control-sm text-end fw-bold" readonly>
+                                                        class="rab-form-control rab-form-control-sm text-end fw-bold"
+                                                        readonly>
                                                 </th>
                                             </tr>
                                         </tfoot>
@@ -314,11 +321,13 @@
                                     <i class="mdi mdi-content-save me-1"></i>Simpan
                                 </button>
 
-                                <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank" class="aksi-btn rab-btn-primary">
+                                <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
+                                    class="aksi-btn rab-btn-primary">
                                     <i class="mdi mdi-printer me-1"></i>Cetak RAB
                                 </a>
 
-                                <button type="button" class="aksi-btn rab-btn-warning acc-btn" data-id="{{ $selectedUnit->id }}">
+                                <button type="button" class="aksi-btn rab-btn-warning acc-btn"
+                                    data-id="{{ $selectedUnit->id }}">
                                     <i class="mdi mdi-check me-1"></i>ACC RAB
                                 </button>
                             </div>
@@ -358,13 +367,41 @@
         let indexItem = 0;
 
         const kategoriMap = {
-            persiapan: { prefix: "1", body: "body-persiapan", subtotal: "subtotal-persiapan" },
-            pondasi: { prefix: "2", body: "body-pondasi", subtotal: "subtotal-pondasi" },
-            struktur: { prefix: "3", body: "body-struktur", subtotal: "subtotal-struktur" },
-            dinding: { prefix: "4", body: "body-dinding", subtotal: "subtotal-dinding" },
-            atap: { prefix: "5", body: "body-atap", subtotal: "subtotal-atap" },
-            finishing: { prefix: "6", body: "body-finishing", subtotal: "subtotal-finishing" },
-            lainnya: { prefix: "7", body: "body-lainnya", subtotal: "subtotal-lainnya" },
+            persiapan: {
+                prefix: "1",
+                body: "body-persiapan",
+                subtotal: "subtotal-persiapan"
+            },
+            pondasi: {
+                prefix: "2",
+                body: "body-pondasi",
+                subtotal: "subtotal-pondasi"
+            },
+            struktur: {
+                prefix: "3",
+                body: "body-struktur",
+                subtotal: "subtotal-struktur"
+            },
+            dinding: {
+                prefix: "4",
+                body: "body-dinding",
+                subtotal: "subtotal-dinding"
+            },
+            atap: {
+                prefix: "5",
+                body: "body-atap",
+                subtotal: "subtotal-atap"
+            },
+            finishing: {
+                prefix: "6",
+                body: "body-finishing",
+                subtotal: "subtotal-finishing"
+            },
+            lainnya: {
+                prefix: "7",
+                body: "body-lainnya",
+                subtotal: "subtotal-lainnya"
+            },
         };
 
         function tambahItem(kategori) {
@@ -372,7 +409,7 @@
             let tbody = document.getElementById(config.body);
 
             // Hapus row "Belum ada data" jika ada
-            if (tbody.querySelector('tr td[colspan="9"]')) {
+            if (tbody.querySelector('tr td[colspan="10"]')) {
                 tbody.innerHTML = '';
             }
 
@@ -412,6 +449,11 @@
                     <td>
                         <input type="text"
                                name="items[${indexItem}][keterangan]"
+                               class="form-control form-control-sm">
+                    </td>
+                    <td>
+                        <input type="date"
+                               name="items[${indexItem}][deadline]"
                                class="form-control form-control-sm">
                     </td>
                     <td>
@@ -618,7 +660,8 @@
                             })
                             .catch(err => {
                                 console.error(err);
-                                Swal.fire('Error!', 'Terjadi error pada request AJAX.', 'error');
+                                Swal.fire('Error!', 'Terjadi error pada request AJAX',
+                                'error');
                             });
                     }
                 });
