@@ -704,13 +704,20 @@
             background: linear-gradient(135deg, #f0fff4, #e6f7e6);
         }
 
-        /* Siteplan Canvas Styling - FULL WIDTH */
-        #siteplanCanvas {
+        /* ===== SITEPLAN STYLING - FIXED SIZE + SCROLL ===== */
+        .siteplan-scroll-container {
             width: 100%;
-            height: auto;
+            overflow-x: auto;
+            overflow-y: auto;
             border: 2px solid #9a55ff;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(154, 85, 255, 0.2);
+            background: #f8f9fa;
+            max-height: 700px;
+        }
+
+        #siteplanCanvas {
+            display: block;
+            border-radius: 8px;
             cursor: pointer;
         }
 
@@ -735,15 +742,17 @@
             font-size: 16px;
         }
         .modal-detail-sederhana p {
-            margin-bottom: 10px;
-            padding: 8px;
+            margin-bottom: 12px;
+            padding: 10px;
             background: #f8f9fa;
-            border-radius: 6px;
+            border-radius: 8px;
+            border-left: 4px solid #9a55ff;
         }
         .modal-detail-sederhana strong {
             color: #9a55ff;
             width: 100px;
             display: inline-block;
+            font-weight: 700;
         }
     </style>
 
@@ -1589,11 +1598,11 @@
                             </div>
                         </div>
 
-                        <!-- SITEPLAN VIEW (FOKUS UTAMA) - FULL WIDTH -->
+                        <!-- SITEPLAN VIEW - FIXED SIZE + SCROLLABLE -->
                         <div id="sitePlandView" style="display:block;">
                             <div class="denah-container" style="padding: 1rem;">
-                                <div class="siteplan-wrapper" style="position:relative; width:100%;">
-                                    <canvas id="siteplanCanvas" style="width:100%; height:auto;"></canvas>
+                                <div class="siteplan-scroll-container">
+                                    <canvas id="siteplanCanvas" width="1200" height="800"></canvas>
                                 </div>
 
                                 <!-- Tombol Simpan Posisi Unit - HANYA DI TAB SITEPLAN -->
@@ -1634,6 +1643,88 @@
                                             <strong>Ukuran:</strong>
                                             <span id="simple_ukuran">-</span>
                                         </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Detail Unit Lengkap (untuk tombol detail) -->
+                        <div class="modal fade" id="detailUnitModal" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="mdi mdi-home-circle me-2" style="color: #9a55ff;"></i>
+                                            Detail Unit Lengkap
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th>Kode Unit</th>
+                                                <td id="m_unit"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Blok</th>
+                                                <td id="m_block"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tipe</th>
+                                                <td id="m_type"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Alamat</th>
+                                                <td id="m_address"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Luas Tanah</th>
+                                                <td id="m_area"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Luas Bangunan</th>
+                                                <td id="m_building"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Harga</th>
+                                                <td id="m_price"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Arah Hadap</th>
+                                                <td id="m_direction"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td id="m_status"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status Pembangunan</th>
+                                                <td id="m_construction"></td>
+                                            </tr>
+                                        </table>
+                                        <h5 class="mt-3">Detail Booking</h5>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th width="30%">Customer</th>
+                                                <td id="m_customer"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Sales / Agency</th>
+                                                <td id="m_sales"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tanggal Booking</th>
+                                                <td id="m_booking_date"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Booking Fee</th>
+                                                <td id="m_booking_fee"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status Booking</th>
+                                                <td id="m_booking_status"></td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -2103,29 +2194,35 @@
             })
         }
 
-        // ========== SITEPLAN CANVAS - FULL WIDTH ==========
+        // ========== SITEPLAN CANVAS - FIXED SIZE ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
         const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
 
-        // Load background image dengan full width
+        // Set fixed canvas size
+        canvas.setWidth(1200);
+        canvas.setHeight(800);
+
+        // Load background image dengan ukuran tetap
         fabric.Image.fromURL(siteplanImage, function(img) {
-            // Dapatkan lebar container
-            const containerWidth = document.querySelector('.siteplan-wrapper').clientWidth;
+            // Skala gambar agar muat di canvas 1200x800
+            const scaleX = 1200 / img.width;
+            const scaleY = 800 / img.height;
+            const scale = Math.min(scaleX, scaleY);
 
-            // Hitung skala agar gambar memenuhi lebar container
-            const scaleFactor = containerWidth / img.width;
-
-            canvas.setWidth(containerWidth);
-            canvas.setHeight(img.height * scaleFactor);
+            img.scale(scale);
+            img.set({
+                left: (1200 - img.width * scale) / 2,
+                top: (800 - img.height * scale) / 2
+            });
 
             canvas.setBackgroundImage(img, function() {
-                // Load unit dari database dengan skala yang sama
+                // Load unit dari database dengan posisi absolut
                 @foreach ($unitsForSvg as $unit)
                     const rect{{ $unit->id }} = new fabric.Rect({
-                        left: ({{ $unit->pos_x ?? 100 }}) * scaleFactor,
-                        top: ({{ $unit->pos_y ?? 100 }}) * scaleFactor,
-                        width: ({{ $unit->width ?? 80 }}) * scaleFactor,
-                        height: ({{ $unit->height ?? 60 }}) * scaleFactor,
+                        left: {{ $unit->pos_x ?? 100 }},
+                        top: {{ $unit->pos_y ?? 100 }},
+                        width: {{ $unit->width ?? 80 }},
+                        height: {{ $unit->height ?? 60 }},
                         fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
                         opacity: 0.6,
                         stroke: 'black',
@@ -2143,11 +2240,6 @@
                 @endforeach
 
                 canvas.renderAll();
-            }, {
-                originX: 'left',
-                originY: 'top',
-                scaleX: scaleFactor,
-                scaleY: scaleFactor
             });
         });
 
@@ -2246,28 +2338,6 @@
             } else if (view === 'sitepland') {
                 document.getElementById('sitePlandView').style.display = 'block';
                 document.getElementById('btnSitePlandView').classList.add('active');
-
-                // Render ulang canvas setelah ditampilkan (dengan ukuran baru)
-                setTimeout(() => {
-                    const containerWidth = document.querySelector('.siteplan-wrapper').clientWidth;
-                    const img = canvas.backgroundImage;
-                    if (img) {
-                        const scaleFactor = containerWidth / img.width;
-                        canvas.setWidth(containerWidth);
-                        canvas.setHeight(img.height * scaleFactor);
-
-                        // Update posisi dan ukuran semua objek
-                        canvas.getObjects().forEach(obj => {
-                            if (obj.unitId) {
-                                // Simpan proporsional position
-                                // Ini perlu disesuaikan dengan data asli dari database
-                            }
-                        });
-
-                        canvas.setZoom(1);
-                        canvas.renderAll();
-                    }
-                }, 100);
             }
         }
 
