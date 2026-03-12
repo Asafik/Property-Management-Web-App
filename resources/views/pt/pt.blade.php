@@ -131,7 +131,7 @@
                         Daftar Perusahaan (PT)
                     </h5>
                     <div class="ms-auto">
-                        <button type="button" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahPT').modal('show')">
+                        <button type="button" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="openTambahModal()">
                             <i class="mdi mdi-plus me-1"></i>
                             <span>Tambah PT</span>
                         </button>
@@ -149,7 +149,7 @@
 
                             <!-- FILTER UNTUK MOBILE -->
                             <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('company-profile.index') }}">
+                                <form method="GET" action="{{ route('company-profile.index') }}" id="filterFormMobile">
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
@@ -178,7 +178,7 @@
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btnReset">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -188,7 +188,7 @@
 
                             <!-- FILTER UNTUK TABLET & DESKTOP -->
                             <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('company-profile.index') }}">
+                                <form method="GET" action="{{ route('company-profile.index') }}" id="filterFormDesktop">
                                     <div class="row g-2 align-items-end">
                                         <div class="col-md-6">
                                             <label class="form-label">
@@ -220,7 +220,7 @@
 
                                         <div class="col-md-1">
                                             <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
+                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btnReset" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -489,38 +489,45 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables
-    const tableElement = document.getElementById('tablePT');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tablePT')) {
-            $('#tablePT').DataTable().destroy();
-        }
-
-        $('#tablePT').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data PT belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [4] }
-            ],
-            // Fix untuk mobile
-            autoWidth: false,
-            deferRender: true
+    // Fungsi untuk menampilkan loading SweetAlert
+    function showLoading(message = 'Mohon tunggu sebentar') {
+        Swal.fire({
+            title: 'Memuat...',
+            text: message,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
     }
+
+    // ===== HANDLE FILTER & RESET =====
+    $('#filterFormMobile, #filterFormDesktop').on('submit', function(e) {
+        showLoading('Menyaring data...');
+        // Form akan submit secara normal
+    });
+
+    $('.btnReset').on('click', function(e) {
+        e.preventDefault();
+        showLoading('Mereset filter...');
+        window.location.href = $(this).attr('href');
+    });
+
+    // ===== HANDLE PAGINATION =====
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        showLoading('Memuat halaman...');
+        window.location.href = $(this).attr('href');
+    });
+
+    // ===== HANDLE TAMBAH MODAL =====
+    window.openTambahModal = function() {
+        $('#modalTambahPT').modal('show');
+    };
 
     // ===== HANDLE FORM TAMBAH PT =====
     $('#formTambahPT').on('submit', function(e) {
         e.preventDefault();
-
         Swal.fire({
             title: 'Menyimpan...',
             text: 'Mohon tunggu sebentar',
@@ -529,7 +536,6 @@ $(document).ready(function() {
                 Swal.showLoading();
             }
         });
-
         this.submit();
     });
 
@@ -539,7 +545,7 @@ $(document).ready(function() {
 
         Swal.fire({
             title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
+            text: 'Mengambil data PT',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
@@ -556,9 +562,7 @@ $(document).ready(function() {
                 $('#editName').val(pt.name);
                 $('#editAddress').val(pt.address);
                 $('#editPhone').val(pt.phone);
-
                 $('#formEditPT').attr('action', '/pt/' + id);
-
                 $('#modalEditPT').modal('show');
             },
             error: function(xhr, status, error) {
@@ -579,7 +583,6 @@ $(document).ready(function() {
     // ===== HANDLE FORM EDIT PT =====
     $('#formEditPT').on('submit', function(e) {
         e.preventDefault();
-
         Swal.fire({
             title: 'Menyimpan...',
             text: 'Mohon tunggu sebentar',
@@ -588,7 +591,6 @@ $(document).ready(function() {
                 Swal.showLoading();
             }
         });
-
         this.submit();
     });
 
@@ -620,6 +622,33 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Inisialisasi DataTables
+    const tableElement = document.getElementById('tablePT');
+    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
+        if ($.fn.DataTable.isDataTable('#tablePT')) {
+            $('#tablePT').DataTable().destroy();
+        }
+
+        $('#tablePT').DataTable({
+            responsive: true,
+            ordering: true,
+            paging: false,
+            info: false,
+            searching: false,
+            lengthChange: false,
+            destroy: true,
+            language: {
+                emptyTable: "Data PT belum tersedia",
+                zeroRecords: "Data tidak ditemukan",
+            },
+            columnDefs: [
+                { orderable: false, targets: [4] }
+            ],
+            autoWidth: false,
+            deferRender: true
+        });
+    }
 });
 
 // Sweet Alert session success

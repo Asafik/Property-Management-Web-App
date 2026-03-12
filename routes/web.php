@@ -36,6 +36,7 @@ use App\Http\Controllers\TamuController;
 use App\Http\Controllers\AkadController;
 use App\Http\Controllers\CustomerKPRRijectedController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\DocumentLegalController;
 use App\Http\Controllers\DocumentPersiapanPecahLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
@@ -410,9 +411,15 @@ Route::post('/master-data/division/store', [DivisionController::class, 'store'])
 Route::put('/master-data/division/update/{id}', [DivisionController::class, 'update'])->name('master.data.division.update');
 Route::delete('/master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
 
-Route::get('/posisi', function () {
-    return view('master_data.posisi');
-});
+
+
+
+// MASTER DATA POSITION
+Route::get('/master-data/posisi', [PositionController::class, 'index'])->name('master.data.posisi');
+Route::post('/master-data/posisi/store', [PositionController::class, 'store'])->name('master.data.posisi.store');
+Route::put('/master-data/posisi/update/{position}', [PositionController::class, 'update'])->name('master.data.posisi.update');
+Route::delete('/master-data/posisi/{position}', [PositionController::class, 'destroy'])->name('master.data.posisi.delete');
+Route::get('/master-data/posisi/get-by-division/{divisionId}', [PositionController::class, 'getByDivision'])->name('master.data.posisi.by-division');
 
 
 // Route::get('/done', function () {
