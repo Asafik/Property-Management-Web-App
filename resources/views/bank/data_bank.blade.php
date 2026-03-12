@@ -800,7 +800,7 @@ h3.text-dark {
 
                             <!-- MOBILE VERSION -->
                             <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('bank.index') }}">
+                                <form method="GET" action="{{ route('bank.index') }}" id="filterFormMobile">
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
@@ -840,7 +840,7 @@ h3.text-dark {
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btnReset">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -850,7 +850,7 @@ h3.text-dark {
 
                             <!-- DESKTOP VERSION -->
                             <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('bank.index') }}">
+                                <form method="GET" action="{{ route('bank.index') }}" id="filterFormDesktop">
                                     <div class="row g-2 align-items-end">
                                         <div class="col-md-4">
                                             <label class="form-label">
@@ -892,7 +892,7 @@ h3.text-dark {
 
                                         <div class="col-md-2">
                                             <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btnReset" title="Reset">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -1178,6 +1178,37 @@ h3.text-dark {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
+    // Fungsi untuk menampilkan loading SweetAlert
+    function showLoading(message = 'Mohon tunggu sebentar') {
+        Swal.fire({
+            title: 'Memuat...',
+            text: message,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
+    // ===== HANDLE FILTER & RESET =====
+    $('#filterFormMobile, #filterFormDesktop').on('submit', function(e) {
+        showLoading('Menyaring data...');
+        // Form akan submit secara normal
+    });
+
+    $('.btnReset').on('click', function(e) {
+        e.preventDefault();
+        showLoading('Mereset filter...');
+        window.location.href = $(this).attr('href');
+    });
+
+    // ===== HANDLE PAGINATION =====
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        showLoading('Memuat halaman...');
+        window.location.href = $(this).attr('href');
+    });
+
     // Inisialisasi DataTables untuk semua perangkat
     const tableElement = document.getElementById('tableBank');
     if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
@@ -1211,34 +1242,17 @@ $(document).ready(function() {
     // ===== HANDLE FORM TAMBAH BANK =====
     $('#formTambahBank').on('submit', function(e) {
         e.preventDefault();
-
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
+        showLoading('Menyimpan data...');
         this.submit();
     });
 
     // ===== HANDLE EDIT BUTTON CLICK =====
-    // Gunakan event delegation untuk menangani klik di semua elemen
     $(document).on('click', '.btnEdit', function() {
         let id = $(this).data('id');
 
         console.log('Edit clicked for ID:', id); // Debug
 
-        Swal.fire({
-            title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        showLoading('Mengambil data bank...');
 
         $.ajax({
             url: '/master-data-bank/' + id + '/edit',
@@ -1289,14 +1303,7 @@ $(document).ready(function() {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+                showLoading('Menghapus data...');
                 form.submit();
             }
         });
@@ -1305,16 +1312,7 @@ $(document).ready(function() {
     // ===== HANDLE FORM EDIT BANK =====
     $('#formEditBank').on('submit', function(e) {
         e.preventDefault();
-
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
+        showLoading('Menyimpan perubahan...');
         this.submit();
     });
 });

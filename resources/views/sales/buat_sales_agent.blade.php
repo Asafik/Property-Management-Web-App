@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Tambah Pengguna / Agent - Property Management App')
+@section('title', isset($employee) ? 'Edit Pengguna / Agent - Property Management App' : 'Tambah Pengguna / Agent - Property Management App')
 
 @section('content')
 <style>
@@ -353,31 +353,39 @@ input, select, textarea, button {
 </style>
 
 <div class="container-fluid p-4">
-    <!-- Header Card Terpisah -->
+   <!-- Header Card Terpisah -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h3 class="text-dark fw-bold mb-1">Tambah Pengguna</h3>
-                    <p class="text-muted mb-0">Input data pengguna marketing properti</p>
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-dark fw-bold mb-1">
+                            <i class="mdi mdi-account-tie me-2" style="color: #9a55ff;"></i>
+                            {{ isset($employee) ? 'Edit Pengguna' : 'Tambah Pengguna' }}
+                        </h3>
+                        <p class="text-muted mb-0">{{ isset($employee) ? 'Ubah data pengguna marketing properti' : 'Input data pengguna marketing properti' }}</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-account-tie" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Form Tambah Sales -->
+    <!-- Form Tambah/Edit Sales -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 d-flex align-items-center">
                         <i class="mdi mdi-account-tie me-2 sales-text-primary"></i>
-                        Form Input Data Pengguna
+                        {{ isset($employee) ? 'Form Edit Data Pengguna' : 'Form Input Data Pengguna' }}
                     </h4>
                     <span class="sales-badge sales-badge-secondary">* Wajib</span>
                 </div>
                 <div class="card-body">
-                <form action="{{ isset($employee) ? route('agency.update', $employee->id) : route('agency.store') }}" method="POST">
+                    <form action="{{ isset($employee) ? route('agency.update', $employee->id) : route('agency.store') }}" method="POST" class="main-form">
                         @csrf
                         @if(isset($employee))
                             @method('PUT')
@@ -413,7 +421,7 @@ input, select, textarea, button {
                             <!-- Password dengan Toggle -->
                             <div class="sales-col-md-6">
                                 <div class="sales-form-group">
-                                    <label>{{ isset($employee) ? 'Password Baru (opsional)' : 'Password *' }}</label>
+                                    <label>{{ isset($employee) ? 'Password Baru (kosongkan jika tidak diubah)' : 'Password *' }}</label>
                                     <div class="password-input-container">
                                         <input type="password" name="password" id="password" class="sales-form-control"
                                             {{ isset($employee) ? '' : 'required' }}>
@@ -434,41 +442,39 @@ input, select, textarea, button {
                             </div>
                         </div>
 
-                       <div class="sales-row">
+                        <div class="sales-row">
+                            <!-- Division -->
+                            <div class="sales-col-md-6">
+                                <div class="sales-form-group">
+                                    <label>Division *</label>
+                                    <select name="division_id" class="sales-form-control" required>
+                                        <option value="">-- Pilih Division --</option>
+                                        @foreach($divisions as $division)
+                                            <option value="{{ $division->id }}"
+                                                {{ old('division_id', $employee->division_id ?? '') == $division->id ? 'selected' : '' }}>
+                                                {{ $division->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
-    <!-- Division -->
-    <div class="sales-col-md-6">
-        <div class="sales-form-group">
-            <label>Division *</label>
-            <select name="division_id" class="sales-form-control" required>
-                <option value="">-- Pilih Division --</option>
-                @foreach($divisions as $division)
-                    <option value="{{ $division->id }}"
-                        {{ old('division_id', $employee->division_id ?? '') == $division->id ? 'selected' : '' }}>
-                        {{ $division->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
-    <!-- Position -->
-    <div class="sales-col-md-6">
-        <div class="sales-form-group">
-            <label>Position *</label>
-            <select name="position_id" class="sales-form-control" required>
-                <option value="">-- Pilih Position --</option>
-                @foreach($positions as $position)
-                    <option value="{{ $position->id }}"
-                        {{ old('position_id', $employee->position_id ?? '') == $position->id ? 'selected' : '' }}>
-                        {{ $position->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
-</div>
+                            <!-- Position -->
+                            <div class="sales-col-md-6">
+                                <div class="sales-form-group">
+                                    <label>Position *</label>
+                                    <select name="position_id" class="sales-form-control" required>
+                                        <option value="">-- Pilih Position --</option>
+                                        @foreach($positions as $position)
+                                            <option value="{{ $position->id }}"
+                                                {{ old('position_id', $employee->position_id ?? '') == $position->id ? 'selected' : '' }}>
+                                                {{ $position->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Alamat -->
                         <div class="sales-row">
@@ -484,21 +490,21 @@ input, select, textarea, button {
 
                         <!-- Tombol -->
                         <div class="sales-btn-group mt-4">
-                            <a href="{{ url('/agency') }}" class="sales-btn sales-btn-secondary">
+                            <a href="{{ route('agency.index') }}" class="sales-btn sales-btn-secondary btn-back">
                                 <i class="mdi mdi-arrow-left me-2"></i>Kembali
                             </a>
 
                             <div style="margin-left:auto;">
-                                <button type="reset" class="sales-btn sales-btn-outline-secondary me-2">
+                                <button type="reset" class="sales-btn sales-btn-outline-secondary btn-reset me-2">
                                     Reset
                                 </button>
 
-                                <button type="submit" class="sales-btn sales-btn-primary">
-                                    {{ isset($employee) ? 'Update Sales' : 'Simpan Pengguna' }}
+                                <button type="submit" class="sales-btn sales-btn-primary btn-submit">
+                                    {{ isset($employee) ? 'Update Pengguna' : 'Simpan Pengguna' }}
                                 </button>
                             </div>
                         </div>
-             </form>
+                    </form>
                 </div>
             </div>
         </div>
@@ -507,28 +513,7 @@ input, select, textarea, button {
 @endsection
 
 @push('scripts')
-@if(session('success'))
-<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Berhasil!',
-    text: '{{ session('success') }}',
-    timer: 2000,
-    showConfirmButton: false
-});
-</script>
-@endif
-@if ($errors->any())
-<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    html: `{!! implode('<br>', $errors->all()) !!}`,
-    confirmButtonColor: '#9a55ff'
-});
-</script>
-@endif
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 // Fungsi untuk toggle password
 function togglePassword(inputId, button) {
@@ -547,26 +532,111 @@ function togglePassword(inputId, button) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector("form[action='{{ route('agency.store') }}']");
-
-    form.addEventListener("submit", function(e) {
-        e.preventDefault();
-
+    // Fungsi untuk menampilkan loading
+    function showLoading(message = 'Mohon tunggu sebentar') {
         Swal.fire({
-            title: 'Simpan Data Pengguna?',
-            text: "Pastikan data sudah benar sebelum disimpan.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#9a55ff',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Simpan!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
+            title: 'Memuat...',
+            text: message,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
             }
         });
-    });
+    }
+
+    // ===== LOADING UNTUK SUBMIT FORM =====
+    const form = document.querySelector('.main-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '{{ isset($employee) ? 'Update Data?' : 'Simpan Data?' }}',
+                text: 'Pastikan data sudah benar sebelum {{ isset($employee) ? 'diupdate' : 'disimpan' }}.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, {{ isset($employee) ? 'Update!' : 'Simpan!' }}',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading('{{ isset($employee) ? 'Mengupdate data...' : 'Menyimpan data...' }}');
+                    form.submit();
+                }
+            });
+        });
+    }
+
+    // ===== LOADING UNTUK TOMBOL KEMBALI =====
+    const backBtn = document.querySelector('.btn-back');
+    if (backBtn) {
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading('Kembali ke daftar...');
+            window.location.href = this.href;
+        });
+    }
+
+    // ===== LOADING UNTUK TOMBOL RESET =====
+    const resetBtn = document.querySelector('.btn-reset');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            showLoading('Mereset form...');
+            setTimeout(() => {
+                Swal.close();
+                const form = document.querySelector('.main-form');
+                if (form) form.reset();
+            }, 500);
+        });
+    }
+
+    // ===== PREVIEW PASSWORD SAAT EDIT (HAPUS REQUIRED) =====
+    @if(isset($employee))
+        const passwordInput = document.getElementById('password');
+        if (passwordInput) {
+            passwordInput.removeAttribute('required');
+        }
+    @endif
 });
+
+// ===== SWEET ALERT UNTUK SESSION SUCCESS =====
+// Timer 3 detik, progress bar, dan tombol OK
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
+@endif
+
+// ===== SWEET ALERT UNTUK SESSION ERROR =====
+// Tanpa timer, pakai tombol OK
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
+@endif
+
+// ===== SWEET ALERT UNTUK VALIDASI ERROR =====
+@if ($errors->any())
+    Swal.fire({
+        icon: 'error',
+        title: 'Validasi Gagal',
+        html: `{!! implode('<br>', $errors->all()) !!}`,
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
+    });
+@endif
 </script>
 @endpush

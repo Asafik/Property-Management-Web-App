@@ -5,6 +5,36 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/bank/bank.css') }}">
 
+<style>
+/* CSS untuk loading overlay (jika diperlukan) */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #9a55ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
 <div class="container-fluid p-2 p-sm-3 p-md-4">
     <!-- Header Dashboard -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
@@ -39,7 +69,7 @@
                         Daftar Pengguna
                     </h5>
                     <div class="ms-auto">
-                        <a href="{{ route('agency.create') }}" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;">
+                        <a href="{{ route('agency.create') }}" class="btn btn-gradient-primary btn-tambah" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;">
                             <i class="mdi mdi-plus me-1"></i>
                             <span>Tambah Pengguna</span>
                         </a>
@@ -57,7 +87,7 @@
 
                             <!-- MOBILE VERSION -->
                             <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('agency.index') }}">
+                                <form method="GET" action="{{ route('agency.index') }}" class="filter-form">
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">
                                             <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
@@ -81,12 +111,12 @@
 
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center btn-filter">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btn-reset">
                                                 <i class="mdi mdi-refresh me-1"></i> Reset
                                             </a>
                                         </div>
@@ -96,7 +126,7 @@
 
                             <!-- DESKTOP VERSION -->
                             <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('agency.index') }}">
+                                <form method="GET" action="{{ route('agency.index') }}" class="filter-form">
                                     <div class="row g-2 align-items-end">
                                         <div class="col-md-6">
                                             <label class="form-label">
@@ -121,14 +151,14 @@
 
                                         <div class="col-md-2">
                                             <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center btn-filter">
                                                 <i class="mdi mdi-filter me-1"></i> Filter
                                             </button>
                                         </div>
 
                                         <div class="col-md-1">
                                             <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
+                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-reset" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -186,7 +216,7 @@
                                         <div class="d-flex justify-content-center gap-1">
                                             <!-- Edit -->
                                             <a href="{{ route('agency.edit', $employee->id) }}"
-                                               class="btn btn-outline-warning btn-sm"
+                                               class="btn btn-outline-warning btn-sm btn-edit"
                                                title="Edit Data">
                                                 <i class="mdi mdi-pencil"></i>
                                             </a>
@@ -242,7 +272,7 @@
                                     </li>
                                 @else
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $employees->previousPageUrl() }}" aria-label="Previous">
+                                        <a class="page-link pagination-link" href="{{ $employees->previousPageUrl() }}" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
@@ -251,14 +281,14 @@
                                 {{-- Page Links --}}
                                 @foreach ($employees->getUrlRange(1, $employees->lastPage()) as $page => $url)
                                     <li class="page-item {{ $employees->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        <a class="page-link pagination-link" href="{{ $url }}">{{ $page }}</a>
                                     </li>
                                 @endforeach
 
                                 {{-- Next Page Link --}}
                                 @if($employees->hasMorePages())
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $employees->nextPageUrl() }}" aria-label="Next">
+                                        <a class="page-link pagination-link" href="{{ $employees->nextPageUrl() }}" aria-label="Next">
                                             <i class="mdi mdi-chevron-right"></i>
                                         </a>
                                     </li>
@@ -284,7 +314,7 @@
             <div class="card">
                 <div class="card-body p-3">
                     <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
+                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary btn-back">
                             <i class="mdi mdi-arrow-left me-1"></i>
                             Kembali ke Dashboard
                         </a>
@@ -297,36 +327,80 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Inisialisasi DataTables hanya jika ada data
-    const tableElement = document.getElementById('tableAgent');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        // Destroy existing DataTable if any
-        if ($.fn.DataTable.isDataTable('#tableAgent')) {
-            $('#tableAgent').DataTable().destroy();
-        }
-
-        // Initialize DataTable with minimal features
-        $('#tableAgent').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data agent belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [5] }
-            ]
+    // Fungsi untuk menampilkan loading
+    function showLoading(message = 'Mohon tunggu sebentar') {
+        Swal.fire({
+            title: 'Memuat...',
+            text: message,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
     }
 
-    // Sweet Alert untuk Delete Confirmation
+    // ===== LOADING UNTUK FILTER FORM =====
+    const filterForms = document.querySelectorAll('.filter-form');
+    filterForms.forEach(form => {
+        form.addEventListener('submit', function() {
+            showLoading('Menyaring data...');
+        });
+    });
+
+    // ===== LOADING UNTUK TOMBOL RESET =====
+    const resetButtons = document.querySelectorAll('.btn-reset');
+    resetButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading('Mereset filter...');
+            window.location.href = this.href;
+        });
+    });
+
+    // ===== LOADING UNTUK PAGINATION =====
+    const paginationLinks = document.querySelectorAll('.pagination-link');
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading('Memuat halaman...');
+            window.location.href = this.href;
+        });
+    });
+
+    // ===== LOADING UNTUK TOMBOL TAMBAH =====
+    const tambahBtn = document.querySelector('.btn-tambah');
+    if (tambahBtn) {
+        tambahBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading('Memuat form tambah...');
+            window.location.href = this.href;
+        });
+    }
+
+    // ===== LOADING UNTUK TOMBOL EDIT =====
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading('Memuat form edit...');
+            window.location.href = this.href;
+        });
+    });
+
+    // ===== LOADING UNTUK TOMBOL KEMBALI =====
+    const backButton = document.querySelector('.btn-back');
+    if (backButton) {
+        backButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading('Kembali ke dashboard...');
+            window.location.href = this.href;
+        });
+    }
+
+    // ===== DELETE CONFIRMATION DENGAN LOADING =====
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(e) {
@@ -344,46 +418,76 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    showLoading('Menghapus data...');
                     form.submit();
                 }
             });
         });
     });
-});
-</script>
 
+    // Inisialisasi DataTables hanya jika ada data
+    const tableElement = document.getElementById('tableAgent');
+    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
+        if ($.fn.DataTable.isDataTable('#tableAgent')) {
+            $('#tableAgent').DataTable().destroy();
+        }
+
+        $('#tableAgent').DataTable({
+            responsive: true,
+            ordering: true,
+            paging: false,
+            info: false,
+            searching: false,
+            lengthChange: false,
+            destroy: true,
+            language: {
+                emptyTable: "Data agent belum tersedia",
+                zeroRecords: "Data tidak ditemukan",
+            },
+            columnDefs: [
+                { orderable: false, targets: [5] }
+            ]
+        });
+    }
+});
+
+// ===== SWEET ALERT UNTUK SESSION SUCCESS =====
+// Timer 3 detik, progress bar, dan tombol OK
 @if(session('success'))
-<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Berhasil!',
-    text: '{{ session('success') }}',
-    timer: 2000,
-    showConfirmButton: false
-});
-</script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
 @endif
 
+// ===== SWEET ALERT UNTUK SESSION ERROR =====
+// Tanpa timer, pakai tombol OK
 @if(session('error'))
-<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: '{{ session('error') }}',
-    timer: 2000,
-    showConfirmButton: false
-});
-</script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
 @endif
 
+// ===== SWEET ALERT UNTUK VALIDASI ERROR =====
 @if ($errors->any())
-<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Validasi Gagal',
-    html: `{!! implode('<br>', $errors->all()) !!}`,
-    confirmButtonColor: '#9a55ff'
-});
-</script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Validasi Gagal',
+        html: `{!! implode('<br>', $errors->all()) !!}`,
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
+    });
 @endif
+</script>
 @endpush
