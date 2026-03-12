@@ -737,22 +737,29 @@
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
 
-        /* Modal Detail Unit Sederhana */
-        .modal-detail-sederhana {
-            font-size: 16px;
+        /* ===== MODAL DETAIL SEDERHANA ===== */
+        .modal-detail-simple {
+            font-family: 'Nunito', sans-serif;
         }
-        .modal-detail-sederhana p {
+
+        .modal-detail-simple .modal-header {
+            background: #9a55ff;
+            color: white;
+            border-bottom: none;
+        }
+
+        .modal-detail-simple .modal-body p {
             margin-bottom: 12px;
-            padding: 10px;
+            padding: 8px 12px;
             background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #9a55ff;
+            border-radius: 6px;
+            border-left: 3px solid #9a55ff;
         }
-        .modal-detail-sederhana strong {
+
+        .modal-detail-simple strong {
             color: #9a55ff;
-            width: 100px;
+            width: 80px;
             display: inline-block;
-            font-weight: 700;
         }
     </style>
 
@@ -1615,33 +1622,33 @@
                             </div>
                         </div>
 
-                        <!-- Modal Detail Unit Sederhana untuk Double Click -->
-                        <div class="modal fade" id="detailUnitModalSimple" tabindex="-1">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
+                        <!-- MODAL DETAIL SEDERHANA - PAKAI YANG INI -->
+                        <div class="modal fade" id="myModal" tabindex="-1">
+                            <div class="modal-dialog modal-sm modal-dialog-centered">
+                                <div class="modal-content modal-detail-simple">
                                     <div class="modal-header">
                                         <h5 class="modal-title">
-                                            <i class="mdi mdi-home-circle me-2" style="color: #9a55ff;"></i>
+                                            <i class="mdi mdi-home-circle me-2"></i>
                                             Detail Unit
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-                                    <div class="modal-body modal-detail-sederhana">
+                                    <div class="modal-body">
                                         <p>
                                             <strong>Unit Code:</strong>
-                                            <span id="simple_unit_code">-</span>
+                                            <span class="unit-code">-</span>
                                         </p>
                                         <p>
                                             <strong>Status:</strong>
-                                            <span id="simple_status">-</span>
+                                            <span class="unit-status">-</span>
                                         </p>
                                         <p>
                                             <strong>Posisi:</strong>
-                                            <span id="simple_posisi">-</span>
+                                            <span class="unit-pos">-</span>
                                         </p>
                                         <p>
                                             <strong>Ukuran:</strong>
-                                            <span id="simple_ukuran">-</span>
+                                            <span class="unit-size">-</span>
                                         </p>
                                     </div>
                                 </div>
@@ -1975,7 +1982,6 @@
                                                     style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                                     <i class="mdi mdi-bank me-1"></i>KPR
                                                 </button>
-
                                             </div>
                                         </td>
                                     </tr>
@@ -2155,24 +2161,6 @@
         </div>
     </div>
 
-    <!-- Modal Detail Unit Klik (myModal) -->
-    <div class="modal fade" id="myModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detail Unit</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Unit Code: <span class="unit-code"></span></p>
-                    <p>Status: <span class="unit-status"></span></p>
-                    <p>Posisi: <span class="unit-pos"></span></p>
-                    <p>Ukuran: <span class="unit-size"></span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
         @csrf
@@ -2262,8 +2250,8 @@
             return "gray";
         }
 
-        // ========== KLICK UNIT UNTUK DETAIL SEDERHANA ==========
-        canvas.on('mouse:down', function(e) {
+        // ========== DOUBLE CLICK HANDLER UNTUK DETAIL SEDERHANA ==========
+        canvas.on('mouse:dblclick', function(e) {
             if (e.target && e.target.unitId) {
                 // Isi modal dengan data unit
                 document.querySelector('#myModal .unit-code').textContent = e.target.unitCode || '-';
@@ -2350,6 +2338,11 @@
                 document.getElementById('btnSitePlandView').classList.add('active');
             }
         }
+
+        // Set default view ke siteplan
+        document.addEventListener('DOMContentLoaded', function() {
+            switchView('sitepland');
+        });
 
         // ========== SISANYA TETAP SAMA PERSIS ==========
         $(document).ready(function() {
@@ -2470,7 +2463,6 @@
                     return;
                 }
 
-                // VALIDASI FILE UPLOAD - WAJIB UNTUK CASH DAN KPR
                 if (!buktiTransfer) {
                     Swal.fire({
                         icon: 'warning',
@@ -2480,7 +2472,6 @@
                     return;
                 }
 
-                // Validasi ukuran file (max 2MB)
                 if (buktiTransfer.size > 2 * 1024 * 1024) {
                     Swal.fire({
                         icon: 'error',
@@ -2490,7 +2481,6 @@
                     return;
                 }
 
-                // Validasi tipe file
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
                 if (!allowedTypes.includes(buktiTransfer.type)) {
                     Swal.fire({
@@ -2516,7 +2506,6 @@
                     cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Buat FormData
                         let formData = new FormData();
                         formData.append('_token', '{{ csrf_token() }}');
                         formData.append('customer_id', customerId);
@@ -2526,7 +2515,6 @@
 
                         let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 
-                        // Tampilkan loading
                         Swal.fire({
                             title: 'Memproses...',
                             text: 'Harap tunggu',
@@ -2536,7 +2524,6 @@
                             }
                         });
 
-                        // Kirim via AJAX
                         $.ajax({
                             url: actionUrl,
                             type: 'POST',
@@ -2602,7 +2589,9 @@
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Pilih!',
-                    cancelButtonText: 'Batal'
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         let formData = new FormData();
