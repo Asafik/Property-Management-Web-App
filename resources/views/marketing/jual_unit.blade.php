@@ -1122,10 +1122,10 @@
                             </div>
                         </div>
 
-                        <!-- Toggle View -->
+                        <!-- Toggle View - TABLE SEBAGAI DEFAULT -->
                         <div class="d-flex justify-content-end mb-3">
                             <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary" id="btnTableView"
+                                <button type="button" class="btn btn-outline-primary active" id="btnTableView"
                                     onclick="switchView('table')">
                                     <i class="mdi mdi-view-list me-1"></i>
                                     <span class="d-none d-sm-inline">Table</span>
@@ -1142,7 +1142,7 @@
                                     <i class="mdi mdi-floor-plan me-1"></i>
                                     <span class="d-none d-sm-inline">Denah Unit</span>
                                 </button>
-                                <button type="button" class="btn btn-outline-primary active" id="btnSitePlandView"
+                                <button type="button" class="btn btn-outline-primary" id="btnSitePlandView"
                                     onclick="switchView('sitepland')">
                                     <i class="mdi mdi-floor-plan me-1"></i>
                                     <span class="d-none d-sm-inline">Siteplan</span>
@@ -1150,8 +1150,8 @@
                             </div>
                         </div>
 
-                        <!-- TABLE VIEW DENGAN ICON DI SEMUA KOLOM -->
-                        <div id="tableView" style="display: none;">
+                        <!-- TABLE VIEW - TAMPIL (DEFAULT) -->
+                        <div id="tableView" style="display: block;">
                             <div class="table-responsive">
                                 <table class="table table-hover" id="unitTable" style="width:100%">
                                     <thead>
@@ -1327,7 +1327,7 @@
                             </div>
                         </div>
 
-                        <!-- GRID VIEW (Katalog) -->
+                        <!-- GRID VIEW (Katalog) - SEMBUNYI -->
                         <div id="gridView" style="display: none;">
                             <div class="row g-3">
                                 @forelse ($units as $unit)
@@ -1387,7 +1387,7 @@
                             </div>
                         </div>
 
-                        <!-- DENAH VIEW (DARI HALAMAN BUAT KAVLING) -->
+                        <!-- DENAH VIEW - SEMBUNYI -->
                         <div id="denahView" style="display: none;">
                             <div class="denah-container">
                                 <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
@@ -1605,8 +1605,8 @@
                             </div>
                         </div>
 
-                        <!-- SITEPLAN VIEW - RESPONSIVE -->
-                        <div id="sitePlandView" style="display: block;">
+                        <!-- SITEPLAN VIEW - SEMBUNYI -->
+                        <div id="sitePlandView" style="display: none;">
                             <div class="denah-container" style="padding: 1rem;">
                                 <div class="siteplan-scroll-container">
                                     <canvas id="siteplanCanvas"></canvas>
@@ -1622,7 +1622,7 @@
                             </div>
                         </div>
 
-                        <!-- MODAL DETAIL SEDERHANA - PAKAI YANG INI -->
+                        <!-- MODAL DETAIL SEDERHANA -->
                         <div class="modal fade" id="myModal" tabindex="-1">
                             <div class="modal-dialog modal-sm modal-dialog-centered">
                                 <div class="modal-content modal-detail-simple">
@@ -2339,10 +2339,10 @@
             }
         }
 
-        // Set default view ke siteplan
-        document.addEventListener('DOMContentLoaded', function() {
-            switchView('sitepland');
-        });
+        // ========== HAPUS DEFAULT VIEW KE SITEPLAN ==========
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     switchView('sitepland');
+        // });
 
         // ========== SISANYA TETAP SAMA PERSIS ==========
         $(document).ready(function() {
