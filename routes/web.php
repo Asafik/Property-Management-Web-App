@@ -229,9 +229,7 @@ Route::get(
 //     return view('marketing.cash_pengajuan');
 // });
 
-Route::get('/cash-pengajuan', [CashController::class, 'index'])->name('marketing.cash_pengajuan');
-
-
+Route::get('/marketing/cash/{booking}', [CashController::class, 'index'])->name('marketing.cash_tempo');
 
 
 // Route::get('/dashboard-akad-cash', function () {

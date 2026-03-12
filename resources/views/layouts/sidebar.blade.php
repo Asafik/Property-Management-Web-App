@@ -162,9 +162,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('customer.kpr.rijected') }}">User Rijected kpr</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('marketing.cash_pengajuan') }}">Cash Pengajuan</a>
-                    </li>
+                  
 
                 </ul>
             </div>

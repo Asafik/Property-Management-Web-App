@@ -58,6 +58,7 @@ class DevelopmentProgressController extends Controller
     public function store(Request $request)
     {
         Log::info($request->all());
+
         $request->validate([
             'land_bank_unit_id' => 'required|exists:land_bank_units,id',
 
@@ -118,7 +119,7 @@ class DevelopmentProgressController extends Controller
                     'deadline'     => $deadlineItem,
                 ]);
 
-                // upload dokumentasi
+                // Upload dokumentasi
                 if ($request->hasFile("items.$index.dokumentasi")) {
 
                     $file = $request->file("items.$index.dokumentasi");
@@ -129,6 +130,40 @@ class DevelopmentProgressController extends Controller
                     ]);
                 }
             }
+
+            /* ==============================
+           UPDATE PROGRESS PEMBANGUNAN UNIT
+        ============================== */
+
+            $totalItems = $progress->items()->count();
+
+            $status = 'belum_mulai';
+
+            if ($totalItems >= 1) {
+                $status = 'pondasi';
+            }
+
+            if ($totalItems >= 3) {
+                $status = 'dinding';
+            }
+
+            if ($totalItems >= 5) {
+                $status = 'atap';
+            }
+
+            if ($totalItems >= 7) {
+                $status = 'finishing';
+            }
+
+            if ($totalItems >= 9) {
+                $status = 'selesai';
+            }
+
+            LandBankUnit::where('id', $request->land_bank_unit_id)
+                ->update([
+                    'construction_progress' => $status
+                ]);
+
             DB::commit();
 
             return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');

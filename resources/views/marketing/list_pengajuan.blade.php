@@ -1130,11 +1130,17 @@
                                             </td>
                                             <td>
                                                 @if ($booking->purchase_type == 'kpr')
-                                                    <span class="badge badge-info badge-sm"><i
-                                                            class="mdi mdi-bank me-1"></i>KPR</span>
-                                                @else
-                                                    <span class="badge badge-success badge-sm"><i
-                                                            class="mdi mdi-cash me-1"></i>Cash</span>
+                                                    <span class="badge badge-info badge-sm">
+                                                        <i class="mdi mdi-bank me-1"></i>KPR
+                                                    </span>
+                                                @elseif ($booking->purchase_type == 'cash')
+                                                    <span class="badge badge-success badge-sm">
+                                                        <i class="mdi mdi-cash me-1"></i>Cash
+                                                    </span>
+                                                @elseif ($booking->purchase_type == 'cash_tempo')
+                                                    <span class="badge badge-warning badge-sm">
+                                                        <i class="mdi mdi-calendar-clock me-1"></i>Cash Tempo
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td>
@@ -1194,13 +1200,14 @@
                                                     class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
 
-                                                    {{-- Proses KPR / Cash / Completed --}}
+                                                    {{-- Proses KPR / Cash / Cash Tempo / Completed --}}
                                                     @if ($booking->status === 'completed')
                                                         <a href="{{ route('unit.selesai', $booking->id) }}"
                                                             class="btn btn-success btn-sm" title="Unit Selesai">
                                                             <i class="mdi mdi-check-decagram"></i>
                                                         </a>
                                                     @else
+                                                        {{-- KPR --}}
                                                         @if ($booking->purchase_type == 'kpr')
                                                             @if (!$booking->kprApplication || $booking->kprApplication->status != 'pengajuan')
                                                                 <a href="{{ route('pengajuan.show', $booking->id) }}"
@@ -1209,11 +1216,23 @@
                                                                     <i class="mdi mdi-bank"></i>
                                                                 </a>
                                                             @endif
-                                                        @else
+                                                        @endif
+
+                                                        {{-- Cash --}}
+                                                        @if ($booking->purchase_type == 'cash')
                                                             <a href="{{ route('marketing.cash', $booking->id) }}"
                                                                 class="btn btn-outline-success btn-sm"
                                                                 title="Proses Cash">
                                                                 <i class="mdi mdi-cash"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        {{-- Cash Tempo --}}
+                                                        @if ($booking->purchase_type == 'cash_tempo')
+                                                            <a href="{{ route('marketing.cash_tempo', $booking->id) }}"
+                                                                class="btn btn-outline-warning btn-sm"
+                                                                title="Proses Cash Tempo">
+                                                                <i class="mdi mdi-calendar-clock"></i>
                                                             </a>
                                                         @endif
                                                     @endif

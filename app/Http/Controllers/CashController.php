@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Booking;
 
 class CashController extends Controller
 {
     //
-    public function index()
+    public function index(Booking $booking)
     {
-        return view('marketing.cash_pengajuan');
+        $booking->load(['customer', 'unit']);
+
+        return view('marketing.cash_pengajuan', compact('booking'));
     }
 }
