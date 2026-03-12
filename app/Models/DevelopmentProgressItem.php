@@ -17,8 +17,11 @@ class DevelopmentProgressItem extends Model
         'harga_satuan',
         'total',
         'keterangan',
+        'deadline'
     ];
-
+    protected $casts = [
+    'deadline' => 'date'
+];
     public function progress()
     {
         return $this->belongsTo(DevelopmentProgress::class, 'development_progress_id');
