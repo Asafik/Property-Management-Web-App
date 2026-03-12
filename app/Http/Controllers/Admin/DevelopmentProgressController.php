@@ -55,41 +55,58 @@ class DevelopmentProgressController extends Controller
         return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items'));
     }
 
- public function store(Request $request)
-{
-    $request->validate([
-        'land_bank_unit_id' => 'required|exists:land_bank_units,id',
-        'items' => 'nullable|array',
-        'items.*.id' => 'nullable|exists:development_progress_items,id', // untuk update
-        'items.*.kategori' => 'required|string',
-        'items.*.kode' => 'required|string',
-        'items.*.uraian' => 'required|string',
-        'items.*.volume' => 'required|numeric',
-        'items.*.satuan' => 'required|string',
-        'items.*.harga_satuan' => 'required|numeric',
-        'items.*.keterangan' => 'nullable|string',
-        'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        'deadline' => 'nullable|array',
-        'deadline.*' => 'nullable|date',
-    ]);
+    public function store(Request $request)
+    {
+        Log::info($request->all());
+        $request->validate([
+            'land_bank_unit_id' => 'required|exists:land_bank_units,id',
 
-    DB::beginTransaction();
-    try {
-        $progress = DevelopmentProgress::firstOrCreate(
-            ['land_bank_unit_id' => $request->land_bank_unit_id],
-            ['title' => $request->title ?? 'Progress Baru']
-        );
+            'items' => 'nullable|array',
+            'items.*.id' => 'nullable|exists:development_progress_items,id',
 
-        $lastKategori = null;
+            'items.*.kategori' => 'nullable|string',
+            'items.*.kode' => 'nullable|string',
+            'items.*.uraian' => 'nullable|string',
+            'items.*.volume' => 'nullable|numeric',
+            'items.*.satuan' => 'nullable|string',
+            'items.*.harga_satuan' => 'nullable|numeric',
 
-        foreach ($request->items ?? [] as $index => $item) {
+            'items.*.keterangan' => 'nullable|string',
+            'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
-            $lastKategori = strtolower(trim($item['kategori']));
-            $deadlineItem = $request->deadline[$item['id']] ?? null;
+            'deadline' => 'nullable|array',
+            'deadline.*' => 'nullable|date',
+        ]);
 
-            $progressItem = $progress->items()->updateOrCreate(
-                ['id' => $item['id'] ?? null],
-                [
+        DB::beginTransaction();
+
+        try {
+
+            $progress = DevelopmentProgress::firstOrCreate(
+                ['land_bank_unit_id' => $request->land_bank_unit_id],
+                ['title' => $request->title ?? 'Progress Baru']
+            );
+
+            foreach ($request->items ?? [] as $index => $item) {
+
+                $itemId = $item['id'] ?? null;
+
+                $deadlineItem = $item['deadline']
+                    ?? ($itemId ? ($request->deadline[$itemId] ?? null) : null);
+
+                // UPDATE deadline item lama
+                if ($itemId && empty($item['kategori'])) {
+
+                    DevelopmentProgressItem::where('id', $itemId)
+                        ->update([
+                            'deadline' => $deadlineItem
+                        ]);
+
+                    continue;
+                }
+
+                // CREATE item baru
+                $progressItem = $progress->items()->create([
                     'kategori'     => $item['kategori'],
                     'kode'         => $item['kode'],
                     'uraian'       => $item['uraian'],
@@ -99,28 +116,33 @@ class DevelopmentProgressController extends Controller
                     'total'        => $item['volume'] * $item['harga_satuan'],
                     'keterangan'   => $item['keterangan'] ?? null,
                     'deadline'     => $deadlineItem,
-                ]
-            );
-
-            if ($request->hasFile("items.$index.dokumentasi")) {
-                $file = $request->file("items.$index.dokumentasi");
-                $filePath = $file->store('progress_dokumentasi', 'public');
-
-                $progressItem->documents()->create([
-                    'file_path' => $filePath,
                 ]);
+
+                // upload dokumentasi
+                if ($request->hasFile("items.$index.dokumentasi")) {
+
+                    $file = $request->file("items.$index.dokumentasi");
+                    $filePath = $file->store('progress_dokumentasi', 'public');
+
+                    $progressItem->documents()->create([
+                        'file_path' => $filePath
+                    ]);
+                }
             }
+            DB::commit();
+
+            return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            Log::error('Error store development progress', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Terjadi kesalahan, cek log.');
         }
-
-        DB::commit();
-        return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error($e->getMessage());
-        return back()->with('error', 'Terjadi kesalahan, cek log.');
     }
-}
-
     public function accAjax($unitId)
     {
         try {

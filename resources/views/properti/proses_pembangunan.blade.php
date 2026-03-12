@@ -167,25 +167,38 @@
                                         <tbody id="body-{{ $key }}">
                                             {{-- DATA DARI DB --}}
                                             @if ($selectedUnit->progress)
-                                                @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $i => $item)
+                                                @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $item)
                                                     <tr>
-                                                        <td class="text-center">{{ $i + 1 }}</td>
+
+                                                        <td style="display:none;">
+                                                            <input type="hidden" name="items[{{ $item->id }}][id]"
+                                                                value="{{ $item->id }}">
+                                                        </td>
+
+                                                        <td class="text-center">{{ $loop->iteration }}</td>
+
                                                         <td>{{ $item->uraian }}</td>
+
                                                         <td>{{ $item->volume }}</td>
+
                                                         <td>{{ $item->satuan }}</td>
+
                                                         <td>Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+
                                                         <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+
                                                         <td>{{ $item->keterangan }}</td>
+
                                                         <td>
                                                             <input type="date" name="deadline[{{ $item->id }}]"
                                                                 class="form-control form-control-sm"
                                                                 value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
                                                         </td>
+
                                                         <td>
-                                                            @php
-                                                                $documents = $item->documents;
-                                                            @endphp
-                                                            @if ($documents->count() > 0)
+                                                            @php $documents = $item->documents; @endphp
+
+                                                            @if ($documents->count())
                                                                 @foreach ($documents as $doc)
                                                                     <a href="{{ asset('storage/' . $doc->file_path) }}"
                                                                         target="_blank" class="file-preview-btn">
@@ -197,13 +210,14 @@
                                                                 <span class="text-muted">-</span>
                                                             @endif
                                                         </td>
+
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})"
-                                                                title="Hapus">
+                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})">
                                                                 <i class="mdi mdi-delete"></i>
                                                             </button>
                                                         </td>
+
                                                     </tr>
                                                 @endforeach
                                             @else
@@ -661,7 +675,7 @@
                             .catch(err => {
                                 console.error(err);
                                 Swal.fire('Error!', 'Terjadi error pada request AJAX',
-                                'error');
+                                    'error');
                             });
                     }
                 });
