@@ -75,7 +75,8 @@ Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(func
 
 Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
 Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
-
+Route::post('/unit/save-position', [SellUnitController::class,'savePosition'])
+->name('unit.save.position');
 
 Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])->name('set.customer');
 Route::get('/marketing/jual-unit/export/excel', [SellUnitController::class, 'exportExcel'])

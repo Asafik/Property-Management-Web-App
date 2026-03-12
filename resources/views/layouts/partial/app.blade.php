@@ -52,7 +52,7 @@
 
 <!-- Bootstrap 4 (bukan 5!) untuk template -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <!-- Template vendor scripts -->
 <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
 <script src="{{ asset('admin/assets/vendors/chart.js/chart.umd.js') }}"></script>

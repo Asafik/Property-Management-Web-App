@@ -1545,7 +1545,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card mb-3">
+                            {{-- <div class="card mb-3">
                                 <div class="card-body">
                                     <h6 class="mb-3">Atur Warna Status</h6>
 
@@ -1587,16 +1587,22 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div id="sitePlandView" style="display:none;">
                             <div class="denah-container text-center">
-                                <div class="siteplan-wrapper">
-                                    <img src="{{ asset('storage/siteplan.jfif') }}" alt="Siteplan"
-                                        class="img-fluid siteplan-img">
+
+                                <div class="siteplan-wrapper" style="position:relative; display:inline-block;">
+
+                                    <canvas id="siteplanCanvas"></canvas>
+
                                 </div>
+
                             </div>
                         </div>
+                        <button type="button" class="btn btn-success mt-3" onclick="savePosition()">
+                            Simpan Posisi Unit
+                        </button>
                         <div class="modal fade" id="detailUnitModal" tabindex="-1">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -1940,7 +1946,7 @@
                                                     style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                                     <i class="mdi mdi-bank me-1"></i>KPR
                                                 </button>
-                                                
+
                                             </div>
                                         </td>
                                     </tr>
@@ -2157,7 +2163,7 @@
 
         })
     </script>
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
 
             const defaultColors = {
@@ -2201,7 +2207,7 @@
 
             applyColors();
         });
-    </script>
+    </script> --}}
     <script>
         $(document).ready(function() {
             // CEK APAKAH TABEL MEMILIKI DATA (bukan baris kosong)
@@ -2595,4 +2601,160 @@
             });
         </script>
     @endif
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+
+<script>
+
+const canvas = new fabric.Canvas('siteplanCanvas');
+const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
+
+
+/* ===============================
+LOAD BACKGROUND
+=============================== */
+
+fabric.Image.fromURL(siteplanImage, function(img){
+
+    canvas.setWidth(img.width);
+    canvas.setHeight(img.height);
+
+    canvas.setBackgroundImage(img, function(){
+
+        /* ===============================
+        LOAD UNIT DARI DATABASE
+        =============================== */
+
+        @foreach ($unitsForSvg as $unit)
+
+        console.log(
+            "DB POS:",
+            {{ $unit->pos_x ?? 0 }},
+            {{ $unit->pos_y ?? 0 }},
+            "SIZE:",
+            {{ $unit->width ?? 80 }},
+            {{ $unit->height ?? 60 }}
+        )
+
+        const rect{{ $unit->id }} = new fabric.Rect({
+
+            left: {{ $unit->pos_x ?? 100 }},
+            top: {{ $unit->pos_y ?? 100 }},
+
+            width: {{ $unit->width ?? 80 }},
+            height: {{ $unit->height ?? 60 }},
+
+            fill:getColor("{{ $unit->status }}","{{ $unit->type }}"),
+
+            opacity:0.6,
+            stroke:'black',
+            strokeWidth:1
+
+        });
+
+        rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
+        rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
+        rect{{ $unit->id }}.status = "{{ $unit->status }}";
+
+        canvas.add(rect{{ $unit->id }});
+
+        @endforeach
+
+
+        canvas.renderAll()
+
+    },{
+        originX:'left',
+        originY:'top'
+    });
+
+});
+
+
+/* ===============================
+WARNA STATUS
+=============================== */
+
+function getColor(status,type){
+
+if(type==="komersil" && status==="ready") return "#2675BB"
+if(status==="ready") return "#CE2A2E"
+if(status==="booked") return "#FFD700"
+if(status==="sold") return "#FA2800"
+
+return "gray"
+
+}
+
+
+/* ===============================
+CLICK UNIT
+=============================== */
+
+canvas.on('mouse:down',function(e){
+
+if(e.target){
+
+alert(
+"Unit : "+e.target.unitCode+
+"\nStatus : "+e.target.status
+)
+
+}
+
+})
+
+
+/* ===============================
+SAVE POSITION
+=============================== */
+
+function savePosition(){
+canvas.on('object:modified', function() {
+    savePosition()
+})
+let units=[]
+
+canvas.getObjects().forEach(function(obj){
+
+if(obj.unitId){
+
+units.push({
+    id: obj.unitId,
+    pos_x: Math.round(obj.left),
+    pos_y: Math.round(obj.top),
+    width: Math.round(obj.getScaledWidth()),   // <-- ini ukuran final
+    height: Math.round(obj.getScaledHeight())  // <-- ini ukuran final
+})
+
+}
+
+})
+
+
+fetch("{{ route('unit.save.position') }}",{
+
+method:'POST',
+
+headers:{
+'Content-Type':'application/json',
+'X-CSRF-TOKEN':'{{ csrf_token() }}'
+},
+
+body:JSON.stringify({
+units:units
+})
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+if(data.success){
+alert("Posisi unit berhasil disimpan")
+}
+
+})
+
+}
+
+</script>
 @endpush
