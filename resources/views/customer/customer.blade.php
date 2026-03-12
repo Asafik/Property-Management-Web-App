@@ -582,7 +582,7 @@
                     <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                         alt="circle-image" />
                     <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                        Total Customer
+                        Total User
                         <i class="mdi mdi-account-group float-end" style="font-size: 1.2rem;"></i>
                     </h4>
                     <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalCustomer ?? 0 }}</h2>
@@ -596,7 +596,7 @@
                     <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
                         alt="circle-image" />
                     <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                        Customer Aktif
+                        User Aktif
                         <i class="mdi mdi-account-check float-end" style="font-size: 1.2rem;"></i>
                     </h4>
                     <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $customerAktif ?? 0 }}</h2>
@@ -641,7 +641,7 @@
                 <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <h5 class="card-title mb-2 mb-md-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Customer
+                        Daftar User
                     </h5>
                     <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-gradient-success" onclick="$('#modalImportCustomer').modal('show')">

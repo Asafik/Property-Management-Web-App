@@ -29,49 +29,51 @@ class AgencyPropertyController extends Controller
 
         // Ambil data dengan pagination
         $employees = $query->latest()->paginate($perPage)->withQueryString();
-    
+
         return view('sales.data_sales_agent', compact('employees'));
     }
 
     // Menampilkan form tambah sales/agent
     public function create()
     {
-         $divisions = Division::all();
-         $positions = Position::all();
-        return view('sales.buat_sales_agent', compact('divisions','positions'));
+        $divisions = Division::all();
+        $positions = Position::all();
+        return view('sales.buat_sales_agent', compact('divisions', 'positions'));
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required',
-        'username' => 'required|unique:employees,username',
-        'password' => 'required|min:5',
-        'phone' => 'required',
-        'address' => 'required',
-        'division_id' => 'required|exists:divisions,id',
-        'position_id' => 'required|exists:positions,id',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'username' => 'required|unique:employees,username',
+            'password' => 'required|min:5',
+            'phone' => 'required',
+            'address' => 'required',
+            'division_id' => 'required|exists:divisions,id',
+            'position_id' => 'required|exists:positions,id',
+        ]);
 
-    Employee::create([
-        'name' => $request->name,
-        'username' => $request->username,
-        'password' => Hash::make($request->password),
-        'phone' => $request->phone,
-        'address' => $request->address,
-        'division_id' => $request->division_id,
-        'position_id' => $request->position_id,
-    ]);
+        Employee::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'division_id' => $request->division_id,
+            'position_id' => $request->position_id,
+        ]);
 
-    return redirect()->route('agency.index')
-        ->with('success', 'Pengguna berhasil ditambahkan');
-}
+        return redirect()->route('agency.index')
+            ->with('success', 'Pengguna berhasil ditambahkan');
+    }
 
     // Menampilkan form edit sales/agent
     public function edit($id)
     {
         $employee = Employee::findOrFail($id);
-        return view('sales.buat_sales_agent', compact('employee'));
+        $divisions = Division::all();
+        $positions = Position::all();
+        return view('sales.buat_sales_agent', compact('employee', 'divisions', 'positions'));
     }
 
     // Menyimpan perubahan data sales/agent
@@ -85,22 +87,24 @@ class AgencyPropertyController extends Controller
             'password' => 'nullable|min:5',
             'phone' => 'required',
             'address' => 'required',
-            'role' => 'required'
+            'division_id' => 'required|exists:divisions,id',
+            'position_id' => 'required|exists:positions,id',
         ]);
 
         $employee->name = $request->name;
         $employee->username = $request->username;
-        if ($request->password) {
+        if ($request->filled('password')) {
             $employee->password = Hash::make($request->password);
         }
         $employee->phone = $request->phone;
         $employee->address = $request->address;
-        $employee->role = $request->role;
+        $employee->division_id = $request->division_id;
+        $employee->position_id = $request->position_id;
 
         $employee->save();
 
         return redirect()->route('agency.index')
-            ->with('success', 'Data Sales berhasil diperbarui');
+            ->with('success', 'Data berhasil diperbarui');
     }
 
     // Menghapus data sales/agent

@@ -205,12 +205,7 @@ Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController
 | ========================= AGENCY / SALES =========================
 |--------------------------------------------------------------------------
 */
-Route::get('/agency', [AgencyPropertyController::class, 'index'])->name('agency.index');
-Route::get('/agency/create', [AgencyPropertyController::class, 'create'])->name('agency.create');
-Route::post('/agency/store', [AgencyPropertyController::class, 'store'])->name('agency.store');
-Route::get('/agency/{id}/edit', [AgencyPropertyController::class, 'edit'])->name('agency.edit');
-Route::put('/agency/{id}', [AgencyPropertyController::class, 'update'])->name('agency.update');
-Route::delete('/agency/{id}', [AgencyPropertyController::class, 'destroy'])->name('agency.destroy');
+
 /*
 |--------------------------------------------------------------------------
 | PENGAJUAN
@@ -236,12 +231,7 @@ Route::get(
 Route::get('/cash-pengajuan', [CashController::class, 'index'])->name('marketing.cash_pengajuan');
 
 
-//bank
-Route::get('/master-data-bank', [BankController::class, 'index'])->name('bank.index');
-Route::post('/master-data-bank/store', [BankController::class, 'store'])->name('bank.store');
-Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
-Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
-Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
+
 
 // Route::get('/dashboard-akad-cash', function () {
 //     return view('marketing.akad_cash');
@@ -262,14 +252,7 @@ Route::prefix('lokasi')->name('lokasi.')->group(function () {
 
 });
 
-//promo
-Route::get('/promo', [PromoController::class, 'index'])->name('promo.index');
-Route::post('/promo/store', [PromoController::class, 'store'])->name('promo.store');
-Route::get('/promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
-Route::put('/promo/{id}', [PromoController::class, 'update'])->name('promo.update');
-Route::delete('/promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
-Route::get('/promo/{id}', [PromoController::class, 'show'])->name('promo.show');
-Route::get('/promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
+
 // Route::get('/dashboard-promo', function () {
 //     return view('promo.promo');
 // });
@@ -279,12 +262,8 @@ Route::get('/promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo
 // });
 
 
-Route::get('/pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
-Route::post('/pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
-Route::get('/pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
-Route::put('/pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
-Route::delete('/pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
-Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
+
+
 
 Route::get('/servis', function () {
     return view('servis.servis');
@@ -295,21 +274,6 @@ Route::get('/servis', function () {
 //     return view('dokument.dokument');
 // });
 
-// Route untuk Document Types (Master Data)
-Route::get('/dokument-tanah-induk', [LandBankDocumentController::class, 'index'])
-    ->name('dokument.index');
-
-Route::post('/dokument/store', [LandBankDocumentController::class, 'store'])
-    ->name('document-types.store');
-
-Route::get('/dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])
-    ->name('document-types.edit');
-
-Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'])
-    ->name('document-types.update');
-
-Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])
-    ->name('document-types.destroy');
 
 
 
@@ -328,11 +292,6 @@ Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::cla
 Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
 
 
-// Halaman daftar customer (LIST)
-Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');
-Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
-Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
-// Route::get('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
 
 
 Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
@@ -405,15 +364,56 @@ Route::get('/survey-komersil', function () {
 // });
 
 
+// MASTER DATA USER/CUSTOMER
+Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');
+Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
+Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
+// Route::get('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
+
+
+// MASTER DATA DOKUMEN PASCA LANDBANK/DOKUMEN TYPE
+Route::get('/dokument-tanah-induk', [LandBankDocumentController::class, 'index'])->name('dokument.index');
+Route::post('/dokument/store', [LandBankDocumentController::class, 'store'])->name('document-types.store');
+Route::get('/dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])->name('document-types.edit');
+Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'])->name('document-types.update');
+Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])->name('document-types.destroy');
+
+
+
+
+// EMPLOYEE/AGENCY
+Route::get('/agency', [AgencyPropertyController::class, 'index'])->name('agency.index');
+Route::get('/agency/create', [AgencyPropertyController::class, 'create'])->name('agency.create');
+Route::post('/agency/store', [AgencyPropertyController::class, 'store'])->name('agency.store');
+Route::get('/agency/{id}/edit', [AgencyPropertyController::class, 'edit'])->name('agency.edit');
+Route::put('/agency/{id}', [AgencyPropertyController::class, 'update'])->name('agency.update');
+Route::delete('/agency/{id}', [AgencyPropertyController::class, 'destroy'])->name('agency.destroy');
+// MASTER DATA PROMO
+Route::get('/promo', [PromoController::class, 'index'])->name('promo.index');
+Route::post('/promo/store', [PromoController::class, 'store'])->name('promo.store');
+Route::get('/promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
+Route::put('/promo/{id}', [PromoController::class, 'update'])->name('promo.update');
+Route::delete('/promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
+Route::get('/promo/{id}', [PromoController::class, 'show'])->name('promo.show');
+Route::get('/promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
+// MASTER DATA PT/COMPANY
+Route::get('/pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+Route::post('/pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
+Route::get('/pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
+Route::put('/pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
+Route::delete('/pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
+Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
+// MASTER DATA BANK
+Route::get('/master-data-bank', [BankController::class, 'index'])->name('bank.index');
+Route::post('/master-data-bank/store', [BankController::class, 'store'])->name('bank.store');
+Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
+Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
+Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
 // MASTER DATA DIVISION
 Route::get('/master-data/division', [DivisionController::class, 'index'])->name('master.data.division.index');
 Route::post('/master-data/division/store', [DivisionController::class, 'store'])->name('master.data.division.store');
 Route::put('/master-data/division/update/{id}', [DivisionController::class, 'update'])->name('master.data.division.update');
 Route::delete('/master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
-
-
-
-
 // MASTER DATA POSITION
 Route::get('/master-data/posisi', [PositionController::class, 'index'])->name('master.data.posisi');
 Route::post('/master-data/posisi/store', [PositionController::class, 'store'])->name('master.data.posisi.store');
