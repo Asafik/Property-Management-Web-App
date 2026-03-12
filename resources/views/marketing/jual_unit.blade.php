@@ -703,6 +703,48 @@
             border-color: #28a745;
             background: linear-gradient(135deg, #f0fff4, #e6f7e6);
         }
+
+        /* Siteplan Canvas Styling - FULL WIDTH */
+        #siteplanCanvas {
+            width: 100%;
+            height: auto;
+            border: 2px solid #9a55ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(154, 85, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .btn-save-position {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save-position:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Modal Detail Unit Sederhana */
+        .modal-detail-sederhana {
+            font-size: 16px;
+        }
+        .modal-detail-sederhana p {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .modal-detail-sederhana strong {
+            color: #9a55ff;
+            width: 100px;
+            display: inline-block;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -1545,162 +1587,58 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="card mb-3">
-                                <div class="card-body">
-                                    <h6 class="mb-3">Atur Warna Status</h6>
-
-                                    <div class="row g-3">
-                                        <div class="col-md-2">
-                                            <label>Sold</label>
-                                            <input type="color" id="color_sold" value="#dc3545"
-                                                class="form-control form-control-color">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label>Booked</label>
-                                            <input type="color" id="color_booked" value="#ffc107"
-                                                class="form-control form-control-color">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label>Draft</label>
-                                            <input type="color" id="color_draft" value="#343a40"
-                                                class="form-control form-control-color">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label>Ready Subsidi</label>
-                                            <input type="color" id="color_ready_subsidi" value="#28a745"
-                                                class="form-control form-control-color">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label>Ready Komersil</label>
-                                            <input type="color" id="color_ready_komersil" value="#0d6efd"
-                                                class="form-control form-control-color">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label>Belum Tersedia</label>
-                                            <input type="color" id="color_unavailable" value="#6c757d"
-                                                class="form-control form-control-color">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}
                         </div>
-                        <div id="sitePlandView" style="display:none;">
-                            <div class="denah-container text-center">
 
-                                <div class="siteplan-wrapper" style="position:relative; display:inline-block;">
-
-                                    <canvas id="siteplanCanvas"></canvas>
-
+                        <!-- SITEPLAN VIEW (FOKUS UTAMA) - FULL WIDTH -->
+                        <div id="sitePlandView" style="display:block;">
+                            <div class="denah-container" style="padding: 1rem;">
+                                <div class="siteplan-wrapper" style="position:relative; width:100%;">
+                                    <canvas id="siteplanCanvas" style="width:100%; height:auto;"></canvas>
                                 </div>
 
+                                <!-- Tombol Simpan Posisi Unit - HANYA DI TAB SITEPLAN -->
+                                <div class="mt-4 text-center">
+                                    <button type="button" class="btn btn-save-position" onclick="savePosition()">
+                                        <i class="mdi mdi-content-save me-2"></i>
+                                        Simpan Posisi Unit
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-success mt-3" onclick="savePosition()">
-                            Simpan Posisi Unit
-                        </button>
-                        <div class="modal fade" id="detailUnitModal" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
 
+                        <!-- Modal Detail Unit Sederhana untuk Double Click -->
+                        <div class="modal fade" id="detailUnitModalSimple" tabindex="-1">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Detail Unit</h5>
+                                        <h5 class="modal-title">
+                                            <i class="mdi mdi-home-circle me-2" style="color: #9a55ff;"></i>
+                                            Detail Unit
+                                        </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-
-                                    <div class="modal-body">
-
-                                        <table class="table table-bordered">
-
-                                            <tr>
-                                                <th>Kode Unit</th>
-                                                <td id="m_unit"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Blok</th>
-                                                <td id="m_block"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Tipe</th>
-                                                <td id="m_type"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Alamat</th>
-                                                <td id="m_address"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Luas Tanah</th>
-                                                <td id="m_area"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Luas Bangunan</th>
-                                                <td id="m_building"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Harga</th>
-                                                <td id="m_price"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Arah Hadap</th>
-                                                <td id="m_direction"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Status</th>
-                                                <td id="m_status"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Status Pembangunan</th>
-                                                <td id="m_construction"></td>
-                                            </tr>
-
-                                        </table>
-                                        <h5 class="mt-3">Detail Booking</h5>
-
-                                        <table class="table table-bordered">
-
-                                            <tr>
-                                                <th width="30%">Customer</th>
-                                                <td id="m_customer"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Sales / Agency</th>
-                                                <td id="m_sales"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Tanggal Booking</th>
-                                                <td id="m_booking_date"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Booking Fee</th>
-                                                <td id="m_booking_fee"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>Status Booking</th>
-                                                <td id="m_booking_status"></td>
-                                            </tr>
-
-                                        </table>
+                                    <div class="modal-body modal-detail-sederhana">
+                                        <p>
+                                            <strong>Unit Code:</strong>
+                                            <span id="simple_unit_code">-</span>
+                                        </p>
+                                        <p>
+                                            <strong>Status:</strong>
+                                            <span id="simple_status">-</span>
+                                        </p>
+                                        <p>
+                                            <strong>Posisi:</strong>
+                                            <span id="simple_posisi">-</span>
+                                        </p>
+                                        <p>
+                                            <strong>Ukuran:</strong>
+                                            <span id="simple_ukuran">-</span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <!-- Pagination dengan styling yang sama -->
                         @if ($units->count() > 0)
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
@@ -2125,22 +2063,22 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="myModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detail Unit</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Unit Code: <span class="unit-code"></span></p>
-                    <p>Status: <span class="unit-status"></span></p>
-                    <p>Posisi: <span class="unit-pos"></span></p>
-                    <p>Ukuran: <span class="unit-size"></span></p>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="myModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detail Unit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Unit Code: <span class="unit-code"></span></p>
+        <p>Status: <span class="unit-status"></span></p>
+        <p>Posisi: <span class="unit-pos"></span></p>
+        <p>Ukuran: <span class="unit-size"></span></p>
+      </div>
     </div>
+  </div>
+</div>
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
         @csrf
@@ -2153,82 +2091,211 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+
     <script>
+        // ========== DETAIL MODAL HANDLER (untuk tombol detail) ==========
         const detailModal = document.getElementById('detailUnitModal')
+        if (detailModal) {
+            detailModal.addEventListener('show.bs.modal', function(event) {
+                let button = event.relatedTarget
 
-        detailModal.addEventListener('show.bs.modal', function(event) {
+                document.getElementById('m_unit').innerText = button.getAttribute('data-unit')
+                document.getElementById('m_block').innerText = button.getAttribute('data-block')
+                document.getElementById('m_type').innerText = button.getAttribute('data-type')
+                document.getElementById('m_address').innerText = button.getAttribute('data-address')
+                document.getElementById('m_area').innerText = button.getAttribute('data-area') + ' m²'
+                document.getElementById('m_building').innerText = button.getAttribute('data-building') + ' m²'
+                document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(button.getAttribute('data-price'))
+                document.getElementById('m_direction').innerText = button.getAttribute('data-direction')
+                document.getElementById('m_status').innerText = button.getAttribute('data-status')
+                document.getElementById('m_construction').innerText = button.getAttribute('data-construction')
+                document.getElementById('m_customer').innerText = button.getAttribute('data-customer')
+                document.getElementById('m_sales').innerText = button.getAttribute('data-sales')
+                document.getElementById('m_booking_date').innerText = button.getAttribute('data-booking_date')
+                document.getElementById('m_booking_fee').innerText = button.getAttribute('data-booking_fee')
+                document.getElementById('m_booking_status').innerText = button.getAttribute('data-booking_status')
+            })
+        }
 
-            let button = event.relatedTarget
+        // ========== SITEPLAN CANVAS - FULL WIDTH ==========
+        const canvas = new fabric.Canvas('siteplanCanvas');
+        const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
 
-            document.getElementById('m_unit').innerText = button.getAttribute('data-unit')
-            document.getElementById('m_block').innerText = button.getAttribute('data-block')
-            document.getElementById('m_type').innerText = button.getAttribute('data-type')
-            document.getElementById('m_address').innerText = button.getAttribute('data-address')
-            document.getElementById('m_area').innerText = button.getAttribute('data-area') + ' m²'
-            document.getElementById('m_building').innerText = button.getAttribute('data-building') + ' m²'
-            document.getElementById('m_price').innerText = 'Rp ' + button.getAttribute('data-price')
-            document.getElementById('m_direction').innerText = button.getAttribute('data-direction')
-            document.getElementById('m_status').innerText = button.getAttribute('data-status')
-            document.getElementById('m_construction').innerText = button.getAttribute('data-construction')
-            document.getElementById('m_customer').innerText = button.getAttribute('data-customer')
-            document.getElementById('m_sales').innerText = button.getAttribute('data-sales')
-            document.getElementById('m_booking_date').innerText = button.getAttribute('data-booking_date')
-            document.getElementById('m_booking_fee').innerText = button.getAttribute('data-booking_fee')
-            document.getElementById('m_booking_status').innerText = button.getAttribute('data-booking_status')
+        // Load background image dengan full width
+        fabric.Image.fromURL(siteplanImage, function(img) {
+            // Dapatkan lebar container
+            const containerWidth = document.querySelector('.siteplan-wrapper').clientWidth;
 
-        })
-    </script>
-    {{-- <script>
-        document.addEventListener("DOMContentLoaded", function() {
+            // Hitung skala agar gambar memenuhi lebar container
+            const scaleFactor = containerWidth / img.width;
 
-            const defaultColors = {
-                sold: "#dc3545",
-                booked: "#ffc107",
-                draft: "#343a40",
-                ready_subsidi: "#28a745",
-                ready_komersil: "#0d6efd",
-                unavailable: "#6c757d"
-            };
+            canvas.setWidth(containerWidth);
+            canvas.setHeight(img.height * scaleFactor);
 
-            function applyColors() {
-                document.querySelectorAll(".unit-box").forEach(box => {
-                    let status = box.dataset.status;
-                    let type = box.dataset.type;
-                    let color = "";
+            canvas.setBackgroundImage(img, function() {
+                // Load unit dari database dengan skala yang sama
+                @foreach ($unitsForSvg as $unit)
+                    const rect{{ $unit->id }} = new fabric.Rect({
+                        left: ({{ $unit->pos_x ?? 100 }}) * scaleFactor,
+                        top: ({{ $unit->pos_y ?? 100 }}) * scaleFactor,
+                        width: ({{ $unit->width ?? 80 }}) * scaleFactor,
+                        height: ({{ $unit->height ?? 60 }}) * scaleFactor,
+                        fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
+                        opacity: 0.6,
+                        stroke: 'black',
+                        strokeWidth: 1,
+                        hasControls: true,
+                        hasBorders: true,
+                        lockRotation: true
+                    });
 
-                    if (!status || status === "unavailable") {
-                        color = document.getElementById("color_unavailable").value;
-                    } else if (status === "sold") {
-                        color = document.getElementById("color_sold").value;
-                    } else if (status === "booked") {
-                        color = document.getElementById("color_booked").value;
-                    } else if (status === "draft") {
-                        color = document.getElementById("color_draft").value;
-                    } else if (status === "ready") {
-                        if (type === "subsidi") {
-                            color = document.getElementById("color_ready_subsidi").value;
-                        } else {
-                            color = document.getElementById("color_ready_komersil").value;
-                        }
-                    }
+                    rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
+                    rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
+                    rect{{ $unit->id }}.status = "{{ $unit->status }}";
 
-                    box.style.backgroundColor = color;
-                });
+                    canvas.add(rect{{ $unit->id }});
+                @endforeach
+
+                canvas.renderAll();
+            }, {
+                originX: 'left',
+                originY: 'top',
+                scaleX: scaleFactor,
+                scaleY: scaleFactor
+            });
+        });
+
+        // Fungsi untuk menentukan warna berdasarkan status dan tipe
+        function getColor(status, type) {
+            if (type === "komersil" && status === "ready") return "#2675BB";
+            if (status === "ready") return "#CE2A2E";
+            if (status === "booked") return "#FFD700";
+            if (status === "sold") return "#FA2800";
+            return "gray";
+        }
+
+        // ========== DOUBLE CLICK HANDLER UNTUK DETAIL SEDERHANA ==========
+        canvas.on('mouse:dblclick', function(e) {
+            if (e.target && e.target.unitId) {
+                // Isi modal sederhana
+                document.getElementById('simple_unit_code').innerText = e.target.unitCode || '-';
+                document.getElementById('simple_status').innerText = e.target.status || '-';
+                document.getElementById('simple_posisi').innerText = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
+                document.getElementById('simple_ukuran').innerText = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
+
+                // Tampilkan modal
+                const modal = new bootstrap.Modal(document.getElementById('detailUnitModalSimple'));
+                modal.show();
             }
+        });
 
-            document.querySelectorAll("input[type=color]").forEach(input => {
-                input.addEventListener("input", applyColors);
+        // ========== SAVE POSITION FUNCTION ==========
+        function savePosition() {
+            let units = [];
+
+            canvas.getObjects().forEach(function(obj) {
+                if (obj.unitId) {
+                    units.push({
+                        id: obj.unitId,
+                        pos_x: Math.round(obj.left),
+                        pos_y: Math.round(obj.top),
+                        width: Math.round(obj.getScaledWidth()),
+                        height: Math.round(obj.getScaledHeight())
+                    });
+                }
             });
 
-            applyColors();
+            fetch("{{ route('unit.save.position') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ units: units })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Posisi unit berhasil disimpan',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan saat menyimpan posisi'
+                });
+            });
+        }
+
+        // ========== SWITCH VIEW FUNCTION ==========
+        function switchView(view) {
+            // sembunyikan semua
+            document.getElementById('tableView').style.display = 'none';
+            document.getElementById('gridView').style.display = 'none';
+            document.getElementById('denahView').style.display = 'none';
+            document.getElementById('sitePlandView').style.display = 'none';
+
+            // reset active button
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // tampilkan sesuai pilihan
+            if (view === 'table') {
+                document.getElementById('tableView').style.display = 'block';
+                document.getElementById('btnTableView').classList.add('active');
+            } else if (view === 'grid') {
+                document.getElementById('gridView').style.display = 'block';
+                document.getElementById('btnGridView').classList.add('active');
+            } else if (view === 'denah') {
+                document.getElementById('denahView').style.display = 'block';
+                document.getElementById('btnDenahView').classList.add('active');
+            } else if (view === 'sitepland') {
+                document.getElementById('sitePlandView').style.display = 'block';
+                document.getElementById('btnSitePlandView').classList.add('active');
+
+                // Render ulang canvas setelah ditampilkan (dengan ukuran baru)
+                setTimeout(() => {
+                    const containerWidth = document.querySelector('.siteplan-wrapper').clientWidth;
+                    const img = canvas.backgroundImage;
+                    if (img) {
+                        const scaleFactor = containerWidth / img.width;
+                        canvas.setWidth(containerWidth);
+                        canvas.setHeight(img.height * scaleFactor);
+
+                        // Update posisi dan ukuran semua objek
+                        canvas.getObjects().forEach(obj => {
+                            if (obj.unitId) {
+                                // Simpan proporsional position
+                                // Ini perlu disesuaikan dengan data asli dari database
+                            }
+                        });
+
+                        canvas.setZoom(1);
+                        canvas.renderAll();
+                    }
+                }, 100);
+            }
+        }
+
+        // Set default view ke siteplan
+        document.addEventListener('DOMContentLoaded', function() {
+            switchView('sitepland');
         });
-    </script> --}}
-    <script>
+
+        // ========== SISANYA TETAP SAMA PERSIS ==========
         $(document).ready(function() {
             // CEK APAKAH TABEL MEMILIKI DATA (bukan baris kosong)
             let hasData = false;
             $('#unitTable tbody tr').each(function() {
-                // Jika baris memiliki lebih dari 1 kolom ATAU tidak memiliki colspan
                 if ($(this).find('td').length > 1 || $(this).find('td[colspan]').length === 0) {
                     hasData = true;
                 }
@@ -2241,7 +2308,6 @@
 
             // HANYA inisialisasi DataTables JIKA ADA DATA
             if (hasData) {
-                console.log('Data ditemukan, menginisialisasi DataTables');
                 let table = $('#unitTable').DataTable({
                     responsive: true,
                     paging: false,
@@ -2256,15 +2322,13 @@
                     columnDefs: [{
                             targets: 0,
                             orderable: false
-                        }, // Kolom No
+                        },
                         {
                             targets: 14,
                             orderable: false
-                        } // Kolom Aksi (index ke-14)
+                        }
                     ]
                 });
-            } else {
-                console.log('Tabel kosong, DataTables tidak diinisialisasi');
             }
 
             // Format Rupiah untuk booking fee dan agent fee
@@ -2285,20 +2349,16 @@
                 const $fileSize = $('#buktiFileSize');
 
                 if (file) {
-                    // Tampilkan nama file
                     $fileName.text(file.name.length > 30 ? file.name.substring(0, 30) + '...' : file.name);
 
-                    // Hitung ukuran file
                     if (file.size < 1024 * 1024) {
                         $fileSize.text((file.size / 1024).toFixed(1) + ' KB');
                     } else {
                         $fileSize.text((file.size / (1024 * 1024)).toFixed(1) + ' MB');
                     }
 
-                    // Tambah class selected
                     $label.addClass('file-selected');
                 } else {
-                    // Reset
                     $fileName.text('Upload Bukti Transfer');
                     $fileSize.text('');
                     $label.removeClass('file-selected');
@@ -2332,7 +2392,6 @@
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '');
                 let buktiTransfer = $('#bukti_transfer')[0].files[0];
 
-                // VALIDASI UNIT
                 if (!unitId) {
                     Swal.fire({
                         icon: 'error',
@@ -2342,7 +2401,6 @@
                     return;
                 }
 
-                // VALIDASI BOOKING FEE
                 if (!bookingFee || parseInt(bookingFee) <= 0) {
                     Swal.fire({
                         icon: 'warning',
@@ -2352,7 +2410,7 @@
                     return;
                 }
 
-                // VALIDASI FILE
+                // VALIDASI FILE UPLOAD - WAJIB UNTUK CASH DAN KPR
                 if (!buktiTransfer) {
                     Swal.fire({
                         icon: 'warning',
@@ -2361,6 +2419,8 @@
                     });
                     return;
                 }
+
+                // Validasi ukuran file (max 2MB)
                 if (buktiTransfer.size > 2 * 1024 * 1024) {
                     Swal.fire({
                         icon: 'error',
@@ -2369,6 +2429,8 @@
                     });
                     return;
                 }
+
+                // Validasi tipe file
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
                 if (!allowedTypes.includes(buktiTransfer.type)) {
                     Swal.fire({
@@ -2393,34 +2455,38 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33'
                 }).then((result) => {
-                    if (!result.isConfirmed) return;
-
-                    let formData = new FormData();
-                    formData.append('_token', '{{ csrf_token() }}');
-                    formData.append('customer_id', customerId);
-                    formData.append('purchase_type', purchaseType);
-                    formData.append('booking_fee', bookingFee);
-                    formData.append('bukti_transfer', buktiTransfer);
+                    if (result.isConfirmed) {
+                        // Buat FormData
+                        let formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('customer_id', customerId);
+                        formData.append('purchase_type', purchaseType);
+                        formData.append('booking_fee', bookingFee);
+                        formData.append('bukti_transfer', buktiTransfer);
 
                     let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId',
                         unitId);
 
-                    Swal.fire({
-                        title: 'Memproses...',
-                        text: 'Harap tunggu',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
+                        // Tampilkan loading
+                        Swal.fire({
+                            title: 'Memproses...',
+                            text: 'Harap tunggu',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
 
-                    $.ajax({
-                        url: actionUrl,
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            $('#modalCustomer').modal('hide');
-                            Swal.fire({
+                        // Kirim via AJAX
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#modalCustomer').modal('hide');
+                                Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil!',
                                     text: response.message,
@@ -2451,7 +2517,7 @@
             $(document).on('click', '.bukaModal', function() {
                 let unitId = $(this).data('unit');
                 $('#formAgency').attr('action', "{{ url('marketing/set-agency') }}/" + unitId);
-                $('#modalAgency').data('unit', unitId); // simpan di modal
+                $('#modalAgency').data('unit', unitId);
                 $('#sales_id').val('');
                 $('#agent_fee_modal').val('');
                 $('#modalAgency').modal('show');
@@ -2470,7 +2536,7 @@
                     return;
                 }
 
-                let unitId = $('#modalAgency').data('unit'); // ambil dari modal
+                let unitId = $('#modalAgency').data('unit');
 
                 Swal.fire({
                     title: 'Yakin pilih agency ini?',
@@ -2527,41 +2593,7 @@
                 $('#buktiFileSize').text('');
                 $('#buktiLabel').removeClass('file-selected');
             });
-        });
 
-        // SWITCH VIEW
-        function switchView(view) {
-
-            // sembunyikan semua
-            document.getElementById('tableView').style.display = 'none';
-            document.getElementById('gridView').style.display = 'none';
-            document.getElementById('denahView').style.display = 'none';
-            document.getElementById('sitePlandView').style.display = 'none';
-
-            // reset active button
-            document.querySelectorAll('.btn-group .btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // tampilkan sesuai pilihan
-            if (view === 'table') {
-                document.getElementById('tableView').style.display = 'block';
-                document.getElementById('btnTableView').classList.add('active');
-
-            } else if (view === 'grid') {
-                document.getElementById('gridView').style.display = 'block';
-                document.getElementById('btnGridView').classList.add('active');
-
-            } else if (view === 'denah') {
-                document.getElementById('denahView').style.display = 'block';
-                document.getElementById('btnDenahView').classList.add('active');
-
-            } else if (view === 'sitepland') {
-                document.getElementById('sitePlandView').style.display = 'block';
-                document.getElementById('btnSitePlandView').classList.add('active');
-            }
-        }
-        $(document).ready(function() {
             $('#searchCustomer').on('keyup', function() {
                 const searchTerm = $(this).val().toLowerCase();
 
@@ -2571,10 +2603,9 @@
                 });
             });
         });
-    </script>
 
-    @if (session('success'))
-        <script>
+        // ========== SESSION FLASH MESSAGES ==========
+        @if (session('success'))
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
@@ -2582,22 +2613,18 @@
                 showConfirmButton: false,
                 timer: 2000
             });
-        </script>
-    @endif
+        @endif
 
-    @if (session('error'))
-        <script>
+        @if (session('error'))
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: "{{ session('error') }}",
                 confirmButtonColor: '#d33'
             });
-        </script>
-    @endif
+        @endif
 
-    @if ($errors->any())
-        <script>
+        @if ($errors->any())
             Swal.fire({
                 icon: 'warning',
                 title: 'Validasi Gagal',
@@ -2605,160 +2632,161 @@
             });
         </script>
     @endif
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
-    <script>
-        const canvas = new fabric.Canvas('siteplanCanvas');
-        const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
+<script>
 
+const canvas = new fabric.Canvas('siteplanCanvas');
+const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
+
+
+/* ===============================
+LOAD BACKGROUND
+=============================== */
+
+fabric.Image.fromURL(siteplanImage, function(img){
+
+    canvas.setWidth(img.width);
+    canvas.setHeight(img.height);
+
+    canvas.setBackgroundImage(img, function(){
 
         /* ===============================
-        LOAD BACKGROUND
+        LOAD UNIT DARI DATABASE
         =============================== */
 
-        fabric.Image.fromURL(siteplanImage, function(img) {
+        @foreach ($unitsForSvg as $unit)
 
-            canvas.setWidth(img.width);
-            canvas.setHeight(img.height);
+        console.log(
+            "DB POS:",
+            {{ $unit->pos_x ?? 0 }},
+            {{ $unit->pos_y ?? 0 }},
+            "SIZE:",
+            {{ $unit->width ?? 80 }},
+            {{ $unit->height ?? 60 }}
+        )
 
-            canvas.setBackgroundImage(img, function() {
+        const rect{{ $unit->id }} = new fabric.Rect({
 
-                /* ===============================
-                LOAD UNIT DARI DATABASE
-                =============================== */
+            left: {{ $unit->pos_x ?? 100 }},
+            top: {{ $unit->pos_y ?? 100 }},
 
-                @foreach ($unitsForSvg as $unit)
+            width: {{ $unit->width ?? 80 }},
+            height: {{ $unit->height ?? 60 }},
 
-                    console.log(
-                        "DB POS:",
-                        {{ $unit->pos_x ?? 0 }},
-                        {{ $unit->pos_y ?? 0 }},
-                        "SIZE:",
-                        {{ $unit->width ?? 80 }},
-                        {{ $unit->height ?? 60 }}
-                    )
+            fill:getColor("{{ $unit->status }}","{{ $unit->type }}"),
 
-                    const rect{{ $unit->id }} = new fabric.Rect({
-
-                        left: {{ $unit->pos_x ?? 100 }},
-                        top: {{ $unit->pos_y ?? 100 }},
-
-                        width: {{ $unit->width ?? 80 }},
-                        height: {{ $unit->height ?? 60 }},
-
-                        fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
-
-                        opacity: 0.6,
-                        stroke: 'black',
-                        strokeWidth: 1
-
-                    });
-
-                    rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
-                    rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    rect{{ $unit->id }}.status = "{{ $unit->status }}";
-
-                    canvas.add(rect{{ $unit->id }});
-                @endforeach
-
-
-                canvas.renderAll()
-
-            }, {
-                originX: 'left',
-                originY: 'top'
-            });
+            opacity:0.6,
+            stroke:'black',
+            strokeWidth:1
 
         });
 
+        rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
+        rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
+        rect{{ $unit->id }}.status = "{{ $unit->status }}";
 
-        /* ===============================
-        WARNA STATUS
-        =============================== */
+        canvas.add(rect{{ $unit->id }});
 
-        function getColor(status, type) {
-
-            if (type === "komersil" && status === "ready") return "#2675BB"
-            if (status === "ready") return "#CE2A2E"
-            if (status === "booked") return "#FFD700"
-            if (status === "sold") return "#FA2800"
-
-            return "gray"
-
-        }
+        @endforeach
 
 
-        /* ===============================
-        CLICK UNIT
-        =============================== */
-        canvas.on('mouse:down', function(e) {
-            if (e.target) {
+        canvas.renderAll()
 
-                // Isi konten modal dengan data unit
-                document.querySelector('#myModal .unit-code').textContent = e.target.unitCode;
-                document.querySelector('#myModal .unit-status').textContent = e.target.status;
-                document.querySelector('#myModal .unit-pos').textContent =
-                    `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
-                document.querySelector('#myModal .unit-size').textContent =
-                    `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
+    },{
+        originX:'left',
+        originY:'top'
+    });
 
-                // Tampilkan modal
-                const modal = new bootstrap.Modal(document.getElementById('myModal'));
-                modal.show();
-            }
-        });
+});
 
 
-        /* ===============================
-        SAVE POSITION
-        =============================== */
+/* ===============================
+WARNA STATUS
+=============================== */
 
-        function savePosition() {
-            canvas.on('object:modified', function() {
-                savePosition()
-            })
-            let units = []
+function getColor(status,type){
 
-            canvas.getObjects().forEach(function(obj) {
+if(type==="komersil" && status==="ready") return "#2675BB"
+if(status==="ready") return "#CE2A2E"
+if(status==="booked") return "#FFD700"
+if(status==="sold") return "#FA2800"
 
-                if (obj.unitId) {
+return "gray"
 
-                    units.push({
-                        id: obj.unitId,
-                        pos_x: Math.round(obj.left),
-                        pos_y: Math.round(obj.top),
-                        width: Math.round(obj.getScaledWidth()), // <-- ini ukuran final
-                        height: Math.round(obj.getScaledHeight()) // <-- ini ukuran final
-                    })
-
-                }
-
-            })
+}
 
 
-            fetch("{{ route('unit.save.position') }}", {
+/* ===============================
+CLICK UNIT
+=============================== */
+canvas.on('mouse:down', function(e){
+    if(e.target){
 
-                    method: 'POST',
+        // Isi konten modal dengan data unit
+        document.querySelector('#myModal .unit-code').textContent = e.target.unitCode;
+        document.querySelector('#myModal .unit-status').textContent = e.target.status;
+        document.querySelector('#myModal .unit-pos').textContent = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
+        document.querySelector('#myModal .unit-size').textContent = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
 
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
+        // Tampilkan modal
+        const modal = new bootstrap.Modal(document.getElementById('myModal'));
+        modal.show();
+    }
+});
 
-                    body: JSON.stringify({
-                        units: units
-                    })
 
-                })
-                .then(res => res.json())
-                .then(data => {
+/* ===============================
+SAVE POSITION
+=============================== */
 
-                    if (data.success) {
-                        alert("Posisi unit berhasil disimpan")
-                    }
+function savePosition(){
+canvas.on('object:modified', function() {
+    savePosition()
+})
+let units=[]
 
-                })
+canvas.getObjects().forEach(function(obj){
 
-        }
-    </script>
+if(obj.unitId){
+
+units.push({
+    id: obj.unitId,
+    pos_x: Math.round(obj.left),
+    pos_y: Math.round(obj.top),
+    width: Math.round(obj.getScaledWidth()),   // <-- ini ukuran final
+    height: Math.round(obj.getScaledHeight())  // <-- ini ukuran final
+})
+
+}
+
+})
+
+
+fetch("{{ route('unit.save.position') }}",{
+
+method:'POST',
+
+headers:{
+'Content-Type':'application/json',
+'X-CSRF-TOKEN':'{{ csrf_token() }}'
+},
+
+body:JSON.stringify({
+units:units
+})
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+if(data.success){
+alert("Posisi unit berhasil disimpan")
+}
+
+})
+
+}
+
+</script>
 @endpush
