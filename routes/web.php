@@ -77,7 +77,7 @@ Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(func
 Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
 Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
 Route::post('/unit/save-position', [SellUnitController::class,'savePosition'])
-->name('unit.save.position');   
+->name('unit.save.position');
 
 Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])->name('set.customer');
 Route::get('/marketing/jual-unit/export/excel', [SellUnitController::class, 'exportExcel'])
@@ -437,7 +437,9 @@ Route::post('/pengaturan', [CompanySettingController::class, 'update'])->name('s
 //     return view('land_bank.all_pra_land_bank');
 // });
 
-
+Route::get('/cash-tempo-timline', function () {
+    return view('transaksi.timline_pembayaran');
+});
 
 });
 
