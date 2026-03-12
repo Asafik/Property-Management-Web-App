@@ -13,6 +13,7 @@ class DevelopmentProgress extends Model
         'title',
         'status',
         'total_anggaran',
+        'deadline'
     ];
 
     public function unit()

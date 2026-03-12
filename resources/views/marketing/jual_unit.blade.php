@@ -2125,22 +2125,22 @@
             </div>
         </div>
     </div>
-<div class="modal fade" id="myModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Detail Unit</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p>Unit Code: <span class="unit-code"></span></p>
-        <p>Status: <span class="unit-status"></span></p>
-        <p>Posisi: <span class="unit-pos"></span></p>
-        <p>Ukuran: <span class="unit-size"></span></p>
-      </div>
+    <div class="modal fade" id="myModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Unit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Unit Code: <span class="unit-code"></span></p>
+                    <p>Status: <span class="unit-status"></span></p>
+                    <p>Posisi: <span class="unit-pos"></span></p>
+                    <p>Ukuran: <span class="unit-size"></span></p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
         @csrf
@@ -2352,7 +2352,7 @@
                     return;
                 }
 
-                // VALIDASI FILE UPLOAD - WAJIB UNTUK CASH DAN KPR
+                // VALIDASI FILE
                 if (!buktiTransfer) {
                     Swal.fire({
                         icon: 'warning',
@@ -2361,8 +2361,6 @@
                     });
                     return;
                 }
-
-                // Validasi ukuran file (max 2MB)
                 if (buktiTransfer.size > 2 * 1024 * 1024) {
                     Swal.fire({
                         icon: 'error',
@@ -2371,8 +2369,6 @@
                     });
                     return;
                 }
-
-                // Validasi tipe file
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
                 if (!allowedTypes.includes(buktiTransfer.type)) {
                     Swal.fire({
@@ -2386,10 +2382,10 @@
                 Swal.fire({
                     title: 'Yakin pilih customer ini?',
                     html: `
-                        <p class="mb-1">Jenis: <b>${purchaseType.toUpperCase()}</b></p>
-                        <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
-                        <p class="small text-muted mt-2">File: ${buktiTransfer.name}</p>
-                    `,
+            <p class="mb-1">Jenis: <b>${purchaseType.toUpperCase()}</b></p>
+            <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
+            <p class="small text-muted mt-2">File: ${buktiTransfer.name}</p>
+        `,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Simpan!',
@@ -2397,64 +2393,57 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33'
                 }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Buat FormData
-                        let formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        formData.append('customer_id', customerId);
-                        formData.append('purchase_type', purchaseType);
-                        formData.append('booking_fee', bookingFee);
-                        formData.append('bukti_transfer', buktiTransfer);
+                    if (!result.isConfirmed) return;
 
-                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(
-                            ':unitId', unitId);
+                    let formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('customer_id', customerId);
+                    formData.append('purchase_type', purchaseType);
+                    formData.append('booking_fee', bookingFee);
+                    formData.append('bukti_transfer', buktiTransfer);
 
-                        // Tampilkan loading
-                        Swal.fire({
-                            title: 'Memproses...',
-                            text: 'Harap tunggu',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
+                    let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId',
+                        unitId);
 
-                        // Kirim via AJAX
-                        $.ajax({
-                            url: actionUrl,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                $('#modalCustomer').modal('hide');
-                                Swal.fire({
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Harap tunggu',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    $.ajax({
+                        url: actionUrl,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            $('#modalCustomer').modal('hide');
+                            Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil!',
-                                    text: 'Customer berhasil dipilih',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            },
-                            error: function(xhr) {
-                                let errorMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                    errorMsg = xhr.responseJSON.message;
-                                } else if (xhr.responseJSON && xhr.responseJSON
-                                    .errors) {
-                                    errorMsg = Object.values(xhr.responseJSON.errors)
-                                        .join('\n');
-                                }
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: errorMsg
-                                });
-                            }
-                        });
-                    }
+                                    text: response.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                })
+                                .then(() => location.reload());
+                        },
+                        error: function(xhr) {
+                            let errorMsg = 'Terjadi kesalahan';
+                            if (xhr.responseJSON && xhr.responseJSON.message) errorMsg =
+                                xhr.responseJSON.message;
+                            else if (xhr.responseJSON && xhr.responseJSON.errors)
+                                errorMsg = Object.values(xhr.responseJSON.errors).join(
+                                    '\n');
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: errorMsg
+                            });
+                        }
+                    });
                 });
             });
 
@@ -2616,161 +2605,160 @@
             });
         </script>
     @endif
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
-<script>
+    <script>
+        const canvas = new fabric.Canvas('siteplanCanvas');
+        const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
 
-const canvas = new fabric.Canvas('siteplanCanvas');
-const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
-
-
-/* ===============================
-LOAD BACKGROUND
-=============================== */
-
-fabric.Image.fromURL(siteplanImage, function(img){
-
-    canvas.setWidth(img.width);
-    canvas.setHeight(img.height);
-
-    canvas.setBackgroundImage(img, function(){
 
         /* ===============================
-        LOAD UNIT DARI DATABASE
+        LOAD BACKGROUND
         =============================== */
 
-        @foreach ($unitsForSvg as $unit)
+        fabric.Image.fromURL(siteplanImage, function(img) {
 
-        console.log(
-            "DB POS:",
-            {{ $unit->pos_x ?? 0 }},
-            {{ $unit->pos_y ?? 0 }},
-            "SIZE:",
-            {{ $unit->width ?? 80 }},
-            {{ $unit->height ?? 60 }}
-        )
+            canvas.setWidth(img.width);
+            canvas.setHeight(img.height);
 
-        const rect{{ $unit->id }} = new fabric.Rect({
+            canvas.setBackgroundImage(img, function() {
 
-            left: {{ $unit->pos_x ?? 100 }},
-            top: {{ $unit->pos_y ?? 100 }},
+                /* ===============================
+                LOAD UNIT DARI DATABASE
+                =============================== */
 
-            width: {{ $unit->width ?? 80 }},
-            height: {{ $unit->height ?? 60 }},
+                @foreach ($unitsForSvg as $unit)
 
-            fill:getColor("{{ $unit->status }}","{{ $unit->type }}"),
+                    console.log(
+                        "DB POS:",
+                        {{ $unit->pos_x ?? 0 }},
+                        {{ $unit->pos_y ?? 0 }},
+                        "SIZE:",
+                        {{ $unit->width ?? 80 }},
+                        {{ $unit->height ?? 60 }}
+                    )
 
-            opacity:0.6,
-            stroke:'black',
-            strokeWidth:1
+                    const rect{{ $unit->id }} = new fabric.Rect({
+
+                        left: {{ $unit->pos_x ?? 100 }},
+                        top: {{ $unit->pos_y ?? 100 }},
+
+                        width: {{ $unit->width ?? 80 }},
+                        height: {{ $unit->height ?? 60 }},
+
+                        fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
+
+                        opacity: 0.6,
+                        stroke: 'black',
+                        strokeWidth: 1
+
+                    });
+
+                    rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
+                    rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
+                    rect{{ $unit->id }}.status = "{{ $unit->status }}";
+
+                    canvas.add(rect{{ $unit->id }});
+                @endforeach
+
+
+                canvas.renderAll()
+
+            }, {
+                originX: 'left',
+                originY: 'top'
+            });
 
         });
 
-        rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
-        rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-        rect{{ $unit->id }}.status = "{{ $unit->status }}";
 
-        canvas.add(rect{{ $unit->id }});
+        /* ===============================
+        WARNA STATUS
+        =============================== */
 
-        @endforeach
+        function getColor(status, type) {
 
+            if (type === "komersil" && status === "ready") return "#2675BB"
+            if (status === "ready") return "#CE2A2E"
+            if (status === "booked") return "#FFD700"
+            if (status === "sold") return "#FA2800"
 
-        canvas.renderAll()
+            return "gray"
 
-    },{
-        originX:'left',
-        originY:'top'
-    });
-
-});
+        }
 
 
-/* ===============================
-WARNA STATUS
-=============================== */
+        /* ===============================
+        CLICK UNIT
+        =============================== */
+        canvas.on('mouse:down', function(e) {
+            if (e.target) {
 
-function getColor(status,type){
+                // Isi konten modal dengan data unit
+                document.querySelector('#myModal .unit-code').textContent = e.target.unitCode;
+                document.querySelector('#myModal .unit-status').textContent = e.target.status;
+                document.querySelector('#myModal .unit-pos').textContent =
+                    `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
+                document.querySelector('#myModal .unit-size').textContent =
+                    `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
 
-if(type==="komersil" && status==="ready") return "#2675BB"
-if(status==="ready") return "#CE2A2E"
-if(status==="booked") return "#FFD700"
-if(status==="sold") return "#FA2800"
-
-return "gray"
-
-}
-
-
-/* ===============================
-CLICK UNIT
-=============================== */
-canvas.on('mouse:down', function(e){
-    if(e.target){
-
-        // Isi konten modal dengan data unit
-        document.querySelector('#myModal .unit-code').textContent = e.target.unitCode;
-        document.querySelector('#myModal .unit-status').textContent = e.target.status;
-        document.querySelector('#myModal .unit-pos').textContent = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
-        document.querySelector('#myModal .unit-size').textContent = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
-
-        // Tampilkan modal
-        const modal = new bootstrap.Modal(document.getElementById('myModal'));
-        modal.show();
-    }
-});
+                // Tampilkan modal
+                const modal = new bootstrap.Modal(document.getElementById('myModal'));
+                modal.show();
+            }
+        });
 
 
-/* ===============================
-SAVE POSITION
-=============================== */
+        /* ===============================
+        SAVE POSITION
+        =============================== */
 
-function savePosition(){
-canvas.on('object:modified', function() {
-    savePosition()
-})
-let units=[]
+        function savePosition() {
+            canvas.on('object:modified', function() {
+                savePosition()
+            })
+            let units = []
 
-canvas.getObjects().forEach(function(obj){
+            canvas.getObjects().forEach(function(obj) {
 
-if(obj.unitId){
+                if (obj.unitId) {
 
-units.push({
-    id: obj.unitId,
-    pos_x: Math.round(obj.left),
-    pos_y: Math.round(obj.top),
-    width: Math.round(obj.getScaledWidth()),   // <-- ini ukuran final
-    height: Math.round(obj.getScaledHeight())  // <-- ini ukuran final
-})
+                    units.push({
+                        id: obj.unitId,
+                        pos_x: Math.round(obj.left),
+                        pos_y: Math.round(obj.top),
+                        width: Math.round(obj.getScaledWidth()), // <-- ini ukuran final
+                        height: Math.round(obj.getScaledHeight()) // <-- ini ukuran final
+                    })
 
-}
+                }
 
-})
+            })
 
 
-fetch("{{ route('unit.save.position') }}",{
+            fetch("{{ route('unit.save.position') }}", {
 
-method:'POST',
+                    method: 'POST',
 
-headers:{
-'Content-Type':'application/json',
-'X-CSRF-TOKEN':'{{ csrf_token() }}'
-},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
 
-body:JSON.stringify({
-units:units
-})
+                    body: JSON.stringify({
+                        units: units
+                    })
 
-})
-.then(res=>res.json())
-.then(data=>{
+                })
+                .then(res => res.json())
+                .then(data => {
 
-if(data.success){
-alert("Posisi unit berhasil disimpan")
-}
+                    if (data.success) {
+                        alert("Posisi unit berhasil disimpan")
+                    }
 
-})
+                })
 
-}
-
-</script>
+        }
+    </script>
 @endpush

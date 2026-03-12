@@ -55,11 +55,12 @@ class DevelopmentProgressController extends Controller
         return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items'));
     }
 
-   public function store(Request $request)
+ public function store(Request $request)
 {
     $request->validate([
         'land_bank_unit_id' => 'required|exists:land_bank_units,id',
         'items' => 'nullable|array',
+        'items.*.id' => 'nullable|exists:development_progress_items,id', // untuk update
         'items.*.kategori' => 'required|string',
         'items.*.kode' => 'required|string',
         'items.*.uraian' => 'required|string',
@@ -68,12 +69,12 @@ class DevelopmentProgressController extends Controller
         'items.*.harga_satuan' => 'required|numeric',
         'items.*.keterangan' => 'nullable|string',
         'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'deadline' => 'nullable|array',
+        'deadline.*' => 'nullable|date',
     ]);
 
     DB::beginTransaction();
-
     try {
-
         $progress = DevelopmentProgress::firstOrCreate(
             ['land_bank_unit_id' => $request->land_bank_unit_id],
             ['title' => $request->title ?? 'Progress Baru']
@@ -83,19 +84,23 @@ class DevelopmentProgressController extends Controller
 
         foreach ($request->items ?? [] as $index => $item) {
 
-            // 🔥 INI YANG WAJIB ADA
             $lastKategori = strtolower(trim($item['kategori']));
+            $deadlineItem = $request->deadline[$item['id']] ?? null;
 
-            $progressItem = $progress->items()->create([
-                'kategori'     => $item['kategori'],
-                'kode'         => $item['kode'],
-                'uraian'       => $item['uraian'],
-                'volume'       => $item['volume'],
-                'satuan'       => $item['satuan'],
-                'harga_satuan' => $item['harga_satuan'],
-                'total'        => $item['volume'] * $item['harga_satuan'],
-                'keterangan'   => $item['keterangan'] ?? null,
-            ]);
+            $progressItem = $progress->items()->updateOrCreate(
+                ['id' => $item['id'] ?? null],
+                [
+                    'kategori'     => $item['kategori'],
+                    'kode'         => $item['kode'],
+                    'uraian'       => $item['uraian'],
+                    'volume'       => $item['volume'],
+                    'satuan'       => $item['satuan'],
+                    'harga_satuan' => $item['harga_satuan'],
+                    'total'        => $item['volume'] * $item['harga_satuan'],
+                    'keterangan'   => $item['keterangan'] ?? null,
+                    'deadline'     => $deadlineItem,
+                ]
+            );
 
             if ($request->hasFile("items.$index.dokumentasi")) {
                 $file = $request->file("items.$index.dokumentasi");
@@ -107,91 +112,58 @@ class DevelopmentProgressController extends Controller
             }
         }
 
-        // ===============================
-        // Mapping kategori → progress enum
-        // ===============================
-        $kategoriMapping = [
-            'persiapan' => 'belum_mulai',
-            'pondasi'   => 'pondasi',
-            'struktur'  => 'dinding',
-            'dinding'   => 'dinding',
-            'atap'      => 'atap',
-            'finishing' => 'finishing',
-            'selesai'   => 'selesai',
-        ];
-
-        $progressEnum = $kategoriMapping[$lastKategori] ?? 'belum_mulai';
-
-        $unit = LandBankUnit::findOrFail($request->land_bank_unit_id);
-        $unit->construction_progress = $progressEnum;
-
-        if ($progressEnum === 'finishing') {
-            $unit->status = 'ready';
-        }
-
-        if ($request->filled('price')) {
-            $unit->price = $request->price;
-        }
-
-        $unit->save();
-
         DB::commit();
-
         return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');
-
     } catch (\Exception $e) {
-
         DB::rollBack();
-
+        Log::error($e->getMessage());
         return back()->with('error', 'Terjadi kesalahan, cek log.');
     }
 }
 
+    public function accAjax($unitId)
+    {
+        try {
+            // Ambil unit
+            $unit = LandBankUnit::findOrFail($unitId);
 
-public function accAjax($unitId)
-{
-    try {
-        // Ambil unit
-        $unit = LandBankUnit::findOrFail($unitId);
+            // Ambil progress terkait
+            $progress = $unit->progress; // hasOne(DevelopmentProgress)
 
-        // Ambil progress terkait
-        $progress = $unit->progress; // hasOne(DevelopmentProgress)
+            $totalAnggaran = 0;
 
-        $totalAnggaran = 0;
+            if ($progress) {
+                // Hitung total dari semua item
+                $totalAnggaran = $progress->items()->sum('total');
 
-        if ($progress) {
-            // Hitung total dari semua item
-            $totalAnggaran = $progress->items()->sum('total');
+                // Update kolom total_anggaran di tabel utama progress
+                $progress->total_anggaran = $totalAnggaran;
+                $progress->status = 'completed';
+                $progress->save();
+            }
 
-            // Update kolom total_anggaran di tabel utama progress
-            $progress->total_anggaran = $totalAnggaran;
-            $progress->status = 'completed';
-            $progress->save();
+
+            $unit->price = $unit->price + $totalAnggaran;
+
+            // Update progress unit
+            $unit->construction_progress = 'selesai';
+            $unit->status = 'ready';
+            $unit->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'RAB berhasil di-ACC dan harga unit diperbarui',
+                'construction_progress' => $unit->construction_progress,
+                'total_anggaran' => $totalAnggaran,
+                'price_baru' => $unit->price,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal: ' . $e->getMessage(),
+            ]);
         }
-
-        
-        $unit->price = $unit->price + $totalAnggaran;
-
-        // Update progress unit
-        $unit->construction_progress = 'selesai';
-        $unit->status = 'ready';
-        $unit->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'RAB berhasil di-ACC dan harga unit diperbarui',
-            'construction_progress' => $unit->construction_progress,
-            'total_anggaran' => $totalAnggaran,
-            'price_baru' => $unit->price,
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal: ' . $e->getMessage(),
-        ]);
     }
-}
 
 
     public function uploadDocumentation(Request $request, $itemId)
@@ -210,14 +182,14 @@ public function accAjax($unitId)
 
         return back()->with('success', 'File berhasil diupload!');
     }
-public function destroy($itemId)
-{
-    $item = DevelopmentProgressItem::findOrFail($itemId); // Ambil item
-    $item->delete(); // Hapus
+    public function destroy($itemId)
+    {
+        $item = DevelopmentProgressItem::findOrFail($itemId); // Ambil item
+        $item->delete(); // Hapus
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Item berhasil dihapus!'
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Item berhasil dihapus!'
+        ]);
+    }
 }
