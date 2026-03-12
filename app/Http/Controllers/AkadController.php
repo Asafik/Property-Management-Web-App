@@ -78,7 +78,7 @@ class AkadController extends Controller
                 'no_akad' => $noAkad
             ]);
 
-            return redirect()->route('dashboard_cash')->with('success', 'Akad selesai berhasil diproses.');
+            return redirect()->back()->with('success', 'Akad selesai berhasil diproses.');
         }
 
         // ===== FORM BATAL =====
