@@ -176,7 +176,7 @@ public function setCustomer(Request $request, $unitId)
 {
     $request->validate([
         'customer_id'   => 'required|exists:customers,id',
-        'purchase_type' => 'required|in:cash,kpr',
+        'purchase_type' => 'required|in:cash,kpr,cash_tempo',
         'booking_fee'   => 'required',
         'bukti_transfer'=> 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
