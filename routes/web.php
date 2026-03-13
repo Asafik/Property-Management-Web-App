@@ -46,6 +46,7 @@ use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
 use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\TimelineCashTempoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -435,10 +436,13 @@ Route::post('/pengaturan', [CompanySettingController::class, 'update'])->name('s
 //     return view('land_bank.all_pra_land_bank');
 // });
 
-Route::get('/cash-tempo-timline', function () {
-    return view('transaksi.timline_pembayaran');
-});
-
+// Route::get('/cash-tempo-timline', function () {
+//     return view('transaksi.timline_pembayaran');
+// });
+Route::get('/cash-tempo-timeline', [TimelineCashTempoController::class, 'index'])->name('cash-tempo.timeline');
+Route::get('/cash-tempo/timeline/{id}', [TimelineCashTempoController::class,'timeline']);
+Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
+Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
 });
 
 
