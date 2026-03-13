@@ -359,7 +359,11 @@
                         <h4 class="mb-0">Data Pembelian Cash Tenor</h4>
                     </div>
                     <div class="pengajuan-card-body">
-                        <form class="pengajuan-form-sample">
+                        <form class="pengajuan-form-sample" action="{{ route('cash-tempo.store') }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+
+                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
                             <!-- Customer -->
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
@@ -387,21 +391,22 @@
                                     <div class="pengajuan-form-group">
                                         <label>No. NPWP</label>
                                         <input type="text" class="pengajuan-form-control"
-                                            placeholder="Masukkan nomor NPWP" value="{{$booking->customer->npwp ?? ''}}">
+                                            placeholder="Masukkan nomor NPWP" value="{{ $booking->customer->npwp ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
                                     <div class="pengajuan-form-group">
                                         <label>No. Telepon <span class="text-primary-custom">*</span></label>
                                         <input type="text" class="pengajuan-form-control"
-                                            placeholder="Masukkan nomor telepon" value="{{$booking->customer->phone ?? ''}}">
+                                            placeholder="Masukkan nomor telepon"
+                                            value="{{ $booking->customer->phone ?? '' }}">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="pengajuan-form-group">
                                 <label>Alamat Lengkap <span class="text-primary-custom">*</span></label>
-                                <textarea class="pengajuan-form-control" rows="2" placeholder="Masukkan alamat lengkap customer">{{$booking->customer->address ?? ''}}</textarea>
+                                <textarea class="pengajuan-form-control" rows="2" placeholder="Masukkan alamat lengkap customer">{{ $booking->customer->address ?? '' }}</textarea>
                             </div>
 
                             <hr class="pengajuan-hr">
@@ -416,25 +421,29 @@
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
                                         <label>Type Unit</label>
-                                        <input type="text" class="pengajuan-form-control" value="{{$booking->unit->type ?? ''}}" readonly>
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->type ?? '' }}" readonly>
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
                                         <label>Blok</label>
-                                        <input type="text" class="pengajuan-form-control" value="{{$booking->unit->unit_code ?? ''}}" readonly>
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->unit_code ?? '' }}" readonly>
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
                                         <label>No. Unit</label>
-                                        <input type="text" class="pengajuan-form-control" value="{{$booking->unit->unit_number ?? ''}}" readonly>
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->unit_number ?? '' }}" readonly>
                                     </div>
                                 </div>
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
                                     <div class="pengajuan-form-group">
                                         <label>Luas Tanah/Bangunan</label>
-                                        <input type="text" class="pengajuan-form-control" value="{{$booking->unit->area ?? ''}} m² / {{$booking->unit->building_area ?? ''}} m²"
+                                        <input type="text" class="pengajuan-form-control"
+                                            value="{{ $booking->unit->area ?? '' }} m² / {{ $booking->unit->building_area ?? '' }} m²"
                                             readonly>
                                     </div>
                                 </div>
@@ -455,7 +464,7 @@
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
                                             <input type="number" class="pengajuan-form-control" id="hargaUnit"
-                                                value="{{$booking->unit->price ?? ''}}">
+                                                name="harga_unit" value="{{ $booking->unit->price ?? '' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -466,7 +475,7 @@
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
                                             <input type="number" class="pengajuan-form-control" id="diskon"
-                                                value="25000000">
+                                                name="diskon" value="25000000">
                                         </div>
                                     </div>
                                 </div>
@@ -475,24 +484,34 @@
                             <div class="pengajuan-row">
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
                                     <div class="pengajuan-form-group">
-                                        <label>Booking Fee (Sudah Dibayar)</label>
+
+                                        <label>Booking Fee</label>
+
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
+
                                             <input type="number" class="pengajuan-form-control" id="bookingFee"
-                                                value="{{$booking->booking_fee ?? ''}}" readonly>
+                                                name="booking_fee" value="{{ $booking->booking_fee ?? 0 }}">
                                         </div>
-                                        <small class="pengajuan-text-muted">Booking fee sudah dibayar saat booking</small>
+
+                                        <small class="pengajuan-text-muted">
+                                            Jika booking fee kurang dari 20% harga unit, dapat ditambahkan di sini
+                                        </small>
+
                                     </div>
                                 </div>
 
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
                                     <div class="pengajuan-form-group">
                                         <label>Metode Pembayaran <span class="text-primary-custom">*</span></label>
-                                        <select class="pengajuan-form-control" id="metodePembayaran">
+                                        <select class="pengajuan-form-control" id="metodePembayaran"
+                                            name="metode_pembayaran">
+
                                             <option value="">-- Pilih Metode --</option>
-                                            <option value="transfer" selected>Transfer Bank</option>
+                                            <option value="transfer">Transfer Bank</option>
                                             <option value="cash">Cash (Tunai)</option>
                                             <option value="giro">Cek / Giro</option>
+
                                         </select>
                                     </div>
                                 </div>
@@ -513,7 +532,8 @@
                                                 <div class="pengajuan-form-group">
                                                     <label>Jangka Waktu Tenor <span
                                                             class="text-primary-custom">*</span></label>
-                                                    <select class="pengajuan-form-control" id="jangkaTenor">
+                                                    <select class="pengajuan-form-control" id="jangkaTenor"
+                                                        name="tenor_bulan">
                                                         <option value="6">6 Bulan</option>
                                                         <option value="12" selected>12 Bulan (1 Tahun)</option>
                                                         <option value="18">18 Bulan</option>
@@ -530,7 +550,8 @@
                                                     <div class="pengajuan-input-group">
                                                         <span class="pengajuan-input-group-text">Rp</span>
                                                         <input type="number" class="pengajuan-form-control"
-                                                            id="uangMuka" value="{{$booking->booking_fee ?? ''}}">
+                                                            id="uangMuka" name="dp"
+                                                            value="{{ $booking->booking_fee ?? '' }}">
                                                     </div>
                                                     <small class="text-muted">Minimal 20% dari harga</small>
                                                 </div>
@@ -541,7 +562,7 @@
                                                     <div class="pengajuan-input-group">
                                                         <span class="pengajuan-input-group-text">Rp</span>
                                                         <input type="number" class="pengajuan-form-control"
-                                                            id="sisaAngsuran" value="375000000" readonly>
+                                                            id="sisaAngsuran" name="sisa_pembayaran" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -552,14 +573,14 @@
                                                 <div class="pengajuan-form-group">
                                                     <label>Tanggal Mulai Angsuran</label>
                                                     <input type="date" class="pengajuan-form-control"
-                                                        id="tanggalMulaiAngsuran" value="2026-03-21">
+                                                        id="tanggalMulaiAngsuran" name="tanggal_mulai_angsuran">
                                                 </div>
                                             </div>
                                             <div class="pengajuan-col-12 pengajuan-col-md-4">
                                                 <div class="pengajuan-form-group">
                                                     <label>Tanggal Jatuh Tempo Akhir</label>
                                                     <input type="date" class="pengajuan-form-control"
-                                                        id="jatuhTempoAkhir" value="2027-02-21" readonly>
+                                                        id="jatuhTempoAkhir" name="tanggal_jatuh_tempo_akhir" readonly>
                                                 </div>
                                             </div>
                                             <div class="pengajuan-col-12 pengajuan-col-md-4">
@@ -568,7 +589,8 @@
                                                     <div class="pengajuan-input-group">
                                                         <span class="pengajuan-input-group-text">%</span>
                                                         <input type="number" class="pengajuan-form-control"
-                                                            id="denda" value="2" step="0.1">
+                                                            id="denda" name="denda_persen" value="2"
+                                                            step="0.1">
                                                     </div>
                                                     <small>per bulan</small>
                                                 </div>
@@ -621,117 +643,255 @@
                             <div class="pengajuan-row">
                                 @php
                                     $uploadFields = [
-                                        'ktp' => 'KTP Customer',
-                                        'npwp' => 'NPWP',
-                                        'surat_perjanjian' => 'Surat Perjanjian',
+                                        'KTP' => 'KTP Customer',
+                                        'NPWP' => 'NPWP',
+                                        'Surat Perjanjian' => 'Surat Perjanjian',
                                     ];
+
+                                    $documents = $booking->customer->documents ?? collect();
                                 @endphp
 
-                                @foreach ($uploadFields as $field => $label)
+                                @foreach ($uploadFields as $docName => $label)
+                                    @php
+                                        $file = $documents->where('document_name', $docName)->first();
+                                    @endphp
+
                                     <div class="pengajuan-col-12 pengajuan-col-md-6 mb-3">
                                         <div class="pengajuan-form-group">
-                                            <label for="{{ $field }}">{{ $label }}</label>
-                                            <div class="properti-file-upload-modern">
-                                                <input type="file" id="{{ $field }}" name="{{ $field }}"
-                                                    accept=".jpg,.jpeg,.png,.pdf">
-                                                <div class="properti-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <div class="properti-file-info-modern">
-                                                        <span>Upload {{ $label }}</span>
-                                                        <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                                    </div>
-                                                    <span class="properti-file-size"></span>
+
+                                            <label>{{ $label }}</label>
+
+                                            @if ($file)
+                                                {{-- FILE SUDAH ADA --}}
+                                                <div class="border p-3 rounded bg-light">
+
+                                                    <p class="mb-2 text-success">
+                                                        <i class="fas fa-check-circle"></i>
+                                                        {{ $label }} sudah diupload
+                                                    </p>
+
+                                                    <a href="{{ asset('storage/' . $file->file) }}" target="_blank"
+                                                        class="btn btn-sm btn-primary">
+
+                                                        <i class="fas fa-eye"></i> Lihat Dokumen
+                                                    </a>
+
+                                                    <a href="{{ asset('storage/' . $file->file) }}" download
+                                                        class="btn btn-sm btn-secondary">
+
+                                                        <i class="fas fa-download"></i> Download
+                                                    </a>
+
                                                 </div>
-                                            </div>
+                                            @else
+                                                {{-- INPUT UPLOAD --}}
+                                                <div class="properti-file-upload-modern">
+
+                                                    <input type="file" name="{{ Str::slug($docName, '_') }}"
+                                                        accept=".jpg,.jpeg,.png,.pdf">
+
+                                                    <div class="properti-file-label-modern">
+
+                                                        <i class="fas fa-cloud-upload-alt"></i>
+
+                                                        <div class="properti-file-info-modern">
+
+                                                            <span>Upload {{ $label }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+
+                                                        </div>
+
+                                                        <span class="properti-file-size"></span>
+
+                                                    </div>
+
+                                                </div>
+                                            @endif
+
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
+                            <div class="d-grid gap-2 mt-3">
+                                <button type="submit" class="btn-primary-custom" id="btnProses">
+                                    <i class="fas fa-save me-2"></i>
+                                    Proses Cash Tenor
+                                </button>
+                                <a href="#" class="btn-secondary-custom">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Kembali
+                                </a>
+                            </div>
                         </form>
                     </div>
-                    
+
                 </div>
-                 <!-- Button Aksi -->
-                        <div class="d-grid gap-2 mt-3">
-                            <button class="btn-primary-custom" id="btnProses">
-                                <i class="fas fa-save me-2"></i>
-                                Proses Cash Tenor
-                            </button>
-                            <a href="#" class="btn-secondary-custom">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Kembali
-                            </a>
-                        </div>
+                <!-- Button Aksi -->
+
             </div>
 
-            
+
         </div>
     </div>
 
     {{-- Script untuk File Upload dan Perhitungan --}}
     @push('scripts')
+
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Form Belum Lengkap',
+                    html: `{!! implode('<br>', $errors->all()) !!}`,
+                    confirmButtonColor: '#d33'
+                });
+            </script>
+        @endif
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#d33'
+                });
+            </script>
+        @endif
+
+
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#3085d6'
+                });
+            </script>
+        @endif
         <script>
             $(document).ready(function() {
-                // File upload modern preview
+
+                /* ===============================
+                FILE UPLOAD PREVIEW
+                =============================== */
                 document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
+
                     input.addEventListener('change', function(e) {
+
                         const fileName = e.target.files[0]?.name;
                         const fileSize = e.target.files[0]?.size;
-                        const label = this.closest('.properti-file-upload-modern').querySelector(
-                            '.properti-file-info-modern span');
-                        const sizeSpan = this.closest('.properti-file-upload-modern').querySelector(
-                            '.properti-file-size');
+
+                        const label = this.closest('.properti-file-upload-modern')
+                            .querySelector('.properti-file-info-modern span');
+
+                        const sizeSpan = this.closest('.properti-file-upload-modern')
+                            .querySelector('.properti-file-size');
 
                         if (fileName) {
-                            label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                                '...' : fileName;
+
+                            label.textContent = fileName.length > 30 ?
+                                fileName.substring(0, 30) + '...' :
+                                fileName;
+
                             if (fileSize) {
                                 const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
                                 sizeSpan.textContent = sizeInMB + ' MB';
                             }
+
                         } else {
+
                             const inputId = this.id;
+
                             const labelText = inputId.split('_').map(word =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' ');
+                                word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
                             label.textContent = 'Upload ' + labelText;
                             sizeSpan.textContent = '';
+
                         }
+
                     });
+
                 });
 
-                // ===== FUNGSI HITUNG CASH TENOR =====
+
+                /* ===============================
+                PARSE RUPIAH
+                =============================== */
+                function parseRupiah(angka) {
+
+                    if (!angka) return 0;
+
+                    return parseFloat(
+                        angka.toString()
+                        .replace(/\./g, '')
+                        .replace(/,/g, '')
+                    ) || 0;
+
+                }
+
+
+                /* ===============================
+                FORMAT RUPIAH
+                =============================== */
+                function formatRupiah(angka) {
+
+                    if (angka === undefined || angka === null || isNaN(angka)) return '0';
+
+                    return Math.round(angka)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                }
+
+
+                /* ===============================
+                HITUNG TENOR
+                =============================== */
                 function hitungTenor() {
-                    var hargaUnit = parseFloat($('#hargaUnit').val()) || 0;
-                    var diskon = parseFloat($('#diskon').val()) || 0;
-                    var bookingFee = parseFloat($('#bookingFee').val()) || 0;
-                    var uangMuka = parseFloat($('#uangMuka').val()) || 0;
+
+                    var hargaUnit = parseRupiah($('#hargaUnit').val());
+                    var diskon = parseRupiah($('#diskon').val());
+                    var bookingFee = parseRupiah($('#bookingFee').val());
+                    var uangMuka = parseRupiah($('#uangMuka').val());
 
                     var hargaSetelahDiskon = hargaUnit - diskon;
                     var sisaAngsuran = hargaSetelahDiskon - uangMuka;
 
                     $('#sisaAngsuran').val(sisaAngsuran);
 
-                    // Update display di sidebar
                     var sisaBayar = hargaSetelahDiskon - bookingFee;
+
                     $('#sisaBayarDisplay').text('Rp ' + formatRupiah(sisaBayar));
 
                     return sisaAngsuran;
+
                 }
 
-                // ===== GENERATE TABEL ANGSURAN =====
+
+                /* ===============================
+                GENERATE TABEL ANGSURAN
+                =============================== */
                 function generateTabelAngsuran() {
+
                     var sisaAngsuran = parseFloat($('#sisaAngsuran').val()) || 0;
+
                     var jangkaTenor = parseInt($('#jangkaTenor').val()) || 12;
+
                     var tanggalMulai = $('#tanggalMulaiAngsuran').val() || '2026-03-21';
 
-                    var angsuranPerBulan = sisaAngsuran / jangkaTenor;
+                    var angsuranPerBulan = Math.floor(sisaAngsuran / jangkaTenor);
+
                     var sisa = sisaAngsuran;
 
                     var tbody = '';
+
                     for (var i = 1; i <= jangkaTenor; i++) {
+
                         var tanggal = new Date(tanggalMulai);
+
                         tanggal.setMonth(tanggal.getMonth() + (i - 1));
 
                         var options = {
@@ -739,9 +899,11 @@
                             month: 'short',
                             year: 'numeric'
                         };
+
                         var tanggalFormatted = tanggal.toLocaleDateString('id-ID', options);
 
                         sisa -= angsuranPerBulan;
+
                         if (i === jangkaTenor) {
                             sisa = 0;
                         }
@@ -752,82 +914,126 @@
                             '<td>Rp ' + formatRupiah(angsuranPerBulan) + '</td>' +
                             '<td>Rp ' + formatRupiah(Math.max(sisa, 0)) + '</td>' +
                             '</tr>';
+
                     }
 
                     $('#tbodyAngsuran').html(tbody);
+
                     $('#totalAngsuran').text('Rp ' + formatRupiah(sisaAngsuran));
+
                     $('#tenorText').text(jangkaTenor + ' Bulan');
 
-                    // Update timeline
+
+                    /* ===== UPDATE TIMELINE ===== */
+
                     var akhirBulan = new Date(tanggalMulai);
+
                     akhirBulan.setMonth(akhirBulan.getMonth() + (jangkaTenor - 1));
+
                     var tahunAkhir = akhirBulan.getFullYear();
+
                     var bulanAkhir = akhirBulan.toLocaleDateString('id-ID', {
                         month: 'short'
                     });
+
                     var tahunMulai = new Date(tanggalMulai).getFullYear();
+
                     var bulanMulai = new Date(tanggalMulai).toLocaleDateString('id-ID', {
                         month: 'short'
                     });
 
                     $('#timelineAngsuran').text('Angsuran 1 - ' + jangkaTenor);
-                    $('#timelinePeriode').text(bulanMulai + ' ' + tahunMulai + ' - ' + bulanAkhir + ' ' + tahunAkhir);
-                    $('#timelineNominal').text(jangkaTenor + ' x Rp ' + formatRupiah(angsuranPerBulan));
 
-                    // Update jatuh tempo akhir
+                    $('#timelinePeriode').text(
+                        bulanMulai + ' ' + tahunMulai + ' - ' + bulanAkhir + ' ' + tahunAkhir
+                    );
+
+                    $('#timelineNominal').text(
+                        jangkaTenor + ' x Rp ' + formatRupiah(angsuranPerBulan)
+                    );
+
                     updateJatuhTempoAkhir();
+
                 }
 
-                // ===== UPDATE JATUH TEMPO AKHIR =====
+
+                /* ===============================
+                UPDATE JATUH TEMPO AKHIR
+                =============================== */
                 function updateJatuhTempoAkhir() {
+
                     var bulan = parseInt($('#jangkaTenor').val()) || 12;
+
                     var tanggalMulai = $('#tanggalMulaiAngsuran').val() || '2026-03-21';
 
                     if (tanggalMulai) {
+
                         var date = new Date(tanggalMulai);
+
                         date.setMonth(date.getMonth() + bulan);
+
                         var tahun = date.getFullYear();
+
                         var bulanAngka = ('0' + (date.getMonth() + 1)).slice(-2);
+
                         var hari = ('0' + date.getDate()).slice(-2);
-                        $('#jatuhTempoAkhir').val(tahun + '-' + bulanAngka + '-' + hari);
+
+                        $('#jatuhTempoAkhir').val(
+                            tahun + '-' + bulanAngka + '-' + hari
+                        );
+
                     }
+
                 }
 
-                // ===== FORMAT RUPIAH =====
-                function formatRupiah(angka) {
-                    if (angka === undefined || angka === null || isNaN(angka)) return '0';
-                    return Math.round(angka).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                }
 
-                // ===== EVENT LISTENERS =====
-                $('#hargaUnit, #diskon, #uangMuka').on('input', function() {
-                    var sisa = hitungTenor();
-                    generateTabelAngsuran();
-                });
-
-                $('#jangkaTenor, #tanggalMulaiAngsuran').on('change', function() {
-                    generateTabelAngsuran();
-                });
-
-                // Update total harga display
+                /* ===============================
+                UPDATE DISPLAY SIDEBAR
+                =============================== */
                 function updateDisplay() {
-                    var hargaUnit = parseFloat($('#hargaUnit').val()) || 0;
-                    var diskon = parseFloat($('#diskon').val()) || 0;
-                    var bookingFee = parseFloat($('#bookingFee').val()) || 0;
+
+                    var hargaUnit = parseRupiah($('#hargaUnit').val());
+
+                    var diskon = parseRupiah($('#diskon').val());
+
+                    var bookingFee = parseRupiah($('#bookingFee').val());
 
                     $('#totalHargaDisplay').text('Rp ' + formatRupiah(hargaUnit));
+
                     $('#diskonDisplay').text('- Rp ' + formatRupiah(diskon));
+
                     $('#bookingFeeDisplay').text('Rp ' + formatRupiah(bookingFee));
+
                 }
 
-                $('#hargaUnit, #diskon').on('input', function() {
+
+                /* ===============================
+                EVENT LISTENER
+                =============================== */
+
+                $('#hargaUnit,#diskon,#uangMuka').on('input', function() {
+
+                    hitungTenor();
+                    generateTabelAngsuran();
                     updateDisplay();
+
                 });
 
-                // Initial calls
+                $('#jangkaTenor,#tanggalMulaiAngsuran').on('change', function() {
+
+                    generateTabelAngsuran();
+
+                });
+
+
+                /* ===============================
+                INITIAL LOAD
+                =============================== */
+
                 updateDisplay();
-                generateTabelAngsuran();
                 hitungTenor();
+                generateTabelAngsuran();
+
             });
         </script>
     @endpush

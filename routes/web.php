@@ -230,7 +230,7 @@ Route::get(
 // });
 
 Route::get('/marketing/cash/{booking}', [CashController::class, 'index'])->name('marketing.cash_tempo');
-
+Route::post('/marketin/cash-tempo/store', [CashController::class, 'store'])->name('cash-tempo.store');
 
 // Route::get('/dashboard-akad-cash', function () {
 //     return view('marketing.akad_cash');
