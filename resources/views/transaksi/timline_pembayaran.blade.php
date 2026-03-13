@@ -1001,7 +1001,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-history me-2" style="color:#9a55ff"></i>
-                        Timeline Pembayaran
+                        Timeline Pembayarans
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
