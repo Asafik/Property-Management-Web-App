@@ -624,6 +624,62 @@
                 width: 100% !important;
             }
         }
+
+        /* ===== TABEL TIMELINE PEMBAYARAN ===== */
+        .table-timeline-pembayaran {
+            font-size: 0.85rem;
+        }
+
+        .table-timeline-pembayaran thead th {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        .table-timeline-pembayaran tbody td {
+            vertical-align: middle;
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table-timeline-pembayaran tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .status-badge.paid {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: white;
+        }
+
+        .status-badge.unpaid {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .status-badge.late {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: white;
+        }
+
+        .denda-badge {
+            color: #dc3545;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
     </style>
 
     <!-- DataTables CSS -->
@@ -775,7 +831,6 @@
                                 </thead>
 
                                 <tbody>
-
                                     @forelse($tenors as $index => $tenor)
                                         @php
                                             $tahun = floor($tenor->tenor_bulan / 12);
@@ -788,7 +843,6 @@
                                         @endphp
 
                                         <tr>
-
                                             <td class="text-center fw-bold">
                                                 {{ $index + 1 }}
                                             </td>
@@ -836,13 +890,10 @@
                                             </td>
 
                                             <td class="text-center">
-
                                                 <div class="action-buttons">
-
                                                     <a href="javascript:void(0)"
                                                         class="btn btn-outline-info btn-sm btn-detail-tenor"
                                                         data-id="{{ $tenor->id }}" title="Detail Timeline">
-
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
 
@@ -852,31 +903,23 @@
                                                         data-tenor="{{ $tenor->tenor_bulan }}"
                                                         data-denda="{{ $tenor->denda_persen }}"
                                                         data-metode="{{ $tenor->metode_pembayaran }}" title="Edit">
-
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
 
                                                     <button class="btn btn-outline-danger btn-sm btn-delete"
                                                         data-id="{{ $tenor->id }}" title="Hapus">
-
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
-
                                                 </div>
-
                                             </td>
-
                                         </tr>
-
                                     @empty
-
                                         <tr>
                                             <td colspan="8" class="text-center text-muted">
                                                 Data tenor belum tersedia
                                             </td>
                                         </tr>
                                     @endforelse
-
                                 </tbody>
                             </table>
                         </div>
@@ -988,16 +1031,14 @@
                         </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
 
-
+    <!-- MODAL TIMELINE PEMBAYARAN - DIUBAH MENJADI TABEL -->
     <div class="modal fade" id="modalTimeline" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-history me-2" style="color:#9a55ff"></i>
@@ -1007,26 +1048,54 @@
                 </div>
 
                 <div class="modal-body">
-
                     <div class="mb-3">
-                        <span id="statusTenor"></span>
-                        <p class="small text-muted" id="infoTenor"></p>
+                        <span id="statusTenor" class="mb-2"></span>
+                        <p class="small text-muted mt-2" id="infoTenor"></p>
                     </div>
 
-                    <div class="timeline-detail" id="timelineInstallment">
-                        <!-- diisi javascript -->
+                    <div class="table-responsive">
+                        <table class="table table-timeline-pembayaran table-hover align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal Jatuh Tempo</th>
+                                    <th>Nominal Angsuran</th>
+                                    <th>Status</th>
+                                    <th>Denda</th>
+                                    <th>Total Dibayar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timelineInstallmentTable">
+                                <!-- Akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
 
+                    <div class="mt-3 p-3 bg-light rounded" id="ringkasanPembayaran" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <small class="text-muted d-block">Total Angsuran</small>
+                                <span class="fw-bold" id="totalAngsuran">Rp 0</span>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted d-block">Sudah Dibayar</small>
+                                <span class="fw-bold text-success" id="sudahDibayar">Rp 0</span>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted d-block">Sisa Angsuran</small>
+                                <span class="fw-bold text-primary" id="sisaAngsuran">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
 
+    <!-- MODAL EDIT TENOR -->
     <div class="modal fade" id="modalEditTenor" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="mdi mdi-pencil me-2 text-warning"></i>
@@ -1037,9 +1106,7 @@
 
                 <form action="{{ route('cash-tempo.update') }}" method="POST">
                     @csrf
-
                     <div class="modal-body">
-
                         <input type="hidden" name="id" id="edit_id">
 
                         <div class="mb-3">
@@ -1059,24 +1126,15 @@
                                 <option value="cash">Cash</option>
                             </select>
                         </div>
-
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">
-                            Simpan Perubahan
-                        </button>
+                        <button type="submit" class="btn btn-gradient-primary">Simpan Perubahan</button>
                     </div>
-
                 </form>
-
             </div>
         </div>
     </div>
-
-
-
-
 @endsection
 
 @push('scripts')
@@ -1086,147 +1144,10 @@
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $('#selectCashTempo').on('change', function() {
-            let selected = $(this).find(':selected');
-            let nominal = selected.data('nominal') || 0;
-            let customer = selected.text(); // "Nama - Unit"
-            $('#nominalAngsuran').val(nominal.toLocaleString('id-ID'));
-            $('#detailCustomer').text(customer); // tampil di div/detail area
-        });
-    </script>
-    <script>
-        $('#formCreatePayment').on('submit', function(e) {
-            e.preventDefault();
 
-            let formData = new FormData(this);
-
-            $.ajax({
-                url: '/cash-tempo/payments', // route untuk menyimpan pembayaran
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    alert('Pembayaran berhasil disimpan!');
-                    $('#modalCreatePayment').modal('hide');
-                    location.reload(); // atau refresh tabel angsuran
-                },
-                error: function(err) {
-                    console.error(err);
-                    alert('Terjadi kesalahan, coba lagi.');
-                }
-            });
-        });
-        $(document).on('click', '.btn-detail-tenor', function() {
-
-            let id = $(this).data('id');
-
-            $('#timelineInstallment').html('Loading...');
-
-            $.get('/cash-tempo/timeline/' + id, function(data) {
-
-                let statusBadge = '';
-
-                if (data.status == 'done') {
-                    statusBadge = '<span class="badge badge-gradient-success">Lunas</span>';
-                } else {
-                    statusBadge = '<span class="badge badge-gradient-warning">Berjalan</span>';
-                }
-
-                $('#statusTenor').html(statusBadge);
-
-                $('#infoTenor').html(
-                    'Jatuh tempo setiap tanggal ' +
-                    new Date(data.tanggal_mulai_angsuran).getDate() +
-                    ' | Angsuran ' + formatRupiah(data.sisa_pembayaran / data.tenor_bulan) +
-                    ' | Denda ' + data.denda_persen + '% per bulan'
-                );
-
-                let html = '';
-
-                data.installments.forEach(function(row) {
-
-                    let status = '';
-                    let dot = '';
-
-                    if (row.status == 'paid') {
-                        status =
-                            '<span class="badge badge-gradient-success"><i class="mdi mdi-check-circle"></i> Lunas</span>';
-                        dot = 'success';
-                    } else {
-                        status =
-                            '<span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline"></i> Belum Bayar</span>';
-                        dot = 'warning';
-                    }
-
-                    html += `
-            <div class="timeline-detail-item">
-
-                <span class="timeline-date">
-                    <span class="status-dot ${dot}"></span>
-                    ${formatTanggal(row.jatuh_tempo)}
-                </span>
-
-                <span class="timeline-status">
-                    ${status}
-                </span>
-
-                <span class="timeline-denda">
-                    ${formatRupiah(row.nominal_angsuran)}
-                </span>
-
-            </div>
-            `;
-
-                });
-
-                $('#timelineInstallment').html(html);
-
-                $('#modalTimeline').modal('show');
-
-            });
-
-        });
-
-
-        function formatTanggal(tanggal) {
-
-            let d = new Date(tanggal);
-
-            return d.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-
-        }
-
-        function formatRupiah(angka) {
-
-            return 'Rp ' + Number(angka).toLocaleString('id-ID');
-
-        }
-
-        $(document).on('click', '.btn-edit-tenor', function() {
-
-            let id = $(this).data('id');
-            let tenor = $(this).data('tenor');
-            let denda = $(this).data('denda');
-            let metode = $(this).data('metode');
-
-            $('#edit_id').val(id);
-            $('#edit_tenor').val(tenor);
-            $('#edit_denda').val(denda);
-            $('#edit_metode').val(metode);
-
-            $('#modalEditTenor').modal('show');
-
-        });
-    </script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi DataTables karena ada data (data-use-datatables="true")
+            // Inisialisasi DataTables
             const tableElement = document.getElementById('tableTenor');
             if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
                 if ($.fn.DataTable.isDataTable('#tableTenor')) {
@@ -1247,14 +1168,15 @@
                     },
                     columnDefs: [{
                             orderable: false,
-                            targets: [0, 6]
-                        } // Kolom No dan Aksi tidak bisa diurutkan
+                            targets: [0, 7]
+                        }
                     ],
                     autoWidth: false,
                     deferRender: true
                 });
             }
 
+            // Fungsi loading
             function showLoading(message = 'Mohon tunggu sebentar') {
                 Swal.fire({
                     title: 'Memuat...',
@@ -1265,6 +1187,161 @@
                     }
                 });
             }
+
+            // Format Rupiah
+            function formatRupiah(angka) {
+                if (!angka) return 'Rp 0';
+                return 'Rp ' + Number(angka).toLocaleString('id-ID');
+            }
+
+            // Format Tanggal
+            function formatTanggal(tanggal) {
+                let d = new Date(tanggal);
+                return d.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
+
+            // Select Cash Tempo
+            $('#selectCashTempo').on('change', function() {
+                let selected = $(this).find(':selected');
+                let nominal = selected.data('nominal') || 0;
+                $('#nominalAngsuran').val(nominal.toLocaleString('id-ID'));
+            });
+
+            // Detail Tenor - Tampilkan Timeline dalam bentuk TABEL
+            $(document).on('click', '.btn-detail-tenor', function() {
+                let id = $(this).data('id');
+
+                $('#timelineInstallmentTable').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+
+                $.get('/cash-tempo/timeline/' + id, function(data) {
+                    let statusBadge = '';
+
+                    if (data.status == 'done') {
+                        statusBadge = '<span class="badge badge-gradient-success"><i class="mdi mdi-check-circle"></i> Lunas</span>';
+                    } else {
+                        statusBadge = '<span class="badge badge-gradient-warning"><i class="mdi mdi-timer-sand"></i> Berjalan</span>';
+                    }
+
+                    $('#statusTenor').html(statusBadge);
+
+                    $('#infoTenor').html(
+                        'Jatuh tempo setiap tanggal ' +
+                        new Date(data.tanggal_mulai_angsuran).getDate() +
+                        ' | Angsuran ' + formatRupiah(data.sisa_pembayaran / data.tenor_bulan) +
+                        ' | Denda ' + data.denda_persen + '% per bulan'
+                    );
+
+                    let html = '';
+                    let totalDibayar = 0;
+                    let totalDenda = 0;
+
+                    data.installments.forEach(function(row, index) {
+                        let statusClass = '';
+                        let statusText = '';
+                        let dendaText = '';
+
+                        if (row.status == 'paid') {
+                            statusClass = 'paid';
+                            statusText = '<span class="status-badge paid"><i class="mdi mdi-check-circle"></i> Lunas</span>';
+                            dendaText = '-';
+                            totalDibayar += row.nominal_angsuran;
+                        } else {
+                            // Cek apakah sudah melewati jatuh tempo
+                            let jatuhTempo = new Date(row.jatuh_tempo);
+                            let sekarang = new Date();
+
+                            if (jatuhTempo < sekarang) {
+                                statusClass = 'late';
+                                let denda = row.nominal_angsuran * (data.denda_persen / 100);
+                                dendaText = formatRupiah(denda);
+                                totalDenda += denda;
+                                statusText = '<span class="status-badge late"><i class="mdi mdi-alert"></i> Terlambat</span>';
+                            } else {
+                                statusClass = 'unpaid';
+                                statusText = '<span class="status-badge unpaid"><i class="mdi mdi-clock-outline"></i> Belum Bayar</span>';
+                                dendaText = '-';
+                            }
+                        }
+
+                        html += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${formatTanggal(row.jatuh_tempo)}</td>
+                                <td class="fw-bold">${formatRupiah(row.nominal_angsuran)}</td>
+                                <td>${statusText}</td>
+                                <td class="${row.status != 'paid' && new Date(row.jatuh_tempo) < new Date() ? 'denda-badge' : ''}">${dendaText}</td>
+                                <td class="fw-bold">${row.status == 'paid' ? formatRupiah(row.nominal_angsuran) : '-'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $('#timelineInstallmentTable').html(html);
+
+                    // Tampilkan ringkasan
+                    $('#totalAngsuran').text(formatRupiah(data.sisa_pembayaran));
+                    $('#sudahDibayar').text(formatRupiah(totalDibayar));
+                    $('#sisaAngsuran').text(formatRupiah(data.sisa_pembayaran - totalDibayar));
+                    $('#ringkasanPembayaran').show();
+
+                    $('#modalTimeline').modal('show');
+                });
+            });
+
+            // Edit Tenor
+            $(document).on('click', '.btn-edit-tenor', function() {
+                let id = $(this).data('id');
+                let tenor = $(this).data('tenor');
+                let denda = $(this).data('denda');
+                let metode = $(this).data('metode');
+
+                $('#edit_id').val(id);
+                $('#edit_tenor').val(tenor);
+                $('#edit_denda').val(denda);
+                $('#edit_metode').val(metode);
+
+                $('#modalEditTenor').modal('show');
+            });
+
+            // Submit Form Create Payment
+            $('#formCreatePayment').on('submit', function(e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: '/cash-tempo/payments',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Pembayaran berhasil disimpan',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            $('#modalCreatePayment').modal('hide');
+                            location.reload();
+                        });
+                    },
+                    error: function(err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan, coba lagi.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
 
             // Filter
             $('.btn-gradient-primary.w-100, .btn-filter').on('click', function(e) {
@@ -1296,24 +1373,6 @@
                         showConfirmButton: false
                     });
                 }, 1000);
-            });
-
-            // Save Create
-            $('.btn-save-create').on('click', function() {
-                showLoading('Menyimpan data...');
-                setTimeout(() => {
-                    Swal.close();
-                    $('#modalCreate').modal('hide');
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Data tenor berhasil ditambahkan',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        showConfirmButton: true,
-                        confirmButtonText: 'OK'
-                    });
-                }, 1500);
             });
 
             // Delete
