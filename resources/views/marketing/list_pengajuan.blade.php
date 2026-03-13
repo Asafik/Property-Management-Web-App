@@ -1098,6 +1098,26 @@
 
                         <!-- Tabel DENGAN ICON DI SEMUA KOLOM -->
                         <div class="table-responsive">
+                            @php
+                                $highlightBooking = request('booking_id');
+                            @endphp
+
+                            <style>
+                                .highlight-row {
+                                    animation: highlightFade 2s ease;
+                                }
+
+                                @keyframes highlightFade {
+                                    0% {
+                                        background-color: #fff3cd;
+                                    }
+
+                                    100% {
+                                        background-color: inherit;
+                                    }
+                                }
+                            </style>
+
                             <table class="table table-hover" id="tableMarketing" style="width:100%">
                                 <thead>
                                     <tr>
@@ -1112,22 +1132,30 @@
                                         <th class="text-center"><i class="mdi mdi-cog"></i> Aksi</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     @foreach ($bookings as $booking)
-                                        <tr>
+
+                                        <tr class="{{ $highlightBooking == $booking->id ? 'table-warning highlight-row' : '' }}"
+                                            id="booking-{{ $booking->id }}">
+
                                             <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+
                                             <td>
                                                 <i class="mdi mdi-ticket text-primary me-1"></i>
                                                 <span class="fw-medium small">{{ $booking->booking_code }}</span>
                                             </td>
+
                                             <td class="small">
                                                 <i class="mdi mdi-account text-info me-1"></i>
                                                 {{ $booking->customer->full_name ?? '-' }}
                                             </td>
+
                                             <td class="small">
                                                 <i class="mdi mdi-home text-warning me-1"></i>
                                                 {{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}
                                             </td>
+
                                             <td>
                                                 @if ($booking->purchase_type == 'kpr')
                                                     <span class="badge badge-info badge-sm">
@@ -1143,34 +1171,43 @@
                                                     </span>
                                                 @endif
                                             </td>
+
                                             <td>
                                                 @switch($booking->status)
                                                     @case('active')
-                                                        <span class="badge badge-warning badge-sm"><i
-                                                                class="mdi mdi-clock-outline me-1"></i>Active</span>
+                                                        <span class="badge badge-warning badge-sm">
+                                                            <i class="mdi mdi-clock-outline me-1"></i>Active
+                                                        </span>
                                                     @break
 
                                                     @case('akad')
-                                                        <span class="badge badge-primary badge-sm"><i
-                                                                class="mdi mdi-handshake me-1"></i>Akad</span>
+                                                        <span class="badge badge-primary badge-sm">
+                                                            <i class="mdi mdi-handshake me-1"></i>Akad
+                                                        </span>
                                                     @break
 
                                                     @case('cash_process')
-                                                        <span class="badge badge-success badge-sm"><i
-                                                                class="mdi mdi-check-circle me-1"></i>Lunas</span>
+                                                        <span class="badge badge-success badge-sm">
+                                                            <i class="mdi mdi-check-circle me-1"></i>Lunas
+                                                        </span>
                                                     @break
 
                                                     @case('cancelled')
-                                                        <span class="badge badge-danger badge-sm"><i
-                                                                class="mdi mdi-close-circle me-1"></i>Ditolak</span>
+                                                        <span class="badge badge-danger badge-sm">
+                                                            <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                        </span>
                                                     @break
 
                                                     @default
-                                                        <span class="badge badge-secondary badge-sm"><i
-                                                                class="mdi mdi-information-outline me-1"></i>{{ ucfirst($booking->status) }}</span>
+                                                        <span class="badge badge-secondary badge-sm">
+                                                            <i
+                                                                class="mdi mdi-information-outline me-1"></i>{{ ucfirst($booking->status) }}
+                                                        </span>
                                                 @endswitch
                                             </td>
+
                                             <td>
+
                                                 @php
                                                     $progress = match ($booking->status) {
                                                         'active' => 25,
@@ -1183,31 +1220,36 @@
                                                         default => 10,
                                                     };
                                                 @endphp
+
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <div class="progress w-100" style="height: 6px;">
+
+                                                    <div class="progress w-100" style="height:6px;">
                                                         <div class="progress-bar" style="width: {{ $progress }}%">
                                                         </div>
                                                     </div>
+
                                                     <span class="small">{{ $progress }}%</span>
+
                                                 </div>
+
                                             </td>
+
                                             <td class="small">
                                                 <i class="mdi mdi-account-tie text-primary me-1"></i>
                                                 {{ $booking->sales->name ?? '-' }}
                                             </td>
+
                                             <td class="text-center">
+
                                                 <div
                                                     class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
-
-                                                    {{-- Proses KPR / Cash / Cash Tempo / Completed --}}
                                                     @if ($booking->status === 'completed')
                                                         <a href="{{ route('unit.selesai', $booking->id) }}"
                                                             class="btn btn-success btn-sm" title="Unit Selesai">
                                                             <i class="mdi mdi-check-decagram"></i>
                                                         </a>
                                                     @else
-                                                        {{-- KPR --}}
                                                         @if ($booking->purchase_type == 'kpr')
                                                             @if (!$booking->kprApplication || $booking->kprApplication->status != 'pengajuan')
                                                                 <a href="{{ route('pengajuan.show', $booking->id) }}"
@@ -1218,7 +1260,6 @@
                                                             @endif
                                                         @endif
 
-                                                        {{-- Cash --}}
                                                         @if ($booking->purchase_type == 'cash')
                                                             <a href="{{ route('marketing.cash', $booking->id) }}"
                                                                 class="btn btn-outline-success btn-sm"
@@ -1227,7 +1268,6 @@
                                                             </a>
                                                         @endif
 
-                                                        {{-- Cash Tempo --}}
                                                         @if ($booking->purchase_type == 'cash_tempo')
                                                             <a href="{{ route('marketing.cash_tempo', $booking->id) }}"
                                                                 class="btn btn-outline-warning btn-sm"
@@ -1237,32 +1277,37 @@
                                                         @endif
                                                     @endif
 
-                                                    {{-- Detail --}}
                                                     <a href="#" class="btn btn-outline-info btn-sm" title="Detail">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
 
-                                                    {{-- Edit --}}
                                                     <a href="#" class="btn btn-outline-warning btn-sm"
                                                         title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
 
-                                                    {{-- Delete --}}
                                                     <form action="#" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
+
                                                         <button type="submit" class="btn btn-outline-danger btn-sm"
                                                             title="Hapus">
+
                                                             <i class="mdi mdi-delete"></i>
+
                                                         </button>
+
                                                     </form>
 
                                                 </div>
+
                                             </td>
+
                                         </tr>
+
                                     @endforeach
                                 </tbody>
+
                             </table>
                         </div>
 
@@ -1376,4 +1421,30 @@
             });
         }
     </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const bookingId = "{{ request('booking_id') }}";
+
+    if(bookingId){
+
+        const row = document.getElementById("booking-" + bookingId);
+
+        if(row){
+
+            setTimeout(function(){
+
+                row.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+            }, 500);
+
+        }
+
+    }
+
+});
+</script>
 @endpush

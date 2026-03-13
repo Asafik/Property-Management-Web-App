@@ -68,7 +68,16 @@ Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(func
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/notifications/read/{id}', function ($id) {
+    $notif = auth()->user()->notifications()->find($id);
 
+    if ($notif) {
+        $notif->markAsRead();
+        return redirect($notif->data['url'] ?? '/');
+    }
+
+    return back();
+})->name('notifications.read');
 /*
 |--------------------------------------------------------------------------
 | ========================= MARKETING =========================
