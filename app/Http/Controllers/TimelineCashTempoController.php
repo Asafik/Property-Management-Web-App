@@ -37,12 +37,11 @@ public function update(Request $request)
 public function storePayment(Request $request)
 {
     $request->validate([
-        'cash_tempo_id' => 'required|exists:cash_tempo_installments,id',
-        'status' => 'required|in:paid',
+        'installment_id' => 'required|exists:cash_tempo_installments,id',
         'bukti_pembayaran' => 'required|file|mimes:jpg,png,pdf|max:2048',
     ]);
 
-    $installment = CashTempoInstallment::findOrFail($request->cash_tempo_id);
+    $installment = CashTempoInstallment::findOrFail($request->installment_id);
 
     if ($request->hasFile('bukti_pembayaran')) {
         $file = $request->file('bukti_pembayaran');

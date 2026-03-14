@@ -982,20 +982,31 @@
                         @csrf
 
                         <!-- Pilih Customer / Unit -->
-                        <div class="modal-form-group">
-                            <label><i class="mdi mdi-account-multiple me-1" style="color: #9a55ff;"></i>Customer <span
-                                    class="text-danger">*</span></label>
-                            <select class="modal-form-control" name="cash_tempo_id" id="selectCashTempo" required>
-                                <option value="">-- Pilih Customer / Unit --</option>
-                                @foreach ($tenors as $tempo)
-                                    <option value="{{ $tempo->id }}"
-                                        data-nominal="{{ $tempo->installments->first()->nominal_angsuran ?? '-' }}">
-                                        {{ $tempo->booking->customer->full_name ?? '-' }} - Unit
-                                        {{ $tempo->booking->unit->unit_name ?? '-' }}
-                                    </option>
+                        <select class="modal-form-control" id="selectTenor">
+                            <option value="">-- Pilih Customer / Unit --</option>
+
+                            @foreach ($tenors as $tempo)
+                                <option value="{{ $tempo->id }}">
+                                    {{ $tempo->booking->customer->full_name ?? '-' }}
+                                    - Unit {{ $tempo->booking->unit->unit_name ?? '-' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <select class="modal-form-control" name="installment_id" id="selectCashTempo" required>
+                            <option value="">-- Pilih Angsuran --</option>
+
+                            @foreach ($tenors as $tempo)
+                                @foreach ($tempo->installments as $installment)
+                                    @if ($installment->status != 'paid')
+                                        <option value="{{ $installment->id }}" data-tenor="{{ $tempo->id }}"
+                                            data-nominal="{{ $installment->nominal_angsuran }}">
+
+                                            Angsuran {{ $loop->iteration }}
+                                        </option>
+                                    @endif
                                 @endforeach
-                            </select>
-                        </div>
+                            @endforeach
+                        </select>
 
                         <!-- Nominal Angsuran -->
                         <div class="modal-form-group">
@@ -1062,6 +1073,7 @@
                                     <th>Nominal Angsuran</th>
                                     <th>Status</th>
                                     <th>Denda</th>
+                                    <th>Bukti Pembayaran</th>
                                     <th>Total Dibayar</th>
                                 </tr>
                             </thead>
@@ -1167,10 +1179,9 @@
                         zeroRecords: "Data tidak ditemukan",
                     },
                     columnDefs: [{
-                            orderable: false,
-                            targets: [0, 7]
-                        }
-                    ],
+                        orderable: false,
+                        targets: [0, 7]
+                    }],
                     autoWidth: false,
                     deferRender: true
                 });
@@ -1215,15 +1226,18 @@
             $(document).on('click', '.btn-detail-tenor', function() {
                 let id = $(this).data('id');
 
-                $('#timelineInstallmentTable').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+                $('#timelineInstallmentTable').html(
+                    '<tr><td colspan="6" class="text-center">Loading...</td></tr>');
 
                 $.get('/cash-tempo/timeline/' + id, function(data) {
                     let statusBadge = '';
 
                     if (data.status == 'done') {
-                        statusBadge = '<span class="badge badge-gradient-success"><i class="mdi mdi-check-circle"></i> Lunas</span>';
+                        statusBadge =
+                            '<span class="badge badge-gradient-success"><i class="mdi mdi-check-circle"></i> Lunas</span>';
                     } else {
-                        statusBadge = '<span class="badge badge-gradient-warning"><i class="mdi mdi-timer-sand"></i> Berjalan</span>';
+                        statusBadge =
+                            '<span class="badge badge-gradient-warning"><i class="mdi mdi-timer-sand"></i> Berjalan</span>';
                     }
 
                     $('#statusTenor').html(statusBadge);
@@ -1246,7 +1260,8 @@
 
                         if (row.status == 'paid') {
                             statusClass = 'paid';
-                            statusText = '<span class="status-badge paid"><i class="mdi mdi-check-circle"></i> Lunas</span>';
+                            statusText =
+                                '<span class="status-badge paid"><i class="mdi mdi-check-circle"></i> Lunas</span>';
                             dendaText = '-';
                             totalDibayar += row.nominal_angsuran;
                         } else {
@@ -1256,26 +1271,44 @@
 
                             if (jatuhTempo < sekarang) {
                                 statusClass = 'late';
-                                let denda = row.nominal_angsuran * (data.denda_persen / 100);
+                                let denda = row.nominal_angsuran * (data.denda_persen /
+                                    100);
                                 dendaText = formatRupiah(denda);
                                 totalDenda += denda;
-                                statusText = '<span class="status-badge late"><i class="mdi mdi-alert"></i> Terlambat</span>';
+                                statusText =
+                                    '<span class="status-badge late"><i class="mdi mdi-alert"></i> Terlambat</span>';
                             } else {
                                 statusClass = 'unpaid';
-                                statusText = '<span class="status-badge unpaid"><i class="mdi mdi-clock-outline"></i> Belum Bayar</span>';
+                                statusText =
+                                    '<span class="status-badge unpaid"><i class="mdi mdi-clock-outline"></i> Belum Bayar</span>';
                                 dendaText = '-';
                             }
                         }
 
+                        let namaFile = row.bukti_pembayaran ? row.bukti_pembayaran.split(
+                            '/').pop() : '-';
+                        let fileUrl = row.bukti_pembayaran ? '/storage/' + row
+                            .bukti_pembayaran : '#';
+
                         html += `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${formatTanggal(row.jatuh_tempo)}</td>
-                                <td class="fw-bold">${formatRupiah(row.nominal_angsuran)}</td>
-                                <td>${statusText}</td>
-                                <td class="${row.status != 'paid' && new Date(row.jatuh_tempo) < new Date() ? 'denda-badge' : ''}">${dendaText}</td>
-                                <td class="fw-bold">${row.status == 'paid' ? formatRupiah(row.nominal_angsuran) : '-'}</td>
-                            </tr>
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${formatTanggal(row.jatuh_tempo)}</td>
+                            <td class="fw-bold">${formatRupiah(row.nominal_angsuran)}</td>
+                            <td>${statusText}</td>
+                            <td class="${row.status != 'paid' && new Date(row.jatuh_tempo) < new Date() ? 'denda-badge' : ''}">
+                                ${dendaText}
+                            </td>
+                           <td class="text-center">
+                                ${row.bukti_pembayaran 
+                                    ? `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat Bukti">
+                                                                        <i class="mdi mdi-eye"></i>
+                                                                </a>`
+                                    : '-'
+                                }
+                            </td>
+                            <td class="fw-bold">${row.status == 'paid' ? formatRupiah(row.nominal_angsuran) : '-'}</td>
+                        </tr>
                         `;
                     });
 
@@ -1307,10 +1340,53 @@
             });
 
             // Submit Form Create Payment
+            // CSRF Token Laravel
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Filter angsuran berdasarkan customer / unit
+            $('#selectTenor').on('change', function() {
+
+                let tenorId = $(this).val();
+
+                $('#selectCashTempo option').each(function() {
+
+                    let optionTenor = $(this).data('tenor');
+
+                    if (!optionTenor) return;
+
+                    if (optionTenor == tenorId) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+
+                });
+
+                $('#selectCashTempo').val('');
+            });
+            // Auto isi nominal saat pilih angsuran
+            $('#selectCashTempo').on('change', function() {
+
+                let nominal = $(this).find(':selected').data('nominal') || '-';
+
+                $('#nominalAngsuran').val(nominal);
+
+            });
+
+
+            // Submit Form Create Payment
             $('#formCreatePayment').on('submit', function(e) {
                 e.preventDefault();
 
-                let formData = new FormData(this);
+                let form = this;
+                let formData = new FormData(form);
+
+                // disable tombol agar tidak double klik
+                $('.btn-save-payment').prop('disabled', true);
 
                 $.ajax({
                     url: '/cash-tempo/payments',
@@ -1318,27 +1394,40 @@
                     data: formData,
                     processData: false,
                     contentType: false,
+
                     success: function(response) {
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
                             text: 'Pembayaran berhasil disimpan',
                             timer: 2000,
                             timerProgressBar: true,
-                            showConfirmButton: true,
-                            confirmButtonText: 'OK'
+                            showConfirmButton: false
                         }).then(() => {
+
+                            // reset form
+                            $('#formCreatePayment')[0].reset();
+
+                            // tutup modal
                             $('#modalCreatePayment').modal('hide');
+
+                            // reload halaman
                             location.reload();
                         });
+
                     },
+
                     error: function(err) {
+
+                        $('.btn-save-payment').prop('disabled', false);
+
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Terjadi kesalahan, coba lagi.',
-                            confirmButtonText: 'OK'
+                            text: 'Terjadi kesalahan, coba lagi.'
                         });
+
                     }
                 });
             });
