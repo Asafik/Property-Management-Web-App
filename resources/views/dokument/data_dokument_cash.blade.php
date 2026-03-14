@@ -887,41 +887,50 @@
                     </div>
 
                     <!-- Konten dari server -->
-                    @php
-                        $ktp = $booking->documentUploads->where('document_id', 2)->first();
-                    @endphp
+                    @foreach ($documents as $doc)
+                        @php
+                            $uploaded = $booking->documentUploads->where('document_id', $doc->id)->first();
+                        @endphp
 
-                    @if ($ktp)
-                        <!-- Kalau sudah upload -->
-                        <div id="contentDokumen">
-                            <a href="{{ asset('storage/' . $ktp->file_path) }}" target="_blank">
-                                <i class="mdi mdi-eye"></i> Lihat KTP
-                            </a>
+                        <div class="mb-3">
+
+                            <strong>{{ $doc->name }}</strong>
+
+                            @if ($uploaded)
+                                <!-- Kalau sudah upload -->
+                                <div id="contentDokumen">
+                                    <a href="{{ asset('storage/' . $uploaded->file_path) }}" target="_blank">
+                                        <i class="mdi mdi-eye"></i> Lihat {{ $doc->name }}
+                                    </a>
+                                </div>
+                            @else
+                                <!-- Kalau belum upload -->
+                                <div id="sectionUploadFoto">
+
+                                    <div class="custom-alert custom-alert-warning mb-2">
+                                        Dokumen {{ $doc->name }} belum diupload.
+                                    </div>
+
+                                    <form action="{{ route('document.upload') }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+
+                                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                        <input type="hidden" name="document_id" value="{{ $doc->id }}">
+
+                                        <input type="file" name="file" accept="image/*,application/pdf" required>
+
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            Upload {{ $doc->name }}
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            @endif
+
                         </div>
-                    @else
-                        <!-- Kalau belum upload -->
-                        <div id="sectionUploadFoto">
-
-                            <div class="custom-alert custom-alert-warning mb-3">
-                                Dokumen belum lengkap. Silakan upload foto KTP pembeli.
-                            </div>
-
-                            <form action="{{ route('document.upload') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-
-                                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                <input type="hidden" name="document_id" value="2">
-
-                                <input type="file" name="file" accept="image/*,application/pdf" required>
-
-                                <button type="submit" class="btn btn-primary">
-                                    Upload KTP
-                                </button>
-
-                            </form>
-
-                        </div>
-                    @endif
+                    @endforeach
 
                     {{--
                         Alert Lengkap:
@@ -1085,7 +1094,7 @@
                             progressBar.hide();
                             barFill.css('width', '0%');
                             btn.html(
-                            '<i class="mdi mdi-cloud-upload"></i> Upload Foto KTP');
+                                '<i class="mdi mdi-cloud-upload"></i> Upload Foto KTP');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil!',
