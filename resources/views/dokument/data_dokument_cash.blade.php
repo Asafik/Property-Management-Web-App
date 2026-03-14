@@ -135,7 +135,9 @@
             color: #9a55ff;
         }
 
-        .dokumen-info { flex: 1; }
+        .dokumen-info {
+            flex: 1;
+        }
 
         .dokumen-info h6 {
             font-size: 1rem;
@@ -183,7 +185,9 @@
             margin-top: 0.5rem;
         }
 
-        .file-preview i { color: #9a55ff; }
+        .file-preview i {
+            color: #9a55ff;
+        }
 
         .file-preview span {
             flex: 1;
@@ -237,7 +241,10 @@
             border-bottom: 2px solid #e9ecef;
         }
 
-        .info-row { display: flex; margin-bottom: 0.5rem; }
+        .info-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
 
         .info-label {
             width: 120px;
@@ -306,7 +313,9 @@
             box-shadow: 0 6px 18px rgba(154, 85, 255, 0.12);
         }
 
-        .foto-upload-item input[type="file"] { display: none; }
+        .foto-upload-item input[type="file"] {
+            display: none;
+        }
 
         .foto-upload-item .foto-icon {
             width: 42px;
@@ -358,7 +367,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0, 0, 0, 0.45);
             border-radius: 10px;
             display: flex;
             flex-direction: column;
@@ -370,7 +379,9 @@
             cursor: pointer;
         }
 
-        .foto-upload-item.has-preview:hover .foto-preview-overlay { opacity: 1; }
+        .foto-upload-item.has-preview:hover .foto-preview-overlay {
+            opacity: 1;
+        }
 
         .foto-upload-item.has-preview .foto-preview-overlay i {
             font-size: 1.2rem;
@@ -397,7 +408,7 @@
             align-items: center;
             justify-content: center;
             z-index: 5;
-            box-shadow: 0 2px 6px rgba(40,167,69,0.4);
+            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.4);
         }
 
         .btn-upload-semua {
@@ -452,7 +463,9 @@
             margin-top: 0.75rem;
         }
 
-        .foto-counter strong { color: #9a55ff; }
+        .foto-counter strong {
+            color: #9a55ff;
+        }
 
         /* Alert lengkap di modal */
         .alert-dokumen-lengkap {
@@ -515,7 +528,8 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <div
+                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                             Daftar Pengecekan Dokumen
@@ -655,7 +669,8 @@
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0 me-3">
-                                                <i class="mdi mdi-file-document text-primary" style="font-size: 2rem;"></i>
+                                                <i class="mdi mdi-file-document text-primary"
+                                                    style="font-size: 2rem;"></i>
                                             </div>
                                             <div>
                                                 <h5 class="fw-bold mb-0">{{ $totalBooking }}</h5>
@@ -685,7 +700,8 @@
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0 me-3">
-                                                <i class="mdi mdi-clock-outline text-warning" style="font-size: 2rem;"></i>
+                                                <i class="mdi mdi-clock-outline text-warning"
+                                                    style="font-size: 2rem;"></i>
                                             </div>
                                             <div>
                                                 <h5 class="fw-bold mb-0">{{ $kurang }}</h5>
@@ -731,7 +747,10 @@
                                         @php
                                             $requiredDocs = $documents->where('required', true)->count();
                                             $uploaded = $booking->documentUploads
-                                                ->whereIn('document_id', $documents->where('required', true)->pluck('id'))
+                                                ->whereIn(
+                                                    'document_id',
+                                                    $documents->where('required', true)->pluck('id'),
+                                                )
                                                 ->count();
                                             $isLengkap = $uploaded >= $requiredDocs;
                                         @endphp
@@ -758,7 +777,8 @@
                                                     </span>
                                                 @else
                                                     <span class="badge badge-gradient-warning">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>{{ $uploaded }}/{{ $requiredDocs }}
+                                                        <i
+                                                            class="mdi mdi-clock-outline me-1"></i>{{ $uploaded }}/{{ $requiredDocs }}
                                                     </span>
                                                 @endif
                                             </td>
@@ -809,7 +829,8 @@
                                 Menampilkan 1 - 5 dari 24 data booking
                             </div>
                             <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
+                                    style="gap: 2px;">
                                     <li class="page-item disabled">
                                         <span class="page-link"><i class="mdi mdi-chevron-left"></i></span>
                                     </li>
@@ -866,55 +887,41 @@
                     </div>
 
                     <!-- Konten dari server -->
-                    <div id="contentDokumen" style="display: none;"></div>
+                    @php
+                        $ktp = $booking->documentUploads->where('document_id', 2)->first();
+                    @endphp
 
-                    {{--
-                        Section Upload Foto KTP:
-                        - Muncul jika dokumen BELUM lengkap
-                        - Disembunyikan jika sudah lengkap (ditangani JS via data-lengkap)
-                    --}}
-                    <div id="sectionUploadFoto" style="display: none; margin-top: 1.5rem;">
-                        <div class="upload-foto-section">
-                            <div class="section-header">
-                                <i class="mdi mdi-camera-plus"></i>
-                                <span>Upload Foto KTP</span>
-                                <span class="badge bg-warning text-dark ms-auto" style="font-size: 0.65rem;">
-                                    <i class="mdi mdi-flask me-1"></i>UI Sementara
-                                </span>
-                            </div>
+                    @if ($ktp)
+                        <!-- Kalau sudah upload -->
+                        <div id="contentDokumen">
+                            <a href="{{ asset('storage/' . $ktp->file_path) }}" target="_blank">
+                                <i class="mdi mdi-eye"></i> Lihat KTP
+                            </a>
+                        </div>
+                    @else
+                        <!-- Kalau belum upload -->
+                        <div id="sectionUploadFoto">
 
                             <div class="custom-alert custom-alert-warning mb-3">
-                                <i class="mdi mdi-alert-circle me-1"></i>
-                                Dokumen belum lengkap. Silakan upload foto KTP pembeli untuk melanjutkan proses.
+                                Dokumen belum lengkap. Silakan upload foto KTP pembeli.
                             </div>
 
-                            <!-- Slot KTP -->
-                            <div class="foto-upload-item" id="fotoItem_ktp" style="max-width: 180px;">
-                                <input type="file" id="foto_ktp" accept="image/*,application/pdf"
-                                    data-key="ktp" class="foto-input">
-                                <label for="foto_ktp" class="foto-label">
-                                    <div class="foto-icon">
-                                        <i class="mdi mdi-card-account-details"></i>
-                                    </div>
-                                    <div class="foto-name">KTP Pembeli</div>
-                                    <div class="foto-hint">Klik untuk upload</div>
-                                </label>
-                            </div>
+                            <form action="{{ route('document.upload') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
 
-                            <div class="foto-counter" id="fotoCounter" style="margin-top: 0.75rem;">
-                                <strong>0</strong> dari <strong>1</strong> foto dipilih
-                            </div>
+                                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                <input type="hidden" name="document_id" value="2">
 
-                            <div class="upload-progress-bar" id="uploadProgressBar">
-                                <div class="bar-fill" id="uploadBarFill"></div>
-                            </div>
+                                <input type="file" name="file" accept="image/*,application/pdf" required>
 
-                            <button type="button" class="btn-upload-semua" id="btnUploadSemuaFoto" disabled>
-                                <i class="mdi mdi-cloud-upload"></i>
-                                Upload Foto KTP
-                            </button>
+                                <button type="submit" class="btn btn-primary">
+                                    Upload KTP
+                                </button>
+
+                            </form>
+
                         </div>
-                    </div>
+                    @endif
 
                     {{--
                         Alert Lengkap:
@@ -926,7 +933,8 @@
                             <i class="mdi mdi-check-circle"></i>
                             <div class="alert-text">
                                 <strong>Dokumen Sudah Lengkap!</strong>
-                                <span>Semua dokumen telah diupload. Booking ini siap untuk proses Akad / Pecah Legal Unit.</span>
+                                <span>Semua dokumen telah diupload. Booking ini siap untuk proses Akad / Pecah Legal
+                                    Unit.</span>
                             </div>
                         </div>
                     </div>
@@ -944,7 +952,7 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             // DataTables
             if ($.fn.DataTable.isDataTable('#tableCekDokumen')) {
@@ -962,7 +970,10 @@
                     emptyTable: "Data booking belum tersedia",
                     zeroRecords: "Data tidak ditemukan",
                 },
-                columnDefs: [{ orderable: false, targets: [6] }]
+                columnDefs: [{
+                    orderable: false,
+                    targets: [6]
+                }]
             });
 
             // Helpers
@@ -971,12 +982,14 @@
                     title: 'Memuat...',
                     text: message,
                     allowOutsideClick: false,
-                    didOpen: () => { Swal.showLoading(); }
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
             }
 
             function initFileUpload() {
-                $('.modern-file-upload input[type="file"]').off('change').on('change', function (e) {
+                $('.modern-file-upload input[type="file"]').off('change').on('change', function(e) {
                     const file = e.target.files[0];
                     const label = $(this).closest('.modern-file-upload').find('.file-info span');
                     const sizeSpan = $(this).closest('.modern-file-upload').find('.file-size');
@@ -999,7 +1012,7 @@
             }
 
             // Preview foto saat dipilih
-            $(document).on('change', '.foto-input', function (e) {
+            $(document).on('change', '.foto-input', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
 
@@ -1009,7 +1022,7 @@
 
                 if (file.type.startsWith('image/')) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         labelEl.empty();
                         labelEl.append(
                             $('<img>').addClass('foto-preview-img').attr('src', ev.target.result)
@@ -1022,7 +1035,8 @@
                         );
                         itemEl.find('.foto-badge-ok').remove();
                         itemEl.append(
-                            $('<div>').addClass('foto-badge-ok').html('<i class="mdi mdi-check"></i>')
+                            $('<div>').addClass('foto-badge-ok').html(
+                                '<i class="mdi mdi-check"></i>')
                         );
                         itemEl.addClass('has-preview');
                         updateFotoCounter();
@@ -1032,7 +1046,10 @@
                     // PDF
                     labelEl.empty().addClass('p-3 text-center').append(
                         $('<div>').addClass('foto-icon mb-1').append(
-                            $('<i>').addClass('mdi mdi-file-pdf-box').css({ fontSize: '1.5rem', color: '#dc3545' })
+                            $('<i>').addClass('mdi mdi-file-pdf-box').css({
+                                fontSize: '1.5rem',
+                                color: '#dc3545'
+                            })
                         ),
                         $('<div>').addClass('foto-name').text(
                             file.name.length > 16 ? file.name.substring(0, 13) + '...' : file.name
@@ -1049,7 +1066,7 @@
             });
 
             // Tombol upload (simulasi - ganti dengan AJAX real saat backend siap)
-            $('#btnUploadSemuaFoto').on('click', function () {
+            $('#btnUploadSemuaFoto').on('click', function() {
                 const btn = $(this);
                 const progressBar = $('#uploadProgressBar');
                 const barFill = $('#uploadBarFill');
@@ -1058,16 +1075,17 @@
                 progressBar.show();
 
                 let progress = 0;
-                const interval = setInterval(function () {
+                const interval = setInterval(function() {
                     progress += Math.random() * 15;
                     if (progress >= 100) {
                         progress = 100;
                         clearInterval(interval);
                         barFill.css('width', '100%');
-                        setTimeout(function () {
+                        setTimeout(function() {
                             progressBar.hide();
                             barFill.css('width', '0%');
-                            btn.html('<i class="mdi mdi-cloud-upload"></i> Upload Foto KTP');
+                            btn.html(
+                            '<i class="mdi mdi-cloud-upload"></i> Upload Foto KTP');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil!',
@@ -1076,7 +1094,7 @@
                                 timerProgressBar: true,
                                 showConfirmButton: false,
                                 confirmButtonColor: '#9a55ff'
-                            }).then(function () {
+                            }).then(function() {
                                 btn.prop('disabled', fotoSelected === 0);
                             });
                         }, 400);
@@ -1089,11 +1107,11 @@
             // ================================================================
             // Buka Modal - cek data-lengkap untuk tampilkan/sembunyikan form
             // ================================================================
-            $('.btn-detail-dokumen').on('click', function (e) {
+            $('.btn-detail-dokumen').on('click', function(e) {
                 e.preventDefault();
 
-                const bookingId  = $(this).data('booking');
-                const isLengkap  = $(this).data('lengkap') === true; // baca dari data-lengkap di tombol
+                const bookingId = $(this).data('booking');
+                const isLengkap = $(this).data('lengkap') === true; // baca dari data-lengkap di tombol
 
                 // Reset modal
                 $('#loadingDokumen').show();
@@ -1107,7 +1125,8 @@
                 ktpItem.removeClass('has-preview').find('.foto-badge-ok').remove();
                 ktpItem.find('input[type="file"]').val('');
                 ktpItem.find('.foto-label').removeClass('p-3 text-center').empty().append(
-                    $('<div>').addClass('foto-icon').append($('<i>').addClass('mdi mdi-card-account-details')),
+                    $('<div>').addClass('foto-icon').append($('<i>').addClass(
+                        'mdi mdi-card-account-details')),
                     $('<div>').addClass('foto-name').text('KTP Pembeli'),
                     $('<div>').addClass('foto-hint').text('Klik untuk upload')
                 );
@@ -1124,9 +1143,9 @@
                         // Cek kondisi lengkap/belum → tampilkan section yang sesuai
                         if (isLengkap) {
                             $('#sectionSudahLengkap').show(); // tampilkan info sudah lengkap
-                            $('#sectionUploadFoto').hide();   // sembunyikan form upload
+                            $('#sectionUploadFoto').hide(); // sembunyikan form upload
                         } else {
-                            $('#sectionUploadFoto').show();   // tampilkan form upload
+                            $('#sectionUploadFoto').show(); // tampilkan form upload
                             $('#sectionSudahLengkap').hide(); // sembunyikan info lengkap
                         }
 
@@ -1149,7 +1168,7 @@
             });
 
             // Submit upload dokumen dari konten server
-            $(document).on('submit', '.form-upload-dokumen', function (e) {
+            $(document).on('submit', '.form-upload-dokumen', function(e) {
                 e.preventDefault();
                 const form = this;
                 const formData = new FormData(form);
@@ -1160,7 +1179,7 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function (response) {
+                    success: function(response) {
                         Swal.close();
                         Swal.fire({
                             icon: 'success',
@@ -1171,15 +1190,17 @@
                             showConfirmButton: false
                         }).then(() => {
                             const bookingId = $(form).data('booking');
-                            $('.btn-detail-dokumen[data-booking="' + bookingId + '"]').click();
+                            $('.btn-detail-dokumen[data-booking="' + bookingId + '"]')
+                                .click();
                         });
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         Swal.close();
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: xhr.responseJSON?.message || 'Terjadi kesalahan saat upload',
+                            text: xhr.responseJSON?.message ||
+                                'Terjadi kesalahan saat upload',
                             confirmButtonColor: '#9a55ff'
                         });
                     }
@@ -1187,7 +1208,7 @@
             });
 
             // Download file
-            $(document).on('click', '.btn-download-file', function (e) {
+            $(document).on('click', '.btn-download-file', function(e) {
                 e.preventDefault();
                 window.open($(this).data('file'), '_blank');
             });

@@ -326,6 +326,7 @@ Route::get('/document-legal/detail/{booking}', [DocumentPersiapanPecahLegalContr
 ->name('document_legal.detail');
 Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
 Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
+Route::post('/document-upload', [DocumentPersiapanPecahLegalController::class, 'upload'])->name('document.upload');
 
 
 Route::get('/customer-profil-cash', function () {
