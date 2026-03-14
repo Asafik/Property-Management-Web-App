@@ -43,6 +43,7 @@ public function storePayment(Request $request)
 
     $installment = CashTempoInstallment::findOrFail($request->installment_id);
 
+    // Upload bukti pembayaran
     if ($request->hasFile('bukti_pembayaran')) {
         $file = $request->file('bukti_pembayaran');
         $path = $file->store('bukti_pembayaran', 'public');
@@ -53,6 +54,21 @@ public function storePayment(Request $request)
     $installment->tanggal_bayar = now();
     $installment->save();
 
-    return response()->json(['message' => 'Pembayaran berhasil disimpan']);
+    // Ambil tenor
+    $tenor = CashTempo::find($installment->cash_tempo_id);
+
+    // Cek apakah masih ada angsuran yang belum dibayar
+    $unpaid = CashTempoInstallment::where('cash_tempo_id', $tenor->id)
+                ->where('status', '!=', 'paid')
+                ->count();
+
+    if ($unpaid == 0) {
+        $tenor->status = 'lunas';
+        $tenor->save();
+    }
+
+    return response()->json([
+        'message' => 'Pembayaran berhasil disimpan'
+    ]);
 }
 }

@@ -998,7 +998,7 @@
                                         @php
                                             $tahun = floor($tenor->tenor_bulan / 12);
                                             $statusColor = match ($tenor->status) {
-                                                'done' => 'success',
+                                                'lunas' => 'success',
                                                 'process' => 'warning',
                                                 'cancel' => 'danger',
                                                 default => 'secondary',
@@ -1010,7 +1010,7 @@
                                                 {{ $index + 1 }}
                                             </td>
 
-                                            <td>
+                                            <td>    
                                                 {{ $tenor->booking->customer->full_name ?? '-' }}
                                             </td>
 
@@ -1042,7 +1042,7 @@
 
                                             <td>
                                                 <span class="badge badge-gradient-{{ $statusColor }}">
-                                                    @if ($tenor->status == 'done')
+                                                    @if ($tenor->status == 'lunas')
                                                         <i class="mdi mdi-check-circle me-1"></i> Lunas
                                                     @elseif($tenor->status == 'process')
                                                         <i class="mdi mdi-timer-sand me-1"></i> Berjalan
