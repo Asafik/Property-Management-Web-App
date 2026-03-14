@@ -86,4 +86,20 @@ public function detail($bookingId)
 
     return view('document_legal.partials.detail', compact('booking','documents'));
 }
+public function upload(Request $request){
+     $request->validate([
+        'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+    ]);
+
+    $file = $request->file('file')->store('documents','public');
+
+    DocumentUpload::create([
+        'booking_id' => $request->booking_id,
+        'document_id' => $request->document_id,
+        'file_name' => $request->file('file')->getClientOriginalName(),
+        'file_path' => $file
+    ]);
+
+    return back()->with('success','Dokumen berhasil diupload');
+}
 }
