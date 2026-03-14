@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}  # propertyManagement
           password: ${{ secrets.FTP_PASSWORD }}  # Bismillah123!
           protocol: ftp                          # ganti ke sftp kalau Hostinger pakai SFTP
-          server-dir: /public_html               # root Laravel di server
+          server-dir: /public_html/              # root Laravel di server
           exclude: |
             **/.git*
             **/.env
