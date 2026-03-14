@@ -86,8 +86,9 @@ public function detail($bookingId)
 
     return view('document_legal.partials.detail', compact('booking','documents'));
 }
-public function upload(Request $request){
-     $request->validate([
+public function upload(Request $request)
+{
+    $request->validate([
         'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
     ]);
 
@@ -99,6 +100,23 @@ public function upload(Request $request){
         'file_name' => $request->file('file')->getClientOriginalName(),
         'file_path' => $file
     ]);
+
+    // Ambil dokumen wajib
+    $requiredDocs = Document::where('required', true)->pluck('id');
+
+    // Hitung dokumen yang sudah diupload
+    $uploadedDocs = DocumentUpload::where('booking_id', $request->booking_id)
+        ->whereIn('document_id', $requiredDocs)
+        ->count();
+
+    // Jika semua dokumen wajib sudah ada
+    if ($uploadedDocs >= $requiredDocs->count()) {
+
+        Booking::where('id', $request->booking_id)
+            ->update([
+                'status_legal' => 'done'
+            ]);
+    }
 
     return back()->with('success','Dokumen berhasil diupload');
 }
