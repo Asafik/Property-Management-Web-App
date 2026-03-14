@@ -851,7 +851,8 @@
 
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Dashboard -->
@@ -1010,7 +1011,7 @@
                                                 {{ $index + 1 }}
                                             </td>
 
-                                            <td>    
+                                            <td>
                                                 {{ $tenor->booking->customer->full_name ?? '-' }}
                                             </td>
 
@@ -1073,13 +1074,21 @@
                                                         data-id="{{ $tenor->id }}" title="Hapus">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
+                                                    @if ($tenor->status == 'lunas')
+                                                        <a href="{{ route('document.user.persiapan-legal') }}"
+                                                            class="btn btn-outline-success btn-sm"
+                                                            title="Dokumen Persiapan">
+                                                            <i class="mdi mdi-file-document-outline"></i>
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
                                             <td colspan="8" class="text-center py-5">
-                                                <i class="mdi mdi-information-outline" style="font-size: 3rem; color: #ccc;"></i>
+                                                <i class="mdi mdi-information-outline"
+                                                    style="font-size: 3rem; color: #ccc;"></i>
                                                 <p class="mt-2 text-muted">Belum ada data tenor</p>
                                                 <p class="text-muted small">Silahkan tambahkan data tenor baru</p>
                                             </td>
@@ -1160,12 +1169,16 @@
 
                         <!-- Pilih Customer / Unit - SELECT2 -->
                         <div class="modal-form-group">
-                            <label><i class="mdi mdi-account-multiple me-1" style="color: #9a55ff;"></i>Customer / Unit <span class="text-danger">*</span></label>
-                            <select class="modal-form-control select2-customer" id="selectTenor" name="cash_tempo_id" required style="width: 100%;">
+                            <label><i class="mdi mdi-account-multiple me-1" style="color: #9a55ff;"></i>Customer / Unit
+                                <span class="text-danger">*</span></label>
+                            <select class="modal-form-control select2-customer" id="selectTenor" name="cash_tempo_id"
+                                required style="width: 100%;">
                                 <option value="">-- Pilih Customer / Unit --</option>
                                 @foreach ($tenors as $tempo)
                                     <option value="{{ $tempo->id }}">
-                                        {{ $tempo->booking->customer->full_name ?? '-' }} - Unit {{ $tempo->booking->unit->unit_name ?? '-' }} (Tenor: {{ $tempo->tenor_bulan }} bulan)
+                                        {{ $tempo->booking->customer->full_name ?? '-' }} - Unit
+                                        {{ $tempo->booking->unit->unit_name ?? '-' }} (Tenor: {{ $tempo->tenor_bulan }}
+                                        bulan)
                                     </option>
                                 @endforeach
                             </select>
@@ -1174,7 +1187,8 @@
 
                         <!-- Pilih Angsuran yang Akan Dibayar -->
                         <div class="modal-form-group">
-                            <label><i class="mdi mdi-calendar-clock me-1" style="color: #9a55ff;"></i>Pilih Angsuran <span class="text-danger">*</span></label>
+                            <label><i class="mdi mdi-calendar-clock me-1" style="color: #9a55ff;"></i>Pilih Angsuran <span
+                                    class="text-danger">*</span></label>
                             <select class="modal-form-control" name="installment_id" id="selectCashTempo" required>
                                 <option value="">-- Pilih Angsuran --</option>
                                 @foreach ($tenors as $tempo)
@@ -1182,7 +1196,8 @@
                                         @if ($installment->status != 'paid')
                                             <option value="{{ $installment->id }}" data-tenor="{{ $tempo->id }}"
                                                 data-nominal="{{ $installment->nominal_angsuran }}">
-                                                Angsuran ke-{{ $loop->iteration }} - Jatuh tempo {{ \Carbon\Carbon::parse($installment->jatuh_tempo)->format('d M Y') }}
+                                                Angsuran ke-{{ $loop->iteration }} - Jatuh tempo
+                                                {{ \Carbon\Carbon::parse($installment->jatuh_tempo)->format('d M Y') }}
                                             </option>
                                         @endif
                                     @endforeach
@@ -1192,7 +1207,8 @@
 
                         <!-- Nominal Angsuran - RUPIAH FORMAT -->
                         <div class="modal-form-group">
-                            <label><i class="mdi mdi-cash-multiple me-1" style="color: #9a55ff;"></i>Nominal Angsuran</label>
+                            <label><i class="mdi mdi-cash-multiple me-1" style="color: #9a55ff;"></i>Nominal
+                                Angsuran</label>
                             <input type="text" class="modal-form-control" name="nominal_angsuran_display"
                                 id="nominalAngsuranDisplay" placeholder="Rp 0" readonly>
                             <input type="hidden" name="nominal_angsuran" id="nominalAngsuran" value="0">
@@ -1209,7 +1225,8 @@
 
                         <!-- Upload Bukti Pembayaran - MODERN FILE UPLOAD -->
                         <div class="modal-form-group">
-                            <label><i class="mdi mdi-file-upload-outline me-1" style="color: #9a55ff;"></i>Bukti Pembayaran <span class="text-danger">*</span></label>
+                            <label><i class="mdi mdi-file-upload-outline me-1" style="color: #9a55ff;"></i>Bukti
+                                Pembayaran <span class="text-danger">*</span></label>
                             <div class="modern-file-upload">
                                 <input type="file" id="buktiPembayaran" name="bukti_pembayaran"
                                     accept="image/*,application/pdf" required>
@@ -1443,7 +1460,8 @@
                 const fileSize = e.target.files[0]?.size;
 
                 if (fileName) {
-                    $('#fileName').text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+                    $('#fileName').text(fileName.length > 30 ? fileName.substring(0, 30) + '...' :
+                        fileName);
 
                     if (fileSize) {
                         const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
@@ -1460,12 +1478,13 @@
                 let id = $(this).data('id');
 
                 $('#timelineInstallmentTable').html(
-                    '<tr><td colspan="7" class="text-center py-4"><i class="mdi mdi-loading mdi-spin me-2"></i>Loading...</td></tr>');
+                    '<tr><td colspan="7" class="text-center py-4"><i class="mdi mdi-loading mdi-spin me-2"></i>Loading...</td></tr>'
+                );
 
                 $.get('/cash-tempo/timeline/' + id, function(data) {
                     let statusBadge = '';
 
-                    if (data.status == 'done') {
+                    if (data.status == 'lunas') {
                         statusBadge =
                             '<span class="badge badge-gradient-success"><i class="mdi mdi-check-circle"></i> Lunas</span>';
                     } else {
@@ -1474,12 +1493,17 @@
                     }
 
                     $('#statusTenor').html(statusBadge);
-
                     let jatuhTempoDate = new Date(data.tanggal_mulai_angsuran);
                     let jatuhTempoDay = jatuhTempoDate.getDate();
+                    let typeUnit = data.booking.unit?.type ?? '-';
+                    let jenisUnit = data.booking.unit?.jenis ?? '-';
+                    let bookingcode = data.booking?.booking_code ?? '-';
 
                     $('#infoTenor').html(
-                        'Jatuh tempo setiap tanggal ' + jatuhTempoDay +
+                        'Booking ID ' + bookingcode +
+                        ' | Type Unit ' + typeUnit +
+                        ' | Jenis Unit : ' + jenisUnit +
+                        ' | Jatuh tempo setiap tanggal ' + jatuhTempoDay +
                         ' | Angsuran ' + formatRupiah(data.sisa_pembayaran / data.tenor_bulan) +
                         ' | Denda ' + data.denda_persen + '% per bulan'
                     );
@@ -1500,7 +1524,8 @@
                                 totalDibayar += parseFloat(row.nominal_angsuran || 0);
 
                                 if (row.bukti_pembayaran) {
-                                    let fileUrl = row.bukti_pembayaran ? '/storage/' + row.bukti_pembayaran : '#';
+                                    let fileUrl = row.bukti_pembayaran ? '/storage/' + row
+                                        .bukti_pembayaran : '#';
                                     buktiButton = `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat Bukti">
                                         <i class="mdi mdi-eye"></i>
                                     </a>`;
@@ -1513,7 +1538,8 @@
                                 let sekarang = new Date();
 
                                 if (jatuhTempo < sekarang) {
-                                    let denda = parseFloat(row.nominal_angsuran || 0) * (parseFloat(data.denda_persen || 0) / 100);
+                                    let denda = parseFloat(row.nominal_angsuran || 0) * (
+                                        parseFloat(data.denda_persen || 0) / 100);
                                     dendaText = formatRupiah(denda);
                                     totalDenda += denda;
                                     statusText =
@@ -1540,13 +1566,15 @@
                             `;
                         });
                     } else {
-                        html = '<tr><td colspan="7" class="text-center py-4">Tidak ada data angsuran</td></tr>';
+                        html =
+                            '<tr><td colspan="7" class="text-center py-4">Tidak ada data angsuran</td></tr>';
                     }
 
                     $('#timelineInstallmentTable').html(html);
 
                     // Tampilkan ringkasan
-                    let totalAngsuran = parseFloat(data.sisa_pembayaran || 0) + parseFloat(totalDibayar || 0);
+                    let totalAngsuran = parseFloat(data.sisa_pembayaran || 0) + parseFloat(
+                        totalDibayar || 0);
                     $('#totalAngsuran').text(formatRupiah(totalAngsuran));
                     $('#sudahDibayar').text(formatRupiah(totalDibayar));
                     $('#sisaAngsuran').text(formatRupiah(totalAngsuran - totalDibayar));
@@ -1554,7 +1582,9 @@
 
                     $('#modalTimeline').modal('show');
                 }).fail(function() {
-                    $('#timelineInstallmentTable').html('<tr><td colspan="7" class="text-center py-4 text-danger">Gagal memuat data</td></tr>');
+                    $('#timelineInstallmentTable').html(
+                        '<tr><td colspan="7" class="text-center py-4 text-danger">Gagal memuat data</td></tr>'
+                    );
                 });
             });
 
@@ -1607,7 +1637,8 @@
                 }
 
                 // disable tombol agar tidak double klik
-                $('.btn-save-payment').prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin me-1"></i> Menyimpan...');
+                $('.btn-save-payment').prop('disabled', true).html(
+                    '<i class="mdi mdi-loading mdi-spin me-1"></i> Menyimpan...');
 
                 $.ajax({
                     url: '/cash-tempo/payments',
@@ -1642,7 +1673,8 @@
                     },
 
                     error: function(err) {
-                        $('.btn-save-payment').prop('disabled', false).html('Simpan Pembayaran');
+                        $('.btn-save-payment').prop('disabled', false).html(
+                            'Simpan Pembayaran');
 
                         let errorMessage = 'Terjadi kesalahan, coba lagi.';
                         if (err.responseJSON && err.responseJSON.message) {
@@ -1727,7 +1759,7 @@
                 showLoading('Kembali ke dashboard...');
                 setTimeout(() => {
                     Swal.close();
-                    window.location.href = '{{ route("dashboard") }}';
+                    window.location.href = '{{ route('dashboard') }}';
                 }, 1000);
             });
 

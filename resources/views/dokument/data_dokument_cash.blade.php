@@ -466,24 +466,29 @@
     <script>
         document.querySelectorAll('.btn-detail-dokumen').forEach(btn => {
 
-            btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
 
-                let bookingId = this.dataset.id
+        e.preventDefault()
 
-                document.getElementById('loadingDokumen').style.display = 'block'
-                document.getElementById('contentDokumen').innerHTML = ''
+        let bookingId = this.dataset.booking
 
-                fetch(`/document-legal/detail/${bookingId}`)
-                    .then(res => res.text())
-                    .then(html => {
+        // tampilkan modal
+        $('#modalDokumen').modal('show')
 
-                        document.getElementById('loadingDokumen').style.display = 'none'
-                        document.getElementById('contentDokumen').innerHTML = html
+        document.getElementById('loadingDokumen').style.display = 'block'
+        document.getElementById('contentDokumen').innerHTML = ''
 
-                    })
+        fetch(`/document-legal/detail/${bookingId}`)
+            .then(res => res.text())
+            .then(html => {
+
+                document.getElementById('loadingDokumen').style.display = 'none'
+                document.getElementById('contentDokumen').innerHTML = html
 
             })
 
-        })
+    })
+
+})
     </script>
 @endpush

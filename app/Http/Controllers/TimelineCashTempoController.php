@@ -15,11 +15,12 @@ class TimelineCashTempoController extends Controller
         ->get();
         return view('transaksi.timline_pembayaran', compact('tenors'));
     }
-    public function timeline($id)
+public function timeline($id)
 {
     $cashTempo = CashTempo::with([
         'installments',
-        'booking.customer'
+        'booking.customer',
+        'booking.unit'
     ])->findOrFail($id);
 
     return response()->json($cashTempo);
