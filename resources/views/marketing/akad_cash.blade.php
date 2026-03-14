@@ -940,21 +940,15 @@
                             <h5 class="card-title"><i class="mdi mdi-information me-2 text-primary"></i>Informasi Akad</h5>
 
                             @php
-                                $totalDibayar = $booking->payments->sum('amount');
-                                $sisaPembayaran = $booking->unit->price - $totalDibayar;
-                                $statusLunas = $sisaPembayaran <= 0;
+                                $totalDibayar = $booking->unit->price;
+                               
+                                $statusLunas = $booking->finalPayment->type ?? '-';
                             @endphp
 
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Total Dibayar</span>
                                 <span class="fw-medium">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</span>
                             </div>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Sisa Pembayaran</span>
-                                <span class="fw-medium text-primary">Rp {{ number_format(max($sisaPembayaran, 0), 0, ',', '.') }}</span>
-                            </div>
-
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Status</span>
                                 <span class="fw-medium">

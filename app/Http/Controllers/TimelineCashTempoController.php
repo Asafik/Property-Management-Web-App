@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CashTempo;
 use App\Models\CashTempoInstallment;
 use App\Models\Booking;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class TimelineCashTempoController extends Controller
@@ -59,24 +60,38 @@ public function storePayment(Request $request)
     // Ambil tenor
     $tenor = CashTempo::find($installment->cash_tempo_id);
 
-    // Cek apakah masih ada angsuran yang belum dibayar
+    // cek sisa angsuran
     $unpaid = CashTempoInstallment::where('cash_tempo_id', $tenor->id)
-                ->where('status', '!=', 'paid')
-                ->count();
+        ->where('status', '!=', 'paid')
+        ->count();
 
     if ($unpaid == 0) {
 
-        // Update status tenor
+        // update tenor
         $tenor->status = 'lunas';
         $tenor->save();
 
-        // Update status booking
         $booking = Booking::find($tenor->booking_id);
 
         if ($booking) {
-            $booking->status_cash = 'done';
-            $booking->pelunasan_date = now();
-            $booking->save();
+
+            // INSERT ke table payments
+            Payment::create([
+                'booking_id' => $booking->id,
+                'type' => 'pelunasan',
+                'amount' => $installment->nominal_angsuran,
+                'payment_date' => now(),
+                'status' => 'paid',
+                'method' => 'Transfer Bank',
+                'reference_number' => $installment->bukti_pembayaran,
+                'notes' => 'Pelunasan Cash Tempo'
+            ]);
+
+            // update booking
+            $booking->update([
+                'status_cash' => 'done',
+                'pelunasan_date' => now()
+            ]);
         }
     }
 
