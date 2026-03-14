@@ -601,30 +601,6 @@
             vertical-align: middle;
         }
 
-        /* DataTables Custom Styling */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
-        .dataTables_wrapper {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .table {
-            width: 100% !important;
-            margin-bottom: 0;
-        }
-
-        @media (max-width: 768px) {
-            .dataTables_wrapper .table {
-                width: 100% !important;
-            }
-        }
-
         /* ===== TABEL TIMELINE PEMBAYARAN ===== */
         .table-timeline-pembayaran {
             font-size: 0.85rem;
@@ -680,11 +656,202 @@
             font-weight: 600;
             font-size: 0.8rem;
         }
+
+        /* ===== MODERN FILE UPLOAD STYLING ===== */
+        .modern-file-upload {
+            position: relative;
+            width: 100%;
+        }
+
+        .modern-file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .modern-file-upload .file-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 6px;
+            padding: 1rem 0.6rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 100px;
+        }
+
+        @media (min-width: 576px) {
+            .modern-file-upload .file-label {
+                flex-direction: row;
+                text-align: left;
+                gap: 8px;
+                padding: 0.75rem 1rem;
+                min-height: auto;
+            }
+        }
+
+        .modern-file-upload:hover .file-label {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .modern-file-upload .file-label i {
+            font-size: 1.6rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .modern-file-upload .file-label .file-info {
+            flex: 1;
+            width: 100%;
+        }
+
+        .modern-file-upload .file-label .file-info span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.8rem;
+            word-break: break-word;
+        }
+
+        .modern-file-upload .file-label .file-info small {
+            color: #6c7383;
+            font-size: 0.65rem;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .modern-file-upload .file-label .file-size {
+            font-size: 0.7rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
+
+        @media (min-width: 576px) {
+            .modern-file-upload .file-label .file-size {
+                margin-top: 0;
+            }
+        }
+
+        /* Select2 Custom Styling */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.8rem !important;
+            min-height: 42px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
     </style>
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
         <!-- Header Dashboard -->
@@ -731,7 +898,7 @@
                     </div>
 
                     <div class="card-body">
-                        <!-- FILTER SECTION -->
+                        <!-- FILTER SECTION - UI ONLY -->
                         <div class="filter-card mb-4">
                             <div class="card-body">
                                 <h6 class="card-title mb-3" style="font-size: 1rem;">
@@ -739,84 +906,80 @@
                                     Filter Data Tenor
                                 </h6>
 
-                                <!-- MOBILE VERSION -->
+                                <!-- MOBILE VERSION - UI ONLY -->
                                 <div class="d-block d-md-none">
-                                    <form method="GET" action="#" id="filterFormMobile">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
+                                            Cari Tenor
+                                        </label>
+                                        <input type="text" class="form-control" placeholder="Cari tenor..."
+                                            style="height: 45px;">
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="button"
+                                                class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button"
+                                                class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DESKTOP VERSION - UI ONLY -->
+                                <div class="d-none d-md-block">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-4">
+                                            <label class="form-label">
                                                 <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
                                                 Cari Tenor
                                             </label>
-                                            <input type="text" class="form-control" placeholder="Cari tenor..."
-                                                style="height: 45px;">
+                                            <input type="text" class="form-control" placeholder="Cari tenor...">
                                         </div>
 
-                                        <div class="row g-2">
-                                            <div class="col-6">
-                                                <button type="button"
-                                                    class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-filter me-1"></i> Filter
-                                                </button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button type="button"
-                                                    class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </button>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
+                                                Tampil
+                                            </label>
+                                            <select class="form-control">
+                                                <option>10</option>
+                                                <option>15</option>
+                                                <option>25</option>
+                                                <option>50</option>
+                                            </select>
                                         </div>
-                                    </form>
-                                </div>
 
-                                <!-- DESKTOP VERSION -->
-                                <div class="d-none d-md-block">
-                                    <form method="GET" action="#" id="filterFormDesktop">
-                                        <div class="row g-2 align-items-end">
-                                            <div class="col-md-4">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                    Cari Tenor
-                                                </label>
-                                                <input type="text" class="form-control" placeholder="Cari tenor...">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                                    Tampil
-                                                </label>
-                                                <select class="form-control">
-                                                    <option>10</option>
-                                                    <option>15</option>
-                                                    <option>25</option>
-                                                    <option>50</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label invisible">Filter</label>
-                                                <button type="button"
-                                                    class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-filter me-1"></i>
-                                                </button>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label invisible">Reset</label>
-                                                <button type="button"
-                                                    class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-refresh me-1"></i>
-                                                </button>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible">Filter</label>
+                                            <button type="button"
+                                                class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-filter me-1"></i>
+                                            </button>
                                         </div>
-                                    </form>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible">Reset</label>
+                                            <button type="button"
+                                                class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-refresh me-1"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- TABEL DATA -->
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle" id="tableTenor" data-use-datatables="true">
+                            <table class="table table-hover align-middle" id="tableTenor">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
@@ -915,8 +1078,10 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center text-muted">
-                                                Data tenor belum tersedia
+                                            <td colspan="8" class="text-center py-5">
+                                                <i class="mdi mdi-information-outline" style="font-size: 3rem; color: #ccc;"></i>
+                                                <p class="mt-2 text-muted">Belum ada data tenor</p>
+                                                <p class="text-muted small">Silahkan tambahkan data tenor baru</p>
                                             </td>
                                         </tr>
                                     @endforelse
@@ -924,11 +1089,11 @@
                             </table>
                         </div>
 
-                        <!-- PAGINATION -->
+                        <!-- PAGINATION - UI ONLY (STATIS) -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                                Menampilkan 1 - 7 dari 7 data tenor
+                                Menampilkan 1 - 5 dari 12 data tenor
                             </div>
 
                             <nav>
@@ -940,8 +1105,20 @@
                                     <li class="page-item active">
                                         <span class="page-link">1</span>
                                     </li>
-                                    <li class="page-item disabled">
-                                        <span class="page-link"><i class="mdi mdi-chevron-right"></i></span>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">3</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">4</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">5</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#"><i class="mdi mdi-chevron-right"></i></a>
                                     </li>
                                 </ul>
                             </nav>
@@ -981,39 +1158,44 @@
                         enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Pilih Customer / Unit -->
-                        <select class="modal-form-control" id="selectTenor">
-                            <option value="">-- Pilih Customer / Unit --</option>
-
-                            @foreach ($tenors as $tempo)
-                                <option value="{{ $tempo->id }}">
-                                    {{ $tempo->booking->customer->full_name ?? '-' }}
-                                    - Unit {{ $tempo->booking->unit->unit_name ?? '-' }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <select class="modal-form-control" name="installment_id" id="selectCashTempo" required>
-                            <option value="">-- Pilih Angsuran --</option>
-
-                            @foreach ($tenors as $tempo)
-                                @foreach ($tempo->installments as $installment)
-                                    @if ($installment->status != 'paid')
-                                        <option value="{{ $installment->id }}" data-tenor="{{ $tempo->id }}"
-                                            data-nominal="{{ $installment->nominal_angsuran }}">
-
-                                            Angsuran {{ $loop->iteration }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            @endforeach
-                        </select>
-
-                        <!-- Nominal Angsuran -->
+                        <!-- Pilih Customer / Unit - SELECT2 -->
                         <div class="modal-form-group">
-                            <label><i class="mdi mdi-cash-multiple me-1" style="color: #9a55ff;"></i>Nominal
-                                Angsuran</label>
-                            <input type="text" class="modal-form-control" name="nominal_angsuran"
-                                id="nominalAngsuran" readonly value="-">
+                            <label><i class="mdi mdi-account-multiple me-1" style="color: #9a55ff;"></i>Customer / Unit <span class="text-danger">*</span></label>
+                            <select class="modal-form-control select2-customer" id="selectTenor" name="cash_tempo_id" required style="width: 100%;">
+                                <option value="">-- Pilih Customer / Unit --</option>
+                                @foreach ($tenors as $tempo)
+                                    <option value="{{ $tempo->id }}">
+                                        {{ $tempo->booking->customer->full_name ?? '-' }} - Unit {{ $tempo->booking->unit->unit_name ?? '-' }} (Tenor: {{ $tempo->tenor_bulan }} bulan)
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Ketik untuk mencari customer atau unit</small>
+                        </div>
+
+                        <!-- Pilih Angsuran yang Akan Dibayar -->
+                        <div class="modal-form-group">
+                            <label><i class="mdi mdi-calendar-clock me-1" style="color: #9a55ff;"></i>Pilih Angsuran <span class="text-danger">*</span></label>
+                            <select class="modal-form-control" name="installment_id" id="selectCashTempo" required>
+                                <option value="">-- Pilih Angsuran --</option>
+                                @foreach ($tenors as $tempo)
+                                    @foreach ($tempo->installments as $installment)
+                                        @if ($installment->status != 'paid')
+                                            <option value="{{ $installment->id }}" data-tenor="{{ $tempo->id }}"
+                                                data-nominal="{{ $installment->nominal_angsuran }}">
+                                                Angsuran ke-{{ $loop->iteration }} - Jatuh tempo {{ \Carbon\Carbon::parse($installment->jatuh_tempo)->format('d M Y') }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Nominal Angsuran - RUPIAH FORMAT -->
+                        <div class="modal-form-group">
+                            <label><i class="mdi mdi-cash-multiple me-1" style="color: #9a55ff;"></i>Nominal Angsuran</label>
+                            <input type="text" class="modal-form-control" name="nominal_angsuran_display"
+                                id="nominalAngsuranDisplay" placeholder="Rp 0" readonly>
+                            <input type="hidden" name="nominal_angsuran" id="nominalAngsuran" value="0">
                         </div>
 
                         <!-- Status Pembayaran -->
@@ -1025,13 +1207,21 @@
                             </select>
                         </div>
 
-                        <!-- Upload Bukti Pembayaran -->
+                        <!-- Upload Bukti Pembayaran - MODERN FILE UPLOAD -->
                         <div class="modal-form-group">
-                            <label><i class="mdi mdi-file-upload-outline me-1" style="color: #9a55ff;"></i>Bukti
-                                Pembayaran</label>
-                            <input type="file" class="modal-form-control" name="bukti_pembayaran"
-                                accept="image/*,application/pdf" required>
-                            <small class="text-muted">Upload bukti pembayaran (format: jpg, png, pdf)</small>
+                            <label><i class="mdi mdi-file-upload-outline me-1" style="color: #9a55ff;"></i>Bukti Pembayaran <span class="text-danger">*</span></label>
+                            <div class="modern-file-upload">
+                                <input type="file" id="buktiPembayaran" name="bukti_pembayaran"
+                                    accept="image/*,application/pdf" required>
+                                <div class="file-label">
+                                    <i class="mdi mdi-cloud-upload"></i>
+                                    <div class="file-info">
+                                        <span id="fileName">Upload Bukti Pembayaran</span>
+                                        <small>Format: JPG, PNG, PDF (Max: 2MB)</small>
+                                    </div>
+                                    <span class="file-size" id="fileSize"></span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="modal-footer">
@@ -1048,7 +1238,7 @@
 
     <!-- MODAL TIMELINE PEMBAYARAN - DIUBAH MENJADI TABEL -->
     <div class="modal fade" id="modalTimeline" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
@@ -1150,42 +1340,30 @@
 @endsection
 
 @push('scripts')
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
-            // Inisialisasi DataTables
-            const tableElement = document.getElementById('tableTenor');
-            if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-                if ($.fn.DataTable.isDataTable('#tableTenor')) {
-                    $('#tableTenor').DataTable().destroy();
-                }
-
-                $('#tableTenor').DataTable({
-                    responsive: true,
-                    ordering: true,
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    destroy: true,
-                    language: {
-                        emptyTable: "Data tenor belum tersedia",
-                        zeroRecords: "Data tidak ditemukan",
+            // Inisialisasi Select2 untuk Customer
+            $('.select2-customer').select2({
+                theme: 'bootstrap-5',
+                placeholder: '-- Pilih Customer / Unit --',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#modalCreatePayment'),
+                minimumResultsForSearch: 0,
+                dropdownCssClass: 'select2-limited-items',
+                language: {
+                    noResults: function() {
+                        return "Customer tidak ditemukan";
                     },
-                    columnDefs: [{
-                        orderable: false,
-                        targets: [0, 7]
-                    }],
-                    autoWidth: false,
-                    deferRender: true
-                });
-            }
+                    searching: function() {
+                        return "Mencari...";
+                    }
+                }
+            });
 
             // Fungsi loading
             function showLoading(message = 'Mohon tunggu sebentar') {
@@ -1207,6 +1385,7 @@
 
             // Format Tanggal
             function formatTanggal(tanggal) {
+                if (!tanggal) return '-';
                 let d = new Date(tanggal);
                 return d.toLocaleDateString('id-ID', {
                     day: 'numeric',
@@ -1215,11 +1394,65 @@
                 });
             }
 
-            // Select Cash Tempo
+            // Format Rupiah untuk input
+            function formatRupiahInput(angka) {
+                if (!angka) return '';
+                return Number(angka).toLocaleString('id-ID');
+            }
+
+            // Filter angsuran berdasarkan customer / unit
+            $('#selectTenor').on('change', function() {
+                let tenorId = $(this).val();
+
+                $('#selectCashTempo option').each(function() {
+                    let optionTenor = $(this).data('tenor');
+
+                    if (!optionTenor) {
+                        $(this).hide();
+                        return;
+                    }
+
+                    if (optionTenor == tenorId) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                $('#selectCashTempo').val('').trigger('change');
+                $('#nominalAngsuranDisplay').val('');
+                $('#nominalAngsuran').val(0);
+            });
+
+            // Auto isi nominal saat pilih angsuran
             $('#selectCashTempo').on('change', function() {
-                let selected = $(this).find(':selected');
-                let nominal = selected.data('nominal') || 0;
-                $('#nominalAngsuran').val(nominal.toLocaleString('id-ID'));
+                let nominal = $(this).find(':selected').data('nominal') || 0;
+
+                if (nominal) {
+                    $('#nominalAngsuranDisplay').val('Rp ' + formatRupiahInput(nominal));
+                    $('#nominalAngsuran').val(nominal);
+                } else {
+                    $('#nominalAngsuranDisplay').val('');
+                    $('#nominalAngsuran').val(0);
+                }
+            });
+
+            // Modern file upload preview
+            $('#buktiPembayaran').on('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                const fileSize = e.target.files[0]?.size;
+
+                if (fileName) {
+                    $('#fileName').text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+
+                    if (fileSize) {
+                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                        $('#fileSize').text(sizeInMB + ' MB').show();
+                    }
+                } else {
+                    $('#fileName').text('Upload Bukti Pembayaran');
+                    $('#fileSize').text('').hide();
+                }
             });
 
             // Detail Tenor - Tampilkan Timeline dalam bentuk TABEL
@@ -1227,7 +1460,7 @@
                 let id = $(this).data('id');
 
                 $('#timelineInstallmentTable').html(
-                    '<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+                    '<tr><td colspan="7" class="text-center py-4"><i class="mdi mdi-loading mdi-spin me-2"></i>Loading...</td></tr>');
 
                 $.get('/cash-tempo/timeline/' + id, function(data) {
                     let statusBadge = '';
@@ -1242,9 +1475,11 @@
 
                     $('#statusTenor').html(statusBadge);
 
+                    let jatuhTempoDate = new Date(data.tanggal_mulai_angsuran);
+                    let jatuhTempoDay = jatuhTempoDate.getDate();
+
                     $('#infoTenor').html(
-                        'Jatuh tempo setiap tanggal ' +
-                        new Date(data.tanggal_mulai_angsuran).getDate() +
+                        'Jatuh tempo setiap tanggal ' + jatuhTempoDay +
                         ' | Angsuran ' + formatRupiah(data.sisa_pembayaran / data.tenor_bulan) +
                         ' | Denda ' + data.denda_persen + '% per bulan'
                     );
@@ -1253,74 +1488,73 @@
                     let totalDibayar = 0;
                     let totalDenda = 0;
 
-                    data.installments.forEach(function(row, index) {
-                        let statusClass = '';
-                        let statusText = '';
-                        let dendaText = '';
+                    if (data.installments && data.installments.length > 0) {
+                        data.installments.forEach(function(row, index) {
+                            let statusText = '';
+                            let dendaText = '-';
+                            let buktiButton = '-';
 
-                        if (row.status == 'paid') {
-                            statusClass = 'paid';
-                            statusText =
-                                '<span class="status-badge paid"><i class="mdi mdi-check-circle"></i> Lunas</span>';
-                            dendaText = '-';
-                            totalDibayar += row.nominal_angsuran;
-                        } else {
-                            // Cek apakah sudah melewati jatuh tempo
-                            let jatuhTempo = new Date(row.jatuh_tempo);
-                            let sekarang = new Date();
-
-                            if (jatuhTempo < sekarang) {
-                                statusClass = 'late';
-                                let denda = row.nominal_angsuran * (data.denda_persen /
-                                    100);
-                                dendaText = formatRupiah(denda);
-                                totalDenda += denda;
+                            if (row.status == 'paid') {
                                 statusText =
-                                    '<span class="status-badge late"><i class="mdi mdi-alert"></i> Terlambat</span>';
-                            } else {
-                                statusClass = 'unpaid';
-                                statusText =
-                                    '<span class="status-badge unpaid"><i class="mdi mdi-clock-outline"></i> Belum Bayar</span>';
-                                dendaText = '-';
-                            }
-                        }
+                                    '<span class="status-badge paid"><i class="mdi mdi-check-circle"></i> Lunas</span>';
+                                totalDibayar += parseFloat(row.nominal_angsuran || 0);
 
-                        let namaFile = row.bukti_pembayaran ? row.bukti_pembayaran.split(
-                            '/').pop() : '-';
-                        let fileUrl = row.bukti_pembayaran ? '/storage/' + row
-                            .bukti_pembayaran : '#';
-
-                        html += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${formatTanggal(row.jatuh_tempo)}</td>
-                            <td class="fw-bold">${formatRupiah(row.nominal_angsuran)}</td>
-                            <td>${statusText}</td>
-                            <td class="${row.status != 'paid' && new Date(row.jatuh_tempo) < new Date() ? 'denda-badge' : ''}">
-                                ${dendaText}
-                            </td>
-                           <td class="text-center">
-                                ${row.bukti_pembayaran 
-                                    ? `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat Bukti">
-                                                                        <i class="mdi mdi-eye"></i>
-                                                                </a>`
-                                    : '-'
+                                if (row.bukti_pembayaran) {
+                                    let fileUrl = row.bukti_pembayaran ? '/storage/' + row.bukti_pembayaran : '#';
+                                    buktiButton = `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat Bukti">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>`;
+                                } else {
+                                    buktiButton = '-';
                                 }
-                            </td>
-                            <td class="fw-bold">${row.status == 'paid' ? formatRupiah(row.nominal_angsuran) : '-'}</td>
-                        </tr>
-                        `;
-                    });
+                            } else {
+                                // Cek apakah sudah melewati jatuh tempo
+                                let jatuhTempo = new Date(row.jatuh_tempo);
+                                let sekarang = new Date();
+
+                                if (jatuhTempo < sekarang) {
+                                    let denda = parseFloat(row.nominal_angsuran || 0) * (parseFloat(data.denda_persen || 0) / 100);
+                                    dendaText = formatRupiah(denda);
+                                    totalDenda += denda;
+                                    statusText =
+                                        '<span class="status-badge late"><i class="mdi mdi-alert"></i> Terlambat</span>';
+                                } else {
+                                    statusText =
+                                        '<span class="status-badge unpaid"><i class="mdi mdi-clock-outline"></i> Belum Bayar</span>';
+                                }
+                                buktiButton = '-';
+                            }
+
+                            html += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${formatTanggal(row.jatuh_tempo)}</td>
+                                <td class="fw-bold">${formatRupiah(row.nominal_angsuran)}</td>
+                                <td>${statusText}</td>
+                                <td class="${row.status != 'paid' && new Date(row.jatuh_tempo) < new Date() ? 'denda-badge' : ''}">
+                                    ${dendaText}
+                                </td>
+                                <td class="text-center">${buktiButton}</td>
+                                <td class="fw-bold">${row.status == 'paid' ? formatRupiah(row.nominal_angsuran) : '-'}</td>
+                            </tr>
+                            `;
+                        });
+                    } else {
+                        html = '<tr><td colspan="7" class="text-center py-4">Tidak ada data angsuran</td></tr>';
+                    }
 
                     $('#timelineInstallmentTable').html(html);
 
                     // Tampilkan ringkasan
-                    $('#totalAngsuran').text(formatRupiah(data.sisa_pembayaran));
+                    let totalAngsuran = parseFloat(data.sisa_pembayaran || 0) + parseFloat(totalDibayar || 0);
+                    $('#totalAngsuran').text(formatRupiah(totalAngsuran));
                     $('#sudahDibayar').text(formatRupiah(totalDibayar));
-                    $('#sisaAngsuran').text(formatRupiah(data.sisa_pembayaran - totalDibayar));
+                    $('#sisaAngsuran').text(formatRupiah(totalAngsuran - totalDibayar));
                     $('#ringkasanPembayaran').show();
 
                     $('#modalTimeline').modal('show');
+                }).fail(function() {
+                    $('#timelineInstallmentTable').html('<tr><td colspan="7" class="text-center py-4 text-danger">Gagal memuat data</td></tr>');
                 });
             });
 
@@ -1339,44 +1573,12 @@
                 $('#modalEditTenor').modal('show');
             });
 
-            // Submit Form Create Payment
             // CSRF Token Laravel
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
-            // Filter angsuran berdasarkan customer / unit
-            $('#selectTenor').on('change', function() {
-
-                let tenorId = $(this).val();
-
-                $('#selectCashTempo option').each(function() {
-
-                    let optionTenor = $(this).data('tenor');
-
-                    if (!optionTenor) return;
-
-                    if (optionTenor == tenorId) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-
-                });
-
-                $('#selectCashTempo').val('');
-            });
-            // Auto isi nominal saat pilih angsuran
-            $('#selectCashTempo').on('change', function() {
-
-                let nominal = $(this).find(':selected').data('nominal') || '-';
-
-                $('#nominalAngsuran').val(nominal);
-
-            });
-
 
             // Submit Form Create Payment
             $('#formCreatePayment').on('submit', function(e) {
@@ -1385,8 +1587,27 @@
                 let form = this;
                 let formData = new FormData(form);
 
+                // Validasi sederhana
+                if (!$('#selectTenor').val()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan',
+                        text: 'Pilih customer / unit terlebih dahulu'
+                    });
+                    return;
+                }
+
+                if (!$('#selectCashTempo').val()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan',
+                        text: 'Pilih angsuran yang akan dibayar'
+                    });
+                    return;
+                }
+
                 // disable tombol agar tidak double klik
-                $('.btn-save-payment').prop('disabled', true);
+                $('.btn-save-payment').prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin me-1"></i> Menyimpan...');
 
                 $.ajax({
                     url: '/cash-tempo/payments',
@@ -1396,7 +1617,6 @@
                     contentType: false,
 
                     success: function(response) {
-
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
@@ -1405,9 +1625,13 @@
                             timerProgressBar: true,
                             showConfirmButton: false
                         }).then(() => {
-
                             // reset form
                             $('#formCreatePayment')[0].reset();
+                            $('#fileName').text('Upload Bukti Pembayaran');
+                            $('#fileSize').text('').hide();
+                            $('#nominalAngsuranDisplay').val('');
+                            $('#nominalAngsuran').val(0);
+                            $('.select2-customer').val('').trigger('change');
 
                             // tutup modal
                             $('#modalCreatePayment').modal('hide');
@@ -1415,25 +1639,27 @@
                             // reload halaman
                             location.reload();
                         });
-
                     },
 
                     error: function(err) {
+                        $('.btn-save-payment').prop('disabled', false).html('Simpan Pembayaran');
 
-                        $('.btn-save-payment').prop('disabled', false);
+                        let errorMessage = 'Terjadi kesalahan, coba lagi.';
+                        if (err.responseJSON && err.responseJSON.message) {
+                            errorMessage = err.responseJSON.message;
+                        }
 
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Terjadi kesalahan, coba lagi.'
+                            text: errorMessage
                         });
-
                     }
                 });
             });
 
-            // Filter
-            $('.btn-gradient-primary.w-100, .btn-filter').on('click', function(e) {
+            // Filter button - demo only
+            $('.btn-gradient-primary.w-100').on('click', function(e) {
                 e.preventDefault();
                 showLoading('Menyaring data...');
                 setTimeout(() => {
@@ -1448,8 +1674,8 @@
                 }, 1000);
             });
 
-            // Reset
-            $('.btn-gradient-secondary.w-100, .btn-reset').on('click', function(e) {
+            // Reset button - demo only
+            $('.btn-gradient-secondary.w-100').on('click', function(e) {
                 e.preventDefault();
                 showLoading('Mereset filter...');
                 setTimeout(() => {
@@ -1464,7 +1690,7 @@
                 }, 1000);
             });
 
-            // Delete
+            // Delete button - demo only
             $('.btn-delete').on('click', function(e) {
                 e.preventDefault();
                 Swal.fire({
@@ -1501,17 +1727,19 @@
                 showLoading('Kembali ke dashboard...');
                 setTimeout(() => {
                     Swal.close();
-                    window.location.href = '#';
+                    window.location.href = '{{ route("dashboard") }}';
                 }, 1000);
             });
 
-            // Format Rupiah untuk input angsuran
-            $('input[placeholder*="Rp"]').on('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                if (value) {
-                    value = parseInt(value).toLocaleString('id-ID');
-                    this.value = value;
-                }
+            // Reset modal ketika ditutup
+            $('#modalCreatePayment').on('hidden.bs.modal', function() {
+                $('#formCreatePayment')[0].reset();
+                $('#fileName').text('Upload Bukti Pembayaran');
+                $('#fileSize').text('').hide();
+                $('#nominalAngsuranDisplay').val('');
+                $('#nominalAngsuran').val(0);
+                $('.select2-customer').val('').trigger('change');
+                $('.btn-save-payment').prop('disabled', false).html('Simpan Pembayaran');
             });
         });
     </script>
