@@ -549,6 +549,10 @@
                                         {{ $application->unit->type ?? '-' }}</span>
                                 </div>
                                 <div>
+                                    <small class="text-muted d-block">Jenis Unit</small>
+                                    <span class="fw-medium">{{$application->unit->jenis ?? '-'}}</span>
+                                </div>
+                                <div>
                                     <small class="text-muted d-block">Blok/No</small>
                                     <span class="fw-medium">{{ $application->unit->unit_code ?? '-' }}</span>
                                 </div>
@@ -809,7 +813,7 @@
                                         <span class="survey-input-group-text">m²</span>
                                     </div>
                                     <input type="text" class="survey-form-control" name="luas_tanah"
-                                        value="{{ $application->luas_tanah ?? '' }}">
+                                        value="{{ $application->unit->area ?? '' }}">
                                 </div>
                             </div>
                         </div>
@@ -821,7 +825,7 @@
                                         <span class="survey-input-group-text">m²</span>
                                     </div>
                                     <input type="text" class="survey-form-control" name="luas_bangunan"
-                                        value="{{ $application->luas_bangunan ?? '' }}">
+                                        value="{{ $application->unit->building_area ?? '' }}">
                                 </div>
                             </div>
                         </div>
@@ -1024,6 +1028,18 @@
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil',
+    text: '{{ session('success') }}',
+    confirmButtonText: 'OK'
+});
+</script>
+@endif
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Handler untuk file upload - menampilkan nama file
@@ -1052,3 +1068,4 @@
         });
     </script>
 @endpush
+

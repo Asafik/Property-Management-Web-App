@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -297,7 +298,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive */
@@ -336,181 +339,181 @@
         }
     </style>
 </head>
+
 <body>
 
-<!-- Background Pattern Sederhana -->
-<div class="bg-pattern"></div>
+    <!-- Background Pattern Sederhana -->
+    <div class="bg-pattern"></div>
 
-<div class="container py-4 py-md-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-11 col-xl-10">
-            <!-- Card Utama -->
-            <div class="login-card">
-                <div class="row g-0">
+    <div class="container py-4 py-md-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-11 col-xl-10">
+                <!-- Card Utama -->
+                <div class="login-card">
+                    <div class="row g-0">
 
-                    <!-- KIRI: Gradient Solid -->
-                    <div class="col-lg-5 login-left">
-                        <div class="illustration">
-                            <i class="mdi mdi-home-city illustration-icon"></i>
-                        </div>
-
-                        <h3 class="fw-bold mb-3">Welcome Back!</h3>
-                        <p class="mb-4 px-3">
-                            Kelola properti Anda dengan sistem terintegrasi
-                        </p>
-
-                        <ul class="feature-list">
-                            <li>
-                                <i class="mdi mdi-check-circle"></i>
-                                <span>Manajemen Tanah & Properti</span>
-                            </li>
-                            <li>
-                                <i class="mdi mdi-check-circle"></i>
-                                <span>Pembuatan Kavling Otomatis</span>
-                            </li>
-                            <li>
-                                <i class="mdi mdi-check-circle"></i>
-                                <span>Verifikasi Dokumen Legal</span>
-                            </li>
-                            <li>
-                                <i class="mdi mdi-check-circle"></i>
-                                <span>Progress Pembangunan</span>
-                            </li>
-                            <li>
-                                <i class="mdi mdi-check-circle"></i>
-                                <span>Laporan RAB & Keuangan</span>
-                            </li>
-                        </ul>
-
-                        <div class="mt-4 text-white-50 small">
-                            <i class="mdi mdi-shield-check me-1"></i>
-                            Enterprise Grade Security
-                        </div>
-                    </div>
-
-                    <!-- KANAN: Form Login -->
-                    <div class="col-lg-7 login-right position-relative">
-
-                        <div class="brand-badge">
-                            <i class="mdi mdi-crown"></i>
-                            Properti Management
-                        </div>
-
-                        <!-- Header Form -->
-                        <div class="text-center mb-5">
-                            <h2 class="fw-bold mb-2" style="color: #1e293b;">Masuk ke Akun</h2>
-                            <p class="text-muted">Silakan login untuk mengakses dashboard</p>
-                        </div>
-
-                        
-                            @if(session('error'))
-
-                            <div class="alert-modern" role="alert">
-                                <i class="mdi mdi-alert-circle"></i>
-                                <div>{{ session('error') }}</div>
+                        <!-- KIRI: Gradient Solid -->
+                        <div class="col-lg-5 login-left">
+                            <div class="illustration">
+                                <i class="mdi mdi-home-city illustration-icon"></i>
                             </div>
+
+                            <h3 class="fw-bold mb-3">Welcome Back!</h3>
+                            <p class="mb-4 px-3">
+                                Kelola properti Anda dengan sistem terintegrasi
+                            </p>
+
+                            <ul class="feature-list">
+                                <li>
+                                    <i class="mdi mdi-check-circle"></i>
+                                    <span>Manajemen Tanah & Properti</span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-check-circle"></i>
+                                    <span>Pembuatan Kavling Otomatis</span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-check-circle"></i>
+                                    <span>Verifikasi Dokumen Legal</span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-check-circle"></i>
+                                    <span>Progress Pembangunan</span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-check-circle"></i>
+                                    <span>Laporan RAB & Keuangan</span>
+                                </li>
+                            </ul>
+
+                            <div class="mt-4 text-white-50 small">
+                                <i class="mdi mdi-shield-check me-1"></i>
+                                Enterprise Grade Security
+                            </div>
+                        </div>
+
+                        <!-- KANAN: Form Login -->
+                        <div class="col-lg-7 login-right position-relative">
+
+                            <div class="brand-badge">
+                                <i class="mdi mdi-crown"></i>
+                                Properti Management
+                            </div>
+
+                            <!-- Header Form -->
+                            <div class="text-center mb-5">
+                                <h2 class="fw-bold mb-2" style="color: #1e293b;">Masuk ke Akun</h2>
+                                <p class="text-muted">Silakan login untuk mengakses dashboard</p>
+                            </div>
+
+
+                            @if (session('error'))
+                                <div class="alert-modern" role="alert">
+                                    <i class="mdi mdi-alert-circle"></i>
+                                    <div>{{ session('error') }}</div>
+                                </div>
                             @endif
-                        <!-- Form Login -->
-                        <form action="{{ route('login.proses') }}" method="POST">
-                            @csrf
+                            <!-- Form Login -->
+                            <form action="{{ route('login.proses') }}" method="POST">
+                                @csrf
 
-                            <!-- USERNAME -->
-                            <div class="mb-4">
-                                <label class="form-label">Username</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="mdi mdi-account"></i>
-                                    </span>
-                                    <input type="text" name="username" class="form-control"
-                                           placeholder="Masukkan username Anda"
-                                           value="{{ old('username') }}"
-                                           required>
+                                <!-- USERNAME -->
+                                <div class="mb-4">
+                                    <label class="form-label">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="mdi mdi-account"></i>
+                                        </span>
+                                        <input type="text" name="username" class="form-control"
+                                            placeholder="Masukkan username Anda" value="{{ old('username') }}" required>
+                                    </div>
+                                </div>
+
+                                <!-- PASSWORD dengan toggle -->
+                                <div class="mb-4">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="mdi mdi-lock"></i>
+                                        </span>
+                                        <input type="password" name="password" class="form-control" id="password"
+                                            placeholder="Masukkan password Anda" required>
+                                        <span class="input-group-text password-toggle" onclick="togglePassword()">
+                                            <i class="mdi mdi-eye" id="password-icon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Remember & Forgot -->
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                                        <label class="form-check-label" for="remember">
+                                            Ingat saya
+                                        </label>
+                                    </div>
+                                    <a href="#" class="forgot-link">
+                                        Lupa password?
+                                    </a>
+                                </div>
+
+                                <!-- Button Login -->
+                                <button type="submit" class="btn-login" id="loginBtn">
+                                    <i class="mdi mdi-login"></i>
+                                    Login ke Dashboard
+                                </button>
+
+
+
+                            </form>
+
+                            <!-- Footer -->
+                            <div class="text-center mt-5">
+
+                                <div class="d-flex justify-content-center gap-3">
+                                    <span class="text-muted small">© {{ now()->year }} Properti Management</span>
+                                    <span class="text-muted small">|</span>
+                                    <a href="https://aleena.co.id" class="text-muted small text-decoration-none">
+                                        PT Aleena Mandiri
+                                    </a>
                                 </div>
                             </div>
 
-                            <!-- PASSWORD dengan toggle -->
-                            <div class="mb-4">
-                                <label class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="mdi mdi-lock"></i>
-                                    </span>
-                                    <input type="password" name="password" class="form-control" id="password"
-                                           placeholder="Masukkan password Anda"
-                                           required>
-                                    <span class="input-group-text password-toggle" onclick="togglePassword()">
-                                        <i class="mdi mdi-eye" id="password-icon"></i>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Remember & Forgot -->
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                                    <label class="form-check-label" for="remember">
-                                        Ingat saya
-                                    </label>
-                                </div>
-                                <a href="#" class="forgot-link">
-                                    Lupa password?
-                                </a>
-                            </div>
-
-                            <!-- Button Login -->
-                            <button type="submit" class="btn-login" id="loginBtn">
-                                <i class="mdi mdi-login"></i>
-                                Login ke Dashboard
-                            </button>
-
-
-
-                        </form>
-
-                        <!-- Footer -->
-                        <div class="text-center mt-5">
-
-                            <div class="d-flex justify-content-center gap-3">
-                                <span class="text-muted small">© {{ now()->year }} Properti Management</span>
-                                <span class="text-muted small">|</span>
-                                <span class="text-muted small">All rights reserved</span>
-                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    // Toggle Password Visibility
-    function togglePassword() {
-        const passwordField = document.getElementById('password');
-        const passwordIcon = document.getElementById('password-icon');
+    <script>
+        // Toggle Password Visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const passwordIcon = document.getElementById('password-icon');
 
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            passwordIcon.classList.remove('mdi-eye');
-            passwordIcon.classList.add('mdi-eye-off');
-        } else {
-            passwordField.type = 'password';
-            passwordIcon.classList.remove('mdi-eye-off');
-            passwordIcon.classList.add('mdi-eye');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordIcon.classList.remove('mdi-eye');
+                passwordIcon.classList.add('mdi-eye-off');
+            } else {
+                passwordField.type = 'password';
+                passwordIcon.classList.remove('mdi-eye-off');
+                passwordIcon.classList.add('mdi-eye');
+            }
         }
-    }
 
-    // Loading animation on form submit
-    document.querySelector('form')?.addEventListener('submit', function(e) {
-        const btn = document.getElementById('loginBtn');
-        btn.classList.add('btn-loading');
-        btn.innerHTML = '<i class="mdi mdi-login"></i> Memproses...';
-    });
-</script>
+        // Loading animation on form submit
+        document.querySelector('form')?.addEventListener('submit', function(e) {
+            const btn = document.getElementById('loginBtn');
+            btn.classList.add('btn-loading');
+            btn.innerHTML = '<i class="mdi mdi-login"></i> Memproses...';
+        });
+    </script>
 
 </body>
+
 </html>

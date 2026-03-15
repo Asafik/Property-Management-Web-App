@@ -189,6 +189,12 @@ public function survey($id)
     $application = KprApplication::with(['customer', 'unit.agency', 'bank'])->findOrFail($id);
     return view('marketing.akad', compact('application'));
 }
+public function analisaKPRKomersil()
+{
+    $applications = KprApplication::with(['customer','unit','bank'])
+                    ->where('status','analisa')
+                    ->get();
 
-
+    return view('marketing.analisa_kpr_komersil', compact('applications'));
+}
 }

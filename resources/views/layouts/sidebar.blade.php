@@ -165,6 +165,9 @@
                      <li class="nav-item">
                         <a class="nav-link" href="{{ route('cash-tempo.timeline') }}">User Cash Tempo</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('analisa.kpr.komersil')}}">User KPR Komersil</a>
+                    </li>
 
                 </ul>
             </div>

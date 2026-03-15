@@ -358,6 +358,7 @@ Route::get('/customer-kpr-rijected', [CustomerKPRRijectedController::class, 'ind
 Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
 
 
+Route::get('/customer-kpr-komersil/', [TransaksiKPRController::class, 'analisaKPRKomersil'])->name('analisa.kpr.komersil');
 // Route::get('/dashboard-dedline-rab', function () {
 //     return view('properti.dedline_rab');
 

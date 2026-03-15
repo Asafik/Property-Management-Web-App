@@ -982,6 +982,16 @@
 @endsection
 
 @push('scripts')
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil',
+    text: '{{ session('success') }}',
+    confirmButtonText: 'OK'
+});
+</script>
+@endif
 <!-- JS -->
 <script>
 $(document).ready(function() {
