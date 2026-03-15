@@ -23,10 +23,12 @@ class LoginController extends Controller
             'username' => $request->username,
             'password' => $request->password
         ];
-
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard');
+
+            return redirect()
+                ->route('dashboard')
+                ->with('success', 'Login berhasil');
         }
 
         return back()->with('error', 'Username atau password salah');
