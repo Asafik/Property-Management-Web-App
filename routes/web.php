@@ -455,12 +455,6 @@ Route::get('/cash-tempo/timeline/{id}', [TimelineCashTempoController::class,'tim
 Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
 Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
 
-Route::get('/akad-kpr-komersil', function () {
-    return view('transaksi.akad_kpr_komersil');
-});
-
-
-
 });
 
 

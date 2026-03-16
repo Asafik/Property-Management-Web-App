@@ -90,7 +90,7 @@ class SurveyController extends Controller
             }
 
             // Update status survey selesai
-            $kpr->status = 'analisa';
+            $kpr->status = 'survey';
             $kpr->save();
 
             DB::commit();

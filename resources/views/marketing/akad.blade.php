@@ -221,10 +221,11 @@
                         Pilih status persetujuan dari bank. Keputusan ini akan menentukan langkah selanjutnya.
                     </div>
 
-                    <form action="{{ route('kpr.verifikasi.store', $application->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('kpr.verifikasi.store', $application->booking_id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     <!-- Input status global -->
     <input type="hidden" name="status" id="inputStatus" value="">
+    
 
     <!-- Pilihan Status Persetujuan -->
     <div class="row mb-4">
