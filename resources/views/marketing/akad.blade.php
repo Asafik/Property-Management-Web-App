@@ -384,7 +384,43 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 col-lg-4">
+    <div class="card h-100">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="mdi mdi-home-key me-2 text-success"></i>Serah Terima Unit
+            </h5>
 
+            @if ($application->status === 'approved')
+                
+                <div class="text-center py-3">
+                    <i class="mdi mdi-check-circle text-success" style="font-size: 48px;"></i>
+                    <p class="mt-3 mb-2 fw-medium">
+                        Akad telah disetujui
+                    </p>
+                    <p class="text-muted small">
+                        Unit siap untuk proses serah terima
+                    </p>
+                </div>
+
+<a href="{{ route('booking.serah-terima', $application->booking->id) }}"
+   class="btn btn-success w-100">
+   <i class="mdi mdi-key me-1"></i> Proses Serah Terima
+</a>
+
+            @else
+
+                <div class="text-center py-4">
+                    <i class="mdi mdi-clock-outline text-warning" style="font-size: 48px;"></i>
+                    <p class="mt-3 mb-0 text-muted">
+                        Menunggu persetujuan akad
+                    </p>
+                </div>
+
+            @endif
+        </div>
+    </div>
+</div>
         {{-- <!-- Kolom Kanan: Info & Ringkasan -->
         <div class="col-12 col-lg-4">
             <div class="card h-100">
@@ -481,6 +517,7 @@
                 </div>
             </div>
         </div> --}}
+        
     </div>
 @endsection
 
