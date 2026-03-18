@@ -1,519 +1,416 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - Properti Management</title>
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Material Design Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
-
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Background Pattern Sederhana */
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image:
-                radial-gradient(circle at 30% 40%, rgba(154, 85, 255, 0.03) 0%, transparent 30%),
-                radial-gradient(circle at 70% 60%, rgba(102, 126, 234, 0.03) 0%, transparent 40%);
-        }
-
-        /* Card Utama */
-        .login-card {
-            background: white;
-            border: 1px solid rgba(154, 85, 255, 0.1);
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
-            border-radius: 32px;
-            overflow: hidden;
-        }
-
-        /* Left Panel - Gradient Solid */
-        .login-left {
-            background: linear-gradient(145deg, #667eea, #9a55ff, #da8cff);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 3rem 2rem;
-            min-height: 700px;
-        }
-
-        /* Illustration */
-        .illustration-icon {
-            font-size: 120px;
-            color: rgba(255, 255, 255, 0.2);
-            margin-bottom: 1.5rem;
-        }
-
-        /* Feature List */
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 2rem 0 0;
-            text-align: left;
-            width: 100%;
-            max-width: 320px;
-        }
-
-        .feature-list li {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.75rem 1rem;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .feature-list li i {
-            font-size: 24px;
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 6px;
-            border-radius: 12px;
-        }
-
-        /* Right Panel */
-        .login-right {
-            background: white;
-            padding: 3.5rem 3rem;
-            min-height: 700px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .brand-badge {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            background: #f8f4ff;
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            color: #9a55ff;
-            border: 1px solid rgba(154, 85, 255, 0.2);
-            font-weight: 600;
-        }
-
-        /* Form Styling - Clean & Simple */
-        .form-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #9a55ff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .input-group {
-            border-radius: 16px;
-            border: 2px solid transparent;
-            background: #f8fafd;
-        }
-
-        .input-group:focus-within {
-            border-color: #9a55ff;
-            background: white;
-        }
-
-        .input-group-text {
-            border: none;
-            background: transparent;
-            padding-left: 1.2rem;
-        }
-
-        .input-group-text:first-child {
-            border-radius: 16px 0 0 16px !important;
-        }
-
-        .password-toggle {
-            border-radius: 0 16px 16px 0 !important;
-            cursor: pointer;
-            background: transparent !important;
-        }
-
-        .password-toggle i {
-            font-size: 1.3rem;
-            color: #94a3b8;
-            transition: color 0.2s ease;
-        }
-
-        .password-toggle:hover i {
-            color: #9a55ff;
-        }
-
-        .input-group-text i {
-            font-size: 1.3rem;
-            color: #9a55ff;
-        }
-
-        .form-control {
-            border: none;
-            background: transparent;
-            padding: 0.9rem 1rem 0.9rem 0.5rem;
-            font-size: 0.95rem;
-            color: #1e293b;
-        }
-
-        .form-control:focus {
-            background: transparent;
-            box-shadow: none;
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-
-        /* Checkbox */
-        .form-check-input {
-            width: 18px;
-            height: 18px;
-            border-radius: 5px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .form-check-input:checked {
-            background-color: #9a55ff;
-            border-color: #9a55ff;
-        }
-
-        .form-check-label {
-            color: #475569;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        /* Forgot Password */
-        .forgot-link {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .forgot-link:hover {
-            color: #9a55ff;
-        }
-
-        /* Login Button */
-        .btn-login {
-            background: linear-gradient(135deg, #667eea, #9a55ff);
-            border: none;
-            border-radius: 16px;
-            padding: 1rem;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 8px 16px -4px rgba(102, 126, 234, 0.2);
-        }
-
-        .btn-login:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-            box-shadow: 0 12px 20px -8px rgba(102, 126, 234, 0.3);
-        }
-
-        /* Alert */
-        .alert-modern {
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-            border-radius: 16px;
-            padding: 1rem 1.2rem;
-            margin-top: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .alert-modern i {
-            color: #ef4444;
-            font-size: 1.3rem;
-        }
-
-        /* Footer */
-        .footer-link {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-link:hover {
-            color: #9a55ff;
-        }
-
-        /* Loading State */
-        .btn-loading {
-            pointer-events: none;
-            opacity: 0.8;
-        }
-
-        .btn-loading::after {
-            content: '';
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            margin-left: 8px;
-            border: 2px solid white;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 991px) {
-            .login-left {
-                min-height: auto;
-                padding: 2rem;
-            }
-
-            .login-right {
-                min-height: auto;
-                padding: 2.5rem 2rem;
-            }
-
-            .illustration-icon {
-                font-size: 80px;
-            }
-
-            .brand-badge {
-                position: relative;
-                top: auto;
-                right: auto;
-                display: inline-block;
-                margin-bottom: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .login-right {
-                padding: 2rem 1.5rem;
-            }
-
-            .feature-list {
-                max-width: 100%;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- Background Pattern Sederhana -->
-    <div class="bg-pattern"></div>
-
-    <div class="container py-4 py-md-5">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-11 col-xl-10">
-                <!-- Card Utama -->
-                <div class="login-card">
-                    <div class="row g-0">
-
-                        <!-- KIRI: Gradient Solid -->
-                        <div class="col-lg-5 login-left">
-                            <div class="illustration">
-                                <i class="mdi mdi-home-city illustration-icon"></i>
-                            </div>
-
-                            <h3 class="fw-bold mb-3">Welcome Back!</h3>
-                            <p class="mb-4 px-3">
-                                Kelola properti Anda dengan sistem terintegrasi
-                            </p>
-
-                            <ul class="feature-list">
-                                <li>
-                                    <i class="mdi mdi-check-circle"></i>
-                                    <span>Manajemen Tanah & Properti</span>
-                                </li>
-                                <li>
-                                    <i class="mdi mdi-check-circle"></i>
-                                    <span>Pembuatan Kavling Otomatis</span>
-                                </li>
-                                <li>
-                                    <i class="mdi mdi-check-circle"></i>
-                                    <span>Verifikasi Dokumen Legal</span>
-                                </li>
-                                <li>
-                                    <i class="mdi mdi-check-circle"></i>
-                                    <span>Progress Pembangunan</span>
-                                </li>
-                                <li>
-                                    <i class="mdi mdi-check-circle"></i>
-                                    <span>Laporan RAB & Keuangan</span>
-                                </li>
-                            </ul>
-
-                            <div class="mt-4 text-white-50 small">
-                                <i class="mdi mdi-shield-check me-1"></i>
-                                Enterprise Grade Security
-                            </div>
-                        </div>
-
-                        <!-- KANAN: Form Login -->
-                        <div class="col-lg-7 login-right position-relative">
-
-                            <div class="brand-badge">
-                                <i class="mdi mdi-crown"></i>
-                                Properti Management
-                            </div>
-
-                            <!-- Header Form -->
-                            <div class="text-center mb-5">
-                                <h2 class="fw-bold mb-2" style="color: #1e293b;">Masuk ke Akun</h2>
-                                <p class="text-muted">Silakan login untuk mengakses dashboard</p>
-                            </div>
-
-
-                            @if (session('error'))
-                                <div class="alert-modern" role="alert">
-                                    <i class="mdi mdi-alert-circle"></i>
-                                    <div>{{ session('error') }}</div>
-                                </div>
-                            @endif
-                            <!-- Form Login -->
-                            <form action="{{ route('login.proses') }}" method="POST">
-                                @csrf
-
-                                <!-- USERNAME -->
-                                <div class="mb-4">
-                                    <label class="form-label">Username</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="mdi mdi-account"></i>
-                                        </span>
-                                        <input type="text" name="username" class="form-control"
-                                            placeholder="Masukkan username Anda" value="{{ old('username') }}" required>
-                                    </div>
-                                </div>
-
-                                <!-- PASSWORD dengan toggle -->
-                                <div class="mb-4">
-                                    <label class="form-label">Password</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="mdi mdi-lock"></i>
-                                        </span>
-                                        <input type="password" name="password" class="form-control" id="password"
-                                            placeholder="Masukkan password Anda" required>
-                                        <span class="input-group-text password-toggle" onclick="togglePassword()">
-                                            <i class="mdi mdi-eye" id="password-icon"></i>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- Remember & Forgot -->
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                                        <label class="form-check-label" for="remember">
-                                            Ingat saya
-                                        </label>
-                                    </div>
-                                    <a href="#" class="forgot-link">
-                                        Lupa password?
-                                    </a>
-                                </div>
-
-                                <!-- Button Login -->
-                                <button type="submit" class="btn-login" id="loginBtn">
-                                    <i class="mdi mdi-login"></i>
-                                    Login ke Dashboard
-                                </button>
-
-
-
-                            </form>
-
-                            <!-- Footer -->
-                            <div class="text-center mt-5">
-
-                                <div class="d-flex justify-content-center gap-3">
-                                    <span class="text-muted small">© {{ now()->year }} Properti Management</span>
-                                    <span class="text-muted small">|</span>
-                                    <a href="https://aleena.co.id" class="text-muted small text-decoration-none">
-                                        PT Aleena Mandiri
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+@extends('home.layouts.partials.app')
+
+@section('title', 'Login — Sweet Home')
+
+@push('styles')
+<style>
+  html, body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  main {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 960px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(11,31,75,0.18);
+  }
+
+  /* LEFT */
+  .login-left {
+    position: relative;
+    background-image: url('https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=900&h=1200&fit=crop');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2.5rem 2rem;
+    min-height: 580px;
+  }
+
+  .login-left-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg,
+      rgba(11,31,75,0.55) 0%,
+      rgba(60,20,120,0.45) 40%,
+      rgba(11,31,75,0.92) 100%
+    );
+  }
+
+  .login-left-content { position: relative; z-index: 1; }
+
+  .left-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    position: absolute;
+    top: 2.5rem;
+    left: 2rem;
+    z-index: 1;
+    text-decoration: none;
+  }
+  .left-logo-icon {
+    width: 38px; height: 38px;
+    background: var(--gold);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .left-logo-icon i { color: white; font-size: 1rem; }
+  .left-logo-text { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: white; }
+  .left-logo-text span { color: var(--gold-light); }
+
+  .left-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .left-title em { color: var(--gold-light); font-style: italic; }
+
+  .left-sub {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .left-features { display: flex; flex-direction: column; gap: 0.55rem; }
+  .left-feat {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.82rem; color: rgba(255,255,255,0.85); font-weight: 500;
+  }
+  .left-feat i { color: var(--gold-light); font-size: 0.72rem; flex-shrink: 0; }
+
+  /* RIGHT */
+  .login-right {
+    background: white;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .login-right-head { margin-bottom: 2rem; }
+  .login-right-head h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.85rem;
+    color: var(--navy);
+    margin-bottom: 0.35rem;
+  }
+  .login-right-head p { font-size: 0.875rem; color: var(--text-light); }
+
+  /* ACCENT BAR */
+  .accent-bar {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 2rem;
+  }
+  .accent-bar span { height: 4px; border-radius: 100px; }
+  .accent-bar .bar-navy   { width: 32px; background: var(--navy); }
+  .accent-bar .bar-purple { width: 20px; background: #7C3AED; }
+  .accent-bar .bar-gold   { width: 12px; background: var(--gold); }
+
+  /* FORM */
+  .form-group { margin-bottom: 1.25rem; }
+
+  .form-label-custom {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.2s;
+    overflow: hidden;
+  }
+  .input-wrap:focus-within {
+    border-color: #7C3AED;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.08);
+  }
+
+  .input-icon {
+    width: 44px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .input-icon i { color: #7C3AED; font-size: 0.9rem; }
+
+  .input-wrap input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.8rem 0.75rem 0.8rem 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    min-width: 0;
+  }
+  .input-wrap input::placeholder { color: var(--text-light); }
+
+  .toggle-pass {
+    width: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .toggle-pass i { color: var(--text-light); font-size: 0.9rem; transition: color 0.2s; }
+  .toggle-pass:hover i { color: #7C3AED; }
+
+  /* REMEMBER */
+  .remember-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .remember-check {
+    display: flex; align-items: center;
+    gap: 0.5rem; cursor: pointer;
+  }
+  .remember-check input[type="checkbox"] {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    accent-color: #7C3AED;
+    cursor: pointer;
+  }
+  .remember-check span { font-size: 0.875rem; color: var(--text-mid); font-weight: 500; }
+
+  .forgot-link {
+    font-size: 0.875rem; color: var(--text-light);
+    text-decoration: none; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .forgot-link:hover { color: #7C3AED; }
+
+  /* BTN */
+  .btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+  }
+  .btn-login:hover {
+    background: var(--navy-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(11,31,75,0.25);
+  }
+
+  /* FOOTER */
+  .login-footer {
+    text-align: center;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--text-light);
+  }
+  .login-footer a { color: var(--text-light); text-decoration: none; }
+  .login-footer a:hover { color: var(--navy); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .login-card {
+      grid-template-columns: 1fr;
+      max-width: 520px;
+      border-radius: 22px;
+    }
+    .login-left {
+      min-height: 240px;
+      padding: 1.75rem;
+      justify-content: flex-end;
+    }
+    .left-logo { top: 1.75rem; left: 1.75rem; }
+    .left-features { display: none; }
+    .left-sub { display: none; }
+    .left-title { font-size: 1.4rem; margin-bottom: 0; }
+    .login-right { padding: 2rem 2rem; }
+  }
+
+  @media (max-width: 480px) {
+    main { padding: 1rem; }
+    .login-card { border-radius: 18px; }
+    .login-left { min-height: 180px; padding: 1.25rem; }
+    .left-logo { top: 1.25rem; left: 1.25rem; }
+    .left-title { font-size: 1.2rem; }
+    .login-right { padding: 1.5rem 1.25rem; }
+    .login-right-head h2 { font-size: 1.5rem; }
+    .remember-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+@endpush
+
+@section('content')
+<div class="login-card">
+
+  {{-- LEFT --}}
+  <div class="login-left">
+    <div class="login-left-overlay"></div>
+
+    <a href="#" class="left-logo">
+      <div class="left-logo-icon"><i class="fa-solid fa-house-chimney"></i></div>
+      <span class="left-logo-text">Sweet <span>Home</span></span>
+    </a>
+
+    <div class="login-left-content">
+      <h2 class="left-title">Kelola properti<br><em>lebih mudah</em></h2>
+      <p class="left-sub">Sistem manajemen properti terintegrasi untuk developer rumah subsidi, komersil, dan cash/KPR.</p>
+      <div class="left-features">
+        <div class="left-feat"><i class="fa-solid fa-circle-check"></i> Manajemen Tanah & Properti</div>
+        <div class="left-feat"><i class="fa-solid fa-circle-check"></i> Pembuatan Kavling Otomatis</div>
+        <div class="left-feat"><i class="fa-solid fa-circle-check"></i> Verifikasi Dokumen Legal</div>
+        <div class="left-feat"><i class="fa-solid fa-circle-check"></i> Progress Pembangunan</div>
+        <div class="left-feat"><i class="fa-solid fa-circle-check"></i> Laporan RAB & Keuangan</div>
+      </div>
+    </div>
+  </div>
+
+  {{-- RIGHT --}}
+  <div class="login-right">
+
+    <div class="login-right-head">
+      <h2>Masuk ke Akun</h2>
+      <p>Silakan login untuk mengakses dashboard</p>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="accent-bar">
+      <span class="bar-navy"></span>
+      <span class="bar-purple"></span>
+      <span class="bar-gold"></span>
+    </div>
 
-    <script>
-        // Toggle Password Visibility
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const passwordIcon = document.getElementById('password-icon');
+    <form action="{{ route('login.proses') }}" method="POST" id="loginForm">
+      @csrf
 
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                passwordIcon.classList.remove('mdi-eye');
-                passwordIcon.classList.add('mdi-eye-off');
-            } else {
-                passwordField.type = 'password';
-                passwordIcon.classList.remove('mdi-eye-off');
-                passwordIcon.classList.add('mdi-eye');
-            }
-        }
+      <div class="form-group">
+        <label class="form-label-custom">Username</label>
+        <div class="input-wrap">
+          <div class="input-icon"><i class="fa-solid fa-user"></i></div>
+          <input type="text" name="username" placeholder="Masukkan username Anda" value="{{ old('username') }}" required>
+        </div>
+      </div>
 
-        // Loading animation on form submit
-        document.querySelector('form')?.addEventListener('submit', function(e) {
-            const btn = document.getElementById('loginBtn');
-            btn.classList.add('btn-loading');
-            btn.innerHTML = '<i class="mdi mdi-login"></i> Memproses...';
-        });
-    </script>
+      <div class="form-group">
+        <label class="form-label-custom">Password</label>
+        <div class="input-wrap">
+          <div class="input-icon"><i class="fa-solid fa-lock"></i></div>
+          <input type="password" name="password" id="password" placeholder="Masukkan password Anda" required>
+          <div class="toggle-pass" onclick="togglePassword()">
+            <i class="fa-regular fa-eye" id="password-icon"></i>
+          </div>
+        </div>
+      </div>
 
-</body>
+      <div class="remember-row">
+        <label class="remember-check">
+          <input type="checkbox" name="remember" id="remember">
+          <span>Ingat saya</span>
+        </label>
+        <a href="#" class="forgot-link">Lupa password?</a>
+      </div>
 
-</html>
+      <button type="submit" class="btn-login" id="loginBtn">
+        <i class="fa-solid fa-right-to-bracket"></i> Login ke Dashboard
+      </button>
+
+    </form>
+
+    <div class="login-footer">
+      <div>&copy; {{ date('Y') }} Sweet Home — Properti Management</div>
+      <div style="margin-top:0.4rem;">
+        <i class="fa-solid fa-shield-halved" style="color:#7C3AED; font-size:0.7rem;"></i>
+        Enterprise Grade Security
+      </div>
+    </div>
+
+  </div>
+
+</div>
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function togglePassword() {
+    const input = document.getElementById('password');
+    const icon  = document.getElementById('password-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+
+    Swal.fire({
+      title: 'Memproses Login...',
+      text: 'Mohon tunggu sebentar',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    setTimeout(() => form.submit(), 400);
+  });
+
+  @if(session('error'))
+    Swal.fire({
+      icon: 'error',
+      title: 'Login Gagal',
+      text: '{{ session('error') }}',
+      confirmButtonColor: '#0B1F4B',
+      confirmButtonText: 'Coba Lagi',
+      borderRadius: '16px'
+    });
+  @endif
+</script>
+@endpush

@@ -63,6 +63,14 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/beranda', function () {
+    return view('home.index');
+});
+
+Route::get('/detail', function () {
+    return view('home.detail');
+});
+
 Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -458,7 +466,6 @@ Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storeP
 Route::get('/akad-kpr-komersil', function () {
     return view('transaksi.akad_kpr_komersil');
 });
-
 
 
 });
