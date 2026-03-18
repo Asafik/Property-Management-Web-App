@@ -48,6 +48,19 @@ use App\Http\Controllers\TransaksiKPRController;
 use App\Http\Controllers\CompanySettingController;
 use App\Http\Controllers\TimelineCashTempoController;
 
+
+/*
+|--------------------------------------------------------------------------
+| Landing Page
+|--------------------------------------------------------------------------
+*/
+Route::get('/beranda', function () {
+    return view('home.index');
+});
+
+Route::get('/detail', function () {
+    return view('home.detail');
+});
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -63,15 +76,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/beranda', function () {
-    return view('home.index');
-});
-
-Route::get('/detail', function () {
-    return view('home.detail');
-});
-
-Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(function () {
+Route::middleware(['auth','position:1,2,3,4,5'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -463,12 +468,4 @@ Route::get('/cash-tempo/timeline/{id}', [TimelineCashTempoController::class,'tim
 Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
 Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
 
-Route::get('/akad-kpr-komersil', function () {
-    return view('transaksi.akad_kpr_komersil');
 });
-
-
-});
-
-
-

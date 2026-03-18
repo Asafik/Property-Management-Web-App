@@ -85,7 +85,7 @@ public function storeVerifikasi(Request $request, $bookingId)
             $kpr->bunga = $request->bunga ?? $kpr->bunga;
             $kpr->no_sp3k = $request->no_sp3k ?? $kpr->no_sp3k;
             $kpr->akad_at = $request->akad_at ?? now();
-            $kpr->status = 'survey';
+            $kpr->status = 'approved';
 
             // Update harga unit di KPR applications
             $kpr->harga_unit = $request->jumlah_pinjaman ?? $kpr->harga_unit;
@@ -187,12 +187,13 @@ public function survey($id)
     public function akad($id)
 {
     $application = KprApplication::with(['customer', 'unit.agency', 'bank'])->findOrFail($id);
+
     return view('marketing.akad', compact('application'));
 }
 public function analisaKPRKomersil()
 {
     $applications = KprApplication::with(['customer','unit','bank'])
-                    ->where('status','analisa')
+                    ->where('status','survey')
                     ->get();
 
     return view('marketing.analisa_kpr_komersil', compact('applications'));

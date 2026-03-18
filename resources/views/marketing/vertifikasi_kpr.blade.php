@@ -429,6 +429,10 @@
                                     <small class="text-muted d-block">Unit</small>
                                     <span class="fw-medium">{{ $booking->unit->unit_name ?? '-' }}</span>
                                 </div>
+                                  <div>
+                                    <small class="text-muted d-block">Jenis Unit</small>
+                                    <span class="fw-medium">{{ $booking->unit->jenis ?? '-' }}</span>
+                                </div>
                                 <div>
                                     <small class="text-muted d-block">Blok/No</small>
                                     <span class="fw-medium">{{ $booking->unit->unit_code ?? '-' }}</span>

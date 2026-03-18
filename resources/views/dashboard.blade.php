@@ -739,6 +739,14 @@
                                                 title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
+
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" id="btnRefreshTable"
+                                                class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-icon-only"
+                                                title="Refresh Data">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -964,209 +972,245 @@
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
+                                        @php
+                                            $page = request()->get('page_' . $item->id, 1);
+                                            $perPage = 5;
 
-                                        @foreach ($landBank as $landBank)
-                                            <tbody>
-                                                @foreach ($landBank->units as $item)
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
+                                            $units = $item->units;
+                                            $pagedUnits = $units->forPage($page, $perPage);
+                                            $totalPages = ceil($units->count() / $perPage);
+                                        @endphp
 
-                                                        <td>{{ $item->unit_name ?? '-' }}</td>
+                                        <tbody>
+                                            @forelse ($item->units as $unit)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
 
-                                                        <td>{{ $item->type }}</td>
+                                                    <td>{{ $unit->unit_name ?? '-' }}</td>
 
-                                                        <td>
-                                                            @switch($item->construction_progress)
-                                                                @case('belum_mulai')
-                                                                    <span class="badge bg-secondary">Belum Mulai</span>
-                                                                @break
+                                                    <td>{{ $unit->type }}</td>
 
-                                                                @case('pondasi')
-                                                                    <span class="badge bg-info">Pondasi</span>
-                                                                @break
+                                                    <td>
+                                                        @switch($unit->construction_progress)
+                                                            @case('belum_mulai')
+                                                                <span class="badge bg-secondary">Belum Mulai</span>
+                                                            @break
 
-                                                                @case('dinding')
-                                                                    <span class="badge bg-primary">Dinding</span>
-                                                                @break
+                                                            @case('pondasi')
+                                                                <span class="badge bg-info">Pondasi</span>
+                                                            @break
 
-                                                                @case('atap')
-                                                                    <span class="badge bg-warning text-dark">Atap</span>
-                                                                @break
+                                                            @case('dinding')
+                                                                <span class="badge bg-primary">Dinding</span>
+                                                            @break
 
-                                                                @case('finishing')
-                                                                    <span class="badge bg-dark">Finishing</span>
-                                                                @break
+                                                            @case('atap')
+                                                                <span class="badge bg-warning text-dark">Atap</span>
+                                                            @break
 
-                                                                @case('selesai')
-                                                                    <span class="badge bg-success">Selesai</span>
-                                                                @break
+                                                            @case('finishing')
+                                                                <span class="badge bg-dark">Finishing</span>
+                                                            @break
 
-                                                                @default
-                                                                    <span class="badge bg-light text-dark">-</span>
-                                                            @endswitch
-                                                        </td>
-                                                        <td>
-                                                            @if ($item->activeBooking && $item->activeBooking->customer)
-                                                                <span class="badge bg-success">
-                                                                    {{ $item->activeBooking->customer->full_name }}
-                                                                </span>
-                                                            @else
-                                                                <span class="badge bg-secondary">
-                                                                    Belum Booking
-                                                                </span>
-                                                            @endif
-                                                        </td>
+                                                            @case('selesai')
+                                                                <span class="badge bg-success">Selesai</span>
+                                                            @break
 
-                                                        <td>
-                                                            <span class="badge bg-info">
-                                                                {{ $item->status }}
+                                                            @default
+                                                                <span class="badge bg-light text-dark">-</span>
+                                                        @endswitch
+                                                    </td>
+
+                                                    <td>
+                                                        @if ($unit->activeBooking && $unit->activeBooking->customer)
+                                                            <span class="badge bg-success">
+                                                                {{ $unit->activeBooking->customer->full_name }}
                                                             </span>
+                                                        @else
+                                                            <span class="badge bg-secondary">
+                                                                Belum Booking
+                                                            </span>
+                                                        @endif
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="badge bg-info">
+                                                            {{ $unit->status }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="6" class="text-center text-muted">
+                                                            Tidak ada data unit
                                                         </td>
-
                                                     </tr>
-                                                @endforeach
+                                                @endforelse
                                             </tbody>
-                                        @endforeach
 
-                                    </table>
+                                        </table>
+                                        <div class="p-3 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                Page {{ $page }} of {{ $totalPages }}
+                                            </div>
+
+                                            <div>
+                                                @if ($page > 1)
+                                                    <a href="?page_{{ $item->id }}={{ $page - 1 }}"
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        Prev
+                                                    </a>
+                                                @endif
+
+                                                @if ($page < $totalPages)
+                                                    <a href="?page_{{ $item->id }}={{ $page + 1 }}"
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        Next
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                                Tutup
+                            </button>
                         </div>
 
                     </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                            Tutup
-                        </button>
-                    </div>
-
                 </div>
             </div>
-        </div>
-    @endforeach
-@endsection
+        @endforeach
+    @endsection
 
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @if (session('success'))
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: '{{ session('error') }}'
+                });
+            </script>
+        @endif
         <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: '{{ session('success') }}',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        </script>
-    @endif
-
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Login Gagal',
-                text: '{{ session('error') }}'
-            });
-        </script>
-    @endif
-    <script>
-        $(document).ready(function() {
-            let table = $('#tableDashboard').DataTable({
-                responsive: true,
-                paging: false,
-                info: false,
-                searching: false,
-                lengthChange: false,
-                ordering: true,
-                language: {
-                    emptyTable: "Data kosong",
-                    zeroRecords: "Data tidak ditemukan",
-                },
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 7]
-                }]
-            });
-
-            // Filter functionality
-            function filterTable() {
-                let searchValue = $('#searchInput').val().toLowerCase() || $('#searchInputMobile').val()
-                    .toLowerCase();
-                let typeValue = $('#filterType').val() || $('#filterTypeMobile').val();
-                let locationValue = $('#filterLokasi').val() || $('#filterLokasiMobile').val();
-
-                table.rows().every(function() {
-                    let row = this.data();
-                    let rowNode = this.node();
-                    let show = true;
-
-                    // Search filter
-                    if (searchValue) {
-                        let rowText = '';
-                        for (let i = 1; i <= 2; i++) {
-                            rowText += row[i] ? row[i].toLowerCase() : '';
-                        }
-                        if (!rowText.includes(searchValue)) {
-                            show = false;
-                        }
-                    }
-
-                    // Type filter
-                    if (show && typeValue) {
-                        let type = $(rowNode).find('td:eq(3) span').text();
-                        if (type.toLowerCase() !== typeValue.toLowerCase()) {
-                            show = false;
-                        }
-                    }
-
-                    // Location filter
-                    if (show && locationValue) {
-                        let location = $(rowNode).find('td:eq(4) span').text();
-                        if (location.toLowerCase() !== locationValue.toLowerCase()) {
-                            show = false;
-                        }
-                    }
-
-                    if (show) {
-                        $(rowNode).show();
-                    } else {
-                        $(rowNode).hide();
-                    }
+            $(document).ready(function() {
+                let table = $('#tableDashboard').DataTable({
+                    responsive: true,
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    lengthChange: false,
+                    ordering: true,
+                    language: {
+                        emptyTable: "Data kosong",
+                        zeroRecords: "Data tidak ditemukan",
+                    },
+                    columnDefs: [{
+                        orderable: false,
+                        targets: [0, 7]
+                    }]
                 });
 
-                // Update info
-                let visibleCount = table.rows(':visible').count();
-                $('.pagination-info').html(
-                    `<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${visibleCount} dari ${table.rows().count()} data`
-                );
-            }
+                // Filter functionality
+                function filterTable() {
+                    let searchValue = $('#searchInput').val().toLowerCase() || $('#searchInputMobile').val()
+                        .toLowerCase();
+                    let typeValue = $('#filterType').val() || $('#filterTypeMobile').val();
+                    let locationValue = $('#filterLokasi').val() || $('#filterLokasiMobile').val();
 
-            function resetFilter() {
-                $('#searchInput, #searchInputMobile').val('');
-                $('#filterType, #filterTypeMobile').val('');
-                $('#filterLokasi, #filterLokasiMobile').val('');
+                    table.rows().every(function() {
+                        let row = this.data();
+                        let rowNode = this.node();
+                        let show = true;
 
-                table.rows().show();
-                $('.pagination-info').html(
-                    `<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${table.rows().count()} dari ${table.rows().count()} data`
-                );
-            }
+                        // Search filter
+                        if (searchValue) {
+                            let rowText = '';
+                            for (let i = 1; i <= 2; i++) {
+                                rowText += row[i] ? row[i].toLowerCase() : '';
+                            }
+                            if (!rowText.includes(searchValue)) {
+                                show = false;
+                            }
+                        }
 
-            // Desktop filter
-            $('#filterData').click(filterTable);
-            $('#resetFilter').click(resetFilter);
+                        // Type filter
+                        if (show && typeValue) {
+                            let type = $(rowNode).find('td:eq(3) span').text();
+                            if (type.toLowerCase() !== typeValue.toLowerCase()) {
+                                show = false;
+                            }
+                        }
 
-            // Mobile filter
-            $('#filterDataMobile').click(filterTable);
-            $('#resetFilterMobile').click(resetFilter);
+                        // Location filter
+                        if (show && locationValue) {
+                            let location = $(rowNode).find('td:eq(4) span').text();
+                            if (location.toLowerCase() !== locationValue.toLowerCase()) {
+                                show = false;
+                            }
+                        }
 
-            // Enter key on search input
-            $('#searchInput, #searchInputMobile').keypress(function(e) {
-                if (e.which == 13) {
-                    filterTable();
+                        if (show) {
+                            $(rowNode).show();
+                        } else {
+                            $(rowNode).hide();
+                        }
+                    });
+
+                    // Update info
+                    let visibleCount = table.rows(':visible').count();
+                    $('.pagination-info').html(
+                        `<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${visibleCount} dari ${table.rows().count()} data`
+                    );
                 }
+
+                function resetFilter() {
+                    $('#searchInput, #searchInputMobile').val('');
+                    $('#filterType, #filterTypeMobile').val('');
+                    $('#filterLokasi, #filterLokasiMobile').val('');
+
+                    table.rows().show();
+                    $('.pagination-info').html(
+                        `<i class="mdi mdi-information-outline me-1"></i>Menampilkan ${table.rows().count()} dari ${table.rows().count()} data`
+                    );
+                }
+
+                // Desktop filter
+                $('#filterData').click(filterTable);
+                $('#resetFilter').click(resetFilter);
+
+                // Mobile filter
+                $('#filterDataMobile').click(filterTable);
+                $('#resetFilterMobile').click(resetFilter);
+
+                // Enter key on search input
+                $('#searchInput, #searchInputMobile').keypress(function(e) {
+                    if (e.which == 13) {
+                        filterTable();
+                    }
+                });
+                $('#btnRefreshTable').click(function() {
+                    table.ajax.reload(null, false); // reload tanpa reset posisi & filter
+                });
             });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PositionMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$positions)
+    public function handle(Request $request, Closure $next, ...$positionIds)
     {
         $user = Auth::user();
 
@@ -16,9 +16,8 @@ class PositionMiddleware
             abort(403);
         }
 
-        $userPosition = strtolower($user->position->name);
-
-        if (!in_array($userPosition, $positions)) {
+        // langsung pakai position_id
+        if (!in_array($user->position_id, $positionIds)) {
             abort(403);
         }
 
