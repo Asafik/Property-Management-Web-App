@@ -56,7 +56,7 @@
             $position = Auth::user()->position->name ?? '';
         @endphp
 
-        @if ($position == 'Legal' || $position == 'Admin')
+        @if ($position == 'Kepala Legal' || $position == 'Admin')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#properti"
                     aria-expanded="{{ request()->routeIs('properti*') ? 'true' : 'false' }}" aria-controls="properti">
