@@ -1298,7 +1298,7 @@
 
                                                             <i class="mdi mdi-eye"></i>
                                                         </button>
-                                                        @if (auth()->user()->position_id != 5)
+                                                        @if (auth()->user()->position_id != 4)
                                                             <button onclick="openCustomerModal({{ $unit->id }})"
                                                                 class="btn btn-outline-danger btn-sm"
                                                                 title="Tambah Customer">

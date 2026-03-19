@@ -751,7 +751,7 @@
                 }).addTo(map);
 
                 // Ambil data lokasi dari backend
-                $.getJSON('/lokasi-data', function(locations) {
+              $.getJSON("{{ route('lokasi.data') }}", function(locations) {
                     locations.forEach(function(loc) {
                         // Tentukan icon berdasarkan kategori
                         let iconMap = {

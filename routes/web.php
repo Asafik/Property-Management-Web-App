@@ -46,6 +46,7 @@ use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
 use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\TimelineCashTempoController;
 
 
@@ -71,10 +72,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
 });
 
-
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [LandingpageController::class, 'index'])->name('landingpage');
+// Route::get('/', function () {
+//     return redirect()->route('login');
+// });
 
 Route::middleware(['auth','position:1,2,3,4,5'])->group(function () {
 
