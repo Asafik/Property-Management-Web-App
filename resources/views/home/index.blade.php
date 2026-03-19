@@ -1874,7 +1874,7 @@
     <div class="cta-inner">
         <div>
             <h2>Siap punya rumah impian <em>bersama kami?</em></h2>
-            <p>Subsidi · Komersil · Cash / KPR — Konsultasi gratis tanpa biaya apapun</p>
+            <p style="color: white;">Subsidi · Komersil · Cash / KPR — Konsultasi gratis tanpa biaya apapun</p>
         </div>
         <div class="cta-btns">
             <a href="https://wa.me/62811999988888" class="btn-wa-cta">

@@ -262,11 +262,6 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="rab-deadline">
-                                <span class="menu-title">Dedline RAB</span>
-                            </a>
-                        </li>
 
                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('master.data.division.index') }}">
