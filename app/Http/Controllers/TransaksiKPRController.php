@@ -139,7 +139,7 @@ public function storeVerifikasi(Request $request, $bookingId)
     public function verified(Request $request)
 {
     $query = KprApplication::with(['customer', 'unit', 'bank'])
-        ->where('status', 'dokumen');
+        ->where('status', 'approved');
 
     // Filter search
     if ($request->filled('search')) {

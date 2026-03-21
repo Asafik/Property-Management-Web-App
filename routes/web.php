@@ -365,6 +365,7 @@ Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::cl
 
 Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
 Route::get('/transaksi/kpr/akad-kpr/{id}', [AkadController::class, 'akadkpr'])->name('kpr.approve');
+Route::post('/transaksi/kpr/akad-kpr/store/{booking}', [AkadController::class, 'storeKPR'])->name('akad.kpr.store');
 
 // Route untuk Customer KPR ACC (Survey)
 Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
