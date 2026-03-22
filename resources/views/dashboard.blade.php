@@ -472,12 +472,7 @@
         }
     </style>
 
-    <!-- NON-CRITICAL CSS - LOAD ASYNC -->
-    <link rel="preload" href="{{ asset('css/dashboard-non-critical.css') }}" as="style"
-        onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet" href="{{ asset('css/dashboard-non-critical.css') }}">
-    </noscript>
+
 
     <!-- HTML CONTENT - TANPA UBAH LAYOUT -->
     <div class="container-fluid p-2 p-sm-3 p-md-4">
