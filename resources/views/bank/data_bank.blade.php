@@ -5,7 +5,7 @@
 @section('content')
 
 <style>
-/* ====== CSS ====== */
+    /* ====== CSS ====== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
@@ -323,6 +323,7 @@ h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !i
     .filter-row-desktop { display: none; }
     .filter-row-mobile  { display: block; margin-top: 1rem; }
 }
+
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">

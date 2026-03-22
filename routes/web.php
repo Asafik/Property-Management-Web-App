@@ -299,16 +299,7 @@ Route::get('/servis', function () {
 
 
 
-// Route untuk Dokument Legal Persiapan
-Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])
-    ->name('dokument.persiapan');
-    Route::post('/documents/persiapan-pecah-legal', [DocumentPersiapanPecahLegalController::class, 'store'])
-    ->name('documents.storePersiapanPecahLegal');
-    Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])
-    ->name('documents.destroy');
 
-Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])
-    ->name('document_legal.store');
 
 
 Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
@@ -402,7 +393,13 @@ Route::get('/dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])->
 Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'])->name('document-types.update');
 Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])->name('document-types.destroy');
 
-
+// Route untuk Dokument Legal Persiapan
+Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
+Route::post('/documents/persiapan-pecah-legal', [DocumentPersiapanPecahLegalController::class, 'store'])->name('documents.storePersiapanPecahLegal');
+Route::get('/documents/persiapan-pecah-legal/{id}/edit', [DocumentPersiapanPecahLegalController::class, 'edit'])->name('documents.editPersiapanPecahLegal');
+Route::put('/documents/persiapan-pecah-legal/{id}', [DocumentPersiapanPecahLegalController::class, 'update'])->name('documents.updatePersiapanPecahLegal');
+Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])->name('documents.destroy');
+Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
 
 
 // EMPLOYEE/AGENCY

@@ -18,19 +18,28 @@ class AgencyPropertyController extends Controller
         // Filter search (nama atau username)
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('username', 'like', "%{$search}%");
             });
+        }
+
+        // Sorting
+        $sortField = $request->input('sortField', 'created_at');
+        $sortDirection = $request->input('sortDirection', 'desc');
+        $validSortFields = ['name', 'username', 'phone', 'address', 'created_at'];
+
+        if (in_array($sortField, $validSortFields)) {
+            $query->orderBy($sortField, $sortDirection === 'asc' ? 'asc' : 'desc');
         }
 
         // Jumlah tampil per halaman (default 10)
         $perPage = $request->input('per_page', 10);
 
         // Ambil data dengan pagination
-        $employees = $query->latest()->paginate($perPage)->withQueryString();
+        $employees = $query->paginate($perPage)->withQueryString();
 
-        return view('sales.data_sales_agent', compact('employees'));
+        return view('sales.data_sales_agent', compact('employees', 'sortField', 'sortDirection'));
     }
 
     // Menampilkan form tambah sales/agent
@@ -38,6 +47,7 @@ class AgencyPropertyController extends Controller
     {
         $divisions = Division::all();
         $positions = Position::all();
+
         return view('sales.buat_sales_agent', compact('divisions', 'positions'));
     }
 
@@ -73,6 +83,7 @@ class AgencyPropertyController extends Controller
         $employee = Employee::findOrFail($id);
         $divisions = Division::all();
         $positions = Position::all();
+
         return view('sales.buat_sales_agent', compact('employee', 'divisions', 'positions'));
     }
 
@@ -93,14 +104,15 @@ class AgencyPropertyController extends Controller
 
         $employee->name = $request->name;
         $employee->username = $request->username;
+
         if ($request->filled('password')) {
             $employee->password = Hash::make($request->password);
         }
+
         $employee->phone = $request->phone;
         $employee->address = $request->address;
         $employee->division_id = $request->division_id;
         $employee->position_id = $request->position_id;
-
         $employee->save();
 
         return redirect()->route('agency.index')

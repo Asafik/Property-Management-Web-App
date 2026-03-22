@@ -3,588 +3,941 @@
 @section('title', 'Dokumen Persiapan - Property Management App')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('assets/css/dokument/dokument.css') }}">
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header Dashboard -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>
-                                Dokumen Izin Persiapan
-                            </h3>
-                            <p class="text-muted mb-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Kelola master dokumen perizinan dan persyaratan
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-file-document" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+
+<style>
+/* ====== CSS ====== */
+.card {
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
+.card-header {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+@media (min-width: 576px) { .card-header { padding: 1rem; } }
+@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
+.card-body { padding: 0.75rem; }
+@media (min-width: 576px) { .card-body { padding: 1rem; } }
+@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
+.card-title { font-size: 0.9rem; font-weight: 600; color: #9a55ff; margin-bottom: 0; }
+@media (min-width: 576px) { .card-title { font-size: 1rem; } }
+@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
+
+/* Filter Card */
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 12px; padding: 1rem; margin-bottom: 1.25rem; border: none;
+}
+.filter-card .form-label {
+    font-size: 0.85rem; font-weight: 600; color: #9a55ff !important;
+    margin-bottom: 0.4rem; letter-spacing: 0.3px;
+}
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.5rem 0.75rem; font-size: 0.9rem;
+    border-radius: 8px; height: auto; min-height: 40px; border: 1px solid #e0e4e9;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border: 1px solid #e9ecef; border-radius: 8px; padding: 0.6rem 0.8rem;
+    font-size: 0.9rem; transition: all 0.2s ease; background-color: #ffffff;
+    color: #2c2e3f; height: auto;
+}
+@media (min-width: 576px) { .form-control, .form-select { padding: 0.7rem 1rem; font-size: 0.95rem; border-radius: 10px; } }
+.form-control:focus, .form-select:focus {
+    border-color: #9a55ff; box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1); outline: none;
+}
+.form-label {
+    font-size: 0.85rem; font-weight: 600; color: #9a55ff !important;
+    margin-bottom: 0.3rem; letter-spacing: 0.3px; font-family: 'Nunito', sans-serif;
+}
+
+/* Buttons */
+.btn {
+    font-size: 0.85rem; padding: 0.6rem 1rem; border-radius: 8px;
+    font-weight: 600; transition: all 0.3s ease; font-family: 'Nunito', sans-serif; border: none;
+}
+@media (min-width: 576px) { .btn { font-size: 0.9rem; padding: 0.7rem 1.2rem; border-radius: 10px; } }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; border-radius: 6px; }
+.btn-gradient-primary   { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.btn-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
+.btn-gradient-secondary:hover { background: #5a6268 !important; }
+
+/* Action Buttons */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.btn-action i {
+    font-size: 1.1rem;
+}
+.btn-action.edit {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+}
+.btn-action.edit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
+.btn-action.delete {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
+    color: white;
+}
+.btn-action.delete:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+.btn-icon-only {
+    width: 40px; height: 40px; padding: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 8px;
+}
+.btn-icon-only i { font-size: 1.2rem; margin: 0; }
+
+/* Table Responsive dengan Scrollbar */
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    max-height: 500px;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #9a55ff;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #7a3fcc;
+}
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f0f0f0;
+}
+
+.table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+.table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #9a55ff; font-weight: 600; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.8rem 0.5rem;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.table thead th:hover {
+    color: #7a3fcc;
+}
+.table thead th i {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    opacity: 0.5;
+}
+.table thead th.active-sort {
+    color: #7a3fcc;
+}
+.table thead th.active-sort i {
+    opacity: 1;
+    color: #7a3fcc;
+}
+@media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
+@media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
+.table thead th:first-child { padding-left: 0.5rem; width: 40px; text-align: center; cursor: default; }
+.table thead th:first-child:hover { color: #9a55ff; }
+.table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; width: 40px; text-align: center; }
+.table tbody td {
+    vertical-align: middle; font-size: 0.85rem; padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #e9ecef; color: #2c2e3f;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
+@media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
+.table tbody tr:hover { background-color: #f8f9fa; }
+
+/* Status badge */
+.status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+.status-badge.aktif {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+    color: #fff;
+}
+.status-badge.nonaktif {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: #fff;
+}
+.status-badge i {
+    margin-right: 4px;
+    font-size: 0.9rem;
+}
+
+/* Pagination */
+.pagination { margin: 0; gap: 3px; }
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+@media (min-width: 576px) {
+    .page-item .page-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 36px;
+    }
+}
+@media (min-width: 768px) {
+    .page-item .page-link {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
+    }
+}
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+.page-item .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff;
+    transform: translateY(-1px);
+}
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* Modal */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+}
+.modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+}
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+.modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-body {
+    padding: 1.5rem;
+}
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+/* Text colors */
+.text-primary  { color: #9a55ff !important; }
+.text-info     { color: #17a2b8 !important; }
+.text-danger   { color: #dc3545 !important; }
+.text-success  { color: #28a745 !important; }
+.text-warning  { color: #ffc107 !important; }
+.fw-bold       { font-weight: 600 !important; }
+.text-muted    { color: #a5b3cb !important; }
+
+h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !important; margin-bottom: 0.5rem !important; }
+@media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
+@media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
+
+.mdi { vertical-align: middle; }
+
+.filter-row-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.filter-row-desktop .filter-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.filter-row-mobile  { display: none; }
+@media (max-width: 767px) {
+    .filter-row-desktop { display: none; }
+    .filter-row-mobile  { display: block; margin-top: 1rem; }
+}
+
+/* Form group untuk modal (dari dokument.blade.php aslinya untuk konsistensi) */
+.modal-form-group {
+    margin-bottom: 1rem;
+}
+.modal-form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+    display: block;
+}
+.modal-form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    width: 100%;
+}
+.modal-form-control:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+</style>
+
+<div class="container-fluid p-2 p-sm-3 p-md-4">
+
+    <!-- Header -->
+    <div class="row mb-3 mb-sm-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-dark mb-1">
+                            <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>Dokumen Izin Persiapan
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Kelola master dokumen perizinan dan persyaratan
+                        </p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabel Data Dokumen Izin -->
-        <div class="row mt-2 mt-sm-2 mt-md-3">
-            <div class="col-12">
-                <div class="card">
-                    <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Dokumen Izin
-                        </h5>
-                        <div class="ms-auto">
-                            <button class="btn btn-gradient-primary"
-                                style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;"
-                                onclick="$('#modalUploadDokumen').modal('show')">
-                                <i class="mdi mdi-plus me-1"></i>
-                                <span>Tambah Dokumen</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <!-- Filter Section - Selalu tampil -->
-                        <div class="filter-card mb-4">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                    <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                    Filter Data Dokumen
-                                </h6>
-
-                                <!-- FILTER UNTUK MOBILE -->
-                                <div class="d-block d-md-none">
-                                    <form method="GET" action="{{ route('dokument.persiapan') }}">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Dokumen
-                                            </label>
-                                            <input type="text" class="form-control" name="search"
-                                                value="{{ request('search') }}" placeholder="Cari nama dokumen..."
-                                                style="height: 45px;">
-                                        </div>
-
-                                        <div class="row g-2 mb-3">
-                                            <div class="col-6">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Has Expiry
-                                                </label>
-                                                <select class="form-control" name="has_expiry" style="height: 45px;">
-                                                    <option value="">Semua</option>
-                                                    <option value="yes"
-                                                        {{ request('has_expiry') == 'yes' ? 'selected' : '' }}>Yes</option>
-                                                    <option value="no"
-                                                        {{ request('has_expiry') == 'no' ? 'selected' : '' }}>No</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                                </label>
-                                                <select class="form-control" name="per_page" style="height: 45px;">
-                                                    <option value="10"
-                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15"
-                                                        {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25"
-                                                        {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-2">
-                                            <div class="col-6">
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-filter me-1"></i> Filter
-                                                </button>
-                                            </div>
-                                            <div class="col-6">
-                                                <a href="{{ route('dokument.index') }}"
-                                                    class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                <div class="d-none d-md-block">
-                                    <form method="GET" action="{{ route('dokument.persiapan') }}">
-                                        <div class="row g-2 align-items-end">
-                                            <div class="col-md-4">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                    Cari Dokumen
-                                                </label>
-                                                <input type="text" class="form-control" name="search"
-                                                    value="{{ request('search') }}" placeholder="Cari nama dokumen...">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Has Expiry
-                                                </label>
-                                                <select class="form-control" name="has_expiry">
-                                                    <option value="">Semua</option>
-                                                    <option value="yes"
-                                                        {{ request('has_expiry') == 'yes' ? 'selected' : '' }}>Yes</option>
-                                                    <option value="no"
-                                                        {{ request('has_expiry') == 'no' ? 'selected' : '' }}>No</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                                </label>
-                                                <select class="form-control" name="per_page">
-                                                    <option value="10"
-                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15"
-                                                        {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25"
-                                                        {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label invisible">Filter</label>
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                    <i class="mdi mdi-filter me-1"></i> Filter
-                                                </button>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label invisible">Reset</label>
-                                                <a href="{{ route('dokument.index') }}"
-                                                    class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center"
-                                                    title="Reset">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tabel Dokumen -->
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle" id="tableDokumen"
-                                {{ $documentTypes->count() > 0 ? 'data-use-datatables=true' : '' }}>
-
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="text-center" width="5%">No</th>
-                                        <th width="30%">Nama Dokumen</th>
-                                        <th width="35%">Deskripsi</th>
-                                        <th class="text-center" width="15%">Wajib</th>
-                                        <th class="text-center" width="15%">Aksi</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @forelse($documentTypes as $item)
-                                        <tr>
-
-                                            <td class="text-center fw-semibold">
-                                                {{ $loop->iteration + ($documentTypes->currentPage() - 1) * $documentTypes->perPage() }}
-                                            </td>
-
-                                            <td class="fw-semibold">
-                                                <i class="{{ $item->icon ?? 'mdi mdi-file-document-outline' }} me-1"></i>
-                                                {{ $item->name }}
-                                            </td>
-
-                                            <td class="text-muted">
-                                                {{ $item->description }}
-                                            </td>
-
-                                            <td class="text-center">
-                                                @if ($item->required)
-                                                    <span class="badge bg-success">
-                                                        <i class="mdi mdi-check-circle me-1"></i>Wajib
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-secondary">
-                                                        <i class="mdi mdi-minus-circle me-1"></i>Opsional
-                                                    </span>
-                                                @endif
-                                            </td>
-
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
-
-                                                    <!-- EDIT -->
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-outline-warning btn-action btn-edit"
-                                                        data-id="{{ $item->id }}">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </button>
-
-                                                    <!-- DELETE -->
-                                                    <form action="{{ route('documents.destroy', $item->id) }}"
-                                                        method="POST" class="m-0 form-delete">
-
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger btn-action">
-                                                            <i class="mdi mdi-delete"></i>
-                                                        </button>
-
-                                                    </form>
-
-                                                </div>
-                                            </td>
-
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted py-5">
-
-                                                <i class="mdi mdi-file-document-off"
-                                                    style="font-size: 3rem; opacity: 0.3;"></i>
-
-                                                <p class="mt-2 mb-0">
-                                                    Tidak ada data dokumen yang tersedia.
-                                                </p>
-
-                                                <p class="text-muted small">
-                                                    Silahkan tambahkan data dokumen baru.
-                                                </p>
-
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-
-                            </table>
-                        </div>
-
-                        <!-- Pagination Section - Tampil jika ada data -->
-                        @if ($documentTypes->count() > 0)
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                                <div class="pagination-info mb-2 mb-sm-0">
-                                    <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                                    Menampilkan
-                                    <span class="fw-bold">{{ $documentTypes->firstItem() }}</span>
-                                    -
-                                    <span class="fw-bold">{{ $documentTypes->lastItem() }}</span>
-                                    dari
-                                    <span class="fw-bold">{{ $documentTypes->total() }}</span>
-                                    data dokumen
-                                </div>
-
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                        style="gap: 2px;">
-                                        {{-- Previous Page Link --}}
-                                        @if ($documentTypes->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link" aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $documentTypes->previousPageUrl() }}"
-                                                    aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        {{-- Page Links --}}
-                                        @foreach ($documentTypes->getUrlRange(1, $documentTypes->lastPage()) as $page => $url)
-                                            <li
-                                                class="page-item {{ $documentTypes->currentPage() == $page ? 'active' : '' }}">
-                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                            </li>
-                                        @endforeach
-
-                                        {{-- Next Page Link --}}
-                                        @if ($documentTypes->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $documentTypes->nextPageUrl() }}"
-                                                    aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link" aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tombol Aksi Bawah -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                            </a>
-                        </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-file-document" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL TAMBAH DOKUMEN -->
-    <div class="modal fade" id="modalUploadDokumen" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-file-document-plus-outline"></i>
-                        Tambah Master Dokumen
+    <!-- Tabel Data Dokumen Izin -->
+    <div class="row mt-2 mt-sm-2 mt-md-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar Dokumen Izin
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="openModal('tambah')">
+                        <i class="mdi mdi-plus me-1"></i>Tambah Dokumen
+                    </button>
                 </div>
-                <form method="POST" action="{{ route('documents.storePersiapanPecahLegal') }}">
-                    @csrf
 
-                    <div class="modal-body">
+                <div class="card-body">
+                    <!-- FILTER SECTION -->
+                    <div class="filter-card mb-4">
+                        <div class="card-body">
 
-                        <div class="modal-form-group">
-                            <label class="form-label fw-semibold">
-                                Nama Dokumen <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="name" class="modal-form-control"
-                                placeholder="Contoh: KTP, KK , NPWP" required>
+                            <!-- DESKTOP VERSION -->
+                            <div class="filter-row-desktop">
+                                <div class="filter-text">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data dokumen</span>
+                                </div>
+                                <form id="filterForm" method="GET" action="{{ route('dokument.persiapan') }}">
+                                    <div class="row g-2 align-items-end w-100">
+
+                                        <!-- Search -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Cari Dokumen</label>
+                                            <input type="text" class="form-control" name="search" id="searchInput" placeholder="Nama dokumen..." value="{{ request('search') }}">
+                                        </div>
+
+                                        <!-- Required Status -->
+                                        <div class="col-md-3">
+                                            <label class="form-label">Wajib Upload</label>
+                                            <select class="form-control" name="required" id="requiredSelect">
+                                                <option value="">Semua</option>
+                                                <option value="yes" {{ request('required') == 'yes' ? 'selected' : '' }}>Wajib</option>
+                                                <option value="no" {{ request('required') == 'no' ? 'selected' : '' }}>Opsional</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Tampil - Hanya 10, 15, 25 -->
+                                        <div class="col-md-1">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Tombol Filter + Reset -->
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('dokument.persiapan') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- MOBILE VERSION -->
+                            <div class="filter-row-mobile">
+                                <div class="filter-text mb-2">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data dokumen</span>
+                                </div>
+                                <form method="GET" action="{{ route('dokument.persiapan') }}">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Cari Dokumen</label>
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile" placeholder="Nama dokumen..." value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Wajib Upload</label>
+                                            <select class="form-control" name="required" id="requiredSelectMobile">
+                                                <option value="">Semua</option>
+                                                <option value="yes" {{ request('required') == 'yes' ? 'selected' : '' }}>Wajib</option>
+                                                <option value="no" {{ request('required') == 'no' ? 'selected' : '' }}>Opsional</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-12 mt-2">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtnMobile" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('dokument.persiapan') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
                         </div>
+                    </div>
 
-                        <div class="modal-form-group">
-                            <label class="form-label fw-semibold">
-                                Deskripsi <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="description" class="modal-form-control"
-                                placeholder="Keterangan dokumen" required>
+                    <!-- TABEL DATA DOKUMEN DENGAN SCROLLBAR -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Dokumen
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="description" data-direction="{{ request('sortField') == 'description' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Deskripsi
+                                        @if(request('sortField') == 'description')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="required" data-direction="{{ request('sortField') == 'required' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Status Upload
+                                        @if(request('sortField') == 'required')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($documentTypes as $index => $item)
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $documentTypes->firstItem() + $index }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-file-document text-primary me-2" style="font-size: 1.2rem;"></i>
+                                            <span class="fw-bold">{{ $item->name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted fw-medium">{{ $item->description }}</span>
+                                    </td>
+                                    <td>
+                                        @if ($item->required)
+                                            <span class="status-badge aktif">
+                                                <i class="mdi mdi-check-circle"></i> Wajib
+                                            </span>
+                                        @else
+                                            <span class="status-badge nonaktif">
+                                                <i class="mdi mdi-minus-circle"></i> Opsional
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn-action edit me-1" title="Edit" onclick="openModal('edit', {{ $item->id }})">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </button>
+                                        <button class="btn-action delete" title="Hapus" onclick="confirmDelete({{ $item->id }})">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        <i class="mdi mdi-file-document-off" style="font-size: 3rem; opacity: 0.3;"></i>
+                                        <p class="mt-2 mb-0">Tidak ada data dokumen yang tersedia.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
 
-                            <small class="text-muted mt-1 d-block">
-                                <i class="mdi mdi-information-outline me-1"></i>
+                    <!-- PAGINATION -->
+                    @if ($documentTypes instanceof \Illuminate\Pagination\LengthAwarePaginator && $documentTypes->total() > 0)
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                        <div class="pagination-info mb-2 mb-sm-0">
+                            Menampilkan {{ $documentTypes->firstItem() }} - {{ $documentTypes->lastItem() }} dari {{ $documentTypes->total() }} data
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($documentTypes->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $documentTypes->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous" onclick="showPaginationLoading(event)">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                @endif
 
+                                {{-- Pagination Elements --}}
+                                @foreach ($documentTypes->getUrlRange(max(1, $documentTypes->currentPage() - 2), min($documentTypes->lastPage(), $documentTypes->currentPage() + 2)) as $page => $url)
+                                    @if ($page == $documentTypes->currentPage())
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $documentTypes->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        </li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($documentTypes->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $documentTypes->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next" onclick="showPaginationLoading(event)">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
+                    @endif
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL TAMBAH/EDIT DOKUMEN -->
+<div class="modal fade" id="modalDokumen" tabindex="-1" aria-labelledby="modalDokumenLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDokumenLabel">
+                    <i class="mdi mdi-file-document-plus-outline me-2" id="modalIcon"></i>
+                    <span id="modalTitle">Tambah Dokumen</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formDokumen" method="POST" onsubmit="return submitForm(event)">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                
+                <div class="modal-body">
+                    <div class="modal-form-group mb-3">
+                        <label>
+                            <i class="mdi mdi-file-document me-1"></i>Nama Dokumen <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="name" id="namaDokumen" class="modal-form-control" placeholder="Contoh: KTP, KK, NPWP" required>
+                    </div>
+
+                    <div class="modal-form-group mb-3">
+                        <label>
+                            <i class="mdi mdi-information-outline me-1"></i>Deskripsi <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="description" id="deskripsiDokumen" class="modal-form-control" placeholder="Contoh: Keterangan dokumen" required>
+                    </div>
+                    
+                    <!-- Ini untuk code jika model membutuhkan, pada data aslinya ada code di modal Edit (line 452) -->
+                    <!-- Jika di model Document tidak ada code, fitur tambahannya akan diproses backend sesuai kebutuhan -->
+                    <div class="modal-form-group mb-3 d-none" id="codeFormGroup">
+                        <label>
+                            <i class="mdi mdi-code-tags me-1"></i>Code
+                        </label>
+                        <input type="text" name="code" id="codeDokumen" class="modal-form-control" placeholder="Contoh: SHM">
+                    </div>
+
+                    <!-- Optional Fields / Hidden defaults -->
+                    <input type="hidden" name="accept" value=".jpg,.jpeg,.png,.pdf">
+                    <input type="hidden" name="icon" value="mdi-file-document-outline">
+
+                    <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded mt-3">
+                        <div>
+                            <span class="fw-bold d-block">Dokumen Wajib Upload</span>
+                            <small class="text-muted">
+                                Aktifkan jika dokumen wajib dilengkapi
                             </small>
                         </div>
-
-                        <div class="modal-switch-container">
-                            <div>
-                                <span class="fw-semibold d-block">Dokumen Wajib Upload</span>
-                                <small class="text-muted">
-                                    Aktifkan jika dokumen wajib dilengkapi
-                                </small>
-                            </div>
-
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" name="required" value="1" checked>
-                            </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="required" value="1" id="requiredCheckbox" checked style="cursor: pointer; width: 40px; height: 20px;">
                         </div>
-
-                        <!-- Default Format File -->
-                        <input type="hidden" name="accept" value=".jpg,.jpeg,.png,.pdf">
-
-                        <!-- Default Icon -->
-                        <input type="hidden" name="icon" value="mdi-file-document-outline">
-
                     </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="modal-btn modal-btn-outline" data-bs-dismiss="modal">
-                            <i class="mdi mdi-close me-1"></i> Batal
-                        </button>
-
-                        <button type="submit" class="modal-btn modal-btn-primary">
-                            <i class="mdi mdi-content-save me-1"></i> Simpan
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL EDIT DOKUMEN -->
-    <div class="modal fade" id="modalEditDokumen" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-pencil-box-outline"></i>
-                        Edit Master Dokumen
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" id="formEditDokumen">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="modal-form-group">
-                            <label class="form-label fw-semibold">
-                                Nama Dokumen <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="name" id="editName" class="modal-form-control"
-                                placeholder="Masukkan nama dokumen" required>
-                        </div>
-
-                        <div class="modal-form-group">
-                            <label class="form-label fw-semibold">
-                                Code <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="code" id="editCode" class="modal-form-control"
-                                placeholder="Contoh: SHM" required>
-                        </div>
-
-                        <div class="modal-switch-container">
-                            <div>
-                                <span class="fw-semibold d-block">
-                                    Dokumen memiliki masa berlaku
-                                </span>
-                                <small class="text-muted">
-                                    Aktifkan jika dokumen memiliki tanggal kadaluarsa
-                                </small>
-                            </div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" name="has_expiry" value="1"
-                                    id="editHasExpiry">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="modal-btn modal-btn-outline" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="modal-btn modal-btn-primary">Update</button>
-                    </div>
-                </form>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary" id="submitBtn">
+                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                        <span id="btnText">Simpan</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            // Inisialisasi DataTables hanya jika ada data
-            const tableElement = document.getElementById('tableDokumen');
-            if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-                // Destroy existing DataTable if any
-                if ($.fn.DataTable.isDataTable('#tableDokumen')) {
-                    $('#tableDokumen').DataTable().destroy();
-                }
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                // Initialize DataTable with minimal features
-                $('#tableDokumen').DataTable({
-                    responsive: true,
-                    ordering: true,
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    destroy: true,
-                    language: {
-                        emptyTable: "Belum ada data dokumen izin",
-                        zeroRecords: "Data tidak ditemukan",
-                    },
-                    columnDefs: [{
-                            orderable: false,
-                            targets: [0, 4]
-                        } // Kolom No dan Aksi tidak bisa diurutkan
-                    ]
-                });
+<script>
+$(document).ready(function() {
+    // Sorting functionality
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
+
+        // Tampilkan loading
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang mengurutkan data',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
+    });
+
+    // Notifikasi sukses
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#9a55ff',
+            timerProgressBar: true
+        });
+    @endif
+
+    // Notifikasi error
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Ooops!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
+        });
+    @endif
+    
+    // Validasi error
+    @if($errors->any())
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validasi Gagal',
+            html: `
+                <ul style="text-align: left; margin-top: 10px;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            `,
+            confirmButtonColor: '#9a55ff'
+        });
+    @endif
+});
+
+// Fungsi loading filter
+function showFilterLoading() {
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    return true;
+}
+
+// Fungsi loading reset
+function showResetLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+// Fungsi loading pagination
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+// Fungsi form submit
+function submitForm(event) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang menyimpan data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    setTimeout(() => {
+        document.getElementById('formDokumen').submit();
+    }, 100);
+
+    return false;
+}
+
+// Buka Modal Tambah/Edit
+function openModal(type, id = null) {
+    if (type === 'tambah') {
+        $('#formDokumen')[0].reset();
+        $('#methodField').val('POST');
+        $('#formDokumen').attr('action', '{{ route("documents.storePersiapanPecahLegal") }}');
+
+        $('#modalTitle').text('Tambah Dokumen');
+        $('#modalIcon').removeClass('mdi-pencil').addClass('mdi-file-document-plus-outline');
+        $('#btnText').text('Simpan');
+        $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
+        
+        $('#requiredCheckbox').prop('checked', true); // default true for new
+        $('#codeFormGroup').addClass('d-none'); // Hide code on create since Original didn't have it
+
+        $('#modalDokumen').modal('show');
+    } else {
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            html: 'Sedang mengambil data dokumen',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // AJAX Fetch
+        $.get('/documents/persiapan-pecah-legal/' + id + '/edit', function(data) {
+            Swal.close();
+
+            $('#namaDokumen').val(data.name);
+            $('#deskripsiDokumen').val(data.description);
+            $('#requiredCheckbox').prop('checked', data.required == 1);
+            if(data.code !== undefined && data.code !== null){
+                 $('#codeFormGroup').removeClass('d-none');
+                 $('#codeDokumen').val(data.code);
             }
 
-            // Handle Edit Button
-            $(document).on('click', '.btn-edit', function() {
-                let id = $(this).data('id');
+            $('#methodField').val('PUT');
+            $('#formDokumen').attr('action', '/documents/persiapan-pecah-legal/' + id);
 
-                $.ajax({
-                    url: '/dashboard-dokument/' + id + '/edit',
-                    type: 'GET',
-                    success: function(response) {
-                        $('#editName').val(response.name);
-                        $('#editCode').val(response.code);
-                        $('#editHasExpiry').prop('checked', response.has_expiry == 1);
-                        $('#formEditDokumen').attr('action', '/dashboard-dokument/' + id +
-                            '/update');
-                        $('#modalEditDokumen').modal('show');
-                    },
-                    error: function() {
-                        Swal.fire('Error', 'Data tidak ditemukan', 'error');
-                    }
-                });
+            $('#modalTitle').text('Edit Dokumen');
+            $('#modalIcon').removeClass('mdi-file-document-plus-outline').addClass('mdi-pencil');
+            $('#btnText').text('Update');
+            $('#btnIcon').removeClass('mdi-content-save').addClass('mdi-pencil');
+
+            $('#modalDokumen').modal('show');
+        }).fail(function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengambil data dokumen',
+                confirmButtonColor: '#dc3545'
             });
-
-            // Handle Delete Confirmation
-            $('.form-delete').on('submit', function(e) {
-                e.preventDefault();
-                let form = this;
-
-                Swal.fire({
-                    title: 'Yakin hapus data?',
-                    text: "Data tidak bisa dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-
-            // Sweet Alert for Session
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: "{{ session('success') }}",
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            @endif
-
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: "{{ session('error') }}",
-                    confirmButtonColor: '#d33'
-                });
-            @endif
-
-            @if ($errors->any())
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Validasi Gagal',
-                    html: `{!! implode('<br>', $errors->all()) !!}`
-                });
-            @endif
         });
-    </script>
+    }
+}
+
+// Konfirmasi Hapus
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return new Promise((resolve) => {
+                Swal.fire({
+                    title: 'Menghapus...',
+                    html: 'Sedang menghapus data',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                setTimeout(() => {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ url("documents") }}/' + id;
+
+                    let csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = '{{ csrf_token() }}';
+
+                    let methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+
+                    form.appendChild(csrfInput);
+                    form.appendChild(methodInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+
+                    resolve();
+                }, 100);
+            });
+        }
+    });
+}
+</script>
 @endpush

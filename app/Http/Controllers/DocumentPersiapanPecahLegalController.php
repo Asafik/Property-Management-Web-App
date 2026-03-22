@@ -70,6 +70,36 @@ public function index()
 
         return back()->with('success', 'Dokumen berhasil ditambahkan');
     }
+    public function edit($id)
+    {
+        $document = Document::findOrFail($id);
+        return response()->json($document);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255'
+        ]);
+
+        $document = Document::findOrFail($id);
+        
+        $updateData = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'required' => $request->has('required')
+        ];
+        
+        if ($request->has('code')) {
+            $updateData['code'] = $request->code;
+        }
+        
+        $document->update($updateData);
+
+        return redirect()->back()->with('success', 'Dokumen berhasil diperbarui');
+    }
+
     public function destroy($id)
 {
     $document = Document::findOrFail($id);

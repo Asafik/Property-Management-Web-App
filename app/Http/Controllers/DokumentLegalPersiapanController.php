@@ -32,10 +32,20 @@ class DokumentLegalPersiapanController extends Controller
         }
     }
 
+    // Sorting
+    $sortField = $request->input('sortField', 'created_at');
+    $sortDirection = $request->input('sortDirection', 'desc');
+
+    $allowedSortFields = ['name', 'description', 'required', 'created_at'];
+    if (in_array($sortField, $allowedSortFields)) {
+        $query->orderBy($sortField, $sortDirection === 'asc' ? 'asc' : 'desc');
+    } else {
+        $query->orderBy('created_at', 'desc');
+    }
+
     $perPage = $request->input('per_page', 10);
 
     $documentTypes = $query
-        ->latest()
         ->paginate($perPage)
         ->withQueryString();
 
