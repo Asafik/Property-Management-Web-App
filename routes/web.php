@@ -82,6 +82,7 @@ Route::middleware(['auth','position:1,2,3,4,5'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/proyek/refresh', [DashboardController::class, 'refresh']);
 Route::get('/notifications/read/{id}', function ($id) {
     $notif = auth()->user()->notifications()->find($id);
 

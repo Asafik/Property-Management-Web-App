@@ -612,7 +612,7 @@ th.active-sort .sort-icon {
                                             <button type="button" class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
-                                            <button type="button" class="btn btn-gradient-secondary btn-icon-only flex-fill" id="resetBtn" title="Reset">
+                                            <button type="button" class="btn btn-gradient-secondary btn-icon-only flex-fill" id="refreshBTN" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
                                         </div>
@@ -922,7 +922,7 @@ th.active-sort .sort-icon {
                                         <th>No</th>
                                         <th>Nama Unit</th>
                                         <th>Type Unit</th>
-                                        <th>Progress</th>
+                                        <th>Proses Pembangunan</th>
                                         <th>Booking</th>
                                         <th>Status</th>
                                     </tr>
@@ -1121,5 +1121,117 @@ $(document).ready(function() {
 function lihatDetail(id) {
     console.log('Lihat detail ID: ' + id);
 }
+</script>
+<script>
+$('#refreshBTN').click(function () {
+
+    // 🔥 TAMPILKAN LOADING
+    Swal.fire({
+        title: 'Memuat data...',
+        html: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: '/proyek/refresh',
+        type: 'GET',
+        success: function (res) {
+            let tbody = '';
+
+            res.forEach((item, index) => {
+
+                let company = item.company_profile?.name ?? '-';
+                let units = item.units ? item.units.length : 0;
+
+                let statusBadge = '';
+                if (item.status === 'ready') {
+                    statusBadge = `
+                        <span class="status-badge-gradient success">
+                            <i class="mdi mdi-check-circle"></i> Tersedia
+                        </span>`;
+                } else if (item.status === 'sold') {
+                    statusBadge = `
+                        <span class="status-badge-gradient danger">
+                            <i class="mdi mdi-close-circle"></i> Terjual
+                        </span>`;
+                } else {
+                    statusBadge = `
+                        <span class="status-badge-gradient warning">
+                            <i class="mdi mdi-clock"></i> ${item.status ?? '-'}
+                        </span>`;
+                }
+
+                tbody += `
+                    <tr>
+                        <td class="text-center fw-bold">${index + 1}</td>
+
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-city text-primary me-2"></i>
+                                <span class="fw-bold">${item.name ?? '-'}</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-domain text-primary me-2"></i>
+                                <span>${company}</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="type-badge">
+                                <i class="mdi mdi-home"></i> ${item.zoning ?? '-'}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-map-marker text-primary me-2"></i>
+                                <span>${item.address ?? '-'}</span>
+                            </div>
+                        </td>
+
+                        <td>${statusBadge}</td>
+
+                        <td class="text-price">
+                            Rp ${Number(item.acquisition_price ?? 0).toLocaleString('id-ID')}
+                        </td>
+
+                        <td>
+                            <span class="unit-badge">${units} Unit</span>
+                        </td>
+
+                        <td class="text-center">
+                            <button class="btn btn-outline-purple btn-sm"
+                                onclick="lihatDetail(${item.id})">
+                                <i class="mdi mdi-eye"></i> Lihat
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            $('#proyekTable tbody').html(tbody);
+
+            // ✅ TUTUP LOADING
+            Swal.close();
+        },
+        error: function (err) {
+            Swal.close();
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Tidak dapat memuat data'
+            });
+
+            console.error('Gagal refresh:', err);
+        }
+    });
+});
 </script>
 @endpush

@@ -113,4 +113,10 @@ class DashboardController extends Controller
             'filterOptions'
         ));
     }
+    public function refresh()
+{
+    $data = LandBank::with('companyProfile','units')->get();
+
+    return response()->json($data);
+}
 }
