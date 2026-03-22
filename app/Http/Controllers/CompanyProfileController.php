@@ -12,15 +12,35 @@ class CompanyProfileController extends Controller
     {
         $query = CompanyProfile::query();
 
+        // Search filter
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('name', 'like', "%{$search}%");
         }
 
+        // Sorting
+        $sortField = $request->get('sortField', 'created_at');
+        $sortDirection = $request->get('sortDirection', 'desc');
+
+        // Kolom yang valid untuk sorting
+        $validSortFields = ['name', 'address', 'phone', 'land_banks_count', 'created_at'];
+
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField == 'land_banks_count') {
+                // Jika sorting berdasarkan jumlah land bank
+                $query->withCount('landBanks')->orderBy('land_banks_count', $sortDirection);
+            } else {
+                $query->orderBy($sortField, $sortDirection);
+            }
+        } else {
+            $query->latest(); // Default sorting by created_at desc
+        }
+
+        // Jumlah tampil per halaman
         $perPage = $request->input('per_page', 10);
 
+        // Ambil data dengan pagination
         $companies = $query->withCount('landBanks')
-                          ->latest()
                           ->paginate($perPage)
                           ->withQueryString();
 

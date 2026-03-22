@@ -35,11 +35,35 @@ class PromoController extends Controller
             $query->where('status', $request->status);
         }
 
+        // Sorting
+        $sortField = $request->get('sortField', 'created_at');
+        $sortDirection = $request->get('sortDirection', 'desc');
+
+        // Kolom yang valid untuk sorting
+        $validSortFields = [
+            'name',
+            'category',
+            'type',
+            'value',
+            'validity_period',
+            'status',
+            'start_date',
+            'end_date',
+            'duration_days',
+            'created_at'
+        ];
+
+        if (in_array($sortField, $validSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        } else {
+            $query->latest(); // Default sorting by created_at desc
+        }
+
         // Jumlah tampil per halaman (10, 15, 25)
         $perPage = $request->input('per_page', 10);
 
         // Ambil data dengan pagination
-        $promo = $query->latest()->paginate($perPage)->withQueryString();
+        $promo = $query->paginate($perPage)->withQueryString();
 
         return view('promo.promo', compact('promo'));
     }
