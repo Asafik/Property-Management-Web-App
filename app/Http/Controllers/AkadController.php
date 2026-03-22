@@ -19,6 +19,21 @@ class AkadController extends Controller
 
         return view('marketing.akad_cash', compact('booking'));
     }
+    function generateNoAkad()
+    {
+        $year = date('Y');
+        $prefix = "AKAD/CASH/$year/";
+
+        $lastNumber = Akad::whereYear('created_at', $year)->count() + 1;
+
+        do {
+            $noAkad = $prefix . str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+            $exists = Akad::where('no_akad', $noAkad)->exists();
+            $lastNumber++;
+        } while ($exists);
+
+        return $noAkad;
+    }
     public function store(Request $request, Booking $booking)
     {
         try {
@@ -55,7 +70,7 @@ class AkadController extends Controller
 
             // ===== FORM SELESAI =====
             if ($request->filled('tanggal_akad')) {
-                $noAkad = $request->no_akad ?? 'AKD-' . date('Y') . '-' . str_pad(Akad::count() + 1, 4, '0', STR_PAD_LEFT);
+               $noAkad = $request->no_akad ?? $this->generateNoAkad();
 
                 Akad::create([
                     'booking_id' => $booking->id,
@@ -69,6 +84,7 @@ class AkadController extends Controller
                 // Update status akad di booking
                 $booking->update([
                     'status_akad' => 'done',
+                    'status' => 'akad',
                     'akad_date' => now()
 
                 ]);
@@ -162,7 +178,7 @@ class AkadController extends Controller
             // ===== FORM SELESAI =====
             if ($request->filled('tanggal_akad')) {
 
-                $noAkad = $request->no_akad ?? 'AKD-' . date('Y') . '-' . str_pad(Akad::count() + 1, 4, '0', STR_PAD_LEFT);
+             $noAkad = $request->no_akad ?? $this->generateNoAkad();
 
                 Akad::create([
                     'booking_id' => $booking->id,
@@ -176,6 +192,7 @@ class AkadController extends Controller
                 // ✅ Update booking
                 $booking->update([
                     'status_akad' => 'done',
+                    'status' => 'akad',
                     'akad_date' => now()
                 ]);
 

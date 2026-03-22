@@ -327,7 +327,7 @@ Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
 Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
 
 
-Route::get('/akad/akad-cash/{booking}', [AkadController::class, 'index'])->name('akad.cash');
+Route::get('/akad/akad-cash-keras/{booking}', [AkadController::class, 'index'])->name('akad.cash');
 Route::post('/akad/akad-cash/{booking}/store', [AkadController::class, 'store'])->name('akad.cash.store');
 Route::get('/akad/akad-cash/serah-terima/{booking}', [SerahTerimaController::class, 'index'])->name('booking.serah-terima');
 Route::post('/akad/akad-cash/serah-terima/{booking}/store', [SerahTerimaController::class, 'store'])->name('serah-terima.store');

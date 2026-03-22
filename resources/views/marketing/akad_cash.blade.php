@@ -558,6 +558,11 @@
                                         {{ $booking->unit->type }}</span>
                                 </div>
                                 <div>
+                                    <small class="text-muted d-block">Jenis Unit</small>
+                                    <span
+                                        class="fw-medium">{{ $booking->unit->jenis == 'komersil' ? 'Komersil' : '-' }}</span>
+                                </div>
+                                <div>
                                     <small class="text-muted d-block">Blok/No</small>
                                     <span class="fw-medium">{{ $booking->unit->unit_code }}</span>
                                 </div>
@@ -581,7 +586,7 @@
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="mdi mdi-timeline-text me-2 text-primary"></i>
-                            Tahapan Akad Cash
+                            Tahapan Akad Cash Keras
                         </h5>
 
                         <!-- Progress Bar -->
@@ -599,44 +604,80 @@
                         <!-- Timeline Steps -->
                         @php
                             $steps = [
-                                'active' => 'Booking',
-                                'cash_process' => 'Pelunasan',
+                                'booking' => 'Booking',
+                                'cash' => 'Pelunasan',
+                                'legal' => 'Persiapan Legal',
+                                'construction' => 'Pembangunan',
                                 'akad' => 'Akad',
                                 'completed' => 'Serah Terima',
                             ];
-
-                            $currentStatus = $booking->status;
-                            $statusOrder = array_keys($steps);
-                            $currentIndex = array_search($currentStatus, $statusOrder);
+                            $isBookingDone = !empty($booking->booking_date);
+                            $isCashDone = strtolower($booking->status_cash) == 'done';
+                            $isLegalDone = strtolower($booking->status_legal) == 'done';
+                            $construction = strtolower($booking->unit->construction_progress ?? '');
+                            $isBuildDone = $construction == 'selesai';
+                            $isAkadDone = $booking->status == 'akad';
+                            $isCompleted = $booking->status == 'completed';
                         @endphp
 
                         <div class="row g-2 g-md-0">
                             @foreach ($steps as $key => $label)
                                 @php
-                                    $index = array_search($key, $statusOrder);
-                                    $isCompleted = $index < $currentIndex;
-                                    $isActive = $index == $currentIndex;
+                                    $isStepCompleted = false;
+                                    $isStepActive = false;
+                                    if ($key == 'booking') {
+                                        $isStepCompleted = $isBookingDone;
+                                        $isStepActive = !$isBookingDone;
+                                    }
+                                    if ($key == 'cash') {
+                                        $isStepCompleted = $isCashDone;
+                                        $isStepActive = $isBookingDone && !$isCashDone;
+                                    }
 
-                                    if ($key == 'akad' && $booking->status === 'akad') {
-                                        $isCompleted = true;
-                                        $isActive = false;
+                                    if ($key == 'legal') {
+                                        $isStepCompleted = $isLegalDone;
+                                        $isStepActive = $isCashDone && !$isLegalDone;
+                                    }
+
+                                    if ($key == 'construction') {
+                                        if ($construction == 'selesai') {
+                                            $isStepCompleted = true;
+                                        } elseif ($construction == 'proses') {
+                                            $isStepActive = true;
+                                        }
+                                    }
+
+                                    if ($key == 'akad') {
+                                        if ($isAkadDone) {
+                                            $isStepCompleted = true;
+                                        } elseif ($isCashDone && $isLegalDone && $isBuildDone) {
+                                            $isStepActive = true;
+                                        }
+                                    }
+
+                                    if ($key == 'completed') {
+                                        $isStepCompleted = $isCompleted;
                                     }
                                 @endphp
 
                                 <div class="col text-center mb-3 mb-md-0">
-                                    <div class="step {{ $isCompleted ? 'completed' : ($isActive ? 'active' : '') }}">
+                                    <div
+                                        class="step {{ $isStepCompleted ? 'completed' : ($isStepActive ? 'active' : '') }}">
+
                                         <div class="step-icon
-                                            {{ $isCompleted ? 'bg-success text-white' : ($isActive ? 'bg-warning text-white' : 'bg-light text-muted') }}
+                                            {{ $isStepCompleted ? 'bg-success text-white' : ($isStepActive ? 'bg-warning text-white' : 'bg-light text-muted') }}
                                             rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
                                             style="width: 35px; height: 35px;">
 
-                                            @if ($isCompleted)
+                                            @if ($isStepCompleted)
                                                 <i class="mdi mdi-check"></i>
-                                            @elseif($isActive)
-                                                @if($key == 'akad')
+                                            @elseif($isStepActive)
+                                                @if ($key == 'construction')
+                                                    <i class="mdi mdi-hammer"></i>
+                                                @elseif($key == 'akad')
                                                     <i class="mdi mdi-handshake"></i>
-                                                @elseif($key == 'completed')
-                                                    <i class="mdi mdi-certificate"></i>
+                                                @elseif($key == 'legal')
+                                                    <i class="mdi mdi-file-document"></i>
                                                 @else
                                                     <i class="mdi mdi-cash"></i>
                                                 @endif
@@ -645,21 +686,42 @@
                                             @endif
                                         </div>
 
-                                        <span class="d-block
-                                            {{ $isCompleted ? 'text-success' : ($isActive ? 'text-warning' : 'text-muted') }}
-                                            small fw-medium">
+                                        <span
+                                            class="d-block
+                                        {{ $isStepCompleted ? 'text-success' : ($isStepActive ? 'text-warning' : 'text-muted') }}
+                                        small fw-medium">
                                             {{ $label }}
                                         </span>
 
                                         <small class="text-muted d-none d-sm-block">
-                                            @if ($key == 'active' && $booking->booking_date)
+                                            @if ($key == 'booking' && $booking->booking_date)
                                                 {{ $booking->booking_date->format('d M Y') }}
-                                            @elseif($isCompleted || $isActive)
+                                            @elseif($isStepCompleted || $isStepActive)
                                                 {{ $booking->updated_at->format('d M Y') }}
                                             @else
                                                 Menunggu
                                             @endif
                                         </small>
+
+
+                                        @if ($key == 'legal' && !$isStepCompleted && !$isStepActive)
+                                            <small class="text-danger d-block">
+                                                Menunggu proses legal
+                                            </small>
+                                        @endif
+
+                                        @if ($key == 'construction' && !$isStepCompleted && !$isStepActive)
+                                            <small class="text-danger d-block">
+                                                Belum mulai pembangunan
+                                            </small>
+                                        @endif
+
+                                        @if ($key == 'akad' && !$isStepCompleted && !$isStepActive)
+                                            <small class="text-danger d-block">
+                                                Menunggu Cash, Legal & Pembangunan
+                                            </small>
+                                        @endif
+
                                     </div>
                                 </div>
                             @endforeach
@@ -729,8 +791,22 @@
                         <div class="mt-3">
                             <small class="text-muted d-block mb-2">Metode Pembayaran:</small>
                             <span
-                                class="badge {{ $booking->purchase_type === 'cash' ? 'bg-success' : ($booking->purchase_type === 'kpr' ? 'bg-primary' : 'bg-secondary') }}">
-                                {{ $booking->purchase_type === 'cash' ? 'Cash' : ($booking->purchase_type === 'kpr' ? 'KPR' : '-') }}
+                                                        class="badge 
+                            {{ $booking->purchase_type === 'cash'
+                                ? 'bg-success'
+                                : ($booking->purchase_type === 'kpr'
+                                    ? 'bg-primary'
+                                    : ($booking->purchase_type === 'cash_tempo'
+                                        ? 'bg-warning'
+                                        : 'bg-secondary')) }}">
+
+                                {{ $booking->purchase_type === 'cash'
+                                    ? 'Cash Keras'
+                                    : ($booking->purchase_type === 'kpr'
+                                        ? 'KPR'
+                                        : ($booking->purchase_type === 'cash_tempo'
+                                            ? 'Cash Tempo'
+                                            : '-')) }}
                             </span>
                         </div>
                     </div>
@@ -738,7 +814,8 @@
             </div>
         </div>
 
-        <form id="formAkad" action="{{ route('akad.cash.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="formAkad" action="{{ route('akad.cash.store', $booking->id) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
 
             <!-- Hidden input untuk status akad - SEKARANG DI DALAM FORM -->
@@ -764,7 +841,8 @@
                             <!-- Pilihan Status Akad -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
-                                    <div class="card akad-option-card bg-success text-white" id="pilihSelesai" onclick="setStatus('selesai')">
+                                    <div class="card akad-option-card bg-success text-white" id="pilihSelesai"
+                                        onclick="setStatus('selesai')">
                                         <div class="card-body text-center py-4">
                                             <i class="mdi mdi-check-decagram" style="font-size: 48px;"></i>
                                             <h5 class="mt-3 text-white">AKAD SELESAI</h5>
@@ -773,7 +851,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="card akad-option-card bg-danger text-white" id="pilihBatal" onclick="setStatus('batal')">
+                                    <div class="card akad-option-card bg-danger text-white" id="pilihBatal"
+                                        onclick="setStatus('batal')">
                                         <div class="card-body text-center py-4">
                                             <i class="mdi mdi-close-octagon" style="font-size: 48px;"></i>
                                             <h5 class="mt-3 text-white">AKAD BATAL</h5>
@@ -819,8 +898,8 @@
                                                     <span class="akad-input-group-text">Rp</span>
                                                 </div>
                                                 <input type="text" class="akad-form-control"
-                                                       value="{{ number_format($booking->unit->price - $booking->unit->harga_nego, 0, ',', '.') }}"
-                                                       readonly>
+                                                    value="{{ number_format($booking->unit->price - $booking->unit->harga_nego, 0, ',', '.') }}"
+                                                    readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -839,7 +918,8 @@
                                 <div class="akad-form-group">
                                     <label>Upload Dokumen Akad</label>
                                     <div class="akad-file-upload-modern">
-                                        <input type="file" name="dokumen" id="uploadAkad" accept=".jpg,.jpeg,.png,.pdf">
+                                        <input type="file" name="dokumen" id="uploadAkad"
+                                            accept=".jpg,.jpeg,.png,.pdf">
                                         <div class="akad-file-label-modern">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="akad-file-info-modern">
@@ -895,14 +975,16 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="akad-tindakan-card">
-                                            <input type="radio" name="tindakan" id="tindakanRefund" value="refund" checked>
+                                            <input type="radio" name="tindakan" id="tindakanRefund" value="refund"
+                                                checked>
                                             <label class="akad-tindakan-label" for="tindakanRefund">
                                                 <div class="akad-tindakan-icon"><i class="mdi mdi-cash-refund"></i></div>
                                                 <div class="akad-tindakan-content">
                                                     <span class="akad-tindakan-title">Refund DP</span>
                                                     <span class="akad-tindakan-desc">Kembalikan uang muka</span>
                                                 </div>
-                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i></div>
+                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
@@ -915,7 +997,8 @@
                                                     <span class="akad-tindakan-title">DP Hangus</span>
                                                     <span class="akad-tindakan-desc">Sesuai perjanjian</span>
                                                 </div>
-                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i></div>
+                                                <div class="akad-tindakan-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
@@ -937,11 +1020,12 @@
                 <div class="col-12 col-lg-4">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h5 class="card-title"><i class="mdi mdi-information me-2 text-primary"></i>Informasi Akad</h5>
+                            <h5 class="card-title"><i class="mdi mdi-information me-2 text-primary"></i>Informasi Akad
+                            </h5>
 
                             @php
                                 $totalDibayar = $booking->unit->price;
-                               
+
                                 $statusLunas = $booking->finalPayment->type ?? '-';
                             @endphp
 
@@ -963,8 +1047,8 @@
                             @if ($booking->status_akad === 'done')
                                 <div class="mt-3">
                                     <a href="{{ route('booking.serah-terima', $booking->id) }}"
-                                       class="btn btn-primary w-100">
-                                       <i class="mdi mdi-key me-1"></i> Serah Terima Unit
+                                        class="btn btn-primary w-100">
+                                        <i class="mdi mdi-key me-1"></i> Serah Terima Unit
                                     </a>
                                 </div>
                             @endif
@@ -977,143 +1061,146 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    function setStatus(status) {
-        document.getElementById('statusAkad').value = status;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function setStatus(status) {
+            document.getElementById('statusAkad').value = status;
 
-        if (status === 'selesai') {
-            document.getElementById('formSelesai').style.display = 'block';
-            document.getElementById('formBatal').style.display = 'none';
-            document.getElementById('pilihSelesai').classList.add('border', 'border-white', 'border-3');
-            document.getElementById('pilihBatal').classList.remove('border', 'border-white', 'border-3');
-        } else {
-            document.getElementById('formBatal').style.display = 'block';
-            document.getElementById('formSelesai').style.display = 'none';
-            document.getElementById('pilihBatal').classList.add('border', 'border-white', 'border-3');
-            document.getElementById('pilihSelesai').classList.remove('border', 'border-white', 'border-3');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const alasanBatal = document.getElementById('alasanBatal');
-        if (alasanBatal) {
-            alasanBatal.addEventListener('change', function() {
-                const alasanLainnya = document.getElementById('alasanLainnya');
-                if (this.value === 'Lainnya') {
-                    alasanLainnya.style.display = 'block';
-                } else {
-                    alasanLainnya.style.display = 'none';
-                }
-            });
-        }
-
-        const uploadAkad = document.getElementById('uploadAkad');
-        if (uploadAkad) {
-            uploadAkad.addEventListener('change', function(e) {
-                const fileName = e.target.files[0]?.name;
-                const fileSize = e.target.files[0]?.size;
-                const label = this.closest('.akad-file-upload-modern').querySelector('.akad-file-info-modern span');
-                const sizeSpan = this.closest('.akad-file-upload-modern').querySelector('.akad-file-size');
-
-                if (fileName) {
-                    label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
-                    if (fileSize) {
-                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                        sizeSpan.textContent = sizeInMB + ' MB';
-                    }
-                } else {
-                    label.textContent = 'Upload Dokumen Akad';
-                    sizeSpan.textContent = '';
-                }
-            });
-        }
-
-        @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#9a55ff'
-            });
-        @endif
-
-        @if(session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Terjadi Kesalahan',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#9a55ff'
-            });
-        @endif
-    });
-
-    document.getElementById('formAkad').addEventListener('submit', function(e) {
-        const status = document.getElementById('statusAkad').value;
-
-        if (!status) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning',
-                title: 'Pilih Status Akad',
-                text: 'Silakan pilih AKAD SELESAI atau AKAD BATAL terlebih dahulu',
-                confirmButtonColor: '#9a55ff'
-            });
-            return false;
-        }
-
-        if (status === 'selesai') {
-            const tanggal = document.querySelector('input[name="tanggal_akad"]').value;
-            if (!tanggal) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tanggal Akad Harus Diisi',
-                    text: 'Silakan isi tanggal akad',
-                    confirmButtonColor: '#9a55ff'
-                });
-                return false;
+            if (status === 'selesai') {
+                document.getElementById('formSelesai').style.display = 'block';
+                document.getElementById('formBatal').style.display = 'none';
+                document.getElementById('pilihSelesai').classList.add('border', 'border-white', 'border-3');
+                document.getElementById('pilihBatal').classList.remove('border', 'border-white', 'border-3');
+            } else {
+                document.getElementById('formBatal').style.display = 'block';
+                document.getElementById('formSelesai').style.display = 'none';
+                document.getElementById('pilihBatal').classList.add('border', 'border-white', 'border-3');
+                document.getElementById('pilihSelesai').classList.remove('border', 'border-white', 'border-3');
             }
         }
 
-        if (status === 'batal') {
-            const alasan = document.querySelector('select[name="alasan_batal"]').value;
-            if (!alasan) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Alasan Pembatalan Harus Dipilih',
-                    text: 'Silakan pilih alasan pembatalan',
-                    confirmButtonColor: '#9a55ff'
-                });
-                return false;
-            }
-        }
-
-        e.preventDefault();
-
-        Swal.fire({
-            title: 'Simpan Konfirmasi Akad?',
-            text: "Pastikan data akad sudah benar.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#9a55ff',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Simpan',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menyimpan...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                        e.target.submit();
+        document.addEventListener('DOMContentLoaded', function() {
+            const alasanBatal = document.getElementById('alasanBatal');
+            if (alasanBatal) {
+                alasanBatal.addEventListener('change', function() {
+                    const alasanLainnya = document.getElementById('alasanLainnya');
+                    if (this.value === 'Lainnya') {
+                        alasanLainnya.style.display = 'block';
+                    } else {
+                        alasanLainnya.style.display = 'none';
                     }
                 });
             }
+
+            const uploadAkad = document.getElementById('uploadAkad');
+            if (uploadAkad) {
+                uploadAkad.addEventListener('change', function(e) {
+                    const fileName = e.target.files[0]?.name;
+                    const fileSize = e.target.files[0]?.size;
+                    const label = this.closest('.akad-file-upload-modern').querySelector(
+                        '.akad-file-info-modern span');
+                    const sizeSpan = this.closest('.akad-file-upload-modern').querySelector(
+                        '.akad-file-size');
+
+                    if (fileName) {
+                        label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' :
+                            fileName;
+                        if (fileSize) {
+                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                            sizeSpan.textContent = sizeInMB + ' MB';
+                        }
+                    } else {
+                        label.textContent = 'Upload Dokumen Akad';
+                        sizeSpan.textContent = '';
+                    }
+                });
+            }
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#9a55ff'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#9a55ff'
+                });
+            @endif
         });
-    });
-</script>
+
+        document.getElementById('formAkad').addEventListener('submit', function(e) {
+            const status = document.getElementById('statusAkad').value;
+
+            if (!status) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pilih Status Akad',
+                    text: 'Silakan pilih AKAD SELESAI atau AKAD BATAL terlebih dahulu',
+                    confirmButtonColor: '#9a55ff'
+                });
+                return false;
+            }
+
+            if (status === 'selesai') {
+                const tanggal = document.querySelector('input[name="tanggal_akad"]').value;
+                if (!tanggal) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tanggal Akad Harus Diisi',
+                        text: 'Silakan isi tanggal akad',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    return false;
+                }
+            }
+
+            if (status === 'batal') {
+                const alasan = document.querySelector('select[name="alasan_batal"]').value;
+                if (!alasan) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Alasan Pembatalan Harus Dipilih',
+                        text: 'Silakan pilih alasan pembatalan',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    return false;
+                }
+            }
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Simpan Konfirmasi Akad?',
+                text: "Pastikan data akad sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            e.target.submit();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endpush

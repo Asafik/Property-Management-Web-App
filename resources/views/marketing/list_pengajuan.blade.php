@@ -764,11 +764,11 @@
                         <div>
                             <h3 class="text-dark mb-1">
                                 <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
-                                Customer Booking
+                                Customer / User Booking
                             </h3>
                             <p class="text-muted mb-0">
                                 <i class="mdi mdi-information-outline me-1"></i>
-                                Monitoring semua pengajuan KPR dan Cash
+                                Customer / User semua pengajuan KPR dan Cash
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
@@ -1192,6 +1192,24 @@
                                                         </span>
                                                     @break
 
+                                                    @case('lanjut_kpr')
+                                                        <span class="badge badge-info badge-sm">
+                                                            <i class="mdi mdi-arrow-right-bold me-1"></i>Lanjut KPR
+                                                        </span>
+                                                    @break
+
+                                                    @case('legal_done')
+                                                        <span class="badge badge-secondary badge-sm">
+                                                            <i class="mdi mdi-file-document-check-outline me-1"></i>Legal Done
+                                                        </span>
+                                                    @break
+
+                                                    @case('completed')
+                                                        <span class="badge badge-dark badge-sm">
+                                                            <i class="mdi mdi-flag-checkered me-1"></i>Completed
+                                                        </span>
+                                                    @break
+
                                                     @case('cancelled')
                                                         <span class="badge badge-danger badge-sm">
                                                             <i class="mdi mdi-close-circle me-1"></i>Ditolak
@@ -1422,29 +1440,29 @@
         }
     </script>
     <script>
-document.addEventListener("DOMContentLoaded", function(){
+        document.addEventListener("DOMContentLoaded", function() {
 
-    const bookingId = "{{ request('booking_id') }}";
+            const bookingId = "{{ request('booking_id') }}";
 
-    if(bookingId){
+            if (bookingId) {
 
-        const row = document.getElementById("booking-" + bookingId);
+                const row = document.getElementById("booking-" + bookingId);
 
-        if(row){
+                if (row) {
 
-            setTimeout(function(){
+                    setTimeout(function() {
 
-                row.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
+                        row.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
 
-            }, 500);
+                    }, 500);
 
-        }
+                }
 
-    }
+            }
 
-});
-</script>
+        });
+    </script>
 @endpush
