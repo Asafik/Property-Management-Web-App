@@ -243,7 +243,7 @@
 
                         <!-- MENU Pt -->
                         <li class="nav-item">
-                            <a class="nav-link" href="pt">
+                            <a class="nav-link" href="{{ route('company-profile.index') }}">
                                 <span class="menu-title">PT</span>
                             </a>
                         </li>

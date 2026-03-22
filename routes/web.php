@@ -414,19 +414,19 @@ Route::get('/agency/{id}/edit', [AgencyPropertyController::class, 'edit'])->name
 Route::put('/agency/{id}', [AgencyPropertyController::class, 'update'])->name('agency.update');
 Route::delete('/agency/{id}', [AgencyPropertyController::class, 'destroy'])->name('agency.destroy');
 // MASTER DATA PROMO
-Route::get('/promo', [PromoController::class, 'index'])->name('promo.index');
-Route::post('/promo/store', [PromoController::class, 'store'])->name('promo.store');
-Route::get('/promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
-Route::put('/promo/{id}', [PromoController::class, 'update'])->name('promo.update');
-Route::delete('/promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
-Route::get('/promo/{id}', [PromoController::class, 'show'])->name('promo.show');
-Route::get('/promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
+Route::get('/master-data-promo', [PromoController::class, 'index'])->name('promo.index');
+Route::post('/master-data-promo/store', [PromoController::class, 'store'])->name('promo.store');
+Route::get('/master-data-promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
+Route::put('/master-data-promo/{id}', [PromoController::class, 'update'])->name('promo.update');
+Route::delete('/master-data-promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
+Route::get('/master-data-promo/{id}', [PromoController::class, 'show'])->name('promo.show');
+Route::get('/master-data-promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
 // MASTER DATA PT/COMPANY
-Route::get('/pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
-Route::post('/pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
-Route::get('/pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
-Route::put('/pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
-Route::delete('/pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
+Route::get('/master-data-pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+Route::post('/master-data-pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
+Route::get('/master-data-pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
+Route::put('/master-data-pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
+Route::delete('/master-data-pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
 Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
 // MASTER DATA BANK
 Route::get('/master-data-bank', [BankController::class, 'index'])->name('bank.index');

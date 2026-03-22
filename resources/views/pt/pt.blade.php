@@ -1,116 +1,358 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data PT - Property Management App')
+@section('title', 'Master Data Perusahaan - Property Management App')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/pt/pt.css') }}">
 
 <style>
-/* Style untuk alamat dengan ellipsis */
-.address-cell {
-    max-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: help;
+/* ====== CSS ====== */
+.card {
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
+.card-header {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+@media (min-width: 576px) { .card-header { padding: 1rem; } }
+@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
+.card-body { padding: 0.75rem; }
+@media (min-width: 576px) { .card-body { padding: 1rem; } }
+@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
+.card-title { font-size: 0.9rem; font-weight: 600; color: #9a55ff; margin-bottom: 0; }
+@media (min-width: 576px) { .card-title { font-size: 1rem; } }
+@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
+
+/* Filter Card */
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 12px; padding: 1rem; margin-bottom: 1.25rem; border: none;
+}
+.filter-card .form-label {
+    font-size: 0.85rem; font-weight: 600; color: #9a55ff !important;
+    margin-bottom: 0.4rem; letter-spacing: 0.3px;
+}
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.5rem 0.75rem; font-size: 0.9rem;
+    border-radius: 8px; height: auto; min-height: 40px; border: 1px solid #e0e4e9;
 }
 
-.address-cell i {
-    flex-shrink: 0;
-    margin-right: 5px;
+/* Form Controls */
+.form-control, .form-select {
+    border: 1px solid #e9ecef; border-radius: 8px; padding: 0.6rem 0.8rem;
+    font-size: 0.9rem; transition: all 0.2s ease; background-color: #ffffff;
+    color: #2c2e3f; height: auto;
+}
+@media (min-width: 576px) { .form-control, .form-select { padding: 0.7rem 1rem; font-size: 0.95rem; border-radius: 10px; } }
+.form-control:focus, .form-select:focus {
+    border-color: #9a55ff; box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1); outline: none;
+}
+.form-label {
+    font-size: 0.85rem; font-weight: 600; color: #9a55ff !important;
+    margin-bottom: 0.3rem; letter-spacing: 0.3px; font-family: 'Nunito', sans-serif;
 }
 
-.address-cell span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+/* Buttons */
+.btn {
+    font-size: 0.85rem; padding: 0.6rem 1rem; border-radius: 8px;
+    font-weight: 600; transition: all 0.3s ease; font-family: 'Nunito', sans-serif; border: none;
 }
+@media (min-width: 576px) { .btn { font-size: 0.9rem; padding: 0.7rem 1.2rem; border-radius: 10px; } }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; border-radius: 6px; }
+.btn-gradient-primary   { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.btn-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
+.btn-gradient-secondary:hover { background: #5a6268 !important; }
 
-/* Tooltip custom */
-.address-tooltip {
-    position: relative;
+/* Action Buttons */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
-
-.address-tooltip:hover::after {
-    content: attr(data-full-address);
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    background: #2c2e3f;
+.btn-action i {
+    font-size: 1.1rem;
+}
+.btn-action.edit {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+}
+.btn-action.edit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
+.btn-action.delete {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
     color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    white-space: normal;
-    max-width: 400px;
-    min-width: 250px;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    pointer-events: none;
-    word-wrap: break-word;
-    margin-bottom: 5px;
+}
+.btn-action.delete:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
 }
 
-.address-tooltip:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 20px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #2c2e3f transparent transparent transparent;
-    transform: rotate(180deg);
-    margin-bottom: -5px;
-    z-index: 1000;
+.btn-icon-only {
+    width: 40px; height: 40px; padding: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 8px;
 }
-
-/* Fix untuk tombol aksi di mobile */
-.action-buttons {
-    position: relative;
-    z-index: 10;
+.btn-icon-only i { font-size: 1.2rem; margin: 0; }
+.btn-icon-only-mobile {
+    width: 100%; height: 40px; padding: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 8px;
 }
+.btn-icon-only-mobile i { font-size: 1.2rem; margin: 0; }
 
-.btn-outline-warning, .btn-outline-danger {
-    position: relative;
-    z-index: 15;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* DataTables wrapper styling */
-.dataTables_wrapper {
-    width: 100%;
+/* Table Responsive dengan Scrollbar */
+.table-responsive {
     overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    max-height: 500px;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #9a55ff;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #7a3fcc;
+}
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f0f0f0;
 }
 
-/* Pastikan tabel tetap terlihat */
-.table {
-    width: 100% !important;
-    margin-bottom: 0;
+.table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+.table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #9a55ff; font-weight: 600; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.8rem 0.5rem;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.table thead th:hover {
+    color: #7a3fcc;
+}
+.table thead th i {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    opacity: 0.5;
+}
+.table thead th.active-sort {
+    color: #7a3fcc;
+}
+.table thead th.active-sort i {
+    opacity: 1;
+    color: #7a3fcc;
+}
+@media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
+@media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
+.table thead th:first-child { padding-left: 0.5rem; width: 40px; text-align: center; cursor: default; }
+.table thead th:first-child:hover { color: #9a55ff; }
+.table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; width: 40px; text-align: center; }
+.table tbody td {
+    vertical-align: middle; font-size: 0.85rem; padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #e9ecef; color: #2c2e3f;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
+@media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
+.table tbody tr:hover { background-color: #f8f9fa; }
+
+/* Empty State */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #a5b3cb;
+}
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+.empty-state p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+.empty-state small {
+    font-size: 0.85rem;
 }
 
-/* Fix untuk DataTables di mobile */
-@media (max-width: 768px) {
-    .dataTables_wrapper .table {
-        width: 100% !important;
+/* Project Badge - Biru Muda Transparan dengan Border */
+.project-badge {
+    background: rgba(13, 110, 253, 0.1);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    color: #0d6efd;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+.project-badge i {
+    margin-right: 4px;
+    font-size: 0.9rem;
+    color: #0d6efd;
+}
+
+/* Pagination */
+.pagination { margin: 0; gap: 3px; }
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+@media (min-width: 576px) {
+    .page-item .page-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 36px;
     }
+}
+@media (min-width: 768px) {
+    .page-item .page-link {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 40px;
+    }
+}
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+.page-item .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #9a55ff;
+    color: #9a55ff;
+    transform: translateY(-1px);
+}
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+@media (min-width: 576px) {
+    .pagination-info {
+        font-size: 0.85rem;
+    }
+}
+@media (min-width: 768px) {
+    .pagination-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* Modal */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+}
+.modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+}
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+.modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-body {
+    padding: 1.5rem;
+}
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+/* Text colors */
+.text-primary  { color: #9a55ff !important; }
+.text-info     { color: #17a2b8 !important; }
+.text-danger   { color: #dc3545 !important; }
+.text-success  { color: #28a745 !important; }
+.text-warning  { color: #ffc107 !important; }
+.fw-bold       { font-weight: 600 !important; }
+.text-muted    { color: #a5b3cb !important; }
+
+h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !important; margin-bottom: 0.5rem !important; }
+@media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
+@media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
+
+.mdi { vertical-align: middle; }
+
+.filter-row-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.filter-row-desktop .filter-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.filter-row-mobile  { display: none; }
+@media (max-width: 767px) {
+    .filter-row-desktop { display: none; }
+    .filter-row-mobile  { display: block; margin-top: 1rem; }
 }
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
+
+    <!-- Header -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-domain me-2" style="color: #9a55ff;"></i>
-                            Master Data PT
+                            <i class="mdi mdi-domain me-2" style="color: #9a55ff;"></i>Master Data Perusahaan
                         </h3>
                         <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data perusahaan (PT) untuk keperluan administrasi
+                            Kelola data perusahaan/PT
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -121,178 +363,188 @@
         </div>
     </div>
 
-    <!-- Tabel Data PT -->
+    <!-- Tabel Data Perusahaan -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Perusahaan (PT)
+                        <i class="mdi mdi-filter-outline me-2"></i>Daftar Perusahaan
                     </h5>
-                    <div class="ms-auto">
-                        <button type="button" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="openTambahModal()">
-                            <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah PT</span>
-                        </button>
-                    </div>
+                    <button class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="openModal('tambah')">
+                        <i class="mdi mdi-plus me-1"></i>Tambah Perusahaan
+                    </button>
                 </div>
 
                 <div class="card-body">
-                    <!-- Filter Section -->
+                    <!-- FILTER SECTION -->
                     <div class="filter-card mb-4">
                         <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data PT
-                            </h6>
 
-                            <!-- FILTER UNTUK MOBILE -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('company-profile.index') }}" id="filterFormMobile">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                            Cari PT
-                                        </label>
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama PT..." style="height: 45px;">
-                                    </div>
+                            <!-- DESKTOP VERSION -->
+                            <div class="filter-row-desktop">
+                                <div class="filter-text">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data perusahaan</span>
+                                </div>
+                                <form id="filterForm" method="GET" action="{{ route('company-profile.index') }}">
+                                    <div class="row g-2 align-items-end w-100">
 
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                            Tampil per Halaman
-                                        </label>
-                                        <select class="form-control" name="per_page" style="height: 45px;">
-                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                            <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                            <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btnReset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- FILTER UNTUK TABLET & DESKTOP -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('company-profile.index') }}" id="filterFormDesktop">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari PT
-                                            </label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                                placeholder="Cari nama PT...">
+                                        <!-- Search -->
+                                        <div class="col-md-8">
+                                            <label class="form-label">Cari</label>
+                                            <input type="text" class="form-control" name="search" id="searchInput" placeholder="Nama perusahaan..." value="{{ request('search') }}">
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                                Tampil per Halaman
-                                            </label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                        <!-- Tampil - Hanya 10, 15, 25 -->
+                                        <div class="col-md-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                             </select>
                                         </div>
 
+                                        <!-- Tombol Filter + Reset -->
                                         <div class="col-md-2">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
+                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btnReset" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- MOBILE VERSION -->
+                            <div class="filter-row-mobile">
+                                <div class="filter-text mb-2">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data perusahaan</span>
+                                </div>
+                                <form method="GET" action="{{ route('company-profile.index') }}">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Cari</label>
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile" placeholder="Nama perusahaan..." value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" id="filterBtnMobile" title="Filter" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i> Reset
                                             </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
+
                         </div>
                     </div>
 
-                    <!-- Tabel PT -->
+                    <!-- TABEL DATA PERUSAHAAN DENGAN SCROLLBAR -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tablePT" {{ $companies->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="25%">Nama PT</th>
-                                    <th width="35%">Alamat</th>
-                                    <th width="20%">No. Telepon</th>
-                                    <th class="text-center" width="15%">Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Perusahaan
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="address" data-direction="{{ request('sortField') == 'address' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Alamat
+                                        @if(request('sortField') == 'address')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nomor Telepon
+                                        @if(request('sortField') == 'phone')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="land_banks_count" data-direction="{{ request('sortField') == 'land_banks_count' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Total Proyek
+                                        @if(request('sortField') == 'land_banks_count')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($companies as $item)
+                                @forelse ($companies as $index => $company)
                                 <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $companies->firstItem() + $index }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <i class="mdi mdi-domain text-primary me-2" style="font-size: 1.2rem;"></i>
-                                            <span class="fw-bold">{{ $item->name }}</span>
+                                            <span class="fw-bold">{{ $company->name }}</span>
                                         </div>
                                     </td>
                                     <td>
-                                        @if($item->address)
-                                        <div class="d-flex align-items-center address-cell address-tooltip" data-full-address="{{ $item->address }}">
-                                            <i class="mdi mdi-map-marker text-danger me-1 flex-shrink-0"></i>
-                                            <span>{{ $item->address }}</span>
-                                        </div>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($item->phone)
                                         <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-whatsapp text-success me-1"></i>
-                                            {{ $item->phone }}
+                                            <i class="mdi mdi-map-marker text-danger me-2" style="font-size: 1.2rem;"></i>
+                                            <span>{{ $company->address ?? '-' }}</span>
                                         </div>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-phone text-success me-2" style="font-size: 1.2rem;"></i>
+                                            <span>{{ $company->phone ?? '-' }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="project-badge">
+                                            <i class="mdi mdi-office-building"></i> {{ $company->land_banks_count }} Proyek
+                                        </span>
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1 action-buttons">
-                                            <button type="button" class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $item->id }}">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('company-profile.destroy', $item->id) }}" method="POST" class="d-inline formDelete">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" title="Hapus" data-name="{{ $item->name }}">
-                                                    <i class="mdi mdi-delete"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <button class="btn-action edit me-1" title="Edit" onclick="openModal('edit', {{ $company->id }})">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </button>
+                                        <button class="btn-action delete" title="Hapus" onclick="confirmDelete({{ $company->id }})">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-domain-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data PT yang tersedia.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data PT baru.</p>
+                                    <td colspan="6" class="text-center">
+                                        <div class="empty-state">
+                                            <i class="mdi mdi-domain-remove"></i>
+                                            <p>Belum ada data perusahaan</p>
+                                            <small>Klik tombol "Tambah Perusahaan" untuk menambahkan data</small>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -300,53 +552,51 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
-                    @if($companies->count() > 0)
+                    <!-- PAGINATION -->
+                    @if ($companies instanceof \Illuminate\Pagination\LengthAwarePaginator && $companies->total() > 0)
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                         <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan
-                            <span class="fw-bold">{{ $companies->firstItem() }}</span>
-                            -
-                            <span class="fw-bold">{{ $companies->lastItem() }}</span>
-                            dari
-                            <span class="fw-bold">{{ $companies->total() }}</span>
-                            data PT
+                            Menampilkan {{ $companies->firstItem() }} - {{ $companies->lastItem() }} dari {{ $companies->total() }} data
                         </div>
-
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
                                 {{-- Previous Page Link --}}
-                                @if($companies->onFirstPage())
-                                    <li class="page-item disabled">
+                                @if ($companies->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true">
                                         <span class="page-link" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </span>
                                     </li>
                                 @else
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $companies->previousPageUrl() }}" aria-label="Previous">
+                                        <a class="page-link" href="{{ $companies->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous" onclick="showPaginationLoading(event)">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
                                 @endif
 
-                                {{-- Page Links --}}
-                                @foreach ($companies->getUrlRange(1, $companies->lastPage()) as $page => $url)
-                                    <li class="page-item {{ $companies->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                    </li>
+                                {{-- Pagination Elements --}}
+                                @foreach ($companies->getUrlRange(max(1, $companies->currentPage() - 2), min($companies->lastPage(), $companies->currentPage() + 2)) as $page => $url)
+                                    @if ($page == $companies->currentPage())
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $companies->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        </li>
+                                    @endif
                                 @endforeach
 
                                 {{-- Next Page Link --}}
-                                @if($companies->hasMorePages())
+                                @if ($companies->hasMorePages())
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $companies->nextPageUrl() }}" aria-label="Next">
+                                        <a class="page-link" href="{{ $companies->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next" onclick="showPaginationLoading(event)">
                                             <i class="mdi mdi-chevron-right"></i>
                                         </a>
                                     </li>
                                 @else
-                                    <li class="page-item disabled">
+                                    <li class="page-item disabled" aria-disabled="true">
                                         <span class="page-link" aria-label="Next">
                                             <i class="mdi mdi-chevron-right"></i>
                                         </span>
@@ -355,324 +605,300 @@
                             </ul>
                         </nav>
                     </div>
+                    @else
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                        <div class="pagination-info mb-2 mb-sm-0">
+                            Menampilkan 0 - 0 dari 0 data
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <span class="page-link" aria-label="Previous">
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </span>
+                                </li>
+                                <li class="page-item active"><span class="page-link">1</span></li>
+                                <li class="page-item disabled">
+                                    <span class="page-link" aria-label="Next">
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </span>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                        </a>
+</div>
+
+<!-- MODAL TAMBAH/EDIT PERUSAHAAN -->
+<div class="modal fade" id="modalPerusahaan" tabindex="-1" aria-labelledby="modalPerusahaanLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPerusahaanLabel">
+                    <i class="mdi mdi-plus-circle me-2" id="modalIcon"></i>
+                    <span id="modalTitle">Tambah Perusahaan</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formPerusahaan" method="POST" action="{{ route('company-profile.store') }}">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                <input type="hidden" id="perusahaanId" name="id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Perusahaan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="name" id="namaPerusahaan" placeholder="Contoh: PT. Griya Ainaya Sejahtera" value="{{ old('name') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Alamat</label>
+                        <textarea class="form-control" name="address" id="alamat" rows="3" placeholder="Jl. Ahmad Yani No. 123, Jakarta Pusat">{{ old('address') }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Telepon</label>
+                        <input type="text" class="form-control" name="phone" id="nomorTelepon" placeholder="Contoh: (021) 1234-5678" value="{{ old('phone') }}">
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary" id="submitBtn" onclick="showSubmitLoading()">
+                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                        <span id="btnText">Simpan</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- MODAL TAMBAH PT -->
-<div class="modal fade" id="modalTambahPT" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-domain-plus me-2" style="color: #9a55ff;"></i>
-                    Tambah PT Baru
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalTambahPT').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('company-profile.store') }}" method="POST" id="formTambahPT">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-domain me-1"></i>Nama PT <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="name" class="modal-form-control" placeholder="Contoh: PT Properti Management" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-map-marker me-1"></i>Alamat
-                                </label>
-                                <textarea name="address" class="modal-form-control" rows="3" placeholder="Alamat lengkap PT..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-phone me-1"></i>No. Telepon
-                                </label>
-                                <input type="text" name="phone" class="modal-form-control" placeholder="Contoh: 081234567890">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahPT').modal('hide')">Batal</button>
-                <button type="submit" form="formTambahPT" class="btn btn-gradient-primary">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EDIT PT -->
-<div class="modal fade" id="modalEditPT" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit PT
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalEditPT').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="formEditPT">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>Nama PT <span class="text-danger">*</span></label>
-                                <input type="text" name="name" id="editName" class="modal-form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>Alamat</label>
-                                <textarea name="address" id="editAddress" class="modal-form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>No. Telepon</label>
-                                <input type="text" name="phone" id="editPhone" class="modal-form-control">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditPT').modal('hide')">Batal</button>
-                <button type="submit" form="formEditPT" class="btn btn-gradient-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
+<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 $(document).ready(function() {
-    // Fungsi untuk menampilkan loading SweetAlert
-    function showLoading(message = 'Mohon tunggu sebentar') {
+    // Sorting functionality
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
+
+        // Tampilkan loading
         Swal.fire({
             title: 'Memuat...',
-            text: message,
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    }
-
-    // ===== HANDLE FILTER & RESET =====
-    $('#filterFormMobile, #filterFormDesktop').on('submit', function(e) {
-        showLoading('Menyaring data...');
-        // Form akan submit secara normal
-    });
-
-    $('.btnReset').on('click', function(e) {
-        e.preventDefault();
-        showLoading('Mereset filter...');
-        window.location.href = $(this).attr('href');
-    });
-
-    // ===== HANDLE PAGINATION =====
-    $(document).on('click', '.pagination a', function(e) {
-        e.preventDefault();
-        showLoading('Memuat halaman...');
-        window.location.href = $(this).attr('href');
-    });
-
-    // ===== HANDLE TAMBAH MODAL =====
-    window.openTambahModal = function() {
-        $('#modalTambahPT').modal('show');
-    };
-
-    // ===== HANDLE FORM TAMBAH PT =====
-    $('#formTambahPT').on('submit', function(e) {
-        e.preventDefault();
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-        this.submit();
-    });
-
-    // ===== HANDLE EDIT BUTTON CLICK =====
-    $(document).on('click', '.btnEdit', function() {
-        let id = $(this).data('id');
-
-        Swal.fire({
-            title: 'Memuat...',
-            text: 'Mengambil data PT',
+            html: 'Sedang mengurutkan data',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
             }
         });
 
-        $.ajax({
-            url: '/pt/' + id + '/edit',
-            type: 'GET',
-            success: function(response) {
-                Swal.close();
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
 
-                let pt = response;
-                $('#editName').val(pt.name);
-                $('#editAddress').val(pt.address);
-                $('#editPhone').val(pt.phone);
-                $('#formEditPT').attr('action', '/pt/' + id);
-                $('#modalEditPT').modal('show');
-            },
-            error: function(xhr, status, error) {
-                Swal.close();
-                console.error('Error:', error);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Gagal mengambil data PT',
-                    confirmButtonColor: '#9a55ff',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
+        window.location.href = url.toString();
     });
 
-    // ===== HANDLE FORM EDIT PT =====
-    $('#formEditPT').on('submit', function(e) {
-        e.preventDefault();
+    // Notifikasi sukses dari session
+    @if (session('success'))
         Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#9a55ff',
+            timerProgressBar: true,
             didOpen: () => {
-                Swal.showLoading();
+                const timer = Swal.getPopup().querySelector("b");
+                if (timer) {
+                    timer.style.width = "100%";
+                }
             }
         });
-        this.submit();
-    });
+    @endif
 
-    // ===== HANDLE DELETE BUTTON CLICK =====
-    $(document).on('click', '.btnDelete', function() {
-        let form = $(this).closest('.formDelete');
-        let companyName = $(this).data('name');
-
+    // Notifikasi error dari session
+    @if (session('error'))
         Swal.fire({
-            title: 'Hapus PT?',
-            text: "PT " + companyName + " akan dihapus",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                form.submit();
-            }
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
         });
-    });
-
-    // Inisialisasi DataTables
-    const tableElement = document.getElementById('tablePT');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tablePT')) {
-            $('#tablePT').DataTable().destroy();
-        }
-
-        $('#tablePT').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data PT belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [4] }
-            ],
-            autoWidth: false,
-            deferRender: true
-        });
-    }
+    @endif
 });
 
-// Sweet Alert session success
-@if(session('success'))
+// Fungsi loading untuk filter
+function showFilterLoading() {
     Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    return true;
+}
 
-// Sweet Alert session error
-@if(session('error'))
+// Fungsi loading untuk reset
+function showResetLoading(event) {
+    event.preventDefault();
     Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    window.location.href = event.currentTarget.href;
+}
+
+// Fungsi loading untuk pagination
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+// Fungsi loading untuk submit form
+function showSubmitLoading() {
+    Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang menyimpan data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    return true;
+}
+
+// Buka Modal untuk Tambah atau Edit
+function openModal(type, id = null) {
+    if (type === 'tambah') {
+        // Reset form
+        $('#formPerusahaan')[0].reset();
+        $('#perusahaanId').val('');
+        $('#methodField').val('POST');
+        $('#formPerusahaan').attr('action', '{{ route("company-profile.store") }}');
+
+        // Ubah title dan icon
+        $('#modalTitle').text('Tambah Perusahaan');
+        $('#modalIcon').removeClass('mdi-pencil-circle').addClass('mdi-plus-circle');
+        $('#btnText').text('Simpan');
+        $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
+
+        $('#modalPerusahaan').modal('show');
+    } else {
+        // Tampilkan loading saat mengambil data
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            html: 'Sedang mengambil data perusahaan',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Ambil data perusahaan via AJAX
+        $.get('{{ url("pt") }}/' + id + '/edit', function(data) {
+            Swal.close(); // Tutup loading
+
+            $('#perusahaanId').val(data.id);
+            $('#namaPerusahaan').val(data.name);
+            $('#alamat').val(data.address);
+            $('#nomorTelepon').val(data.phone);
+
+            $('#methodField').val('PUT');
+            $('#formPerusahaan').attr('action', '{{ url("pt") }}/' + id);
+
+            // Ubah title dan icon
+            $('#modalTitle').text('Edit Perusahaan');
+            $('#modalIcon').removeClass('mdi-plus-circle').addClass('mdi-pencil-circle');
+            $('#btnText').text('Update');
+            $('#btnIcon').removeClass('mdi-content-save').addClass('mdi-pencil');
+
+            $('#modalPerusahaan').modal('show');
+        }).fail(function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengambil data perusahaan',
+                confirmButtonColor: '#dc3545'
+            });
+        });
+    }
+}
+
+// Fungsi Konfirmasi Hapus dengan Loading
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Tampilkan loading sebelum submit
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Sedang menghapus data',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Buat form delete dan submit setelah loading ditampilkan
+            setTimeout(() => {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("master-data-pt") }}/' + id;
+
+                let csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}';
+
+                let methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+
+                form.appendChild(csrfInput);
+                form.appendChild(methodInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }, 100);
+        }
+    });
+}
 </script>
 @endpush

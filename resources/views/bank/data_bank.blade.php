@@ -5,592 +5,211 @@
 @section('content')
 
 <style>
-    /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN DASHBOARD ===== */
+/* ====== CSS ====== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-
-.card:hover {
-    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-}
-
+.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
 .card-header {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border-bottom: 1px solid #e9ecef;
     padding: 0.75rem;
 }
+@media (min-width: 576px) { .card-header { padding: 1rem; } }
+@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
+.card-body { padding: 0.75rem; }
+@media (min-width: 576px) { .card-body { padding: 1rem; } }
+@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
+.card-title { font-size: 0.9rem; font-weight: 600; color: #9a55ff; margin-bottom: 0; }
+@media (min-width: 576px) { .card-title { font-size: 1rem; } }
+@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
 
-@media (min-width: 576px) {
-    .card-header {
-        padding: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-header {
-        padding: 1.2rem;
-    }
-}
-
-.card-body {
-    padding: 0.75rem;
-}
-
-@media (min-width: 576px) {
-    .card-body {
-        padding: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-body {
-        padding: 1.2rem;
-    }
-}
-
-/* Card Title */
-.card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #9a55ff;
-    margin-bottom: 0;
-}
-
-@media (min-width: 576px) {
-    .card-title {
-        font-size: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-title {
-        font-size: 1.1rem;
-    }
-}
-
-/* ===== FILTER SECTION - DIPERBESAR ===== */
+/* Filter Card */
 .filter-card {
     background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1.25rem;
+    border-radius: 12px; padding: 1rem; margin-bottom: 1.25rem; border: none;
 }
-
-.filter-card .card-body {
-    padding: 1rem !important;
-}
-
 .filter-card .form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.3px;
+    font-size: 0.85rem; font-weight: 600; color: #9a55ff !important;
+    margin-bottom: 0.4rem; letter-spacing: 0.3px;
 }
-
 .filter-card .form-control,
 .filter-card .form-select {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    height: auto;
-    min-height: 40px;
-    border: 1px solid #e0e4e9;
-}
-
-.filter-card .btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
-    min-height: 40px;
-    border-radius: 8px;
-    font-weight: 600;
+    padding: 0.5rem 0.75rem; font-size: 0.9rem;
+    border-radius: 8px; height: auto; min-height: 40px; border: 1px solid #e0e4e9;
 }
 
 /* Form Controls */
 .form-control, .form-select {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    height: auto;
+    border: 1px solid #e9ecef; border-radius: 8px; padding: 0.6rem 0.8rem;
+    font-size: 0.9rem; transition: all 0.2s ease; background-color: #ffffff;
+    color: #2c2e3f; height: auto;
 }
-
-@media (min-width: 576px) {
-    .form-control, .form-select {
-        padding: 0.7rem 1rem;
-        font-size: 0.95rem;
-        border-radius: 10px;
-    }
-}
-
+@media (min-width: 576px) { .form-control, .form-select { padding: 0.7rem 1rem; font-size: 0.95rem; border-radius: 10px; } }
 .form-control:focus, .form-select:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
+    border-color: #9a55ff; box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1); outline: none;
 }
-
-/* Form Label */
 .form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; font-weight: 600; color: #9a55ff !important;
+    margin-bottom: 0.3rem; letter-spacing: 0.3px; font-family: 'Nunito', sans-serif;
 }
 
-/* Button Styling */
+/* Buttons */
 .btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
+    font-size: 0.85rem; padding: 0.6rem 1rem; border-radius: 8px;
+    font-weight: 600; transition: all 0.3s ease; font-family: 'Nunito', sans-serif; border: none;
+}
+@media (min-width: 576px) { .btn { font-size: 0.9rem; padding: 0.7rem 1.2rem; border-radius: 10px; } }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; border-radius: 6px; }
+.btn-gradient-primary   { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.btn-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
+.btn-gradient-secondary:hover { background: #5a6268 !important; }
+
+/* Action Buttons */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 0 3px;
     transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
     border: none;
+    cursor: pointer;
 }
-
-@media (min-width: 576px) {
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
-    }
+.btn-action i {
+    font-size: 1.1rem;
 }
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.btn-sm {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.8rem;
-    border-radius: 6px;
-}
-
-.btn-gradient-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-    color: #ffffff !important;
-}
-
-.btn-gradient-secondary {
-    background: #6c757d !important;
-    color: #ffffff !important;
-}
-
-.btn-gradient-secondary:hover {
-    background: #5a6268 !important;
-}
-
-.btn-gradient-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-    color: #ffffff !important;
-}
-
-.btn-gradient-danger {
-    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-    color: #ffffff !important;
-}
-
-.btn-gradient-warning {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-    color: #2c2e3f !important;
-}
-
-.btn-gradient-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-    color: #ffffff !important;
-}
-
-/* Outline Buttons */
-.btn-outline-primary {
-    background: transparent;
-    border: 1px solid #9a55ff;
-    color: #9a55ff;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-success {
-    background: transparent;
-    border: 1px solid #28a745;
-    color: #28a745;
-}
-
-.btn-outline-success:hover {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-warning {
-    background: transparent;
-    border: 1px solid #ffc107;
-    color: #ffc107;
-}
-
-.btn-outline-warning:hover {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-    border-color: transparent;
-}
-
-.btn-outline-danger {
-    background: transparent;
-    border: 1px solid #dc3545;
-    color: #dc3545;
-}
-
-.btn-outline-danger:hover {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-info {
-    background: transparent;
-    border: 1px solid #17a2b8;
-    color: #17a2b8;
-}
-
-.btn-outline-info:hover {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-/* Badge Styling */
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-@media (min-width: 576px) {
-    .badge {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .badge {
-        padding: 0.45rem 0.8rem;
-        font-size: 0.85rem;
-    }
-}
-
-.badge-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-}
-
-.badge-gradient-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-}
-
-.badge-gradient-warning {
+.btn-action.edit {
     background: linear-gradient(135deg, #ffc107, #ffdb6d);
     color: #2c2e3f;
 }
-
-.badge-gradient-danger {
+.btn-action.edit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
+.btn-action.delete {
     background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: #ffffff;
+    color: white;
+}
+.btn-action.delete:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
 }
 
-.badge-gradient-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: #ffffff;
+.btn-icon-only {
+    width: 40px; height: 40px; padding: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 8px;
 }
-
-.badge-gradient-primary {
-    background: linear-gradient(135deg, #9a55ff, #da8cff);
-    color: #ffffff;
+.btn-icon-only i { font-size: 1.2rem; margin: 0; }
+.btn-icon-only-mobile {
+    width: 100%; height: 40px; padding: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 8px;
 }
+.btn-icon-only-mobile i { font-size: 1.2rem; margin: 0; }
 
-/* ===== TABLE STYLING ===== */
+/* Table Responsive dengan Scrollbar */
 .table-responsive {
     overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     border-radius: 8px;
     margin-bottom: 0.5rem;
+    max-height: 500px;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #9a55ff;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #7a3fcc;
+}
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f0f0f0;
 }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 0;
-}
-
+.table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
 .table thead th {
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    color: #9a55ff;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #9a55ff; font-weight: 600; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
     border-bottom: 2px solid #e9ecef;
     padding: 0.8rem 0.5rem;
     white-space: nowrap;
-}
-
-@media (min-width: 576px) {
-    .table thead th {
-        font-size: 0.85rem;
-        padding: 0.9rem 0.6rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .table thead th {
-        font-size: 0.9rem;
-        padding: 1rem 0.75rem;
-    }
-}
-
-/* Kolom No lebih rapat */
-.table thead th:first-child {
-    padding-left: 0.75rem;
-    width: 60px;
-}
-
-.table tbody td:first-child {
-    padding-left: 0.75rem;
-    font-weight: 500;
-    width: 60px;
-}
-
-.table tbody td {
-    vertical-align: middle;
-    font-size: 0.85rem;
-    padding: 0.8rem 0.5rem;
-    border-bottom: 1px solid #e9ecef;
-    color: #2c2e3f;
-}
-
-@media (min-width: 576px) {
-    .table tbody td {
-        font-size: 0.9rem;
-        padding: 0.9rem 0.6rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .table tbody td {
-        font-size: 0.95rem;
-        padding: 1rem 0.75rem;
-    }
-}
-
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-/* Nama properti - lebih rapat dengan nomor */
-.table tbody td:nth-child(2) {
-    padding-left: 0.3rem;
-}
-
-.table tbody td .d-flex.align-items-center {
-    gap: 0.5rem;
-}
-
-/* Icon dalam tabel */
-.table tbody td i {
-    font-size: 1rem;
-}
-
-/* Text colors */
-.text-primary { color: #9a55ff !important; }
-.text-info { color: #17a2b8 !important; }
-.text-danger { color: #dc3545 !important; }
-.text-success { color: #28a745 !important; }
-.text-warning { color: #ffc107 !important; }
-.fw-bold { font-weight: 600 !important; }
-.text-muted { color: #a5b3cb !important; }
-
-/* Typography */
-h3.text-dark {
-    font-size: 1.3rem !important;
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
-}
-
-@media (min-width: 576px) {
-    h3.text-dark {
-        font-size: 1.5rem !important;
-    }
-}
-
-@media (min-width: 768px) {
-    h3.text-dark {
-        font-size: 1.7rem !important;
-    }
-}
-
-/* Modal Styling */
-.modal-content {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 16px 16px 0 0;
-}
-
-.modal-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #9a55ff;
-}
-
-.modal-body {
-    padding: 1.2rem;
-}
-
-.modal-footer {
-    border-top: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 0 0 16px 16px;
-}
-
-/* Badge dengan icon */
-.badge i {
-    font-size: 0.8rem;
-    margin-right: 4px;
-}
-
-/* Hover effect untuk icon aksi */
-.btn-outline-primary:hover,
-.btn-outline-success:hover,
-.btn-outline-warning:hover,
-.btn-outline-danger:hover,
-.btn-outline-info:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Responsive untuk mobile */
-@media (max-width: 576px) {
-    .table thead th {
-        font-size: 0.75rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .table tbody td {
-        font-size: 0.8rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .filter-card {
-        padding: 0.75rem;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.8rem;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select,
-    .filter-card .btn {
-        font-size: 0.8rem;
-        min-height: 38px;
-    }
-
-    h3.text-dark {
-        font-size: 1.2rem !important;
-    }
-}
-
-/* DataTables Custom Styling */
-.dataTables_filter,
-.dataTables_length,
-.dataTables_paginate,
-.dataTables_info {
-    display: none !important;
-}
-
-/* Sorting indicator */
-.sorting, .sorting_asc, .sorting_desc {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     cursor: pointer;
-}
-
-/* Icon styling */
-.mdi {
-    vertical-align: middle;
-}
-
-/* Styling untuk tombol reset icon-only */
-.btn-icon-only {
-    width: 40px;
-    padding: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon-only i {
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-/* Form group untuk modal */
-.modal-form-group {
-    margin-bottom: 1rem;
-}
-
-.modal-form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-.modal-form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
     transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
+}
+.table thead th:hover {
+    color: #7a3fcc;
+}
+.table thead th i {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    opacity: 0.5;
+}
+.table thead th.active-sort {
+    color: #7a3fcc;
+}
+.table thead th.active-sort i {
+    opacity: 1;
+    color: #7a3fcc;
+}
+@media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
+@media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
+.table thead th:first-child { padding-left: 0.5rem; width: 40px; text-align: center; cursor: default; }
+.table thead th:first-child:hover { color: #9a55ff; }
+.table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; width: 40px; text-align: center; }
+.table tbody td {
+    vertical-align: middle; font-size: 0.85rem; padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #e9ecef; color: #2c2e3f;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
+@media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
+.table tbody tr:hover { background-color: #f8f9fa; }
+
+/* Status badge */
+.status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+.status-badge.aktif {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+    color: #fff;
+}
+.status-badge.nonaktif {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
+    color: #fff;
+}
+.status-badge i {
+    margin-right: 4px;
+    font-size: 0.9rem;
 }
 
-.modal-form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-.pagination {
-    margin: 0;
-    gap: 3px;
-}
-
+/* Pagination */
+.pagination { margin: 0; gap: 3px; }
 .page-item .page-link {
     border: 1px solid #e9ecef;
     padding: 0.35rem 0.7rem;
@@ -601,8 +220,9 @@ h3.text-dark {
     transition: all 0.2s ease;
     min-width: 32px;
     text-align: center;
+    cursor: pointer;
+    text-decoration: none;
 }
-
 @media (min-width: 576px) {
     .page-item .page-link {
         padding: 0.4rem 0.8rem;
@@ -610,7 +230,6 @@ h3.text-dark {
         min-width: 36px;
     }
 }
-
 @media (min-width: 768px) {
     .page-item .page-link {
         padding: 0.45rem 0.9rem;
@@ -618,150 +237,107 @@ h3.text-dark {
         min-width: 40px;
     }
 }
-
 .page-item.active .page-link {
     background: linear-gradient(to right, #da8cff, #9a55ff);
     border-color: transparent;
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
 }
-
 .page-item .page-link:hover {
     background-color: #f8f9fa;
     border-color: #9a55ff;
     color: #9a55ff;
     transform: translateY(-1px);
 }
-
-/* Info text pagination */
 .pagination-info {
     font-size: 0.8rem;
     color: #6c7383;
 }
-
 @media (min-width: 576px) {
     .pagination-info {
         font-size: 0.85rem;
     }
 }
-
 @media (min-width: 768px) {
     .pagination-info {
         font-size: 0.9rem;
     }
 }
 
-/* Typography */
-h3.text-dark {
-    font-size: 1.3rem !important;
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
+/* Modal */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+}
+.modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+}
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+.modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-body {
+    padding: 1.5rem;
+}
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
 }
 
-@media (min-width: 576px) {
-    h3.text-dark {
-        font-size: 1.5rem !important;
-    }
+/* Text colors */
+.text-primary  { color: #9a55ff !important; }
+.text-info     { color: #17a2b8 !important; }
+.text-danger   { color: #dc3545 !important; }
+.text-success  { color: #28a745 !important; }
+.text-warning  { color: #ffc107 !important; }
+.fw-bold       { font-weight: 600 !important; }
+.text-muted    { color: #a5b3cb !important; }
+
+h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !important; margin-bottom: 0.5rem !important; }
+@media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
+@media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
+
+.mdi { vertical-align: middle; }
+
+.filter-row-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
-
-@media (min-width: 768px) {
-    h3.text-dark {
-        font-size: 1.7rem !important;
-    }
+.filter-row-desktop .filter-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
-
-/* Badge dengan icon */
-.badge i {
-    font-size: 0.8rem;
-    margin-right: 4px;
-}
-
-/* Hover effect untuk icon aksi */
-.btn-outline-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Responsive untuk mobile */
-@media (max-width: 576px) {
-    .table thead th {
-        font-size: 0.75rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .table tbody td {
-        font-size: 0.8rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .filter-card {
-        padding: 0.75rem;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.8rem;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select,
-    .filter-card .btn {
-        font-size: 0.8rem;
-        min-height: 38px;
-    }
-
-    h3.text-dark {
-        font-size: 1.2rem !important;
-    }
-}
-
-/* Fix untuk tombol aksi */
-.action-buttons {
-    position: relative;
-    z-index: 10;
-}
-
-.btn-outline-warning, .btn-outline-danger {
-    position: relative;
-    z-index: 15;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* DataTables wrapper styling */
-.dataTables_wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-/* Pastikan tabel tetap terlihat */
-.table {
-    width: 100% !important;
-    margin-bottom: 0;
-}
-
-/* Fix untuk DataTables di mobile */
-@media (max-width: 768px) {
-    .dataTables_wrapper .table {
-        width: 100% !important;
-    }
+.filter-row-mobile  { display: none; }
+@media (max-width: 767px) {
+    .filter-row-desktop { display: none; }
+    .filter-row-mobile  { display: block; margin-top: 1rem; }
 }
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
+
+    <!-- Header -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>
-                            Master Data Bank
+                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Master Data Bank
                         </h3>
                         <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data bank untuk keperluan transaksi dan pembayaran
+                            Kelola data bank perusahaan
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -778,185 +354,197 @@ h3.text-dark {
             <div class="card">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Bank
+                        <i class="mdi mdi-filter-outline me-2"></i>Daftar Bank
                     </h5>
-                    <div class="ms-auto">
-                        <button class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahBank').modal('show')">
-                            <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah Bank</span>
-                        </button>
-                    </div>
+                    <button class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="openModal('tambah')">
+                        <i class="mdi mdi-plus me-1"></i>Tambah Bank
+                    </button>
                 </div>
 
                 <div class="card-body">
-                    <!-- FILTER SECTION - Selalu tampil -->
+                    <!-- FILTER SECTION -->
                     <div class="filter-card mb-4">
                         <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data Bank
-                            </h6>
-
-                            <!-- MOBILE VERSION -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('bank.index') }}" id="filterFormMobile">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                            Cari Bank
-                                        </label>
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama bank..." style="height: 45px;">
-                                    </div>
-
-                                    <div class="row g-2 mb-3">
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
-                                            </label>
-                                            <select class="form-control" name="status" style="height: 45px;">
-                                                <option value="">Semua</option>
-                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
-                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Non-Aktif</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select class="form-control" name="per_page" style="height: 45px;">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btnReset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
 
                             <!-- DESKTOP VERSION -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('bank.index') }}" id="filterFormDesktop">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-4">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Bank
-                                            </label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                                placeholder="Cari nama bank...">
+                            <div class="filter-row-desktop">
+                                <div class="filter-text">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data bank</span>
+                                </div>
+                                <form id="filterForm" method="GET" action="{{ route('bank.index') }}">
+                                    <div class="row g-2 align-items-end w-100">
+
+                                        <!-- Search -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Cari</label>
+                                            <input type="text" class="form-control" name="search" id="searchInput" placeholder="Nama bank..." value="{{ request('search') }}">
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
-                                            </label>
-                                            <select class="form-control" name="status">
-                                                <option value="">Semua</option>
+                                        <!-- Status -->
+                                        <div class="col-md-3">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-control" name="status" id="statusSelect">
+                                                <option value="">Semua Status</option>
                                                 <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
-                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Non-Aktif</option>
+                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                        <!-- Tampil - Hanya 10, 15, 25 -->
+                                        <div class="col-md-1">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                             </select>
                                         </div>
 
+                                        <!-- Tombol Filter + Reset -->
                                         <div class="col-md-2">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- MOBILE VERSION -->
+                            <div class="filter-row-mobile">
+                                <div class="filter-text mb-2">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data bank</span>
+                                </div>
+                                <form method="GET" action="{{ route('bank.index') }}">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Cari</label>
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile" placeholder="Nama bank..." value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-control" name="status" id="statusSelectMobile">
+                                                <option value="">Semua Status</option>
+                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" id="filterBtnMobile" title="Filter" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i> Filter
                                             </button>
                                         </div>
-
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btnReset" title="Reset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                        <div class="col-6">
+                                            <a href="{{ route('bank.index') }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i> Reset
                                             </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
+
                         </div>
                     </div>
 
-                    <!-- TABEL DATA -->
+                    <!-- TABEL DATA BANK DENGAN SCROLLBAR -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tableBank" {{ $banks->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="25%">Nama Bank</th>
-                                    <th width="25%">Pemilik Rekening</th>
-                                    <th width="20%">Status</th>
-                                    <th class="text-center" width="15%">Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="bank_name" data-direction="{{ request('sortField') == 'bank_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Bank
+                                        @if(request('sortField') == 'bank_name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="account_holder" data-direction="{{ request('sortField') == 'account_holder' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Pemilik Rekening
+                                        @if(request('sortField') == 'account_holder')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="number" data-direction="{{ request('sortField') == 'number' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nomor Rekening
+                                        @if(request('sortField') == 'number')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="is_active" data-direction="{{ request('sortField') == 'is_active' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Status
+                                        @if(request('sortField') == 'is_active')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($banks as $bank)
+                                @forelse ($banks as $index => $bank)
                                 <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $banks->firstItem() + $index }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <i class="mdi mdi-bank text-primary me-2" style="font-size: 1.2rem;"></i>
                                             <span class="fw-bold">{{ $bank->bank_name }}</span>
                                         </div>
                                     </td>
-                                    <td>{{ $bank->account_holder ?? '-' }}</td>
+                                    <td>{{ $bank->account_holder }}</td>
                                     <td>
-                                        @if($bank->is_active)
-                                            <span class="badge badge-gradient-success">
-                                                <i class="mdi mdi-check-circle me-1"></i>Aktif
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-credit-card text-info me-2" style="font-size: 1.2rem;"></i>
+                                            <span>{{ $bank->number }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if ($bank->is_active)
+                                            <span class="status-badge aktif">
+                                                <i class="mdi mdi-check-circle"></i> Aktif
                                             </span>
                                         @else
-                                            <span class="badge badge-gradient-danger">
-                                                <i class="mdi mdi-close-circle me-1"></i>Non-Aktif
+                                            <span class="status-badge nonaktif">
+                                                <i class="mdi mdi-close-circle"></i> Nonaktif
                                             </span>
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1 action-buttons">
-                                            <button class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $bank->id }}">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('bank.destroy', $bank->id) }}" method="POST" class="d-inline formDelete">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" title="Hapus" data-name="{{ $bank->bank_name }}">
-                                                    <i class="mdi mdi-delete"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <button class="btn-action edit me-1" title="Edit" onclick="openModal('edit', {{ $bank->id }})">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </button>
+                                        <button class="btn-action delete" title="Hapus" onclick="confirmDelete({{ $bank->id }})">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-bank-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data bank yang tersedia.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data bank baru.</p>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        Tidak ada data bank
                                     </td>
                                 </tr>
                                 @endforelse
@@ -964,55 +552,51 @@ h3.text-dark {
                         </table>
                     </div>
 
-                    <!-- PAGINATION SECTION - Tampil jika ada data -->
-                    @if($banks->count() > 0)
+                    <!-- PAGINATION -->
+                    @if ($banks instanceof \Illuminate\Pagination\LengthAwarePaginator && $banks->total() > 0)
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <!-- Info Menampilkan Data -->
                         <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan
-                            <span class="fw-bold">{{ $banks->firstItem() }}</span>
-                            -
-                            <span class="fw-bold">{{ $banks->lastItem() }}</span>
-                            dari
-                            <span class="fw-bold">{{ $banks->total() }}</span>
-                            data bank
+                            Menampilkan {{ $banks->firstItem() }} - {{ $banks->lastItem() }} dari {{ $banks->total() }} data
                         </div>
-
-                        <!-- Pagination Links -->
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
                                 {{-- Previous Page Link --}}
-                                @if($banks->onFirstPage())
-                                    <li class="page-item disabled">
+                                @if ($banks->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true">
                                         <span class="page-link" aria-label="Previous">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </span>
                                     </li>
                                 @else
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $banks->previousPageUrl() }}" aria-label="Previous">
+                                        <a class="page-link" href="{{ $banks->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous" onclick="showPaginationLoading(event)">
                                             <i class="mdi mdi-chevron-left"></i>
                                         </a>
                                     </li>
                                 @endif
 
-                                {{-- Page Links --}}
-                                @foreach ($banks->getUrlRange(1, $banks->lastPage()) as $page => $url)
-                                    <li class="page-item {{ $banks->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                    </li>
+                                {{-- Pagination Elements --}}
+                                @foreach ($banks->getUrlRange(max(1, $banks->currentPage() - 2), min($banks->lastPage(), $banks->currentPage() + 2)) as $page => $url)
+                                    @if ($page == $banks->currentPage())
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $banks->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        </li>
+                                    @endif
                                 @endforeach
 
                                 {{-- Next Page Link --}}
-                                @if($banks->hasMorePages())
+                                @if ($banks->hasMorePages())
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ $banks->nextPageUrl() }}" aria-label="Next">
+                                        <a class="page-link" href="{{ $banks->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next" onclick="showPaginationLoading(event)">
                                             <i class="mdi mdi-chevron-right"></i>
                                         </a>
                                     </li>
                                 @else
-                                    <li class="page-item disabled">
+                                    <li class="page-item disabled" aria-disabled="true">
                                         <span class="page-link" aria-label="Next">
                                             <i class="mdi mdi-chevron-right"></i>
                                         </span>
@@ -1022,323 +606,292 @@ h3.text-dark {
                         </nav>
                     </div>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>
-                            Kembali ke Dashboard
-                        </a>
+</div>
+
+<!-- MODAL TAMBAH/EDIT BANK -->
+<div class="modal fade" id="modalBank" tabindex="-1" aria-labelledby="modalBankLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalBankLabel">
+                    <i class="mdi mdi-plus-circle me-2" id="modalIcon"></i>
+                    <span id="modalTitle">Tambah Bank</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formBank" method="POST" onsubmit="return submitForm(event)">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                <input type="hidden" id="bankId" name="id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Bank <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="bank_name" id="namaBank" placeholder="Contoh: Bank Mandiri" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Pemilik Rekening <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="account_holder" id="pemilikRekening" placeholder="Nama perusahaan / perorangan" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Rekening <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="number" id="nomorRekening" placeholder="Contoh: 123-456-7890" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" name="is_active" id="status">
+                            <option value="1">Aktif</option>
+                            <option value="0">Nonaktif</option>
+                        </select>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary" id="submitBtn">
+                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                        <span id="btnText">Simpan</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- MODAL TAMBAH BANK -->
-<div class="modal fade" id="modalTambahBank" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-bank-plus me-2" style="color: #9a55ff;"></i>
-                    Tambah Bank Baru
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalTambahBank').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('bank.store') }}" method="POST" id="formTambahBank">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-bank me-1"></i>Nama Bank
-                                </label>
-                                <input type="text" name="bank_name" class="modal-form-control" placeholder="Contoh: BCA" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
-                                </label>
-                                <input type="text" name="account_holder" class="modal-form-control" placeholder="Contoh: PT Griya Ainaya Sejahtera" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                         <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
-                                </label>
-                                <input type="text" name="number" class="modal-form-control" placeholder="Contoh: 1234567890" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status
-                                </label>
-                                <select class="modal-form-control" name="is_active" required>
-                                    <option value="1">Aktif</option>
-                                    <option value="0">Non-Aktif</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahBank').modal('hide')">Batal</button>
-                <button type="submit" form="formTambahBank" class="btn btn-gradient-primary">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EDIT BANK -->
-<div class="modal fade" id="modalEditBank" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit Bank
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalEditBank').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="formEditBank">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-bank me-1"></i>Nama Bank
-                                </label>
-                                <input type="text" name="bank_name" id="editBankName" class="modal-form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Pemilik Rekening
-                                </label>
-                                <input type="text" name="account_holder" id="editAccountHolder" class="modal-form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                         <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-credit-card me-1"></i>Nomor Rekening
-                                </label>
-                                <input type="text" name="number" id="editNumber" class="modal-form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status
-                                </label>
-                                <select class="modal-form-control" name="is_active" id="editStatus" required>
-                                    <option value="1">Aktif</option>
-                                    <option value="0">Non-Aktif</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditBank').modal('hide')">Batal</button>
-                <button type="submit" form="formEditBank" class="btn btn-gradient-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
+<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 $(document).ready(function() {
-    // Fungsi untuk menampilkan loading SweetAlert
-    function showLoading(message = 'Mohon tunggu sebentar') {
+    // Sorting functionality
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
+
+        // Tampilkan loading
         Swal.fire({
             title: 'Memuat...',
-            text: message,
+            html: 'Sedang mengurutkan data',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
             }
         });
-    }
 
-    // ===== HANDLE FILTER & RESET =====
-    $('#filterFormMobile, #filterFormDesktop').on('submit', function(e) {
-        showLoading('Menyaring data...');
-        // Form akan submit secara normal
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
     });
 
-    $('.btnReset').on('click', function(e) {
-        e.preventDefault();
-        showLoading('Mereset filter...');
-        window.location.href = $(this).attr('href');
-    });
-
-    // ===== HANDLE PAGINATION =====
-    $(document).on('click', '.pagination a', function(e) {
-        e.preventDefault();
-        showLoading('Memuat halaman...');
-        window.location.href = $(this).attr('href');
-    });
-
-    // Inisialisasi DataTables untuk semua perangkat
-    const tableElement = document.getElementById('tableBank');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        // Destroy existing DataTable if any
-        if ($.fn.DataTable.isDataTable('#tableBank')) {
-            $('#tableBank').DataTable().destroy();
-        }
-
-        // Initialize DataTable with minimal features
-        $('#tableBank').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data bank belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [4] } // Kolom aksi tidak bisa diurutkan
-            ],
-            // Fix untuk mobile
-            autoWidth: false,
-            deferRender: true
-        });
-    }
-
-    // ===== HANDLE FORM TAMBAH BANK =====
-    $('#formTambahBank').on('submit', function(e) {
-        e.preventDefault();
-        showLoading('Menyimpan data...');
-        this.submit();
-    });
-
-    // ===== HANDLE EDIT BUTTON CLICK =====
-    $(document).on('click', '.btnEdit', function() {
-        let id = $(this).data('id');
-
-        console.log('Edit clicked for ID:', id); // Debug
-
-        showLoading('Mengambil data bank...');
-
-        $.ajax({
-            url: '/master-data-bank/' + id + '/edit',
-            type: 'GET',
-            success: function(response) {
-                Swal.close();
-
-                let bank = response;
-                $('#editBankName').val(bank.bank_name);
-                $('#editAccountHolder').val(bank.account_holder);
-                $('#editNumber').val(bank.number);
-                $('#editStatus').val(bank.is_active);
-
-                $('#formEditBank').attr('action', '/master-data-bank/' + id);
-
-                $('#modalEditBank').modal('show');
-            },
-            error: function(xhr, status, error) {
-                Swal.close();
-                console.error('Error:', error); // Debug
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Gagal mengambil data bank',
-                    confirmButtonColor: '#9a55ff',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-    });
-
-    // ===== HANDLE DELETE BUTTON CLICK =====
-    $(document).on('click', '.btnDelete', function() {
-        let form = $(this).closest('.formDelete');
-        let bankName = $(this).data('name');
-
-        console.log('Delete clicked for:', bankName); // Debug
-
+    // Notifikasi sukses dari session
+    @if (session('success'))
         Swal.fire({
-            title: 'Hapus Bank?',
-            text: "Bank " + bankName + " akan dihapus",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                showLoading('Menghapus data...');
-                form.submit();
-            }
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 2000,
+            showConfirmButton: true,
+            confirmButtonColor: '#9a55ff',
+            timerProgressBar: true
         });
-    });
+    @endif
 
-    // ===== HANDLE FORM EDIT BANK =====
-    $('#formEditBank').on('submit', function(e) {
-        e.preventDefault();
-        showLoading('Menyimpan perubahan...');
-        this.submit();
-    });
+    // Notifikasi error dari session
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
+        });
+    @endif
 });
 
-// Sweet Alert untuk session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
-@if(session('success'))
+// Fungsi loading untuk filter
+function showFilterLoading() {
     Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    return true;
+}
 
-// Sweet Alert untuk session error - TANPA TIMER (pakai tombol OK)
-@if(session('error'))
+// Fungsi loading untuk reset
+function showResetLoading(event) {
+    event.preventDefault();
     Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    window.location.href = event.currentTarget.href;
+}
+
+// Fungsi loading untuk pagination
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+// Fungsi submit form dengan loading
+function submitForm(event) {
+    event.preventDefault();
+
+    // Tampilkan loading
+    Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang menyimpan data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Submit form setelah loading ditampilkan
+    setTimeout(() => {
+        document.getElementById('formBank').submit();
+    }, 100);
+
+    return false;
+}
+
+// Buka Modal untuk Tambah atau Edit
+function openModal(type, id = null) {
+    if (type === 'tambah') {
+        // Reset form
+        $('#formBank')[0].reset();
+        $('#bankId').val('');
+        $('#methodField').val('POST');
+        $('#formBank').attr('action', '{{ route("bank.store") }}');
+
+        // Ubah title dan icon
+        $('#modalTitle').text('Tambah Bank');
+        $('#modalIcon').removeClass('mdi-pencil-circle').addClass('mdi-plus-circle');
+        $('#btnText').text('Simpan');
+        $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
+
+        $('#modalBank').modal('show');
+    } else {
+        // Tampilkan loading saat mengambil data
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            html: 'Sedang mengambil data bank',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Ambil data bank via AJAX
+        $.get('{{ url("master-data-bank") }}/' + id + '/edit', function(data) {
+            Swal.close(); // Tutup loading
+
+            $('#bankId').val(data.id);
+            $('#namaBank').val(data.bank_name);
+            $('#pemilikRekening').val(data.account_holder);
+            $('#nomorRekening').val(data.number);
+            $('#status').val(data.is_active ? '1' : '0');
+
+            $('#methodField').val('PUT');
+            $('#formBank').attr('action', '{{ url("master-data-bank") }}/' + id);
+
+            // Ubah title dan icon
+            $('#modalTitle').text('Edit Bank');
+            $('#modalIcon').removeClass('mdi-plus-circle').addClass('mdi-pencil-circle');
+            $('#btnText').text('Update');
+            $('#btnIcon').removeClass('mdi-content-save').addClass('mdi-pencil');
+
+            $('#modalBank').modal('show');
+        }).fail(function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengambil data bank',
+                confirmButtonColor: '#dc3545'
+            });
+        });
+    }
+}
+
+// Fungsi Konfirmasi Hapus
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return new Promise((resolve) => {
+                // Tampilkan loading manual
+                Swal.fire({
+                    title: 'Menghapus...',
+                    html: 'Sedang menghapus data',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Buat form delete dan submit
+                setTimeout(() => {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ url("master-data-bank") }}/' + id;
+
+                    let csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = '{{ csrf_token() }}';
+
+                    let methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+
+                    form.appendChild(csrfInput);
+                    form.appendChild(methodInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+
+                    resolve();
+                }, 100);
+            });
+        }
+    });
+}
 </script>
 @endpush
