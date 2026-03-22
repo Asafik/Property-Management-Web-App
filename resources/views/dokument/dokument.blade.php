@@ -117,16 +117,14 @@
 /* Table Responsive dengan Scrollbar */
 .table-responsive {
     overflow-x: auto;
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
     border-radius: 8px;
     margin-bottom: 0.5rem;
-    max-height: 500px;
     scrollbar-width: thin;
     scrollbar-color: #9a55ff #f0f0f0;
 }
 .table-responsive::-webkit-scrollbar {
-    width: 8px;
     height: 8px;
 }
 .table-responsive::-webkit-scrollbar-track {
@@ -139,9 +137,6 @@
 }
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #7a3fcc;
-}
-.table-responsive::-webkit-scrollbar-corner {
-    background: #f0f0f0;
 }
 
 .table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
