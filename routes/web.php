@@ -46,6 +46,7 @@ use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
 use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\TimelineCashTempoController;
 
 
@@ -71,16 +72,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
 });
 
-
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [LandingpageController::class, 'index'])->name('landingpage');
+// Route::get('/', function () {
+//     return redirect()->route('login');
+// });
 
 Route::middleware(['auth','position:1,2,3,4,5'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/proyek/refresh', [DashboardController::class, 'refresh']);
 Route::get('/notifications/read/{id}', function ($id) {
     $notif = auth()->user()->notifications()->find($id);
 
@@ -316,7 +318,7 @@ Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
 Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
 
 
-Route::get('/akad/akad-cash/{booking}', [AkadController::class, 'index'])->name('akad.cash');
+Route::get('/akad/akad-cash-keras/{booking}', [AkadController::class, 'index'])->name('akad.cash');
 Route::post('/akad/akad-cash/{booking}/store', [AkadController::class, 'store'])->name('akad.cash.store');
 Route::get('/akad/akad-cash/serah-terima/{booking}', [SerahTerimaController::class, 'index'])->name('booking.serah-terima');
 Route::post('/akad/akad-cash/serah-terima/{booking}/store', [SerahTerimaController::class, 'store'])->name('serah-terima.store');
@@ -355,6 +357,7 @@ Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::cl
 
 Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
 Route::get('/transaksi/kpr/akad-kpr/{id}', [AkadController::class, 'akadkpr'])->name('kpr.approve');
+Route::post('/transaksi/kpr/akad-kpr/store/{booking}', [AkadController::class, 'storeKPR'])->name('akad.kpr.store');
 
 // Route untuk Customer KPR ACC (Survey)
 Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');

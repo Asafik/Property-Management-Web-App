@@ -658,43 +658,43 @@
                                     <th style="width:15%">Aksi</th>
                                 </tr>
                             </thead>
-                           <tbody>
-@foreach ($kpr->documents as $doc)
-<tr>
-    <td>
-        <div class="d-flex align-items-center">
-            <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-            <span>{{ strtoupper($doc->type) }}</span>
-        </div>
-    </td>
+                            <tbody>
+                                @foreach ($kpr->documents as $doc)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-file-document-outline text-primary me-2"></i>
+                                                <span>{{ strtoupper($doc->type) }}</span>
+                                            </div>
+                                        </td>
 
-    <td>
-        @if ($doc->path)
-            <span class="badge bg-success">Lengkap</span>
-        @else
-            <span class="badge bg-danger">Belum Upload</span>
-        @endif
-    </td>
+                                        <td>
+                                            @if ($doc->path)
+                                                <span class="badge bg-success">Lengkap</span>
+                                            @else
+                                                <span class="badge bg-danger">Belum Upload</span>
+                                            @endif
+                                        </td>
 
-    <td>
-        <small>
-            {{ \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y') }}
-        </small>
-    </td>
+                                        <td>
+                                            <small>
+                                                {{ \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y') }}
+                                            </small>
+                                        </td>
 
-    <td>
-        @if ($doc->path)
-            <a href="{{ asset('storage/'.$doc->path) }}" target="_blank"
-                class="btn btn-sm btn-outline-primary">
-                <i class="mdi mdi-eye"></i>
-            </a>
-        @else
-            <span class="text-muted">-</span>
-        @endif
-    </td>
-</tr>
-@endforeach
-</tbody>
+                                        <td>
+                                            @if ($doc->path)
+                                                <a href="{{ asset('storage/' . $doc->path) }}" target="_blank"
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    <i class="mdi mdi-eye"></i>
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
 
@@ -776,29 +776,31 @@
                                 <small class="text-muted">15 Maret 2025</small>
                             </div>
                         </div>
+                        @php
+                            $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
+                        @endphp
+
                         <div class="d-flex mb-2">
                             <div style="width: 24px;" class="me-2">
-                                <i class="mdi mdi-progress-clock text-warning"></i>
+                                <i
+                                    class="mdi {{ $akadSelesai ? 'mdi-check-circle text-success' : 'mdi-progress-clock text-warning' }}"></i>
                             </div>
                             <div>
                                 <span class="d-block">Akad</span>
-                                <small class="text-muted">Proses Closing</small>
+                                <small class="{{ $akadSelesai ? 'text-success' : 'text-muted' }}">
+                                    {{ $akadSelesai ? 'Closing Selesai' : 'Proses Closing' }}
+                                </small>
                             </div>
+                           
                         </div>
-                        <div class="d-flex mb-2">
-                            <div style="width: 24px;" class="me-2">
-                                <i class="mdi mdi-clock-outline text-muted"></i>
-                            </div>
-                        </div>
-                        <div class="d-flex">
-                            <div style="width: 24px;" class="me-2">
-                                <i class="mdi mdi-clock-outline text-muted"></i>
-                            </div>
-                            <div>
-                                <span class="d-block">Cair</span>
-                                <small class="text-muted">Menunggu</small>
-                            </div>
-                        </div>
+                         @if ($akadSelesai)
+                                <div class="mt-2">
+                                    <a href="{{ route('kpr.serahterima', $kpr->id) }}" class="btn btn-sm btn-success">
+                                        <i class="mdi mdi-home-check-outline me-1"></i>
+                                        Proses Serah Terima
+                                    </a>
+                                </div>
+                            @endif
                     </div>
                 </div>
             </div>
@@ -821,7 +823,9 @@
                         Lengkapi data akad berikut untuk melanjutkan ke proses closing.
                     </div>
 
-                    <form>
+                    <form action="{{ route('akad.kpr.store', $kpr->booking_id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
                         <input type="hidden" name="status" id="statusAkadInput" value="">
 
                         <!-- Tombol Pilih Selesai / Tunda -->
