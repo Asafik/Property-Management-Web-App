@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data Pengguna - Demo UI')
+@section('title', 'Master Data Pengguna')
 
 @section('content')
 

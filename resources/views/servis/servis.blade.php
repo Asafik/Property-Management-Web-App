@@ -1,15 +1,42 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Service & Perbaikan - Property Management App')
+@section('title', 'Service & Perbaikan - Demo UI')
 
 @section('content')
+
+@php
+    $dummyServices = [
+        [
+            'id' => 1,
+            'ticket_no' => 'SRV/2026/001',
+            'unit_name' => 'Lavender 45 - C/12',
+            'date' => '2026-03-22',
+            'status' => 'Diproses',
+        ],
+        [
+            'id' => 2,
+            'ticket_no' => 'SRV/2026/002',
+            'unit_name' => 'Rosemary 12 - A/08',
+            'date' => '2026-03-21',
+            'status' => 'Pending',
+        ],
+        [
+            'id' => 3,
+            'ticket_no' => 'SRV/2026/003',
+            'unit_name' => 'Jasmine 09 - B/03',
+            'date' => '2026-03-20',
+            'status' => 'Selesai',
+        ],
+    ];
+@endphp
+
 <style>
-/* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN PT ===== */
 .card {
     transition: all 0.3s ease;
     margin-bottom: 1rem;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-
 .card:hover {
     box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
 }
@@ -17,159 +44,80 @@
 .card-header {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border-bottom: 1px solid #e9ecef;
-    padding: 0.75rem;
-}
-
-@media (min-width: 576px) {
-    .card-header {
-        padding: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-header {
-        padding: 1.2rem;
-    }
+    padding: 0.9rem 1rem;
 }
 
 .card-body {
-    padding: 0.75rem;
-}
-
-@media (min-width: 576px) {
-    .card-body {
-        padding: 1rem;
-    }
+    padding: 1rem;
 }
 
 @media (min-width: 768px) {
+    .card-header {
+        padding: 1rem 1.25rem;
+    }
+
     .card-body {
-        padding: 1.2rem;
+        padding: 1.25rem;
     }
 }
 
-/* Card Title */
 .card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     color: #9a55ff;
     margin-bottom: 0;
 }
 
-@media (min-width: 576px) {
-    .card-title {
-        font-size: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-title {
-        font-size: 1.1rem;
-    }
-}
-
-/* ===== FILTER SECTION ===== */
 .filter-card {
     background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 1rem;
     margin-bottom: 1.25rem;
+    border: none;
 }
 
-.filter-card .card-body {
-    padding: 1rem !important;
-}
-
-.filter-card .form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.3px;
-}
-
-.filter-card .form-control,
-.filter-card .form-select {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    height: auto;
-    min-height: 40px;
-    border: 1px solid #e0e4e9;
-}
-
-.filter-card .btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
-    min-height: 40px;
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-/* Form Controls */
-.form-control, .form-select {
+.form-control,
+.form-select {
     border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
+    border-radius: 10px;
+    padding: 0.7rem 0.95rem;
+    font-size: 0.92rem;
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
-    height: auto;
+    min-height: 42px;
+    height: 42px;
 }
 
-@media (min-width: 576px) {
-    .form-control, .form-select {
-        padding: 0.7rem 1rem;
-        font-size: 0.95rem;
-        border-radius: 10px;
-    }
-}
-
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: #9a55ff;
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
     outline: none;
 }
 
-/* Form Label */
 .form-label {
     font-size: 0.85rem;
     font-weight: 600;
     color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.2px;
     font-family: 'Nunito', sans-serif;
 }
 
-/* Button Styling */
 .btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
+    font-size: 0.88rem;
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
     font-weight: 600;
     transition: all 0.3s ease;
     font-family: 'Nunito', sans-serif;
     border: none;
 }
 
-@media (min-width: 576px) {
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
-    }
-}
-
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.btn-sm {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.8rem;
-    border-radius: 6px;
 }
 
 .btn-gradient-primary {
@@ -182,138 +130,93 @@
     color: #ffffff !important;
 }
 
-.btn-gradient-secondary:hover {
-    background: #5a6268 !important;
+.btn-action {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
-.btn-gradient-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-    color: #ffffff !important;
+.btn-action i {
+    font-size: 1.1rem;
 }
 
-.btn-gradient-warning {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-    color: #2c2e3f !important;
+.btn-action.detail {
+    background: linear-gradient(135deg, #17a2b8, #56c6d8);
+    color: #fff;
 }
 
-.btn-gradient-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-    color: #ffffff !important;
+.btn-action.detail:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
 }
 
-/* Outline Buttons */
-.btn-outline-primary {
-    background: transparent;
-    border: 1px solid #9a55ff;
-    color: #9a55ff;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-warning {
-    background: transparent;
-    border: 1px solid #ffc107;
-    color: #ffc107;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-warning:hover {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-    border-color: transparent;
-}
-
-.btn-outline-danger {
-    background: transparent;
-    border: 1px solid #dc3545;
-    color: #dc3545;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-danger:hover {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-.btn-outline-success {
-    background: transparent;
-    border: 1px solid #28a745;
-    color: #28a745;
-    padding: 0.4rem 0.75rem;
-}
-
-.btn-outline-success:hover {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    border-color: transparent;
-}
-
-/* Badge Styling */
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-@media (min-width: 576px) {
-    .badge {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .badge {
-        padding: 0.45rem 0.8rem;
-        font-size: 0.85rem;
-    }
-}
-
-.badge-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-}
-
-.badge-gradient-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-}
-
-.badge-gradient-warning {
+.btn-action.edit {
     background: linear-gradient(135deg, #ffc107, #ffdb6d);
     color: #2c2e3f;
 }
 
-.badge-gradient-danger {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: #ffffff;
+.btn-action.edit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
 }
 
-.badge-gradient-primary {
-    background: linear-gradient(135deg, #9a55ff, #da8cff);
-    color: #ffffff;
+.btn-icon-only {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
 }
 
-.badge-gradient-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: #ffffff;
+.btn-icon-only i {
+    font-size: 1.15rem;
+    margin: 0;
 }
 
-/* ===== TABLE STYLING ===== */
 .table-responsive {
     overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 0.5rem;
+    max-height: 500px;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #9a55ff;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #7a3fcc;
+}
+
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f0f0f0;
 }
 
 .table {
@@ -325,56 +228,59 @@
 .table thead th {
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
     color: #9a55ff;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 2px solid #e9ecef;
-    padding: 0.8rem 0.5rem;
+    padding: 0.85rem 0.75rem;
     white-space: nowrap;
-}
-
-@media (min-width: 576px) {
-    .table thead th {
-        font-size: 0.85rem;
-        padding: 0.9rem 0.6rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .table thead th {
-        font-size: 0.9rem;
-        padding: 1rem 0.75rem;
-    }
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .table tbody td {
     vertical-align: middle;
-    font-size: 0.85rem;
-    padding: 0.8rem 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.9rem 0.75rem;
     border-bottom: 1px solid #e9ecef;
     color: #2c2e3f;
+    white-space: nowrap;
 }
 
-@media (min-width: 576px) {
-    .table tbody td {
-        font-size: 0.9rem;
-        padding: 0.9rem 0.6rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .table tbody td {
-        font-size: 0.95rem;
-        padding: 1rem 0.75rem;
-    }
+.table thead th:first-child,
+.table tbody td:first-child {
+    width: 60px;
+    text-align: center;
 }
 
 .table tbody tr:hover {
     background-color: #f8f9fa;
 }
 
-/* ===== PAGINATION STYLING ===== */
+.badge-status {
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    display: inline-block;
+    color: #fff;
+}
+
+.badge-status.pending {
+    background: linear-gradient(135deg, #6c757d, #9aa0a6);
+}
+
+.badge-status.proses {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+}
+
+.badge-status.selesai {
+    background: linear-gradient(135deg, #28a745, #5dd879);
+}
+
 .pagination {
     margin: 0;
     gap: 3px;
@@ -390,22 +296,7 @@
     transition: all 0.2s ease;
     min-width: 32px;
     text-align: center;
-}
-
-@media (min-width: 576px) {
-    .page-item .page-link {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-        min-width: 36px;
-    }
-}
-
-@media (min-width: 768px) {
-    .page-item .page-link {
-        padding: 0.45rem 0.9rem;
-        font-size: 0.85rem;
-        min-width: 40px;
-    }
+    text-decoration: none;
 }
 
 .page-item.active .page-link {
@@ -415,164 +306,120 @@
     box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
 }
 
-.page-item .page-link:hover {
-    background-color: #f8f9fa;
-    border-color: #9a55ff;
-    color: #9a55ff;
-    transform: translateY(-1px);
-}
-
 .pagination-info {
     font-size: 0.8rem;
     color: #6c7383;
 }
 
+.text-primary { color: #9a55ff !important; }
+.text-muted { color: #a5b3cb !important; }
+.fw-bold { font-weight: 600 !important; }
+
+h3.text-dark {
+    font-size: 1.25rem !important;
+    font-weight: 700;
+    color: #2c2e3f !important;
+    margin-bottom: 0.4rem !important;
+}
+
 @media (min-width: 576px) {
-    .pagination-info {
-        font-size: 0.85rem;
+    h3.text-dark {
+        font-size: 1.45rem !important;
     }
 }
 
 @media (min-width: 768px) {
-    .pagination-info {
-        font-size: 0.9rem;
+    h3.text-dark {
+        font-size: 1.65rem !important;
     }
-}
-
-/* ===== MODAL STYLING ===== */
-.modal-content {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 16px 16px 0 0;
-}
-
-.modal-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #9a55ff;
-}
-
-.modal-body {
-    padding: 1.2rem;
-}
-
-.modal-footer {
-    border-top: 1px solid #e9ecef;
-    padding: 1rem;
-    border-radius: 0 0 16px 16px;
-}
-
-.modal-form-group {
-    margin-bottom: 1rem;
-}
-
-.modal-form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-.modal-form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-}
-
-.modal-form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-/* Styling untuk tombol reset icon-only */
-.btn-icon-only {
-    width: 40px;
-    padding: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon-only i {
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 576px) {
-    .table thead th {
-        font-size: 0.75rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .table tbody td {
-        font-size: 0.8rem;
-        padding: 0.6rem 0.3rem;
-    }
-
-    .filter-card {
-        padding: 0.75rem;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.8rem;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select,
-    .filter-card .btn {
-        font-size: 0.8rem;
-        min-height: 38px;
-    }
-}
-
-/* DataTables Custom Styling */
-.dataTables_filter,
-.dataTables_length,
-.dataTables_paginate,
-.dataTables_info {
-    display: none !important;
-}
-
-.sorting, .sorting_asc, .sorting_desc {
-    cursor: pointer;
 }
 
 .mdi {
     vertical-align: middle;
 }
+
+.filter-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9a55ff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+.filter-actions-wrap {
+    display: flex;
+    align-items: end;
+}
+
+@media (max-width: 575.98px) {
+    .container-fluid {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .filter-card {
+        padding: 0.9rem;
+    }
+
+    .filter-actions-wrap {
+        width: 100%;
+    }
+
+    .filter-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .filter-actions .btn-icon-only {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .table thead th,
+    .table tbody td {
+        font-size: 0.82rem;
+        padding: 0.8rem 0.6rem;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .filter-actions-wrap {
+        width: 100%;
+    }
+
+    .filter-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
+
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-tools me-2" style="color: #9a55ff;"></i>
-                            Service & Perbaikan
+                            <i class="mdi mdi-tools me-2" style="color: #9a55ff;"></i>Service & Perbaikan
                         </h3>
                         <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola pengajuan service, perbaikan, dan garansi unit
+                            Kelola pengajuan service, perbaikan, dan garansi unit, status, tampil data servis
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -583,586 +430,209 @@
         </div>
     </div>
 
-    <!-- Tabel Data Service & Perbaikan -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                    <h5 class="card-title mb-2 mb-md-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Pengajuan Service & Perbaikan
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Servis
                     </h5>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal" data-bs-target="#modalTambahService">
-                            <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah Pengajuan</span>
-                        </button>
-                    </div>
                 </div>
+
                 <div class="card-body">
-                    <!-- Filter Section -->
                     <div class="filter-card">
-                        <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                            </h6>
+                        <div class="filter-title">
+                            <i class="mdi mdi-filter-outline"></i>
+                            <span>Filter data servis</span>
+                        </div>
 
-                            <!-- FILTER UNTUK MOBILE -->
-                            <div class="d-block d-md-none">
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="mdi mdi-magnify me-1"></i>Cari Pengajuan
-                                    </label>
-                                    <input type="text" class="form-control" placeholder="Cari nomor tiket, customer...">
+                        <form id="filterForm" onsubmit="return simulateFilter(event)">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6 col-lg-5">
+                                    <label class="form-label">Search</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="searchInput"
+                                        name="search"
+                                        placeholder="Cari no tiket / unit / status..."
+                                    >
                                 </div>
 
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="baru">Baru</option>
-                                            <option value="proses">Diproses</option>
-                                            <option value="selesai">Selesai</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="statusFilter" name="status">
+                                        <option value="">Semua Status</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Diproses">Diproses</option>
+                                        <option value="Selesai">Selesai</option>
+                                    </select>
                                 </div>
 
-                                <div class="row g-2 mt-2">
-                                    <div class="col-6">
-                                        <button type="button" class="btn btn-gradient-primary w-100">
-                                            <i class="mdi mdi-filter me-1"></i> Filter
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="button" class="btn btn-gradient-secondary w-100">
-                                            <i class="mdi mdi-refresh me-1"></i> Reset
-                                        </button>
-                                    </div>
+                                <div class="col-12 col-md-6 col-lg-2">
+                                    <label class="form-label">Tampil</label>
+                                    <select class="form-select" id="showFilter" name="show">
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="25">25</option>
+                                    </select>
                                 </div>
-                            </div>
 
-                            <!-- FILTER UNTUK TABLET & DESKTOP -->
-                            <div class="d-none d-md-block">
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-md-3">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Cari Pengajuan
-                                        </label>
-                                        <input type="text" class="form-control" placeholder="Cari nomor tiket, customer...">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-flag me-1"></i>Status
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="">Semua</option>
-                                            <option value="baru">Baru</option>
-                                            <option value="proses">Diproses</option>
-                                            <option value="selesai">Selesai</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                        </label>
-                                        <select class="form-control">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-gradient-primary w-100">
-                                            <i class="mdi mdi-filter me-1"></i> Filter
+                                <div class="col-12 col-md-6 col-lg-2 filter-actions-wrap">
+                                    <div class="filter-actions">
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
                                         </button>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-gradient-secondary w-100 btn-icon-only" title="Reset">
+                                        <button type="button" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="resetFilter()">
                                             <i class="mdi mdi-refresh"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
 
-                    <!-- Tabel Service & Perbaikan -->
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="tableService" style="width:100%">
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                    <th><i class="mdi mdi-ticket me-1"></i>No. Tiket</th>
-                                    <th><i class="mdi mdi-account me-1"></i>Customer</th>
-                                    <th><i class="mdi mdi-home me-1"></i>Unit</th>
-                                    <th><i class="mdi mdi-alert-circle me-1"></i>Jenis Kerusakan</th>
-                                    <th><i class="mdi mdi-calendar me-1"></i>Tanggal</th>
-                                    <th><i class="mdi mdi-flag me-1"></i>Status</th>
-                                    <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th>No Tiket</th>
+                                    <th>Unit</th>
+                                    <th>Tanggal</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Data 1 -->
-                                <tr>
-                                    <td class="text-center fw-bold">1</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-ticket text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">SRV/2026/001</span>
-                                        </div>
-                                    </td>
-                                    <td>Budi Santoso</td>
-                                    <td>Lavender 45 - C/12</td>
-                                    <td>Retak dinding</td>
-                                    <td>20 Feb 2026</td>
-                                    <td><span class="badge badge-gradient-warning">Diproses</span></td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" title="Detail">
+                                @forelse ($dummyServices as $index => $service)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-ticket-confirmation text-primary me-2" style="font-size: 1.2rem;"></i>
+                                                <span class="fw-bold">{{ $service['ticket_no'] }}</span>
+                                            </div>
+                                        </td>
+                                        <td>{{ $service['unit_name'] }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($service['date'])->format('d M Y') }}</td>
+                                        <td>
+                                            @php
+                                                $statusClass = 'pending';
+                                                if ($service['status'] === 'Diproses') $statusClass = 'proses';
+                                                if ($service['status'] === 'Selesai') $statusClass = 'selesai';
+                                            @endphp
+                                            <span class="badge-status {{ $statusClass }}">
+                                                {{ $service['status'] }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn-action detail me-1" title="Detail" onclick="openDetail({{ $service['id'] }})">
                                                 <i class="mdi mdi-eye"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditService">
+                                            <button class="btn-action edit" title="Edit" onclick="openEdit({{ $service['id'] }})">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-success btn-sm" title="Selesai">
-                                                <i class="mdi mdi-check-circle"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Data 2 -->
-                                <tr>
-                                    <td class="text-center fw-bold">2</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-ticket text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">SRV/2026/002</span>
-                                        </div>
-                                    </td>
-                                    <td>Siti Aminah</td>
-                                    <td>Garden 36 - B/05</td>
-                                    <td>Kebocoran atap</td>
-                                    <td>18 Feb 2026</td>
-                                    <td><span class="badge badge-gradient-primary">Baru</span></td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" title="Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditService">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-success btn-sm" title="Proses">
-                                                <i class="mdi mdi-progress-clock"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Data 3 -->
-                                <tr>
-                                    <td class="text-center fw-bold">3</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-ticket text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">SRV/2026/003</span>
-                                        </div>
-                                    </td>
-                                    <td>Joko Widodo</td>
-                                    <td>Royal 70 - A/08</td>
-                                    <td>Keramik retak</td>
-                                    <td>15 Feb 2026</td>
-                                    <td><span class="badge badge-gradient-success">Selesai</span></td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" title="Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditService">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" disabled title="Selesai">
-                                                <i class="mdi mdi-check"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Data 4 -->
-                                <tr>
-                                    <td class="text-center fw-bold">4</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-ticket text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">SRV/2026/004</span>
-                                        </div>
-                                    </td>
-                                    <td>Rini Susanti</td>
-                                    <td>Lavender 45 - D/03</td>
-                                    <td>Listrik padam</td>
-                                    <td>10 Feb 2026</td>
-                                    <td><span class="badge badge-gradient-warning">Diproses</span></td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" title="Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditService">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-success btn-sm" title="Selesai">
-                                                <i class="mdi mdi-check-circle"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Data 5 -->
-                                <tr>
-                                    <td class="text-center fw-bold">5</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-ticket text-primary me-2" style="font-size: 1rem;"></i>
-                                            <span class="fw-bold">SRV/2026/005</span>
-                                        </div>
-                                    </td>
-                                    <td>Hendra Wijaya</td>
-                                    <td>Garden 36 - E/09</td>
-                                    <td>Pipa air bocor</td>
-                                    <td>5 Feb 2026</td>
-                                    <td><span class="badge badge-gradient-success">Selesai</span></td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" title="Detail">
-                                                <i class="mdi mdi-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-warning btn-sm" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditService">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" disabled title="Selesai">
-                                                <i class="mdi mdi-check"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            Tidak ada data servis
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Pagination UI -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Menampilkan 1 - 5 dari 5 data
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4 gap-2">
+                        <div class="pagination-info mb-0">
+                            Menampilkan 1 - 3 dari 3 data
                         </div>
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
                                 <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-label="Previous">
+                                    <span class="page-link">
                                         <i class="mdi mdi-chevron-left"></i>
-                                    </a>
+                                    </span>
                                 </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item active">
+                                    <span class="page-link">1</span>
+                                </li>
                                 <li class="page-item disabled">
-                                    <a class="page-link" href="#" aria-label="Next">
+                                    <span class="page-link">
                                         <i class="mdi mdi-chevron-right"></i>
-                                    </a>
+                                    </span>
                                 </li>
                             </ul>
                         </nav>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Aksi Bawah -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
-<!-- MODAL TAMBAH SERVICE -->
-<div class="modal fade" id="modalTambahService" tabindex="-1" aria-labelledby="modalTambahServiceLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahServiceLabel">
-                    <i class="mdi mdi-tools me-2" style="color: #9a55ff;"></i>
-                    Tambah Pengajuan Service
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="formTambahService">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-account me-1"></i>Nama Customer
-                                </label>
-                                <input type="text" name="customer" class="modal-form-control" placeholder="Contoh: Budi Santoso">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-home me-1"></i>Unit
-                                </label>
-                                <input type="text" name="unit" class="modal-form-control" placeholder="Contoh: Lavender 45 - C/12">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-alert-circle me-1"></i>Jenis Kerusakan
-                                </label>
-                                <select class="modal-form-control" name="jenis_kerusakan">
-                                    <option value="">-- Pilih Jenis --</option>
-                                    <option value="retak dinding">Retak Dinding</option>
-                                    <option value="kebocoran atap">Kebocoran Atap</option>
-                                    <option value="keramik retak">Keramik Retak</option>
-                                    <option value="listrik padam">Listrik Padam</option>
-                                    <option value="pipa bocor">Pipa Air Bocor</option>
-                                    <option value="cat mengelupas">Cat Mengelupas</option>
-                                    <option value="pintu rusak">Pintu Rusak</option>
-                                    <option value="jendela rusak">Jendela Rusak</option>
-                                    <option value="lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar me-1"></i>Tanggal Pengajuan
-                                </label>
-                                <input type="date" name="tanggal" class="modal-form-control" value="{{ date('Y-m-d') }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-text-box me-1"></i>Deskripsi Kerusakan
-                                </label>
-                                <textarea name="deskripsi" class="modal-form-control" rows="3" placeholder="Jelaskan detail kerusakan..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status
-                                </label>
-                                <select class="modal-form-control" name="status">
-                                    <option value="baru">Baru</option>
-                                    <option value="proses">Diproses</option>
-                                    <option value="selesai">Selesai</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-account-tie me-1"></i>Teknisi
-                                </label>
-                                <input type="text" name="teknisi" class="modal-form-control" placeholder="Nama teknisi (opsional)">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formTambahService" class="btn btn-gradient-primary" onclick="alert('Pengajuan service berhasil ditambahkan (demo)'); $('#modalTambahService').modal('hide');">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EDIT SERVICE -->
-<div class="modal fade" id="modalEditService" tabindex="-1" aria-labelledby="modalEditServiceLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEditServiceLabel">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit Pengajuan Service
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="formEditService">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-ticket me-1"></i>No. Tiket
-                                </label>
-                                <input type="text" name="no_tiket" class="modal-form-control" value="SRV/2026/001" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar me-1"></i>Tanggal Pengajuan
-                                </label>
-                                <input type="date" name="tanggal" class="modal-form-control" value="2026-02-20">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-account me-1"></i>Nama Customer
-                                </label>
-                                <input type="text" name="customer" class="modal-form-control" value="Budi Santoso">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-home me-1"></i>Unit
-                                </label>
-                                <input type="text" name="unit" class="modal-form-control" value="Lavender 45 - C/12">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-alert-circle me-1"></i>Jenis Kerusakan
-                                </label>
-                                <select class="modal-form-control" name="jenis_kerusakan">
-                                    <option value="retak dinding" selected>Retak Dinding</option>
-                                    <option value="kebocoran atap">Kebocoran Atap</option>
-                                    <option value="keramik retak">Keramik Retak</option>
-                                    <option value="listrik padam">Listrik Padam</option>
-                                    <option value="pipa bocor">Pipa Air Bocor</option>
-                                    <option value="cat mengelupas">Cat Mengelupas</option>
-                                    <option value="pintu rusak">Pintu Rusak</option>
-                                    <option value="jendela rusak">Jendela Rusak</option>
-                                    <option value="lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status
-                                </label>
-                                <select class="modal-form-control" name="status">
-                                    <option value="baru">Baru</option>
-                                    <option value="proses" selected>Diproses</option>
-                                    <option value="selesai">Selesai</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-text-box me-1"></i>Deskripsi Kerusakan
-                                </label>
-                                <textarea name="deskripsi" class="modal-form-control" rows="3">Retak dinding di ruang tamu, panjang sekitar 50cm</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-account-tie me-1"></i>Teknisi
-                                </label>
-                                <input type="text" name="teknisi" class="modal-form-control" value="Ahmad Rizki">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-check me-1"></i>Tanggal Perbaikan
-                                </label>
-                                <input type="date" name="tanggal_perbaikan" class="modal-form-control" value="2026-02-22">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formEditService" class="btn btn-gradient-primary" onclick="alert('Data service berhasil diperbarui (demo)'); $('#modalEditService').modal('hide');">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
+@endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-$(document).ready(function() {
-    // Inisialisasi DataTables - hanya untuk sorting
-    let table = $('#tableService').DataTable({
-        responsive: true,
-        paging: false,
-        info: false,
-        searching: false,
-        lengthChange: false,
-        ordering: true,
-        language: {
-            emptyTable: "Data service belum tersedia",
-            zeroRecords: "Data tidak ditemukan",
-        },
-        columnDefs: [
-            { orderable: false, targets: [7] } // Non-aktifkan sorting untuk kolom Aksi
-        ]
+function simulateFilter(event) {
+    event.preventDefault();
+
+    const search = document.getElementById('searchInput')?.value || '';
+    const status = document.getElementById('statusFilter')?.value || 'Semua Status';
+    const show = document.getElementById('showFilter')?.value || '10';
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Simulasi Filter',
+        html: `
+            <div style="text-align:left; font-size:14px;">
+                <div><b>Search:</b> ${search || '-'}</div>
+                <div><b>Status:</b> ${status}</div>
+                <div><b>Tampil:</b> ${show}</div>
+            </div>
+        `,
+        confirmButtonColor: '#9a55ff'
     });
 
-    // Handle edit button click - buka modal edit tanpa isi data
-    $('.btn-outline-warning').click(function() {
-        $('#modalEditService').modal('show');
+    return false;
+}
+
+function resetFilter() {
+    document.getElementById('filterForm')?.reset();
+    document.getElementById('showFilter').value = '10';
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Reset Berhasil',
+        text: 'Filter berhasil direset (simulasi UI).',
+        confirmButtonColor: '#9a55ff'
     });
-});
+}
+
+function openDetail(id) {
+    Swal.fire({
+        icon: 'info',
+        title: 'Detail Servis',
+        text: 'Menampilkan detail pengajuan servis ID ' + id + ' (simulasi UI).',
+        confirmButtonColor: '#9a55ff'
+    });
+}
+
+function openEdit(id) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Edit Servis',
+        text: 'Membuka form edit untuk ID ' + id + ' (simulasi UI).',
+        confirmButtonColor: '#9a55ff'
+    });
+}
 </script>
 @endpush
-@endsection
