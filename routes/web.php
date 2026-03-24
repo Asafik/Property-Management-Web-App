@@ -314,6 +314,7 @@ Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
     ->name('costomer.guests.convert');
 Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
 Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
+Route::delete('/customer/guest/{id}', [TamuController::class, 'destroy'])->name('customer.tamu.destroy');
 
 
 Route::get('/akad/akad-cash/{booking}', [AkadController::class, 'index'])->name('akad.cash');

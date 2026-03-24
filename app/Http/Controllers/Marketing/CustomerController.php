@@ -151,11 +151,27 @@ class CustomerController extends Controller
             $query->where('job_status', $request->pekerjaan);
         }
 
-        $perPage = $request->input('per_page', 10);
-        $customers = $query->withCount(['units', 'documents'])->latest()->paginate($perPage)->withQueryString();
-        $totalCustomer = Customer::count();
+        // Sorting
+        $allowedSortFields = ['full_name', 'customer_id', 'job_status', 'created_at'];
+        $sortField     = in_array($request->input('sortField'), $allowedSortFields)
+                         ? $request->input('sortField')
+                         : 'created_at';
+        $sortDirection = $request->input('sortDirection') === 'asc' ? 'asc' : 'desc';
 
-        return view('customer.customer', compact('customers', 'totalCustomer'));
+        $perPage   = $request->input('per_page', 10);
+        $customers = $query->withCount(['units', 'documents'])
+                           ->orderBy($sortField, $sortDirection)
+                           ->paginate($perPage)
+                           ->withQueryString();
+
+        $totalCustomer  = Customer::count();
+        $customerAktif  = Customer::whereHas('units')->count();
+        $customerCash   = Customer::where('job_status', '!=', null)->count(); // placeholder; ganti sesuai field pembayaran
+        $customerKpr    = Customer::whereNull('job_status')->count();         // placeholder
+
+        return view('customer.customer', compact(
+            'customers', 'totalCustomer', 'customerAktif', 'customerCash', 'customerKpr'
+        ));
     }
 
     public function search(Request $request)

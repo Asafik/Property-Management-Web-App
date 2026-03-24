@@ -4,10 +4,11 @@
 
 @section('content')
 <style>
-    /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN SEBELUMNYA ===== */
     .card {
         transition: all 0.3s ease;
         margin-bottom: 1rem;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
     .card:hover {
@@ -48,7 +49,6 @@
         }
     }
 
-    /* Card Title */
     .card-title {
         font-size: 0.9rem;
         font-weight: 600;
@@ -68,42 +68,117 @@
         }
     }
 
-    /* ===== STATISTICS CARDS ===== */
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    /* ===== STAT CARD BARU ===== */
+    .stat-card {
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-radius: 16px;
+        padding: 1.2rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: none;
+        transition: all 0.3s ease;
     }
 
-    .bg-gradient-info {
-        background: linear-gradient(135deg, #6a82fb, #4e6aff) !important;
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(154, 85, 255, 0.12);
     }
 
-    .bg-gradient-success {
-        background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+    .stat-card .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        flex-shrink: 0;
     }
 
-    .bg-gradient-danger {
-        background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+    .stat-card .stat-icon.total {
+        background: linear-gradient(135deg, #667eea, #764ba2);
     }
 
-    .bg-gradient-warning {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+    .stat-card .stat-icon.aktif {
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
     }
 
-    .card-img-holder {
-        position: relative;
+    .stat-card .stat-icon.cash {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .stat-card .stat-icon.kpr {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+
+    .stat-card .stat-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .stat-card .stat-content h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+        color: #2c2e3f;
+        line-height: 1.2;
+    }
+
+    .stat-card .stat-content p {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0;
+        white-space: nowrap;
         overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .card-img-absolute {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        opacity: 0.3;
-        width: 80px;
-        height: auto;
+    @media (max-width: 768px) {
+        .stat-card {
+            padding: 1rem;
+            gap: 0.75rem;
+        }
+
+        .stat-card .stat-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 1.4rem;
+        }
+
+        .stat-card .stat-content h3 {
+            font-size: 1.3rem;
+        }
+
+        .stat-card .stat-content p {
+            font-size: 0.75rem;
+        }
     }
 
-    /* ===== FILTER SECTION ===== */
+    @media (max-width: 576px) {
+        .stat-card {
+            padding: 0.75rem;
+            gap: 0.5rem;
+        }
+
+        .stat-card .stat-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .stat-card .stat-content h3 {
+            font-size: 1.1rem;
+        }
+
+        .stat-card .stat-content p {
+            font-size: 0.7rem;
+        }
+    }
+
     .filter-card {
         background: linear-gradient(135deg, #f9f7ff, #f2ecff);
         border-radius: 12px;
@@ -141,7 +216,6 @@
         font-weight: 600;
     }
 
-    /* Form Controls */
     .form-control,
     .form-select {
         border: 1px solid #e9ecef;
@@ -155,7 +229,6 @@
     }
 
     @media (min-width: 576px) {
-
         .form-control,
         .form-select {
             padding: 0.7rem 1rem;
@@ -171,7 +244,6 @@
         outline: none;
     }
 
-    /* Form Label */
     .form-label {
         font-size: 0.85rem;
         font-weight: 600;
@@ -181,7 +253,6 @@
         font-family: 'Nunito', sans-serif;
     }
 
-    /* Button Styling */
     .btn {
         font-size: 0.85rem;
         padding: 0.6rem 1rem;
@@ -245,7 +316,6 @@
         color: #ffffff !important;
     }
 
-    /* Outline Buttons */
     .btn-outline-primary {
         background: transparent;
         border: 1px solid #9a55ff;
@@ -264,6 +334,10 @@
         border: 1px solid #ffc107;
         color: #ffc107;
         padding: 0.4rem 0.75rem;
+        position: relative;
+        z-index: 15;
+        pointer-events: auto !important;
+        cursor: pointer !important;
     }
 
     .btn-outline-warning:hover {
@@ -277,6 +351,10 @@
         border: 1px solid #dc3545;
         color: #dc3545;
         padding: 0.4rem 0.75rem;
+        position: relative;
+        z-index: 15;
+        pointer-events: auto !important;
+        cursor: pointer !important;
     }
 
     .btn-outline-danger:hover {
@@ -298,7 +376,6 @@
         border-color: transparent;
     }
 
-    /* Badge Styling */
     .badge {
         padding: 0.35rem 0.6rem;
         font-size: 0.75rem;
@@ -322,27 +399,6 @@
         }
     }
 
-    .badge-gradient-success {
-        background: linear-gradient(135deg, #28a745, #5cb85c);
-        color: #ffffff;
-    }
-
-    .badge-gradient-warning {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d);
-        color: #2c2e3f;
-    }
-
-    .badge-gradient-danger {
-        background: linear-gradient(135deg, #dc3545, #e4606d);
-        color: #ffffff;
-    }
-
-    .badge-gradient-info {
-        background: linear-gradient(135deg, #17a2b8, #5bc0de);
-        color: #ffffff;
-    }
-
-    /* ===== AVATAR STYLING ===== */
     .avatar-circle {
         width: 40px;
         height: 40px;
@@ -371,78 +427,67 @@
         font-size: 14px;
     }
 
-    /* ===== TABLE STYLING ===== */
     .table-responsive {
         overflow-x: auto;
+        overflow-y: visible;
         -webkit-overflow-scrolling: touch;
         border-radius: 8px;
         margin-bottom: 0.5rem;
+        scrollbar-width: thin;
+        scrollbar-color: #9a55ff #f0f0f0;
+    }
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 10px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #9a55ff;
+        border-radius: 10px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #7a3fcc;
     }
 
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 0;
-    }
-
+    .table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
     .table thead th {
         background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-        color: #9a55ff;
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        color: #9a55ff; font-weight: 600; font-size: 0.8rem;
+        text-transform: uppercase; letter-spacing: 0.5px;
         border-bottom: 2px solid #e9ecef;
         padding: 0.8rem 0.5rem;
         white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
-
-    @media (min-width: 576px) {
-        .table thead th {
-            font-size: 0.85rem;
-            padding: 0.9rem 0.6rem;
-        }
+    .table thead th:hover {
+        color: #7a3fcc;
     }
-
-    @media (min-width: 768px) {
-        .table thead th {
-            font-size: 0.9rem;
-            padding: 1rem 0.75rem;
-        }
+    .table thead th i {
+        font-size: 0.8rem;
+        margin-left: 4px;
+        opacity: 0.5;
     }
-
+    @media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
+    @media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
+    .table thead th:first-child { padding-left: 0.5rem; text-align: center; }
+    .table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; text-align: center; }
     .table tbody td {
-        vertical-align: middle;
-        font-size: 0.85rem;
-        padding: 0.8rem 0.5rem;
-        border-bottom: 1px solid #e9ecef;
-        color: #2c2e3f;
+        vertical-align: middle; font-size: 0.85rem; padding: 0.8rem 0.5rem;
+        border-bottom: 1px solid #e9ecef; color: #2c2e3f;
+        white-space: nowrap;
     }
+    @media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
+    @media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
 
-    @media (min-width: 576px) {
-        .table tbody td {
-            font-size: 0.9rem;
-            padding: 0.9rem 0.6rem;
-        }
-    }
+    .table tbody tr:hover { background-color: #f8f9fa; }
 
-    @media (min-width: 768px) {
-        .table tbody td {
-            font-size: 0.95rem;
-            padding: 1rem 0.75rem;
-        }
-    }
-
-    .table tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-
-    /* ===== PAGINATION STYLING ===== */
-    .pagination {
-        margin: 0;
-        gap: 3px;
-    }
-
+    .pagination { margin: 0; gap: 3px; }
     .page-item .page-link {
         border: 1px solid #e9ecef;
         padding: 0.35rem 0.7rem;
@@ -453,8 +498,9 @@
         transition: all 0.2s ease;
         min-width: 32px;
         text-align: center;
+        cursor: pointer;
+        text-decoration: none;
     }
-
     @media (min-width: 576px) {
         .page-item .page-link {
             padding: 0.4rem 0.8rem;
@@ -462,7 +508,6 @@
             min-width: 36px;
         }
     }
-
     @media (min-width: 768px) {
         .page-item .page-link {
             padding: 0.45rem 0.9rem;
@@ -470,83 +515,104 @@
             min-width: 40px;
         }
     }
-
     .page-item.active .page-link {
         background: linear-gradient(to right, #da8cff, #9a55ff);
         border-color: transparent;
         color: #ffffff;
         box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
     }
-
     .page-item .page-link:hover {
         background-color: #f8f9fa;
         border-color: #9a55ff;
         color: #9a55ff;
         transform: translateY(-1px);
     }
+    .pagination-info { font-size: 0.8rem; color: #6c7383; }
 
-    .pagination-info {
-        font-size: 0.8rem;
-        color: #6c7383;
-    }
-
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 576px) {
-        .table thead th {
-            font-size: 0.75rem;
-            padding: 0.6rem 0.3rem;
-        }
-
-        .table tbody td {
-            font-size: 0.8rem;
-            padding: 0.6rem 0.3rem;
-        }
-
-        .filter-card {
-            padding: 0.75rem;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.8rem;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select,
-        .filter-card .btn {
-            font-size: 0.8rem;
-            min-height: 38px;
+        .table thead th { font-size: 0.75rem; padding: 0.6rem 0.3rem; }
+        .table tbody td { font-size: 0.8rem; padding: 0.6rem 0.3rem; }
+        .filter-card { padding: 0.75rem; }
+        .filter-card .form-label { font-size: 0.8rem; }
+        .filter-card .form-control, .filter-card .form-select, .filter-card .btn {
+            font-size: 0.8rem; min-height: 38px;
         }
     }
 
-    /* DataTables Custom Styling */
-    .dataTables_filter,
-    .dataTables_length,
-    .dataTables_paginate,
-    .dataTables_info {
+    .dataTables_filter, .dataTables_length, .dataTables_paginate, .dataTables_info {
         display: none !important;
     }
+    .sorting, .sorting_asc, .sorting_desc { cursor: pointer; }
+    .mdi { vertical-align: middle; }
+    
+    h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !important; margin-bottom: 0.5rem !important; }
+    @media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
+    @media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
 
-    .sorting,
-    .sorting_asc,
-    .sorting_desc {
+    /* ====== CSS ACTION BUTTONS DARI DATA BANK ====== */
+    .btn-action {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        margin: 0 3px;
+        transition: all 0.3s ease;
+        border: none;
         cursor: pointer;
     }
-
-    .mdi {
-        vertical-align: middle;
+    .btn-action i {
+        font-size: 1.1rem;
+    }
+    .btn-action.edit {
+        background: linear-gradient(135deg, #ffc107, #ffdb6d);
+        color: #2c2e3f;
+    }
+    .btn-action.edit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+    }
+    .btn-action.delete {
+        background: linear-gradient(135deg, #dc3545, #e4606d);
+        color: white;
+    }
+    .btn-action.delete:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
     }
 
-    /* Fix untuk tombol aksi di mobile */
-    .action-buttons {
-        position: relative;
-        z-index: 10;
+    .btn-icon-only {
+        width: 40px; height: 40px; padding: 0;
+        display: flex; align-items: center; justify-content: center; border-radius: 8px;
     }
+    .btn-icon-only i { font-size: 1.2rem; margin: 0; }
+    .btn-icon-only-mobile {
+        width: 100%; height: 40px; padding: 0;
+        display: flex; align-items: center; justify-content: center; border-radius: 8px;
+    }
+    .btn-icon-only-mobile i { font-size: 1.2rem; margin: 0; }
 
-    .btn-outline-warning, .btn-outline-danger {
-        position: relative;
-        z-index: 15;
-        pointer-events: auto !important;
-        cursor: pointer !important;
+    /* ====== CSS FILTER ====== */
+    .filter-card { border: none; }
+    .filter-row-desktop {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .filter-row-desktop .filter-text {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #9a55ff;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    .filter-row-mobile  { display: none; }
+    @media (max-width: 767px) {
+        .filter-row-desktop { display: none; }
+        .filter-row-mobile  { display: block; margin-top: 1rem; }
     }
 </style>
 
@@ -575,60 +641,51 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row g-2 g-sm-2 g-md-3">
-        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-            <div class="card bg-gradient-primary card-img-holder text-white h-100">
-                <div class="card-body p-2 p-sm-2 p-md-3">
-                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                        alt="circle-image" />
-                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                        Total User
-                        <i class="mdi mdi-account-group float-end" style="font-size: 1.2rem;"></i>
-                    </h4>
-                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalCustomer ?? 0 }}</h2>
-                    <h6 class="card-text small">Semua customer</h6>
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $totalCustomer ?? 0 }}</h3>
+                    <p>Total User</p>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-            <div class="card bg-gradient-success card-img-holder text-white h-100">
-                <div class="card-body p-2 p-sm-2 p-md-3">
-                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                        alt="circle-image" />
-                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                        User Aktif
-                        <i class="mdi mdi-account-check float-end" style="font-size: 1.2rem;"></i>
-                    </h4>
-                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $customerAktif ?? 0 }}</h2>
-                    <h6 class="card-text small">75% dari total</h6>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon aktif">
+                    <i class="mdi mdi-account-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $customerAktif ?? 0 }}</h3>
+                    <p>User Aktif</p>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-            <div class="card bg-gradient-warning card-img-holder text-white h-100">
-                <div class="card-body p-2 p-sm-2 p-md-3">
-                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                        alt="circle-image" />
-                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                        Pembeli Cash
-                        <i class="mdi mdi-cash-multiple float-end" style="font-size: 1.2rem;"></i>
-                    </h4>
-                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $customerCash ?? 0 }}</h2>
-                    <h6 class="card-text small">39.5%</h6>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon cash">
+                    <i class="mdi mdi-cash-multiple"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $customerCash ?? 0 }}</h3>
+                    <p>Pembeli Cash</p>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-            <div class="card bg-gradient-info card-img-holder text-white h-100">
-                <div class="card-body p-2 p-sm-2 p-md-3">
-                    <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                        alt="circle-image" />
-                    <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                        Pembeli KPR
-                        <i class="mdi mdi-bank float-end" style="font-size: 1.2rem;"></i>
-                    </h4>
-                    <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $customerKpr ?? 0 }}</h2>
-                    <h6 class="card-text small">60.5%</h6>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon kpr">
+                    <i class="mdi mdi-bank"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $customerKpr ?? 0 }}</h3>
+                    <p>Pembeli KPR</p>
                 </div>
             </div>
         </div>
@@ -638,49 +695,42 @@
     <div class="row mt-4 mt-sm-4 mt-md-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                    <h5 class="card-title mb-2 mb-md-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
                         <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
                         Daftar User
                     </h5>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-gradient-success" onclick="$('#modalImportCustomer').modal('show')">
+                        <button class="btn btn-gradient-success" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="$('#modalImportCustomer').modal('show')">
                             <i class="mdi mdi-import me-1"></i><span class="d-none d-sm-inline">Import</span>
                         </button>
-                        <button class="btn btn-sm btn-gradient-danger" onclick="$('#modalExportCustomer').modal('show')">
+                        <button class="btn btn-gradient-danger" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="$('#modalExportCustomer').modal('show')">
                             <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
                         </button>
-                        <a href="{{ route('customer.create') }}" class="btn btn-sm btn-gradient-primary">
-                            <i class="mdi mdi-account-multiple-plus-outline"></i> Tambah
+                        <a href="{{ route('customer.create') }}" class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
+                            <i class="mdi mdi-account-multiple-plus-outline"></i><span class="d-none d-sm-inline"> Tambah</span>
                         </a>
                     </div>
                 </div>
                 <div class="card-body">
                     <!-- Filter Section -->
-                    <div class="filter-card">
+                    <div class="filter-card mb-4">
                         <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1"></i>Filter Data User
-                            </h6>
-
-                            <!-- FILTER UNTUK MOBILE -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('customer.data') }}" id="filterFormMobile">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>Cari Customer
-                                        </label>
-                                        <input type="text" name="search" class="form-control"
-                                            value="{{ request('search') }}" placeholder="Cari nama, ID..."
-                                            style="height: 45px;">
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-briefcase me-1" style="color: #9a55ff;"></i>Pekerjaan
-                                            </label>
-                                            <select name="pekerjaan" class="form-control">
+                            <!-- DESKTOP VERSION -->
+                            <div class="filter-row-desktop">
+                                <div class="filter-text">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data customer</span>
+                                </div>
+                                <form method="GET" action="{{ route('customer.data') }}">
+                                    <div class="row g-2 align-items-end w-100">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Cari User</label>
+                                            <input type="text" class="form-control" name="search" placeholder="Nama, ID..." value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Pekerjaan</label>
+                                            <select class="form-control" name="pekerjaan">
                                                 <option value="">Semua</option>
                                                 <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
                                                 <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
@@ -690,50 +740,45 @@
                                                 <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                                             </select>
                                         </div>
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select name="per_page" class="form-control">
+                                        <div class="col-md-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
                                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                                 <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                                 <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
-                                    </div>
-
-                                    <div class="row g-2 mt-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
+                                        <div class="col-md-2">
+                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
 
-                            <!-- FILTER UNTUK TABLET & DESKTOP -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('customer.data') }}" id="filterFormDesktop">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>Cari User
-                                            </label>
-                                            <input type="text" name="search" class="form-control"
-                                                value="{{ request('search') }}" placeholder="Nama, ID...">
+                            <!-- MOBILE VERSION -->
+                            <div class="filter-row-mobile">
+                                <div class="filter-text mb-2">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data customer</span>
+                                </div>
+                                <form method="GET" action="{{ route('customer.data') }}">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Cari User</label>
+                                            <input type="text" class="form-control" name="search" placeholder="Nama, ID..." value="{{ request('search') }}">
                                         </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-briefcase me-1" style="color: #9a55ff;"></i>Pekerjaan
-                                            </label>
-                                            <select name="pekerjaan" class="form-control">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Pekerjaan</label>
+                                            <select class="form-control" name="pekerjaan">
                                                 <option value="">Semua</option>
                                                 <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
                                                 <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
@@ -743,27 +788,23 @@
                                                 <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select name="per_page" class="form-control">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
                                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                                 <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                                 <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter"></i>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" title="Filter" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i> Filter
                                             </button>
                                         </div>
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
+                                        <div class="col-6">
+                                            <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i> Reset
                                             </a>
                                         </div>
                                     </div>
@@ -773,14 +814,42 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tableCustomer" {{ $customers->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
                                     <th class="text-center" width="5%">No</th>
-                                    <th width="15%">ID User</th>
-                                    <th width="25%">Nama User</th>
-                                    <th width="15%">No. HP</th>
-                                    <th width="15%">Pekerjaan</th>
+                                    <th class="sortable" width="15%" data-field="customer_id" data-direction="{{ request('sortField') == 'customer_id' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        ID User
+                                        @if(request('sortField') == 'customer_id')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="25%" data-field="full_name" data-direction="{{ request('sortField') == 'full_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama User
+                                        @if(request('sortField') == 'full_name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="15%" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        No. HP
+                                        @if(request('sortField') == 'phone')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="15%" data-field="job_status" data-direction="{{ request('sortField') == 'job_status' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Pekerjaan
+                                        @if(request('sortField') == 'job_status')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
                                     <th class="text-center" width="15%">Aksi</th>
                                 </tr>
                             </thead>
@@ -825,14 +894,12 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1 action-buttons">
-                                            <button class="btn btn-outline-warning btn-sm" title="Edit">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                <i class="mdi mdi-delete"></i>
-                                            </button>
-                                        </div>
+                                        <button class="btn-action edit me-1" title="Edit">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </button>
+                                        <button class="btn-action delete" title="Hapus">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 @empty
@@ -848,39 +915,60 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
-                    @if($customers->count() > 0)
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
+                    <!-- PAGINATION -->
+                    @if ($customers instanceof \Illuminate\Pagination\LengthAwarePaginator && $customers->total() > 0)
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                         <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan <span class="fw-bold">{{ $customers->firstItem() }}</span> -
-                            <span class="fw-bold">{{ $customers->lastItem() }}</span> dari
-                            <span class="fw-bold">{{ $customers->total() }}</span> data
+                            Menampilkan {{ $customers->firstItem() }} - {{ $customers->lastItem() }} dari {{ $customers->total() }} data
                         </div>
-                        <div>
-                            <nav>
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                    {{ $customers->onEachSide(1)->links('pagination::bootstrap-5') }}
-                                </ul>
-                            </nav>
-                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($customers->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $customers->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous" onclick="showPaginationLoading(event)">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($customers->getUrlRange(max(1, $customers->currentPage() - 2), min($customers->lastPage(), $customers->currentPage() + 2)) as $page => $url)
+                                    @if ($page == $customers->currentPage())
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $customers->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        </li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($customers->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $customers->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next" onclick="showPaginationLoading(event)">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
                     </div>
                     @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tombol Aksi Bawah -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-wrap gap-2">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -994,34 +1082,28 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables
-    const tableElement = document.getElementById('tableCustomer');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tableCustomer')) {
-            $('#tableCustomer').DataTable().destroy();
-        }
+    // Sorting functionality
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
 
-        $('#tableCustomer').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data User belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [0, 5] }
-            ],
-            autoWidth: false,
-            deferRender: true
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang mengurutkan data',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
-    }
 
-    // Filter form submit with loading
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
+    });
+
     $('#filterFormMobile, #filterFormDesktop').on('submit', function() {
         Swal.fire({
             title: 'Memuat...',
@@ -1033,7 +1115,6 @@ $(document).ready(function() {
         });
     });
 
-    // Reset button with loading
     $('a[href="{{ route('customer.data') }}"]').on('click', function(e) {
         e.preventDefault();
         let href = $(this).attr('href');
@@ -1050,8 +1131,7 @@ $(document).ready(function() {
         window.location.href = href;
     });
 
-    // Edit button click (demo)
-    $('.btn-outline-warning').click(function() {
+    $('.btn-action.edit').click(function() {
         Swal.fire({
             icon: 'info',
             title: 'Info',
@@ -1060,8 +1140,7 @@ $(document).ready(function() {
         });
     });
 
-    // Delete button click with confirmation (demo)
-    $('.btn-outline-danger').click(function() {
+    $('.btn-action.delete').click(function() {
         Swal.fire({
             title: 'Hapus Customer?',
             text: "Data customer akan dihapus (demo)",
@@ -1085,7 +1164,6 @@ $(document).ready(function() {
     });
 });
 
-// Sweet Alert untuk session
 @if(session('success'))
     Swal.fire({
         icon: 'success',
@@ -1107,5 +1185,43 @@ $(document).ready(function() {
         confirmButtonText: 'OK'
     });
 @endif
+
+// Fungsi loading untuk pagination
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showFilterLoading() {
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+}
+
+function showResetLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
 </script>
 @endpush
