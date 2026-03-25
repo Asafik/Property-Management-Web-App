@@ -42,22 +42,45 @@ class ListPengajuanController extends Controller
         if ($request->filled('metode')) {
             $query->where('purchase_type', $request->metode);
         }
-        // Filter Marketing
-        if ($request->filled('marketing_id')) {
-            $query->whereHas('sales', function ($q) use ($request) {
-                $q->where('id', $request->marketing_id);
+        // Filter by Customer Name Explicitly
+        if ($request->filled('name')) {
+            $name = $request->name;
+            $query->whereHas('customer', function ($q) use ($name) {
+                $q->where('full_name', 'like', "%{$name}%");
             });
         }
 
-        // Ambil data marketing untuk dropdown filter
-        $marketing = \App\Models\Employee::All();
+        // Filter by ID Booking Explicitly
+        if ($request->filled('id_booking')) {
+            $id_booking = $request->id_booking;
+            $query->where(function ($q) use ($id_booking) {
+                $q->where('id', 'like', "%{$id_booking}%")
+                  ->orWhere('booking_code', 'like', "%{$id_booking}%");
+            });
+        }
 
+        // Sorting Logic
+        $sortColumn = $request->input('sort');
+        $sortDirection = $request->input('direction', 'asc');
+        $sortDirection = in_array(strtolower($sortDirection), ['asc', 'desc']) ? strtolower($sortDirection) : 'asc';
+
+        if ($sortColumn === 'name') {
+            $query->join('customers', 'bookings.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', $sortDirection)
+                  ->select('bookings.*');
+        } elseif ($sortColumn === 'id_booking') {
+            $query->orderBy('booking_code', $sortDirection);
+        } elseif (in_array($sortColumn, ['id', 'booking_code', 'status', 'purchase_type', 'created_at'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        } else {
+            $query->latest('bookings.created_at'); // Menggunakan nama tabel saat default untuk menghindari ambiguitas jika ada join nantinya
+        }
 
         // Jumlah tampil per halaman
         $perPage = $request->input('per_page', 10);
 
         // Ambil data dengan pagination
-        $bookings = $query->latest()->paginate($perPage)->withQueryString();
+        $bookings = $query->paginate($perPage)->withQueryString();
 
         // Total booking dengan status pengajuan (untuk statistik)
         $totalPengajuan = Booking::where('status', 'active')->count();
@@ -74,8 +97,7 @@ class ListPengajuanController extends Controller
             'totalKpr',
             'totalCash',
             'totalLunas',
-            'bookings',
-            'marketing'
+            'bookings'
         ));
     }
 
