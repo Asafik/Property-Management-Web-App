@@ -483,6 +483,10 @@
                                     <span class="fw-medium">{{ $kpr->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div>
+                                    <small class="text-muted d-block">Jenis Unit</small>
+                                    <span class="fw-medium">{{ strtoupper($kpr->unit->jenis ?? '-')}}</span>
+                                </div>
+                                <div>
                                     <small class="text-muted d-block">Harga Unit</small>
                                     <span class="fw-medium text-primary">
                                         Rp {{ number_format($kpr->unit->price, 0, ',', '.') }}
