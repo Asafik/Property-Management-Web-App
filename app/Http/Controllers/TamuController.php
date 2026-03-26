@@ -13,9 +13,8 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 class TamuController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $guests = Guest::with(['project', 'unit', 'employee',])->get();
         $agents = Employee::where('position_id', 4)->get();
         $projects = LandBank::with('units')->get();
         $units = LandBankUnit::all(); // ambil semua unit
@@ -26,15 +25,56 @@ class TamuController extends Controller
             'converted',
             'lost'
         ];
-        $totalGuests = $guests->count();
-        $totalProspek = $guests->whereIn('status', ['new', 'follow_up', 'negotiation'])->count();
-        $totalFollowUp = $guests
+
+        $perPage = $request->input('per_page', 10);
+
+        $query = Guest::with(['project', 'unit', 'employee']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($request->filled('agent')) {
+            $query->where('assigned_to', $request->agent);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Sorting
+        $allowedSortFields = ['name', 'phone', 'source', 'assigned_to', 'status', 'last_follow_up', 'next_follow_up', 'created_at'];
+        $sortField     = in_array($request->input('sortField'), $allowedSortFields)
+                         ? $request->input('sortField')
+                         : 'created_at';
+        $sortDirection = $request->input('sortDirection') === 'asc' ? 'asc' : 'desc';
+
+        $guests = $query->orderBy($sortField, $sortDirection)
+                        ->paginate($perPage)
+                        ->withQueryString();
+
+        // statistik tetap pakai semua data, tidak ikut filter
+        $allGuests = Guest::all();
+        $totalGuests = $allGuests->count();
+        $totalProspek = $allGuests->whereIn('status', ['new', 'follow_up', 'negotiation'])->count();
+        $totalFollowUp = $allGuests
             ->where('next_follow_up', '!=', null)
             ->where('next_follow_up', '>=', now()->startOfDay())
             ->where('next_follow_up', '<=', now()->endOfDay())
             ->whereNotIn('status', ['converted', 'lost'])
             ->count();
-        return view('customer.tamu', compact('guests', 'agents', 'projects', 'units', 'statuses', 'totalGuests', 'totalProspek', 'totalFollowUp'));
+
+        return view('customer.tamu', compact(
+            'guests',
+            'agents',
+            'projects',
+            'units',
+            'statuses',
+            'totalGuests',
+            'totalProspek',
+            'totalFollowUp'
+        ));
     }
 
     public function store(Request $request)
@@ -68,6 +108,7 @@ class TamuController extends Controller
 
         return redirect()->back()->with('success', 'Tamu berhasil ditambahkan.');
     }
+
     public function followUp(Request $request)
     {
         $request->validate([
@@ -88,18 +129,20 @@ class TamuController extends Controller
 
         return back()->with('success', 'Follow up berhasil disimpan.');
     }
-public function convert($id)
-{
-    $guest = Guest::findOrFail($id);
 
-    if ($guest->status === 'converted') {
-        return back()->with('error', 'Tamu sudah dikonversi.');
+    public function convert($id)
+    {
+        $guest = Guest::findOrFail($id);
+
+        if ($guest->status === 'converted') {
+            return back()->with('error', 'Tamu sudah dikonversi.');
+        }
+
+        return redirect()->route('customer.create', [
+            'guest_id' => $guest->id
+        ]);
     }
 
-    return redirect()->route('customer.create', [
-        'guest_id' => $guest->id
-    ]);
-}
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -138,5 +181,13 @@ public function convert($id)
     {
         $tamu = Guest::findOrFail($id);
         return response()->json($tamu);
+    }
+
+    public function destroy($id)
+    {
+        $guest = Guest::findOrFail($id);
+        $guest->delete();
+
+        return redirect()->back()->with('success', 'Tamu berhasil dihapus.');
     }
 }

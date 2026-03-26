@@ -7,40 +7,6 @@
 {{-- ================ STYLES ================ --}}
 @push('styles')
 <style>
-    /* ------------------------------------------------
-        VARIABLES & RESET
-    ------------------------------------------------ */
-    :root {
-        --gold: #c9973a;
-        --gold-light: #e5b155;
-        --navy: #0b1f4b;
-        --navy-mid: #1a3470;
-        --cream: #f9f6f0;
-        --border: #eae6df;
-        --text-dark: #1e1e2a;
-        --text-mid: #5e5e6b;
-        --text-light: #8a8a98;
-        --subsidi: #0f766e;
-        --subsidi-soft: #ccf0e9;
-        --komersil: #7c3aed;
-        --komersil-soft: #eee9ff;
-        --cashkpr: #b8882f;
-        --cashkpr-soft: #fcedd7;
-        --shadow-md: 0 10px 30px -10px rgba(0,0,0,0.12);
-        --shadow-lg: 0 25px 50px -15px rgba(0,0,0,0.25);
-    }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: 'DM Sans', sans-serif;
-        color: var(--text-dark);
-        background-color: #ffffff;
-    }
 
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(25px); }

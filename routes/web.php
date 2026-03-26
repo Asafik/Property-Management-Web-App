@@ -300,16 +300,7 @@ Route::get('/servis', function () {
 
 
 
-// Route untuk Dokument Legal Persiapan
-Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])
-    ->name('dokument.persiapan');
-    Route::post('/documents/persiapan-pecah-legal', [DocumentPersiapanPecahLegalController::class, 'store'])
-    ->name('documents.storePersiapanPecahLegal');
-    Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])
-    ->name('documents.destroy');
 
-Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])
-    ->name('document_legal.store');
 
 
 Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
@@ -324,6 +315,7 @@ Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
     ->name('costomer.guests.convert');
 Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
 Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
+Route::delete('/customer/guest/{id}', [TamuController::class, 'destroy'])->name('customer.tamu.destroy');
 
 
 Route::get('/akad/akad-cash/{booking}', [AkadController::class, 'index'])->name('akad.cash');
@@ -403,7 +395,13 @@ Route::get('/dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])->
 Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'])->name('document-types.update');
 Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])->name('document-types.destroy');
 
-
+// Route untuk Dokument Legal Persiapan
+Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
+Route::post('/documents/persiapan-pecah-legal', [DocumentPersiapanPecahLegalController::class, 'store'])->name('documents.storePersiapanPecahLegal');
+Route::get('/documents/persiapan-pecah-legal/{id}/edit', [DocumentPersiapanPecahLegalController::class, 'edit'])->name('documents.editPersiapanPecahLegal');
+Route::put('/documents/persiapan-pecah-legal/{id}', [DocumentPersiapanPecahLegalController::class, 'update'])->name('documents.updatePersiapanPecahLegal');
+Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])->name('documents.destroy');
+Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
 
 
 // EMPLOYEE/AGENCY
@@ -468,5 +466,7 @@ Route::get('/cash-tempo-timeline', [TimelineCashTempoController::class, 'index']
 Route::get('/cash-tempo/timeline/{id}', [TimelineCashTempoController::class,'timeline']);
 Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
 Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
+
+Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
 
 });

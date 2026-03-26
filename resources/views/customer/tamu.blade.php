@@ -1,1275 +1,1104 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Data Tamu / Prospek - Property Management App')
+@section('title', 'Data Tamu / Prospek')
 
 @section('content')
-    <style>
-        /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN SEBELUMNYA ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
 
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== STATISTICS CARDS ===== */
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(135deg, #6a82fb, #4e6aff) !important;
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-        }
-
-        .bg-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-        }
-
-        .bg-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-        }
-
-        .card-img-holder {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-img-absolute {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            opacity: 0.3;
-            width: 80px;
-            height: auto;
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            min-height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        /* Outline Buttons */
-        .btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
-            color: #9a55ff;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-primary:hover {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-warning {
-            background: transparent;
-            border: 1px solid #ffc107;
-            color: #ffc107;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #dc3545;
-            color: #dc3545;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-info {
-            background: transparent;
-            border: 1px solid #17a2b8;
-            color: #17a2b8;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-info:hover {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        /* Badge Styling */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-        }
-
-        .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-        }
-
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-        }
-
-        /* Status Prospek Badge */
-        .badge-hot {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: white;
-        }
-
-        .badge-warm {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-cold {
-            background: linear-gradient(135deg, #6c757d, #a5b3cb);
-            color: white;
-        }
-
-        /* ===== AVATAR STYLING ===== */
-        .avatar-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 576px) {
-            .avatar-circle {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
-            }
-        }
-
-        .avatar-sm {
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* ===== MODAL STYLING ===== */
-        .modal-content {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-bottom: 1px solid rgba(154, 85, 255, 0.1);
-            padding: 1.2rem 1.5rem;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #9a55ff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modal-title i {
-            font-size: 1.4rem;
-        }
-
-        .modal-body {
-            padding: 1.8rem 1.5rem;
-            background: #ffffff;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1.2rem 1.5rem;
-            border-radius: 0 0 20px 20px;
-            background: #f8f9fa;
-        }
-
-        .modal-form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-form-group label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .modal-form-group label i {
-            font-size: 1.1rem;
-        }
-
-        .modal-form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            width: 100%;
-        }
-
-        .modal-form-control:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 4px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        .modal-form-control[readonly] {
-            background-color: #f8f9fa;
-            border-color: #e9ecef;
-            color: #6c757d;
-        }
-
-        .modal .btn-close {
-            background: transparent;
-            opacity: 0.7;
-            transition: all 0.2s ease;
-            padding: 0.5rem;
-            border-radius: 8px;
-        }
-
-        .modal .btn-close:hover {
-            opacity: 1;
-            background: rgba(154, 85, 255, 0.1);
-            transform: rotate(90deg);
-        }
-
-        /* Modal divider */
-        .modal-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #9a55ff, transparent);
-            margin: 1.5rem 0;
-            opacity: 0.2;
-        }
-
-        /* ===== PAGINATION STYLING ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                min-height: 38px;
-            }
-
-            .modal-header {
-                padding: 1rem;
-            }
-
-            .modal-body {
-                padding: 1.2rem;
-            }
-
-            .modal-footer {
-                padding: 1rem;
-            }
-        }
-
-        /* DataTables Custom Styling */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            cursor: pointer;
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-    </style>
-
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header Dashboard -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
-                                Data Tamu / Prospek
-                            </h3>
-                            <p class="text-muted mb-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Kelola data pengunjung dan calon pembeli unit properti
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-account-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+@php
+    $statusLabels = [
+        'new' => 'Baru',
+        'follow_up' => 'Sudah Dihubungi',
+        'negotiation' => 'Negosiasi',
+        'converted' => 'Dikonversi / Deal',
+        'lost' => 'Gagal / Batal'
+    ];
+@endphp
+
+<style>
+.card {
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.card:hover {
+    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+}
+.card-header {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+@media (min-width: 576px) {
+    .card-header { padding: 1rem; }
+}
+@media (min-width: 768px) {
+    .card-header { padding: 1.2rem; }
+}
+
+.card-body { padding: 0.75rem; }
+@media (min-width: 576px) {
+    .card-body { padding: 1rem; }
+}
+@media (min-width: 768px) {
+    .card-body { padding: 1.2rem; }
+}
+
+.card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9a55ff;
+    margin-bottom: 0;
+}
+@media (min-width: 576px) {
+    .card-title { font-size: 1rem; }
+}
+@media (min-width: 768px) {
+    .card-title { font-size: 1.1rem; }
+}
+
+.filter-card {
+    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    border: none;
+}
+.filter-card .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.3px;
+}
+.filter-card .form-control,
+.filter-card .form-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    height: auto;
+    min-height: 40px;
+    border: 1px solid #e0e4e9;
+}
+
+.form-control, .form-select, textarea.form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    height: auto;
+}
+@media (min-width: 576px) {
+    .form-control, .form-select, textarea.form-control {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+}
+.form-control:focus, .form-select:focus, textarea.form-control:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    border: none;
+}
+@media (min-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.2rem;
+        border-radius: 10px;
+    }
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-gradient-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+}
+.btn-gradient-success {
+    background: linear-gradient(135deg, #43e97b, #38f9d7) !important;
+    color: #ffffff !important;
+}
+.btn-gradient-info {
+    background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+    color: #ffffff !important;
+}
+.btn-gradient-secondary {
+    background: #6c757d !important;
+    color: #ffffff !important;
+}
+.btn-gradient-secondary:hover {
+    background: #5a6268 !important;
+}
+.btn-gradient-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+    color: #2c2e3f !important;
+}
+.btn-gradient-danger {
+    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+    color: #ffffff !important;
+}
+
+.btn-icon-only {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+.btn-icon-only i { font-size: 1.2rem; margin: 0; }
+
+.btn-icon-only-mobile {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+.btn-icon-only-mobile i { font-size: 1.2rem; margin: 0; }
+
+.header-action-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+@media (max-width: 576px) {
+    .header-action-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .header-action-group .btn-add {
+        grid-column: span 2;
+    }
+    .header-action-group .btn {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+    }
+    .header-action-group .d-none.d-sm-inline {
+        display: inline !important; /* Force text to show on mobile since we have grid space */
+        margin-left: 4px;
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #9a55ff;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #7a3fcc;
+}
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f0f0f0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+.table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.8rem 0.5rem;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.table thead th.sortable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.table thead th.sortable:hover {
+    color: #7a3fcc;
+}
+.table thead th i {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    opacity: 0.5;
+}
+@media (min-width: 576px) {
+    .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; }
+}
+@media (min-width: 768px) {
+    .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; }
+}
+
+.table thead th:first-child {
+    padding-left: 0.5rem;
+    width: 40px;
+    text-align: center;
+}
+.table tbody td:first-child {
+    padding-left: 0.5rem;
+    font-weight: 500;
+    width: 40px;
+    text-align: center;
+}
+.table tbody td {
+    vertical-align: middle;
+    font-size: 0.85rem;
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #2c2e3f;
+    white-space: nowrap;
+}
+@media (min-width: 576px) {
+    .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; }
+}
+@media (min-width: 768px) {
+    .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; }
+}
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.badge-status {
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    display: inline-block;
+    color: #fff;
+}
+.badge-status.new { background: linear-gradient(135deg, #667eea, #764ba2); }
+.badge-status.follow_up { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.badge-status.negotiation { background: linear-gradient(135deg, #ffc107, #ff9800); }
+.badge-status.converted { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.badge-status.lost { background: linear-gradient(135deg, #dc3545, #e4606d); }
+
+.info-icon {
+    color: #9a55ff;
+    font-size: 1rem;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+
+.name-avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+}
+
+.name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.form-badge-rp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px 0 0 8px;
+    background: linear-gradient(135deg, #f2ecff, #e7dbff);
+    color: #7a3fcc;
+    font-weight: 700;
+    border: 1px solid #e9ecef;
+    border-right: none;
+}
+.input-group-rp .form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.rp-example {
+    font-size: 0.75rem;
+    color: #8a94a6;
+    margin-top: 0.35rem;
+}
+
+.pagination { margin: 0; gap: 3px; }
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    text-align: center;
+    text-decoration: none;
+}
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+}
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+.modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-body {
+    padding: 1.5rem;
+}
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+.modal-scroll-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f1f1f1;
+}
+.modal-scroll-body::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-scroll-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.modal-scroll-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #da8cff, #9a55ff);
+    border-radius: 10px;
+}
+.modal-scroll-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #c678ff, #7f3dff);
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 16px;
+    padding: 1.2rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: none;
+    transition: all 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.12);
+}
+.stat-card .stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    flex-shrink: 0;
+}
+.stat-card .stat-icon.total { background: linear-gradient(135deg, #667eea, #764ba2); }
+.stat-card .stat-icon.prospek { background: linear-gradient(135deg, #ff9a9e, #f6416c); }
+.stat-card .stat-icon.followup { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.stat-card .stat-icon.converted { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.stat-card .stat-content {
+    flex: 1;
+    min-width: 0;
+}
+.stat-card .stat-content h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    color: #2c2e3f;
+    line-height: 1.2;
+}
+.stat-card .stat-content p {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-primary { color: #9a55ff !important; }
+.text-danger { color: #dc3545 !important; }
+.text-muted { color: #a5b3cb !important; }
+.fw-bold { font-weight: 600 !important; }
+
+h3.text-dark {
+    font-size: 1.3rem !important;
+    font-weight: 700;
+    color: #2c2e3f !important;
+    margin-bottom: 0.5rem !important;
+}
+@media (min-width: 576px) {
+    h3.text-dark { font-size: 1.5rem !important; }
+}
+@media (min-width: 768px) {
+    h3.text-dark { font-size: 1.7rem !important; }
+}
+
+.mdi { vertical-align: middle; }
+
+.filter-row-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.filter-row-desktop .filter-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.filter-row-mobile { display: none; }
+
+@media (max-width: 768px) {
+    .stat-card { padding: 1rem; gap: 0.75rem; }
+    .stat-card .stat-icon { width: 45px; height: 45px; font-size: 1.4rem; }
+    .stat-card .stat-content h3 { font-size: 1.3rem; }
+    .stat-card .stat-content p { font-size: 0.75rem; }
+}
+@media (max-width: 767px) {
+    .filter-row-desktop { display: none; }
+    .filter-row-mobile { display: block; margin-top: 1rem; }
+}
+@media (max-width: 576px) {
+    .stat-card { padding: 0.75rem; gap: 0.5rem; }
+    .stat-card .stat-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+    .stat-card .stat-content h3 { font-size: 1.1rem; }
+    .stat-card .stat-content p { font-size: 0.7rem; }
+}
+</style>
+
+<div class="container-fluid p-2 p-sm-3 p-md-4">
+
+
+    <div class="row mb-3 mb-sm-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-dark mb-1">
+                            <i class="mdi mdi-account-group me-2" style="color: #9a55ff;"></i>Data Tamu / Prospek
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Kelola data pengunjung dan calon pembeli unit properti
+                        </p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-account-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-      <!-- Statistics Cards -->
-<div class="row g-4 justify-content-center">
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $totalGuests ?? 0 }}</h3>
+                    <p>Total Tamu / Prospek</p>
+                </div>
+            </div>
+        </div>
 
-    <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card bg-gradient-primary card-img-holder text-white h-100 shadow-sm border-0">
-            <div class="card-body p-4">
-                <h6 class="fw-normal mb-3">
-                    Total Tamu
-                    <i class="mdi mdi-account-group float-end fs-5"></i>
-                </h6>
-                <h2 class="fw-bold mb-2">{{ $totalGuests }}</h2>
-                <small>Semua tamu</small>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon prospek">
+                    <i class="mdi mdi-fire"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $totalProspek ?? 0 }}</h3>
+                    <p>Total Prospek Aktif</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon followup">
+                    <i class="mdi mdi-phone-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $totalFollowUp ?? 0 }}</h3>
+                    <p>Follow Up Hari Ini</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon converted">
+                    <i class="mdi mdi-handshake"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ $guests->where('status','converted')->count() ?? 0 }}</h3>
+                    <p>Converted / Deal</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card bg-gradient-danger card-img-holder text-white h-100 shadow-sm border-0">
-            <div class="card-body p-4">
-                <h6 class="fw-normal mb-3">
-                    Prospek Prioritas
-                    <i class="mdi mdi-fire float-end fs-5"></i>
-                </h6>
-                <h2 class="fw-bold mb-2">{{ $totalProspek }}</h2>
-                <small>Siap closing</small>
-            </div>
-        </div>
-    </div>
+    <div class="row mt-2 mt-sm-2 mt-md-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-3">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Tamu / Prospek
+                    </h5>
 
-    <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card bg-gradient-info card-img-holder text-white h-100 shadow-sm border-0">
-            <div class="card-body p-4">
-                <h6 class="fw-normal mb-3">
-                    Follow Up Hari Ini
-                    <i class="mdi mdi-phone-log float-end fs-5"></i>
-                </h6>
-                <h2 class="fw-bold mb-2">{{ $totalFollowUp }}</h2>
-                <small>Belum dilakukan</small>
-            </div>
-        </div>
-    </div>
-
-</div>
-        <!-- Tabel Data Tamu -->
-        <div class="row mt-4 mt-sm-4 mt-md-4">
-            <div class="col-12">
-                <div class="card">
-                    <div
-                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                        <h5 class="card-title mb-2 mb-md-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Tamu / Prospek
-                        </h5>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-gradient-success" onclick="$('#modalImportTamu').modal('show')">
-                                <i class="mdi mdi-import me-1"></i><span class="d-none d-sm-inline">Import</span>
-                            </button>
-                            <button class="btn btn-sm btn-gradient-danger" onclick="$('#modalExportTamu').modal('show')">
-                                <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
-                            </button>
-                            <button class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal"
-                                data-bs-target="#modalTambahTamu">
-                                <i class="mdi mdi-plus me-1"></i>
-                                <span class="d-none d-sm-inline">Tambah Tamu</span>
-                            </button>
-                        </div>
+                    <div class="header-action-group">
+                        <button class="btn btn-gradient-success" onclick="$('#modalImportTamu').modal('show')">
+                            <i class="mdi mdi-import"></i><span class="d-none d-sm-inline">Import</span>
+                        </button>
+                        <button class="btn btn-gradient-danger" onclick="$('#modalExportTamu').modal('show')">
+                            <i class="mdi mdi-export"></i><span class="d-none d-sm-inline">Export</span>
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary btn-add" data-bs-toggle="modal" data-bs-target="#modalGuest">
+                            <i class="mdi mdi-plus"></i><span class="d-none d-sm-inline">Tambah Prospek</span>
+                        </button>
                     </div>
-                    <div class="card-body">
-                        <!-- Filter Section -->
-                        <div class="filter-card">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                    <i class="mdi mdi-filter-outline me-1"></i>Filter Data Tamu
-                                </h6>
+                </div>
 
-                                <!-- FILTER UNTUK MOBILE -->
-                                <div class="d-block d-md-none">
-                                    <div class="mb-3">
-                                        <label class="form-label">
-                                            <i class="mdi mdi-magnify me-1"></i>Cari Tamu
-                                        </label>
-                                        <input type="text" class="form-control" placeholder="Cari nama, no. HP...">
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-source-branch me-1"></i>Sumber Info
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua</option>
-                                                <option value="instagram">Instagram</option>
-                                                <option value="facebook">Facebook</option>
-                                                <option value="iklan">Iklan</option>
-                                                <option value="referensi">Referensi</option>
-                                                <option value="walk-in">Walk-in</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-chart-arc me-1"></i>Status Prospek
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua</option>
-                                                <option value="hot">Hot</option>
-                                                <option value="warm">Warm</option>
-                                                <option value="cold">Cold</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2 mt-2">
-                                        <div class="col-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1"></i>Tampil
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6 d-flex align-items-end">
-                                            <button type="button" class="btn btn-gradient-secondary w-100">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </button>
-                                        </div>
-                                    </div>
+                <div class="card-body">
+                    <div class="filter-card mb-4">
+                        <div class="card-body">
+                            <div class="filter-row-desktop">
+                                <div class="filter-text">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data tamu / prospek</span>
                                 </div>
 
-                                <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                <div class="d-none d-md-block">
-                                    <div class="row g-2 align-items-end">
+                                <form method="GET" action="{{ route('customer.tamu') }}" id="filterFormDesktop">
+                                    <div class="row g-2 align-items-end w-100">
                                         <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Cari Tamu
-                                            </label>
-                                            <input type="text" class="form-control" placeholder="Nama, No. HP...">
+                                            <label class="form-label">Cari</label>
+                                            <input type="text" class="form-control" name="search" id="searchInput"
+                                                placeholder="Nama tamu / prospek..."
+                                                value="{{ request('search') }}">
                                         </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Agent</label>
+                                            <select class="form-control" name="agent" id="agentSelect">
+                                                <option value="">Semua Agent</option>
+                                                @foreach ($agents as $agent)
+                                                    <option value="{{ $agent->id }}" {{ request('agent') == $agent->id ? 'selected' : '' }}>
+                                                        {{ $agent->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
                                         <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-source-branch me-1"></i>Sumber Info
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua</option>
-                                                <option value="instagram">Instagram</option>
-                                                <option value="facebook">Facebook</option>
-                                                <option value="iklan">Iklan</option>
-                                                <option value="referensi">Referensi</option>
-                                                <option value="walk-in">Walk-in</option>
+                                            <label class="form-label">Status</label>
+                                            <select class="form-control" name="status" id="statusSelect">
+                                                <option value="">Semua Status</option>
+                                                @foreach ($statuses as $s)
+                                                    <option value="{{ $s }}" {{ request('status') == $s ? 'selected' : '' }}>
+                                                        {{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
+
                                         <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-chart-arc me-1"></i>Status Prospek
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua</option>
-                                                <option value="hot">Hot</option>
-                                                <option value="warm">Warm</option>
-                                                <option value="cold">Cold</option>
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
+
                                         <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-account-tie me-1"></i>Agent
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="">Semua</option>
-                                                <option value="1">Ahmad Fauzi</option>
-                                                <option value="2">Siti Aminah</option>
-                                                <option value="3">Budi Santoso</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1"></i>Tampil
-                                            </label>
-                                            <select class="form-control">
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <button type="button" class="btn btn-gradient-primary w-100">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <button type="button" class="btn btn-gradient-secondary w-100"
-                                                title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </button>
+                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('customer.tamu') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
+                                </form>
+                            </div>
+
+                            <div class="filter-row-mobile">
+                                <div class="filter-text mb-2">
+                                    <i class="mdi mdi-filter-outline"></i>
+                                    <span>Filter data tamu / prospek</span>
                                 </div>
+                                <form method="GET" action="{{ route('customer.tamu') }}" id="filterFormMobile">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Cari</label>
+                                            <input type="text" class="form-control" name="search"
+                                                placeholder="Nama tamu / prospek..."
+                                                value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Agent</label>
+                                            <select class="form-control" name="agent">
+                                                <option value="">Semua Agent</option>
+                                                @foreach ($agents as $agent)
+                                                    <option value="{{ $agent->id }}" {{ request('agent') == $agent->id ? 'selected' : '' }}>
+                                                        {{ $agent->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-control" name="status">
+                                                <option value="">Semua Status</option>
+                                                @foreach ($statuses as $s)
+                                                    <option value="{{ $s }}" {{ request('status') == $s ? 'selected' : '' }}>
+                                                        {{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="per_page">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i> 
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('customer.tamu') }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i> 
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Tabel Tamu -->
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="tableTamu" style="width:100%">
-                                <thead>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5%">No</th>
+                                    <th class="sortable" width="15%" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Tamu
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="12%" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        No HP
+                                        @if(request('sortField') == 'phone')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th>Email</th>
+                                    <th>Sumber Info</th>
+                                    <th>Proyek / Unit</th>
+                                    <th class="sortable" width="12%" data-field="assigned_to" data-direction="{{ request('sortField') == 'assigned_to' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Agent
+                                        @if(request('sortField') == 'assigned_to')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="10%" data-field="status" data-direction="{{ request('sortField') == 'status' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Status
+                                        @if(request('sortField') == 'status')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="12%" data-field="last_follow_up" data-direction="{{ request('sortField') == 'last_follow_up' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Last Follow
+                                        @if(request('sortField') == 'last_follow_up')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" width="12%" data-field="next_follow_up" data-direction="{{ request('sortField') == 'next_follow_up' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Next Follow
+                                        @if(request('sortField') == 'next_follow_up')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center" width="10%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($guests as $index => $guest)
+                                    @php
+                                        $initials = collect(explode(' ', trim($guest->name)))
+                                            ->filter()
+                                            ->take(2)
+                                            ->map(fn($word) => strtoupper(substr($word, 0, 1)))
+                                            ->implode('');
+                                    @endphp
                                     <tr>
-                                        <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                        <th><i class="mdi mdi-account me-1"></i>Nama Tamu</th>
-                                        <th><i class="mdi mdi-phone me-1"></i>Kontak</th>
-                                        <th><i class="mdi mdi-source-branch me-1"></i>Sumber Info</th>
-                                        <th><i class="mdi mdi-home-group me-1"></i>Minat Unit</th>
-                                        <th><i class="mdi mdi-account-tie me-1"></i>Agent</th>
-                                        <th><i class="mdi mdi-chart-arc me-1"></i>Status</th>
-                                        <th><i class="mdi mdi-calendar-clock me-1"></i>Follow Up</th>
-                                        <th><i class="mdi mdi-calendar-clock me-1">Next Follow Up</i></th>
-                                        <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($guests as $index => $t)
-                                        <tr>
-                                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-circle avatar-sm me-2">
-                                                        {{ strtoupper(substr($t->name, 0, 2)) }}
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-bold">{{ $t->name }}</span>
-                                                        <small class="text-muted d-block"><i
-                                                                class="mdi mdi-email-outline me-1"
-                                                                style="font-size: 10px;"></i>{{ $t->email }}</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <i class="mdi mdi-whatsapp text-success me-1"></i>{{ $t->phone }}
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-light text-dark">
-                                                    <i class="mdi mdi-instagram me-1"></i>{{ $t->source }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold">
-                                                    {{ $t->project->name ?? '-' }}
-                                                </span>
+                                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                        <td>
+                                            <div class="name-wrap">
+                                                <div class="name-avatar">{{ $initials ?: 'TG' }}</div>
+                                                <div class="fw-bold">{{ $guest->name }}</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-phone info-icon"></i>{{ $guest->phone }}
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-email-outline info-icon"></i>{{ $guest->email ?? '-' }}
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-bullhorn-outline info-icon"></i>{{ $guest->source }}
+                                        </td>
+                                        <td>
+                                            <div><i class="mdi mdi-home-city-outline info-icon"></i>{{ $guest->project?->name ?? '-' }}</div>
+                                            <small class="text-muted">
+                                                <i class="mdi mdi-home-outline info-icon"></i> {{ $guest->unit ? $guest->unit->unit_code . ' - ' . $guest->unit->type : '' }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-account-tie-outline info-icon"></i>{{ $guest->employee->name ?? '-' }}
+                                        </td>
+                                        <td>
+                                            <span class="badge-status {{ $guest->status }}">
+                                                {{ $statusLabels[$guest->status] ?? ucfirst(str_replace('_', ' ', $guest->status)) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-calendar-clock info-icon"></i>
+                                            {{ $guest->last_follow_up ? \Carbon\Carbon::parse($guest->last_follow_up)->format('d M Y') : '-' }}
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-calendar-check-outline info-icon"></i>
+                                            {{ $guest->next_follow_up ? \Carbon\Carbon::parse($guest->next_follow_up)->format('d M Y') : '-' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <button class="btn btn-sm btn-gradient-info" title="Follow Up"
+                                                    onclick="openFollowUpModal({{ $guest->id }}, '{{ addslashes($guest->name) }}')">
+                                                    <i class="mdi mdi-phone-log"></i>
+                                                </button>
 
-                                                <small class="text-muted d-block">
-                                                    {{ $t->unit ? $t->unit->unit_code . ' - ' . $t->unit->type : '' }}
-                                                </small>
-                                            </td>
-                                            <td>
-                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                {{ $t->employee->name ?? '-' }}
-                                            </td>
-                                            @php
-                                                $statusMap = [
-                                                    'new' => [
-                                                        'label' => 'Baru',
-                                                        'color' => 'primary',
-                                                    ],
-                                                    'follow_up' => [
-                                                        'label' => 'Sudah Dihubungi',
-                                                        'color' => 'info',
-                                                    ],
-                                                    'negotiation' => [
-                                                        'label' => 'Sudah Negosiasi',
-                                                        'color' => 'warning',
-                                                    ],
-                                                    'lost' => [
-                                                        'label' => 'Batal',
-                                                        'color' => 'danger',
-                                                    ],
-                                                    'converted' => [
-                                                        'label' => 'Mau Booking / Beli',
-                                                        'color' => 'success',
-                                                    ],
-                                                ];
-
-                                                $status = $statusMap[$t->status] ?? [
-                                                    'label' => ucfirst($t->status),
-                                                    'color' => 'secondary',
-                                                ];
-                                            @endphp
-                                            <td>
-
-                                                <span class="badge badge-gradient-{{ $status['color'] }}">
-                                                    {{ $status['label'] }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <small class="d-block"><i
-                                                        class="mdi mdi-calendar me-1"></i>{{ $t->last_follow_up }}</small>
-
-                                            </td>
-                                            <td>
-                                                <small class="d-block">
-                                                    <i class="mdi mdi-calendar me-1"></i>
-                                                    {{ $t->next_follow_up }}
-                                                </small>
-
-                                            </td>
-
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
-
-                                                    <!-- Tombol Follow Up -->
-                                                    <button class="btn btn-sm btn-primary"
-                                                        onclick="openFollowUpModal({{ $t->id }}, '{{ $t->name }}')">
-                                                        <i class="mdi mdi-phone-log"></i>
+                                                <form action="{{ route('costomer.guests.convert', $guest->id) }}" method="POST" style="display:inline;"
+                                                    id="convertForm{{ $guest->id }}">
+                                                    @csrf
+                                                    <button type="button" class="btn btn-sm btn-gradient-success" title="Konversi ke Customer"
+                                                        onclick="confirmConvert({{ $guest->id }}, '{{ addslashes($guest->name) }}')">
+                                                        <i class="mdi mdi-account-convert"></i>
                                                     </button>
+                                                </form>
 
-                                                    <!-- Tombol Konversi -->
-                                                    <form action="{{ route('costomer.guests.convert', $t->id) }}"
-                                                        method="POST" style="display:inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-outline-success btn-sm"
-                                                            title="Konversi ke Customer"
-                                                            onclick="return confirm('Yakin konversi tamu ini jadi customer?')">
-                                                            <i class="mdi mdi-account-convert"></i>
-                                                        </button>
-                                                    </form>
+                                                <button class="btn btn-sm btn-gradient-warning btnEditTamu" title="Edit"
+                                                    data-id="{{ $guest->id }}">
+                                                    <i class="mdi mdi-account-edit"></i>
+                                                </button>
 
-                                                    <!-- Tombol Edit -->
-                                                    <button class="btn btn-sm btn-primary btnEditTamu"
-                                                        data-id="{{ $t->id }}">
-                                                        <i class="mdi mdi-account-edit"></i> Edit
-                                                    </button>
-
-                                                    <!-- Tombol Hapus -->
-                                                    <button class="btn btn-outline-danger btn-sm" title="Hapus"
-                                                        onclick="confirmDelete()">
+                                                <form action="/customer/guest/{{ $guest->id }}" method="POST"
+                                                    id="deleteForm{{ $guest->id }}" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-gradient-danger" title="Hapus"
+                                                        onclick="confirmDelete({{ $guest->id }})">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="11" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-account-off" style="font-size: 2rem; opacity: 0.3;"></i>
+                                            <p class="mt-2 mb-0">Tidak ada data tamu / prospek</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                    @if ($guests->isEmpty())
-                                        <tr>
-                                            <td colspan="10" class="text-center text-muted py-4">
-                                                <i class="mdi mdi-emoticon-sad-outline me-1"
-                                                    style="font-size: 1.5rem;"></i>
-                                                Tidak ada data tamu yang tersedia.
-                                            </td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                    @if ($guests instanceof \Illuminate\Pagination\LengthAwarePaginator && $guests->total() > 0)
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                        <div class="pagination-info mb-2 mb-sm-0">
+                            Menampilkan {{ $guests->firstItem() }} - {{ $guests->lastItem() }} dari {{ $guests->total() }} data
                         </div>
-                        <!-- MODAL TAMBAH TAMU -->
-                        <div class="modal fade" id="modalTambahTamu" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($guests->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link" aria-label="Previous">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $guests->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous" onclick="showPaginationLoading(event)">
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                @endif
 
-                                    <form action="{{ route('customer.tamu.store') }}" method="POST">
-                                        @csrf
-
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                <i class="mdi mdi-account-plus"></i>
-                                                Tambah Tamu Baru
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Nama Lengkap <span class="text-danger">*</span></label>
-                                                        <input type="text" class="modal-form-control" name="name"
-                                                            placeholder="Contoh: Ahmad Syarif" required>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>No. HP <span class="text-danger">*</span></label>
-                                                        <input type="text" class="modal-form-control" name="phone"
-                                                            placeholder="Contoh: 081234567890" required>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mt-2">
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Email</label>
-                                                        <input type="email" class="modal-form-control" name="email"
-                                                            placeholder="email@domain.com">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Sumber Informasi</label>
-                                                        <select class="modal-form-control" name="source" required>
-                                                            <option value="">-- Pilih
-                                                                Sumber --</option>
-                                                            <option value="instagram">Instagram
-                                                            </option>
-                                                            <option value="facebook">Facebook
-                                                            </option>
-                                                            <option value="tiktok">TikTok
-                                                            </option>
-                                                            <option value="iklan">Iklan Online
-                                                            </option>
-                                                            <option value="referensi">Referensi
-                                                            </option>
-                                                            <option value="walk-in">Walk-in
-                                                            </option>
-                                                            <option value="lainnya">Lainnya
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mt-2">
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Agent</label>
-                                                        <select class="modal-form-control" name="assigned_to" required>
-                                                            <option value="">-- Pilih
-                                                                Agent --</option>
-                                                            @foreach ($agents as $agent)
-                                                                <option value="{{ $agent->id }}">
-                                                                    {{ $agent->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Status Prospek</label>
-                                                        <select class="modal-form-control" name="status" required>
-                                                            <option value="new" selected>
-                                                                Baru</option>
-                                                            <option value="follow_up">Sudah Di
-                                                                Hubungi</option>
-                                                            <option value="negotiation">
-                                                                Negosiasi</option>
-                                                            <option value="converted">Jadi
-                                                                Booking / Beli</option>
-                                                            <option value="lost">Batal
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mt-2">
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Proyek Minat</label>
-                                                        <select class="modal-form-control" name="land_bank_id"
-                                                            id="projectSelect" required>
-                                                            <option value="">-- Pilih
-                                                                Proyek --</option>
-                                                            @foreach ($projects as $project)
-                                                                <option value="{{ $project->id }}">
-                                                                    {{ $project->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="modal-form-group">
-                                                        <label>Tipe Unit</label>
-                                                        <select class="modal-form-control" name="unit_id"
-                                                            id="unitSelect">
-                                                            <option value="">-- Pilih
-                                                                Tipe --</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="modal-form-group mt-2">
-                                                <label>Budget (Rp)</label>
-                                                <input type="text" class="modal-form-control" name="budget"
-                                                    placeholder="Contoh: 500000000">
-                                            </div>
-
-                                            <div class="modal-form-group mt-2">
-                                                <label>Next Follow Up</label>
-                                                <input type="date" class="modal-form-control" name="next_follow_up">
-                                            </div>
-
-                                            <div class="modal-form-group mt-2">
-                                                <label>Catatan</label>
-                                                <textarea class="modal-form-control" rows="2" name="notes" placeholder="Tambahkan catatan tentang tamu..."></textarea>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Batal
-                                            </button>
-
-                                            <button type="submit" class="btn btn-primary">
-                                                Simpan Tamu
-                                            </button>
-                                        </div>
-
-                                    </form>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Pagination -->
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan 1 - 5 dari 156 data
-                            </div>
-                            <div>
-                                <nav>
-                                    <ul class="pagination">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#" tabindex="-1"><i
-                                                    class="mdi mdi-chevron-left"></i></a>
+                                {{-- Pagination Elements --}}
+                                @foreach ($guests->getUrlRange(max(1, $guests->currentPage() - 2), min($guests->lastPage(), $guests->currentPage() + 2)) as $page => $url)
+                                    @if ($page == $guests->currentPage())
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ $page }}</span>
                                         </li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                    @else
                                         <li class="page-item">
-                                            <a class="page-link" href="#"><i class="mdi mdi-chevron-right"></i></a>
+                                            <a class="page-link" href="{{ $guests->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
                                         </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                    @endif
+                                @endforeach
 
-        <!-- Tombol Aksi Bawah -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="dashboard" class="btn btn-gradient-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                            </a>
-                        </div>
+                                {{-- Next Page Link --}}
+                                @if ($guests->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $guests->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next" onclick="showPaginationLoading(event)">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link" aria-label="Next">
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+<div class="modal fade" id="modalGuest" tabindex="-1" aria-labelledby="modalGuestLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalGuestLabel">
+                    <i class="mdi mdi-plus-circle me-2"></i>Tambah Tamu / Prospek
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
+            <form action="{{ route('customer.tamu.store') }}" method="POST">
+                @csrf
+                <div class="modal-body modal-scroll-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" placeholder="Masukkan nama lengkap" required>
+                        </div>
 
-    <!-- MODAL EDIT TAMU -->
-    <div class="modal fade" id="modalEditTamu" tabindex="-1">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">No HP <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="phone" placeholder="Masukkan nomor HP" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Masukkan email">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sumber Informasi <span class="text-danger">*</span></label>
+                            <select class="form-control" name="source" required>
+                                <option value="">Pilih Sumber Informasi</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Website">Website</option>
+                                <option value="Referensi">Referensi</option>
+                                <option value="Pameran">Pameran</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Proyek Minat <span class="text-danger">*</span></label>
+                            <select class="form-control" name="land_bank_id" id="projectSelect" required>
+                                <option value="">Pilih Proyek</option>
+                                @foreach ($projects as $project)
+                                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tipe Unit</label>
+                            <select class="form-control" name="unit_id" id="unitSelect">
+                                <option value="">Pilih Unit</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}" data-project="{{ $unit->land_bank_id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Agent <span class="text-danger">*</span></label>
+                            <select class="form-control" name="assigned_to" required>
+                                <option value="">Pilih Agent</option>
+                                @foreach ($agents as $agent)
+                                    <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" name="status" required>
+                                <option value="">Pilih Status</option>
+                                @foreach ($statuses as $s)
+                                    <option value="{{ $s }}">{{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Budget</label>
+                            <div class="d-flex input-group-rp">
+                                <span class="form-badge-rp">RP</span>
+                                <input type="text" class="form-control" name="budget" id="budgetInput" placeholder="1000.0000.000.00">
+                            </div>
+                            <small class="rp-example">Contoh: 1000.0000.000.00</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Next Follow Up <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="next_follow_up" required>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Catatan</label>
+                            <textarea class="form-control" name="notes" rows="4" placeholder="Masukkan catatan tambahan"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditTamu" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="mdi mdi-account-edit"></i> Edit Data Tamu
+                    <i class="mdi mdi-account-edit me-2"></i>Edit Data Tamu
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -1282,167 +1111,95 @@
                     <input type="hidden" id="edit_id">
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>Nama Lengkap</label>
-                                <input type="text" name="name" id="edit_name" class="modal-form-control" required>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="edit_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">No. HP <span class="text-danger">*</span></label>
+                            <input type="text" name="phone" id="edit_phone" class="form-control" required>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>No. HP</label>
-                                <input type="text" name="phone" id="edit_phone" class="modal-form-control" required>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" id="edit_email" class="form-control">
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label><i class="mdi mdi-email text-primary"></i>Email</label>
-                                <input type="email" name="email" id="edit_email" class="modal-form-control">
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sumber Informasi <span class="text-danger">*</span></label>
+                            <select name="source" id="edit_source" class="form-control" required>
+                                <option value="">-- Pilih Sumber --</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="iklan">Iklan Online</option>
+                                <option value="referensi">Referensi</option>
+                                <option value="walk-in">Walk-in</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label><i class="mdi mdi-source-branch text-primary"></i>Sumber Informasi</label>
-                                <select name="source" id="edit_source" class="modal-form-control">
-                                    <option value="instagram">Instagram</option>
-                                    <option value="facebook">Facebook</option>
-                                    <option value="tiktok">TikTok</option>
-                                    <option value="iklan">Iklan Online</option>
-                                    <option value="referensi">Referensi</option>
-                                    <option value="walk-in">Walk-in</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label">
-                                <i class="mdi mdi-account-tie me-1"></i>Agent
-                            </label>
-
-                            <select name="assigned_to" id="edit_assigned_to" class="form-control">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Agent <span class="text-danger">*</span></label>
+                            <select name="assigned_to" id="edit_assigned_to" class="form-control" required>
                                 <option value="">-- Pilih Agent --</option>
                                 @foreach ($agents as $agent)
-                                    <option value="{{ $agent->id }}">
-                                        {{ $agent->name }}
-                                    </option>
+                                    <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status Prospek <span class="text-danger">*</span></label>
+                            <select name="status" id="edit_status" class="form-control" required>
+                                @foreach ($statuses as $s)
+                                    <option value="{{ $s }}">{{ $statusLabels[$s] ?? ucfirst(str_replace('_',' ',$s)) }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        @php
-                            $statusLabel = [
-                                'new' => 'Baru',
-                                'follow_up' => 'Sudah Dihubungi',
-                                'negotiation' => 'Negosiasi',
-                                'converted' => 'Jadi Booking / Beli',
-                                'lost' => 'Batal',
-                            ];
-                        @endphp
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Proyek Minat <span class="text-danger">*</span></label>
+                            <select name="land_bank_id" id="edit_land_bank_id" class="form-control" required>
+                                <option value="">-- Pilih Proyek --</option>
+                                @foreach ($projects as $project)
+                                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tipe Unit</label>
+                            <select name="unit_id" id="edit_unit_id" class="form-control">
+                                <option value="">-- Pilih Unit --</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-chart-arc text-primary"></i>
-                                    Status Prospek
-                                </label>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Follow Up</label>
+                            <input type="datetime-local" name="last_follow_up" id="edit_last_follow_up" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Next Follow Up <span class="text-danger">*</span></label>
+                            <input type="datetime-local" name="next_follow_up" id="edit_next_follow_up" class="form-control" required>
+                        </div>
 
-                                <select name="status" id="edit_status" class="modal-form-control">
-                                    @foreach ($statuses as $status)
-                                        <option value="{{ $status }}">
-                                            {{ $statusLabel[$status] }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div class="col-12">
+                            <hr style="border-color: rgba(154,85,255,0.15);">
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Catatan</label>
+                            <textarea name="notes" id="edit_notes" class="form-control" rows="4" placeholder="Masukkan catatan tambahan"></textarea>
                         </div>
                     </div>
 
-                    {{-- PROJECT & UNIT --}}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-office-building text-primary"></i>
-                                    Proyek Minat
-                                </label>
-
-                                {{-- FIXED: name sesuai migration --}}
-                                <select name="land_bank_id" id="edit_land_bank_id" class="modal-form-control">
-                                    <option value="">-- Pilih Proyek --</option>
-                                    @foreach ($projects as $project)
-                                        <option value="{{ $project->id }}">
-                                            {{ $project->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-home-group text-primary"></i>
-                                    Tipe Unit
-                                </label>
-
-                                <select name="unit_id" id="edit_unit_id" class="modal-form-control">
-                                    <option value="">-- Pilih Unit --</option>
-                                    @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}">
-                                            {{ $unit->unit_code }} - {{ $unit->type }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- CATATAN --}}
-                    <div class="modal-form-group">
-                        <label><i class="mdi mdi-note-text text-primary"></i>Catatan</label>
-                        <textarea name="notes" id="edit_notes" class="modal-form-control" rows="2"></textarea>
-                    </div>
-
-                    {{-- TAMBAHAN FIELD FOLLOW UP --}}
-                    <div class="row mt-2">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-check text-primary"></i>
-                                    Last Follow Up
-                                </label>
-                                <input type="datetime-local"
-                                       name="last_follow_up"
-                                       id="edit_last_follow_up"
-                                       class="modal-form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-clock text-primary"></i>
-                                    Next Follow Up
-                                </label>
-                                <input type="datetime-local"
-                                       name="next_follow_up"
-                                       id="edit_next_follow_up"
-                                       class="modal-form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer mt-3">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">
-                            Update Data
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i>Batal
+                        </button>
+                        <button type="submit" class="btn btn-gradient-primary">
+                            <i class="mdi mdi-content-save me-1"></i>Update Data
                         </button>
                     </div>
                 </form>
@@ -1451,308 +1208,408 @@
     </div>
 </div>
 
-    <div class="modal fade" id="modalFollowUp" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+<div class="modal fade" id="modalFollowUp" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('customer.tamu.followup') }}" method="POST">
+                @csrf
+                <input type="hidden" name="guest_id" id="followup_guest_id">
 
-                <form action="{{ route('customer.tamu.followup') }}" method="POST">
-                    @csrf
-
-                    <input type="hidden" name="guest_id" id="followup_guest_id">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="mdi mdi-phone-log"></i>
-                            Follow Up Tamu
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-
-                        <div class="modal-form-group">
-                            <label>Nama Tamu</label>
-                            <input type="text" class="modal-form-control" id="followup_guest_name" readonly>
-                        </div>
-
-                        <div class="modal-form-group">
-                            <label>Waktu Follow Up</label>
-                            <input type="datetime-local" class="modal-form-control" name="last_follow_up" required>
-                        </div>
-
-                        <div class="modal-form-group">
-                            <label>Catatan Follow Up</label>
-                            <textarea class="modal-form-control" name="notes" rows="3"></textarea>
-                        </div>
-
-                        <div class="modal-divider"></div>
-
-                        <div class="modal-form-group">
-                            <label>Jadwal Follow Up Berikutnya</label>
-                            <input type="datetime-local" class="modal-form-control" name="next_follow_up">
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Batal
-                        </button>
-
-                        <button type="submit" class="btn btn-primary">
-                            Simpan Follow Up
-                        </button>
-                    </div>
-
-                </form>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL IMPORT TAMU -->
-    <div class="modal fade" id="modalImportTamu" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="mdi mdi-import"></i>
-                        Import Data Tamu
+                        <i class="mdi mdi-phone-log me-2"></i>Follow Up Tamu
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <div class="text-center mb-4">
-                        <i class="mdi mdi-file-excel" style="font-size: 64px; color: #28a745;"></i>
-                        <h6 class="mt-3">Import dari file Excel</h6>
-                        <p class="text-muted small">Download template terlebih dahulu untuk memudahkan import data</p>
+                    <div class="mb-3">
+                        <label class="form-label">Nama Tamu</label>
+                        <input type="text" class="form-control" id="followup_guest_name" readonly>
                     </div>
-
-                    <div class="d-flex gap-2 mb-4">
-                        <a href="#" class="btn btn-outline-success w-50">
-                            <i class="mdi mdi-download me-1"></i>Download Template
-                        </a>
-                        <a href="#" class="btn btn-outline-info w-50">
-                            <i class="mdi mdi-eye me-1"></i>Lihat Contoh
-                        </a>
+                    <div class="mb-3">
+                        <label class="form-label">Waktu Follow Up <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control" name="last_follow_up" required>
                     </div>
-
-                    <div class="modal-form-group">
-                        <label><i class="mdi mdi-file-upload text-primary"></i>Upload File Excel</label>
-                        <input type="file" class="modal-form-control" accept=".xlsx,.xls,.csv">
-                        <small class="text-muted">Format: .xlsx, .xls, .csv (Max 5MB)</small>
+                    <div class="mb-3">
+                        <label class="form-label">Catatan Follow Up</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="Hasil follow up..."></textarea>
+                    </div>
+                    <hr style="border-color: rgba(154,85,255,0.2);">
+                    <div class="mb-3">
+                        <label class="form-label">Jadwal Follow Up Berikutnya</label>
+                        <input type="datetime-local" class="form-control" name="next_follow_up">
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
                         <i class="mdi mdi-close me-1"></i>Batal
                     </button>
-                    <button type="button" class="btn btn-gradient-success">
-                        <i class="mdi mdi-import me-1"></i>Import Data
+                    <button type="submit" class="btn btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan Follow Up
                     </button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Import Tamu --}}
+<div class="modal fade" id="modalImportTamu" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-import me-2" style="color: #9a55ff;"></i>Import Data Tamu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="mdi mdi-file-excel" style="font-size: 64px; color: #28a745;"></i>
+                    <h6 class="mt-3">Import dari file Excel</h6>
+                    <p class="text-muted small">Download template terlebih dahulu untuk memudahkan import data</p>
+                </div>
+
+                <div class="d-flex gap-2 mb-4">
+                    <a href="#" class="btn btn-outline-success w-50">
+                        <i class="mdi mdi-download me-1"></i>Download Template
+                    </a>
+                    <a href="#" class="btn btn-outline-info w-50">
+                        <i class="mdi mdi-eye me-1"></i>Lihat Contoh
+                    </a>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="mdi mdi-file-upload me-1 text-primary"></i>Upload File Excel</label>
+                    <input type="file" class="form-control" accept=".xlsx,.xls,.csv">
+                    <small class="text-muted">Format: .xlsx, .xls, .csv (Max 5MB)</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                    <i class="mdi mdi-close me-1"></i>Batal
+                </button>
+                <button type="button" class="btn btn-gradient-success">
+                    <i class="mdi mdi-import me-1"></i>Import Data
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- MODAL EXPORT TAMU -->
-    <div class="modal fade" id="modalExportTamu" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-export"></i>
-                        Export Data Tamu
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+{{-- Modal Export Tamu --}}
+<div class="modal fade" id="modalExportTamu" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-export me-2" style="color: #9a55ff;"></i>Export Data Tamu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="mdi mdi-file-download" style="font-size: 64px; color: #9a55ff;"></i>
+                    <h6 class="mt-3">Pilih format export</h6>
                 </div>
-                <div class="modal-body">
-                    <div class="text-center mb-4">
-                        <i class="mdi mdi-file-download" style="font-size: 64px; color: #9a55ff;"></i>
-                        <h6 class="mt-3">Pilih format export</h6>
-                    </div>
 
-                    <div class="d-flex gap-3 justify-content-center">
-                        <button class="btn btn-outline-success p-3" style="width: 100px;">
-                            <i class="mdi mdi-file-excel" style="font-size: 32px;"></i>
-                            <span class="d-block small mt-2">Excel</span>
-                        </button>
-                        <button class="btn btn-outline-danger p-3" style="width: 100px;">
-                            <i class="mdi mdi-file-pdf" style="font-size: 32px;"></i>
-                            <span class="d-block small mt-2">PDF</span>
-                        </button>
-                        <button class="btn btn-outline-primary p-3" style="width: 100px;">
-                            <i class="mdi mdi-file-delimited" style="font-size: 32px;"></i>
-                            <span class="d-block small mt-2">CSV</span>
-                        </button>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <div class="modal-form-group">
-                        <label><i class="mdi mdi-filter-outline text-primary"></i>Filter Data yang Diexport</label>
-                        <select class="modal-form-control">
-                            <option value="semua">Semua Tamu</option>
-                            <option value="hot">Hot Prospek</option>
-                            <option value="warm">Warm Prospek</option>
-                            <option value="cold">Cold Prospek</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                        <i class="mdi mdi-close me-1"></i>Batal
+                <div class="d-flex gap-3 justify-content-center">
+                    <button class="btn btn-outline-success p-3" style="width: 100px;">
+                        <i class="mdi mdi-file-excel" style="font-size: 32px;"></i>
+                        <span class="d-block small mt-2">Excel</span>
                     </button>
-                    <button type="button" class="btn btn-gradient-primary">
-                        <i class="mdi mdi-export me-1"></i>Export Data
+                    <button class="btn btn-outline-danger p-3" style="width: 100px;">
+                        <i class="mdi mdi-file-pdf" style="font-size: 32px;"></i>
+                        <span class="d-block small mt-2">PDF</span>
+                    </button>
+                    <button class="btn btn-outline-primary p-3" style="width: 100px;">
+                        <i class="mdi mdi-file-delimited" style="font-size: 32px;"></i>
+                        <span class="d-block small mt-2">CSV</span>
                     </button>
                 </div>
+
+                <hr class="my-4">
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="mdi mdi-filter-outline me-1 text-primary"></i>Filter Data yang Diexport</label>
+                    <select class="form-control">
+                        <option value="semua">Semua Tamu</option>
+                        <option value="new">Tamu Baru</option>
+                        <option value="follow_up">Sudah Dihubungi</option>
+                        <option value="negotiation">Negosiasi</option>
+                        <option value="converted">Jadi Booking / Beli</option>
+                        <option value="lost">Batal</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                    <i class="mdi mdi-close me-1"></i>Batal
+                </button>
+                <button type="button" class="btn btn-gradient-primary">
+                    <i class="mdi mdi-export me-1"></i>Export Data
+                </button>
             </div>
         </div>
     </div>
+</div>
 
 @endsection
 
 @push('scripts')
-    <script>
-        function showTambahTamu() {
-            var modal = new bootstrap.Modal(document.getElementById('modalTambahTamu'));
-            modal.show();
-        }
-    </script>
-   <script>
-    $(document).on('click', '.btnEditTamu', function () {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        let id = $(this).data('id');
+<script>
+$(document).on('click', '.btnEditTamu', function () {
+    let id = $(this).data('id');
 
-        $.ajax({
-            url: '/customer/guest/' + id + '/edit',
-            type: 'GET',
-            success: function (data) {
+    $.ajax({
+        url: '/customer/guest/' + id + '/edit',
+        type: 'GET',
+        success: function (data) {
+            $('#formEditTamu')[0].reset();
 
-                // Reset form dulu biar bersih
-                $('#formEditTamu')[0].reset();
+            $('#edit_id').val(data.id);
+            $('#edit_name').val(data.name ?? '');
+            $('#edit_phone').val(data.phone ?? '');
+            $('#edit_email').val(data.email ?? '');
+            $('#edit_source').val(data.source ?? '');
+            $('#edit_assigned_to').val(data.assigned_to ?? '');
+            $('#edit_status').val(data.status ?? '');
+            $('#edit_land_bank_id').val(data.land_bank_id ?? '');
+            $('#edit_unit_id').val(data.unit_id ?? '');
+            $('#edit_notes').val(data.notes ?? '');
 
-                // Set basic data
-                $('#edit_id').val(data.id);
-                $('#edit_name').val(data.name ?? '');
-                $('#edit_phone').val(data.phone ?? '');
-                $('#edit_email').val(data.email ?? '');
-                $('#edit_source').val(data.source ?? '');
-                $('#edit_assigned_to').val(data.assigned_to ?? '');
-                $('#edit_status').val(data.status ?? '');
-                $('#edit_land_bank_id').val(data.land_bank_id ?? '');
-                $('#edit_unit_id').val(data.unit_id ?? '');
-                $('#edit_notes').val(data.notes ?? '');
-
-                // Format datetime untuk input datetime-local
-                if (data.last_follow_up) {
-                    $('#edit_last_follow_up').val(
-                        data.last_follow_up.replace(' ', 'T')
-                    );
-                }
-
-                if (data.next_follow_up) {
-                    $('#edit_next_follow_up').val(
-                        data.next_follow_up.replace(' ', 'T')
-                    );
-                }
-
-                // Set form action
-                $('#formEditTamu').attr('action', '/customer/guest/' + data.id);
-
-                // Tampilkan modal (Bootstrap 5)
-                const modal = new bootstrap.Modal(
-                    document.getElementById('modalEditTamu')
-                );
-                modal.show();
-            },
-            error: function (xhr) {
-                console.log(xhr.responseText);
-                alert('Gagal mengambil data');
+            if (data.last_follow_up) {
+                $('#edit_last_follow_up').val(data.last_follow_up.replace(' ', 'T').substring(0, 16));
             }
-        });
+            if (data.next_follow_up) {
+                $('#edit_next_follow_up').val(data.next_follow_up.replace(' ', 'T').substring(0, 16));
+            }
 
+            $('#formEditTamu').attr('action', '/customer/guest/' + data.id);
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEditTamu'));
+            modal.show();
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Data tidak dapat dimuat.',
+                confirmButtonColor: '#dc3545'
+            });
+        }
     });
-</script>
-    <script>
-        $(document).ready(function() {
-            // CEK TABEL DATA
-            let hasData = $('#tableTamu tbody tr').length > 0;
+});
 
-            if ($.fn.DataTable.isDataTable('#tableTamu')) {
-                $('#tableTamu').DataTable().destroy();
-            }
+function openFollowUpModal(id, name) {
+    document.getElementById('followup_guest_id').value = id;
+    document.getElementById('followup_guest_name').value = name;
+    var modal = new bootstrap.Modal(document.getElementById('modalFollowUp'));
+    modal.show();
+}
 
-            if (hasData) {
-                let table = $('#tableTamu').DataTable({
-                    responsive: true,
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    ordering: true,
-                    language: {
-                        emptyTable: "Data tamu belum tersedia",
-                        zeroRecords: "Data tidak ditemukan",
-                    },
-                    columnDefs: [{
-                            targets: 0,
-                            orderable: false
-                        },
-                        {
-                            targets: 8,
-                            orderable: false
-                        }
-                    ]
-                });
-            }
-
-            // DELETE CONFIRMATION
-            window.confirmDelete = function() {
-                if (confirm('Apakah Anda yakin ingin menghapus data tamu ini?')) {
-                    alert('Data tamu berhasil dihapus (demo)');
-                }
-            };
-        });
-    </script>
-    <script>
-        function openFollowUpModal(id, name) {
-            document.getElementById('followup_guest_id').value = id;
-            document.getElementById('followup_guest_name').value = name;
-
-            var modal = new bootstrap.Modal(document.getElementById('modalFollowUp'));
-            modal.show();
-        }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const projects = @json($projects);
-
-            const projectSelect = document.getElementById('projectSelect');
-            const unitSelect = document.getElementById('unitSelect');
-
-            if (!projectSelect) return; // biar aman
-
-            projectSelect.addEventListener('change', function() {
-                const projectId = this.value;
-
-                unitSelect.innerHTML = '<option value="">-- Pilih Unit --</option>';
-
-                const selectedProject = projects.find(p => p.id == projectId);
-
-                if (selectedProject && selectedProject.units?.length > 0) {
-                    selectedProject.units.forEach(unit => {
-                        unitSelect.innerHTML += `
-                    <option value="${unit.id}">
-                        ${unit.unit_code} - ${unit.unit_name} (${unit.type})
-                    </option>
-                `;
-                    });
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: 'Data tamu ini akan dihapus secara permanen.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
             });
+            document.getElementById('deleteForm' + id).submit();
+        }
+    });
+}
 
+function confirmConvert(id, name) {
+    Swal.fire({
+        title: 'Konversi ke Customer?',
+        html: `Tamu <b>${name}</b> akan dikonversi menjadi customer.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Konversi!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Memproses...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            document.getElementById('convertForm' + id).submit();
+        }
+    });
+}
+
+function formatBudgetCustom(value) {
+    let onlyNumbers = value.replace(/\D/g, '');
+    if (!onlyNumbers) return '';
+
+    let groups = [];
+    while (onlyNumbers.length > 4) {
+        groups.unshift(onlyNumbers.slice(-2));
+        onlyNumbers = onlyNumbers.slice(0, -2);
+    }
+    if (onlyNumbers.length > 0) {
+        groups.unshift(onlyNumbers);
+    }
+
+    return groups.join('.');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const projects = @json($projects);
+    const projectSelect = document.getElementById('projectSelect');
+    const unitSelect = document.getElementById('unitSelect');
+    const budgetInput = document.getElementById('budgetInput');
+
+    if (projectSelect) {
+        projectSelect.addEventListener('change', function () {
+            const projectId = this.value;
+            unitSelect.innerHTML = '<option value="">-- Pilih Unit --</option>';
+            const selected = projects.find(p => p.id == projectId);
+
+            if (selected && selected.units?.length > 0) {
+                selected.units.forEach(unit => {
+                    unitSelect.innerHTML += `<option value="${unit.id}">${unit.unit_code ?? ''} - ${unit.name ?? unit.unit_name ?? ''}</option>`;
+                });
+            }
         });
-    </script>
+    }
+
+    if (budgetInput) {
+        budgetInput.addEventListener('input', function () {
+            this.value = formatBudgetCustom(this.value);
+        });
+    }
+});
+
+
+// Notification Session SweetAlerts
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 3000,
+        timerProgressBar: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
+    });
+@endif
+
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
+    });
+@endif
+
+// Sorting functionality
+$(document).ready(function() {
+    $('#modalGuest form, #formEditTamu, #modalFollowUp form, #modalImportTamu form').on('submit', function() {
+        Swal.fire({
+            title: 'Memproses...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    });
+
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
+
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang mengurutkan data',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
+    });
+
+    $('#filterFormDesktop, #filterFormMobile').on('submit', function() {
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    });
+});
+
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showFilterLoading() {
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+}
+
+function showResetLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+</script>
 @endpush
