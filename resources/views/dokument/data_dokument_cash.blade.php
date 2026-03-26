@@ -795,7 +795,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-1">
-                                                    {{-- Tombol detail dengan data-lengkap --}}
+                                                    {{-- Tombol detail tetap sama --}}
                                                     <button class="btn btn-outline-info btn-sm btn-detail-dokumen"
                                                         data-booking="{{ $booking->id }}"
                                                         data-lengkap="{{ $isLengkap ? 'true' : 'false' }}"
@@ -804,11 +804,20 @@
                                                     </button>
 
                                                     @if ($isLengkap)
-                                                        <a href="{{ route('akad.cash', $booking->id) }}"
-                                                            class="btn btn-success btn-sm" title="Proses Akad">
-                                                            <i class="mdi mdi-file-sign"></i>
-                                                        </a>
+                                                        {{-- Cek tipe pembelian: KPR ke Survey, Lainnya ke Akad --}}
+                                                        @if (strtolower($booking->purchase_type) == 'kpr')
+                                                            <a href="{{ route('kpr.survey', $booking->kprApplication->id) }}"
+                                                                class="btn btn-warning btn-sm" title="Proses Survey">
+                                                                <i class="mdi mdi-clipboard-check"></i>
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ route('akad.cash', $booking->id) }}"
+                                                                class="btn btn-success btn-sm" title="Proses Akad">
+                                                                <i class="mdi mdi-file-sign"></i>
+                                                            </a>
+                                                        @endif
                                                     @else
+                                                        {{-- Tombol disabled jika dokumen belum lengkap --}}
                                                         <button class="btn btn-secondary btn-sm" disabled
                                                             title="Dokumen belum lengkap">
                                                             <i class="mdi mdi-file-sign"></i>

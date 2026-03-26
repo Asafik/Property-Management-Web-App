@@ -1171,6 +1171,7 @@
                                             <th><i class="mdi mdi-account-tie"></i> Agent</th>
                                             <th><i class="mdi mdi-cash"></i> Fee Agent</th>
                                             <th><i class="mdi mdi-account"></i> Customer</th>
+                                            <th><i class="mdi mdi-cash"> Booking Fee</i></th>
                                             <th class="text-center"><i class="mdi mdi-cog"></i> Aksi</th>
                                         </tr>
                                     </thead>
@@ -1274,6 +1275,12 @@
                                                 <td>
                                                     <i class="mdi mdi-account text-info me-1"></i>
                                                     {{ $unit->activeBooking->customer->full_name ?? '-' }}
+                                                </td>
+                                                <td>
+                                                    <i class="mdi mdi-cash text-success me-1">
+                                                        Rp
+                                                        {{ number_format($unit->activeBooking->booking_fee ?? 0,0, ',', '.')}}
+                                                    </i>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-1">
