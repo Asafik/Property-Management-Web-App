@@ -189,14 +189,14 @@ class AkadController extends Controller
                     'status' => 'selesai'
                 ]);
 
-                // ✅ Update booking
+        
                 $booking->update([
                     'status_akad' => 'done',
                     'status' => 'akad',
                     'akad_date' => now()
                 ]);
 
-                // ✅ TAMBAHAN: update KPR
+               
                 $kpr = KprApplication::where('booking_id', $booking->id)->first();
 
                 if ($kpr) {
