@@ -573,6 +573,89 @@ h3.text-dark {
     margin-left: 4px;
     opacity: 0.5;
 }
+
+/* ===== MODERN FILE UPLOAD STYLING ===== */
+.properti-file-upload-modern {
+    position: relative;
+    width: 100%;
+}
+.properti-file-upload-modern input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+.properti-file-upload-modern .properti-file-label-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    padding: 1rem 0.6rem;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 2px dashed #d0d4db;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+}
+@media (min-width: 576px) {
+    .properti-file-upload-modern .properti-file-label-modern {
+        flex-direction: row;
+        text-align: left;
+        gap: 8px;
+        padding: 0.75rem 1rem;
+        min-height: auto;
+    }
+}
+.properti-file-upload-modern:hover .properti-file-label-modern {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+}
+.properti-file-upload-modern .properti-file-label-modern i {
+    font-size: 1.6rem;
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 8px;
+    border-radius: 50%;
+}
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
+    flex: 1;
+    width: 100%;
+}
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
+    display: block;
+    font-weight: 600;
+    color: #2c2e3f;
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
+    color: #6c7383;
+    font-size: 0.65rem;
+    display: block;
+    margin-top: 2px;
+}
+.properti-file-upload-modern .properti-file-label-modern .properti-file-size {
+    font-size: 0.7rem;
+    color: #9a55ff;
+    font-weight: 600;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 5px;
+}
+@media (min-width: 576px) {
+    .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
+        margin-top: 0;
+    }
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -1118,7 +1201,25 @@ h3.text-dark {
                                                             Lihat
                                                         </a>
                                                     @else
-                                                        <span class="text-muted small">Belum upload</span>
+                                                        <div class="d-flex flex-column gap-1 mt-1 text-end">
+                                                            <span class="text-danger small fw-bold mb-1" style="font-size: 0.75rem;"><i class="mdi mdi-alert-circle-outline"></i> Belum Upload</span>
+                                                            <div class="d-flex align-items-stretch justify-content-end gap-2">
+                                                                <div class="properti-file-upload-modern text-start" style="width: 240px;">
+                                                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                    <div class="properti-file-label-modern m-0 h-100 flex-row text-start" style="padding: 0.4rem 0.6rem; min-height: 42px; justify-content: flex-start; border-radius: 10px;">
+                                                                        <i class="mdi mdi-cloud-upload-outline" style="font-size: 1.3rem; padding: 4px; margin-right: 4px; min-width: 30px; text-align: center;"></i>
+                                                                        <div class="properti-file-info-modern" style="line-height: 1.2;">
+                                                                            <span style="font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">Pilih File</span>
+                                                                            <small style="font-size: 0.6rem;">Format: PDF/JPG/PNG</small>
+                                                                        </div>
+                                                                        <span class="properti-file-size" style="font-size: 0.65rem; padding: 2px 6px; margin: 0 0 0 auto;"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="button" class="btn btn-sm btn-gradient-primary text-nowrap d-flex align-items-center justify-content-center" style="padding: 0 1rem; border-radius: 10px; height: auto;">
+                                                                    <i class="mdi mdi-upload me-1"></i> Upload
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -1150,6 +1251,29 @@ h3.text-dark {
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File upload modern preview
+    document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            const fileSize = e.target.files[0]?.size;
+            const label = this.closest('.properti-file-upload-modern').querySelector('.properti-file-info-modern span');
+            const sizeSpan = this.closest('.properti-file-upload-modern').querySelector('.properti-file-size');
+
+            if (fileName) {
+                label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
+                if (fileSize) {
+                    const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                    sizeSpan.textContent = sizeInMB + ' MB';
+                }
+            } else {
+                label.textContent = 'Pilih File';
+                sizeSpan.textContent = '';
+            }
+        });
+    });
+});
+
 $(document).ready(function() {
     // Sorting functionality
     $('.sortable').click(function() {

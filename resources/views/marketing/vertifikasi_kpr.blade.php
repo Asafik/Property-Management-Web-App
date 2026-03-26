@@ -743,33 +743,6 @@
                             Semua dokumen lengkap, siap untuk verifikasi
                         </div>
                     @endif
-
-                    <hr class="my-3">
-
-                    <!-- Timeline -->
-                    <h6 class="mb-3 konfirmasi-text-primary">Timeline Pengajuan</h6>
-                    <div class="konfirmasi-timeline">
-                        <div class="konfirmasi-timeline-item">
-                            <div class="konfirmasi-timeline-icon">
-                                <i class="mdi mdi-check-circle text-success"></i>
-                            </div>
-                            <div class="konfirmasi-timeline-content">
-                                <span class="konfirmasi-timeline-text">Pengajuan KPR</span>
-                                <small class="konfirmasi-timeline-date">
-                                    {{ $booking->kprApplication->submitted_at ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('j F Y') : '-' }}
-                                </small>
-                            </div>
-                        </div>
-                        <div class="konfirmasi-timeline-item">
-                            <div class="konfirmasi-timeline-icon">
-                                <i class="mdi mdi-progress-clock text-warning"></i>
-                            </div>
-                            <div class="konfirmasi-timeline-content">
-                                <span class="konfirmasi-timeline-text">Verifikasi Dokumen</span>
-                                <small class="konfirmasi-timeline-date">Sedang Proses</small>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
