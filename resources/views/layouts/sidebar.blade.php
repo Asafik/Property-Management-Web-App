@@ -82,20 +82,6 @@
                                 Semua Tanah Pasca Land Bank
                             </a>
                         </li>
-
-                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('pra-landbank') ? 'active' : '' }}"
-                                href="{{ route('pra-landbank') }}">
-                                Tambah Tanah ( PRA LandBank)
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('properti') ? 'active' : '' }}"
-                                href="{{ route('properti') }}">
-                                Tambah Tanah (Pasca LandBank)
-                            </a>
-                        </li>
-
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('kavling.*') ? 'active' : '' }}"
                                 href="{{ route('kavling.index') }}">

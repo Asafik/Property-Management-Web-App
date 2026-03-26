@@ -415,6 +415,9 @@ h3.text-dark {
             <div class="card">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0"><i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Properti</h5>
+                    <a href="{{ route('properti') }}" class="btn btn-primary btn-sm">
+                            <i class="mdi mdi-plus me-1"></i> Tambah Pasca Landbank
+                        </a>
                 </div>
 
                 <div class="card-body">
