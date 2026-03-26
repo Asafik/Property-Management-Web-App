@@ -1270,7 +1270,6 @@
                             @endsection
 
                             @push('scripts')
-                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                                 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
                                 <script>
@@ -1299,7 +1298,7 @@
 
                                     // ========== SITEPLAN CANVAS ==========
                                     const canvas = new fabric.Canvas('siteplanCanvas');
-                                    const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
+                                    const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
 
                                     fabric.Image.fromURL(siteplanImage, function(img) {
                                         canvas.setWidth(img.width);
