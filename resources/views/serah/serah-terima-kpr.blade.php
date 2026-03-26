@@ -404,7 +404,7 @@
             box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
         }
 
-        .serah-checklist-item input[type="checkbox"]:checked + .check-label {
+        .serah-checklist-item input[type="checkbox"]:checked+.check-label {
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
             box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
@@ -426,7 +426,7 @@
             font-size: 1.4rem;
         }
 
-        .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-icon {
+        .serah-checklist-item input[type="checkbox"]:checked+.check-label .check-icon {
             color: #9a55ff;
             transform: scale(1.1);
             animation: checkPulse 0.3s ease;
@@ -439,14 +439,22 @@
             font-size: 0.9rem;
         }
 
-        .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-text {
+        .serah-checklist-item input[type="checkbox"]:checked+.check-label .check-text {
             color: #9a55ff;
         }
 
         @keyframes checkPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1.1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1.1);
+            }
         }
 
         /* Dokumen Checklist Modern */
@@ -490,7 +498,7 @@
             transform: translateX(5px);
         }
 
-        .serah-doc-item input[type="checkbox"]:checked + .doc-label {
+        .serah-doc-item input[type="checkbox"]:checked+.doc-label {
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
             border-left: 4px solid #9a55ff;
@@ -511,7 +519,7 @@
             font-size: 1.2rem;
         }
 
-        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-icon {
+        .serah-doc-item input[type="checkbox"]:checked+.doc-label .doc-icon {
             background: rgba(154, 85, 255, 0.2);
             color: #9a55ff;
         }
@@ -522,7 +530,7 @@
             color: #2c2e3f;
         }
 
-        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-text {
+        .serah-doc-item input[type="checkbox"]:checked+.doc-label .doc-text {
             color: #9a55ff;
             font-weight: 600;
         }
@@ -536,7 +544,7 @@
             font-weight: 600;
         }
 
-        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-badge {
+        .serah-doc-item input[type="checkbox"]:checked+.doc-label .doc-badge {
             background: linear-gradient(135deg, #9a55ff, #da8cff);
             color: white;
         }
@@ -670,10 +678,11 @@
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center">
                                 <h4 class="mb-1 text-dark">{{ $application->customer->full_name }}</h4>
-                                <span class="badge-kpr">KPR</span>
-                                <span class="badge-subsidi">Subsidi</span>
+                                <span class="badge-kpr">{{ Str::upper($application->booking->purchase_type ?? '-') }}</span>
+                                <span
+                                    class="badge-subsidi">{{ Str::upper($application->booking->unit->jenis ?? '-') }}</span>
                             </div>
-                            <p class="text-muted mb-0">Kode Booking: BK-KPR-2024-089</p>
+                            <p class="text-muted mb-0">Kode Booking:{{ $application->booking->booking_code ?? '-' }}</p>
                         </div>
 
                         <!-- Info Unit (Data dari Database) -->
@@ -685,11 +694,13 @@
                                 </div>
                                 <div>
                                     <small class="text-muted d-block">Blok/No</small>
-                                    <span class="fw-medium">C-08</span>
+                                    <span class="fw-medium">{{ $application->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div>
                                     <small class="text-muted d-block">Harga Unit</small>
-                                    <span class="fw-medium text-primary">Rp 650.000.000</span>
+                                    <span class="fw-medium text-primary">
+                                        Rp {{ number_format($application->unit->price, 0, ',', '.') }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -730,7 +741,9 @@
                                             <i class="mdi mdi-check"></i>
                                         </div>
                                         <span>Pengajuan</span>
-                                        <small>10 Jan 2024</small>
+                                        <small>
+                                            {{ \Carbon\Carbon::parse($application->booking->booking_date)->translatedFormat('d F Y') }}
+                                        </small>
                                     </div>
                                 </div>
                                 <div class="col text-center">
@@ -739,7 +752,7 @@
                                             <i class="mdi mdi-check"></i>
                                         </div>
                                         <span>Verifikasi</span>
-                                        <small>15 Jan 2024</small>
+                                        <small>{{ \Carbon\Carbon::parse($application->approved_at)->translatedFormat('d F Y') }}</small>
                                     </div>
                                 </div>
                                 <div class="col text-center">
@@ -748,16 +761,7 @@
                                             <i class="mdi mdi-check"></i>
                                         </div>
                                         <span>Akad</span>
-                                        <small>25 Jan 2024</small>
-                                    </div>
-                                </div>
-                                <div class="col text-center">
-                                    <div class="step completed">
-                                        <div class="step-icon">
-                                            <i class="mdi mdi-magnify"></i>
-                                        </div>
-                                        <span>Survey</span>
-                                        <small>30 Jan 2024</small>
+                                        <small>{{ \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') }}</small>
                                     </div>
                                 </div>
                                 <div class="col text-center">
@@ -787,19 +791,15 @@
                         <div class="detail-info">
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Harga Unit</span>
-                                <span class="fw-medium">Rp 650.000.000</span>
+                                <span class="fw-medium"> Rp
+                                    {{ number_format($application->unit->price, 0, ',', '.') }}</span>
                             </div>
 
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Uang Muka (DP)</span>
-                                <span class="fw-medium text-primary">Rp 130.000.000</span>
+                                <span class="fw-medium text-primary"> Rp
+                                    {{ number_format($application->booking->booking_fee, 0, ',', '.') }}</span>
                             </div>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Plafon KPR</span>
-                                <span class="fw-medium text-success">Rp 520.000.000</span>
-                            </div>
-
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Bank</span>
                                 <span class="fw-medium">{{ $application->bank->bank_name }}</span>
@@ -807,7 +807,10 @@
 
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Status KPR</span>
-                                <span class="badge bg-success">Disetujui</span>
+                                <span
+                                    class="badge {{ $application->booking->status_cash == 'done' ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $application->booking->status_cash == 'done' ? 'Disetujui' : 'Belum Disetujui' }}
+                                </span>
                             </div>
                         </div>
 
@@ -820,8 +823,8 @@
                                     <i class="mdi mdi-account-tie text-primary"></i>
                                 </div>
                                 <div>
-                                    <span class="fw-medium d-block">Dian Permata</span>
-                                    <small class="text-muted">Marketing KPR</small>
+                                    <span class="fw-medium d-block">{{ $application->booking->sales->name ?? '-' }}</span>
+                                    <small class="text-muted">{{ $application->booking->sales->phone ?? '-' }}</small>
                                 </div>
                             </div>
                         </div>
@@ -830,209 +833,222 @@
             </div>
         </div>
 
-        <!-- Form Serah Terima Unit (Tanpa action route) -->
-        <div class="row mt-4">
-            <!-- ================= LEFT ================= -->
-            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="mdi mdi-key me-2 text-primary"></i>
-                            Form Serah Terima Unit
-                        </h5>
+       <form action="{{ route('serah-terima.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
 
-                        <!-- Informasi -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>Tanggal Serah Terima</label>
-                                    <input type="date" name="tanggal_serah_terima" class="serah-form-control" value="{{ date('Y-m-d') }}">
+            <div class="row mt-4">
+
+                <!-- ================= LEFT ================= -->
+                <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                <i class="mdi mdi-key me-2 text-primary"></i>
+                                Form Serah Terima Unit
+                            </h5>
+
+                            <!-- Informasi -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="serah-form-group">
+                                        <label>Tanggal Serah Terima</label>
+                                        <input type="date" name="tanggal_serah_terima" class="serah-form-control"
+                                            value="{{ date('Y-m-d') }}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="serah-form-group">
+                                        <label>No. BAST</label>
+                                        <input type="text" name="no_bast" class="serah-form-control"
+                                            value="{{ $noBast ?? 'Auto Generate' }}" readonly>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>No. BAST</label>
-                                    <input type="text" name="no_bast" class="serah-form-control" value="BAST/KPR/03/2024/012" readonly>
+                            <div class="serah-form-group">
+                                <label>Lokasi Serah Terima</label>
+                                <select name="lokasi_serah_terima" class="serah-form-control">
+                                    <option value="site">Di Site / Proyek</option>
+                                    <option value="kantor">Di Kantor Marketing</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+
+                            <hr>
+
+                            <!-- ================= CHECKLIST MODERN ================= -->
+                            <h6 class="text-primary mb-3">Checklist Kondisi Unit</h6>
+
+                            @php
+                                $items = [
+                                    'Listrik berfungsi normal',
+                                    'Air mengalir lancar',
+                                    'Pintu & jendela berfungsi baik',
+                                    'Kunci lengkap (pintu utama, pagar)',
+                                    'Dinding & plafon baik',
+                                    'Lantai keramik baik',
+                                    'Kloset & sanitasi berfungsi',
+                                    'Meteran listrik & air terpasang',
+                                ];
+                            @endphp
+
+                            <div class="serah-checklist-wrapper">
+                                @foreach ($items as $index => $item)
+                                    <div class="serah-checklist-item">
+                                        <div class="form-check">
+                                            <input type="hidden" name="items[{{ $index }}][name]"
+                                                value="{{ $item }}">
+                                            <input type="checkbox" name="items[{{ $index }}][checked]"
+                                                value="1" id="item_{{ $index }}" class="form-check-input">
+                                            <label for="item_{{ $index }}" class="check-label">
+                                                <span class="check-icon">
+                                                    <i class="mdi mdi-check-circle"></i>
+                                                </span>
+                                                <span class="check-text">{{ $item }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <hr>
+
+                            <!-- ================= DOKUMEN MODERN ================= -->
+                            <h6 class="text-primary mb-3">Dokumen yang Diserahkan</h6>
+
+                            @php
+                                $documents = [
+                                    ['name' => 'Kunci Unit (3 buah)', 'icon' => 'key'],
+                                    ['name' => 'Akta Jual Beli (AJB)', 'icon' => 'file-document-outline'],
+                                    ['name' => 'Sertifikat Hak Milik (SHM)', 'icon' => 'file-certificate'],
+                                    ['name' => 'IMB / PBG', 'icon' => 'file-document'],
+                                    ['name' => 'Buku Panduan & Garansi', 'icon' => 'book-open'],
+                                ];
+                            @endphp
+
+                            <div class="serah-doc-wrapper">
+                                @foreach ($documents as $index => $doc)
+                                    <div class="serah-doc-item">
+                                        <div class="form-check">
+                                            <input type="hidden" name="documents[{{ $index }}][name]"
+                                                value="{{ $doc['name'] }}">
+                                            <input type="checkbox" name="documents[{{ $index }}][submitted]"
+                                                value="1" id="doc_{{ $index }}" class="form-check-input">
+                                            <label for="doc_{{ $index }}" class="doc-label">
+                                                <span class="doc-icon">
+                                                    <i class="mdi mdi-{{ $doc['icon'] }}"></i>
+                                                </span>
+                                                <span class="doc-text">{{ $doc['name'] }}</span>
+                                                <span class="doc-badge">Wajib</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <hr>
+
+                            <!-- ================= UPLOAD MODERN ================= -->
+                            <h6 class="text-primary mb-3">Dokumentasi Serah Terima</h6>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="serah-form-group">
+                                        <label>Foto Serah Terima Kunci</label>
+                                        <div class="serah-file-upload-modern">
+                                            <input type="file" name="foto_serah_kunci" accept=".jpg,.jpeg,.png">
+                                            <div class="serah-file-label-modern">
+                                                <i class="mdi mdi-cloud-upload"></i>
+                                                <div class="serah-file-info-modern">
+                                                    <span>Upload Foto Kunci</span>
+                                                    <small>Format: JPG, PNG (Max 5MB)</small>
+                                                </div>
+                                                <span class="serah-file-size"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="serah-form-group">
+                                        <label>Foto Kondisi Unit</label>
+                                        <div class="serah-file-upload-modern">
+                                            <input type="file" name="foto_kondisi_unit" accept=".jpg,.jpeg,.png">
+                                            <div class="serah-file-label-modern">
+                                                <i class="mdi mdi-cloud-upload"></i>
+                                                <div class="serah-file-info-modern">
+                                                    <span>Upload Foto Unit</span>
+                                                    <small>Format: JPG, PNG (Max 5MB)</small>
+                                                </div>
+                                                <span class="serah-file-size"></span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="serah-form-group">
+                                <label>Catatan</label>
+                                <textarea name="catatan" class="serah-form-control" rows="3" placeholder="Tambahkan catatan jika ada..."></textarea>
+                            </div>
+
                         </div>
+                    </div>
+                </div>
 
-                        <div class="serah-form-group">
-                            <label>Lokasi Serah Terima</label>
-                            <select name="lokasi_serah_terima" class="serah-form-control">
-                                <option value="site">Di Site / Proyek</option>
-                                <option value="kantor">Di Kantor Marketing</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                        </div>
+                <!-- ================= RIGHT ================= -->
+                <div class="col-12 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
 
-                        <hr>
+                            <h5 class="card-title">
+                                <i class="mdi mdi-signature me-2 text-primary"></i>
+                                Persetujuan
+                            </h5>
 
-                        <!-- ================= CHECKLIST MODERN ================= -->
-                        <h6 class="text-primary mb-3">Checklist Kondisi Unit</h6>
+                            <div class="serah-form-group">
+                                <label>Saksi (Opsional)</label>
+                                <input type="text" name="saksi" class="serah-form-control"
+                                    placeholder="Nama saksi">
+                            </div>
 
-                        @php
-                            $items = [
-                                'Listrik berfungsi normal',
-                                'Air mengalir lancar',
-                                'Pintu & jendela berfungsi baik',
-                                'Kunci lengkap (pintu utama, pagar)',
-                                'Dinding & plafon baik',
-                                'Lantai keramik baik',
-                                'Kloset & sanitasi berfungsi',
-                                'Meteran listrik & air terpasang'
-                            ];
-                        @endphp
-
-                        <div class="serah-checklist-wrapper">
-                            @foreach($items as $index => $item)
-                                <div class="serah-checklist-item">
+                            <div class="serah-form-group">
+                                <div class="serah-checklist-item" style="width: 100%;">
                                     <div class="form-check">
-                                        <input type="hidden" name="items[{{ $index }}][name]" value="{{ $item }}">
-                                        <input type="checkbox" name="items[{{ $index }}][checked]" value="1" id="item_{{ $index }}" class="form-check-input">
-                                        <label for="item_{{ $index }}" class="check-label">
+                                        <input type="checkbox" name="persetujuan" value="1" id="persetujuan"
+                                            class="form-check-input" required>
+                                        <label for="persetujuan" class="check-label">
                                             <span class="check-icon">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </span>
-                                            <span class="check-text">{{ $item }}</span>
+                                            <span class="check-text">Saya menyatakan unit diterima dalam kondisi
+                                                baik.</span>
                                         </label>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-
-                        <hr>
-
-                        <!-- ================= DOKUMEN MODERN ================= -->
-                        <h6 class="text-primary mb-3">Dokumen yang Diserahkan</h6>
-
-                        @php
-                            $documents = [
-                                ['name' => 'Kunci Unit (3 buah)', 'icon' => 'key'],
-                                ['name' => 'Akad KPR Asli', 'icon' => 'file-document-outline'],
-                                ['name' => 'Sertifikat Hak Milik (SHM)', 'icon' => 'file-certificate'],
-                                ['name' => 'IMB / PBG', 'icon' => 'file-document'],
-                                ['name' => 'Buku Panduan & Garansi', 'icon' => 'book-open']
-                            ];
-                        @endphp
-
-                        <div class="serah-doc-wrapper">
-                            @foreach($documents as $index => $doc)
-                                <div class="serah-doc-item">
-                                    <div class="form-check">
-                                        <input type="hidden" name="documents[{{ $index }}][name]" value="{{ $doc['name'] }}">
-                                        <input type="checkbox" name="documents[{{ $index }}][submitted]" value="1" id="doc_{{ $index }}" class="form-check-input">
-                                        <label for="doc_{{ $index }}" class="doc-label">
-                                            <span class="doc-icon">
-                                                <i class="mdi mdi-{{ $doc['icon'] }}"></i>
-                                            </span>
-                                            <span class="doc-text">{{ $doc['name'] }}</span>
-                                            <span class="doc-badge">Wajib</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <hr>
-
-                        <!-- ================= UPLOAD MODERN ================= -->
-                        <h6 class="text-primary mb-3">Dokumentasi Serah Terima</h6>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>Foto Serah Terima Kunci</label>
-                                    <div class="serah-file-upload-modern">
-                                        <input type="file" name="foto_serah_kunci" accept=".jpg,.jpeg,.png">
-                                        <div class="serah-file-label-modern">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="serah-file-info-modern">
-                                                <span>Upload Foto Kunci</span>
-                                                <small>Format: JPG, PNG (Max 5MB)</small>
-                                            </div>
-                                            <span class="serah-file-size"></span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="serah-form-group">
-                                    <label>Foto Kondisi Unit</label>
-                                    <div class="serah-file-upload-modern">
-                                        <input type="file" name="foto_kondisi_unit" accept=".jpg,.jpeg,.png">
-                                        <div class="serah-file-label-modern">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="serah-file-info-modern">
-                                                <span>Upload Foto Unit</span>
-                                                <small>Format: JPG, PNG (Max 5MB)</small>
-                                            </div>
-                                            <span class="serah-file-size"></span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <hr>
+
+                            <button type="submit" class="serah-btn serah-btn-success w-100">
+                                <i class="mdi mdi-check-decagram me-2"></i>
+                                Proses Serah Terima
+                            </button>
+
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="mdi mdi-information-outline me-1"></i>
+                                    Pastikan semua checklist terisi
+                                </small>
                             </div>
-                        </div>
 
-                        <div class="serah-form-group">
-                            <label>Catatan</label>
-                            <textarea name="catatan" class="serah-form-control" rows="3" placeholder="Tambahkan catatan jika ada..."></textarea>
                         </div>
-
                     </div>
                 </div>
             </div>
-
-            <!-- ================= RIGHT ================= -->
-            <div class="col-12 col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-
-                        <h5 class="card-title">
-                            <i class="mdi mdi-signature me-2 text-primary"></i>
-                            Persetujuan
-                        </h5>
-
-                        <div class="serah-form-group">
-                            <label>Saksi (Opsional)</label>
-                            <input type="text" name="saksi" class="serah-form-control" placeholder="Nama saksi">
-                        </div>
-
-                        <div class="serah-form-group">
-                            <div class="serah-checklist-item" style="width: 100%;">
-                                <div class="form-check">
-                                    <input type="checkbox" name="persetujuan" value="1" id="persetujuan" class="form-check-input" required>
-                                    <label for="persetujuan" class="check-label">
-                                        <span class="check-icon">
-                                            <i class="mdi mdi-check-circle"></i>
-                                        </span>
-                                        <span class="check-text">Saya menyatakan unit diterima dalam kondisi baik.</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <button type="submit" class="serah-btn serah-btn-success w-100">
-                            <i class="mdi mdi-check-decagram me-2"></i>
-                            Proses Serah Terima
-                        </button>
-
-                        <div class="text-center mt-3">
-                            <small class="text-muted">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Pastikan semua checklist terisi
-                            </small>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        </form>
     </div>
 @endsection
 
@@ -1043,7 +1059,8 @@
             $('.serah-file-upload-modern input[type="file"]').change(function(e) {
                 const fileName = e.target.files[0]?.name;
                 const fileSize = e.target.files[0]?.size;
-                const label = $(this).closest('.serah-file-upload-modern').find('.serah-file-info-modern span');
+                const label = $(this).closest('.serah-file-upload-modern').find(
+                    '.serah-file-info-modern span');
                 const sizeSpan = $(this).closest('.serah-file-upload-modern').find('.serah-file-size');
 
                 if (fileName) {

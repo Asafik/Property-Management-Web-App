@@ -937,7 +937,7 @@
                                                         data-booking_status="{{ $unit->activeBooking->status ?? '-' }}">
                                                         <i class="mdi mdi-eye"></i>
                                                     </button>
-                                                    @if (auth()->user()->position_id != 5)
+                                                    @if (auth()->user()->position_id != 4)
                                                         <button class="btn-action customer" title="Pilih Customer" onclick="openCustomerModal({{ $unit->id }})">
                                                             <i class="mdi mdi-account-plus"></i>
                                                         </button>
