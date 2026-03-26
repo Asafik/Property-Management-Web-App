@@ -800,6 +800,7 @@
                                             <th>Agent</th>
                                             <th>Fee Agent</th>
                                             <th>Customer</th>
+                                            <th>Booking Fee</th>
                                             <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
@@ -911,6 +912,9 @@
                                                 <i class="mdi mdi-account-outline text-primary me-1"></i>
                                                 {{ $unit->activeBooking->customer->full_name ?? '-' }}
                                             </td>
+                                            <td class="fee-text">
+                                                Rp {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
+                                            </td>
                                             <td class="text-center">
                                                 <div class="action-group">
                                                     <button class="btn-action view" title="Detail"
@@ -946,7 +950,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="15" class="text-center text-muted py-4">
+                                            <td colspan="16" class="text-center text-muted py-4">
                                                 <i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i>
                                                 <p class="mt-2">Data unit belum tersedia</p>
                                             </td>
