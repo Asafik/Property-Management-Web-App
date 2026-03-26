@@ -424,18 +424,177 @@
             vertical-align: middle;
         }
 
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* ===== TABLE MODERN STYLE ===== */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #9a55ff #f0f0f0;
         }
 
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            padding: 0.8rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .table thead th {
+                font-size: 0.85rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table thead th {
+                font-size: 0.9rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .table thead th:first-child {
+            text-align: center;
+            width: 40px;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.85rem;
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #2c2e3f;
+            white-space: nowrap;
+        }
+
+        .table tbody td:first-child {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        @media (min-width: 576px) {
+            .table tbody td {
+                font-size: 0.9rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table tbody td {
+                font-size: 0.95rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Badge Status */
+        .badge-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .badge-tersedia {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #fff;
+        }
+
+        .badge-booking {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .badge-terjual {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: #fff;
+        }
+
+        .badge-default {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: #fff;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            min-width: 90px;
+            height: 36px;
+            padding: 0 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-radius: 10px;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: transparent;
+        }
+
+        .btn-action i {
+            font-size: 1rem;
+        }
+
+        .btn-action.view {
+            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            color: white;
+        }
+
+        .btn-action.view:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+        }
+
+        .btn-action.locate {
+            border: 1.5px solid #9a55ff;
+            color: #9a55ff;
+            background: transparent;
+        }
+
+        .btn-action.locate:hover {
+            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            color: #ffffff;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.4);
         }
 
         /* Responsive untuk mobile */
@@ -446,6 +605,12 @@
 
             .info-panel {
                 margin-top: 0.5rem;
+            }
+
+            .btn-action {
+                min-width: 78px;
+                font-size: 0.8rem;
+                padding: 0 10px;
             }
         }
     </style>
@@ -490,126 +655,8 @@
                         </h5>
                     </div>
                     <div class="card-body p-2 p-sm-3">
-                        <!-- Filter Section - LANGSUNG DI DALAM CARD MAPS -->
-                        <div class="filter-card">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                    <i class="mdi mdi-filter-outline me-1"></i>Cari Lokasi
-                                </h6>
-
-                                <form method="GET" action="{{ route('lokasi.index') }}">
-                                    <div class="d-block d-md-none">
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Cari Properti
-                                            </label>
-                                            <input type="text" name="search" value="{{ request('search') }}"
-                                                class="form-control" placeholder="Cari nama properti...">
-                                        </div>
-
-                                        <div class="row g-2">
-                                             <div class="col-md-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Kategori
-                                                </label>
-                                                <select name="kategori" class="form-control">
-                                                    <option value="">Semua</option>
-
-                                                    @foreach ($zonings as $zoning)
-                                                        <option value="{{ $zoning }}"
-                                                            {{ request('kategori') == $zoning ? 'selected' : '' }}>
-                                                            {{ $zoning }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="tampil" class="form-control">
-                                                    <option value="10" {{ request('tampil') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-2 mt-2">
-                                            <div class="col-12">
-                                                <button type="submit" class="btn btn-gradient-primary w-100">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <form method="GET" action="{{ route('lokasi.index') }}">
-                                    <div class="d-none d-md-block">
-                                        <div class="row g-2 align-items-end">
-
-                                            <div class="col-md-5">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari Properti
-                                                </label>
-                                                <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari nama properti...">
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Kategori
-                                                </label>
-                                                <select name="kategori" class="form-control">
-                                                    <option value="">Semua</option>
-
-                                                    @foreach ($zonings as $zoning)
-                                                        <option value="{{ $zoning }}"
-                                                            {{ request('kategori') == $zoning ? 'selected' : '' }}>
-                                                            {{ $zoning }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="tampil" class="form-control">
-                                                    <option value="10" {{ request('tampil') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <button type="submit" class="btn btn-gradient-primary w-100">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Map Container -->
                         <div id="map"></div>
 
-                        <!-- Info Panel -->
                         <div class="info-panel">
                             <div class="row g-2">
                                 <div class="col-6 col-md-3">
@@ -641,7 +688,7 @@
                                         </div>
                                         <div class="info-content">
                                             <div class="info-title">Booking</div>
-                                            <div class="info-value"> {{ $totalBooked }} Unit</div>
+                                            <div class="info-value">{{ $totalBooked }} Unit</div>
                                         </div>
                                     </div>
                                 </div>
@@ -652,7 +699,7 @@
                                         </div>
                                         <div class="info-content">
                                             <div class="info-title">Terjual</div>
-                                            <div class="info-value"> {{ $totalSold }} Unit</div>
+                                            <div class="info-value">{{ $totalSold }} Unit</div>
                                         </div>
                                     </div>
                                 </div>
@@ -663,75 +710,222 @@
             </div>
         </div>
 
-        <!-- Daftar Properti -->
+        {{-- Daftar Properti --}}
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-white">
                         <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Properti Terdekat
+                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Properti Terdekat
                         </h5>
-                      
                     </div>
                     <div class="card-body">
+                        <div class="filter-card">
+                            <div class="card-body">
+                                <form method="GET" action="{{ route('lokasi.index') }}">
+                                    <!-- Mobile Filter -->
+                                    <div class="d-block d-md-none">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="mdi mdi-magnify me-1"></i>Cari Properti
+                                            </label>
+                                            <input type="text" name="search" value="{{ request('search') }}"
+                                                class="form-control" placeholder="Cari nama properti...">
+                                        </div>
+
+                                        <div class="row g-2">
+                                            <div class="col-md-3">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home me-1"></i>Kategori
+                                                </label>
+                                                <select name="kategori" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($zonings as $zoning)
+                                                        <option value="{{ $zoning }}" {{ request('kategori') == $zoning ? 'selected' : '' }}>
+                                                            {{ $zoning }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="tampil" class="form-control">
+                                                    <option value="10" {{ request('tampil') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-2 mt-2">
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-gradient-primary w-100">
+                                                    <i class="mdi mdi-magnify me-1"></i>Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form method="GET" action="{{ route('lokasi.index') }}">
+                                    <!-- Desktop Filter -->
+                                    <div class="d-none d-md-block">
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-md-5">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-magnify me-1"></i>Cari Properti
+                                                </label>
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari nama properti...">
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-home me-1"></i>Kategori
+                                                </label>
+                                                <select name="kategori" class="form-control">
+                                                    <option value="">Semua</option>
+                                                    @foreach ($zonings as $zoning)
+                                                        <option value="{{ $zoning }}" {{ request('kategori') == $zoning ? 'selected' : '' }}>
+                                                            {{ $zoning }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label class="form-label">
+                                                    <i class="mdi mdi-counter me-1"></i>Tampil
+                                                </label>
+                                                <select name="tampil" class="form-control">
+                                                    <option value="10" {{ request('tampil', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <button type="submit" class="btn btn-gradient-primary w-100" title="Filter">
+                                                    <i class="mdi mdi-filter"></i> Filter
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover align-middle" style="width:100%;margin-bottom:0;">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <th class="text-center">No</th>
                                         <th>Nama Properti</th>
                                         <th>Kategori</th>
                                         <th>Lokasi</th>
                                         <th>Jarak</th>
                                         <th>Status</th>
-                                        <th>Aksi</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($landBanks as $item)
+                                    @forelse ($landBanks as $item)
                                         <tr>
-                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                            <td>{{ $loop->iteration + ($landBanks->currentPage() - 1) * $landBanks->perPage() }}</td>
                                             <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home-variant text-primary me-2"></i>
-                                                    {{ $item->name }}
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <i class="mdi mdi-home-variant" style="color:#9a55ff;font-size:1.1rem;"></i>
+                                                    <span>{{ $item->name }}</span>
                                                 </div>
                                             </td>
                                             <td>{{ $item->zoning }}</td>
-                                            <td>{{ $item->address }}</td>
-                                            <td class="distance" data-lat="{{ $item->lat }}"
-                                                data-lng="{{ $item->lng }}">
-                                                Menghitung...
+                                            <td>{{ Str::limit($item->address, 35) }}</td>
+                                            <td class="distance" data-lat="{{ $item->lat }}" data-lng="{{ $item->lng }}">
+                                                <span class="text-muted">Menghitung...</span>
                                             </td>
-                                            <td><span class="badge badge-gradient-success">{{ $item->status }}</span></td>
                                             <td>
-                                                <button class="btn btn-outline-primary btn-sm"
+                                                @php $st = strtolower($item->status ?? ''); @endphp
+                                                @if (str_contains($st, 'tersedia'))
+                                                    <span class="badge-status badge-tersedia">{{ $item->status }}</span>
+                                                @elseif(str_contains($st, 'booking'))
+                                                    <span class="badge-status badge-booking">{{ $item->status }}</span>
+                                                @elseif(str_contains($st, 'terjual') || str_contains($st, 'sold'))
+                                                    <span class="badge-status badge-terjual">{{ $item->status }}</span>
+                                                @else
+                                                    <span class="badge-status badge-default">{{ $item->status }}</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn-action locate" title="Lihat di Peta"
                                                     onclick="flyToLocation({{ $item->lat }}, {{ $item->lng }})">
-                                                    <i class="mdi mdi-map-marker"></i> Lihat
+                                                    <i class="mdi mdi-map-marker"></i>
+                                                    <span>Lihat</span>
                                                 </button>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4">
+                                                <i class="mdi mdi-map-marker-off" style="font-size:2rem;color:#9a55ff;opacity:0.4;"></i>
+                                                <p class="mt-2 mb-0 text-muted">Tidak ada properti ditemukan.</p>
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Pagination -->
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
+                        {{-- Pagination --}}
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                             <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan
-                                {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }}
-                                dari {{ $landBanks->total() }} data
+                                Menampilkan <strong>{{ $landBanks->firstItem() ?? 0 }}</strong> -
+                                <strong>{{ $landBanks->lastItem() ?? 0 }}</strong> dari
+                                <strong>{{ $landBanks->total() }}</strong> data
                             </div>
+                            <nav>
+                                <ul class="pagination">
+                                    @if ($landBanks->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="mdi mdi-chevron-left"></i></span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $landBanks->appends(request()->query())->previousPageUrl() }}">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
 
-                            <!-- tombol pagination -->
-                            <div class="pagination-buttons mt-2">
-                                {{ $landBanks->links() }}
-                            </div>
+                                    @foreach ($landBanks->getUrlRange(max(1, $landBanks->currentPage() - 2), min($landBanks->lastPage(), $landBanks->currentPage() + 2)) as $page => $url)
+                                        @if ($page == $landBanks->currentPage())
+                                            <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $landBanks->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
 
+                                    @if ($landBanks->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $landBanks->appends(request()->query())->nextPageUrl() }}">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="mdi mdi-chevron-right"></i></span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -779,25 +973,25 @@
 
                         // Popup content
                         var popupContent = `
-                <div style="min-width: 200px;">
-                    <strong>${loc.name}</strong>
-                    <p><i class="mdi mdi-map-marker" style="color: #9a55ff;"></i> ${loc.address}</p>
-                    <p><i class="mdi mdi-home" style="color: #9a55ff;"></i> ${loc.category}</p>
-                    <p><i class="mdi mdi-currency-usd" style="color: #9a55ff;"></i> ${loc.price}</p>
-                    <p>
-                        <span class="badge" style="background: ${
-                            loc.status === 'Tersedia' ? 'linear-gradient(135deg, #28a745, #5cb85c)' :
-                            loc.status === 'Booking' ? 'linear-gradient(135deg, #ffc107, #ffdb6d)' :
-                            'linear-gradient(135deg, #dc3545, #e4606d)'
-                        }; color: white; padding: 4px 8px; border-radius: 20px;">
-                            ${loc.status}
-                        </span>
-                    </p>
-                    <button class="btn btn-sm" style="background: linear-gradient(to right, #da8cff, #9a55ff); color: white; border: none; border-radius: 6px; padding: 5px 10px; margin-top: 5px;" onclick="alert('Detail ${loc.name}')">
-                        <i class="mdi mdi-eye"></i> Detail
-                    </button>
-                </div>
-            `;
+                            <div style="min-width: 200px;">
+                                <strong>${loc.name}</strong>
+                                <p><i class="mdi mdi-map-marker" style="color: #9a55ff;"></i> ${loc.address}</p>
+                                <p><i class="mdi mdi-home" style="color: #9a55ff;"></i> ${loc.category}</p>
+                                <p><i class="mdi mdi-currency-usd" style="color: #9a55ff;"></i> ${loc.price}</p>
+                                <p>
+                                    <span class="badge" style="background: ${
+                                        loc.status === 'Tersedia' ? 'linear-gradient(135deg, #28a745, #5cb85c)' :
+                                        loc.status === 'Booking' ? 'linear-gradient(135deg, #ffc107, #ffdb6d)' :
+                                        'linear-gradient(135deg, #dc3545, #e4606d)'
+                                    }; color: white; padding: 4px 8px; border-radius: 20px;">
+                                        ${loc.status}
+                                    </span>
+                                </p>
+                                <button class="btn btn-sm" style="background: linear-gradient(to right, #da8cff, #9a55ff); color: white; border: none; border-radius: 6px; padding: 5px 10px; margin-top: 5px;" onclick="alert('Detail ${loc.name}')">
+                                    <i class="mdi mdi-eye"></i> Detail
+                                </button>
+                            </div>
+                        `;
                         marker.bindPopup(popupContent);
                     });
                 });

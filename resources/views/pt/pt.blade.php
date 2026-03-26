@@ -117,16 +117,14 @@
 /* Table Responsive dengan Scrollbar */
 .table-responsive {
     overflow-x: auto;
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
     border-radius: 8px;
     margin-bottom: 0.5rem;
-    max-height: 500px;
     scrollbar-width: thin;
     scrollbar-color: #9a55ff #f0f0f0;
 }
 .table-responsive::-webkit-scrollbar {
-    width: 8px;
     height: 8px;
 }
 .table-responsive::-webkit-scrollbar-track {
@@ -139,9 +137,6 @@
 }
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #7a3fcc;
-}
-.table-responsive::-webkit-scrollbar-corner {
-    background: #f0f0f0;
 }
 
 .table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
@@ -186,25 +181,6 @@
 @media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
 @media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
 .table tbody tr:hover { background-color: #f8f9fa; }
-
-/* Empty State */
-.empty-state {
-    padding: 3rem 1rem;
-    text-align: center;
-    color: #a5b3cb;
-}
-.empty-state i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    opacity: 0.3;
-}
-.empty-state p {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-}
-.empty-state small {
-    font-size: 0.85rem;
-}
 
 /* Project Badge - Biru Muda Transparan dengan Border */
 .project-badge {

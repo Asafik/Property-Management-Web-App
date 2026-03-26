@@ -15,34 +15,71 @@ class TransaksiKPRController extends Controller
     //
 
         public function index(Request $request)
-    {
-        $query = Booking::with(['customer', 'unit', 'sales'])
-            ->where('purchase_type', 'kpr');
+        {
+            $query = Booking::with(['customer', 'unit', 'sales', 'kprApplication'])
+                ->where('purchase_type', 'kpr');
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('customer', function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%");
-            });
+            // search by customer name only
+            if ($request->filled('search')) {
+                $search = trim($request->search);
+
+                $query->whereHas('customer', function ($q) use ($search) {
+                    $q->where('full_name', 'like', "%{$search}%");
+                });
+            }
+
+            // filter status
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // sort
+            $sort = $request->input('sort', 'latest');
+
+            switch ($sort) {
+                case 'name_asc':
+                    $query->join('customers', 'bookings.customer_id', '=', 'customers.id')
+                        ->orderBy('customers.full_name', 'asc')
+                        ->select('bookings.*');
+                    break;
+
+                case 'name_desc':
+                    $query->join('customers', 'bookings.customer_id', '=', 'customers.id')
+                        ->orderBy('customers.full_name', 'desc')
+                        ->select('bookings.*');
+                    break;
+
+                case 'unit_asc':
+                    $query->join('land_bank_units', 'bookings.unit_id', '=', 'land_bank_units.id')
+                        ->orderBy('land_bank_units.unit_code', 'asc')
+                        ->select('bookings.*');
+                    break;
+
+                case 'unit_desc':
+                    $query->join('land_bank_units', 'bookings.unit_id', '=', 'land_bank_units.id')
+                        ->orderBy('land_bank_units.unit_code', 'desc')
+                        ->select('bookings.*');
+                    break;
+
+                case 'latest':
+                default:
+                    $query->latest();
+                    break;
+            }
+
+            // per page
+            $perPage = (int) $request->input('per_page', 10);
+            $allowedPerPage = [10, 15, 25];
+
+            if (!in_array($perPage, $allowedPerPage)) {
+                $perPage = 10;
+            }
+
+            // pagination
+            $bookings = $query->paginate($perPage)->appends($request->query());
+
+            return view('transaksi.customer-kpr', compact('bookings'));
         }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $perPage = $request->input('per_page', 10);
-
-        // Validasi nilai per_page
-        $allowedPerPage = [10, 15, 25];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
-
-        $bookings = $query->latest()->paginate($perPage);
-        $bookings->appends($request->query());
-
-        return view('transaksi.customer-kpr', compact('bookings'));
-    }
 
 
     public function approve($id)
@@ -189,12 +226,69 @@ public function survey($id)
 
     return view('marketing.akad', compact('application'));
 }
-public function analisaKPRKomersil()
-{
-    $applications = KprApplication::with(['customer','unit','bank'])
-                    ->where('status','survey')
-                    ->get();
 
-    return view('marketing.analisa_kpr_komersil', compact('applications'));
+
+public function analisaKPRKomersil(Request $request)
+{
+    $perPage = $request->input('per_page', 10);
+    $perPage = in_array((int) $perPage, [10, 15, 25]) ? (int) $perPage : 10;
+
+    $search = $request->input('search');
+    $bankId = $request->input('bank');
+
+    $sortField = $request->input('sortField', 'name');
+    $sortDirection = $request->input('sortDirection', 'asc');
+    $allowedSortFields = ['name', 'unit', 'bank', 'price', 'appraisal'];
+
+    if (!in_array($sortField, $allowedSortFields)) {
+        $sortField = 'name';
+    }
+    if (!in_array($sortDirection, ['asc', 'desc'])) {
+        $sortDirection = 'asc';
+    }
+
+    $applications = KprApplication::with(['customer', 'unit', 'bank'])
+        ->where('kpr_applications.status', 'survey')
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('customer', function (\Illuminate\Database\Eloquent\Builder $q) use ($search) {
+                $q->where('full_name', 'like', '%' . $search . '%');
+            });
+        })
+        ->when($bankId, function ($query) use ($bankId) {
+            $query->where('banks_id', $bankId);
+        })
+        ->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+        ->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+        ->leftJoin('banks', 'kpr_applications.banks_id', '=', 'banks.id')
+        ->when($sortField == 'name', function($q) use ($sortDirection) {
+            $q->orderBy('customers.full_name', $sortDirection);
+        })
+        ->when($sortField == 'unit', function($q) use ($sortDirection) {
+            $q->orderBy('land_bank_units.unit_name', $sortDirection);
+        })
+        ->when($sortField == 'bank', function($q) use ($sortDirection) {
+            $q->orderBy('banks.bank_name', $sortDirection);
+        })
+        ->when($sortField == 'price', function($q) use ($sortDirection) {
+            $q->orderBy('land_bank_units.price', $sortDirection);
+        })
+        ->when($sortField == 'appraisal', function($q) use ($sortDirection) {
+            $q->orderBy('kpr_applications.appraisal_value', $sortDirection);
+        })
+        ->select('kpr_applications.*')
+        ->paginate($perPage)
+        ->withQueryString();
+
+    $banks = Banks::orderBy('bank_name')->get();
+
+    return view('marketing.analisa_kpr_komersil', compact(
+        'applications',
+        'banks',
+        'search',
+        'bankId',
+        'perPage'
+    ));
 }
+
+
 }

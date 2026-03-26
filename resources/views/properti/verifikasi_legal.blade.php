@@ -325,10 +325,17 @@
         /* Table Styling Modern */
         .table-responsive {
             overflow-x: auto;
+            overflow-y: visible;
             -webkit-overflow-scrolling: touch;
             border-radius: 8px;
             margin-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #9a55ff #f0f0f0;
         }
+        .table-responsive::-webkit-scrollbar { height: 8px; }
+        .table-responsive::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #9a55ff; border-radius: 10px; }
+        .table-responsive::-webkit-scrollbar-thumb:hover { background: #7a3fcc; }
 
         .table {
             width: 100%;
@@ -340,53 +347,60 @@
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             color: #9a55ff;
             font-weight: 600;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #e9ecef;
-            padding: 0.6rem 0.4rem;
+            padding: 0.8rem 0.5rem;
             white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.7rem 0.5rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.8rem;
-                padding: 0.85rem 0.75rem;
-            }
-        }
-
+        @media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
+        @media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
+        .table thead th:first-child { padding-left: 0.5rem; width: 40px; text-align: center; }
+        .table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; width: 40px; text-align: center; }
         .table tbody td {
             vertical-align: middle;
-            font-size: 0.75rem;
-            padding: 0.6rem 0.4rem;
+            font-size: 0.85rem;
+            padding: 0.8rem 0.5rem;
             border-bottom: 1px solid #e9ecef;
             color: #2c2e3f;
+            white-space: nowrap;
         }
+        @media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
+        @media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
+        .table tbody tr:hover { background-color: #f8f9fa; }
 
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.7rem 0.5rem;
-            }
+        /* Badge gradient */
+        .badge-status {
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
         }
+        .badge-pending  { background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f; }
+        .badge-verified { background: linear-gradient(135deg, #28a745, #5cb85c); color: #fff; }
+        .badge-rejected { background: linear-gradient(135deg, #dc3545, #e4606d); color: #fff; }
 
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.85rem;
-                padding: 0.85rem 0.75rem;
-            }
+        /* Btn action */
+        .btn-action {
+            width: 34px; height: 34px; padding: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 10px; margin: 0 2px;
+            transition: all 0.3s ease; border: none; cursor: pointer;
         }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
+        .btn-action i { font-size: 1rem; }
+        .btn-action.view   { background: linear-gradient(135deg, #9a55ff, #da8cff); color: #fff; }
+        .btn-action.view:hover   { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(154,85,255,0.4); }
+        .btn-action.approve { background: linear-gradient(135deg, #28a745, #5cb85c); color: #fff; }
+        .btn-action.approve:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(40,167,69,0.4); }
+        .btn-action.reject  { background: linear-gradient(135deg, #dc3545, #e4606d); color: #fff; }
+        .btn-action.reject:hover  { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(220,53,69,0.4); }
 
         /* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
         .dataTables_filter {
@@ -685,87 +699,85 @@
 
         {{-- ================= TABEL DOKUMEN ================= --}}
         <div class="card">
-            <div class="card-body">
-                <h5 class="mb-3">
-                    <i class="mdi mdi-file-document-multiple me-2" style="color: #9a55ff;"></i>
-                    Daftar Dokumen
+            <div class="card-header bg-white d-flex justify-content-between align-items-center" style="border-bottom:1px solid #e9ecef; padding:0.9rem 1.2rem;">
+                <h5 class="card-title mb-0">
+                    <i class="mdi mdi-file-document-multiple me-2"></i>Daftar Dokumen
                 </h5>
-
+                <span class="badge" style="background:linear-gradient(135deg,#da8cff,#9a55ff);color:#fff;padding:0.4rem 0.9rem;border-radius:20px;font-size:0.82rem;">
+                    {{ $land->documents->count() }} Dokumen
+                </span>
+            </div>
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table id="tableDokumen" class="table table-hover" style="width:100%">
+                    <table class="table table-hover align-middle" style="width:100%;margin-bottom:0;">
                         <thead>
                             <tr>
-                                <th><i class="mdi mdi-counter me-1"></i>No</th>
-                                <th><i class="mdi mdi-file-outline me-1"></i>Jenis</th>
-                                <th><i class="mdi mdi-format-list-numbered me-1"></i>Nomor</th>
-                                <th><i class="mdi mdi-calendar-upload me-1"></i>Tanggal Upload</th>
-                                <th><i class="mdi mdi-information me-1"></i>Status</th>
-                                <th><i class="mdi mdi-cog me-1"></i>Aksi</th>
+                                <th class="text-center">No</th>
+                                <th>Jenis Dokumen</th>
+                                <th>Nomor Dokumen</th>
+                                <th>Tanggal Upload</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($land->documents as $doc)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td>
-                                        @php
-                                            $docName = strtolower($doc->documentType->name ?? '');
-                                        @endphp
-
-                                        @if ($docName == 'sertifikat')
-                                            <i class="mdi mdi-certificate text-primary me-1"></i>
-                                        @elseif($docName == 'imb')
-                                            <i class="mdi mdi-domain text-info me-1"></i>
-                                        @else
-                                            <i class="mdi mdi-file text-secondary me-1"></i>
-                                        @endif
-
-                                        {{ ucfirst($doc->documentType->name ?? '-') }}
+                                        @php $docName = strtolower($doc->documentType->name ?? ''); @endphp
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if($docName == 'sertifikat')
+                                                <i class="mdi mdi-certificate text-primary" style="font-size:1.2rem;"></i>
+                                            @elseif($docName == 'imb')
+                                                <i class="mdi mdi-domain" style="font-size:1.2rem;color:#17a2b8;"></i>
+                                            @else
+                                                <i class="mdi mdi-file-document-outline text-primary" style="font-size:1.2rem;"></i>
+                                            @endif
+                                            <span class="fw-bold">{{ ucfirst($doc->documentType->name ?? '-') }}</span>
+                                        </div>
                                     </td>
                                     <td>{{ $doc->document_number ?? '-' }}</td>
                                     <td>
-                                        <i class="mdi mdi-calendar me-1 text-muted"></i>
-                                        {{ $doc->created_at->format('d M Y') }}
+                                        <div class="d-flex align-items-center gap-1">
+                                            <i class="mdi mdi-calendar-outline" style="color:#9a55ff;"></i>
+                                            {{ $doc->created_at->format('d M Y') }}
+                                        </div>
                                     </td>
                                     <td>
                                         @if ($doc->status == 'pending')
-                                            <span class="badge bg-warning">
-                                                <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                            <span class="badge-status badge-pending">
+                                                <i class="mdi mdi-clock-outline"></i> Pending
                                             </span>
                                         @elseif($doc->status == 'verified')
-                                            <span class="badge bg-success">
-                                                <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                            <span class="badge-status badge-verified">
+                                                <i class="mdi mdi-check-circle"></i> Terverifikasi
                                             </span>
                                         @else
-                                            <span class="badge bg-danger">
-                                                <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                            <span class="badge-status badge-rejected">
+                                                <i class="mdi mdi-close-circle"></i> Ditolak
                                             </span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
-                                            class="btn btn-sm btn-gradient-primary" title="Lihat Dokumen">
+                                           class="btn-action view" title="Lihat Dokumen">
                                             <i class="mdi mdi-eye"></i>
                                         </a>
 
                                         @if ($doc->status == 'pending')
-                                            <form action="{{ route('dokumen.approve', $doc->id) }}" method="POST"
-                                                class="d-inline">
+                                            <form action="{{ route('dokumen.approve', $doc->id) }}" method="POST" class="d-inline">
                                                 @csrf
-                                                <button class="btn btn-sm btn-gradient-success" title="Setujui">
+                                                <button type="submit" class="btn-action approve" title="Setujui">
                                                     <i class="mdi mdi-check"></i>
                                                 </button>
                                             </form>
 
-                                            <form action="{{ route('dokumen.reject', $doc->id) }}" method="POST"
-                                                class="d-inline">
-                                                @csrf
-                                                <button type="button" class="btn btn-sm btn-gradient-danger"
-                                                    data-bs-toggle="modal" data-bs-target="#rejectModal{{ $doc->id }}"
-                                                    title="Tolak">
-                                                    <i class="mdi mdi-close"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn-action reject"
+                                                data-bs-toggle="modal" data-bs-target="#rejectModal{{ $doc->id }}"
+                                                title="Tolak">
+                                                <i class="mdi mdi-close"></i>
+                                            </button>
                                         @endif
                                     </td>
                                 </tr>

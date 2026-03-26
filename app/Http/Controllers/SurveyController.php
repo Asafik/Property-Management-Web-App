@@ -10,15 +10,53 @@ use Illuminate\Support\Facades\Storage;
 
 class SurveyController extends Controller
 {
-    public function index()
-    {
-        // Ambil data KPR yang statusnya 'survey'
-        $kprApplications = KprApplication::with(['customer', 'unit', 'bank'])
-            ->where('status', 'survey')
-            ->get();
+    public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 10);
+    $sort = $request->input('sort', 'latest');
 
-        return view('transaksi.customer-kpr-acc', compact('kprApplications'));
+    if (!in_array($perPage, [10, 15, 25])) {
+        $perPage = 10;
     }
+
+    $query = KprApplication::with(['customer', 'unit', 'bank'])
+        ->select('kpr_applications.*')
+        ->when($request->filled('search'), function ($q) use ($request) {
+            $q->whereHas('customer', function ($qc) use ($request) {
+                $qc->where('full_name', 'like', '%' . $request->search . '%');
+            });
+        })
+        ->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('kpr_applications.status', $request->status);
+        });
+
+    switch ($sort) {
+        case 'name_asc':
+            $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', 'asc');
+            break;
+        case 'name_desc':
+            $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', 'desc');
+            break;
+        case 'unit_asc':
+            $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+                  ->orderBy('land_bank_units.unit_name', 'asc');
+            break;
+        case 'unit_desc':
+            $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+                  ->orderBy('land_bank_units.unit_name', 'desc');
+            break;
+        case 'latest':
+        default:
+            $query->latest('kpr_applications.created_at');
+            break;
+    }
+
+    $kprApplications = $query->paginate($perPage)->withQueryString();
+
+    return view('transaksi.customer-kpr-acc', compact('kprApplications'));
+}
 
     public function store(Request $request, $kprId)
     {

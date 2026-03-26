@@ -2,26 +2,26 @@
    GLOBAL COLORS & VARIABLES
 ================================================ */
 :root {
-  --navy: #0B1F4B;
+  --navy: #0b1f4b;
   --navy-mid: #1a3470;
-  --gold: #C9973A;
-  --gold-light: #F5C97A;
-  --cream: #FAF7F2;
+  --gold: #c9973a;
+  --gold-light: #e5b155;
+  --cream: #f9f6f0;
   --warm-white: #FFFDF9;
-  --text-dark: #0D1B36;
-  --text-mid: #4A5568;
-  --text-light: #8C96A8;
+  --text-dark: #1e1e2a;
+  --text-mid: #5e5e6b;
+  --text-light: #8a8a98;
   --green: #1A7A5E;
-  --subsidi: #0F766E;
-  --subsidi-soft: #CCFBF1;
-  --komersil: #7C3AED;
-  --komersil-soft: #EDE9FE;
-  --cashkpr: #C9973A;
-  --cashkpr-soft: #FEF3C7;
-  --border: rgba(11, 31, 75, 0.08);
-  --shadow-sm: 0 2px 12px rgba(11, 31, 75, 0.06);
-  --shadow-md: 0 8px 32px rgba(11, 31, 75, 0.10);
-  --shadow-lg: 0 20px 60px rgba(11, 31, 75, 0.14);
+  --subsidi: #0f766e;
+  --subsidi-soft: #ccf0e9;
+  --komersil: #7c3aed;
+  --komersil-soft: #eee9ff;
+  --cashkpr: #b8882f;
+  --cashkpr-soft: #fcedd7;
+  --border: #eae6df;
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 25px 50px -15px rgba(0, 0, 0, 0.25);
 }
 
 /* ================================================

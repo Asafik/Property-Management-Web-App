@@ -29,8 +29,10 @@ class LandBankDocumentController extends Controller
         // Jumlah tampil per halaman (default 10, opsi: 10, 15, 25)
         $perPage = $request->input('per_page', 10);
 
-        // Ambil data dengan pagination
-        $documentTypes = $query->latest()->paginate($perPage)->withQueryString();
+        // Ambil data dengan pagination + sort by name
+        $documentTypes = $query->orderBy('name', 'asc')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return view('dokument.dokument', compact('documentTypes'));
     }
@@ -48,7 +50,7 @@ class LandBankDocumentController extends Controller
             'has_expiry' => $request->has_expiry ?? false,
         ]);
 
-        return back()->with('success', 'Master document created');
+        return back()->with('success', 'Dokumen Pasca LandBank Berhasil');
     }
 
     public function edit($id)
@@ -72,7 +74,7 @@ class LandBankDocumentController extends Controller
             'has_expiry' => $request->has_expiry ?? false,
         ]);
 
-        return back()->with('success', 'Master document updated');
+        return back()->with('success', 'Dokumen Pasca LandBank Berhasil');
     }
 
     public function destroy($id)
@@ -80,6 +82,6 @@ class LandBankDocumentController extends Controller
         $documentType = DocumentTypes::findOrFail($id);
         $documentType->delete();
 
-        return back()->with('success', 'Master document deleted');
+        return back()->with('success', 'Dokumen Pasca LandBank Berhasil');
     }
 }
