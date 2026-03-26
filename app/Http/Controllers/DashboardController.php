@@ -29,7 +29,7 @@ class DashboardController extends Controller
 
         // Filter by perusahaan
         if ($request->filled('perusahaan')) {
-            $query->whereHas('companyProfile', function($q) use ($request) {
+            $query->whereHas('companyProfile', function ($q) use ($request) {
                 $q->where('name', 'like', "%{$request->perusahaan}%");
             });
         }
@@ -61,7 +61,7 @@ class DashboardController extends Controller
         $landBank = $query->paginate($perPage)->withQueryString();
 
         // Transform data untuk units_detail
-        $landBank->getCollection()->transform(function($lb) {
+        $landBank->getCollection()->transform(function ($lb) {
             $lb->units_detail = $lb->units->map(function ($unit) {
                 return [
                     'type' => $unit->type ?? '-',
@@ -101,7 +101,17 @@ class DashboardController extends Controller
         // Notifications
         $notifications = auth()->user()->unreadNotifications;
         $countNotif = $notifications->count();
+        $detailId = $request->get('detail');
+        $units = null;
 
+        if ($detailId) {
+            $selectedItem = LandBank::findOrFail($detailId);
+
+            $units = $selectedItem->units()
+                ->with('activeBooking.customer')
+                ->paginate(5)
+                ->appends($request->query());
+        }
         return view('dashboard', compact(
             'totalProperty',
             'totalCustomer',
@@ -110,7 +120,15 @@ class DashboardController extends Controller
             'landBank',
             'notifications',
             'countNotif',
-            'filterOptions'
+            'filterOptions',
+            'units',      
+            'detailId'
         ));
+    }
+    public function refresh()
+    {
+        $data = LandBank::with('companyProfile', 'units')->get();
+
+        return response()->json($data);
     }
 }

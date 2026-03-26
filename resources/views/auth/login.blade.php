@@ -292,7 +292,7 @@
 
     <a href="#" class="left-logo">
       <div class="left-logo-icon"><i class="fa-solid fa-house-chimney"></i></div>
-      <span class="left-logo-text">Sweet <span>Home</span></span>
+      <span class="left-logo-text">Property<span>Management</span></span>
     </a>
 
     <div class="login-left-content">
@@ -359,11 +359,13 @@
     </form>
 
     <div class="login-footer">
-      <div>&copy; {{ date('Y') }} Sweet Home — Properti Management</div>
-      <div style="margin-top:0.4rem;">
-        <i class="fa-solid fa-shield-halved" style="color:#7C3AED; font-size:0.7rem;"></i>
-        Enterprise Grade Security
-      </div>
+      <div>&copy; {{ date('Y') }} Properti Management</div>
+      <a href="https://aleena.co.id" target="_blank" style="text-decoration: none; color: inherit;">
+  <div style="margin-top:0.4rem;">
+    <i class="fa-solid fa-shield-halved" style="color:#7C3AED; font-size:0.7rem;"></i>
+    PT Aleena Mandiri Group
+  </div>
+</a>
     </div>
 
   </div>

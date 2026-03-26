@@ -116,21 +116,25 @@ public function storeVerifikasi(Request $request, $bookingId)
         // Jika KPR disetujui / survey
         if ($request->status === 'survey') {
             // Update KPR application
-            $kpr->jumlah_pinjaman = $request->jumlah_pinjaman ?? $kpr->jumlah_pinjaman;
-            $kpr->estimasi_angsuran = $request->estimasi_angsuran ?? $kpr->estimasi_angsuran;
-            $kpr->tenor = $request->tenor ?? $kpr->tenor;
-            $kpr->bunga = $request->bunga ?? $kpr->bunga;
-            $kpr->no_sp3k = $request->no_sp3k ?? $kpr->no_sp3k;
-            $kpr->akad_at = $request->akad_at ?? now();
-            $kpr->status = 'approved';
+            $kpr->fill([
+                'jumlah_pinjaman'   => $request->jumlah_pinjaman ?? $kpr->jumlah_pinjaman,
+                'estimasi_angsuran' => $request->estimasi_angsuran ?? $kpr->estimasi_angsuran,
+                'tenor'             => $request->tenor ?? $kpr->tenor,
+                'bunga'             => $request->bunga ?? $kpr->bunga,
+                'no_sp3k'           => $request->no_sp3k ?? $kpr->no_sp3k,
+                'akad_at'           => $request->akad_at ?? now(),
+                'status'            => 'approved',
+                'harga_unit'        => $request->jumlah_pinjaman ?? $kpr->harga_unit,
+            ]);
 
-            // Update harga unit di KPR applications
-            $kpr->harga_unit = $request->jumlah_pinjaman ?? $kpr->harga_unit;
-
+            // Update status di table Booking
+            $booking->status_cash = 'done'; // Update sesuai permintaan Anda
+            $booking->status = 'cash_process';
             // Update harga di LandBankUnit
             if ($kpr->unit) {
-                $kpr->unit->price = $request->jumlah_pinjaman ?? $kpr->unit->price;
-                $kpr->unit->save();
+                $kpr->unit->update([
+                    'price' => $request->jumlah_pinjaman ?? $kpr->unit->price
+                ]);
             }
         }
 
@@ -138,45 +142,40 @@ public function storeVerifikasi(Request $request, $bookingId)
         if ($request->status === 'rejected') {
             $kpr->status = 'rejected';
             $kpr->rejected_at = now();
+            
+            // Update status di table Booking jika ditolak (opsional, silakan sesuaikan)
+            $booking->status_cash = 'rejected'; 
         }
 
-        // Update catatan
+        // Update catatan & Berita Acara
         $kpr->catatan = $request->catatan;
-
-        // Upload berita acara
         if ($request->hasFile('berita_acara')) {
             $path = $request->file('berita_acara')->store('kpr/verifikasi', 'public');
             $kpr->berita_acara = $path;
         }
 
+        // Simpan semua perubahan
         $kpr->save();
+        $booking->save(); // Simpan perubahan pada table booking
+
         DB::commit();
 
         Log::info('Verifikasi KPR berhasil disimpan', [
             'booking_id' => $bookingId,
-            'user_id' => auth()->id(),
             'status' => $request->status,
         ]);
 
         return redirect()->back()->with('success', 'Verifikasi berhasil disimpan!');
     } catch (\Throwable $e) {
         DB::rollBack();
-
-        Log::error('Gagal menyimpan verifikasi KPR', [
-            'booking_id' => $bookingId,
-            'user_id' => auth()->id(),
-            'status' => $request->status ?? null,
-            'error_message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ]);
-
-        return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan. Silakan coba lagi.');
+        Log::error('Gagal menyimpan verifikasi KPR: ' . $e->getMessage());
+        return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan.');
     }
 }
     public function verified(Request $request)
 {
     $query = KprApplication::with(['customer', 'unit', 'bank'])
-        ->where('status', 'dokumen');
+        ->where('status', 'approved');
 
     // Filter search
     if ($request->filled('search')) {

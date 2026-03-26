@@ -38,8 +38,31 @@
                                         {{ $booking->unit->type ?? '-' }}</span>
                                 </div>
                                 <div>
+                                    <small class="text-muted d-block">Jenis</small>
+                                    <span class="fw-medium">
+                                        {{ $booking->unit->jenis == 'komersil' ? 'Komersil' : '-' }}
+                                    </span>
+                                </div>
+                                <div>
                                     <small class="text-muted d-block">Blok/No</small>
                                     <span class="fw-medium">{{ $booking->unit->unit_code }}</span>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Status Pembangunan</small>
+                                    @php
+                                        $progressMap = [
+                                            'belum_mulai' => 'Belum mulai pembangunan',
+                                            'pondasi' => 'Sedang tahap pondasi',
+                                            'dinding' => 'Sedang tahap pembangunan Dinding',
+                                            'atap' => 'Sedang tahap pembangunan Atap',
+                                            'finishing' => 'Sedang tahap Finishing',
+                                            'selesai' => 'Selesai pembangunan',
+                                        ];
+                                    @endphp
+
+                                    <span class="fw-medium">
+                                        {{ $progressMap[$booking->unit->construction_progress] ?? '-' }}
+                                    </span>
                                 </div>
                                 <div>
                                     <small class="text-muted d-block">Harga Unit</small>
@@ -586,18 +609,34 @@
                                 <i class="mdi mdi-clock-outline me-2"></i> Menunggu Pembayaran
                             </button>
                         @endif
+                        @php
+                            $isLegalDone = strtolower($booking->status_legal) == 'done';
+                            $isBuildDone = strtolower($booking->unit->construction_progress) == 'selesai';
+                            $isAkadDone = $booking->status_akad == 'done';
+                        @endphp
 
-                        {{-- Tombol Akad --}}
-                        @if ($booking->status_akad == 'done')
+                        @if ($isAkadDone)
                             <button class="cash-btn cash-btn-outline-success w-100" disabled>
                                 <i class="mdi mdi-check-circle-outline me-2"></i> Sudah Akad
                             </button>
+                        @elseif ($isLegalDone && $isBuildDone)
+                            {{-- Sudah siap akad --}}
+                            <a href="{{ route('akad.cash', $booking->id) }}"
+                                class="cash-btn cash-btn-outline-primary w-100">
+                                <i class="mdi mdi-cash me-2"></i> Proses Akad
+                            </a>
+                        @elseif ($isLegalDone && !$isBuildDone)
+                            {{-- Legal sudah, tapi pembangunan belum selesai --}}
+                            <a href="{{ route('properti.progress', $booking->unit->land_bank_id) }}?unit_id={{ $booking->unit->id }}"
+                                class="cash-btn cash-btn-outline-warning w-100">
+                                <i class="mdi mdi-hammer me-2"></i> Lihat Progress Pembangunan
+                            </a>
                         @else
-                            <button class="cash-btn cash-btn-outline-warning w-100" disabled>
-                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Akad
+                            {{-- Masih belum siap --}}
+                            <button class="cash-btn cash-btn-outline-secondary w-100" disabled>
+                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Legal & Pembangunan
                             </button>
                         @endif
-
                         {{-- Tombol Legal --}}
                         @if ($booking->status_legal == 'done')
                             <button class="cash-btn cash-btn-outline-success w-100" disabled>

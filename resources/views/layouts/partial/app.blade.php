@@ -60,7 +60,6 @@
 
 <!-- Template custom scripts (urutan penting) -->
 <script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script>
-<script src="{{ asset('admin/assets/js/hoverable-collapse.js') }}"></script>  <!-- WAJIB untuk collapse -->
 <script src="{{ asset('admin/assets/js/misc.js') }}"></script>
 <script src="{{ asset('admin/assets/js/settings.js') }}"></script>
 <script src="{{ asset('admin/assets/js/todolist.js') }}"></script>

@@ -710,7 +710,7 @@
                             </div>
                             <div>
                                 <span class="fw-medium d-block">{{ $application->booking->sales->name ?? '-' }}</span>
-                                <small class="text-muted">{{ $application->booking->sales->role ?? '-' }}</small>
+                                <small class="text-muted">{{ $application->booking->sales->phone ?? '-' }}</small>
                             </div>
                         </div>
                     </div>

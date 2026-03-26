@@ -153,7 +153,7 @@ public function store(Request $request)
 
         DB::commit();
 
-        return redirect()->back()
+        return redirect()->route('customer.kpr')
             ->with('success', 'Pengajuan KPR berhasil disimpan');
 
     } catch (\Throwable $e) {
@@ -164,7 +164,7 @@ public function store(Request $request)
             'error' => $e->getMessage()
         ]);
 
-        return redirect()->back()
+        return redirect()->route('customer.kpr')
             ->withInput()
             ->with('error', $e->getMessage());
     }
@@ -201,7 +201,10 @@ public function store(Request $request)
 {
     $application = KprApplication::with(['customer','unit','bank'])->findOrFail($id);
 
-    return view('serah.serah-terima-kpr', compact('application'));
+   return view('serah.serah-terima-kpr', [
+    'application' => $application,
+    'booking' => $application->booking
+]);
 }
 public function pecahLegal($id)
 {

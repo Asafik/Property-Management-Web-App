@@ -282,6 +282,13 @@
                                             readonly>
                                     </div>
                                 </div>
+                                <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-2">
+                                    <div class="pengajuan-form-group">
+                                        <label>Jenis Unit</label>
+                                        <input type="text" class="pengajuan-form-control" 
+                                         value="{{ Str::upper($booking->unit->jenis ?? '-') }}" readonly>
+                                    </div>
+                                </div>
                             </div>
 
                             <hr class="pengajuan-hr">
