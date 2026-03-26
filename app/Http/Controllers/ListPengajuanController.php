@@ -90,6 +90,7 @@ class ListPengajuanController extends Controller
         $totalCash = Booking::where('purchase_type', 'cash')->count();
         $totalLunas = Booking::whereIn('status', ['completed', 'cash_process'])->count();
 
+        $marketing = Employee::where('division_id', 1)->get();
 
 
         return view('marketing.list_pengajuan', compact(
@@ -97,7 +98,8 @@ class ListPengajuanController extends Controller
             'totalKpr',
             'totalCash',
             'totalLunas',
-            'bookings'
+            'bookings',
+            'marketing'
         ));
     }
 

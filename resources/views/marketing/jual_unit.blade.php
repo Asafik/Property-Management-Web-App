@@ -901,66 +901,6 @@
                                                         </div>
                                                         <div class="progress-percent">{{ $progress }}%</div>
                                                     </div>
-<<<<<<< HEAD
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                    {{ $unit->activeBooking->sales->name ?? '-' }}
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-cash text-success me-1"></i>
-                                                    Rp
-                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-account text-info me-1"></i>
-                                                    {{ $unit->activeBooking->customer->full_name ?? '-' }}
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-cash text-success me-1">
-                                                        Rp
-                                                        {{ number_format($unit->activeBooking->booking_fee ?? 0,0, ',', '.')}}
-                                                    </i>
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="d-flex justify-content-center gap-1">
-                                                        <button class="btn btn-outline-primary btn-sm btnDetailUnit"
-                                                            data-bs-toggle="modal" data-bs-target="#detailUnitModal"
-                                                            data-unit="{{ $unit->unit_code }}"
-                                                            data-block="{{ $unit->block }}"
-                                                            data-type="{{ $unit->type }}"
-                                                            data-address="{{ $unit->landBank->address }}"
-                                                            data-area="{{ $unit->area }}"
-                                                            data-building="{{ $unit->building_area }}"
-                                                            data-price="{{ $unit->price }}"
-                                                            data-direction="{{ $unit->facing }}"
-                                                            data-status="{{ $unit->status }}"
-                                                            data-construction="{{ $unit->construction_progress }}"
-                                                            data-customer="{{ $unit->activeBooking->customer->full_name ?? '-' }}"
-                                                            data-sales="{{ $unit->activeBooking->sales->name ?? '-' }}"
-                                                            data-booking_date="{{ $unit->activeBooking->booking_date ?? '-' }}"
-                                                            data-booking_fee="{{ $unit->activeBooking->booking_fee ?? '-' }}"
-                                                            data-booking_status="{{ $unit->activeBooking->status ?? '-' }}"
-                                                            title="Detail">
-
-                                                            <i class="mdi mdi-eye"></i>
-                                                        </button>
-                                                        @if (auth()->user()->position_id != 4)
-                                                            <button onclick="openCustomerModal({{ $unit->id }})"
-                                                                class="btn btn-outline-danger btn-sm"
-                                                                title="Tambah Customer">
-                                                                <i class="mdi mdi-account-plus"></i>
-                                                            </button>
-
-                                                            <button class="btn btn-outline-info btn-sm bukaModal"
-                                                                data-unit="{{ $unit->id }}" title="Pilih Agency">
-                                                                <i class="mdi mdi-office-building"></i>
-                                                            </button>
-                                                        @endif
-                                                    </div>
-                                                </td>
-                                            </tr>
-=======
                                                 </div>
                                             </td>
                                             <td>
@@ -1007,7 +947,6 @@
                                                 </div>
                                             </td>
                                         </tr>
->>>>>>> main
                                         @empty
                                         <tr>
                                             <td colspan="15" class="text-center text-muted py-4">
