@@ -170,44 +170,6 @@
             background: #5a6268 !important;
         }
 
-        .btn-action {
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            margin: 0 3px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-action i {
-            font-size: 1.05rem;
-        }
-
-        .btn-action.edit {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .btn-action.edit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-        }
-
-        .btn-action.setting {
-            background: linear-gradient(135deg, #17a2b8, #56c6d8);
-            color: #fff;
-        }
-
-        .btn-action.setting:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.35);
-        }
-
         .btn-icon-only {
             width: 40px;
             height: 40px;
@@ -499,25 +461,24 @@
             }
         }
 
-        /* Efek border tebal dan glow saat select sedang diklik/aktif */
-       
-    #access_position:focus {
-        border: 2px solid #b66dff !important;
-        box-shadow: 0 0 8px rgba(182, 109, 255, 0.4) !important;
-        outline: none;
-    }
-    #access_position option:checked {
-        background-color: #b66dff linear-gradient(0deg, #b66dff 0%, #b66dff 100%);
-        color: white;
-        font-weight: bold;
-    }
-    #access_position option {
-        padding: 8px 12px;
-        margin-bottom: 2px;
-        border-radius: 4px;
-        font-size: 14px;
-    }
+        #access_position:focus {
+            border: 2px solid #b66dff !important;
+            box-shadow: 0 0 8px rgba(182, 109, 255, 0.4) !important;
+            outline: none;
+        }
 
+        #access_position option:checked {
+            background-color: #b66dff linear-gradient(0deg, #b66dff 0%, #b66dff 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        #access_position option {
+            padding: 8px 12px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -545,8 +506,7 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted-square me-2"></i>Daftar Semua Menu
                         </h5>
@@ -573,26 +533,19 @@
                                             <div class="col-md-4">
                                                 <label class="form-label">Filter Tampil</label>
                                                 <select class="form-control" name="per_page" id="perPageSelect">
-                                                    <option value="10"
-                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15"
-                                                        {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25"
-                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                                 </select>
                                             </div>
 
                                             <div class="col-md-3">
                                                 <label class="form-label invisible d-none d-md-block">Aksi</label>
                                                 <div class="d-flex gap-2">
-                                                    <button type="submit"
-                                                        class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                        title="Filter">
+                                                    <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter">
                                                         <i class="mdi mdi-filter"></i>
                                                     </button>
-                                                    <a href="{{ url()->current() }}"
-                                                        class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                        title="Reset">
+                                                    <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset">
                                                         <i class="mdi mdi-refresh"></i>
                                                     </a>
                                                 </div>
@@ -618,26 +571,19 @@
                                             <div class="col-12 mb-2">
                                                 <label class="form-label">Filter Tampil</label>
                                                 <select class="form-control" name="per_page">
-                                                    <option value="10"
-                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15"
-                                                        {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25"
-                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                                 </select>
                                             </div>
 
                                             <div class="col-6">
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary btn-icon-only-mobile w-100"
-                                                    title="Filter">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" title="Filter">
                                                     <i class="mdi mdi-filter"></i>
                                                 </button>
                                             </div>
                                             <div class="col-6">
-                                                <a href="{{ url()->current() }}"
-                                                    class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
-                                                    title="Reset">
+                                                <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
@@ -670,11 +616,9 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     @if ($item->icon)
-                                                        <i class="mdi {{ $item->icon }} text-primary me-2"
-                                                            style="font-size: 1.2rem;"></i>
+                                                        <i class="mdi {{ $item->icon }} text-primary me-2" style="font-size: 1.2rem;"></i>
                                                     @else
-                                                        <i class="mdi mdi-menu text-primary me-2"
-                                                            style="font-size: 1.2rem;"></i>
+                                                        <i class="mdi mdi-menu text-primary me-2" style="font-size: 1.2rem;"></i>
                                                     @endif
                                                     <span class="fw-bold">{{ $item->name }}</span>
                                                 </div>
@@ -709,26 +653,12 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <button type="button" class="btn-action edit" title="Edit UI"
-                                                    onclick="openEditModal(
-                                                    '{{ $item->id }}',
-                                                    '{{ addslashes($item->name) }}',
-                                                    '{{ addslashes($item->route ?? '') }}'
-                                                )">
-                                                    <i class="mdi mdi-pencil"></i>
+                                                <button class="btn btn-sm btn-info text-white"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#accessMenuModal"
+                                                    onclick="editAksesMenu('{{ $item->id }}', '{{ $item->name }}', {{ json_encode($item->positions->pluck('id')->toArray()) }})">
+                                                    Hak Akses
                                                 </button>
-
-                                                <button type="button" class="btn-action setting" title="Pengaturan UI"
-                                                    onclick="openAccessModal(
-                                                    '{{ $item->id }}',
-                                                    '{{ addslashes($item->name) }}'
-                                                )">
-                                                    <i class="mdi mdi-cog-outline"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#accessMenuModal" 
-        onclick="editAksesMenu('{{ $item->id }}', '{{ $item->name }}', {{ json_encode($item->positions->pluck('id')->toArray()) }})">
-    Atur Akses
-</button>
                                             </td>
                                         </tr>
                                     @empty
@@ -745,8 +675,7 @@
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                             <div class="pagination-info mb-2 mb-sm-0">
                                 @if (method_exists($menus, 'total'))
-                                    Menampilkan {{ $menus->firstItem() ?? 0 }} - {{ $menus->lastItem() ?? 0 }} dari
-                                    {{ $menus->total() }} data
+                                    Menampilkan {{ $menus->firstItem() ?? 0 }} - {{ $menus->lastItem() ?? 0 }} dari {{ $menus->total() }} data
                                 @else
                                     Menampilkan 1 - {{ count($menus) }} dari {{ count($menus) }} data
                                 @endif
@@ -766,39 +695,49 @@
 
     </div>
 
-    <div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+    <div class="modal fade" id="accessMenuModal" tabindex="-1" aria-labelledby="accessMenuModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editMenuModalLabel">
-                        <i class="mdi mdi-pencil-circle me-2"></i>Edit Menu UI
+                <div class="modal-header bg-white">
+                    <h5 class="modal-title" id="accessMenuModalLabel">
+                        <i class="mdi mdi-cog-outline me-2 text-primary"></i>Pengaturan Hak Akses Menu
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form onsubmit="return submitEditMenu(event)">
+                <form action="{{ route('menu.store_positions') }}" method="POST">
+                    @csrf
                     <div class="modal-body">
-                        <input type="hidden" id="edit_menu_id">
+
+                        <input type="hidden" name="menu_id" id="access_menu_id">
 
                         <div class="mb-3">
-                            <label class="form-label">Nama Menu</label>
-                            <input type="text" class="form-control" id="edit_menu_name" required>
+                            <label class="form-label fw-bold">Nama Menu</label>
+                            <input type="text" class="form-control bg-light" id="access_menu_name" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Route / Link</label>
-                            <input type="text" class="form-control" id="edit_menu_route">
+                            <label class="form-label fw-bold">Posisi / Hak Akses</label>
+
+                            <select class="form-control shadow-sm" style="height: 140px;" name="position_ids[]" id="access_position" multiple required>
+                                @foreach ($positions as $pos)
+                                    <option value="{{ $pos->id }}">{{ $pos->name }}</option>
+                                @endforeach
+                            </select>
+
+                            <small class="text-info mt-2 d-block">
+                                <i class="mdi mdi-information-outline"></i> Tahan tombol <strong>Ctrl</strong> (Windows) / <strong>Cmd</strong> (Mac) saat klik untuk memilih lebih dari 1 posisi.
+                            </small>
                         </div>
 
-                        <small class="text-muted">Modal ini masih simulasi UI, belum tersimpan ke database.</small>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="mdi mdi-close me-1"></i>Batal
                         </button>
                         <button type="submit" class="btn btn-gradient-primary">
-                            <i class="mdi mdi-content-save me-1"></i>Simpan
+                            <i class="mdi mdi-content-save me-1"></i>Simpan Ke Database
                         </button>
                     </div>
                 </form>
@@ -806,134 +745,28 @@
         </div>
     </div>
 
-<div class="modal fade" id="accessMenuModal" tabindex="-1" aria-labelledby="accessMenuModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-white">
-                <h5 class="modal-title" id="accessMenuModalLabel">
-                    <i class="mdi mdi-cog-outline me-2 text-primary"></i>Pengaturan Hak Akses Menu
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form action="{{ route('menu.store_positions') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-
-                    <input type="hidden" name="menu_id" id="access_menu_id">
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nama Menu</label>
-                        <input type="text" class="form-control bg-light" id="access_menu_name" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Posisi / Hak Akses</label>
-                        
-                        <select class="form-control shadow-sm" style="height: 140px;" name="position_ids[]" id="access_position" multiple required>
-                            {{-- Looping data posisi dari database --}}
-                            @foreach ($positions as $pos)
-                                <option value="{{ $pos->id }}">{{ $pos->name }}</option>
-                            @endforeach
-                        </select>
-                        
-                        <small class="text-info mt-2 d-block">
-                            <i class="mdi mdi-information-outline"></i> Tahan tombol <strong>Ctrl</strong> (Windows) / <strong>Cmd</strong> (Mac) saat klik untuk memilih lebih dari 1 posisi.
-                        </small>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="mdi mdi-close me-1"></i>Batal
-                    </button>
-                    <button type="submit" class="btn btn-gradient-primary">
-                        <i class="mdi mdi-content-save me-1"></i>Simpan Ke Database
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    function editAksesMenu(id, name, positionIds) {
-        document.getElementById('access_menu_id').value = id;
-        document.getElementById('access_menu_name').value = name;
-        
-        let select = document.getElementById('access_position');
-        
-        // Reset pilihan
-        for (let i = 0; i < select.options.length; i++) {
-            select.options[i].selected = false;
-        }
-
-        // Centang posisi yang sesuai database
-        if (positionIds && positionIds.length > 0) {
-            for (let i = 0; i < select.options.length; i++) {
-                if (positionIds.includes(parseInt(select.options[i].value))) {
-                    select.options[i].selected = true; 
-                }
-            }
-        }
-    }
-</script>
-    <script>
-        function openEditModal(id, name, route) {
-            document.getElementById('edit_menu_id').value = id;
-            document.getElementById('edit_menu_name').value = name;
-            document.getElementById('edit_menu_route').value = route;
-
-            const modal = new bootstrap.Modal(document.getElementById('editMenuModal'));
-            modal.show();
-        }
-
-        function submitEditMenu(event) {
-            event.preventDefault();
-
-            const modalEl = document.getElementById('editMenuModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: 'Simulasi edit menu berhasil dijalankan.',
-                confirmButtonColor: '#9a55ff'
-            });
-
-            return false;
-        }
-
-        function openAccessModal(id, name) {
+        function editAksesMenu(id, name, positionIds) {
             document.getElementById('access_menu_id').value = id;
             document.getElementById('access_menu_name').value = name;
-            document.getElementById('access_position').value = '';
 
-            const modal = new bootstrap.Modal(document.getElementById('accessMenuModal'));
-            modal.show();
-        }
+            let select = document.getElementById('access_position');
 
-        function submitAccessMenu(event) {
-            event.preventDefault();
+            for (let i = 0; i < select.options.length; i++) {
+                select.options[i].selected = false;
+            }
 
-            const modalEl = document.getElementById('accessMenuModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: 'Simulasi pengaturan menu berhasil dijalankan.',
-                confirmButtonColor: '#9a55ff'
-            });
-
-            return false;
+            if (positionIds && positionIds.length > 0) {
+                for (let i = 0; i < select.options.length; i++) {
+                    if (positionIds.includes(parseInt(select.options[i].value))) {
+                        select.options[i].selected = true;
+                    }
+                }
+            }
         }
     </script>
 @endpush
