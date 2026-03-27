@@ -135,12 +135,15 @@ class AkadController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses akad. Silakan coba lagi.');
         }
     }
-    public function akadKPR($id)
-    {
-        $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])->findOrFail($id);
+ public function akadKPR($id)
+{
+    // Cari KPR yang kolom booking_id nya sesuai dengan ID dari URL
+    $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
+            ->where('booking_id', $id)
+            ->firstOrFail(); // Melempar 404 jika booking_id tidak ditemukan di tabel KPR
 
-        return view('marketing.akad_closing', compact('kpr'));
-    }
+    return view('marketing.akad_closing', compact('kpr'));
+}
     public function storeKPR(Request $request, Booking $booking)
     {
         try {

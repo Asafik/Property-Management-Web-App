@@ -201,7 +201,10 @@ public function store(Request $request)
 {
     $application = KprApplication::with(['customer','unit','bank'])->findOrFail($id);
 
-    return view('serah.serah-terima-kpr', compact('application'));
+   return view('serah.serah-terima-kpr', [
+    'application' => $application,
+    'booking' => $application->booking
+]);
 }
 public function pecahLegal($id)
 {

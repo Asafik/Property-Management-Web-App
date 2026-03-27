@@ -40,6 +40,10 @@
                                     <span class="fw-medium">{{ $application->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div>
+                                    <small class="text-muted d-block">Jenis Unit</small>
+                                    <span class="fw-medium">{{$application->unit->jenis ?? '-'}}</span>
+                                </div>
+                                <div>
                                     <small class="text-muted d-block">Harga Unit</small>
                                     <span class="fw-medium text-primary">{{ $application->unit->price ?? '-' }}</span>
                                 </div>

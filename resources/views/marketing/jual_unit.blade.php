@@ -786,24 +786,22 @@
                                 <table class="table table-hover align-middle">
                                     <thead>
                                         <tr>
-                                            <th class="text-center"><i class="mdi mdi-counter"></i> No</th>
-                                            <th><i class="mdi mdi-home-variant"></i> Blok</th>
-                                            <th><i class="mdi mdi-office-building"></i> Proyek</th>
-                                            <th><i class="mdi mdi-shape-outline"></i> Tipe</th>
-                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi
-                                            </th>
-                                            <th><i class="mdi mdi-ruler-square"></i> Luas Tanah</th>
-                                            <th><i class="mdi mdi-domain"></i> Luas Bangunan</th>
-                                            <th><i class="mdi mdi-currency-usd"></i> Harga</th>
-                                            <th><i class="mdi mdi-compass"></i> Hadap</th>
-                                            <th><i class="mdi mdi-chart-arc"></i> Status</th>
-                                            <th><i class="mdi mdi-hammer"></i> Status Pembangunan</th>
-                                            <th><i class="mdi mdi-account-tie"></i> Agent</th>
-                                            <th><i class="mdi mdi-cash"></i> Fee Agent</th>
-                                            <th><i class="mdi mdi-account"></i> Customer</th>
-                                            <th><i class="mdi mdi-cash"> Booking Fee</i></th>
-                                            <th class="text-center"><i class="mdi mdi-cog"></i> Aksi</th>
-
+                                            <th class="text-center">No</th>
+                                            <th>Block/Unit</th>
+                                            <th>Proyek</th>
+                                            <th>Tipe</th>
+                                            <th class="d-none d-md-table-cell">Lokasi</th>
+                                            <th>Luas Tanah</th>
+                                            <th>Luas Bangunan</th>
+                                            <th>Harga</th>
+                                            <th>Hadap</th>
+                                            <th>Status</th>
+                                            <th>Status Pembangunan / Progres</th>
+                                            <th>Agent</th>
+                                            <th>Fee Agent</th>
+                                            <th>Customer</th>
+                                            <th>Booking Fee</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -914,6 +912,9 @@
                                                 <i class="mdi mdi-account-outline text-primary me-1"></i>
                                                 {{ $unit->activeBooking->customer->full_name ?? '-' }}
                                             </td>
+                                            <td class="fee-text">
+                                                Rp {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
+                                            </td>
                                             <td class="text-center">
                                                 <div class="action-group">
                                                     <button class="btn-action view" title="Detail"
@@ -936,7 +937,7 @@
                                                         data-booking_status="{{ $unit->activeBooking->status ?? '-' }}">
                                                         <i class="mdi mdi-eye"></i>
                                                     </button>
-                                                    @if (auth()->user()->position_id != 5)
+                                                    @if (auth()->user()->position_id != 4)
                                                         <button class="btn-action customer" title="Pilih Customer" onclick="openCustomerModal({{ $unit->id }})">
                                                             <i class="mdi mdi-account-plus"></i>
                                                         </button>
@@ -949,7 +950,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="15" class="text-center text-muted py-4">
+                                            <td colspan="16" class="text-center text-muted py-4">
                                                 <i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i>
                                                 <p class="mt-2">Data unit belum tersedia</p>
                                             </td>
@@ -1269,7 +1270,6 @@
                             @endsection
 
                             @push('scripts')
-                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                                 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
                                 <script>
@@ -1298,7 +1298,7 @@
 
                                     // ========== SITEPLAN CANVAS ==========
                                     const canvas = new fabric.Canvas('siteplanCanvas');
-                                    const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
+                                    const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
 
                                     fabric.Image.fromURL(siteplanImage, function(img) {
                                         canvas.setWidth(img.width);
