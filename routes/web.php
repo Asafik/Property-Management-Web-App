@@ -47,6 +47,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
 use App\Http\Controllers\CompanySettingController;
 use App\Http\Controllers\LandingpageController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TimelineCashTempoController;
 
 
@@ -291,7 +292,7 @@ Route::prefix('lokasi')->name('lokasi.')->group(function () {
 
 Route::get('/servis', function () {
     return view('servis.servis');
-});
+})->name('servis');
 
 
 // Route::get('/dashboard-dokument', function () {
@@ -446,6 +447,8 @@ Route::put('/master-data/posisi/update/{position}', [PositionController::class, 
 Route::delete('/master-data/posisi/{position}', [PositionController::class, 'destroy'])->name('master.data.posisi.delete');
 Route::get('/master-data/posisi/get-by-division/{divisionId}', [PositionController::class, 'getByDivision'])->name('master.data.posisi.by-division');
 
+// Master Data Hak Akses Menu
+Route::get('/master-data/permissions', [MenuController::class, 'index'])->name('master.data.menu');
 
 // Route::get('/done', function () {
 //     return view('marketing.done_sell');
