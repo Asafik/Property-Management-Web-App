@@ -449,7 +449,8 @@ Route::get('/master-data/posisi/get-by-division/{divisionId}', [PositionControll
 
 // Master Data Hak Akses Menu
 Route::get('/master-data/permissions', [MenuController::class, 'index'])->name('master.data.menu');
-
+Route::post('/menu/permissions/{position_id}/update', [MenuController::class, 'updatePermissions'])->name('positions.update_permissions');
+Route::post('/menu/store-positions', [MenuController::class, 'storePositions'])->name('menu.store_positions');
 // Route::get('/done', function () {
 //     return view('marketing.done_sell');
 // });
