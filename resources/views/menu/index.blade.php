@@ -162,7 +162,7 @@
         }
 
         .btn-gradient-secondary {
-            background: #6c757d !important;
+            background: #165c99 !important;
             color: #ffffff !important;
         }
 
@@ -468,8 +468,9 @@
         }
 
         #access_position option:checked {
-            background-color: #b66dff linear-gradient(0deg, #b66dff 0%, #b66dff 100%);
-            color: white;
+            background: linear-gradient(0deg, #b66dff 0%, #b66dff 100%) !important;
+            background-color: #b66dff !important;
+            color: white !important;
             font-weight: bold;
         }
 
@@ -478,6 +479,30 @@
             margin-bottom: 2px;
             border-radius: 4px;
             font-size: 14px;
+            color: #000000;
+        }
+
+        #access_position {
+            scrollbar-width: thin;
+            scrollbar-color: #9a55ff #f0f0f0;
+        }
+
+        #access_position::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #access_position::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        #access_position::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        #access_position::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
         }
     </style>
 
