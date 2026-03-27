@@ -498,6 +498,26 @@
                 margin-top: 1rem;
             }
         }
+
+        /* Efek border tebal dan glow saat select sedang diklik/aktif */
+       
+    #access_position:focus {
+        border: 2px solid #b66dff !important;
+        box-shadow: 0 0 8px rgba(182, 109, 255, 0.4) !important;
+        outline: none;
+    }
+    #access_position option:checked {
+        background-color: #b66dff linear-gradient(0deg, #b66dff 0%, #b66dff 100%);
+        color: white;
+        font-weight: bold;
+    }
+    #access_position option {
+        padding: 8px 12px;
+        margin-bottom: 2px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -705,6 +725,10 @@
                                                 )">
                                                     <i class="mdi mdi-cog-outline"></i>
                                                 </button>
+                                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#accessMenuModal" 
+        onclick="editAksesMenu('{{ $item->id }}', '{{ $item->name }}', {{ json_encode($item->positions->pluck('id')->toArray()) }})">
+    Atur Akses
+</button>
                                             </td>
                                         </tr>
                                     @empty
@@ -782,63 +806,83 @@
         </div>
     </div>
 
-    <div class="modal fade" id="accessMenuModal" tabindex="-1" aria-labelledby="accessMenuModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="accessMenuModalLabel">
-                        <i class="mdi mdi-cog-outline me-2"></i>Pengaturan Menu UI
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="accessMenuModal" tabindex="-1" aria-labelledby="accessMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-white">
+                <h5 class="modal-title" id="accessMenuModalLabel">
+                    <i class="mdi mdi-cog-outline me-2 text-primary"></i>Pengaturan Hak Akses Menu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="{{ route('menu.store_positions') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+
+                    <input type="hidden" name="menu_id" id="access_menu_id">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nama Menu</label>
+                        <input type="text" class="form-control bg-light" id="access_menu_name" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Posisi / Hak Akses</label>
+                        
+                        <select class="form-control shadow-sm" style="height: 140px;" name="position_ids[]" id="access_position" multiple required>
+                            {{-- Looping data posisi dari database --}}
+                            @foreach ($positions as $pos)
+                                <option value="{{ $pos->id }}">{{ $pos->name }}</option>
+                            @endforeach
+                        </select>
+                        
+                        <small class="text-info mt-2 d-block">
+                            <i class="mdi mdi-information-outline"></i> Tahan tombol <strong>Ctrl</strong> (Windows) / <strong>Cmd</strong> (Mac) saat klik untuk memilih lebih dari 1 posisi.
+                        </small>
+                    </div>
+
                 </div>
 
-                <form action="{{ route('menu.store_positions') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-
-                        <input type="hidden" name="menu_id" id="access_menu_id">
-
-                        <div class="mb-3">
-                            <label class="form-label">Nama Menu</label>
-                            <input type="text" class="form-control" id="access_menu_name" readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Posisi / Hak Akses</label>
-
-                            <select class="form-control" name="position_ids[]" id="access_position" multiple required>
-                                {{-- Looping data posisi dari database --}}
-                                @foreach ($positions as $pos)
-                                    <option value="{{ $pos->id }}">{{ $pos->name }}</option>
-                                @endforeach
-                            </select>
-                            <small class="text-info mt-1 d-block">
-                                <i class="mdi mdi-information-outline"></i> Tahan tombol Ctrl (Windows) / Cmd (Mac) untuk
-                                memilih lebih dari 1 posisi.
-                            </small>
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                            <i class="mdi mdi-close me-1"></i>Batal
-                        </button>
-                        <button type="submit" class="btn btn-gradient-primary">
-                            <i class="mdi mdi-content-save me-1"></i>Simpan Ke Database
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan Ke Database
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function editAksesMenu(id, name, positionIds) {
+        document.getElementById('access_menu_id').value = id;
+        document.getElementById('access_menu_name').value = name;
+        
+        let select = document.getElementById('access_position');
+        
+        // Reset pilihan
+        for (let i = 0; i < select.options.length; i++) {
+            select.options[i].selected = false;
+        }
 
+        // Centang posisi yang sesuai database
+        if (positionIds && positionIds.length > 0) {
+            for (let i = 0; i < select.options.length; i++) {
+                if (positionIds.includes(parseInt(select.options[i].value))) {
+                    select.options[i].selected = true; 
+                }
+            }
+        }
+    }
+</script>
     <script>
         function openEditModal(id, name, route) {
             document.getElementById('edit_menu_id').value = id;
