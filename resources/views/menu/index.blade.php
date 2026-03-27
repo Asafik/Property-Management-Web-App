@@ -137,6 +137,15 @@
 }
 .btn-action i { font-size: 1.05rem; }
 
+.btn-action.edit {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+}
+.btn-action.edit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
+
 .btn-action.setting {
     background: linear-gradient(135deg, #17a2b8, #56c6d8);
     color: #fff;
@@ -536,6 +545,19 @@ h3.text-dark {
                                         <td class="text-center">
                                             <button
                                                 type="button"
+                                                class="btn-action edit"
+                                                title="Edit UI"
+                                                onclick="openEditModal(
+                                                    '{{ $item->id }}',
+                                                    '{{ addslashes($item->name) }}',
+                                                    '{{ addslashes($item->route ?? '') }}'
+                                                )"
+                                            >
+                                                <i class="mdi mdi-pencil"></i>
+                                            </button>
+
+                                            <button
+                                                type="button"
                                                 class="btn-action setting"
                                                 title="Pengaturan UI"
                                                 onclick="openAccessModal(
@@ -579,6 +601,46 @@ h3.text-dark {
         </div>
     </div>
 
+</div>
+
+<div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMenuModalLabel">
+                    <i class="mdi mdi-pencil-circle me-2"></i>Edit Menu UI
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form onsubmit="return submitEditMenu(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="edit_menu_id">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nama Menu</label>
+                        <input type="text" class="form-control" id="edit_menu_name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Route / Link</label>
+                        <input type="text" class="form-control" id="edit_menu_route">
+                    </div>
+
+                    <small class="text-muted">Modal ini masih simulasi UI, belum tersimpan ke database.</small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="accessMenuModal" tabindex="-1" aria-labelledby="accessMenuModalLabel" aria-hidden="true">
@@ -633,6 +695,32 @@ h3.text-dark {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+function openEditModal(id, name, route) {
+    document.getElementById('edit_menu_id').value = id;
+    document.getElementById('edit_menu_name').value = name;
+    document.getElementById('edit_menu_route').value = route;
+
+    const modal = new bootstrap.Modal(document.getElementById('editMenuModal'));
+    modal.show();
+}
+
+function submitEditMenu(event) {
+    event.preventDefault();
+
+    const modalEl = document.getElementById('editMenuModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) modalInstance.hide();
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Simulasi edit menu berhasil dijalankan.',
+        confirmButtonColor: '#9a55ff'
+    });
+
+    return false;
+}
+
 function openAccessModal(id, name) {
     document.getElementById('access_menu_id').value = id;
     document.getElementById('access_menu_name').value = name;
