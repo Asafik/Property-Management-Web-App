@@ -13,7 +13,7 @@
                 </div>
 
             </a>
-        </li>
+    </li>
 
 
         <li class="nav-item">
@@ -28,7 +28,7 @@
             $position = Auth::user()->position->name ?? '';
         @endphp
 
-        @if ($position == 'Marketing' || $position == 'Admin' || $position == 'Staff Marketing')
+        @if ($position == 'Kepala Marketing' || $position == 'Admin' || $position == 'Staff Marketing')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#marketing" aria-expanded="false"
                     aria-controls="marketing">

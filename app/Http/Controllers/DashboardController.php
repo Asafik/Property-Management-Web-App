@@ -112,6 +112,16 @@ class DashboardController extends Controller
                 ->paginate(5)
                 ->appends($request->query());
         }
+     $employee = auth()->user();
+$positionId = $employee->position_id ?? null;
+
+$menus = \App\Models\Menu::with('children')
+    ->whereNull('parent_id')
+    ->whereHas('positions', function ($q) use ($positionId) {
+        $q->where('position_id', $positionId);
+    })
+    ->orderBy('order')
+    ->get();
         return view('dashboard', compact(
             'totalProperty',
             'totalCustomer',
@@ -122,7 +132,8 @@ class DashboardController extends Controller
             'countNotif',
             'filterOptions',
             'units',      
-            'detailId'
+            'detailId',
+            'menus'
         ));
     }
     public function refresh()
