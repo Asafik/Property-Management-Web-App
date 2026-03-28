@@ -541,11 +541,9 @@
 
         .table-responsive {
             overflow-x: auto;
-            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             border-radius: 8px;
             margin-bottom: 0.5rem;
-            max-height: 500px;
             scrollbar-width: thin;
             scrollbar-color: #9a55ff #f0f0f0;
         }
