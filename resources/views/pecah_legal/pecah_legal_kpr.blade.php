@@ -409,7 +409,23 @@
                                  <span>Tanggal: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</span>
                              </div>
                              <div class="ms-sm-auto mt-2 mt-sm-0">
-                                 <span class="badge badge-warning">Status: Menunggu Upload</span>
+                                 @php
+                                     // Quick check to set status badge
+                                     $allComplete = true;
+                                     $requiredTop = ['ktp','kk','slip_gaji','rekening_koran'];
+                                     $docsTop = $application->documents->keyBy('type');
+                                     foreach ($requiredTop as $docType) {
+                                         if (!isset($docsTop[$docType])) {
+                                             $allComplete = false;
+                                             break;
+                                         }
+                                     }
+                                 @endphp
+                                 @if($allComplete)
+                                     <span class="badge badge-success">Status: Selesai Upload</span>
+                                 @else
+                                     <span class="badge badge-warning">Status: Menunggu Upload</span>
+                                 @endif
                              </div>
                          </div>
                      </div>
@@ -490,23 +506,27 @@
                     </div>
                 </div>
 
-                <div class="upload-file-modern">
-                    <input type="file" id="document-ktp" name="document_ktp" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="upload-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="upload-file-info">
-                            <span>Upload KTP</span>
-                            <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                @if(!isset($documents['ktp']))
+                    <div class="upload-file-modern">
+                        <input type="file" id="document-ktp" name="document_ktp" accept=".jpg,.jpeg,.png,.pdf">
+                        <div class="upload-file-label">
+                            <i class="mdi mdi-cloud-upload"></i>
+                            <div class="upload-file-info">
+                                <span>Upload KTP</span>
+                                <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                @if(isset($documents['ktp']))
-                <div class="mt-2">
-                    <a href="{{ asset('storage/'.$documents['ktp']->path) }}" target="_blank" class="btn btn-sm btn-success">
-                        <i class="mdi mdi-eye"></i> Lihat Dokumen
-                    </a>
-                </div>
+                @else
+                    <div class="alert alert-success d-flex align-items-center mb-0 p-2 border-0" style="background:#edf9f3;">
+                        <i class="mdi mdi-check-circle me-2 text-success" style="font-size: 1.2rem;"></i>
+                        <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ asset('storage/'.$documents['ktp']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                            <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>
@@ -524,23 +544,27 @@
                     </div>
                 </div>
 
-                <div class="upload-file-modern">
-                    <input type="file" id="document-kk" name="document_kk" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="upload-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="upload-file-info">
-                            <span>Upload Kartu Keluarga</span>
-                            <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                @if(!isset($documents['kk']))
+                    <div class="upload-file-modern">
+                        <input type="file" id="document-kk" name="document_kk" accept=".jpg,.jpeg,.png,.pdf">
+                        <div class="upload-file-label">
+                            <i class="mdi mdi-cloud-upload"></i>
+                            <div class="upload-file-info">
+                                <span>Upload Kartu Keluarga</span>
+                                <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                @if(isset($documents['kk']))
-                <div class="mt-2">
-                    <a href="{{ asset('storage/'.$documents['kk']->path) }}" target="_blank" class="btn btn-sm btn-success">
-                        <i class="mdi mdi-eye"></i> Lihat Dokumen
-                    </a>
-                </div>
+                @else
+                    <div class="alert alert-success d-flex align-items-center mb-0 p-2 border-0" style="background:#edf9f3;">
+                        <i class="mdi mdi-check-circle me-2 text-success" style="font-size: 1.2rem;"></i>
+                        <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ asset('storage/'.$documents['kk']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                            <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>
@@ -558,23 +582,27 @@
                     </div>
                 </div>
 
-                <div class="upload-file-modern">
-                    <input type="file" id="document-npwp" name="document_npwp" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="upload-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="upload-file-info">
-                            <span>Upload NPWP</span>
-                            <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                @if(!isset($documents['npwp']))
+                    <div class="upload-file-modern">
+                        <input type="file" id="document-npwp" name="document_npwp" accept=".jpg,.jpeg,.png,.pdf">
+                        <div class="upload-file-label">
+                            <i class="mdi mdi-cloud-upload"></i>
+                            <div class="upload-file-info">
+                                <span>Upload NPWP</span>
+                                <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                @if(isset($documents['npwp']))
-                <div class="mt-2">
-                    <a href="{{ asset('storage/'.$documents['npwp']->path) }}" target="_blank" class="btn btn-sm btn-success">
-                        <i class="mdi mdi-eye"></i> Lihat Dokumen
-                    </a>
-                </div>
+                @else
+                    <div class="alert alert-success d-flex align-items-center mb-0 p-2 border-0" style="background:#edf9f3;">
+                        <i class="mdi mdi-check-circle me-2 text-success" style="font-size: 1.2rem;"></i>
+                        <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ asset('storage/'.$documents['npwp']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                            <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>
@@ -592,23 +620,27 @@
                     </div>
                 </div>
 
-                <div class="upload-file-modern">
-                    <input type="file" id="document-slip-gaji" name="document_slip_gaji" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="upload-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="upload-file-info">
-                            <span>Upload Slip Gaji</span>
-                            <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                @if(!isset($documents['slip_gaji']))
+                    <div class="upload-file-modern">
+                        <input type="file" id="document-slip-gaji" name="document_slip_gaji" accept=".jpg,.jpeg,.png,.pdf">
+                        <div class="upload-file-label">
+                            <i class="mdi mdi-cloud-upload"></i>
+                            <div class="upload-file-info">
+                                <span>Upload Slip Gaji</span>
+                                <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                @if(isset($documents['slip_gaji']))
-                <div class="mt-2">
-                    <a href="{{ asset('storage/'.$documents['slip_gaji']->path) }}" target="_blank" class="btn btn-sm btn-success">
-                        <i class="mdi mdi-eye"></i> Lihat Dokumen
-                    </a>
-                </div>
+                @else
+                    <div class="alert alert-success d-flex align-items-center mb-0 p-2 border-0" style="background:#edf9f3;">
+                        <i class="mdi mdi-check-circle me-2 text-success" style="font-size: 1.2rem;"></i>
+                        <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ asset('storage/'.$documents['slip_gaji']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                            <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>
@@ -626,23 +658,27 @@
                     </div>
                 </div>
 
-                <div class="upload-file-modern">
-                    <input type="file" id="document-rekening" name="document_rekening" accept=".jpg,.jpeg,.png,.pdf">
-                    <div class="upload-file-label">
-                        <i class="mdi mdi-cloud-upload"></i>
-                        <div class="upload-file-info">
-                            <span>Upload Rekening Koran</span>
-                            <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                @if(!isset($documents['rekening_koran']))
+                    <div class="upload-file-modern">
+                        <input type="file" id="document-rekening" name="document_rekening" accept=".jpg,.jpeg,.png,.pdf">
+                        <div class="upload-file-label">
+                            <i class="mdi mdi-cloud-upload"></i>
+                            <div class="upload-file-info">
+                                <span>Upload Rekening Koran</span>
+                                <small>Format: JPG, PNG, PDF (Max: 5MB)</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                @if(isset($documents['rekening_koran']))
-                <div class="mt-2">
-                    <a href="{{ asset('storage/'.$documents['rekening_koran']->path) }}" target="_blank" class="btn btn-sm btn-success">
-                        <i class="mdi mdi-eye"></i> Lihat Dokumen
-                    </a>
-                </div>
+                @else
+                    <div class="alert alert-success d-flex align-items-center mb-0 p-2 border-0" style="background:#edf9f3;">
+                        <i class="mdi mdi-check-circle me-2 text-success" style="font-size: 1.2rem;"></i>
+                        <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ asset('storage/'.$documents['rekening_koran']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                            <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>
@@ -657,12 +693,14 @@
 
         <div class="d-flex gap-2">
 
+            @if(!$isComplete || !isset($documents['npwp']))
             <button type="submit" class="btn btn-primary">
                 <i class="mdi mdi-upload me-1"></i>Upload Dokumen
             </button>
+            @endif
 
             @if($isComplete)
-                <a href="{{ route('kpr.approve', $application->id) }}" class="btn btn-success">
+                <a href="{{ route('kpr.approve', $application->booking_id) }}" class="btn btn-success">
                     <i class="mdi mdi-check-circle me-1"></i>Approve & Lanjut Akad
                 </a>
             @endif

@@ -34,6 +34,23 @@
             min-height: 110px;
         }
 
+        .jenis-badge {
+            background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
+            color: #28a745;
+            border: 1px solid #9ce0a6;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            gap: 6px;
+        }
+
+        .jenis-badge i {
+            font-size: 0.95rem;
+        }
+
         .customer-avatar {
             width: 64px;
             height: 64px;
@@ -50,7 +67,7 @@
         }
 
         .customer-name {
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #2c2e3f;
             line-height: 1.2;
@@ -63,7 +80,7 @@
 
         .customer-unit-info {
             display: grid;
-            grid-template-columns: repeat(4, minmax(90px, auto));
+            grid-template-columns: repeat(3, minmax(90px, auto));
             gap: 1.5rem;
             align-items: center;
         }
@@ -628,7 +645,7 @@
             }
 
             .customer-name {
-                font-size: 1.25rem;
+                font-size: 1.15rem;
             }
 
             .customer-booking {
@@ -670,10 +687,16 @@
                         <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    {{ strtoupper(substr($application->customer->full_name ?? 'C', 0, 1)) }}
+                                    <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
                                 </div>
                                 <div>
-                                    <h4 class="customer-name mb-1">{{ $application->customer->full_name ?? '-' }}</h4>
+                                    <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
+                                        {{ $application->customer->full_name ?? '-' }}
+                                        <span class="jenis-badge">
+                                            <i class="mdi mdi-home-outline"></i>
+                                            {{ strtoupper($application->unit->jenis ?? '-') }}
+                                        </span>
+                                    </h4>
                                     <p class="customer-booking mb-0">
                                         Booking ID: {{ optional($application->unit->activeBooking)->booking_code ?? '-' }}
                                     </p>
@@ -684,10 +707,6 @@
                                 <div class="info-item">
                                     <small>Unit</small>
                                     <span>{{ $application->unit->unit_name ?? '-' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <small>Jenis Unit</small>
-                                    <span>{{ $application->unit->jenis ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Blok/No</small>

@@ -33,6 +33,23 @@
             min-height: 110px;
         }
 
+        .jenis-badge {
+            background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
+            color: #28a745;
+            border: 1px solid #9ce0a6;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            gap: 6px;
+        }
+
+        .jenis-badge i {
+            font-size: 0.95rem;
+        }
+
         .customer-avatar {
             width: 64px;
             height: 64px;
@@ -49,7 +66,7 @@
         }
 
         .customer-name {
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #2c2e3f;
             line-height: 1.2;
@@ -62,7 +79,7 @@
 
         .customer-unit-info {
             display: grid;
-            grid-template-columns: repeat(4, minmax(90px, auto));
+            grid-template-columns: repeat(3, minmax(90px, auto));
             gap: 1.5rem;
             align-items: center;
         }
@@ -116,7 +133,7 @@
 
         .kpr-steps {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
 
@@ -829,7 +846,7 @@
             }
 
             .customer-name {
-                font-size: 1.25rem;
+                font-size: 1.15rem;
             }
 
             .customer-booking {
@@ -890,10 +907,16 @@
                         <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    {{ strtoupper(substr($kpr->customer->full_name ?? 'C', 0, 1)) }}
+                                    <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
                                 </div>
                                 <div>
-                                    <h4 class="customer-name mb-1">{{ $kpr->customer->full_name ?? '-' }}</h4>
+                                    <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
+                                        {{ $kpr->customer->full_name ?? '-' }}
+                                        <span class="jenis-badge">
+                                            <i class="mdi mdi-home-outline"></i>
+                                            {{ strtoupper($kpr->unit->jenis ?? '-') }}
+                                        </span>
+                                    </h4>
                                     <p class="customer-booking mb-0">Booking ID: {{ $kpr->booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
@@ -902,10 +925,6 @@
                                 <div class="info-item">
                                     <small>Unit</small>
                                     <span>Tipe {{ $kpr->unit->type ?? '-' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <small>Jenis Unit</small>
-                                    <span>{{ strtoupper($kpr->unit->jenis ?? '-') }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Blok/No</small>
@@ -933,11 +952,11 @@
 
                         <div class="kpr-progress-top">
                             <span class="kpr-muted">Progress Proses</span>
-                            <span>Tahap 4 dari 5</span>
+                            <span>Tahap 3 dari 4</span>
                         </div>
 
                         <div class="kpr-progress">
-                            <div class="kpr-progress-bar" style="width: 80%;"></div>
+                            <div class="kpr-progress-bar" style="width: 75%;"></div>
                         </div>
 
                         <div class="kpr-steps">
@@ -954,15 +973,7 @@
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="kpr-step-title">Verifikasi</span>
-                                <small>{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') : '-' }}</small>
-                            </div>
-
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-check"></i>
-                                </div>
-                                <span class="kpr-step-title">Survey</span>
-                                <small>{{ $kpr->booking->survey_at ? \Carbon\Carbon::parse($kpr->booking->survey_at)->translatedFormat('d F Y') : '-' }}</small>
+                                <small>{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') : \Carbon\Carbon::parse($kpr->updated_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
                             <div class="kpr-step active">

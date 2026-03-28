@@ -431,6 +431,154 @@ h3.text-dark, h4.text-dark {
 .customer-detail-value.price {
     color: #28a745;
 }
+
+/* MODAL TABLE ACTION */
+.btn-action-purple {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    border: 1.5px solid #9a55ff;
+    background: #fff;
+    color: #9a55ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-action-purple i {
+    font-size: 1rem;
+}
+
+.btn-action-purple:hover {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #fff;
+    border-color: #9a55ff;
+    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.22);
+    transform: translateY(-2px);
+}
+
+.doc-name-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.doc-file-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3e8ff, #efe2ff);
+    color: #9a55ff;
+    font-size: 1.1rem;
+    border: 1px solid #eadbff;
+    flex-shrink: 0;
+}
+
+.col-no-small {
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
+    text-align: center;
+}
+
+/* ===== MODERN FILE UPLOAD STYLING ===== */
+.properti-file-upload-modern {
+    position: relative;
+    width: 100%;
+}
+
+.properti-file-upload-modern input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.properti-file-upload-modern .properti-file-label-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    padding: 1rem 0.6rem;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 2px dashed #d0d4db;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+}
+
+@media (min-width: 576px) {
+    .properti-file-upload-modern .properti-file-label-modern {
+        flex-direction: row;
+        text-align: left;
+        gap: 8px;
+        padding: 0.75rem 1rem;
+        min-height: auto;
+    }
+}
+
+.properti-file-upload-modern:hover .properti-file-label-modern {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+}
+
+.properti-file-upload-modern .properti-file-label-modern i {
+    font-size: 1.6rem;
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
+    flex: 1;
+    width: 100%;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
+    display: block;
+    font-weight: 600;
+    color: #2c2e3f;
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
+    color: #6c7383;
+    font-size: 0.65rem;
+    display: block;
+    margin-top: 2px;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-size {
+    font-size: 0.7rem;
+    color: #9a55ff;
+    font-weight: 600;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 5px;
+}
+
+@media (min-width: 576px) {
+    .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
+        margin-top: 0;
+    }
+}
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -601,9 +749,33 @@ h3.text-dark, h4.text-dark {
                             <tbody>
                                 @forelse($bookings ?? [] as $booking)
                                     @php
-                                        $documents = json_decode($booking->kprApplication?->documents, true);
-                                        $documentCount = is_array($documents) ? count($documents) : 0;
-                                        $hasDocuments = $documentCount > 0;
+                                        $documents = json_decode($booking->kprApplication?->documents, true) ?: [];
+                                        
+                                        $requiredTypes = [
+                                            'ktp', 'kk', 'slip_gaji', 'rekening_koran',
+                                            'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'
+                                        ];
+                                        
+                                        $uploadedCount = 0;
+                                        $hasMissingValues = false;
+                                        
+                                        foreach ($requiredTypes as $reqType) {
+                                            $foundPath = '';
+                                            foreach ($documents as $doc) {
+                                                if (isset($doc['type']) && $doc['type'] === $reqType && !empty($doc['path'])) {
+                                                    $foundPath = $doc['path'];
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (empty($foundPath)) {
+                                                $hasMissingValues = true;
+                                            } else {
+                                                $uploadedCount++;
+                                            }
+                                        }
+
+                                        $isComplete = !$hasMissingValues;
 
                                         $customerName = $booking->customer->full_name ?? '-';
                                         $words = collect(explode(' ', trim($customerName)))->filter();
@@ -644,34 +816,32 @@ h3.text-dark, h4.text-dark {
                                             {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
                                         </td>
                                         <td>
-                                            @if($hasDocuments)
-                                                <button
-                                                    type="button"
-                                                    class="badge-doc btnOpenDocumentModal"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#documentModal"
-                                                    data-customer="{{ $customerName }}"
-                                                    data-unit="{{ $booking->unit->unit_code ?? '-' }}"
-                                                    data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
-                                                    data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
-                                                    data-sales="{{ $booking->sales->name ?? '-' }}"
-                                                    data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
-                                                    data-documents='@json($documents)'>
-                                                    <i class="mdi mdi-file-document-multiple-outline"></i>
-                                                    {{ $documentCount }}
-                                                </button>
-                                            @else
-                                                <span class="text-muted">0</span>
-                                            @endif
+                                            <button
+                                                type="button"
+                                                class="badge-doc btnOpenDocumentModal"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#documentModal"
+                                                data-customer="{{ $customerName }}"
+                                                data-unit="{{ $booking->unit->unit_code ?? '-' }}"
+                                                data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
+                                                data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
+                                                data-sales="{{ $booking->sales->name ?? '-' }}"
+                                                data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
+                                                data-documents='@json($documents)'>
+                                                <i class="mdi mdi-file-document-multiple-outline"></i>
+                                                {{ $uploadedCount }}/8
+                                            </button>
                                         </td>
                                         <td class="text-center">
-                                            @if($hasDocuments)
+                                            @if($isComplete)
                                                 <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
                                                    class="btn btn-gradient-success btn-sm btnApproveKpr">
                                                     <i class="mdi mdi-check-circle-outline me-1"></i>Approved
                                                 </a>
                                             @else
-                                                <span class="text-belum-upload">Belum Upload</span>
+                                                <button class="btn btn-secondary btn-sm" disabled title="Dokumen belum lengkap">
+                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                </button>
                                             @endif
                                         </td>
                                     </tr>
@@ -791,7 +961,7 @@ h3.text-dark, h4.text-dark {
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th style="width: 60px;">No</th>
+                                <th class="col-no-small">No</th>
                                 <th>Nama Dokumen</th>
                                 <th class="text-end">Aksi</th>
                             </tr>
@@ -882,36 +1052,96 @@ $(document).ready(function() {
         let tbody = $('#documentTableBody');
         tbody.html('');
 
-        if (Array.isArray(documents) && documents.length > 0) {
-            documents.forEach(function(doc, index) {
-                let docName = formatDocName(doc.type);
-                let docUrl = formatStorageUrl(doc.path);
+        const requiredDocsList = [
+            { type: 'ktp', label: 'KTP' },
+            { type: 'kk', label: 'KK' },
+            { type: 'slip_gaji', label: 'Slip Gaji' },
+            { type: 'rekening_koran', label: 'Rekening Koran' },
+            { type: 'npwp', label: 'NPWP' },
+            { type: 'sku', label: 'SKU' },
+            { type: 'surat_nikah', label: 'Surat Nikah' },
+            { type: 'ktp_pasangan', label: 'KTP Pasangan' }
+        ];
 
-                tbody.append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            <div class="document-name">
-                                <i class="mdi mdi-file-document-outline text-primary"></i>
-                                <span>${docName}</span>
+        requiredDocsList.forEach(function(reqDoc, index) {
+            let docName = reqDoc.label;
+            
+            // Find in given documents
+            let docInfo = false;
+            if (Array.isArray(documents)) {
+                docInfo = documents.find(d => d.type === reqDoc.type);
+            }
+            
+            let docUrl = (docInfo && docInfo.path) ? formatStorageUrl(docInfo.path) : null;
+
+            let actionHtml = '';
+
+            if (docUrl) {
+                actionHtml = `
+                    <a href="${docUrl}" target="_blank" class="btn-action-purple">
+                        <i class="mdi mdi-eye-outline me-1"></i>Lihat
+                    </a>`;
+            } else {
+                actionHtml = `
+                    <div class="d-flex flex-column gap-1 mt-1 text-end">
+                        <span class="text-danger small fw-bold mb-1" style="font-size: 0.75rem;">
+                            <i class="mdi mdi-alert-circle-outline"></i> Belum Upload
+                        </span>
+                        <div class="d-flex align-items-stretch justify-content-end gap-2">
+                            <div class="properti-file-upload-modern text-start" style="width: 240px;">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png">
+                                <div class="properti-file-label-modern m-0 h-100 flex-row text-start" style="padding: 0.4rem 0.6rem; min-height: 42px; justify-content: flex-start; border-radius: 10px;">
+                                    <i class="mdi mdi-cloud-upload-outline" style="font-size: 1.3rem; padding: 4px; margin-right: 4px; min-width: 30px; text-align: center;"></i>
+                                    <div class="properti-file-info-modern" style="line-height: 1.2;">
+                                        <span style="font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">Pilih File</span>
+                                        <small style="font-size: 0.6rem;">Format: PDF/JPG/PNG</small>
+                                    </div>
+                                    <span class="properti-file-size" style="font-size: 0.65rem; padding: 2px 6px; margin: 0 0 0 auto;"></span>
+                                </div>
                             </div>
-                        </td>
-                        <td class="document-action-cell">
-                            <a href="${docUrl}" target="_blank" class="btn-eye-purple">
-                                <i class="mdi mdi-eye-outline me-1"></i>Lihat
-                            </a>
-                        </td>
-                    </tr>
-                `);
-            });
-        } else {
-            tbody.html(`
+                            <button type="button" class="btn btn-sm btn-gradient-primary text-nowrap d-flex align-items-center justify-content-center" style="padding: 0 1rem; border-radius: 10px; height: auto;">
+                                <i class="mdi mdi-upload me-1"></i> Upload
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            tbody.append(`
                 <tr>
-                    <td colspan="3" class="text-center text-muted py-4">
-                        Belum ada dokumen
+                    <td class="col-no-small fw-bold">${index + 1}</td>
+                    <td>
+                        <div class="doc-name-inline">
+                            <span class="doc-file-icon">
+                                <i class="mdi mdi-file-document-outline"></i>
+                            </span>
+                            <span>${docName}</span>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        ${actionHtml}
                     </td>
                 </tr>
             `);
+        });
+        
+    });
+
+    $(document).on('change', '.properti-file-upload-modern input[type="file"]', function(e) {
+        const fileName = e.target.files[0]?.name;
+        const fileSize = e.target.files[0]?.size;
+        const label = $(this).closest('.properti-file-upload-modern').find('.properti-file-info-modern span');
+        const sizeSpan = $(this).closest('.properti-file-upload-modern').find('.properti-file-size');
+
+        if (fileName) {
+            label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+            if (fileSize) {
+                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                sizeSpan.text(sizeInMB + ' MB');
+            }
+        } else {
+            label.text('Pilih File');
+            sizeSpan.text('');
         }
     });
 
