@@ -11,7 +11,7 @@ class MenuController extends Controller
     public function index()
     {
         $positions = Position::all();
-        $menus = Menu::with(['positions', 'parent'])->paginate(5); 
+        $menus = Menu::with(['positions', 'parent'])->paginate(10);
         return view('menu.index', compact('menus', 'positions'));
     }
 
@@ -21,7 +21,7 @@ class MenuController extends Controller
         // 1. Validasi data (memastikan menu_id yang dikirim berbentuk array)
         // Boleh kosong/null jika user mencabut semua hak akses (tidak ada yang dicentang)
         $request->validate([
-            'menu_id' => 'nullable|array' 
+            'menu_id' => 'nullable|array'
         ]);
 
         // 2. Cari data Posisi berdasarkan ID

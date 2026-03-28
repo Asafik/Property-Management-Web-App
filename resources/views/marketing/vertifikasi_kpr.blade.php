@@ -1,11 +1,545 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Vertifikasi KPR - Properti Management')
+@section('title', 'Verifikasi KPR - Properti Management')
 
 @section('content')
-
     <style>
-        /* ===== STYLING DARI VERIFIKASI KPR UNTUK UPLOAD DOKUMEN ===== */
+        .kpr-page .card {
+            border: 1px solid #ebe7f2;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(29, 21, 44, 0.05);
+            overflow: hidden;
+        }
+
+        .kpr-page .card-body {
+            padding: 1.25rem;
+        }
+
+        .kpr-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #2c2e3f;
+            margin-bottom: 1rem;
+        }
+
+        .kpr-section-title i {
+            color: #9a55ff;
+        }
+
+        /* HEADER CUSTOMER */
+        .customer-header {
+            min-height: 110px;
+        }
+
+        .customer-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #b57cff, #8f52ff);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.20);
+        }
+
+        .customer-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            line-height: 1.2;
+        }
+
+        .customer-booking {
+            font-size: 1rem;
+            color: #8c8c8c;
+        }
+
+        .customer-unit-info {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(90px, auto));
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .customer-unit-info .info-item small {
+            display: block;
+            font-size: 0.8rem;
+            color: #9a9a9a;
+            margin-bottom: 2px;
+        }
+
+        .customer-unit-info .info-item span {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #2c2e3f;
+            line-height: 1.3;
+        }
+
+        .kpr-muted {
+            color: #6c7383 !important;
+        }
+
+        .kpr-progress-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpr-progress-top span:last-child {
+            color: #9a55ff;
+            font-weight: 700;
+        }
+
+        .kpr-progress {
+            width: 100%;
+            height: 12px;
+            background: #ece9f3;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .kpr-progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #c184ff, #9a55ff);
+        }
+
+        .kpr-steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .kpr-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .kpr-step-icon {
+            width: 42px;
+            height: 42px;
+            margin: 0 auto 0.6rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0eef5;
+            color: #9aa0ac;
+            font-size: 18px;
+            transition: all 0.25s ease;
+        }
+
+        .kpr-step.completed .kpr-step-icon {
+            background: #28a745 !important;
+            color: #fff;
+        }
+
+        .kpr-step.active .kpr-step-icon {
+            background: #ffc107 !important;
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+        }
+
+        .kpr-step-title {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+
+        .kpr-step small {
+            display: block;
+            color: #6c7383;
+            font-size: 0.72rem;
+            line-height: 1.35;
+        }
+
+        .kpr-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .kpr-detail-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .kpr-detail-item span:first-child {
+            color: #6c7383;
+        }
+
+        .kpr-detail-item span:last-child {
+            color: #2c2e3f;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .kpr-detail-item .highlight {
+            color: #9a55ff !important;
+        }
+
+        .kpr-handler {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem;
+            background: #fbf9fe;
+            border: 1px solid #ebe7f2;
+            border-radius: 14px;
+        }
+
+        .kpr-handler-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #f4ecff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9a55ff;
+            flex-shrink: 0;
+        }
+
+        .kpr-inline-alert {
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            font-size: 0.88rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .kpr-inline-alert i {
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+
+        .kpr-inline-alert.info {
+            background: #f6f7fb;
+            border-color: #e7eaf3;
+            color: #4b5565;
+        }
+
+        .kpr-inline-alert.warning {
+            background: #fff8e6;
+            border-color: #ffe29b;
+            color: #8a6a00;
+        }
+
+        .kpr-inline-alert.success {
+            background: #edf9f3;
+            border-color: #b9e7cf;
+            color: #146c43;
+        }
+
+        .kpr-inline-alert.danger {
+            background: #fff1f3;
+            border-color: #ffc9d0;
+            color: #b42318;
+        }
+
+        .kpr-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .kpr-summary-box {
+            border: 1px solid #ebe7f2;
+            background: #fbf9fe;
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        .kpr-summary-box .label {
+            font-size: 0.75rem;
+            color: #6c7383;
+            margin-bottom: 0.35rem;
+        }
+
+        .kpr-summary-box .value {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .kpr-summary-box.success .value {
+            color: #22a06b;
+        }
+
+        .kpr-summary-box.danger .value {
+            color: #dc3545;
+        }
+
+        .kpr-status-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .kpr-status-banner.success {
+            background: #edf9f3;
+            color: #22a06b;
+        }
+
+        .kpr-status-banner.warning {
+            background: #fff8e6;
+            color: #8a6a00;
+        }
+
+        .kpr-doc-table th {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #5d6472;
+            background: #faf8fd;
+            border-bottom: 1px solid #ebe7f2;
+            font-weight: 600;
+        }
+
+        .kpr-doc-table td {
+            vertical-align: middle;
+            padding-top: 0.95rem;
+            padding-bottom: 0.95rem;
+            border-color: #f0edf5;
+        }
+
+        .kpr-doc-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+
+        .kpr-doc-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: #f4ecff;
+            color: #9a55ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+            color: #2c2e3f;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+            color: white;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            font-weight: 500;
+            border-radius: 30px;
+        }
+
+        .kpr-doc-action {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d8c4ff;
+            background: #fff;
+            color: #9a55ff;
+            transition: all 0.25s ease;
+        }
+
+        .kpr-doc-action:hover {
+            background: #f4ecff;
+            color: #7f3df0;
+            transform: translateY(-1px);
+        }
+
+        .kpr-doc-action.disabled,
+        .kpr-doc-action:disabled {
+            border-color: #eaecf0;
+            color: #b3b9c5;
+            background: #f9fafb;
+            cursor: not-allowed;
+        }
+
+        .kpr-decision-card {
+            position: relative;
+        }
+
+        .kpr-decision-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .kpr-decision-label {
+            border: 2px solid #ebe7f2;
+            border-radius: 18px;
+            padding: 1rem;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.25s ease;
+            height: 100%;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .kpr-decision-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(43, 31, 73, 0.07);
+        }
+
+        .kpr-decision-card.approve input[type="radio"]:checked + .kpr-decision-label {
+            border-color: #7bd3a6;
+            background: #edf9f3;
+        }
+
+        .kpr-decision-card.reject input[type="radio"]:checked + .kpr-decision-label {
+            border-color: #f3a7b2;
+            background: #fff1f3;
+        }
+
+        .kpr-decision-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 22px;
+        }
+
+        .kpr-decision-card.approve .kpr-decision-icon {
+            background: #d9f3e6;
+            color: #22a06b;
+        }
+
+        .kpr-decision-card.reject .kpr-decision-icon {
+            background: #ffe2e8;
+            color: #dc3545;
+        }
+
+        .kpr-decision-content {
+            flex: 1;
+        }
+
+        .kpr-decision-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #2c2e3f;
+            margin-bottom: 0.15rem;
+        }
+
+        .kpr-decision-desc {
+            font-size: 0.82rem;
+            color: #6c7383;
+            margin-bottom: 0;
+        }
+
+        .kpr-decision-check {
+            color: #c6ccd8;
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .kpr-decision-card input[type="radio"]:checked + .kpr-decision-label .kpr-decision-check {
+            color: #9a55ff;
+        }
+
+        .kpr-form-shell {
+            margin-top: 1rem;
+            border-radius: 18px;
+            border: 1px solid #ebe7f2;
+            padding: 1rem;
+            background: #fff;
+            display: none;
+        }
+
+        .kpr-form-shell.approve {
+            background: linear-gradient(180deg, #fbfffd, #ffffff);
+            border-color: #cfe9da;
+        }
+
+        .kpr-form-shell.reject {
+            background: linear-gradient(180deg, #fffafb, #ffffff);
+            border-color: #ffd7de;
+        }
+
+        .kpr-form-title {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.9rem;
+        }
+
+        .kpr-form-title.approve {
+            color: #22a06b;
+        }
+
+        .kpr-form-title.reject {
+            color: #dc3545;
+        }
+
+        .kpr-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .kpr-form-label {
+            display: block;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin-bottom: 0.45rem;
+        }
+
+        .kpr-form-control {
+            width: 100%;
+            border: 1px solid #e6e8ef;
+            border-radius: 14px;
+            padding: 0.85rem 0.95rem;
+            font-size: 0.9rem;
+            color: #2c2e3f;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .kpr-form-control:focus {
+            border-color: #c6a6ff;
+            box-shadow: 0 0 0 4px rgba(154, 85, 255, 0.1);
+            outline: none;
+        }
+
         .verifikasi-file-upload {
             position: relative;
             width: 100%;
@@ -19,7 +553,6 @@
             cursor: pointer;
             z-index: 2;
         }
-
 
         .verifikasi-file-upload .verifikasi-file-label {
             display: flex;
@@ -82,453 +615,291 @@
             margin-top: 2px;
         }
 
-        /* ===== STYLING BUTTON DARI VERIFIKASI KPR ===== */
-        .verifikasi-btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            display: inline-block;
-            text-decoration: none;
+        .kpr-next-step-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .kpr-next-card {
+            position: relative;
+        }
+
+        .kpr-next-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .kpr-next-label {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 1rem;
+            border-radius: 18px;
+            border: 2px solid #ebe7f2;
+            background: #fff;
             cursor: pointer;
-            border: none;
-            width: 100%;
-            text-align: center;
+            min-height: 110px;
+            transition: all 0.25s ease;
         }
 
-        @media (min-width: 576px) {
-            .verifikasi-btn {
-                width: auto;
-                padding: 0.5rem 1.2rem;
-            }
+        .kpr-next-label:hover {
+            border-color: #cab0ff;
+            background: #faf7ff;
         }
 
-        .verifikasi-btn-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        .kpr-next-card input[type="radio"]:checked + .kpr-next-label {
+            border-color: #9a55ff;
+            background: #f7f2ff;
+            box-shadow: inset 0 0 0 1px rgba(154, 85, 255, 0.05);
         }
 
-        .verifikasi-btn-primary:hover {
-            background: linear-gradient(to right, #c77cff, #8a45e6);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+        .kpr-next-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: #f4ecff;
+            color: #9a55ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
         }
 
-        .verifikasi-btn-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        .kpr-next-content {
+            flex: 1;
         }
 
-        .verifikasi-btn-success:hover {
-            background: linear-gradient(135deg, #218838, #4cae4c);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        .kpr-next-title {
+            display: block;
+            font-size: 0.97rem;
+            font-weight: 800;
+            color: #2c2e3f;
+            margin-bottom: 0.15rem;
         }
 
-        .verifikasi-btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
+        .kpr-next-desc {
+            display: block;
+            font-size: 0.8rem;
+            color: #6c7383;
+            line-height: 1.4;
+        }
+
+        .kpr-next-check {
+            font-size: 1.1rem;
+            color: #c6ccd8;
+            margin-top: 2px;
+        }
+
+        .kpr-next-card input[type="radio"]:checked + .kpr-next-label .kpr-next-check {
             color: #9a55ff;
         }
 
-        .verifikasi-btn-outline-primary:hover {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        .kpr-sidebar-section {
+            border: 1px solid #ebe7f2;
+            border-radius: 16px;
+            padding: 1rem;
+            background: #fff;
         }
 
-        .verifikasi-btn-outline-secondary {
-            background: transparent;
-            border: 1px solid #e9ecef;
-            color: #6c7383;
+        .kpr-sidebar-section + .kpr-sidebar-section {
+            margin-top: 1rem;
         }
 
-        .verifikasi-btn-outline-secondary:hover {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        .kpr-sidebar-title {
+            font-size: 0.95rem;
+            font-weight: 800;
             color: #2c2e3f;
-            border-color: #9a55ff;
-            transform: translateY(-2px);
+            margin-bottom: 0.75rem;
         }
 
-        .verifikasi-btn-outline-warning {
-            background: transparent;
-            border: 1px solid #ffc107;
-            color: #ffc107;
+        .kpr-decision-summary {
+            display: none;
         }
 
-        .verifikasi-btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        .kpr-decision-summary .summary-state {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.5rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
         }
 
-        /* Text colors */
-        .verifikasi-text-primary {
-            color: #9a55ff !important;
+        .kpr-decision-summary.approve .summary-state {
+            background: #edf9f3;
+            color: #22a06b;
         }
 
-        /* ===== STYLE CSS DARI HALAMAN AKAD (HANYA YANG DIPERLUKAN) ===== */
-        .konfirmasi-alert {
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-            font-size: 0.8rem;
-            border-left: 4px solid;
-            margin-bottom: 1rem;
-        }
-
-        .konfirmasi-alert-danger {
-            background: linear-gradient(135deg, #fff0f0, #ffe6e6);
-            color: #2c2e3f;
-            border-left-color: #dc3545;
-        }
-
-        .konfirmasi-alert-danger i {
+        .kpr-decision-summary.reject .summary-state {
+            background: #fff1f3;
             color: #dc3545;
         }
 
-        .konfirmasi-form-group {
-            margin-bottom: 1rem;
+        .kpr-mini-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .konfirmasi-form-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            display: block;
-        }
-
-        .konfirmasi-form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 0.7rem 0.8rem;
-            font-size: 0.85rem;
-            width: 100%;
-        }
-
-        .konfirmasi-form-control:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        .konfirmasi-text-primary {
-            color: #9a55ff !important;
-        }
-
-        .konfirmasi-tindakan-card {
-            position: relative;
-            margin-bottom: 1rem;
-            width: 100%;
-        }
-
-        .konfirmasi-tindakan-card input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .konfirmasi-tindakan-label {
+        .kpr-mini-list li {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 1rem 1rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px solid #e9ecef;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 70px;
-        }
-
-        .konfirmasi-tindakan-label:hover {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
-        }
-
-        .konfirmasi-tindakan-card input[type="radio"]:checked+.konfirmasi-tindakan-label {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
-        }
-
-        .konfirmasi-tindakan-icon {
-            flex-shrink: 0;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border-radius: 12px;
-        }
-
-        .konfirmasi-tindakan-icon i {
-            font-size: 24px;
-            color: #9a55ff;
-        }
-
-        .konfirmasi-tindakan-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .konfirmasi-tindakan-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #2c2e3f;
-        }
-
-        .konfirmasi-tindakan-desc {
-            font-size: 0.75rem;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.84rem;
             color: #6c7383;
+            margin-bottom: 0.55rem;
         }
 
-        .konfirmasi-tindakan-check {
-            flex-shrink: 0;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .konfirmasi-tindakan-check i {
-            font-size: 20px;
-            color: #d0d4db;
-        }
-
-        .konfirmasi-tindakan-card input[type="radio"]:checked+.konfirmasi-tindakan-label .konfirmasi-tindakan-check i {
+        .kpr-mini-list li i {
             color: #9a55ff;
+            margin-top: 2px;
         }
 
-        .konfirmasi-btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-            cursor: pointer;
+        .kpr-action-bar {
+            margin-top: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .kpr-btn {
             border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 0.82rem 1.2rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            cursor: pointer;
         }
 
-        .konfirmasi-btn-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
+        .kpr-btn:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
         }
 
-        .konfirmasi-btn-primary:hover {
-            background: linear-gradient(to right, #c77cff, #8a45e6);
-            transform: translateY(-2px);
+        .kpr-btn-primary {
+            background: linear-gradient(90deg, #c784ff, #9a55ff);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.22);
         }
 
-        .konfirmasi-btn-outline-secondary {
-            background: transparent;
-            border: 1px solid #e9ecef;
-            color: #6c7383;
+        .kpr-btn-primary:hover {
+            color: #fff;
+            box-shadow: 0 12px 24px rgba(154, 85, 255, 0.28);
         }
 
-        .konfirmasi-btn-outline-secondary:hover {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        .kpr-btn-secondary {
+            background: #fff;
             color: #2c2e3f;
-            border-color: #9a55ff;
-            transform: translateY(-2px);
+            border: 1px solid #ebe7f2;
         }
 
-        .badge.bg-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f;
+        .kpr-btn-secondary:hover {
+            border-color: #cab0ff;
+            color: #7f3df0;
+            background: #faf7ff;
         }
 
-        .badge.bg-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: white;
+        .kpr-error-box {
+            display: none;
+            margin-top: 1rem;
         }
 
-        .badge.bg-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: white;
+        .kpr-sticky {
+            position: sticky;
+            top: 20px;
         }
 
-        .badge {
-            padding: 5px 10px;
-            font-weight: 500;
-            border-radius: 30px;
+        @media (max-width: 991.98px) {
+            .kpr-sticky {
+                position: static;
+            }
         }
 
-        .table th {
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #495057;
-        }
+        @media (max-width: 767.98px) {
+            .customer-header {
+                min-height: auto;
+            }
 
-        .table td {
-            vertical-align: middle;
-            padding: 0.75rem;
-        }
+            .customer-avatar {
+                width: 48px;
+                height: 48px;
+                font-size: 1.1rem;
+            }
 
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
+            .customer-name {
+                font-size: 1.25rem;
+            }
 
-        .timeline-steps .step .step-icon {
-            transition: all 0.3s ease;
-        }
+            .customer-booking {
+                font-size: 0.9rem;
+            }
 
-        .timeline-steps .step.completed .step-icon {
-            background-color: #28a745 !important;
-        }
+            .customer-unit-info {
+                width: 100%;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 0.5rem;
+            }
 
-        .timeline-steps .step.active .step-icon {
-            background-color: #ffc107 !important;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+            .kpr-steps,
+            .kpr-next-step-grid,
+            .kpr-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kpr-action-bar {
+                flex-direction: column-reverse;
+            }
+
+            .kpr-btn {
+                justify-content: center;
+                width: 100%;
+            }
         }
     </style>
 
-    <div class="row">
-        <div class="col-12">
-            <!-- Header Info Customer -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex flex-wrap align-items-center gap-3">
-                        <!-- Avatar -->
-                        <div class="flex-shrink-0">
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 50px; height: 50px;">
-                                <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                            </div>
-                        </div>
-
-                        <!-- Info Customer -->
-                        <div class="flex-grow-1">
-                            <h4 class="mb-1">{{ $booking->customer->full_name ?? '-' }}</h4>
-                            <p class="text-muted mb-0">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
-                        </div>
-
-                        <!-- Info Unit -->
-                        <div class="mt-3 mt-sm-0">
-                            <div class="d-flex flex-wrap gap-3">
-                                <div>
-                                    <small class="text-muted d-block">Unit</small>
-                                    <span class="fw-medium">{{ $booking->unit->unit_name ?? '-' }}</span>
-                                </div>
-                                  <div>
-                                    <small class="text-muted d-block">Jenis Unit</small>
-                                    <span class="fw-medium">{{ $booking->unit->jenis ?? '-' }}</span>
+    <div class="kpr-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="customer-avatar">
+                                    {{ strtoupper(substr($booking->customer->full_name ?? 'C', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <small class="text-muted d-block">Blok/No</small>
-                                    <span class="fw-medium">{{ $booking->unit->unit_code ?? '-' }}</span>
-                                </div>
-                                <div>
-                                    <small class="text-muted d-block">Harga Unit</small>
-                                    <span class="fw-medium text-primary">
-                                        Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}
-                                    </span>
+                                    <h4 class="customer-name mb-1">{{ $booking->customer->full_name ?? '-' }}</h4>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Row untuk Progress dan Detail -->
-    <div class="row mt-4">
-        <!-- Kolom Kiri: Progress Timeline -->
-        <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-timeline-text me-2 text-primary"></i>
-                        Tahapan Verifikasi KPR
-                    </h5>
-
-                    <!-- Progress Bar -->
-                    <div class="mb-4">
-                        <div class="d-flex flex-wrap justify-content-between mb-2">
-                            <span class="text-muted">Progress Verifikasi</span>
-                            <span class="text-primary">Tahap 2 dari 5</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 40%;" aria-valuenow="40"
-                                aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-
-                    <!-- Timeline Steps -->
-                    <div class="timeline-steps">
-                        <div class="row g-2 g-md-0">
-                            <div class="col-4 col-md text-center mb-3 mb-md-0">
-                                <div class="step completed">
-                                    <div class="step-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-check" style="font-size: 18px;"></i>
-                                    </div>
-                                    <span class="d-block text-success small fw-medium">Diajukan</span>
-                                    <small class="text-muted d-none d-sm-block">
-                                        {{ optional($booking->kprApplication)->submitted_at
-                                            ? \Carbon\Carbon::parse(optional($booking->kprApplication)->submitted_at)->translatedFormat('j F Y')
-                                            : '-' }}
-                                    </small>
+                            <div class="customer-unit-info">
+                                <div class="info-item">
+                                    <small>Unit</small>
+                                    <span>{{ $booking->unit->unit_name ?? '-' }}</span>
                                 </div>
-                            </div>
-                            <div class="col-4 col-md text-center mb-3 mb-md-0">
-                                <div class="step active">
-                                    <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-file-document" style="font-size: 18px;"></i>
-                                    </div>
-                                    <span class="d-block small fw-medium">Verifikasi</span>
-                                    <small class="text-muted d-none d-sm-block">Sedang Proses</small>
+                                <div class="info-item">
+                                    <small>Jenis Unit</small>
+                                    <span>{{ $booking->unit->jenis ?? '-' }}</span>
                                 </div>
-                            </div>
-                            <div class="col-4 col-md text-center mb-3 mb-md-0">
-                                <div class="step">
-                                    <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-home" style="font-size: 18px;"></i>
-                                    </div>
-                                    <span class="d-block text-muted small fw-medium">Survey</span>
-                                    <small class="text-muted d-none d-sm-block">Menunggu</small>
+                                <div class="info-item">
+                                    <small>Blok/No</small>
+                                    <span>{{ $booking->unit->unit_code ?? '-' }}</span>
                                 </div>
-                            </div>
-                            <div class="col-4 col-md text-center mt-2 mt-md-0">
-                                <div class="step">
-                                    <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-handshake" style="font-size: 18px;"></i>
-                                    </div>
-                                    <span class="d-block text-muted small fw-medium">Akad</span>
-                                    <small class="text-muted d-none d-sm-block">Menunggu</small>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md text-center mt-2 mt-md-0">
-                                <div class="step">
-                                    <div class="step-icon bg-light text-muted rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                        style="width: 35px; height: 35px;">
-                                        <i class="mdi mdi-cash" style="font-size: 18px;"></i>
-                                    </div>
-                                    <span class="d-block text-muted small fw-medium">Cair</span>
-                                    <small class="text-muted d-none d-sm-block">Menunggu</small>
+                                <div class="info-item">
+                                    <small>Harga Unit</small>
+                                    <span class="text-primary fw-bold">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -537,461 +908,741 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan: Detail KPR -->
-        <div class="col-12 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-bank me-2 text-primary"></i>
-                        Detail KPR
-                    </h5>
+        <div class="row mt-4">
+            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="kpr-section-title">
+                            <i class="mdi mdi-timeline-text"></i>
+                            <span>Tahapan Verifikasi KPR</span>
+                        </div>
 
-                    <div class="detail-info">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Bank Tujuan</span>
-                            <span class="fw-medium">{{ $booking->kprApplication->bank->bank_name ?? '-' }}</span>
+                        <div class="kpr-progress-top">
+                            <span class="kpr-muted">Progress Verifikasi</span>
+                            <span>Tahap 2 dari 5</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Jumlah Pinjaman</span>
-                            <span class="fw-medium">
-                                Rp {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}
-                            </span>
+
+                        <div class="kpr-progress">
+                            <div class="kpr-progress-bar" style="width: 40%;"></div>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Tenor</span>
-                            <span class="fw-medium">{{ $booking->kprApplication->tenor ?? '-' }} Tahun</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Angsuran/bln</span>
-                            <span class="fw-medium text-primary">
-                                Rp {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}
-                            </span>
+
+                        <div class="kpr-steps">
+                            <div class="kpr-step completed">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                                <span class="kpr-step-title">Diajukan</span>
+                                <small>
+                                    {{ optional($booking->kprApplication)->submitted_at
+                                        ? \Carbon\Carbon::parse(optional($booking->kprApplication)->submitted_at)->translatedFormat('j F Y')
+                                        : '-' }}
+                                </small>
+                            </div>
+
+                            <div class="kpr-step active">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-file-document-outline"></i>
+                                </div>
+                                <span class="kpr-step-title">Verifikasi</span>
+                                <small>Sedang diproses</small>
+                            </div>
+
+                            <div class="kpr-step">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-home-search-outline"></i>
+                                </div>
+                                <span class="kpr-step-title">Survey</span>
+                                <small>Menunggu</small>
+                            </div>
+
+                            <div class="kpr-step">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-handshake-outline"></i>
+                                </div>
+                                <span class="kpr-step-title">Akad</span>
+                                <small>Menunggu</small>
+                            </div>
+
+                            <div class="kpr-step">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-cash-fast"></i>
+                                </div>
+                                <span class="kpr-step-title">Cair</span>
+                                <small>Menunggu</small>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <hr class="my-3">
+            <div class="col-12 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="kpr-section-title">
+                            <i class="mdi mdi-bank-outline"></i>
+                            <span>Detail KPR</span>
+                        </div>
 
-                    <div class="mt-3">
-                        <small class="text-muted d-block mb-2">Ditangani oleh:</small>
-                        <div class="d-flex align-items-center">
-                            <div class="bg-light rounded-circle p-2 me-2">
-                                <i class="mdi mdi-account-tie text-primary"></i>
+                        <div class="kpr-detail-list">
+                            <div class="kpr-detail-item">
+                                <span>Bank Tujuan</span>
+                                <span>{{ $booking->kprApplication->bank->bank_name ?? '-' }}</span>
+                            </div>
+                            <div class="kpr-detail-item">
+                                <span>Jumlah Pinjaman</span>
+                                <span>Rp {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="kpr-detail-item">
+                                <span>Tenor</span>
+                                <span>{{ $booking->kprApplication->tenor ?? '-' }} Tahun</span>
+                            </div>
+                            <div class="kpr-detail-item">
+                                <span>Angsuran / bln</span>
+                                <span class="highlight">Rp {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <small class="kpr-muted d-block mb-2">Ditangani oleh</small>
+                        <div class="kpr-handler">
+                            <div class="kpr-handler-icon">
+                                <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
-                                <span class="fw-medium d-block">{{ $booking->sales->name ?? '-' }}</span>
-                                <small class="text-muted">{{ $booking->sales->role ?? '-' }}</small>
+                                <div class="fw-bold">{{ $booking->sales->name ?? '-' }}</div>
+                                {{-- <small class="kpr-muted">{{ $booking->sales->role ?? '-' }}</small> --}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Row Kelengkapan Dokumen -->
-    <div class="row mt-4">
-        <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-file-document-multiple me-2 text-primary"></i>
-                        Kelengkapan Dokumen
-                    </h5>
-
-                    @php
-                        $allTypes = [
-                            'ktp',
-                            'kk',
-                            'npwp',
-                            'slip_gaji',
-                            'rekening_koran',
-                            'surat_nikah',
-                            'sku',
-                            'ktp_pasangan',
-                        ];
-
-                        $missingCount = collect($allTypes)
-                            ->filter(function ($type) use ($booking) {
-                                return !$booking->kprApplication->documents->where('type', $type)->first();
-                            })
-                            ->count();
-                    @endphp
-
-                    @if ($missingCount > 0)
-                        <div class="konfirmasi-alert konfirmasi-alert-warning" role="alert">
-                            <i class="mdi mdi-information-outline me-2"></i>
-                            Masih ada {{ $missingCount }} dokumen yang perlu dilengkapi
+        <div class="row mt-4">
+            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="kpr-section-title">
+                            <i class="mdi mdi-file-document-multiple-outline"></i>
+                            <span>Kelengkapan Dokumen</span>
                         </div>
-                    @endif
 
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th style="width:40%">Nama Dokumen</th>
-                                    <th style="width:25%">Status</th>
-                                    <th style="width:20%">Tanggal Upload</th>
-                                    <th style="width:15%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($allTypes as $type)
-                                    @php
-                                        $doc = $booking->kprApplication->documents->where('type', $type)->first();
-                                        $status = $doc ? 'Lengkap' : 'Kurang';
-                                        $badge = $doc ? 'bg-success' : 'bg-danger';
-                                        $date = $doc
-                                            ? \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y')
-                                            : '-';
-                                    @endphp
+                        @if (
+                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                ->count() < 8
+                        )
+                            <div class="kpr-inline-alert warning">
+                                <i class="mdi mdi-alert-circle-outline"></i>
+                                <div>
+                                    Masih ada
+                                    <strong>
+                                        {{
+                                            8 -
+                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                                ->count()
+                                        }}
+                                        dokumen
+                                    </strong>
+                                    yang perlu dilengkapi sebelum proses verifikasi final.
+                                </div>
+                            </div>
+                        @else
+                            <div class="kpr-inline-alert success">
+                                <i class="mdi mdi-check-circle-outline"></i>
+                                <div>Semua dokumen utama telah tersedia dan siap untuk ditinjau.</div>
+                            </div>
+                        @endif
+
+                        <div class="table-responsive">
+                            <table class="table kpr-doc-table align-middle mb-0">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-file-document-outline text-primary me-2"></i>
-                                                <span>{{ strtoupper(str_replace('_', ' ', $type)) }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge {{ $badge }}">{{ $status }}</span>
-                                        </td>
-                                        <td>
-                                            <small>{{ $date }}</small>
-                                        </td>
-                                        <td>
-                                            @if ($doc)
-                                                <a href="{{ asset('storage/' . $doc->path) }}" target="_blank"
-                                                    class="btn btn-sm btn-outline-primary">
-                                                    <i class="mdi mdi-eye"></i>
-                                                </a>
-                                            @else
-                                                <button class="btn btn-sm btn-outline-secondary" disabled>
-                                                    <i class="mdi mdi-eye-off"></i>
-                                                </button>
-                                            @endif
-                                        </td>
+                                        <th style="width: 38%;">Nama Dokumen</th>
+                                        <th style="width: 20%;">Status</th>
+                                        <th style="width: 22%;">Tanggal Upload</th>
+                                        <th style="width: 20%;">Aksi</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="text-muted small mt-2 d-block d-sm-none">
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Geser tabel untuk melihat kolom lainnya
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-information me-2 text-primary"></i>
-                        Informasi Verifikasi
-                    </h5>
-
-                    <!-- Status Card -->
-                    @php
-                        $lengkapCount = collect($allTypes)
-                            ->filter(fn($type) => $booking->kprApplication->documents->where('type', $type)->first())
-                            ->count();
-                        $kurangCount = count($allTypes) - $lengkapCount;
-                    @endphp
-
-                    @if ($kurangCount > 0)
-                        <div class="text-center mb-3">
-                            <span class="badge bg-warning p-2">
-                                <i class="mdi mdi-progress-clock me-1"></i>
-                                Menunggu Verifikasi Dokumen ({{ $kurangCount }} dokumen kurang)
-                            </span>
+                                </thead>
+                                <tbody>
+                                    @forelse (['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'] as $type)
+                                        @php
+                                            $doc = collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type);
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <div class="kpr-doc-name">
+                                                    <div class="kpr-doc-icon">
+                                                        <i class="mdi mdi-file-document-outline"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div>{{ strtoupper(str_replace('_', ' ', $type)) }}</div>
+                                                        <small class="kpr-muted">{{ $doc ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge {{ $doc ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $doc ? 'Lengkap' : 'Kurang' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="kpr-muted">
+                                                    {{ $doc ? \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y') : '-' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if ($doc)
+                                                    <a href="{{ asset('storage/' . $doc->path) }}"
+                                                        target="_blank"
+                                                        class="kpr-doc-action"
+                                                        title="Lihat dokumen">
+                                                        <i class="mdi mdi-eye-outline"></i>
+                                                    </a>
+                                                @else
+                                                    <button type="button"
+                                                        class="kpr-doc-action disabled"
+                                                        title="Dokumen belum tersedia"
+                                                        disabled>
+                                                        <i class="mdi mdi-eye-off-outline"></i>
+                                                    </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">
+                                                Belum ada data dokumen
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                    @else
-                        <div class="text-center mb-4">
-                            <span class="badge bg-success p-2" style="font-size: 14px;">
-                                <i class="mdi mdi-check-circle-outline me-1"></i>
-                                Semua Dokumen Lengkap
-                            </span>
+
+                        <div class="text-muted small mt-3 d-block d-sm-none">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Geser tabel untuk melihat kolom lainnya
                         </div>
-                    @endif
-
-                    <!-- Ringkasan Dokumen -->
-                    <h6 class="mb-3 konfirmasi-text-primary">Status Dokumen</h6>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Dokumen Lengkap</span>
-                            <span class="fw-medium text-success">{{ $lengkapCount }} Dokumen</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Dokumen Kurang</span>
-                            <span class="fw-medium text-danger">{{ $kurangCount }} Dokumen</span>
-                        </div>
-                    </div>
-
-                    <hr class="my-3">
-
-                    <!-- Rekomendasi -->
-                    <h6 class="mb-3 konfirmasi-text-primary">Rekomendasi</h6>
-                    @if ($kurangCount > 0)
-                        <div class="konfirmasi-alert konfirmasi-alert-warning py-2">
-                            <i class="mdi mdi-information-outline me-2"></i>
-                            Lengkapi {{ $kurangCount }} dokumen yang kurang sebelum verifikasi
-                        </div>
-                    @else
-                        <div class="konfirmasi-alert konfirmasi-alert-success py-2">
-                            <i class="mdi mdi-check-circle-outline me-2"></i>
-                            Semua dokumen lengkap, siap untuk verifikasi
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Row untuk Verifikasi KPR - HANYA FORM PENOLAKAN -->
-    <div class="row mt-4">
-        <!-- Kolom Kiri: Form Verifikasi -->
-        <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-help-circle me-2 text-primary"></i>
-                        Verifikasi KPR
-                    </h5>
-
-                    <div class="konfirmasi-alert konfirmasi-alert-danger" role="alert">
-                        <i class="mdi mdi-information-outline me-2"></i>
-                        Pilih status verifikasi. Keputusan ini akan menentukan langkah selanjutnya.
-                    </div>
-
-<form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    <input type="hidden" name="status" id="statusVerifikasiInput" value="">
-
-    <!-- Tombol Pilih Setuju / Tolak -->
-    <div class="d-flex gap-2 mb-3">
-        <button type="button" id="pilihSetuju" class="konfirmasi-btn konfirmasi-btn-outline-success">
-            Setuju
-        </button>
-        <button type="button" id="pilihTolak" class="konfirmasi-btn konfirmasi-btn-outline-danger">
-            Tolak
-        </button>
-    </div>
-
-    <!-- FORM SETUJU -->
-    <div id="formSetuju" style="display: none;">
-        <hr class="my-3">
-        <h6 class="mb-3 konfirmasi-text-primary">Form Persetujuan Verifikasi</h6>
-
-        <div class="konfirmasi-alert konfirmasi-alert-success" role="alert">
-            <i class="mdi mdi-check-circle me-2"></i>
-            <strong>VERIFIKASI DISETUJUI</strong> - Silakan lanjutkan ke tahap Survey
-        </div>
-
-        <div class="konfirmasi-form-group">
-            <label>Catatan Verifikasi</label>
-            <textarea class="konfirmasi-form-control" name="catatan_setuju" rows="3" placeholder="Contoh: Semua dokumen lengkap dan valid"></textarea>
-        </div>
-
-        <div class="verifikasi-form-group mb-4">
-            <label class="verifikasi-text-primary">Upload Berita Acara (Opsional)</label>
-            <div class="verifikasi-file-upload">
-                <input type="file" name="berita_acara_setuju" accept=".jpg,.jpeg,.png,.pdf">
-                <div class="verifikasi-file-label">
-                    <i class="mdi mdi-cloud-upload"></i>
-                    <div class="verifikasi-file-info">
-                        <span>Upload Berita Acara</span>
-                        <small>Format: JPG, PNG, PDF (Max 5MB)</small>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- FORM TOLAK -->
-    <div id="formTolak" style="display: none;">
-        <hr class="my-3">
-        <h6 class="mb-3 konfirmasi-text-primary">Form Penolakan Verifikasi</h6>
+            <div class="col-12 col-lg-4">
+                <div class="kpr-sticky">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="kpr-section-title">
+                                <i class="mdi mdi-clipboard-text-outline"></i>
+                                <span>Informasi Verifikasi</span>
+                            </div>
 
-        <div class="konfirmasi-alert konfirmasi-alert-danger" role="alert">
-            <i class="mdi mdi-close-circle me-2"></i>
-            <strong>VERIFIKASI DITOLAK</strong> - Pilih tindakan selanjutnya
-        </div>
+                            <div class="mb-3">
+                                @if (
+                                    collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                        ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                        ->count() === 8
+                                )
+                                    <div class="kpr-status-banner success">
+                                        <i class="mdi mdi-check-circle-outline"></i>
+                                        Semua Dokumen Lengkap
+                                    </div>
+                                @else
+                                    <div class="kpr-status-banner warning">
+                                        <i class="mdi mdi-progress-clock"></i>
+                                        Menunggu Kelengkapan Dokumen
+                                    </div>
+                                @endif
+                            </div>
 
-        <div class="konfirmasi-form-group">
-            <label>Catatan / Alasan</label>
-            <textarea class="konfirmasi-form-control" name="catatan_tolak" rows="3" placeholder="Berikan catatan untuk customer atau internal..."></textarea>
-        </div>
+                            <div class="kpr-summary-grid">
+                                <div class="kpr-summary-box success">
+                                    <div class="label">Dokumen Lengkap</div>
+                                    <div class="value">
+                                        {{
+                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                                ->count()
+                                        }}
+                                    </div>
+                                </div>
+                                <div class="kpr-summary-box danger">
+                                    <div class="label">Dokumen Kurang</div>
+                                    <div class="value">
+                                        {{
+                                            8 -
+                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                                ->count()
+                                        }}
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="verifikasi-form-group mb-4">
-            <label class="verifikasi-text-primary">Upload Berita Acara (Opsional)</label>
-            <div class="verifikasi-file-upload">
-                <input type="file" name="berita_acara_tolak" accept=".jpg,.jpeg,.png,.pdf">
-                <div class="verifikasi-file-label">
-                    <i class="mdi mdi-cloud-upload"></i>
-                    <div class="verifikasi-file-info">
-                        <span>Upload Berita Acara</span>
-                        <small>Format: JPG, PNG, PDF (Max 5MB)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="kpr-sidebar-section">
+                                <div class="kpr-sidebar-title">Rekomendasi Sistem</div>
+                                @if (
+                                    collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                        ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                        ->count() === 8
+                                )
+                                    <div class="kpr-inline-alert success mb-0">
+                                        <i class="mdi mdi-check-decagram-outline"></i>
+                                        <div>Dokumen sudah lengkap. Verifikasi dapat dilanjutkan ke pengambilan keputusan.</div>
+                                    </div>
+                                @else
+                                    <div class="kpr-inline-alert warning mb-0">
+                                        <i class="mdi mdi-file-alert-outline"></i>
+                                        <div>
+                                            Fokus utama saat ini adalah melengkapi
+                                            {{
+                                                8 -
+                                                collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
+                                                    ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
+                                                    ->count()
+                                            }}
+                                            dokumen yang belum tersedia.
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
 
-        <hr class="my-3">
-        <h6 class="mb-3 konfirmasi-text-primary">Tindakan Selanjutnya</h6>
-        <div class="row">
-            <div class="col-md-6 mb-2">
-                <div class="konfirmasi-tindakan-card">
-                    <input type="radio" name="tindakan" id="tindakanLengkapi" value="Lengkapi Dokumen" checked>
-                    <label class="konfirmasi-tindakan-label" for="tindakanLengkapi">
-                        <div class="konfirmasi-tindakan-icon">
-                            <i class="mdi mdi-file-document-edit"></i>
-                        </div>
-                        <div class="konfirmasi-tindakan-content">
-                            <span class="konfirmasi-tindakan-title">Lengkapi Dokumen</span>
-                            <span class="konfirmasi-tindakan-desc">Customer diminta melengkapi dokumen</span>
-                        </div>
-                        <div class="konfirmasi-tindakan-check">
-                            <i class="mdi mdi-check-circle"></i>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6 mb-2">
-                <div class="konfirmasi-tindakan-card">
-                    <input type="radio" name="tindakan" id="tindakanUlang" value="Ajukan ke Bank Lain">
-                    <label class="konfirmasi-tindakan-label" for="tindakanUlang">
-                        <div class="konfirmasi-tindakan-icon">
-                            <i class="mdi mdi-bank-transfer"></i>
-                        </div>
-                        <div class="konfirmasi-tindakan-content">
-                            <span class="konfirmasi-tindakan-title">Ajukan ke Bank Lain</span>
-                            <span class="konfirmasi-tindakan-desc">Pengajuan ulang KPR</span>
-                        </div>
-                        <div class="konfirmasi-tindakan-check">
-                            <i class="mdi mdi-check-circle"></i>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6 mb-2">
-                <div class="konfirmasi-tindakan-card">
-                    <input type="radio" name="tindakan" id="tindakanCash" value="Pindah ke Cash">
-                    <label class="konfirmasi-tindakan-label" for="tindakanCash">
-                        <div class="konfirmasi-tindakan-icon">
-                            <i class="mdi mdi-cash-multiple"></i>
-                        </div>
-                        <div class="konfirmasi-tindakan-content">
-                            <span class="konfirmasi-tindakan-title">Pindah ke Cash</span>
-                            <span class="konfirmasi-tindakan-desc">Customer akan membayar tunai</span>
-                        </div>
-                        <div class="konfirmasi-tindakan-check">
-                            <i class="mdi mdi-check-circle"></i>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6 mb-2">
-                <div class="konfirmasi-tindakan-card">
-                    <input type="radio" name="tindakan" id="tindakanBatal" value="Batalkan Transaksi">
-                    <label class="konfirmasi-tindakan-label" for="tindakanBatal">
-                        <div class="konfirmasi-tindakan-icon">
-                            <i class="mdi mdi-cancel"></i>
-                        </div>
-                        <div class="konfirmasi-tindakan-content">
-                            <span class="konfirmasi-tindakan-title">Batalkan Transaksi</span>
-                            <span class="konfirmasi-tindakan-desc">Customer batal beli (refund)</span>
-                        </div>
-                        <div class="konfirmasi-tindakan-check">
-                            <i class="mdi mdi-check-circle"></i>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6 mb-2">
-                <div class="konfirmasi-tindakan-card">
-                    <input type="radio" name="tindakan" id="tindakanBanding" value="Banding Ulang">
-                    <label class="konfirmasi-tindakan-label" for="tindakanBanding">
-                        <div class="konfirmasi-tindakan-icon">
-                            <i class="mdi mdi-scale-balance"></i>
-                        </div>
-                        <div class="konfirmasi-tindakan-content">
-                            <span class="konfirmasi-tindakan-title">Banding Ulang</span>
-                            <span class="konfirmasi-tindakan-desc">Ajukan banding ke bank yang sama</span>
-                        </div>
-                        <div class="konfirmasi-tindakan-check">
-                            <i class="mdi mdi-check-circle"></i>
-                        </div>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
+                            <div class="kpr-sidebar-section kpr-decision-summary" id="decisionSummary">
+                                <div class="kpr-sidebar-title">Ringkasan Keputusan</div>
+                                <div class="summary-state" id="decisionStateBadge">
+                                    <i class="mdi mdi-help-circle-outline"></i>
+                                    <span id="decisionStateText">Belum dipilih</span>
+                                </div>
 
-    <div class="mt-4 d-flex justify-content-between">
-        <a href="{{ url('/marketing/kpr') }}" class="konfirmasi-btn konfirmasi-btn-outline-secondary">
-            <i class="mdi mdi-arrow-left me-2"></i>
-            Kembali
-        </a>
-        <button type="submit" class="konfirmasi-btn konfirmasi-btn-primary">
-            <i class="mdi mdi-content-save me-2"></i>
-            Submit Verifikasi
-        </button>
-    </div>
-</form>
+                                <ul class="kpr-mini-list mt-3 mb-0" id="decisionSummaryList">
+                                    <li>
+                                        <i class="mdi mdi-information-outline"></i>
+                                        <span>Pilih keputusan verifikasi untuk melihat ringkasan langkah berikutnya.</span>
+                                    </li>
+                                </ul>
+                            </div>
 
-
-
-                    <!-- Informasi Tambahan untuk Mobile -->
-                    <div class="text-muted small mt-2 d-block d-sm-none">
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Geser untuk melihat konten lainnya
+                            <div class="kpr-sidebar-section">
+                                <div class="kpr-sidebar-title">Checklist Review</div>
+                                <ul class="kpr-mini-list mb-0">
+                                    <li>
+                                        <i class="mdi mdi-check-circle-outline"></i>
+                                        <span>Pastikan seluruh dokumen yang tersedia sudah ditinjau.</span>
+                                    </li>
+                                    <li>
+                                        <i class="mdi mdi-check-circle-outline"></i>
+                                        <span>Isi catatan verifikasi agar keputusan mudah dilacak tim berikutnya.</span>
+                                    </li>
+                                    <li>
+                                        <i class="mdi mdi-check-circle-outline"></i>
+                                        <span>Unggah berita acara bila dibutuhkan untuk arsip proses.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Kolom Kanan: Info & Ringkasan (sudah di atas) -->
-        <div class="col-12 col-lg-4">
-            <!-- Konten sudah di atas, tidak perlu diulang -->
+        <div class="row mt-4">
+            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="kpr-section-title">
+                            <i class="mdi mdi-shield-check-outline"></i>
+                            <span>Keputusan Verifikasi KPR</span>
+                        </div>
+
+                        <div class="kpr-inline-alert info mb-4" id="decisionHint">
+                            <i class="mdi mdi-information-outline"></i>
+                            <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai status verifikasi.</div>
+                        </div>
+
+                        <div class="kpr-inline-alert danger kpr-error-box" id="decisionErrorBox">
+                            <i class="mdi mdi-alert-circle-outline"></i>
+                            <div>Silakan pilih keputusan verifikasi terlebih dahulu sebelum submit.</div>
+                        </div>
+
+                        <form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST" enctype="multipart/form-data" id="formVerifikasiKpr">
+                            @csrf
+                            <input type="hidden" name="status" id="statusVerifikasiInput" value="">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="kpr-decision-card approve">
+                                        <input type="radio" name="decision_choice" id="decisionApprove" value="survey">
+                                        <label for="decisionApprove" class="kpr-decision-label">
+                                            <div class="kpr-decision-icon">
+                                                <i class="mdi mdi-check-bold"></i>
+                                            </div>
+                                            <div class="kpr-decision-content">
+                                                <div class="kpr-decision-title">Setujui Verifikasi</div>
+                                                <p class="kpr-decision-desc mb-0">Dokumen dan data dinilai memadai untuk lanjut ke tahap survey.</p>
+                                            </div>
+                                            <div class="kpr-decision-check">
+                                                <i class="mdi mdi-check-circle"></i>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="kpr-decision-card reject">
+                                        <input type="radio" name="decision_choice" id="decisionReject" value="rejected">
+                                        <label for="decisionReject" class="kpr-decision-label">
+                                            <div class="kpr-decision-icon">
+                                                <i class="mdi mdi-close-thick"></i>
+                                            </div>
+                                            <div class="kpr-decision-content">
+                                                <div class="kpr-decision-title">Tolak Verifikasi</div>
+                                                <p class="kpr-decision-desc mb-0">Pengajuan belum dapat dilanjutkan dan perlu tindakan lanjutan.</p>
+                                            </div>
+                                            <div class="kpr-decision-check">
+                                                <i class="mdi mdi-check-circle"></i>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="formSetuju" class="kpr-form-shell approve">
+                                <div class="kpr-form-title approve">Form Persetujuan Verifikasi</div>
+
+                                <div class="kpr-inline-alert success">
+                                    <i class="mdi mdi-check-circle-outline"></i>
+                                    <div><strong>Verifikasi disetujui.</strong> Pengajuan akan diarahkan ke tahap <strong>Survey</strong>.</div>
+                                </div>
+
+                                <div class="kpr-form-group">
+                                    <label class="kpr-form-label" for="catatan_setuju">Catatan Verifikasi</label>
+                                    <textarea id="catatan_setuju"
+                                              class="kpr-form-control"
+                                              name="catatan_setuju"
+                                              rows="4"
+                                              placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey."></textarea>
+                                </div>
+
+                                <div class="kpr-form-group mb-0">
+                                    <label class="kpr-form-label">Upload Berita Acara (Opsional)</label>
+                                    <div class="verifikasi-file-upload">
+                                        <input type="file" name="berita_acara_setuju" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="verifikasi-file-label">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="verifikasi-file-info">
+                                                <span>Upload Berita Acara</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="formTolak" class="kpr-form-shell reject">
+                                <div class="kpr-form-title reject">Form Penolakan Verifikasi</div>
+
+                                <div class="kpr-inline-alert danger">
+                                    <i class="mdi mdi-close-circle-outline"></i>
+                                    <div><strong>Verifikasi ditolak.</strong> Pilih alasan dan tindakan lanjutan agar proses tetap jelas untuk customer dan internal.</div>
+                                </div>
+
+                                <div class="kpr-form-group">
+                                    <label class="kpr-form-label" for="catatan_tolak">Catatan / Alasan</label>
+                                    <textarea id="catatan_tolak"
+                                              class="kpr-form-control"
+                                              name="catatan_tolak"
+                                              rows="4"
+                                              placeholder="Contoh: NPWP belum tersedia dan rekening koran belum sesuai periode yang diminta."></textarea>
+                                </div>
+
+                                <div class="kpr-form-group">
+                                    <label class="kpr-form-label">Upload Berita Acara (Opsional)</label>
+                                    <div class="verifikasi-file-upload">
+                                        <input type="file" name="berita_acara_tolak" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="verifikasi-file-label">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="verifikasi-file-info">
+                                                <span>Upload Berita Acara</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="kpr-form-group mb-0">
+                                    <label class="kpr-form-label">Tindakan Selanjutnya</label>
+
+                                    <div class="kpr-next-step-grid">
+                                        <div class="kpr-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanLengkapi" value="Lengkapi Dokumen" checked>
+                                            <label class="kpr-next-label" for="tindakanLengkapi">
+                                                <div class="kpr-next-icon">
+                                                    <i class="mdi mdi-file-document-edit-outline"></i>
+                                                </div>
+                                                <div class="kpr-next-content">
+                                                    <span class="kpr-next-title">Lengkapi Dokumen</span>
+                                                    <span class="kpr-next-desc">Customer diminta melengkapi dokumen yang belum tersedia atau belum valid.</span>
+                                                </div>
+                                                <div class="kpr-next-check">
+                                                    <i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div class="kpr-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanUlang" value="Ajukan ke Bank Lain">
+                                            <label class="kpr-next-label" for="tindakanUlang">
+                                                <div class="kpr-next-icon">
+                                                    <i class="mdi mdi-bank-transfer-out"></i>
+                                                </div>
+                                                <div class="kpr-next-content">
+                                                    <span class="kpr-next-title">Ajukan ke Bank Lain</span>
+                                                    <span class="kpr-next-desc">Pengajuan diulang ke bank lain dengan penyesuaian kelengkapan bila diperlukan.</span>
+                                                </div>
+                                                <div class="kpr-next-check">
+                                                    <i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div class="kpr-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanCash" value="Pindah ke Cash">
+                                            <label class="kpr-next-label" for="tindakanCash">
+                                                <div class="kpr-next-icon">
+                                                    <i class="mdi mdi-cash-multiple"></i>
+                                                </div>
+                                                <div class="kpr-next-content">
+                                                    <span class="kpr-next-title">Pindah ke Cash</span>
+                                                    <span class="kpr-next-desc">Customer melanjutkan pembelian dengan metode pembayaran tunai.</span>
+                                                </div>
+                                                <div class="kpr-next-check">
+                                                    <i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div class="kpr-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanBatal" value="Batalkan Transaksi">
+                                            <label class="kpr-next-label" for="tindakanBatal">
+                                                <div class="kpr-next-icon">
+                                                    <i class="mdi mdi-cancel"></i>
+                                                </div>
+                                                <div class="kpr-next-content">
+                                                    <span class="kpr-next-title">Batalkan Transaksi</span>
+                                                    <span class="kpr-next-desc">Customer membatalkan transaksi pembelian dan proses diarahkan ke refund.</span>
+                                                </div>
+                                                <div class="kpr-next-check">
+                                                    <i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div class="kpr-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanBanding" value="Banding Ulang">
+                                            <label class="kpr-next-label" for="tindakanBanding">
+                                                <div class="kpr-next-icon">
+                                                    <i class="mdi mdi-scale-balance"></i>
+                                                </div>
+                                                <div class="kpr-next-content">
+                                                    <span class="kpr-next-title">Banding Ulang</span>
+                                                    <span class="kpr-next-desc">Ajukan banding atau review ulang ke bank yang sama dengan catatan tambahan.</span>
+                                                </div>
+                                                <div class="kpr-next-check">
+                                                    <i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="kpr-action-bar">
+                                <a href="{{ url('/marketing/kpr') }}" class="kpr-btn kpr-btn-secondary">
+                                    <i class="mdi mdi-arrow-left"></i>
+                                    Kembali
+                                </a>
+
+                                <button type="submit" class="kpr-btn kpr-btn-primary">
+                                    <i class="mdi mdi-content-save-outline"></i>
+                                    Simpan Verifikasi
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-muted small mt-3 d-block d-sm-none">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Scroll untuk melihat seluruh isi form
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="kpr-sticky">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="kpr-section-title">
+                                <i class="mdi mdi-lightbulb-on-outline"></i>
+                                <span>Panduan Keputusan</span>
+                            </div>
+
+                            <div class="kpr-sidebar-section">
+                                <div class="kpr-sidebar-title">Saat Disetujui</div>
+                                <ul class="kpr-mini-list mb-0">
+                                    <li>
+                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                        <span>Gunakan jika dokumen utama lengkap dan tidak ada temuan material.</span>
+                                    </li>
+                                    <li>
+                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                        <span>Tambahkan catatan singkat agar tim survey memahami konteks review.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="kpr-sidebar-section">
+                                <div class="kpr-sidebar-title">Saat Ditolak</div>
+                                <ul class="kpr-mini-list mb-0">
+                                    <li>
+                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                        <span>Jelaskan alasan penolakan secara spesifik dan dapat ditindaklanjuti.</span>
+                                    </li>
+                                    <li>
+                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                        <span>Pilih tindakan lanjutan yang paling relevan agar proses berikutnya tidak ambigu.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-@if(session('success'))
-<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Berhasil',
-    text: '{{ session('success') }}',
-    confirmButtonText: 'OK'
-});
-</script>
-@endif
-<!-- JS -->
-<script>
-$(document).ready(function() {
-    $('#pilihSetuju').click(function() {
-        $('#formSetuju').slideDown();
-        $('#formTolak').slideUp();
-        $('#statusVerifikasiInput').val('survey');
-    });
-    $('#pilihTolak').click(function() {
-        $('#formTolak').slideDown();
-        $('#formSetuju').slideUp();
-        $('#statusVerifikasiInput').val('rejected');
-    });
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 
-    // Modern file upload menampilkan nama dan ukuran
-    $('input[type="file"]').change(function(e) {
-        const file = e.target.files[0];
-        if(file) {
-            const sizeInMB = (file.size / (1024*1024)).toFixed(2);
-            $(this).closest('.verifikasi-file-upload').find('.verifikasi-file-info span').text(file.name);
-            $(this).closest('.verifikasi-file-upload').find('.verifikasi-file-info small').text(sizeInMB + ' MB');
-        }
-    });
-});
-</script>
+    <script>
+        $(document).ready(function() {
+            const $decisionApprove = $('#decisionApprove');
+            const $decisionReject = $('#decisionReject');
+            const $statusInput = $('#statusVerifikasiInput');
+            const $formSetuju = $('#formSetuju');
+            const $formTolak = $('#formTolak');
+            const $decisionErrorBox = $('#decisionErrorBox');
+            const $decisionSummary = $('#decisionSummary');
+            const $decisionStateText = $('#decisionStateText');
+            const $decisionSummaryList = $('#decisionSummaryList');
+
+            function renderSummary(type) {
+                $decisionSummary.removeClass('approve reject').show();
+
+                if (type === 'survey') {
+                    $decisionSummary.addClass('approve');
+                    $decisionStateText.text('Verifikasi Disetujui');
+                    $decisionSummaryList.html(`
+                        <li>
+                            <i class="mdi mdi-check-circle-outline"></i>
+                            <span>Status booking akan diarahkan ke tahap <strong>Survey</strong>.</span>
+                        </li>
+                        <li>
+                            <i class="mdi mdi-note-text-outline"></i>
+                            <span>Isi catatan singkat sebagai referensi untuk tim berikutnya.</span>
+                        </li>
+                        <li>
+                            <i class="mdi mdi-paperclip"></i>
+                            <span>Berita acara bisa ditambahkan bila diperlukan untuk arsip.</span>
+                        </li>
+                    `);
+                } else if (type === 'rejected') {
+                    $decisionSummary.addClass('reject');
+                    const tindakan = $('input[name="tindakan"]:checked').val() || 'Lengkapi Dokumen';
+                    $decisionStateText.text('Verifikasi Ditolak');
+                    $decisionSummaryList.html(`
+                        <li>
+                            <i class="mdi mdi-close-circle-outline"></i>
+                            <span>Pengajuan tidak dilanjutkan ke tahap survey pada kondisi saat ini.</span>
+                        </li>
+                        <li>
+                            <i class="mdi mdi-arrow-right-bold-circle-outline"></i>
+                            <span>Tindakan lanjutan terpilih: <strong>${tindakan}</strong>.</span>
+                        </li>
+                        <li>
+                            <i class="mdi mdi-note-text-outline"></i>
+                            <span>Catatan alasan penolakan sebaiknya diisi dengan detail yang jelas.</span>
+                        </li>
+                    `);
+                }
+            }
+
+            function switchDecision(type) {
+                $decisionErrorBox.hide();
+
+                if (type === 'survey') {
+                    $statusInput.val('survey');
+                    $formSetuju.stop(true, true).slideDown(180);
+                    $formTolak.stop(true, true).slideUp(180);
+                    renderSummary('survey');
+                } else if (type === 'rejected') {
+                    $statusInput.val('rejected');
+                    $formTolak.stop(true, true).slideDown(180);
+                    $formSetuju.stop(true, true).slideUp(180);
+                    renderSummary('rejected');
+                }
+            }
+
+            $decisionApprove.on('change', function() {
+                if ($(this).is(':checked')) {
+                    switchDecision('survey');
+                }
+            });
+
+            $decisionReject.on('change', function() {
+                if ($(this).is(':checked')) {
+                    switchDecision('rejected');
+                }
+            });
+
+            $(document).on('change', 'input[name="tindakan"]', function() {
+                if ($decisionReject.is(':checked')) {
+                    renderSummary('rejected');
+                }
+            });
+
+            $(document).on('change', 'input[type="file"]', function(e) {
+                const file = e.target.files[0];
+                const $container = $(this).closest('.verifikasi-file-upload');
+
+                if (file) {
+                    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                    $container.find('.verifikasi-file-info span').text(file.name);
+                    $container.find('.verifikasi-file-info small').text(sizeInMB + ' MB');
+                }
+            });
+
+            $('#formVerifikasiKpr').on('submit', function(e) {
+                if (!$statusInput.val()) {
+                    e.preventDefault();
+                    $decisionErrorBox.stop(true, true).slideDown(160);
+
+                    $('html, body').animate({
+                        scrollTop: $decisionErrorBox.offset().top - 120
+                    }, 300);
+                }
+            });
+        });
+    </script>
 @endpush
