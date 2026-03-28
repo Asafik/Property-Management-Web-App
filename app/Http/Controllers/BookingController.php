@@ -36,7 +36,7 @@ public function updateNego(Request $request, $id)
 
         // Simpan ke database
         $booking->harga_nego = (int) $request->harga_nego;
-        $booking->status_cash = 'process';
+        $booking->status_cash = 'pending';
         $booking->save();
 
         // Log setelah berhasil
