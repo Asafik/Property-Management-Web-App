@@ -773,7 +773,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function editAksesMenu(id, name, positionIds) {
             document.getElementById('access_menu_id').value = id;

@@ -3,71 +3,736 @@
 @section('title', 'Cash Keras - Properti Management')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('assets/css/marketing/cash.css') }}">
+    <style>
+        .kpr-page .card-body {
+            padding: 1.25rem;
+        }
 
-    <div class="row">
-        <div class="col-12">
-            <!-- Header Info Customer -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex flex-wrap align-items-center gap-3">
-                        <!-- Avatar -->
-                        <div class="flex-shrink-0">
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 50px; height: 50px;">
-                                <i class="mdi mdi-account" style="font-size: 24px;"></i>
+        .kpr-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #2c2e3f;
+            margin-bottom: 1rem;
+        }
+
+        .kpr-section-title i {
+            color: #9a55ff;
+        }
+
+        .customer-header {
+            min-height: 110px;
+        }
+
+        .customer-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #b57cff, #8f52ff);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.20);
+        }
+
+        .customer-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            line-height: 1.2;
+        }
+
+        .customer-booking {
+            font-size: 1rem;
+            color: #8c8c8c;
+        }
+
+        .customer-unit-info {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(90px, auto));
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .customer-unit-info .info-item small {
+            display: block;
+            font-size: 0.8rem;
+            color: #9a9a9a;
+            margin-bottom: 2px;
+        }
+
+        .customer-unit-info .info-item span {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c2e3f;
+            line-height: 1.3;
+        }
+
+        .kpr-muted {
+            color: #6c7383 !important;
+        }
+
+        .kpr-inline-alert {
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            font-size: 0.88rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .kpr-inline-alert i {
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+
+        .kpr-inline-alert.info {
+            background: #f6f7fb;
+            border-color: #e7eaf3;
+            color: #4b5565;
+        }
+
+        .kpr-inline-alert.warning {
+            background: #fff8e6;
+            border-color: #ffe29b;
+            color: #8a6a00;
+        }
+
+        .kpr-inline-alert.success {
+            background: #edf9f3;
+            border-color: #b9e7cf;
+            color: #146c43;
+        }
+
+        .kpr-inline-alert.danger {
+            background: #fff1f3;
+            border-color: #ffc9d0;
+            color: #b42318;
+        }
+
+        .kpr-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .kpr-detail-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .kpr-detail-item span:first-child {
+            color: #6c7383;
+        }
+
+        .kpr-detail-item span:last-child {
+            color: #2c2e3f;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .kpr-detail-item .highlight {
+            color: #9a55ff !important;
+        }
+
+        .kpr-handler {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem;
+            background: #fbf9fe;
+            border: 1px solid #ebe7f2;
+            border-radius: 14px;
+        }
+
+        .kpr-handler-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #f4ecff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9a55ff;
+            flex-shrink: 0;
+        }
+
+        .cash-segment {
+            display: inline-flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cash-chip {
+            border: 1px solid #e5d8ff;
+            background: #fff;
+            color: #6b46c1;
+            border-radius: 999px;
+            padding: 0.55rem 0.95rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .cash-chip.active {
+            background: linear-gradient(90deg, #c784ff, #9a55ff);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.2);
+        }
+
+        .cash-soft-card {
+            background: #fbf9fe;
+            border: 1px solid #ebe7f2;
+            border-radius: 14px;
+        }
+
+        .cash-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .cash-form-group label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .cash-form-control {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.78rem 0.9rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+            color: #2c2e3f;
+            width: 100%;
+        }
+
+        .cash-form-control:focus {
+            border-color: #9a55ff;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+            outline: none;
+        }
+
+        .cash-input-group {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .cash-input-group-prepend {
+            display: flex;
+        }
+
+        .cash-input-group-text {
+            display: flex;
+            align-items: center;
+            padding: 0.78rem 0.85rem;
+            font-size: 0.85rem;
+            color: #6c7383;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 1px solid #e9ecef;
+            border-radius: 12px 0 0 12px;
+            border-right: none;
+        }
+
+        .cash-input-group .cash-form-control {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .cash-summary-mini {
+            border: 1px solid #ebe7f2;
+            background: #fbf9fe;
+            border-radius: 14px;
+            padding: 0.85rem;
+            height: 100%;
+        }
+
+        .cash-summary-mini small {
+            display: block;
+            color: #6c7383;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cash-summary-mini .value {
+            font-weight: 800;
+            font-size: 1rem;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .cash-text-primary {
+            color: #9a55ff !important;
+        }
+
+        .cash-text-success {
+            color: #28a745 !important;
+        }
+
+        .cash-text-danger {
+            color: #dc3545 !important;
+        }
+
+        .cash-text-warning {
+            color: #f59f00 !important;
+        }
+
+        .cash-text-muted {
+            color: #6c7383 !important;
+            font-size: 0.76rem;
+        }
+
+        .cash-status-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .cash-status-banner.success {
+            background: #edf9f3;
+            color: #22a06b;
+        }
+
+        .cash-status-banner.warning {
+            background: #fff8e6;
+            color: #8a6a00;
+        }
+
+        .cash-status-banner.info {
+            background: #f4ecff;
+            color: #7f3df0;
+        }
+
+        .cash-summary-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .cash-summary-box {
+            border: 1px solid #ebe7f2;
+            background: #fbf9fe;
+            border-radius: 16px;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        .cash-summary-box .label {
+            font-size: 0.75rem;
+            color: #6c7383;
+            margin-bottom: 0.35rem;
+        }
+
+        .cash-summary-box .value {
+            font-size: 1.15rem;
+            font-weight: 800;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .cash-summary-box.primary .value {
+            color: #9a55ff;
+        }
+
+        .cash-summary-box.success .value {
+            color: #22a06b;
+        }
+
+        .cash-summary-box.danger .value {
+            color: #dc3545;
+        }
+
+        .cash-summary-box.warning .value {
+            color: #f59f00;
+        }
+
+        .cash-timeline-section {
+            margin-top: 1.5rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .cash-timeline-title-wrap {
+            margin-bottom: 1rem;
+        }
+
+        .cash-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cash-timeline-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .cash-timeline-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f4ecff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .cash-timeline-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        .cash-timeline-title {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin-bottom: 2px;
+        }
+
+        .cash-timeline-date {
+            display: block;
+            font-size: 0.78rem;
+            color: #6c7383;
+            line-height: 1.5;
+        }
+
+        .cash-doc-section {
+            margin-top: 1.75rem;
+        }
+
+        .cash-doc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed #ece7f7;
+        }
+
+        .cash-doc-row:last-child {
+            border-bottom: none;
+        }
+
+        .cash-doc-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .cash-doc-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+
+        .cash-doc-badge.available {
+            background: #edf9f3;
+            color: #22a06b;
+            border: 1px solid #b9e7cf;
+        }
+
+        .cash-doc-badge.empty {
+            background: #f6f7fb;
+            color: #9aa0ac;
+            border: 1px solid #e7eaf3;
+        }
+
+        .cash-doc-name {
+            font-size: 0.88rem;
+            color: #2c2e3f;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .cash-doc-sub {
+            display: block;
+            font-size: 0.74rem;
+            color: #6c7383;
+            margin-top: 2px;
+        }
+
+        .cash-btn {
+            border: none;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 0.82rem 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .cash-btn:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .cash-btn-primary {
+            background: linear-gradient(90deg, #c784ff, #9a55ff);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.22);
+        }
+
+        .cash-btn-primary:hover {
+            color: #fff;
+        }
+
+        .cash-btn-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #fff;
+        }
+
+        .cash-btn-success:hover {
+            color: #fff;
+        }
+
+        .cash-btn-info {
+            background: linear-gradient(135deg, #17a2b8, #3cc3d9);
+            color: #fff;
+        }
+
+        .cash-btn-info:hover {
+            color: #fff;
+        }
+
+        .cash-btn-outline-primary {
+            background: #fff;
+            color: #9a55ff;
+            border: 1px solid #d8c4ff;
+        }
+
+        .cash-btn-outline-primary:hover {
+            background: #f4ecff;
+            color: #7f3df0;
+        }
+
+        .cash-btn-outline-success {
+            background: #fff;
+            color: #28a745;
+            border: 1px solid #bfe8c9;
+        }
+
+        .cash-btn-outline-success:hover {
+            background: #edf9f3;
+            color: #218838;
+        }
+
+        .cash-btn-outline-warning {
+            background: #fff;
+            color: #f59f00;
+            border: 1px solid #ffe0a3;
+        }
+
+        .cash-btn-outline-warning:hover {
+            background: #fff8e6;
+            color: #c77c02;
+        }
+
+        .cash-btn-outline-secondary {
+            background: #fff;
+            color: #6c7383;
+            border: 1px solid #e4e7ee;
+        }
+
+        .cash-btn-outline-secondary:hover {
+            background: #f8f9fb;
+            color: #2c2e3f;
+        }
+
+        .cash-file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .cash-file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .cash-file-label-modern {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 6px;
+            padding: 1rem 0.6rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 100px;
+        }
+
+        .cash-file-label-modern i {
+            font-size: 1.6rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .cash-file-info-modern {
+            flex: 1;
+            width: 100%;
+        }
+
+        .cash-file-info-modern span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.8rem;
+            word-break: break-word;
+        }
+
+        .cash-file-info-modern small,
+        .cash-file-size {
+            color: #6c7383;
+            font-size: 0.65rem;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .cash-file-upload-modern:hover .cash-file-label-modern {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        @media (min-width: 576px) {
+            .cash-file-label-modern {
+                flex-direction: row;
+                text-align: left;
+                gap: 8px;
+                padding: 0.75rem 1rem;
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .customer-unit-info {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .customer-header {
+                min-height: auto;
+            }
+
+            .customer-avatar {
+                width: 48px;
+                height: 48px;
+                font-size: 1.1rem;
+            }
+
+            .customer-name {
+                font-size: 1.25rem;
+            }
+
+            .customer-booking {
+                font-size: 0.9rem;
+            }
+
+            .customer-unit-info {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 0.5rem;
+            }
+
+            .cash-doc-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <div class="kpr-page">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="customer-avatar">
+                                    {{ strtoupper(substr($booking->customer->full_name ?? 'C', 0, 1)) }}
+                                </div>
+                                <div>
+                                    <h4 class="customer-name mb-1">{{ $booking->customer->full_name ?? '-' }}</h4>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Info Customer -->
-                        <div class="flex-grow-1">
-                            <h4 class="mb-1">
-                                {{ $booking->customer->full_name ?? '-' }}
-                            </h4>
-                            <p class="text-muted mb-0">
-                                Booking ID: {{ $booking->booking_code ?? '-' }}
-                            </p>
-                        </div>
-
-                        <!-- Info Unit -->
-                        <div class="mt-3 mt-sm-0">
-                            <div class="d-flex flex-wrap gap-3">
-                                <div>
-                                    <small class="text-muted d-block">Unit</small>
-                                    <span class="fw-medium">{{ $booking->unit->landBank->name ?? '-' }} -
-                                        {{ $booking->unit->type ?? '-' }}</span>
+                            <div class="customer-unit-info">
+                                <div class="info-item">
+                                    <small>Unit</small>
+                                    <span>{{ $booking->unit->landBank->name ?? '-' }}</span>
                                 </div>
-                                <div>
-                                    <small class="text-muted d-block">Jenis</small>
-                                    <span class="fw-medium">
-                                        {{ $booking->unit->jenis == 'komersil' ? 'Komersil' : '-' }}
-                                    </span>
+                                <div class="info-item">
+                                    <small>Jenis</small>
+                                    <span>{{ $booking->unit->jenis == 'komersil' ? 'Komersil' : '-' }}</span>
                                 </div>
-                                <div>
-                                    <small class="text-muted d-block">Blok/No</small>
-                                    <span class="fw-medium">{{ $booking->unit->unit_code }}</span>
+                                <div class="info-item">
+                                    <small>Blok/No</small>
+                                    <span>{{ $booking->unit->unit_code ?? '-' }}</span>
                                 </div>
-                                <div>
-                                    <small class="text-muted d-block">Status Pembangunan</small>
+                                <div class="info-item">
+                                    <small>Status Pembangunan</small>
                                     @php
                                         $progressMap = [
                                             'belum_mulai' => 'Belum mulai pembangunan',
-                                            'pondasi' => 'Sedang tahap pondasi',
-                                            'dinding' => 'Sedang tahap pembangunan Dinding',
-                                            'atap' => 'Sedang tahap pembangunan Atap',
-                                            'finishing' => 'Sedang tahap Finishing',
+                                            'pondasi' => 'Tahap pondasi',
+                                            'dinding' => 'Tahap dinding',
+                                            'atap' => 'Tahap atap',
+                                            'finishing' => 'Tahap finishing',
                                             'selesai' => 'Selesai pembangunan',
                                         ];
                                     @endphp
-
-                                    <span class="fw-medium">
-                                        {{ $progressMap[$booking->unit->construction_progress] ?? '-' }}
-                                    </span>
+                                    <span>{{ $progressMap[$booking->unit->construction_progress] ?? '-' }}</span>
                                 </div>
-                                <div>
-                                    <small class="text-muted d-block">Harga Unit</small>
-                                    <span class="fw-medium text-primary">Rp
-                                        {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                                <div class="info-item">
+                                    <small>Harga Unit</small>
+                                    <span class="text-primary fw-bold">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -75,81 +740,66 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Row untuk Pilihan Skenario (DEMO PURPOSES) -->
-    <div class="row mt-3">
-        <div class="col-12">
-            <div class="cash-card bg-light">
-                <div class="card-body py-3">
-                    <div class="d-flex align-items-center flex-wrap gap-2">
-                        <div class="cash-btn-group">
-                            <button type="button" class="cash-btn cash-btn-sm cash-btn-success active" id="btnCashAwal">
-                                <i class="mdi mdi-cash me-1"></i>Cash Awal
-                            </button>
-                            <button type="button" class="cash-btn cash-btn-sm cash-btn-warning" id="btnKonversi">
-                                <i class="mdi mdi-bank-off me-1"></i>Konversi dari KPR
-                            </button>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body py-3">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div>
+                                <div class="kpr-section-title mb-0">
+                                    <i class="mdi mdi-cash-multiple"></i>
+                                    <span id="titleCash">Cash Keras - Lunas Langsung</span>
+                                </div>
+                            </div>
+
+                            <div class="cash-segment">
+                                <button type="button" class="cash-chip active" id="btnCashAwal">
+                                    <i class="mdi mdi-cash me-1"></i> Cash Awal
+                                </button>
+                                <button type="button" class="cash-chip" id="btnKonversi">
+                                    <i class="mdi mdi-bank-off me-1"></i> Konversi dari KPR
+                                </button>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Row untuk Status dan Info -->
-    <div class="row mt-4">
-        <!-- Kolom Kiri: Info Pembayaran -->
-        <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-cash-multiple me-2 text-primary"></i>
-                        <span id="titleCash">Cash Keras - Lunas Langsung</span>
-                    </h5>
-
-                    <!-- ALERT SKENARIO 1: CASH AWAL -->
-                    <div class="cash-alert cash-alert-success" id="alertCashAwal">
-                        <div class="d-flex align-items-center">
-                            <i class="mdi mdi-check-circle me-3" style="font-size: 24px;"></i>
+        <div class="row mt-4">
+            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="kpr-inline-alert success" id="alertCashAwal">
+                            <i class="mdi mdi-check-circle"></i>
                             <div>
-                                <strong>Cash Keras</strong> - Customer membayar lunas langsung (bisa nego)
+                                <strong>Cash Keras</strong> — Customer membayar lunas langsung dan harga bisa dinegosiasikan.
                             </div>
                         </div>
-                    </div>
 
-                    <!-- ALERT SKENARIO 2: KONVERSI DARI KPR -->
-                    <div class="cash-alert cash-alert-warning" id="alertKonversi" style="display: none;">
-                        <div class="d-flex">
-                            <i class="mdi mdi-information-outline me-3" style="font-size: 24px;"></i>
+                        <div class="kpr-inline-alert warning" id="alertKonversi" style="display: none;">
+                            <i class="mdi mdi-information-outline"></i>
                             <div>
-                                <strong>Konversi dari KPR ke Cash Keras</strong> - KPR ditolak, pindah ke cash lunas
-                                <div class="mt-2 p-2 bg-white rounded">
-                                    <small class="d-block"><span class="fw-medium">Alasan Penolakan:</span> BI Checking /
-                                        SLIK bermasalah (Rating kurang)</small>
-                                    <small class="d-block"><span class="fw-medium">Bank:</span> Bank ABC Syariah</small>
-                                    <small class="d-block"><span class="fw-medium">Tanggal Penolakan:</span> 25 Februari
-                                        2025</small>
-                                    <button class="cash-btn cash-btn-outline-primary mt-2"
-                                        style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                        <i class="mdi mdi-file-pdf me-1"></i>Lihat Surat Penolakan
+                                <strong>Konversi dari KPR ke Cash Keras</strong> — KPR ditolak, lalu customer berpindah ke skema cash lunas.
+                                <div class="cash-soft-card p-3 mt-3">
+                                    <small class="d-block mb-1"><strong>Alasan Penolakan:</strong> BI Checking / SLIK bermasalah (Rating kurang)</small>
+                                    <small class="d-block mb-1"><strong>Bank:</strong> Bank ABC Syariah</small>
+                                    <small class="d-block mb-2"><strong>Tanggal Penolakan:</strong> 25 Februari 2025</small>
+                                    <button type="button" class="cash-btn cash-btn-outline-primary" style="padding: 0.45rem 0.85rem;">
+                                        <i class="mdi mdi-file-pdf-box me-1"></i> Lihat Surat Penolakan
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- FORM NEGO HARGA -->
-                    <div class="cash-card bg-light mb-4">
-                        <div class="card-body">
-                            <h6 class="cash-text-primary mb-3">
-                                <i class="mdi mdi-tag-multiple me-2"></i>
-                                Informasi Harga & Negosiasi
-                            </h6>
+                        <div class="cash-soft-card p-3 mb-4">
+                            <div class="kpr-section-title mb-3">
+                                <i class="mdi mdi-tag-multiple"></i>
+                                <span>Informasi Harga & Negosiasi</span>
+                            </div>
 
-                            <form action="{{ route('bookings.updateNego', $booking->id) }}" method="POST"
-                                id="formNegoHarga">
+                            <form action="{{ route('bookings.updateNego', $booking->id) }}" method="POST" id="formNegoHarga">
                                 @csrf
                                 @method('PUT')
 
@@ -162,11 +812,11 @@
                                                     <span class="cash-input-group-text">Rp</span>
                                                 </div>
                                                 <input type="text" class="cash-form-control" id="hargaUnit"
-                                                    value="{{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
-                                                    readonly>
+                                                    value="{{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}" readonly>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="cash-form-group">
                                             <label>Harga Nego / Kesepakatan</label>
@@ -174,14 +824,14 @@
                                                 <div class="cash-input-group-prepend">
                                                     <span class="cash-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="cash-form-control" id="hargaNego"
-                                                    name="harga_nego"
+                                                <input type="text" class="cash-form-control" id="hargaNego" name="harga_nego"
                                                     value="{{ number_format($booking->harga_nego ?? 0, 0, ',', '.') }}">
                                             </div>
                                             <small class="cash-text-muted">Masukkan harga final setelah negosiasi</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mt-3">
+
+                                    <div class="col-md-6 mt-2">
                                         <div class="cash-form-group">
                                             <label>Booking Fee (Sudah Dibayar)</label>
                                             <div class="cash-input-group">
@@ -189,549 +839,481 @@
                                                     <span class="cash-input-group-text">Rp</span>
                                                 </div>
                                                 <input type="text" class="cash-form-control" id="bookingFee"
-                                                    value="{{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}"
-                                                    readonly>
+                                                    value="{{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}" readonly>
                                             </div>
                                             <small class="cash-text-muted">Akan dipotong dari total pembayaran</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="cash-card bg-light mb-3">
-                                    <div class="card-body">
-                                        <h6 class="cash-text-primary mb-3">
-                                            <i class="mdi mdi-ticket-percent me-2"></i>
-                                            Gunakan Promo
-                                        </h6>
 
-                                        <div class="cash-form-group">
-                                            <select class="cash-form-control" name="promo_id" id="promoSelect">
-                                                <option value="">-- Tanpa Promo --</option>
+                                <div class="cash-soft-card p-3 mb-3">
+                                    <div class="kpr-section-title mb-3">
+                                        <i class="mdi mdi-ticket-percent"></i>
+                                        <span>Gunakan Promo</span>
+                                    </div>
 
-                                                @foreach ($promos as $promo)
-                                                    <option value="{{ $promo->id }}" data-type="{{ $promo->type }}"
-                                                        data-value="{{ $promo->value }}">
-
-                                                        {{ $promo->name }} -
-
-                                                        @if ($promo->type == 'persen')
-                                                            {{ $promo->value }}%
-                                                        @elseif (is_numeric($promo->value))
-                                                            Rp {{ number_format((float) $promo->value, 0, ',', '.') }}
-                                                        @else
-                                                            {{ $promo->value }}
-                                                        @endif
-
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    <div class="cash-form-group mb-0">
+                                        <select class="cash-form-control" name="promo_id" id="promoSelect">
+                                            <option value="">-- Tanpa Promo --</option>
+                                            @foreach ($promos as $promo)
+                                                <option value="{{ $promo->id }}" data-type="{{ $promo->type }}" data-value="{{ $promo->value }}">
+                                                    {{ $promo->name }} -
+                                                    @if ($promo->type == 'persen')
+                                                        {{ $promo->value }}%
+                                                    @elseif (is_numeric($promo->value))
+                                                        Rp {{ number_format((float) $promo->value, 0, ',', '.') }}
+                                                    @else
+                                                        {{ $promo->value }}
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <!-- Summary Diskon & Total -->
-                                <div class="row mt-2">
-                                    <div class="col-md-4">
-                                        <div class="cash-card border-success">
-                                            <div class="card-body p-2">
-                                                <small class="cash-text-muted d-block">Diskon</small>
-                                                <span class="fw-bold cash-text-success" id="diskonValue">Rp
-                                                    15.000.000</span>
-                                            </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4 mb-3 mb-md-0">
+                                        <div class="cash-summary-mini">
+                                            <small>Diskon</small>
+                                            <div class="value cash-text-success" id="diskonValue">Rp 15.000.000</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3 mb-md-0">
+                                        <div class="cash-summary-mini">
+                                            <small>Persentase Diskon</small>
+                                            <div class="value cash-text-primary" id="diskonPersen">3.33%</div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="cash-card border-primary">
-                                            <div class="card-body p-2">
-                                                <small class="cash-text-muted d-block">Persentase Diskon</small>
-                                                <span class="fw-bold cash-text-primary" id="diskonPersen">3.33%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="cash-card border-danger">
-                                            <div class="card-body p-2">
-                                                <small class="cash-text-muted d-block">Total Bayar</small>
-                                                <span class="fw-bold cash-text-danger" id="totalBayar">Rp 0</span>
-                                            </div>
+                                        <div class="cash-summary-mini">
+                                            <small>Total Bayar</small>
+                                            <div class="value cash-text-danger" id="totalBayar">Rp 0</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="cash-alert cash-alert-info mt-3 mb-3">
-                                    <i class="mdi mdi-information-outline me-2"></i>
-                                    <strong>Cash Keras:</strong> Customer akan membayar lunas
-                                    <strong id="totalBayarAlert">Rp 0</strong> (setelah nego)
+                                <div class="kpr-inline-alert info mt-3 mb-3">
+                                    <i class="mdi mdi-information-outline"></i>
+                                    <div>
+                                        <strong>Cash Keras:</strong> Customer akan membayar lunas
+                                        <strong id="totalBayarAlert">Rp 0</strong> setelah negosiasi.
+                                    </div>
                                 </div>
 
-                                <!-- BUTTON SUBMIT NEGOSIASI -->
                                 <div class="text-end">
                                     <button type="submit" class="cash-btn cash-btn-primary">
-                                        <i class="mdi mdi-content-save me-2"></i> Simpan Negosiasi
+                                        <i class="mdi mdi-content-save-outline"></i> Simpan Negosiasi
                                     </button>
                                 </div>
                             </form>
                         </div>
-                    </div>
 
-                    <!-- SECTION KHUSUS SKENARIO 2: BIAYA HANGUS -->
-                    <div class="cash-card bg-warning-subtle mt-3" id="biayaHangus" style="display: none;">
-                        <div class="card-body">
-                            <h6 class="text-warning mb-2">
-                                <i class="mdi mdi-alert-circle me-1"></i>
-                                Biaya KPR yang Tidak Kembali (Hangus)
-                            </h6>
+                        <div class="cash-soft-card p-3 mt-3" id="biayaHangus" style="display: none; background: #fff9ec; border-color: #ffe5ab;">
+                            <div class="kpr-section-title mb-3">
+                                <i class="mdi mdi-alert-circle-outline" style="color:#f59f00;"></i>
+                                <span>Biaya KPR yang Tidak Kembali (Hangus)</span>
+                            </div>
+
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-4 mb-3 mb-md-0">
                                     <small class="cash-text-muted d-block">Biaya Survey</small>
-                                    <span class="fw-medium">Rp 500.000</span>
+                                    <span class="fw-bold">Rp 500.000</span>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4 mb-3 mb-md-0">
                                     <small class="cash-text-muted d-block">Biaya Provisi</small>
-                                    <span class="fw-medium">Rp 3.600.000</span>
+                                    <span class="fw-bold">Rp 3.600.000</span>
                                 </div>
                                 <div class="col-md-4">
                                     <small class="cash-text-muted d-block">Total Hangus</small>
                                     <span class="fw-bold cash-text-danger">Rp 4.100.000</span>
                                 </div>
                             </div>
-                            <small class="cash-text-muted d-block mt-2">*Biaya ini sudah dikeluarkan dan tidak dapat
-                                dikembalikan</small>
+
+                            <small class="cash-text-muted d-block mt-2">
+                                *Biaya ini sudah dikeluarkan dan tidak dapat dikembalikan
+                            </small>
                         </div>
-                    </div>
 
-                    <hr class="my-3">
+                        <hr class="my-4">
 
-                    <!-- Form Input Pembayaran Lunas -->
-                    <h6 class="cash-text-primary mb-3">Form Pembayaran Lunas</h6>
+                        <div class="kpr-section-title">
+                            <i class="mdi mdi-cash-register"></i>
+                            <span>Form Pembayaran Lunas</span>
+                        </div>
 
-                    <form action="{{ route('payments.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                        <input type="hidden" name="type" value="pelunasan">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="cash-form-group">
-                                    <label>Tanggal Pembayaran</label>
-                                    <input type="date" class="cash-form-control" name="payment_date"
-                                        value="2025-03-25" required>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="cash-form-group">
-                                    <label>Jumlah Dibayar</label>
-                                    <div class="cash-input-group">
-                                        <div class="cash-input-group-prepend">
-                                            <span class="cash-input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" class="cash-form-control" name="amount" id="jumlahBayar"
-                                            value="435000000" readonly>
+                        <form action="{{ route('payments.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                            <input type="hidden" name="type" value="pelunasan">
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="cash-form-group">
+                                        <label>Tanggal Pembayaran</label>
+                                        <input type="date" class="cash-form-control" name="payment_date" value="2025-03-25" required>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="cash-form-group">
-                                    <label>Metode Pembayaran</label>
-                                    <select class="cash-form-control" name="method" required>
-                                        <option value="Transfer Bank">Transfer Bank</option>
-                                        <option value="Tunai">Tunai</option>
-                                        <option value="Kartu Kredit">Kartu Kredit</option>
-                                        <option value="Virtual Account">Virtual Account</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <div class="cash-form-group">
-                                    <label>Keterangan</label>
-                                    <input type="text" class="cash-form-control" name="notes" id="keteranganBayar"
-                                        value="">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="cash-form-group">
-                                    <label>Upload Bukti Transfer</label>
-                                    <div class="cash-file-upload-modern">
-                                        <input type="file" id="uploadBukti" name="reference_number"
-                                            accept=".jpg,.jpeg,.png,.pdf">
-                                        <div class="cash-file-label-modern">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="cash-file-info-modern">
-                                                <span>Upload Bukti Transfer</span>
-                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                <div class="col-md-4">
+                                    <div class="cash-form-group">
+                                        <label>Jumlah Dibayar</label>
+                                        <div class="cash-input-group">
+                                            <div class="cash-input-group-prepend">
+                                                <span class="cash-input-group-text">Rp</span>
                                             </div>
-                                            <span class="cash-file-size"></span>
+                                            <input type="text" class="cash-form-control" name="amount" id="jumlahBayar" value="435000000" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="cash-form-group">
+                                        <label>Metode Pembayaran</label>
+                                        <select class="cash-form-control" name="method" required>
+                                            <option value="Transfer Bank">Transfer Bank</option>
+                                            <option value="Tunai">Tunai</option>
+                                            <option value="Kartu Kredit">Kartu Kredit</option>
+                                            <option value="Virtual Account">Virtual Account</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <div class="cash-form-group">
+                                        <label>Keterangan</label>
+                                        <input type="text" class="cash-form-control" name="notes" id="keteranganBayar" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="cash-form-group">
+                                        <label>Upload Bukti Transfer</label>
+                                        <div class="cash-file-upload-modern">
+                                            <input type="file" id="uploadBukti" name="reference_number" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="cash-file-label-modern">
+                                                <i class="mdi mdi-cloud-upload"></i>
+                                                <div class="cash-file-info-modern">
+                                                    <span>Upload Bukti Transfer</span>
+                                                    <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                                </div>
+                                                <span class="cash-file-size"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <button class="cash-btn cash-btn-success mt-3 w-100" id="btnProsesBayar">
+                                <i class="mdi mdi-check-circle-outline"></i>
+                                Proses Pembayaran Lunas
+                            </button>
+                        </form>
+
+                        <div class="text-muted small mt-3 d-block d-sm-none">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Scroll untuk melihat seluruh isi form
                         </div>
-
-                        <button class="cash-btn cash-btn-success btn-lg mt-3 w-100" id="btnProsesBayar">
-                            <i class="mdi mdi-check-circle me-2"></i>
-                            Proses Pembayaran Lunas
-                        </button>
-                    </form>
-
-                    <!-- Informasi Tambahan untuk Mobile -->
-                    <div class="text-muted small mt-2 d-block d-sm-none">
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Geser untuk melihat konten lainnya
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Kolom Kanan: Info & Aksi -->
-        <div class="col-12 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="mdi mdi-information me-2 text-primary"></i>
-                        Ringkasan Transaksi
-                    </h5>
-
-                    <!-- Status Badge - Berubah sesuai skenario -->
-                    <!-- Badge Status -->
-                    <div class="text-center mb-4" id="badgeCashAwal">
-                        <span class="cash-badge cash-badge-success" style="font-size: 14px;">
-                            <i class="mdi mdi-check-circle me-1"></i>
-                            Cash Keras - Lunas
-                        </span>
-                    </div>
-                    <div class="text-center mb-4" id="badgeKonversi" style="display: none;">
-                        <span class="cash-badge cash-badge-warning" style="font-size: 14px;">
-                            <i class="mdi mdi-bank-off me-1"></i>
-                            Konversi KPR - Cash Keras
-                        </span>
-                    </div>
-
-                    <!-- Ringkasan Transaksi -->
-                    <div class="mb-4 cash-summary-card">
-                        <table class="cash-table">
-                            <tr>
-                                <td>Harga Unit</td>
-                                <td class="text-end" id="hargaUnitView">Rp 0</td>
-                            </tr>
-                            <tr>
-                                <td>Harga Nego</td>
-                                <td class="text-end cash-text-primary" id="hargaNegoView">Rp 0</td>
-                            </tr>
-                            <tr>
-                                <td>Diskon</td>
-                                <td class="text-end cash-text-success" id="diskonView">- Rp 0</td>
-                            </tr>
-                            <tr class="fw-bold">
-                                <td>TOTAL LUNAS</td>
-                                <td class="text-end cash-text-danger" id="totalLunasView">Rp 0</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <hr class="my-3">
-
-                    <!-- Timeline Transaksi -->
-                    <h6 class="cash-text-primary mb-3">Timeline Transaksi</h6>
-                    <div class="cash-timeline">
-                        <!-- Booking Unit -->
-                        <div class="cash-timeline-item">
-                            <div class="cash-timeline-icon">
-                                <i class="mdi mdi-check-circle text-success"></i>
-                            </div>
-                            <div class="cash-timeline-content">
-                                <span class="cash-timeline-title">Booking Unit</span>
-                                <span class="cash-timeline-date">
-                                    {{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('l, d F Y') }}
-                                </span>
-                            </div>
+            <div class="col-12 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="kpr-section-title">
+                            <i class="mdi mdi-clipboard-text-outline"></i>
+                            <span>Ringkasan Transaksi</span>
                         </div>
 
-                        <!-- Negosiasi Harga -->
-                        @if ($booking->harga_unit != $booking->harga_nego)
-                            <div class="cash-timeline-item">
-                                <div class="cash-timeline-icon">
-                                    <i class="mdi mdi-check-circle text-success"></i>
-                                </div>
-                                <div class="cash-timeline-content">
-                                    <span class="cash-timeline-title">Negosiasi Harga</span>
-                                    <span class="cash-timeline-date">
-                                        {{ \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('l, d F Y') }}
-                                        - Diskon
-                                        {{ 'Rp ' . number_format($booking->unit->price - $booking->harga_nego, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-                        @endif
-
-                        <!-- Semua Pembayaran -->
-                        @foreach ($booking->payments->sortBy('payment_date') as $payment)
-                            <div class="cash-timeline-item">
-                                <div class="cash-timeline-icon">
-                                    @if ($payment->payment_date)
-                                        <i class="mdi mdi-check-circle text-success"></i>
-                                    @else
-                                        <i class="mdi mdi-clock-outline text-warning"></i>
-                                    @endif
-                                </div>
-                                <div class="cash-timeline-content">
-                                    <span class="cash-timeline-title">
-                                        @switch($payment->type)
-                                            @case('booking_fee')
-                                                Booking Fee
-                                            @break
-
-                                            @case('dp')
-                                                DP
-                                            @break
-
-                                            @case('cicilan')
-                                                Cicilan
-                                            @break
-
-                                            @case('pelunasan')
-                                                Pelunasan
-                                            @break
-                                        @endswitch
-                                    </span>
-                                    <span class="cash-timeline-date">
-                                        {{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->translatedFormat('l, d F Y') : 'Menunggu pembayaran' }}
-                                        - {{ 'Rp ' . number_format($payment->amount, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <hr class="my-3">
-
-                    <!-- Dokumen Penting -->
-                    <h6 class="cash-text-primary mb-3">Dokumen</h6>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Surat Perjanjian Cash</span>
-                            <button class="cash-btn cash-btn-outline-primary"
-                                style="width: auto; padding: 0.25rem 0.75rem;">
-                                <i class="mdi mdi-download"></i>
-                            </button>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Bukti Negosiasi Harga</span>
-                            <button class="cash-btn cash-btn-outline-primary"
-                                style="width: auto; padding: 0.25rem 0.75rem;">
-                                <i class="mdi mdi-download"></i>
-                            </button>
-                        </div>
-
-                        @php
-                            $payment = $unit->activeBooking
-                                ? $unit->activeBooking->payments()->latest()->first()
-                                : null;
-
-                            $label = null;
-
-                            if ($payment) {
-                                switch ($payment->type) {
-                                    case 'booking_fee':
-                                        $label = 'Booking Fee';
-                                        break;
-                                    case 'dp':
-                                        $label = 'DP';
-                                        break;
-                                    case 'pelunasan':
-                                        $label = 'Pelunasan';
-                                        break;
-                                    case 'cicilan':
-                                        $label = 'Cicilan';
-                                        break;
-                                }
-                            }
-                        @endphp
-
-                        @if ($payment && $payment->reference_number)
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span>
-                                    <i class="mdi mdi-bank-transfer me-1"></i>
-                                    {{ $label }}
-                                </span>
-                                <a href="{{ asset('storage/' . $payment->reference_number) }}" target="_blank"
-                                    class="cash-btn cash-btn-outline-success"
-                                    style="width: auto; padding: 0.25rem 0.75rem;">
-                                    <i class="mdi mdi-download"></i>
-                                </a>
-                            </div>
-                        @endif
-
-                        <!-- DOKUMEN TAMBAHAN UNTUK SKENARIO 2 -->
-                        <div class="d-flex justify-content-between align-items-center mb-2" id="dokumenPenolakan"
-                            style="display: none;">
-                            <span>
-                                <i class="mdi mdi-file-pdf text-danger me-1"></i>
-                                Surat Penolakan KPR
+                        <div class="mb-3 text-center" id="badgeCashAwal">
+                            <span class="cash-status-banner success">
+                                <i class="mdi mdi-check-circle-outline"></i>
+                                Cash Keras - Lunas
                             </span>
-                            <button class="cash-btn cash-btn-outline-danger"
-                                style="width: auto; padding: 0.25rem 0.75rem;">
-                                <i class="mdi mdi-download"></i>
-                            </button>
                         </div>
-                    </div>
 
-                    <hr class="my-3">
+                        <div class="mb-3 text-center" id="badgeKonversi" style="display: none;">
+                            <span class="cash-status-banner warning">
+                                <i class="mdi mdi-bank-off"></i>
+                                Konversi KPR - Cash Keras
+                            </span>
+                        </div>
 
-                    <!-- Tombol Aksi -->
-                    <div class="d-flex flex-column gap-2">
-                        <button
-                            onclick="handleInvoice(
-                                '{{ route('cetak.invoice_cash', $booking->id) }}',
-                                '{{ route('cetak.invoice_wa', $booking->id) }}'
-                            )"
-                            class="cash-btn cash-btn-primary w-100">
-                            <i class="mdi mdi-printer me-2"></i>
-                            Cetak & Kirim WA
-                        </button>
+                        <div class="cash-summary-stack">
+                            <div class="cash-summary-box primary">
+                                <div class="label">Harga Unit</div>
+                                <div class="value" id="hargaUnitView">Rp 0</div>
+                            </div>
 
-                        <button class="cash-btn cash-btn-info w-100">
-                            <i class="mdi mdi-whatsapp me-2"></i>
-                            Kirim Invoice
-                        </button>
-                        {{-- Tombol Cash --}}
-                        @if ($booking->status_cash == 'process')
-                            <a href="{{ route('akad.cash', $booking->id) }}"
-                                class="cash-btn cash-btn-outline-warning w-100">
-                                <i class="mdi mdi-handshake-outline me-2"></i> Lanjut ke Akad
-                            </a>
-                        @elseif($booking->status_cash == 'done')
-                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
-                                <i class="mdi mdi-check-circle-outline me-2"></i> Cash Keras - Sudah Lunas
-                            </button>
-                        @else
-                            <button class="cash-btn cash-btn-outline-warning w-100" disabled>
-                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Pembayaran
-                            </button>
-                        @endif
-                        @php
-                            $isLegalDone = strtolower($booking->status_legal) == 'done';
-                            $isBuildDone = strtolower($booking->unit->construction_progress) == 'selesai';
-                            $isAkadDone = $booking->status_akad == 'done';
-                        @endphp
+                            <div class="cash-summary-box primary">
+                                <div class="label">Harga Nego</div>
+                                <div class="value" id="hargaNegoView">Rp 0</div>
+                            </div>
 
-                        @if ($isAkadDone)
-                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
-                                <i class="mdi mdi-check-circle-outline me-2"></i> Sudah Akad
-                            </button>
-                        @elseif ($isLegalDone && $isBuildDone)
-                            {{-- Sudah siap akad --}}
-                            <a href="{{ route('akad.cash', $booking->id) }}"
-                                class="cash-btn cash-btn-outline-primary w-100">
-                                <i class="mdi mdi-cash me-2"></i> Proses Akad
-                            </a>
-                        @elseif ($isLegalDone && !$isBuildDone)
-                            {{-- Legal sudah, tapi pembangunan belum selesai --}}
-                            <a href="{{ route('properti.progress', $booking->unit->land_bank_id) }}?unit_id={{ $booking->unit->id }}"
-                                class="cash-btn cash-btn-outline-warning w-100">
-                                <i class="mdi mdi-hammer me-2"></i> Lihat Progress Pembangunan
-                            </a>
-                        @else
-                            {{-- Masih belum siap --}}
-                            <button class="cash-btn cash-btn-outline-secondary w-100" disabled>
-                                <i class="mdi mdi-clock-outline me-2"></i> Menunggu Legal & Pembangunan
-                            </button>
-                        @endif
-                        {{-- Tombol Legal --}}
-                        @if ($booking->status_legal == 'done')
-                            <button class="cash-btn cash-btn-outline-success w-100" disabled>
-                                <i class="mdi mdi-check-circle-outline me-2"></i> Legal Document Selesai
-                            </button>
-                        @else
-                            <a href="{{ route('cash.document.legal', $booking->id) }}"
-                                class="cash-btn cash-btn-outline-warning w-100">
-                                <i class="mdi mdi-file-certificate-outline me-2"></i> Persiapan Document Legal -
-                                {{ $booking->customer->name }}
-                            </a>
-                        @endif
+                            <div class="cash-summary-box success">
+                                <div class="label">Diskon</div>
+                                <div class="value" id="diskonView">- Rp 0</div>
+                            </div>
 
+                            <div class="cash-summary-box danger">
+                                <div class="label">Total Lunas</div>
+                                <div class="value" id="totalLunasView">Rp 0</div>
+                            </div>
+                        </div>
 
-                        <button class="cash-btn cash-btn-outline-secondary w-100">
-                            <i class="mdi mdi-arrow-left me-2"></i>
-                            Kembali
-                        </button>
+                        <div class="kpr-sidebar-section cash-timeline-section">
+                            <div class="kpr-sidebar-title cash-timeline-title-wrap">Timeline Transaksi</div>
+
+                            <div class="cash-timeline">
+                                <div class="cash-timeline-item">
+                                    <div class="cash-timeline-icon">
+                                        <i class="mdi mdi-check-circle text-success"></i>
+                                    </div>
+                                    <div class="cash-timeline-content">
+                                        <span class="cash-timeline-title">Booking Unit</span>
+                                        <span class="cash-timeline-date">
+                                            {{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('l, d F Y') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @if ($booking->harga_unit != $booking->harga_nego)
+                                    <div class="cash-timeline-item">
+                                        <div class="cash-timeline-icon">
+                                            <i class="mdi mdi-check-circle text-success"></i>
+                                        </div>
+                                        <div class="cash-timeline-content">
+                                            <span class="cash-timeline-title">Negosiasi Harga</span>
+                                            <span class="cash-timeline-date">
+                                                {{ \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('l, d F Y') }}
+                                                - Diskon {{ 'Rp ' . number_format($booking->unit->price - $booking->harga_nego, 0, ',', '.') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @foreach ($booking->payments->sortBy('payment_date') as $payment)
+                                    <div class="cash-timeline-item">
+                                        <div class="cash-timeline-icon">
+                                            @if ($payment->payment_date)
+                                                <i class="mdi mdi-check-circle text-success"></i>
+                                            @else
+                                                <i class="mdi mdi-clock-outline text-warning"></i>
+                                            @endif
+                                        </div>
+                                        <div class="cash-timeline-content">
+                                            <span class="cash-timeline-title">
+                                                @switch($payment->type)
+                                                    @case('booking_fee') Booking Fee @break
+                                                    @case('dp') DP @break
+                                                    @case('cicilan') Cicilan @break
+                                                    @case('pelunasan') Pelunasan @break
+                                                @endswitch
+                                            </span>
+                                            <span class="cash-timeline-date">
+                                                {{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->translatedFormat('l, d F Y') : 'Menunggu pembayaran' }}
+                                                - {{ 'Rp ' . number_format($payment->amount, 0, ',', '.') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="kpr-sidebar-section cash-doc-section">
+                            <div class="kpr-sidebar-title mb-3">Dokumen</div>
+
+                            <div class="cash-doc-row">
+                                <div class="cash-doc-left">
+                                    <div class="cash-doc-badge empty">
+                                        <i class="mdi mdi-file-outline"></i>
+                                    </div>
+                                    <div>
+                                        <div class="cash-doc-name">Surat Perjanjian Cash</div>
+                                        <small class="cash-doc-sub">Dokumen belum tersedia</small>
+                                    </div>
+                                </div>
+                                <button class="cash-btn cash-btn-outline-secondary" style="padding: 0.45rem 0.8rem;" disabled>
+                                    <i class="mdi mdi-download-off"></i>
+                                </button>
+                            </div>
+
+                            <div class="cash-doc-row">
+                                <div class="cash-doc-left">
+                                    <div class="cash-doc-badge empty">
+                                        <i class="mdi mdi-file-outline"></i>
+                                    </div>
+                                    <div>
+                                        <div class="cash-doc-name">Bukti Negosiasi Harga</div>
+                                        <small class="cash-doc-sub">Dokumen belum tersedia</small>
+                                    </div>
+                                </div>
+                                <button class="cash-btn cash-btn-outline-secondary" style="padding: 0.45rem 0.8rem;" disabled>
+                                    <i class="mdi mdi-download-off"></i>
+                                </button>
+                            </div>
+
+                            @php
+                                $payment = $unit->activeBooking ? $unit->activeBooking->payments()->latest()->first() : null;
+                                $label = null;
+
+                                if ($payment) {
+                                    switch ($payment->type) {
+                                        case 'booking_fee':
+                                            $label = 'Booking Fee';
+                                            break;
+                                        case 'dp':
+                                            $label = 'DP';
+                                            break;
+                                        case 'pelunasan':
+                                            $label = 'Pelunasan';
+                                            break;
+                                        case 'cicilan':
+                                            $label = 'Cicilan';
+                                            break;
+                                    }
+                                }
+                            @endphp
+
+                            @if ($payment && $payment->reference_number)
+                                <div class="cash-doc-row">
+                                    <div class="cash-doc-left">
+                                        <div class="cash-doc-badge available">
+                                            <i class="mdi mdi-file-check-outline"></i>
+                                        </div>
+                                        <div>
+                                            <div class="cash-doc-name">
+                                                <i class="mdi mdi-bank-transfer me-1"></i>{{ $label }}
+                                            </div>
+                                            <small class="cash-doc-sub">Dokumen tersedia dan dapat diunduh</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ asset('storage/' . $payment->reference_number) }}" target="_blank"
+                                        class="cash-btn cash-btn-outline-success" style="padding: 0.45rem 0.8rem;">
+                                        <i class="mdi mdi-download"></i>
+                                    </a>
+                                </div>
+                            @else
+                                <div class="cash-doc-row">
+                                    <div class="cash-doc-left">
+                                        <div class="cash-doc-badge empty">
+                                            <i class="mdi mdi-file-outline"></i>
+                                        </div>
+                                        <div>
+                                            <div class="cash-doc-name">Bukti Pembayaran</div>
+                                            <small class="cash-doc-sub">Belum ada file yang diupload</small>
+                                        </div>
+                                    </div>
+                                    <button class="cash-btn cash-btn-outline-secondary" style="padding: 0.45rem 0.8rem;" disabled>
+                                        <i class="mdi mdi-download-off"></i>
+                                    </button>
+                                </div>
+                            @endif
+
+                            <div class="cash-doc-row" id="dokumenPenolakan" style="display: none;">
+                                <div class="cash-doc-left">
+                                    <div class="cash-doc-badge available">
+                                        <i class="mdi mdi-file-pdf-box"></i>
+                                    </div>
+                                    <div>
+                                        <div class="cash-doc-name">Surat Penolakan KPR</div>
+                                        <small class="cash-doc-sub">Dokumen tersedia dan dapat diunduh</small>
+                                    </div>
+                                </div>
+                                <button class="cash-btn cash-btn-outline-warning" style="padding: 0.45rem 0.8rem;">
+                                    <i class="mdi mdi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="kpr-sidebar-section">
+                            <div class="d-flex flex-column gap-2">
+                                <button
+                                    onclick="handleInvoice('{{ route('cetak.invoice_cash', $booking->id) }}','{{ route('cetak.invoice_wa', $booking->id) }}')"
+                                    class="cash-btn cash-btn-primary w-100">
+                                    <i class="mdi mdi-printer"></i>
+                                    Cetak & Kirim WA
+                                </button>
+
+                                <button class="cash-btn cash-btn-info w-100">
+                                    <i class="mdi mdi-whatsapp"></i>
+                                    Kirim Invoice
+                                </button>
+
+                                @if ($booking->status_cash == 'process')
+                                    <a href="{{ route('akad.cash', $booking->id) }}" class="cash-btn cash-btn-outline-warning w-100">
+                                        <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad
+                                    </a>
+                                @elseif($booking->status_cash == 'done')
+                                    <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                        <i class="mdi mdi-check-circle-outline"></i> Cash Keras - Sudah Lunas
+                                    </button>
+                                @else
+                                    <button class="cash-btn cash-btn-outline-secondary w-100" disabled>
+                                        <i class="mdi mdi-clock-outline"></i> Menunggu Pembayaran
+                                    </button>
+                                @endif
+
+                                @php
+                                    $isLegalDone = strtolower($booking->status_legal) == 'done';
+                                    $isBuildDone = strtolower($booking->unit->construction_progress) == 'selesai';
+                                    $isAkadDone = $booking->status_akad == 'done';
+                                @endphp
+
+                                @if ($isAkadDone)
+                                    <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                        <i class="mdi mdi-check-circle-outline"></i> Sudah Akad
+                                    </button>
+                                @elseif ($isLegalDone && $isBuildDone)
+                                    <a href="{{ route('akad.cash', $booking->id) }}" class="cash-btn cash-btn-outline-primary w-100">
+                                        <i class="mdi mdi-cash"></i> Proses Akad
+                                    </a>
+                                @elseif ($isLegalDone && !$isBuildDone)
+                                    <a href="{{ route('properti.progress', $booking->unit->land_bank_id) }}?unit_id={{ $booking->unit->id }}"
+                                        class="cash-btn cash-btn-outline-warning w-100">
+                                        <i class="mdi mdi-hammer"></i> Lihat Progress Pembangunan
+                                    </a>
+                                @else
+                                    <button class="cash-btn cash-btn-outline-secondary w-100" disabled>
+                                        <i class="mdi mdi-clock-outline"></i> Menunggu Legal & Pembangunan
+                                    </button>
+                                @endif
+
+                                @if ($booking->status_legal == 'done')
+                                    <button class="cash-btn cash-btn-outline-success w-100" disabled>
+                                        <i class="mdi mdi-check-circle-outline"></i> Legal Document Selesai
+                                    </button>
+                                @else
+                                    <a href="{{ route('cash.document.legal', $booking->id) }}" class="cash-btn cash-btn-outline-warning w-100">
+                                        <i class="mdi mdi-file-certificate-outline"></i> Persiapan Document Legal
+                                    </a>
+                                @endif
+
+                                <button class="cash-btn cash-btn-outline-secondary w-100">
+                                    <i class="mdi mdi-arrow-left"></i>
+                                    Kembali
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
-
-@push('styles')
-    <style>
-        /* Custom styles asli - tetap sama */
-        .bg-light {
-            background-color: #f8f9fc !important;
-        }
-
-        .bg-warning-subtle {
-            background-color: #fff3cd !important;
-        }
-
-        .badge {
-            padding: 5px 10px;
-            font-weight: 500;
-        }
-
-        hr {
-            border-top: 1px solid rgba(0, 0, 0, .1);
-        }
-
-        .table-borderless td {
-            padding: 0.3rem 0;
-        }
-
-        /* Responsive */
-        @media (max-width: 576px) {
-            .d-flex.flex-wrap .mt-3.mt-sm-0 {
-                width: 100%;
-            }
-
-            .d-flex.flex-wrap .mt-3.mt-sm-0 .d-flex {
-                justify-content: space-between;
-            }
-
-            .d-flex.flex-wrap .mt-3.mt-sm-0 .d-flex>div {
-                margin-right: 0 !important;
-                text-align: center;
-                flex: 1;
-            }
-        }
-
-        .h-100 {
-            height: 100%;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        .gap-3 {
-            gap: 1rem;
-        }
-    </style>
-@endpush
 
 @push('scripts')
     <script>
         function handleInvoice(printUrl, waUrl) {
-            // buka cetak di tab baru
             window.open(printUrl, '_blank');
-
-            // redirect ke WA setelah 1 detik
             setTimeout(() => {
                 window.location.href = waUrl;
             }, 1000);
         }
     </script>
+
     <script>
         $(document).ready(function() {
-            // Fungsi format rupiah
             function formatRupiah(angka) {
                 angka = angka.toString();
                 return 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -752,62 +1334,29 @@
 
                 let persenDiskon = hargaUnit > 0 ? ((diskon / hargaUnit) * 100).toFixed(2) : 0;
 
-                // ===== Update Semua Elemen Dinamis =====
-                // Ringkasan Transaksi
                 $('#hargaUnitView').text(formatRupiah(hargaUnit));
                 $('#hargaNegoView').text(formatRupiah(hargaNego));
                 $('#diskonView').text(`- ${formatRupiah(diskon)}`);
                 $('#totalLunasView').text(formatRupiah(sisaBayar));
 
-                // Alert dan Total Bayar
                 $('#totalBayar').text(formatRupiah(sisaBayar));
                 $('#totalBayarAlert').text(formatRupiah(sisaBayar));
                 $('#keteranganBayar').val(`Pelunasan Cash Keras - Nego ${formatRupiah(sisaBayar)}`);
-                $('#statusBayarNominal').text(formatRupiah(sisaBayar));
                 $('#diskonValue').text(formatRupiah(diskon));
                 $('#diskonPersen').text(persenDiskon + '%');
-                $('#hargaSetelahNego').text(formatRupiah(hargaNego));
-                $('#bookingFeeView').text(formatRupiah(bookingFee));
-                $('#sisaBayar').text(formatRupiah(sisaBayar));
-                $('#alertHargaNego').text(formatRupiah(hargaNego));
-                $('#alertSisaBayar').text(formatRupiah(sisaBayar));
-                $('#jumlahBayar').val(sisaBayar); // untuk form submission
-
-                // Badge Cash
-                if (sisaBayar === 0) {
-                    $('#badgeCashAwal').html(
-                        `<span class="cash-badge cash-badge-success"><i class="mdi mdi-check-circle me-1"></i>Cash Keras - Lunas</span>`
-                    );
-                } else {
-                    $('#badgeCashAwal').html(
-                        `<span class="cash-badge cash-badge-success"><i class="mdi mdi-check-circle me-1"></i>Cash Keras - Lunas</span>`
-                    );
-                }
-
-                // Badge Konversi contoh kondisi
-                if (diskon > 50000000) {
-                    $('#badgeKonversi').show();
-                } else {
-                    $('#badgeKonversi').hide();
-                }
-
-                // Timeline Negosiasi
-                $('#timelineNegosiasi').text(`Diskon ${formatRupiah(diskon)}`);
+                $('#jumlahBayar').val(sisaBayar);
             }
 
-            // Event listener untuk input dinamis
             $('#hargaNego, #hargaUnit, #bookingFee').on('input', function() {
                 let nilai = $(this).val().replace(/[^0-9]/g, '');
-                $(this).val(nilai); // simpan sebagai angka
+                $(this).val(nilai);
                 hitungDiskon();
             });
 
-            // File upload modern preview
             $('.cash-file-upload-modern input[type="file"]').change(function(e) {
                 const fileName = e.target.files[0]?.name;
                 const fileSize = e.target.files[0]?.size;
-                const label = $(this).closest('.cash-file-upload-modern').find(
-                    '.cash-file-info-modern span');
+                const label = $(this).closest('.cash-file-upload-modern').find('.cash-file-info-modern span');
                 const sizeSpan = $(this).closest('.cash-file-upload-modern').find('.cash-file-size');
 
                 if (fileName) {
@@ -822,7 +1371,6 @@
                 }
             });
 
-            // Toggle Skenario Cash Awal / Konversi
             $('#btnCashAwal').click(function() {
                 $(this).addClass('active');
                 $('#btnKonversi').removeClass('active');
@@ -832,7 +1380,7 @@
                 $('#badgeCashAwal').show();
                 $('#badgeKonversi').hide();
                 $('#dokumenPenolakan').hide();
-                $('#titleCash').text('Cash Keras - Lunas Langsung (Cash Awal)');
+                $('#titleCash').text('Cash Keras - Lunas Langsung');
             });
 
             $('#btnKonversi').click(function() {
@@ -847,10 +1395,10 @@
                 $('#titleCash').text('Cash Keras - Lunas Langsung (Konversi dari KPR)');
             });
 
-            // Inisialisasi hitung diskon
             hitungDiskon();
         });
     </script>
+
     @if (session('success'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -859,14 +1407,15 @@
                     title: 'Berhasil!',
                     text: "{{ session('success') }}",
                     confirmButtonText: 'OK',
-                    timer: 3000, // otomatis hilang setelah 3 detik (opsional)
+                    timer: 3000,
                 });
             });
         </script>
     @endif
+
     <script>
         document.getElementById('btnProsesBayar').addEventListener('click', function(e) {
-            e.preventDefault(); // cegah submit otomatis
+            e.preventDefault();
 
             Swal.fire({
                 title: 'Konfirmasi Pembayaran',
@@ -879,13 +1428,11 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Submit form secara manual
                     this.closest('form').submit();
                 }
             });
         });
 
-        // Optional: tampilkan SweetAlert sukses jika session success ada
         @if (session('success'))
             Swal.fire({
                 icon: 'success',
@@ -896,13 +1443,12 @@
             });
         @endif
     </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-
             const input = document.getElementById('hargaNego');
 
             input.addEventListener('keyup', function() {
-
                 let angka = this.value.replace(/[^,\d]/g, '');
                 let split = angka.split(',');
                 let sisa = split[0].length % 3;
@@ -916,7 +1462,6 @@
 
                 this.value = rupiah;
             });
-
         });
     </script>
 @endpush
