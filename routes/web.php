@@ -333,7 +333,7 @@ Route::get('/data-dokument/user/persiapan/legal', [DocumentPersiapanPecahLegalCo
 Route::get('/document-legal/detail/{booking}', [DocumentPersiapanPecahLegalController::class,'detail'])
 ->name('document_legal.detail');
 Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
-Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
+Route::post('persiapan-dokument-legal/cash/store/{booking}', [DocumentLegalController::class, 'store'])->name('document_legal.store');
 Route::post('/document-upload', [DocumentPersiapanPecahLegalController::class, 'upload'])->name('document.upload');
 
 

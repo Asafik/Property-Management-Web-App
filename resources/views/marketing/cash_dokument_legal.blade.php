@@ -425,6 +425,7 @@
                         <form action="{{ route('document_legal.store', $booking->id) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
                             <div class="row">
                                 @foreach ($documents as $doc)
                                     <div class="col-12 col-md-6 mb-3">
@@ -441,20 +442,38 @@
                                                     <p>{{ $doc->description }}</p>
                                                 </div>
                                             </div>
+                                            @php
+                                                $uploaded = $uploads[$doc->id] ?? null;
+                                            @endphp
+
                                             <div class="upload-file-modern">
+
+                                                {{-- INPUT FILE --}}
                                                 <input type="file" id="document-{{ $doc->id }}"
                                                     name="document_{{ $doc->id }}"
                                                     accept="{{ $doc->accept ?? '.jpg,.jpeg,.png,.pdf' }}"
-                                                    @if ($doc->required) required @endif>
+                                                    @if ($doc->required && !$uploaded) required @endif>
+
                                                 <div class="upload-file-label">
                                                     <i class="mdi mdi-cloud-upload"></i>
+
                                                     <div class="upload-file-info">
-                                                        <span>Upload {{ $doc->name }}</span>
-                                                        <small>Format: {{ $doc->accept ?? 'JPG, PNG, PDF' }} (Max:
-                                                            5MB)</small>
+                                                        <span>
+                                                            {{ $uploaded ? 'Ganti ' . $doc->name : 'Upload ' . $doc->name }}
+                                                        </span>
+
+                                                        <small>
+                                                            Format: {{ $doc->accept ?? 'JPG, PNG, PDF' }} (Max: 5MB)
+                                                        </small>
                                                     </div>
+
                                                     <span class="upload-file-size"></span>
                                                 </div>
+                                                @if ($uploaded && Str::contains($uploaded->file_name, ['jpg', 'jpeg', 'png']))
+                                                    <img src="{{ asset('storage/' . $uploaded->file_path) }}"
+                                                        style="max-width:100%; margin-top:10px; border-radius:8px;">
+                                                @endif
+
                                             </div>
                                         </div>
                                     </div>

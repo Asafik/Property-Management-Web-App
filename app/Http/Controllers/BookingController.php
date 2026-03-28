@@ -3,35 +3,63 @@
 namespace App\Http\Controllers;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
     //
 public function updateNego(Request $request, $id)
 {
-    // Validasi input
-    $request->validate([
-        'harga_nego' => 'required|numeric|min:0',
-    ]);
+    try {
+    
+        $cleanHarga = str_replace(['.', ','], '', $request->harga_nego);
 
-    // Ambil booking
-    $booking = Booking::findOrFail($id);
+            $request->merge([
+            'harga_nego' => $cleanHarga
+        ]);
 
-    // Konversi input dari string format "435.000.000" ke integer
-    $hargaNego = (int) str_replace(['.', ','], '', $request->harga_nego);
 
-    // Update harga nego
-    $booking->harga_nego = $hargaNego;
+        $request->validate([
+            'harga_nego' => 'required|numeric|min:0',
+        ]);
 
-    // Update status_cash menjadi 'process'
-    $booking->status_cash = 'process';
+        // Ambil booking
+        $booking = Booking::findOrFail($id);
 
-    // Simpan perubahan
-    $booking->save();
+        // Log sebelum update
+        Log::info('Update nego dimulai', [
+            'booking_id' => $id,
+            'harga_input_raw' => $request->harga_nego,
+            'user_id' => auth()->id(),
+            'ip' => request()->ip()
+        ]);
 
-    // Flash message
-    return redirect()
-        ->route('marketing.cash', $booking->id)
-        ->with('success', 'Harga negosiasi berhasil diperbarui dan status cash diupdate!');
+        // Simpan ke database
+        $booking->harga_nego = (int) $request->harga_nego;
+        $booking->status_cash = 'process';
+        $booking->save();
+
+        // Log setelah berhasil
+        Log::info('Update nego berhasil', [
+            'booking_id' => $booking->id,
+            'harga_nego' => $booking->harga_nego,
+            'status_cash' => $booking->status_cash
+        ]);
+
+        return redirect()
+            ->route('marketing.cash', $booking->id)
+            ->with('success', 'Harga negosiasi berhasil diperbarui dan status cash diupdate!');
+
+    } catch (\Exception $e) {
+
+        // Log error jika gagal
+        Log::error('Update nego gagal', [
+            'booking_id' => $id,
+            'error' => $e->getMessage(),
+            'input' => $request->all()
+        ]);
+
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat update!');
+    }
 }
 }
