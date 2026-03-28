@@ -40,7 +40,7 @@
                                 <div>
                                     <small class="text-muted d-block">Jenis</small>
                                     <span class="fw-medium">
-                                        {{ $booking->unit->jenis == 'komersil' ? 'Komersil' : '-' }}
+                                        {{ $booking->unit->jenis == 'komersil' ? 'Komersil' : ($booking->unit->jenis == 'subsidi' ? 'Subsidi' : '-') }}
                                     </span>
                                 </div>
                                 <div>
