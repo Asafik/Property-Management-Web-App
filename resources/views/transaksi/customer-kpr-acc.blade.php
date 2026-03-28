@@ -446,10 +446,10 @@ h3.text-dark {
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-file-document-check-outline me-2" style="color: #9a55ff;"></i>Daftar Customer KPR Terverifikasi
-                        </h3>
+                            <i class="mdi mdi-file-document-check-outline me-2" style="color: #9a55ff;"></i>Daftar User KPR Persiapan Pecah Legal Unit
+                        </h3>   
                         <p class="text-muted mb-0">
-                            Kelola data customer KPR yang telah terverifikasi
+                           Persiapan Pecah Legal Unit
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
