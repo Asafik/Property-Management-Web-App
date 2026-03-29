@@ -977,11 +977,11 @@
                                             </select>
                                         </div>
 
-                                        <!-- Type -->
+                                        <!-- Kategori -->
                                         <div class="col-md-2">
-                                            <label class="form-label">Type</label>
+                                            <label class="form-label">Kategori</label>
                                             <select class="form-control" id="typeSelect">
-                                                <option value="">Semua Type</option>
+                                                <option value="">Semua Kategory</option>
                                                 @foreach ($filterOptions['types'] ?? [] as $type)
                                                     <option value="{{ $type }}"
                                                         {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}
@@ -1134,7 +1134,7 @@
                                         <th>Nama Perusahaan</th>
                                         <th class="sortable" data-field="zoning"
                                             data-direction="{{ request('sortField') == 'zoning' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                            Type
+                                            Kategori
                                             @if (request('sortField') == 'zoning')
                                                 <i
                                                     class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }} sort-icon"></i>
@@ -1217,10 +1217,10 @@
                                                 <span class="unit-badge">{{ $item->units->count() }} Unit</span>
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ request()->fullUrlWithQuery(['detail' => $item->id]) }}"
-                                                    class="btn btn-outline-purple btn-sm">
+                                                <button type="button" class="btn btn-outline-purple btn-sm"
+                                                    onclick="lihatDetail({{ $item->id }})">
                                                     <i class="mdi mdi-eye"></i> Lihat
-                                                </a>
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -1303,172 +1303,90 @@
     </div>
 
     <!-- MODAL DETAIL UNTUK SETIAP ITEM -->
-    @foreach ($landBank as $item)
-        <div class="modal fade" id="modalDetailLandbank{{ $item->id }}" tabindex="-1"
-            aria-labelledby="modalDetailLabel{{ $item->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content border-0 shadow">
-                    <div class="modal-header"
-                        style="background: linear-gradient(135deg, #da8cff, #9a55ff); color: white;">
-                        <h5 class="modal-title" id="modalDetailLabel{{ $item->id }}">
-                            <i class="mdi mdi-eye me-2"></i>Detail Landbank
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+    <div class="modal fade" id="modalDetailLandbank" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header" style="background: linear-gradient(135deg, #da8cff, #9a55ff); color: white;">
+                    <h5 class="modal-title" id="modalDetailLabel">
+                        <i class="mdi mdi-eye me-2"></i>Detail Landbank
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- INFORMASI UTAMA -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Nama Proyek</label>
+                                    <h6 class="fw-bold mb-0" id="detail-name">-</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Perusahaan</label>
+                                    <h6 class="fw-bold mb-0" id="detail-company">-</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Tipe / Zoning</label>
+                                    <h6 class="mb-0" id="detail-zoning">-</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Status</label><br>
+                                    <div id="detail-status">-</div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="text-muted small">Lokasi</label>
+                                    <p class="mb-0" id="detail-address">-</p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="text-muted small">Harga Perolehan</label>
+                                    <h5 class="text-success fw-bold mb-0" id="detail-price">
+                                        Rp 0
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <!-- INFORMASI UTAMA -->
-                        <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="text-muted small">Nama Proyek</label>
-                                        <h6 class="fw-bold mb-0">{{ $item->name }}</h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted small">Perusahaan</label>
-                                        <h6 class="fw-bold mb-0">{{ $item->companyProfile->name ?? '-' }}</h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted small">Tipe / Zoning</label>
-                                        <h6 class="mb-0">{{ $item->zoning ?? '-' }}</h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted small">Status</label><br>
-                                        @if ($item->status == 'ready')
-                                            <span class="status-badge-gradient success">Tersedia</span>
-                                        @elseif($item->status == 'sold')
-                                            <span class="status-badge-gradient danger">Terjual</span>
-                                        @else
-                                            <span
-                                                class="status-badge-gradient warning">{{ ucfirst($item->status ?? '-') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="text-muted small">Lokasi</label>
-                                        <p class="mb-0">{{ $item->address }}</p>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="text-muted small">Harga Perolehan</label>
-                                        <h5 class="text-success fw-bold mb-0">
-                                            Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
+
+                    <!-- DETAIL UNIT -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light fw-bold">
+                            <i class="mdi mdi-view-list me-2 text-success"></i>
+                            Detail Unit
                         </div>
-
-                        <!-- DETAIL UNIT -->
-                        <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header bg-light fw-bold">
-                                <i class="mdi mdi-view-list me-2 text-success"></i>
-                                Detail Unit
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Unit</th>
+                                            <th>Type Unit</th>
+                                            <th>Proses Pembangunan</th>
+                                            <th>Booking</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="unit-table-body">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">
+                                                Tidak ada data unit
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Unit</th>
-                                                <th>Type Unit</th>
-                                                <th>Proses Pembangunan</th>
-                                                <th>Booking</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                           @forelse ($units ?? [] as $unit)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $unit->unit_name ?? ($unit->unit_number ?? '-') }}</td>
-                                                    <td>{{ $unit->type ?? '-' }}</td>
-                                                    <td>
-                                                        @if ($unit->construction_progress)
-                                                            @switch($unit->construction_progress)
-                                                                @case('belum_mulai')
-                                                                    <span class="badge bg-secondary">Belum Mulai</span>
-                                                                @break
-
-                                                                @case('pondasi')
-                                                                    <span class="badge bg-info">Pondasi</span>
-                                                                @break
-
-                                                                @case('dinding')
-                                                                    <span class="badge bg-primary">Dinding</span>
-                                                                @break
-
-                                                                @case('atap')
-                                                                    <span class="badge bg-warning text-dark">Atap</span>
-                                                                @break
-
-                                                                @case('finishing')
-                                                                    <span class="badge bg-dark text-white">Finishing</span>
-                                                                @break
-
-                                                                @case('selesai')
-                                                                    <span class="badge bg-success">Selesai</span>
-                                                                @break
-
-                                                                @default
-                                                                    <span
-                                                                        class="badge bg-secondary">{{ ucfirst($unit->construction_progress) }}</span>
-                                                            @endswitch
-                                                        @else
-                                                            <span class="badge bg-secondary">-</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($unit->activeBooking && $unit->activeBooking->customer)
-                                                            {{ $unit->activeBooking->customer->full_name }}
-                                                        @else
-                                                            <span class="text-muted">-</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($unit->status == 'tersedia')
-                                                            <span class="badge bg-success">Tersedia</span>
-                                                        @elseif($unit->status == 'terjual' || $unit->status == 'sold')
-                                                            <span class="badge"
-                                                                style="background: #dc3545; color: white;">
-                                                                <i class="mdi mdi-cancel me-1"></i>Terjual/Sold
-                                                            </span>
-                                                        @elseif($unit->status == 'dipesan' || $unit->status == 'booked')
-                                                            <span class="badge"
-                                                                style="background: #ffc107; color: #2c2e3f;">
-                                                                <i class="mdi mdi-clock me-1"></i>Dipesan/Booked
-                                                            </span>
-                                                        @else
-                                                            <span
-                                                                class="badge bg-secondary">{{ $unit->status ?? '-' }}</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="6" class="text-center text-muted py-4">
-                                                            Tidak ada data unit
-                                                        </td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                        <div class="p-3">
-                                            {{ $units?->appends(request()->query())->links() }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                                <i class="mdi mdi-close me-1"></i>Tutup
-                            </button>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Tutup
+                    </button>
+                </div>
             </div>
-        @endforeach
+        </div>
+    </div>
 
     @endsection
 
@@ -1583,16 +1501,107 @@
             });
 
             function lihatDetail(id) {
-                console.log('Lihat detail ID: ' + id);
+                // Show loading state
+                Swal.fire({
+                    title: 'Memuat detail...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: '/dashboard/detail/' + id,
+                    type: 'GET',
+                    success: function(item) {
+                        Swal.close();
+
+                        // Fill main information
+                        $('#detail-name').text(item.name || '-');
+                        $('#detail-company').text(item.company_profile ? item.company_profile.name : '-');
+                        $('#detail-zoning').text(item.zoning || '-');
+                        $('#detail-address').text(item.address || '-');
+                        $('#detail-price').text('Rp ' + Number(item.acquisition_price || 0).toLocaleString('id-ID'));
+
+                        // Status badge
+                        let statusHtml = '';
+                        if (item.status === 'ready') {
+                            statusHtml = '<span class="status-badge-gradient success">Tersedia</span>';
+                        } else if (item.status === 'sold') {
+                            statusHtml = '<span class="status-badge-gradient danger">Terjual</span>';
+                        } else {
+                            statusHtml = '<span class="status-badge-gradient warning">' + (item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : '-') + '</span>';
+                        }
+                        $('#detail-status').html(statusHtml);
+
+                        // Fill units table
+                        let unitRows = '';
+                        if (item.units && item.units.length > 0) {
+                            item.units.forEach((unit, index) => {
+                                let progressBadge = '<span class="badge bg-secondary">-</span>';
+                                if (unit.construction_progress) {
+                                    const progress = unit.construction_progress;
+                                    switch (progress) {
+                                        case 'belum_mulai': progressBadge = '<span class="badge bg-secondary">Belum Mulai</span>'; break;
+                                        case 'pondasi': progressBadge = '<span class="badge bg-info">Pondasi</span>'; break;
+                                        case 'dinding': progressBadge = '<span class="badge bg-primary">Dinding</span>'; break;
+                                        case 'atap': progressBadge = '<span class="badge bg-warning text-dark">Atap</span>'; break;
+                                        case 'finishing': progressBadge = '<span class="badge bg-dark text-white">Finishing</span>'; break;
+                                        case 'selesai': progressBadge = '<span class="badge bg-success">Selesai</span>'; break;
+                                        default: progressBadge = '<span class="badge bg-secondary">' + progress.charAt(0).toUpperCase() + progress.slice(1) + '</span>';
+                                    }
+                                }
+
+                                let bookingInfo = '<span class="text-muted">-</span>';
+                                if (unit.active_booking && unit.active_booking.customer) {
+                                    bookingInfo = unit.active_booking.customer.full_name;
+                                }
+
+                                let statusBadge = '';
+                                if (unit.status === 'tersedia') {
+                                    statusBadge = '<span class="badge bg-success">Tersedia</span>';
+                                } else if (unit.status === 'terjual' || unit.status === 'sold') {
+                                    statusBadge = '<span class="badge" style="background: #dc3545; color: white;"><i class="mdi mdi-cancel me-1"></i>Terjual/Sold</span>';
+                                } else if (unit.status === 'dipesan' || unit.status === 'booked') {
+                                    statusBadge = '<span class="badge" style="background: #ffc107; color: #2c2e3f;"><i class="mdi mdi-clock me-1"></i>Dipesan/Booked</span>';
+                                } else {
+                                    statusBadge = '<span class="badge bg-secondary">' + (unit.status || '-') + '</span>';
+                                }
+
+                                unitRows += `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${unit.unit_name || unit.unit_number || '-'}</td>
+                                        <td>${unit.type || '-'}</td>
+                                        <td>${progressBadge}</td>
+                                        <td>${bookingInfo}</td>
+                                        <td>${statusBadge}</td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            unitRows = '<tr><td colspan="6" class="text-center text-muted py-4">Tidak ada data unit</td></tr>';
+                        }
+                        $('#unit-table-body').html(unitRows);
+
+                        // Show modal
+                        $('#modalDetailLandbank').modal('show');
+                    },
+                    error: function(err) {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Gagal memuat detail data'
+                        });
+                        console.error('Error fetching detail:', err);
+                    }
+                });
             }
         </script>
         <script>
             $(document).ready(function() {
-                const detailId = new URLSearchParams(window.location.search).get('detail');
-
-                if (detailId) {
-                    $('#modalDetailLandbank' + detailId).modal('show');
-                }
+                // Remove old query-based modal opener
             });
         </script>
         <script>

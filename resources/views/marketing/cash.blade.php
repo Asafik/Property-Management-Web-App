@@ -26,6 +26,19 @@
             min-height: 110px;
         }
 
+        .badge {
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
+
         .customer-avatar {
             width: 64px;
             height: 64px;
@@ -698,7 +711,18 @@
                                     {{ strtoupper(substr($booking->customer->full_name ?? 'C', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h4 class="customer-name mb-1">{{ $booking->customer->full_name ?? '-' }}</h4>
+                                    <h4 class="customer-name mb-1 d-flex align-items-center gap-2" style="font-size: 1.4rem;">
+                                        {{ $booking->customer->full_name ?? '-' }}
+                                        @php
+                                            $jenis = strtolower($booking->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }}" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                            <i class="mdi {{ $icon }} me-1"></i>
+                                            {{ strtoupper($booking->unit->jenis ?? '-') }}
+                                        </span>
+                                    </h4>
                                     <p class="customer-booking mb-0">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
@@ -707,12 +731,6 @@
                                 <div class="info-item">
                                     <small>Unit</small>
                                     <span>{{ $booking->unit->landBank->name ?? '-' }}</span>
-                                </div>
-                                <div>
-                                    <small class="text-muted d-block">Jenis</small>
-                                    <span class="fw-medium">
-                                        {{ $booking->unit->jenis == 'komersil' ? 'Komersil' : ($booking->unit->jenis == 'subsidi' ? 'Subsidi' : '-') }}
-                                    </span>
                                 </div>
                                 <div class="info-item">
                                     <small>Blok/No</small>

@@ -652,26 +652,16 @@
                                     <!-- FILTER DESKTOP -->
                                     <div class="d-none d-md-block">
                                         <div class="row g-2 align-items-end w-100">
-                                            <div class="col-md-3 filter-col">
+                                            <div class="col-md-5 filter-col">
                                                 <label class="form-label"><i class="mdi mdi-magnify me-1"></i>Cari Unit</label>
                                                 <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari block/unit, customer, agent...">
                                             </div>
                                             <div class="col-md-2 filter-col">
-                                                <label class="form-label"><i class="mdi mdi-home me-1"></i>Proyek</label>
-                                                <select name="project" class="form-control">
-                                                    <option value="">Semua Proyek</option>
-                                                    @foreach ($projects as $project)
-                                                        <option value="{{ $project->name }}" {{ request('project') == $project->name ? 'selected' : '' }}>{{ $project->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label"><i class="mdi mdi-home-modern me-1"></i>Tipe</label>
-                                                <select name="type" class="form-control">
-                                                    <option value="">Semua Type</option>
-                                                    @foreach ($types as $type)
-                                                        <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                                                    @endforeach
+                                                <label class="form-label"><i class="mdi mdi-office-building me-1"></i>Jenis</label>
+                                                <select name="jenis" class="form-control">
+                                                    <option value="">Semua Jenis</option>
+                                                    <option value="subsidi" {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
+                                                    <option value="komersil" {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-2 filter-col">
@@ -714,22 +704,12 @@
                                             </div>
                                         </div>
                                         <div class="row filter-row g-1">
-                                            <div class="col-6">
-                                                <label class="form-label"><i class="mdi mdi-home me-1"></i>Proyek</label>
-                                                <select name="project" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($projects as $project)
-                                                        <option value="{{ $project->name }}" {{ request('project') == $project->name ? 'selected' : '' }}>{{ $project->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label"><i class="mdi mdi-home-modern me-1"></i>Tipe</label>
-                                                <select name="type" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($types as $type)
-                                                        <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                                                    @endforeach
+                                            <div class="col-12">
+                                                <label class="form-label"><i class="mdi mdi-office-building me-1"></i>Jenis</label>
+                                                <select name="jenis" class="form-control">
+                                                    <option value="">Semua Jenis</option>
+                                                    <option value="subsidi" {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
+                                                    <option value="komersil" {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -787,9 +767,9 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
-                                            <th>Block/Unit</th>
                                             <th>Proyek</th>
-                                            <th>Tipe</th>
+                                            <th>Block/Unit</th>
+                                            <th>Jenis & Tipe</th>
                                             <th class="d-none d-md-table-cell">Lokasi</th>
                                             <th>Luas Tanah</th>
                                             <th>Luas Bangunan</th>
@@ -852,21 +832,30 @@
                                             <td class="fw-bold text-center">{{ $units->firstItem() + $index }}</td>
                                             <td>
                                                 <span class="icon-text">
-                                                    <i class="mdi mdi-home-outline"></i>
-                                                    <span class="fw-bold">{{ $unit->unit_code }}</span>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="icon-text">
                                                     <i class="mdi mdi-office-building"></i>
                                                     <span class="fw-bold">{{ $unit->landBank->name ?? '-' }}</span>
                                                 </span>
                                             </td>
                                             <td>
                                                 <span class="icon-text">
-                                                    <i class="mdi mdi-floor-plan"></i>
-                                                    <span>{{ $unit->type ?? '-' }}</span>
+                                                    <i class="mdi mdi-home-outline"></i>
+                                                    <span class="fw-bold">{{ $unit->unit_code }}</span>
                                                 </span>
+                                            </td>
+                                            <td>
+                                                @if (strtolower($unit->jenis ?? '') == 'subsidi')
+                                                    <span class="badge badge-gradient-success">
+                                                        <i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}
+                                                    </span>
+                                                @elseif(strtolower($unit->jenis ?? '') == 'komersil')
+                                                    <span class="badge badge-gradient-primary">
+                                                        <i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-gradient-secondary">
+                                                        <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . '/' . ($unit->type ?? '-') }}
+                                                    </span>
+                                                @endif
                                             </td>
                                             <td class="d-none d-md-table-cell">
                                                 <span class="icon-text">
@@ -885,7 +874,7 @@
                                                 </span>
                                             </td>
                                             <td class="price-text">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</td>
-                                            <td><i class="mdi mdi-compass-outline text-primary me-1"></i>{{ $unit->facing ?? '-' }}</td>
+                                            <td class="fw-bold"><i class="mdi mdi-compass-outline text-primary me-1"></i>{{ $unit->facing ?? '-' }}</td>
                                             <td>
                                                 <span class="badge-soft {{ $statusBadge }}">
                                                     <i class="mdi {{ $statusIcon }}"></i>{{ $statusText }}
@@ -922,6 +911,7 @@
                                                         data-bs-target="#detailUnitModal"
                                                         data-unit="{{ $unit->unit_code }}"
                                                         data-block="{{ $unit->block }}"
+                                                        data-jenis="{{ $unit->jenis }}"
                                                         data-type="{{ $unit->type }}"
                                                         data-address="{{ $unit->landBank->address ?? '-' }}"
                                                         data-area="{{ $unit->area }}"
@@ -982,6 +972,15 @@
                                                 </div>
                                                 <h6 class="mt-2 fw-bold"><i class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}</h6>
                                                 <p class="text-muted small mb-1"><i class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}</p>
+                                                <p class="text-muted small mb-1">
+                                                    @if (strtolower($unit->jenis ?? '') == 'subsidi')
+                                                        <span class="badge badge-gradient-success"><i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}</span>
+                                                    @elseif(strtolower($unit->jenis ?? '') == 'komersil')
+                                                        <span class="badge badge-gradient-primary"><i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}</span>
+                                                    @else
+                                                        <span class="badge badge-gradient-secondary"><i class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . '/' . ($unit->type ?? '-') }}</span>
+                                                    @endif
+                                                </p>
                                                 <p class="small mb-1"><i class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | <i class="mdi mdi-currency-usd me-1"></i>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
                                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                                     <small class="text-muted"><i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}</small>
@@ -1105,6 +1104,7 @@
                                         <table class="table table-bordered">
                                             <tr><th>Kode Unit</th><td id="m_unit"></td></tr>
                                             <tr><th>Blok</th><td id="m_block"></td></tr>
+                                            <tr><th>Jenis Unit</th><td id="m_jenis"></td></tr>
                                             <tr><th>Tipe</th><td id="m_type"></td></tr>
                                             <tr><th>Alamat</th><td id="m_address"></td></tr>
                                             <tr><th>Luas Tanah</th><td id="m_area"></td></tr>
@@ -1280,6 +1280,7 @@
                                             let button = event.relatedTarget;
                                             document.getElementById('m_unit').innerText = button.getAttribute('data-unit');
                                             document.getElementById('m_block').innerText = button.getAttribute('data-block');
+                                            document.getElementById('m_jenis').innerText = button.getAttribute('data-jenis') || '-';
                                             document.getElementById('m_type').innerText = button.getAttribute('data-type');
                                             document.getElementById('m_address').innerText = button.getAttribute('data-address');
                                             document.getElementById('m_area').innerText = button.getAttribute('data-area') + ' m²';

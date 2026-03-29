@@ -925,7 +925,7 @@
                             </div>
                             <div>
                                 <div class="fw-bold">{{ $application->booking->sales->name ?? '-' }}</div>
-                                <small class="kpr-muted">{{ $application->booking->sales->phone ?? '-' }}</small>
+                                {{-- <small class="kpr-muted">{{ $application->booking->sales->phone ?? '-' }}</small> --}}
                             </div>
                         </div>
                     </div>

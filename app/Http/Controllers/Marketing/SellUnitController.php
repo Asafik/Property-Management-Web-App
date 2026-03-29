@@ -65,6 +65,10 @@ class SellUnitController extends Controller
             $query->where('type', $request->type);
         }
 
+        if ($request->filled('jenis')) {
+            $query->where('jenis', $request->jenis);
+        }
+
         if ($request->filled('price')) {
             if ($request->price == '<500') {
                 $query->where('price', '<', 500000000);

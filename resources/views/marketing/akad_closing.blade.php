@@ -33,6 +33,19 @@
             min-height: 110px;
         }
 
+        .badge {
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
+
         .jenis-badge {
             background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
             color: #28a745;
@@ -911,10 +924,14 @@
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
-                                        {{ $kpr->customer->full_name ?? '-' }}
-                                        <span class="jenis-badge">
-                                            <i class="mdi mdi-home-outline"></i>
-                                            {{ strtoupper($kpr->unit->jenis ?? '-') }}
+                                        {{ $kpr->booking->customer->full_name ?? '-' }}
+                                        @php
+                                            $jenis = strtolower($kpr->booking->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }} ms-2" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                            <i class="mdi mdi-home-outline me-1"></i>
+                                            {{ strtoupper($kpr->booking->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
                                     <p class="customer-booking mb-0">Booking ID: {{ $kpr->booking->booking_code ?? '-' }}</p>
@@ -1031,8 +1048,8 @@
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
-                                <div class="fw-bold">{{ $kpr->sales->name ?? '-' }}</div>
-                                <small class="kpr-muted">{{ $kpr->sales->position->name ?? '-' }}</small>
+                                <div class="fw-bold">{{ $kpr->booking->sales->name ?? '-' }}</div>
+                                {{-- <small class="kpr-muted">{{ $kpr->booking->sales->role ?? '-' }}</small> --}}
                             </div>
                         </div>
                     </div>

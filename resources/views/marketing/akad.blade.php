@@ -35,21 +35,17 @@
         }
 
         .jenis-badge {
-            background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
-            color: #28a745;
-            border: 1px solid #9ce0a6;
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.85rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            gap: 6px;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
         }
-
-        .jenis-badge i {
-            font-size: 0.95rem;
-        }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
 
         .customer-avatar {
             width: 64px;
@@ -113,7 +109,7 @@
         }
 
         .kpr-progress-top span:last-child {
-            color: #ffc107;
+            color: #9a55ff;
             font-weight: 700;
         }
 
@@ -129,7 +125,7 @@
         .kpr-progress-bar {
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, #ffc107, #ffdb6d);
+            background: linear-gradient(90deg, #c184ff, #9a55ff);
         }
 
         .kpr-steps {
@@ -163,9 +159,9 @@
         }
 
         .kpr-step.active .kpr-step-icon {
-            background: #ffc107 !important;
+            background: #9a55ff !important;
             color: #fff;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.2);
         }
 
         .kpr-step-title {
@@ -206,7 +202,7 @@
         }
 
         .kpr-detail-item .highlight {
-            color: #ffc107 !important;
+            color: #9a55ff !important;
         }
 
         .kpr-handler {
@@ -726,8 +722,13 @@
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
                                         {{ $application->customer->full_name ?? '-' }}
-                                        <span class="jenis-badge">
-                                            <i class="mdi mdi-home-outline"></i>
+                                        @php
+                                            $jenis = strtolower($application->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                        @endphp
+                                        <span class="jenis-badge {{ $badgeClass }}">
+                                            <i class="mdi {{ $icon }} me-1"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
@@ -765,16 +766,20 @@
                             <span>Tahapan Konfirmasi KPR</span>
                         </div>
 
+                        @php
+                            $jenis = strtolower($application->unit->jenis ?? '');
+                        @endphp
+
                         <div class="kpr-progress-top">
                             <span class="kpr-muted">Progress Konfirmasi</span>
-                            <span>Tahap 3 dari 5 (Proses Akad)</span>
+                            <span>Tahap {{ $jenis == 'komersil' ? '4 dari 5' : '3 dari 4' }} (Proses Akad)</span>
                         </div>
 
                         <div class="kpr-progress">
-                            <div class="kpr-progress-bar" style="width: 60%;"></div>
+                            <div class="kpr-progress-bar" style="width: {{ $jenis == 'komersil' ? '80' : '75' }}%;"></div>
                         </div>
 
-                        <div class="kpr-steps">
+                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
                             <!-- Step 1: Pengajuan - COMPLETED -->
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
@@ -793,7 +798,18 @@
                                 <small>{{ \Carbon\Carbon::parse($application->created_at ?? now())->translatedFormat('j F Y') }}</small>
                             </div>
 
-                            <!-- Step 3: Akad - ACTIVE -->
+                            @if($jenis == 'komersil')
+                            <!-- Step 3: Survey - COMPLETED (Assuming survey done before Akad) -->
+                            <div class="kpr-step completed">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                                <span class="kpr-step-title">Survey</span>
+                                <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('j F Y') : 'Selesai' }}</small>
+                            </div>
+                            @endif
+
+                            <!-- Step Akad - ACTIVE -->
                             <div class="kpr-step active">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-handshake-outline"></i>
@@ -802,16 +818,7 @@
                                 <small>Sedang diproses</small>
                             </div>
 
-                            <!-- Step 4: Survey - PENDING -->
-                            <div class="kpr-step">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-home-search-outline"></i>
-                                </div>
-                                <span class="kpr-step-title">Survey</span>
-                                <small>Menunggu</small>
-                            </div>
-
-                            <!-- Step 5: Serah Terima - PENDING -->
+                            <!-- Step Serah Terima - PENDING -->
                             <div class="kpr-step">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-key-variant"></i>

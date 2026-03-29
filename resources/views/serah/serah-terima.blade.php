@@ -39,21 +39,17 @@
         }
 
         .jenis-badge {
-            background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
-            color: #28a745;
-            border: 1px solid #9ce0a6;
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.85rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            gap: 6px;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
         }
-
-        .jenis-badge i {
-            font-size: 0.95rem;
-        }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
 
         .customer-avatar {
             width: 64px;
@@ -806,10 +802,15 @@
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
-                                        {{ $booking->customer->full_name ?? 'Ngebug boy' }}
-                                        <span class="jenis-badge">
-                                            <i class="mdi mdi-home-outline"></i>
-                                            {{ $booking->unit->jenis == 'komersil' ? 'KOMERSIL' : strtoupper($booking->unit->jenis ?? '-') }}
+                                        {{ $booking->customer->full_name ?? '-' }}
+                                        @php
+                                            $jenis = strtolower($booking->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                        @endphp
+                                        <span class="jenis-badge {{ $badgeClass }}">
+                                            <i class="mdi {{ $icon }} me-1"></i>
+                                            {{ strtoupper($booking->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
                                     <p class="customer-booking mb-0">Kode Booking: {{ $booking->booking_code ?? 'Ngebug boy' }}</p>
@@ -859,38 +860,52 @@
                             <span>Tahapan Serah Terima Unit</span>
                         </div>
 
+                        @php
+                            $jenis = strtolower($booking->unit->jenis ?? '');
+                        @endphp
+
                         <div class="kpr-progress-top">
                             <span class="kpr-muted">Progress Transaksi</span>
                             <span>Tahap Akhir: Serah Terima</span>
                         </div>
 
                         <div class="kpr-progress">
-                            <div class="kpr-progress-bar" style="width: 90%;"></div>
+                            <div class="kpr-progress-bar" style="width: 100%;"></div>
                         </div>
 
-                        <div class="kpr-steps">
+                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="kpr-step-title">Booking</span>
-                                <small>{{ isset($booking->booking_date) ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') : '-' }}</small>
+                                <small>{{ isset($booking->booking_date) ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->created_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="kpr-step-title">Pelunasan</span>
-                                <small>{{ isset($booking->pelunasan_date) ? \Carbon\Carbon::parse($booking->pelunasan_date)->translatedFormat('d F Y') : '-' }}</small>
+                                <span class="kpr-step-title">Verifikasi</span>
+                                <small>{{ isset($booking->verifikasi_date) ? \Carbon\Carbon::parse($booking->verifikasi_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
                             </div>
+
+                            @if($jenis == 'komersil')
+                            <div class="kpr-step completed">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                                <span class="kpr-step-title">Survey</span>
+                                <small>{{ isset($booking->survey_date) ? \Carbon\Carbon::parse($booking->survey_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
+                            </div>
+                            @endif
 
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="kpr-step-title">Akad</span>
-                                <small>{{ isset($booking->akad_date) ? \Carbon\Carbon::parse($booking->akad_date)->translatedFormat('d F Y') : '-' }}</small>
+                                <small>{{ isset($booking->akad_date) ? \Carbon\Carbon::parse($booking->akad_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
                             <div class="kpr-step active">
@@ -898,7 +913,7 @@
                                     <i class="mdi mdi-key"></i>
                                 </div>
                                 <span class="kpr-step-title">Serah Terima</span>
-                                <small>Sedang Proses</small>
+                                <small>{{ date('j F Y') }}</small>
                             </div>
                         </div>
                     </div>
@@ -934,14 +949,9 @@
                                     </span>
                                 </span>
                             </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <div class="kpr-detail-list">
                             <div class="kpr-detail-item">
                                 <span>Metode Pembayaran</span>
-                                <span class="badge bg-success">Cash</span>
+                                <span class="badge bg-success">{{ strtoupper($booking->purchase_type ?? 'Cash') }}</span>
                             </div>
                         </div>
 
@@ -954,7 +964,7 @@
                             </div>
                             <div>
                                 <div class="fw-bold">{{ $booking->sales->name ?? '-' }}</div>
-                                <small class="kpr-muted">{{ $booking->sales->role ?? '-' }}</small>
+                                {{-- <small class="kpr-muted">{{ $booking->sales->role ?? '-' }}</small> --}}
                             </div>
                         </div>
                     </div>

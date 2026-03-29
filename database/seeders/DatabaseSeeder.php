@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DivisionSeeder::class,
             PositionSeeder::class,
             EmployeeSeeder::class,
+            MenuSeeder::class,
             //Dokumen
              DocumentTypeSeeder::class,
             //Master Data

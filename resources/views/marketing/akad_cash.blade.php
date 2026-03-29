@@ -34,6 +34,19 @@
             min-height: 110px;
         }
 
+        .badge {
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
+
         .customer-avatar {
             width: 64px;
             height: 64px;
@@ -733,6 +746,34 @@
             background: #faf7ff;
         }
 
+        .akad-file-upload.has-file .akad-file-label {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            transition: all 0.3s ease;
+        }
+
+        .akad-file-upload.has-file:hover .akad-file-label {
+            border-color: #218838;
+            background: #28a745 !important;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .akad-file-upload.has-file:hover .akad-file-label i,
+        .akad-file-upload.has-file:hover .akad-file-label .akad-file-info span,
+        .akad-file-upload.has-file:hover .akad-file-label .akad-file-info small {
+            color: #ffffff !important;
+        }
+
+        .akad-file-upload.has-file:hover .akad-file-label i {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .akad-file-upload.has-file .akad-file-label i {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
         .akad-error-box {
             display: none;
             margin-top: 1rem;
@@ -802,7 +843,18 @@
                                     {{ strtoupper(substr($booking->customer->full_name ?? 'C', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h4 class="customer-name mb-1">{{ $booking->customer->full_name ?? '-' }}</h4>
+                                    <h4 class="customer-name mb-1 d-flex align-items-center gap-2" style="font-size: 1.4rem;">
+                                        {{ $booking->customer->full_name ?? '-' }}
+                                        @php
+                                            $jenis = strtolower($booking->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }}" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                            <i class="mdi {{ $icon }} me-1"></i>
+                                            {{ strtoupper($booking->unit->jenis ?? '-') }}
+                                        </span>
+                                    </h4>
                                     <p class="customer-booking mb-0">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
@@ -810,11 +862,11 @@
                             <div class="customer-unit-info">
                                 <div class="info-item">
                                     <small>Unit</small>
-                                    <span>{{ $booking->unit->LandBank->name ?? '-' }} - {{ $booking->unit->type ?? '-' }}</span>
+                                    <span>{{ $booking->unit->LandBank->name ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
-                                    <small>Jenis Unit</small>
-                                    <span>{{ $booking->unit->jenis ?? '-' }}</span>
+                                    <small>Tipe</small>
+                                    <span>{{ $booking->unit->type ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Blok/No</small>
@@ -916,7 +968,7 @@
                                     <div class="akad-step-icon">
                                         @if ($isStepCompleted)
                                             <i class="mdi mdi-check"></i>
-                                        @elseif($isStepActive)
+                                        @else
                                             @if ($key == 'booking')
                                                 <i class="mdi mdi-book-open-page-variant"></i>
                                             @elseif($key == 'cash')
@@ -930,8 +982,6 @@
                                             @else
                                                 <i class="mdi mdi-key"></i>
                                             @endif
-                                        @else
-                                            <i class="mdi mdi-circle-outline"></i>
                                         @endif
                                     </div>
                                     <span class="akad-step-title">{{ $label }}</span>
@@ -980,42 +1030,16 @@
                                 <span>Sisa Pembayaran</span>
                                 <span class="highlight">Rp {{ number_format((($booking->unit->price ?? 0) - ($booking->unit->harga_nego ?? 0)) - ($booking->booking_fee ?? 0), 0, ',', '.') }}</span>
                             </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <div class="mb-3">
-                            <small class="akad-muted d-block mb-2">Status Pembayaran</small>
-                            @php
-                                $finalPayment = $booking->finalPayment->type ?? null;
-                            @endphp
-                            <div class="akad-status-banner {{ $finalPayment == 'pelunasan' ? 'success' : 'warning' }}">
-                                <i class="mdi {{ $finalPayment == 'pelunasan' ? 'mdi-check-circle-outline' : 'mdi-progress-clock' }}"></i>
-                                <span>{{ $finalPayment == 'pelunasan' ? 'Lunas' : ($finalPayment ? ucfirst($finalPayment) : 'Menunggu Pelunasan') }}</span>
+                            <div class="akad-detail-item mt-2">
+                                <span>Status Pembayaran</span>
+                                <span class="badge bg-success text-white" style="font-size: 0.75rem;">
+                                    <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
+                                </span>
                             </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <small class="akad-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="akad-handler">
-                            <div class="akad-handler-icon">
-                                <i class="mdi mdi-account-tie"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold">{{ $booking->sales->name ?? '-' }}</div>
-                                <small class="akad-muted">{{ $booking->sales->role ?? 'Marketing' }}</small>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <div>
-                            <small class="akad-muted d-block mb-2">Metode Pembayaran</small>
-                            <div class="akad-status-banner {{ $booking->purchase_type == 'cash' ? 'success' : ($booking->purchase_type == 'kpr' ? 'warning' : 'info') }}">
-                                <i class="mdi {{ $booking->purchase_type == 'cash' ? 'mdi-cash' : ($booking->purchase_type == 'kpr' ? 'mdi-bank' : 'mdi-calendar-clock') }}"></i>
-                                <span>
-                                    {{ $booking->purchase_type == 'cash' ? 'Cash Keras' : ($booking->purchase_type == 'kpr' ? 'KPR' : ($booking->purchase_type == 'cash_tempo' ? 'Cash Tempo' : '-')) }}
+                            <div class="akad-detail-item mt-2">
+                                <span>Metode Pembayaran</span>
+                                <span class="badge bg-success text-white" style="font-size: 0.75rem;">
+                                    <i class="mdi mdi-cash me-1"></i>{{ $booking->purchase_type == 'cash' ? 'Cash Keras' : ($booking->purchase_type == 'cash_tempo' ? 'Cash Tempo' : 'Cash') }}
                                 </span>
                             </div>
                         </div>
@@ -1252,6 +1276,19 @@
                             </div>
 
                             <div class="akad-sidebar-section">
+                                <div class="akad-sidebar-title">Ditangani oleh</div>
+                                <div class="akad-handler">
+                                    <div class="akad-handler-icon">
+                                        <i class="mdi mdi-account-tie"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ $booking->sales->name ?? 'Marketing' }}</div>
+                                        <small class="akad-muted">{{ $booking->sales->role ?? 'Marketing Staff' }}</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="akad-sidebar-section">
                                 <div class="akad-sidebar-title">Status Akad Saat Ini</div>
                                 @if($booking->status_akad == 'done')
                                     <div class="akad-status-banner success">
@@ -1278,8 +1315,10 @@
                                 @endif
                             </div>
 
-                            <div class="akad-sidebar-section">
-                                <div class="akad-sidebar-title">Panduan Konfirmasi</div>
+                            <hr class="my-4">
+
+                        <div class="akad-sidebar-section">
+                            <div class="akad-sidebar-title">Panduan Konfirmasi</div>
                                 <ul class="akad-mini-list">
                                     <li>
                                         <i class="mdi mdi-check-circle-outline"></i>
@@ -1381,10 +1420,12 @@
                 const $container = $(this).closest('.akad-file-upload');
 
                 if (file) {
+                    $container.addClass('has-file');
                     const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
                     $container.find('.akad-file-info span').text(file.name.length > 40 ? file.name.substring(0, 40) + '...' : file.name);
                     $container.find('.akad-file-info small').text(sizeInMB + ' MB | Format: ' + file.type.split('/').pop().toUpperCase());
                 } else {
+                    $container.removeClass('has-file');
                     $container.find('.akad-file-info span').text('Upload Dokumen Akad');
                     $container.find('.akad-file-info small').text('Format: JPG, PNG, PDF (Max 5MB)');
                 }

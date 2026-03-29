@@ -393,12 +393,12 @@
         }
 
         .status-komersil {
-            background: linear-gradient(135deg, #9a55ff, #c78dff);
+            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
             color: #fff;
         }
 
         .status-subsidi {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
             color: #fff;
         }
 
@@ -1057,7 +1057,7 @@
                                                 <i class="mdi mdi-swap-vertical"></i>
                                             @endif
                                         </th>
-                                        <th>Jenis</th>
+                                        <th>Jenis & Tipe</th>
                                         <th>Kelengkapan</th>
                                         <th>Status</th>
                                         <th class="text-center">Aksi</th>
@@ -1107,38 +1107,31 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="info-inline">
-                                                    <span class="info-icon">
+                                                <div class="info-inline align-items-start">
+                                                    <span class="info-icon mt-1">
                                                         <i class="mdi mdi-home-city-outline"></i>
                                                     </span>
-                                                    <span>
-                                                        {{ $booking->unit->unit_name ?? '-' }}
-                                                        @if (!empty($booking->unit->type))
-                                                            <br>
-                                                            <small
-                                                                class="text-muted d-inline-flex align-items-center gap-1">
-                                                                <i class="mdi mdi-floor-plan"></i>
-                                                                {{ $booking->unit->type }}
-                                                            </small>
-                                                        @endif
-                                                    </span>
+                                                    <div>
+                                                        <span class="fw-bold d-block">{{ $booking->unit->unit_name ?? '-' }}</span>
+                                                        <small class="text-muted">{{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}</small>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 @if ($jenisUnit == 'komersil' || $jenisUnit == 'komersial')
                                                     <span class="badge-status status-komersil">
                                                         <i class="mdi mdi-storefront-outline"></i>
-                                                        Komersil
+                                                        Komersil/{{ $booking->unit->type ?? '-' }}
                                                     </span>
                                                 @elseif ($jenisUnit == 'subsidi')
                                                     <span class="badge-status status-subsidi">
                                                         <i class="mdi mdi-home-percent-outline"></i>
-                                                        Subsidi
+                                                        Subsidi/{{ $booking->unit->type ?? '-' }}
                                                     </span>
                                                 @else
                                                     <span class="badge-status status-lainnya">
                                                         <i class="mdi mdi-shape-outline"></i>
-                                                        {{ $booking->unit->jenis ?? '-' }}
+                                                        {{ $booking->unit->jenis ?? '-' }}/{{ $booking->unit->type ?? '-' }}
                                                     </span>
                                                 @endif
                                             </td>

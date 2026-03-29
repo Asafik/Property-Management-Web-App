@@ -336,6 +336,20 @@
 .badge-akad {
     background: linear-gradient(135deg, #9a55ff, #b47aff);
 }
+
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
+
 .badge-default {
     background: linear-gradient(135deg, #6c757d, #868e96);
 }
@@ -447,7 +461,7 @@ h3.text-dark {
                     <div>
                         <h3 class="text-dark mb-1">
                             <i class="mdi mdi-file-document-check-outline me-2" style="color: #9a55ff;"></i>Daftar User KPR Persiapan Pecah Legal Unit
-                        </h3>   
+                        </h3>
                         <p class="text-muted mb-0">
                            Persiapan Pecah Legal Unit
                         </p>
@@ -558,10 +572,11 @@ h3.text-dark {
                                         Nama User
                                         <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'name_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
                                     </th>
-                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
+                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
                                         Unit Rumah
                                         <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'unit_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
                                     </th>
+                                    <th>Jenis & Tipe</th>
                                     <th>Unit Code</th>
                                     <th>Bank</th>
                                     <th>Status</th>
@@ -608,13 +623,20 @@ h3.text-dark {
                                                     <i class="mdi mdi-home-outline text-primary me-1"></i>
                                                     {{ $application->unit->unit_name ?? '-' }}
                                                 </span>
-                                                <div class="unit-details">
-                                                    <span class="unit-badge type">
-                                                        <i class="mdi mdi-shape-outline"></i>
-                                                        {{ $application->unit->type ?? '-' }}
-                                                    </span>
-                                                </div>
                                             </div>
+                                        </td>
+
+                                        <td>
+                                            @php
+                                                $jenis = strtolower($application->unit->jenis ?? '');
+                                                $tipe = $application->unit->type ?? '-';
+                                                $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                                $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                            @endphp
+                                            <span class="badge {{ $badgeClass }}">
+                                                <i class="mdi {{ $icon }} me-1"></i>
+                                                {{ ucfirst($jenis ?: '-') }}/{{ $tipe }}
+                                            </span>
                                         </td>
 
                                         <td>

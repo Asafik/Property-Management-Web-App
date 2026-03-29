@@ -826,6 +826,104 @@
             white-space: nowrap;
         }
 
+        /* Modal Custom Style */
+        .modal-custom .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-custom .modal-header {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-bottom: 2px solid #e9ecef;
+            border-radius: 20px 20px 0 0;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .modal-custom .modal-title {
+            font-weight: 700;
+            color: #9a55ff;
+            font-size: 1.2rem;
+        }
+
+        .modal-custom .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-custom .modal-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            border-radius: 0 0 20px 20px;
+            padding: 1rem 1.5rem;
+        }
+
+        /* Modal tabs wrapper di dalam modal */
+        .modal-tabs-wrapper {
+            background: #f6f9ff;
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .modal-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 4px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .modal-tab-item {
+            flex: 0 0 auto;
+        }
+
+        .modal-tab-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #6c7383;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .modal-tab-link i {
+            font-size: 0.9rem;
+            color: #a5b3cb;
+        }
+
+        .modal-tab-link:hover {
+            color: #9a55ff;
+            background: #ffffff;
+        }
+
+        .modal-tab-link.active {
+            color: #9a55ff;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
+            font-weight: 600;
+        }
+
+        .modal-tab-pane {
+            display: none;
+        }
+
+        .modal-tab-pane.active {
+            display: block;
+            animation: addFadeIn 0.3s ease;
+        }
+
         @media (max-width: 767px) {
             .filter-row-desktop {
                 display: none;
@@ -835,11 +933,23 @@
                 display: block;
                 margin-top: 1rem;
             }
+
+            .modal-tab-link span {
+                display: none;
+            }
+
+            .modal-tab-link i {
+                margin: 0;
+            }
         }
 
         @media (max-width: 576px) {
             .filter-card {
                 padding: 0.8rem;
+            }
+
+            .modal-custom .modal-body {
+                padding: 1rem;
             }
         }
     </style>
@@ -996,222 +1106,21 @@
         </div>
 
         <div class="row">
-            <div class="col-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-tools me-2 text-primary"></i>
-                            Metode Pembuatan Kavling
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="add-custom-tabs-wrapper overflow-auto mb-3">
-                            <ul class="add-custom-tabs" id="myTab" role="tablist">
-                                <li class="add-custom-tab-item">
-                                    <a class="add-custom-tab-link active" id="manual-tab" data-toggle="tab"
-                                        href="#manual" role="tab" aria-controls="manual" aria-selected="true">
-                                        <i class="mdi mdi-pencil"></i>
-                                        <span>Manual Satu per Satu</span>
-                                    </a>
-                                </li>
-                                <li class="add-custom-tab-item">
-                                    <a class="add-custom-tab-link" id="import-tab" data-toggle="tab" href="#import"
-                                        role="tab" aria-controls="import" aria-selected="false">
-                                        <i class="mdi mdi-import"></i>
-                                        <span>Import Excel</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="tab-content mt-3 mt-md-4" id="myTabContent">
-                            <div class="add-custom-tab-pane active" id="manual" role="tabpanel"
-                                aria-labelledby="manual-tab">
-                                <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Blok / No. Unit</label>
-                                                <input type="text" name="block" class="kavling-form-control"
-                                                    placeholder="Contoh: A">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Nomor Unit</label>
-                                                <input type="text" name="unit_number" class="kavling-form-control"
-                                                    placeholder="1">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Jenis Unit</label>
-                                                <select name="jenis" class="kavling-form-control">
-                                                    <option value="">-- Pilih Jenis --</option>
-                                                    <option value="subsidi">Subsidi</option>
-                                                    <option value="komersil">Komersil</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Type Unit</label>
-                                                <input type="text" name="type" class="kavling-form-control"
-                                                    placeholder="60/80">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Nama Unit</label>
-                                                <input type="text" name="unit_name" class="kavling-form-control"
-                                                    placeholder="Cluster Mawar">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Luas (m²)</label>
-                                                <input type="number" name="area" class="kavling-form-control"
-                                                    placeholder="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Luas Bangunan(m²)</label>
-                                                <input type="number" name="building_area" class="kavling-form-control"
-                                                    placeholder="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga (Rp)</label>
-                                                <input type="text" name="price" class="kavling-form-control"
-                                                    placeholder="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga IJB (Rp)</label>
-                                                <input type="text" name="ijb_price" class="kavling-form-control"
-                                                    placeholder="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga AJB (Rp)</label>
-                                                <input type="text" name="ajb_price" class="kavling-form-control"
-                                                    placeholder="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Hadap</label>
-                                                <select name="facing" class="kavling-form-control">
-                                                    <option>Utara</option>
-                                                    <option>Selatan</option>
-                                                    <option>Timur</option>
-                                                    <option>Barat</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Posisi</label>
-                                                <select name="position" class="kavling-form-control">
-                                                    <option>Hook</option>
-                                                    <option>Tengah</option>
-                                                    <option>Sudut</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-12">
-                                            <div class="kavling-form-group">
-                                                <label>Keterangan</label>
-                                                <input type="text" name="description" class="kavling-form-control"
-                                                    placeholder="Opsional">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-md-12">
-                                            <button type="submit" class="kavling-btn kavling-btn-primary">
-                                                <i class="mdi mdi-plus me-1"></i>Tambah Unit ke Daftar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="add-custom-tab-pane" id="import" role="tabpanel"
-                                aria-labelledby="import-tab">
-                                <div class="text-center py-4">
-                                    <i class="mdi mdi-file-excel text-success" style="font-size: 48px;"></i>
-                                    <h5 class="mt-3">Import Data Kavling dari Excel</h5>
-                                    <p class="text-muted">
-                                        <i class="mdi mdi-information-outline me-1"></i>
-                                        Download template Excel, isi data unit, lalu upload kembali
-                                    </p>
-
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-6">
-                                            <div class="kavling-form-group">
-                                                <label>Download Template</label>
-                                                <div>
-                                                    <a href="{{ route('kavling.template') }}"
-                                                        class="kavling-btn kavling-btn-outline-success">
-                                                        <i class="mdi mdi-download me-1"></i>Template Kavling.xlsx
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <form action="{{ route('kavling.import', $land->id) }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                @csrf
-
-                                                <div class="kavling-form-group">
-                                                    <label>Upload File Excel</label>
-                                                    <div class="kavling-file-upload-modern position-relative">
-                                                        <input type="file" id="uploadExcel" name="file"
-                                                            accept=".xlsx,.xls" required
-                                                            style="opacity:0; position:absolute; inset:0; cursor:pointer;">
-                                                        <div class="kavling-file-label-modern text-center p-4 border rounded">
-                                                            <i class="mdi mdi-cloud-upload" style="font-size:32px;"></i>
-                                                            <div class="kavling-file-info-modern mt-2">
-                                                                <span id="fileName">Upload File Excel</span>
-                                                                <small class="d-block text-muted">
-                                                                    Format: .xlsx, .xls (Max 5MB)
-                                                                </small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <button class="kavling-btn kavling-btn-primary" type="submit"
-                                                    id="importButton" disabled>
-                                                    <i class="mdi mdi-import me-1"></i>Import Data
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col-12 grid-margin">
                 <div class="card">
                     <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Unit Kavling
+                            <i class="mdi mdi-format-list-bulleted me-2"></i>
+                            Daftar Unit Kavling
                         </h5>
-                        <span class="badge badge-primary">
-                            <i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit
-                        </span>
+                        <div class="d-flex gap-2 align-items-center">
+                            <span class="badge badge-primary">
+                                <i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit
+                            </span>
+                            <button type="button" class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal" data-bs-target="#tambahUnitModal">
+                                <i class="mdi mdi-plus me-1"></i>Tambah Unit
+                            </button>
+                        </div>
                     </div>
 
                     <div class="card-body">
@@ -1864,69 +1773,319 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Tambah Unit dengan 2 Metode -->
+    <div class="modal fade modal-custom" id="tambahUnitModal" tabindex="-1" aria-labelledby="tambahUnitModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tambahUnitModalLabel">
+                        <i class="mdi mdi-plus-circle me-2" style="color: #9a55ff;"></i>
+                        Tambah Unit Kavling Baru
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab Navigation di dalam modal -->
+                    <div class="modal-tabs-wrapper">
+                        <ul class="modal-tabs" id="modalTab" role="tablist">
+                            <li class="modal-tab-item">
+                                <a class="modal-tab-link active" id="modal-manual-tab" data-modal-tab="manual" role="tab">
+                                    <i class="mdi mdi-pencil"></i>
+                                    <span>Manual Satu per Satu</span>
+                                </a>
+                            </li>
+                            <li class="modal-tab-item">
+                                <a class="modal-tab-link" id="modal-import-tab" data-modal-tab="import" role="tab">
+                                    <i class="mdi mdi-import"></i>
+                                    <span>Import Excel</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab Pane Manual -->
+                    <div class="modal-tab-pane active" id="modal-manual-pane">
+                        <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST" id="formTambahUnitManual">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Blok / No. Unit</label>
+                                        <input type="text" name="block" class="kavling-form-control"
+                                            placeholder="Contoh: A">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="kavling-form-group">
+                                        <label>Nomor Unit</label>
+                                        <input type="text" name="unit_number" class="kavling-form-control"
+                                            placeholder="1">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="kavling-form-group">
+                                        <label>Jenis Unit</label>
+                                        <select name="jenis" class="kavling-form-control">
+                                            <option value="">-- Pilih Jenis --</option>
+                                            <option value="subsidi">Subsidi</option>
+                                            <option value="komersil">Komersil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="kavling-form-group">
+                                        <label>Type Unit</label>
+                                        <input type="text" name="type" class="kavling-form-control"
+                                            placeholder="60/80">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Nama Unit</label>
+                                        <input type="text" name="unit_name" class="kavling-form-control"
+                                            placeholder="Cluster Mawar">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Luas (m²)</label>
+                                        <input type="number" name="area" class="kavling-form-control"
+                                            placeholder="200">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Luas Bangunan(m²)</label>
+                                        <input type="number" name="building_area" class="kavling-form-control"
+                                            placeholder="200">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Harga (Rp)</label>
+                                        <input type="text" name="price" class="kavling-form-control price-format"
+                                            placeholder="500.000.000">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Harga IJB (Rp)</label>
+                                        <input type="text" name="ijb_price" class="kavling-form-control price-format"
+                                            placeholder="500.000.000">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="kavling-form-group">
+                                        <label>Harga AJB (Rp)</label>
+                                        <input type="text" name="ajb_price" class="kavling-form-control price-format"
+                                            placeholder="500.000.000">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="kavling-form-group">
+                                        <label>Hadap</label>
+                                        <select name="facing" class="kavling-form-control">
+                                            <option>Utara</option>
+                                            <option>Selatan</option>
+                                            <option>Timur</option>
+                                            <option>Barat</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="kavling-form-group">
+                                        <label>Posisi</label>
+                                        <select name="position" class="kavling-form-control">
+                                            <option>Hook</option>
+                                            <option>Tengah</option>
+                                            <option>Sudut</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <div class="kavling-form-group">
+                                        <label>Keterangan</label>
+                                        <input type="text" name="description" class="kavling-form-control"
+                                            placeholder="Opsional">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <button type="submit" class="kavling-btn kavling-btn-primary w-100">
+                                        <i class="mdi mdi-plus me-1"></i>Tambah Unit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tab Pane Import Excel -->
+                    <div class="modal-tab-pane" id="modal-import-pane">
+                        <div class="text-center py-3">
+                            <i class="mdi mdi-file-excel text-success" style="font-size: 48px;"></i>
+                            <h5 class="mt-3">Import Data Kavling dari Excel</h5>
+                            <p class="text-muted">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Download template Excel, isi data unit, lalu upload kembali
+                            </p>
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-12">
+                                    <div class="kavling-form-group">
+                                        <label>Download Template</label>
+                                        <div>
+                                            <a href="{{ route('kavling.template') }}"
+                                                class="kavling-btn kavling-btn-outline-success">
+                                                <i class="mdi mdi-download me-1"></i>Template Kavling.xlsx
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('kavling.import', $land->id) }}" method="POST"
+                                        enctype="multipart/form-data" id="formImportExcel">
+                                        @csrf
+
+                                        <div class="kavling-form-group">
+                                            <label>Upload File Excel</label>
+                                            <div class="kavling-file-upload-modern position-relative">
+                                                <input type="file" id="uploadExcelModal" name="file"
+                                                    accept=".xlsx,.xls" required
+                                                    style="opacity:0; position:absolute; inset:0; cursor:pointer;">
+                                                <div class="kavling-file-label-modern text-center p-4 border rounded">
+                                                    <i class="mdi mdi-cloud-upload" style="font-size:32px;"></i>
+                                                    <div class="kavling-file-info-modern mt-2">
+                                                        <span id="fileNameModal">Upload File Excel</span>
+                                                        <small class="d-block text-muted">
+                                                            Format: .xlsx, .xls (Max 5MB)
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button class="kavling-btn kavling-btn-primary w-100" type="submit"
+                                            id="importButtonModal" disabled>
+                                            <i class="mdi mdi-import me-1"></i>Import Data
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="kavling-btn kavling-btn-light" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
-        document.getElementById('uploadExcel').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const button = document.getElementById('importButton');
-            const fileNameSpan = document.getElementById('fileName');
-
-            if (!file) {
-                button.disabled = true;
-                fileNameSpan.innerText = "Upload File Excel";
-                return;
-            }
-
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File maksimal 5MB!");
-                e.target.value = "";
-                button.disabled = true;
-                fileNameSpan.innerText = "Upload File Excel";
-                return;
-            }
-
-            fileNameSpan.innerText = file.name;
-            button.disabled = false;
-        });
-    </script>
-
-    <script>
+        // Tab switching di dalam modal
         $(document).ready(function() {
-            $('.add-custom-tab-link').on('click', function(e) {
+            $('.modal-tab-link').on('click', function(e) {
                 e.preventDefault();
 
-                $('.add-custom-tab-link').removeClass('active');
-                $('.add-custom-tab-pane').removeClass('active');
-
+                $('.modal-tab-link').removeClass('active');
                 $(this).addClass('active');
-                var target = $(this).attr('href');
-                $(target).addClass('active');
-            });
 
-            $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').on('keyup', function() {
-                let nilai = this.value.replace(/\D/g, '');
-                if (nilai) {
-                    let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
-                    this.value = rupiah;
+                var target = $(this).data('modal-tab');
+
+                $('.modal-tab-pane').removeClass('active');
+                if (target === 'manual') {
+                    $('#modal-manual-pane').addClass('active');
+                } else if (target === 'import') {
+                    $('#modal-import-pane').addClass('active');
                 }
             });
 
-            $('form').on('submit', function() {
-                $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').each(function() {
+            // File upload handler untuk modal import
+            $('#uploadExcelModal').on('change', function(e) {
+                const file = e.target.files[0];
+                const button = $('#importButtonModal');
+                const fileNameSpan = $('#fileNameModal');
+
+                if (!file) {
+                    button.prop('disabled', true);
+                    fileNameSpan.text("Upload File Excel");
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("File maksimal 5MB!");
+                    $(this).val("");
+                    button.prop('disabled', true);
+                    fileNameSpan.text("Upload File Excel");
+                    return;
+                }
+
+                fileNameSpan.text(file.name);
+                button.prop('disabled', false);
+            });
+
+            // Format harga untuk form manual di modal
+            function formatRupiah(angka) {
+                if (!angka) return '';
+                let nilai = angka.toString().replace(/\D/g, '');
+                if (nilai) {
+                    return new Intl.NumberFormat('id-ID').format(nilai);
+                }
+                return '';
+            }
+
+            $(document).on('keyup', '.price-format', function() {
+                let nilai = $(this).val().replace(/\D/g, '');
+                if (nilai) {
+                    let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
+                    $(this).val(rupiah);
+                }
+            });
+
+            // Submit form manual - hapus titik sebelum submit
+            $('#formTambahUnitManual').on('submit', function() {
+                $('.price-format').each(function() {
                     let nilai = $(this).val().replace(/\./g, '');
                     $(this).val(nilai);
                 });
                 return true;
             });
 
-            $('input[name="block"]').on('keyup', function() {
+            // Submit form import
+            $('#formImportExcel').on('submit', function() {
+                // Biarkan form submit normal
+                return true;
+            });
+
+            // Validasi blok maksimal 5 karakter
+            $(document).on('keyup', 'input[name="block"]', function() {
                 let nilai = $(this).val();
                 if (nilai.length > 5) {
                     $(this).val(nilai.substring(0, 5));
                     alert('Blok maksimal 5 karakter');
                 }
+            });
+
+            // Reset form saat modal ditutup
+            $('#tambahUnitModal').on('hidden.bs.modal', function() {
+                $('#formTambahUnitManual')[0].reset();
+                $('#formImportExcel')[0].reset();
+                $('.price-format').val('');
+                $('#fileNameModal').text("Upload File Excel");
+                $('#importButtonModal').prop('disabled', true);
+                $('#uploadExcelModal').val('');
+
+                // Reset ke tab manual
+                $('.modal-tab-link').removeClass('active');
+                $('.modal-tab-link[data-modal-tab="manual"]').addClass('active');
+                $('.modal-tab-pane').removeClass('active');
+                $('#modal-manual-pane').addClass('active');
             });
         });
     </script>

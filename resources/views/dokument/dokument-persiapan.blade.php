@@ -465,7 +465,7 @@ h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !i
                                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                             </select>
                                         </div>
-                                        
+
                                         <div class="col-12 mt-2">
                                             <div class="d-flex gap-2">
                                                 <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtnMobile" title="Filter" onclick="showFilterLoading()">
@@ -637,7 +637,7 @@ h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !i
             <form id="formDokumen" method="POST" onsubmit="return submitForm(event)">
                 @csrf
                 <input type="hidden" name="_method" id="methodField" value="POST">
-                
+
                 <div class="modal-body">
                     <div class="modal-form-group mb-3">
                         <label>
@@ -652,7 +652,7 @@ h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !i
                         </label>
                         <input type="text" name="description" id="deskripsiDokumen" class="modal-form-control" placeholder="Contoh: Keterangan dokumen" required>
                     </div>
-                    
+
                     <!-- Ini untuk code jika model membutuhkan, pada data aslinya ada code di modal Edit (line 452) -->
                     <!-- Jika di model Document tidak ada code, fitur tambahannya akan diproses backend sesuai kebutuhan -->
                     <div class="modal-form-group mb-3 d-none" id="codeFormGroup">
@@ -746,7 +746,7 @@ $(document).ready(function() {
             confirmButtonColor: '#dc3545'
         });
     @endif
-    
+
     // Validasi error
     @if($errors->any())
         Swal.fire({
@@ -836,7 +836,7 @@ function openModal(type, id = null) {
         $('#modalIcon').removeClass('mdi-pencil').addClass('mdi-file-document-plus-outline');
         $('#btnText').text('Simpan');
         $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
-        
+
         $('#requiredCheckbox').prop('checked', true); // default true for new
         $('#codeFormGroup').addClass('d-none'); // Hide code on create since Original didn't have it
 

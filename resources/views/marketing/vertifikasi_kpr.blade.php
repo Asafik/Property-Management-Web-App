@@ -360,10 +360,17 @@
         }
 
         .badge {
-            padding: 5px 10px;
-            font-weight: 500;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
             border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
         }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
 
         .jenis-badge {
             background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
@@ -898,8 +905,12 @@
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
                                         {{ $booking->customer->full_name ?? '-' }}
-                                        <span class="jenis-badge">
-                                            <i class="mdi mdi-home-outline"></i>
+                                        @php
+                                            $jenis = strtolower($booking->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }} ms-2" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                            <i class="mdi mdi-home-outline me-1"></i>
                                             {{ strtoupper($booking->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
@@ -936,21 +947,25 @@
                             <span>Tahapan Verifikasi KPR</span>
                         </div>
 
+                        @php
+                            $jenis = strtolower($booking->unit->jenis ?? '');
+                        @endphp
+
                         <div class="kpr-progress-top">
                             <span class="kpr-muted">Progress Proses</span>
-                            <span>Tahap 2 dari 4</span>
+                            <span>Tahap 2 dari {{ $jenis == 'komersil' ? '5' : '4' }}</span>
                         </div>
 
                         <div class="kpr-progress">
-                            <div class="kpr-progress-bar" style="width: 50%;"></div>
+                            <div class="kpr-progress-bar" style="width: {{ $jenis == 'komersil' ? '40' : '50' }}%;"></div>
                         </div>
 
-                        <div class="kpr-steps">
+                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="kpr-step-title">Diajukan</span>
+                                <span class="kpr-step-title">Pengajuan</span>
                                 <small>{{ $booking->kprApplication->submitted_at ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('d F Y') : '-' }}</small>
                             </div>
 
@@ -962,6 +977,16 @@
                                 <small>Dalam Proses</small>
                             </div>
 
+                            @if($jenis == 'komersil')
+                            <div class="kpr-step">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-home-search-outline"></i>
+                                </div>
+                                <span class="kpr-step-title">Survey</span>
+                                <small>Menunggu</small>
+                            </div>
+                            @endif
+
                             <div class="kpr-step">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-handshake-outline"></i>
@@ -972,7 +997,7 @@
 
                             <div class="kpr-step">
                                 <div class="kpr-step-icon">
-                                    <i class="mdi mdi-home-outline"></i>
+                                    <i class="mdi mdi-cash-fast"></i>
                                 </div>
                                 <span class="kpr-step-title">Serah Terima</span>
                                 <small>Menunggu</small>

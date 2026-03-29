@@ -240,6 +240,19 @@
     color: #ffffff;
 }
 
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
+.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
+
 .badge-doc {
     display: inline-flex;
     align-items: center;
@@ -738,6 +751,7 @@ h3.text-dark, h4.text-dark {
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
+                                    <th>Jenis & Tipe</th>
                                     <th>Harga</th>
                                     <th>Sales/Agent</th>
                                     <th>Status</th>
@@ -750,15 +764,15 @@ h3.text-dark, h4.text-dark {
                                 @forelse($bookings ?? [] as $booking)
                                     @php
                                         $documents = json_decode($booking->kprApplication?->documents, true) ?: [];
-                                        
+
                                         $requiredTypes = [
                                             'ktp', 'kk', 'slip_gaji', 'rekening_koran',
                                             'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'
                                         ];
-                                        
+
                                         $uploadedCount = 0;
                                         $hasMissingValues = false;
-                                        
+
                                         foreach ($requiredTypes as $reqType) {
                                             $foundPath = '';
                                             foreach ($documents as $doc) {
@@ -767,7 +781,7 @@ h3.text-dark, h4.text-dark {
                                                     break;
                                                 }
                                             }
-                                            
+
                                             if (empty($foundPath)) {
                                                 $hasMissingValues = true;
                                             } else {
@@ -799,6 +813,25 @@ h3.text-dark, h4.text-dark {
                                         </td>
                                         <td>
                                             <i class="mdi mdi-home-city-outline text-primary me-2"></i>{{ $booking->unit->unit_code ?? '-' }}
+                                        </td>
+                                        <td>
+                                            @php
+                                                $jenis = $booking->unit->jenis ?? '';
+                                                $tipe = $booking->unit->type ?? '-';
+                                            @endphp
+                                            @if (strtolower($jenis) == 'subsidi')
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenis }}/{{ $tipe }}
+                                                </span>
+                                            @elseif(strtolower($jenis) == 'komersil')
+                                                <span class="badge badge-gradient-primary">
+                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenis }}/{{ $tipe }}
+                                                </span>
+                                            @else
+                                                <span class="badge badge-gradient-secondary">
+                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenis ?: '-') . '/' . $tipe }}
+                                                </span>
+                                            @endif
                                         </td>
                                         <td>
                                             <span class="text-price">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
@@ -1065,13 +1098,13 @@ $(document).ready(function() {
 
         requiredDocsList.forEach(function(reqDoc, index) {
             let docName = reqDoc.label;
-            
+
             // Find in given documents
             let docInfo = false;
             if (Array.isArray(documents)) {
                 docInfo = documents.find(d => d.type === reqDoc.type);
             }
-            
+
             let docUrl = (docInfo && docInfo.path) ? formatStorageUrl(docInfo.path) : null;
 
             let actionHtml = '';
@@ -1124,7 +1157,7 @@ $(document).ready(function() {
                 </tr>
             `);
         });
-        
+
     });
 
     $(document).on('change', '.properti-file-upload-modern input[type="file"]', function(e) {

@@ -101,18 +101,8 @@ class DashboardController extends Controller
         // Notifications
         $notifications = auth()->user()->unreadNotifications;
         $countNotif = $notifications->count();
-        $detailId = $request->get('detail');
-        $units = null;
 
-        if ($detailId) {
-            $selectedItem = LandBank::findOrFail($detailId);
-
-            $units = $selectedItem->units()
-                ->with('activeBooking.customer')
-                ->paginate(5)
-                ->appends($request->query());
-        }
-     $employee = auth()->user();
+        $employee = auth()->user();
 $positionId = $employee->position_id ?? null;
 
 $menus = \App\Models\Menu::with('children')
@@ -131,8 +121,6 @@ $menus = \App\Models\Menu::with('children')
             'notifications',
             'countNotif',
             'filterOptions',
-            'units',      
-            'detailId',
             'menus'
         ));
     }
@@ -141,5 +129,15 @@ $menus = \App\Models\Menu::with('children')
         $data = LandBank::with('companyProfile', 'units')->get();
 
         return response()->json($data);
+    }
+
+    public function show($id)
+    {
+        $item = LandBank::with([
+            'companyProfile',
+            'units.activeBooking.customer',
+        ])->findOrFail($id);
+
+        return response()->json($item);
     }
 }

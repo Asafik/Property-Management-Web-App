@@ -51,6 +51,7 @@ class MenuSeeder extends Seeder
         'parent_id' => $marketingMenu->id
     ])->positions()->attach([$admin->id, $marketing->id, $staffMarketing->id]);
 
+
     // ================= PROPERTI =================
     $properti = Menu::create([
         'name' => 'Tanah Induk (Land Bank)',
@@ -89,6 +90,7 @@ class MenuSeeder extends Seeder
         'name' => 'User',
         'icon' => 'mdi-account-group',
         'order' => 4
+
     ]);
 
     Menu::create([
@@ -171,23 +173,34 @@ class MenuSeeder extends Seeder
         'parent_id' => $pengguna->id
     ])->positions()->attach([$admin->id]);
 
-    // ================= MASTER DATA =================
+   // ================= MASTER DATA =================
     $master = Menu::create([
         'name' => 'Master Data',
         'icon' => 'mdi-wrench',
         'order' => 8
     ]);
 
+    // attach role ke parent
     $master->positions()->attach([$admin->id]);
 
+    // ================= CHILD MENU =================
+
+    // Role & Permission
+    Menu::create([
+        'name' => 'Role & Permission',
+        'route' => 'master.data.menu',
+        'parent_id' => $master->id
+    ])->positions()->attach([$admin->id]);
+
+    // Menu lainnya
     $masterMenus = [
         'promo.index' => 'Promo',
         'company-profile.index' => 'PT',
         'servis' => 'Servis',
         'bank.index' => 'Data Bank',
-        'rab-deadline' => 'Dedline RAB',
-        'master.data.division.index' => 'Devisi',
-        'posisi' => 'Posisi',
+        'rab.deadline.index' => 'Deadline RAB',
+        'master.data.division.index' => 'Divisi', // ✔ diperbaiki typo
+        'master.data.posisi' => 'Posisi',
     ];
 
     foreach ($masterMenus as $route => $name) {
@@ -208,7 +221,7 @@ class MenuSeeder extends Seeder
     // ================= PENGATURAN =================
     Menu::create([
         'name' => 'Pengaturan',
-        'route' => 'pengaturan',
+        'route' => 'setting.index',
         'icon' => 'mdi-cog',
         'order' => 10
     ])->positions()->attach([$admin->id]);
