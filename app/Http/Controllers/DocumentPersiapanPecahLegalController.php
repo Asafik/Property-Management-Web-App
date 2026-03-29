@@ -6,6 +6,7 @@ use App\Models\DocumentTypes;
 use App\Models\Document;
 use App\Models\DocumentUpload;
 use App\Models\Booking;
+use App\Models\CashTempoDocument;
 use Illuminate\Http\Request;
 
 class DocumentPersiapanPecahLegalController extends Controller
@@ -229,5 +230,36 @@ public function upload(Request $request)
     }
 
     return back()->with('success','Dokumen berhasil diupload');
+}
+
+public function uploadCashTempoDocuments(Request $request, $cashTempoId)
+{
+    $request->validate([
+        'ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        'npwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        'surat_perjanjian' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
+
+    // Ambil data lama atau buat baru
+    $data = CashTempoDocument::firstOrNew([
+        'cash_tempo_id' => $cashTempoId
+    ]);
+
+    // Upload masing-masing file jika ada
+    if ($request->hasFile('ktp')) {
+        $data->ktp = $request->file('ktp')->store('cash_tempo_documents', 'public');
+    }
+
+    if ($request->hasFile('npwp')) {
+        $data->npwp = $request->file('npwp')->store('cash_tempo_documents', 'public');
+    }
+
+    if ($request->hasFile('surat_perjanjian')) {
+        $data->surat_perjanjian = $request->file('surat_perjanjian')->store('cash_tempo_documents', 'public');
+    }
+
+    $data->save();
+
+    return back()->with('success', 'Dokumen berhasil diupload');
 }
 }
