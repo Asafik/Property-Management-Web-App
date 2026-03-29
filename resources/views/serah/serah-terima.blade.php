@@ -861,7 +861,8 @@
                         </div>
 
                         @php
-                            $jenis = strtolower($booking->unit->jenis ?? '');
+                            $purchaseType = strtolower($booking->purchase_type ?? 'cash');
+                            $stepCount = $purchaseType == 'kpr' ? 4 : 6;
                         @endphp
 
                         <div class="kpr-progress-top">
@@ -873,7 +874,8 @@
                             <div class="kpr-progress-bar" style="width: 100%;"></div>
                         </div>
 
-                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
+                        <div class="kpr-steps" style="grid-template-columns: repeat({{ $stepCount }}, 1fr);">
+                            <!-- Step 1: Booking (Always) -->
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
@@ -882,24 +884,43 @@
                                 <small>{{ isset($booking->booking_date) ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->created_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-check"></i>
+                            @if($purchaseType == 'kpr')
+                                <!-- KPR Steps -->
+                                <div class="kpr-step completed">
+                                    <div class="kpr-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="kpr-step-title">Verifikasi</span>
+                                    <small>{{ isset($booking->verifikasi_date) ? \Carbon\Carbon::parse($booking->verifikasi_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
                                 </div>
-                                <span class="kpr-step-title">Verifikasi</span>
-                                <small>{{ isset($booking->verifikasi_date) ? \Carbon\Carbon::parse($booking->verifikasi_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
-                            </div>
+                            @else
+                                <!-- Cash Steps -->
+                                <div class="kpr-step completed">
+                                    <div class="kpr-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="kpr-step-title">Pelunasan</span>
+                                    <small>{{ isset($booking->pelunasan_date) ? \Carbon\Carbon::parse($booking->pelunasan_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
+                                </div>
 
-                            @if($jenis == 'komersil')
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-check"></i>
+                                <div class="kpr-step completed">
+                                    <div class="kpr-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="kpr-step-title">Persiapan Legal</span>
+                                    <small>{{ isset($booking->legal_date) ? \Carbon\Carbon::parse($booking->legal_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
                                 </div>
-                                <span class="kpr-step-title">Survey</span>
-                                <small>{{ isset($booking->survey_date) ? \Carbon\Carbon::parse($booking->survey_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
-                            </div>
+
+                                <div class="kpr-step completed">
+                                    <div class="kpr-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="kpr-step-title">Pembangunan</span>
+                                    <small>{{ isset($booking->construction_date) ? \Carbon\Carbon::parse($booking->construction_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
+                                </div>
                             @endif
 
+                            <!-- Step: Akad (Always) -->
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
@@ -908,6 +929,7 @@
                                 <small>{{ isset($booking->akad_date) ? \Carbon\Carbon::parse($booking->akad_date)->translatedFormat('j F Y') : \Carbon\Carbon::parse($booking->updated_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
+                            <!-- Step: Serah Terima (Always Active) -->
                             <div class="kpr-step active">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-key"></i>

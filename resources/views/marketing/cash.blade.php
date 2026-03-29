@@ -553,14 +553,16 @@
         }
 
         .cash-btn-outline-success {
-            background: #fff;
-            color: #28a745;
-            border: 1px solid #bfe8c9;
+            background: #28a745;
+            color: #fff;
+            border: 1px solid #28a745;
         }
 
         .cash-btn-outline-success:hover {
-            background: #edf9f3;
-            color: #218838;
+            background: #28a745;
+            color: #fff;
+            box-shadow: none;
+            transform: none;
         }
 
         .cash-btn-outline-warning {
@@ -1197,7 +1199,7 @@
                             @if ($payment && $payment->reference_number)
                                 <div class="cash-doc-row">
                                     <div class="cash-doc-left">
-                                        <div class="cash-doc-badge available">
+                                        <div class="cash-doc-badge available" style="background: #28a745; color: #fff;">
                                             <i class="mdi mdi-file-check-outline"></i>
                                         </div>
                                         <div>
@@ -1231,7 +1233,7 @@
 
                             <div class="cash-doc-row" id="dokumenPenolakan" style="display: none;">
                                 <div class="cash-doc-left">
-                                    <div class="cash-doc-badge available">
+                                    <div class="cash-doc-badge available" style="background: #28a745; color: #fff;">
                                         <i class="mdi mdi-file-pdf-box"></i>
                                     </div>
                                     <div>
@@ -1239,7 +1241,7 @@
                                         <small class="cash-doc-sub">Dokumen tersedia dan dapat diunduh</small>
                                     </div>
                                 </div>
-                                <button class="cash-btn cash-btn-outline-warning" style="padding: 0.45rem 0.8rem;">
+                                <button class="cash-btn cash-btn-outline-success" style="padding: 0.45rem 0.8rem;">
                                     <i class="mdi mdi-download"></i>
                                 </button>
                             </div>

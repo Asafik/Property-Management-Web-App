@@ -331,20 +331,17 @@
         }
 
         .badge {
-            padding: 5px 10px;
-            font-weight: 500;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
             border-radius: 30px;
+            display: inline-block;
+            white-space: nowrap;
         }
-
-        .badge.bg-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .badge.bg-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
+        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
 
         .serah-form-group {
             margin-bottom: 1rem;
@@ -801,12 +798,17 @@
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
                                         {{ $application->customer->full_name }}
-                                        <span class="jenis-badge">
-                                            <i class="mdi mdi-home-outline"></i>
+                                        @php
+                                            $jenis = strtolower($application->unit->jenis ?? '');
+                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }}" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                            <i class="mdi {{ $icon }} me-1"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
-                                    <p class="customer-booking mb-0">Kode Booking: {{ $application->booking->booking_code ?? '-' }}</p>
+                                    <p class="customer-booking mb-0">Id Booking: {{ $application->booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
 
@@ -848,7 +850,11 @@
                             <div class="kpr-progress-bar" style="width: 100%;"></div>
                         </div>
 
-                        <div class="kpr-steps">
+                        @php
+                            $jenis = strtolower($application->unit->jenis ?? '');
+                        @endphp
+
+                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
@@ -865,6 +871,16 @@
                                 <small>{{ \Carbon\Carbon::parse($application->approved_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
+                            @if($jenis == 'komersil')
+                            <div class="kpr-step completed">
+                                <div class="kpr-step-icon">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                                <span class="kpr-step-title">Survey</span>
+                                <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : 'Selesai' }}</small>
+                            </div>
+                            @endif
+
                             <div class="kpr-step completed">
                                 <div class="kpr-step-icon">
                                     <i class="mdi mdi-check"></i>
@@ -878,7 +894,7 @@
                                     <i class="mdi mdi-key"></i>
                                 </div>
                                 <span class="kpr-step-title">Serah Terima</span>
-                                <small>Sedang Proses</small>
+                                <small>{{ date('d F Y') }}</small>
                             </div>
                         </div>
                     </div>
@@ -909,9 +925,15 @@
                             <div class="kpr-detail-item">
                                 <span>Status KPR</span>
                                 <span>
-                                    <span class="badge {{ $application->booking->status_cash == 'done' ? 'bg-success' : 'bg-warning' }}">
-                                        {{ $application->booking->status_cash == 'done' ? 'Disetujui' : 'Belum Disetujui' }}
+                                    <span class="badge badge-gradient-success text-white">
+                                        <i class="mdi mdi-check-circle-outline me-1"></i>Disetujui
                                     </span>
+                                </span>
+                            </div>
+                            <div class="kpr-detail-item mt-2">
+                                <span>Metode Pembayaran</span>
+                                <span class="badge badge-gradient-success text-white">
+                                    <i class="mdi mdi-bank me-1"></i>KPR
                                 </span>
                             </div>
                         </div>

@@ -244,6 +244,26 @@
             height: 100%;
             border-radius: 20px;
         }
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .customer-initial {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.2);
+        }
         .progress-green { background: linear-gradient(to right, #28a745, #5dd17a); }
         .progress-dark-green { background: linear-gradient(to right, #198754, #31b87a); }
         .icon-text {
@@ -891,15 +911,53 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                {{ $unit->activeBooking->sales->name ?? '-' }}
+                                                @if ($unit->activeBooking && $unit->activeBooking->sales)
+                                                    @php
+                                                        $salesName = $unit->activeBooking->sales->name;
+                                                        $sInitials = '';
+                                                        foreach (explode(' ', trim($salesName)) as $word) {
+                                                            if ($word !== '') {
+                                                                $sInitials .= strtoupper(substr($word, 0, 1));
+                                                            }
+                                                        }
+                                                        $sInitials = substr($sInitials ?: 'S', 0, 2);
+                                                    @endphp
+                                                    <div class="customer-info">
+                                                        <div class="customer-initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                            {{ $sInitials }}
+                                                        </div>
+                                                        <span>{{ $salesName }}</span>
+                                                    </div>
+                                                @else
+                                                    <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                    -
+                                                @endif
                                             </td>
                                             <td class="fee-text">
                                                 Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
                                             </td>
                                             <td>
-                                                <i class="mdi mdi-account-outline text-primary me-1"></i>
-                                                {{ $unit->activeBooking->customer->full_name ?? '-' }}
+                                                @if ($unit->activeBooking && $unit->activeBooking->customer)
+                                                    @php
+                                                        $customerName = $unit->activeBooking->customer->full_name;
+                                                        $initials = '';
+                                                        foreach (explode(' ', trim($customerName)) as $word) {
+                                                            if ($word !== '') {
+                                                                $initials .= strtoupper(substr($word, 0, 1));
+                                                            }
+                                                        }
+                                                        $initials = substr($initials ?: 'C', 0, 2);
+                                                    @endphp
+                                                    <div class="customer-info">
+                                                        <div class="customer-initial">
+                                                            {{ $initials }}
+                                                        </div>
+                                                        <span>{{ $customerName }}</span>
+                                                    </div>
+                                                @else
+                                                    <i class="mdi mdi-account-outline text-primary me-1"></i>
+                                                    -
+                                                @endif
                                             </td>
                                             <td class="fee-text">
                                                 Rp {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
@@ -982,8 +1040,51 @@
                                                     @endif
                                                 </p>
                                                 <p class="small mb-1"><i class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | <i class="mdi mdi-currency-usd me-1"></i>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
-                                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                                    <small class="text-muted"><i class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}</small>
+
+                                                <div class="mt-2 border-top pt-2">
+                                                    @if($unit->activeBooking && $unit->activeBooking->customer)
+                                                        @php
+                                                            $customerName = $unit->activeBooking->customer->full_name;
+                                                            $initials = '';
+                                                            foreach (explode(' ', trim($customerName)) as $word) {
+                                                                if ($word !== '') {
+                                                                    $initials .= strtoupper(substr($word, 0, 1));
+                                                                }
+                                                            }
+                                                            $initials = substr($initials ?: 'C', 0, 2);
+                                                        @endphp
+                                                        <div class="customer-info mb-1">
+                                                            <div class="customer-initial" style="width: 24px; height: 24px; font-size: 0.7rem;">
+                                                                {{ $initials }}
+                                                            </div>
+                                                            <small class="text-muted fw-bold">{{ Str::limit($customerName, 15) }}</small>
+                                                        </div>
+                                                    @else
+                                                        <small class="text-muted d-block mb-1"><i class="mdi mdi-account-outline me-1"></i>-</small>
+                                                    @endif
+                                                </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                                    @if($unit->activeBooking && $unit->activeBooking->sales)
+                                                        @php
+                                                            $salesName = $unit->activeBooking->sales->name;
+                                                            $sInitials = '';
+                                                            foreach (explode(' ', trim($salesName)) as $word) {
+                                                                if ($word !== '') {
+                                                                    $sInitials .= strtoupper(substr($word, 0, 1));
+                                                                }
+                                                            }
+                                                            $sInitials = substr($sInitials ?: 'S', 0, 2);
+                                                        @endphp
+                                                        <div class="customer-info">
+                                                            <div class="customer-initial" style="width: 24px; height: 24px; font-size: 0.7rem; background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                                {{ $sInitials }}
+                                                            </div>
+                                                            <small class="text-muted fw-bold">{{ Str::limit($salesName, 15) }}</small>
+                                                        </div>
+                                                    @else
+                                                        <small class="text-muted"><i class="mdi mdi-account-tie me-1"></i>-</small>
+                                                    @endif
                                                     <button class="btn btn-outline-danger btn-sm" onclick="openCustomerModal({{ $unit->id }})"><i class="mdi mdi-account-plus"></i></button>
                                                 </div>
                                             </div>
