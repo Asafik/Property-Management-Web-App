@@ -338,6 +338,7 @@ Route::post('persiapan-dokument-legal/cash/store/{booking}', [DocumentLegalContr
 Route::post('/document-upload', [DocumentPersiapanPecahLegalController::class, 'upload'])->name('document.upload');
 
 
+
 Route::get('/customer-profil-cash', function () {
     return view('customer.customer_profil_cash');
 });

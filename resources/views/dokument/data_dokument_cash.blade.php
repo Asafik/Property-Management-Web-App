@@ -1372,42 +1372,47 @@
                                                                 <i class="mdi mdi-eye-outline"></i>
                                                                 Lihat
                                                             </a>
-                                                        @else
-                                                            <div class="d-flex flex-column gap-1 mt-1 text-end">
-                                                                <span class="text-danger small fw-bold mb-1"
-                                                                    style="font-size: 0.75rem;"><i
-                                                                        class="mdi mdi-alert-circle-outline"></i> Belum
-                                                                    Upload</span>
-                                                                <div
-                                                                    class="d-flex align-items-stretch justify-content-end gap-2">
-                                                                    <div class="properti-file-upload-modern text-start"
-                                                                        style="width: 240px;">
-                                                                        <input type="file"
-                                                                            accept=".pdf,.jpg,.jpeg,.png">
-                                                                        <div class="properti-file-label-modern m-0 h-100 flex-row text-start"
-                                                                            style="padding: 0.4rem 0.6rem; min-height: 42px; justify-content: flex-start; border-radius: 10px;">
-                                                                            <i class="mdi mdi-cloud-upload-outline"
-                                                                                style="font-size: 1.3rem; padding: 4px; margin-right: 4px; min-width: 30px; text-align: center;"></i>
-                                                                            <div class="properti-file-info-modern"
-                                                                                style="line-height: 1.2;">
-                                                                                <span
-                                                                                    style="font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">Pilih
-                                                                                    File</span>
-                                                                                <small style="font-size: 0.6rem;">Format:
-                                                                                    PDF/JPG/PNG</small>
-                                                                            </div>
-                                                                            <span class="properti-file-size"
-                                                                                style="font-size: 0.65rem; padding: 2px 6px; margin: 0 0 0 auto;"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="btn btn-sm btn-gradient-primary text-nowrap d-flex align-items-center justify-content-center"
-                                                                        style="padding: 0 1rem; border-radius: 10px; height: auto;">
-                                                                        <i class="mdi mdi-upload me-1"></i> Upload
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        @endif
+                                                       @else
+<div class="d-flex flex-column gap-1 mt-1 text-end">
+    <span class="text-danger small fw-bold mb-1" style="font-size: 0.75rem;">
+        <i class="mdi mdi-alert-circle-outline"></i> Belum Upload
+    </span>
+
+    <form action="{{ route('document.upload') }}" 
+      method="POST" 
+      enctype="multipart/form-data">
+    @csrf
+
+    <!-- WAJIB -->
+    <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+    <input type="hidden" name="document_id" value="{{ $doc->id }}">
+
+    <div class="d-flex align-items-stretch justify-content-end gap-2">
+
+        <div class="properti-file-upload-modern text-start" style="width: 240px;">
+            <input type="file" 
+                   name="file" 
+                   accept=".pdf,.jpg,.jpeg,.png" 
+                   required>
+
+            <div class="properti-file-label-modern">
+                <i class="mdi mdi-cloud-upload-outline"></i>
+                <div>
+                    <span>Pilih File</span>
+                    <small>PDF/JPG/PNG</small>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit"
+            class="btn btn-sm btn-gradient-primary d-flex align-items-center">
+            <i class="mdi mdi-upload me-1"></i> Upload
+        </button>
+
+    </div>
+</form>
+</div>
+@endif
                                                     </td>
                                                 </tr>
                                             @empty
