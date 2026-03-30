@@ -306,23 +306,18 @@
     color: #9a55ff;
 }
 
-.badge-subsidi {
-    padding: 0.4rem 0.85rem;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.78rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: #fff;
-    text-transform: capitalize;
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
 }
-.badge-subsidi.subsidi {
-    background: linear-gradient(135deg, #28a745, #5dd067);
-}
-.badge-subsidi.komersil {
-    background: linear-gradient(135deg, #9a55ff, #c58bff);
-}
+@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
+.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
 
 .badge-status-doc {
     padding: 0.38rem 0.85rem;
@@ -431,10 +426,10 @@ h3.text-dark {
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-home-account me-2" style="color: #9a55ff;"></i>Daftar Customer KPR Terverifikasi
+                            <i class="mdi mdi-home-account me-2" style="color: #9a55ff;"></i>Daftar User KPR Terverifikasi
                         </h3>
                         <p class="text-muted mb-0">
-                            Kelola customer KPR yang telah terverifikasi dokumennya
+                            Kelola User KPR yang telah terverifikasi dokumennya
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -450,7 +445,7 @@ h3.text-dark {
             <div class="card">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Customer KPR Terverifikasi
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar User KPR Terverifikasi
                     </h5>
                 </div>
 
@@ -597,10 +592,9 @@ h3.text-dark {
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th>Nama Customer</th>
-                                    <th>Unit Rumah</th>
-                                    <th>Jenis</th>
-                                    <th>Unit</th>
+                                    <th>Nama User</th>
+                                    <th>Nama - Unit</th>
+                                    <th>Jenis & Tipe</th>
                                     <th>Bank</th>
                                     <th>Status Dokumen</th>
                                     <th>Tgl Verifikasi</th>
@@ -655,24 +649,30 @@ h3.text-dark {
                                         </td>
 
                                         <td>
-                                            <span class="info-with-icon">
-                                                <i class="mdi mdi-home-city-outline"></i>
-                                                {{ $application->unit->unit_name ?? '-' }}
-                                            </span>
+                                            <div class="info-with-icon">
+                                                <i class="mdi mdi-home"></i>
+                                                <span class="fw-bold">{{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}</span>
+                                            </div>
                                         </td>
 
                                         <td>
-                                            <span class="badge-subsidi {{ $unitType === 'subsidi' ? 'subsidi' : 'komersil' }}">
-                                                <i class="mdi mdi-home-variant"></i>
-                                                {{ ucfirst($application->unit->type ?? '-') }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <span class="info-with-icon">
-                                                <i class="mdi mdi-door"></i>
-                                                {{ $application->unit->unit_code ?? '-' }}
-                                            </span>
+                                            @php
+                                                $jenisUnit = $application->unit->jenis ?? '';
+                                                $tipeUnit = $application->unit->type ?? '-';
+                                            @endphp
+                                            @if (strtolower($jenisUnit) == 'subsidi')
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
+                                                </span>
+                                            @elseif(strtolower($jenisUnit) == 'komersil')
+                                                <span class="badge badge-gradient-primary">
+                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
+                                                </span>
+                                            @else
+                                                <span class="badge badge-gradient-secondary">
+                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenisUnit ?: '-') . ' - ' . $tipeUnit }}
+                                                </span>
+                                            @endif
                                         </td>
 
                                         <td>

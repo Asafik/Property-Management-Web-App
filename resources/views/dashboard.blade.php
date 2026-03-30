@@ -1360,8 +1360,8 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Unit</th>
-                                            <th>Type Unit</th>
+                                            <th><i class="mdi mdi-home-outline me-1"></i>Nama Unit</th>
+                                            <th><i class="mdi mdi-view-grid-outline me-1"></i>Type Unit</th>
                                             <th>Proses Pembangunan</th>
                                             <th>Booking</th>
                                             <th>Status</th>
@@ -1571,8 +1571,8 @@
                                 unitRows += `
                                     <tr>
                                         <td>${index + 1}</td>
-                                        <td>${unit.unit_name || unit.unit_number || '-'}</td>
-                                        <td>${unit.type || '-'}</td>
+                                        <td><i class="mdi mdi-home-outline text-primary me-1"></i>${unit.unit_name || unit.unit_number || '-'}</td>
+                                        <td><i class="mdi mdi-view-grid-outline text-info me-1"></i>${unit.type || '-'}</td>
                                         <td>${progressBadge}</td>
                                         <td>${bookingInfo}</td>
                                         <td>${statusBadge}</td>

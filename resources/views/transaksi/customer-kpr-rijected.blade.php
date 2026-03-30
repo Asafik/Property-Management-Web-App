@@ -209,21 +209,18 @@
     color: #2c2e3f;
 }
 
-.badge-type {
-    padding: 0.4rem 0.85rem;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.78rem;
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
     display: inline-block;
+    white-space: nowrap;
 }
-.badge-subsidi {
-    background: linear-gradient(135deg, #28c76f, #48da89);
-    color: #fff;
-}
-.badge-komersil {
-    background: linear-gradient(135deg, #9a55ff, #c084fc);
-    color: #fff;
-}
+@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
+.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
 
 .status-doc {
     display: inline-flex;
@@ -404,10 +401,10 @@ h3.text-dark {
                     <div>
                         <h3 class="text-dark mb-1">
                             <i class="mdi mdi-account-cancel me-2" style="color: #9a55ff;"></i>
-                            Daftar Customer KPR Rejected
+                            Daftar User KPR Rejected
                         </h3>
                         <p class="text-muted mb-0">
-                            Kelola data customer KPR yang telah rejected
+                            Kelola data user KPR yang telah rejected
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -547,11 +544,10 @@ h3.text-dark {
                         <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Customer</th>
-                                    <th>Unit Rumah</th>
-                                    <th>Jenis</th>
-                                    <th>Unit</th>
+                                    <th class="text-center">No</th>
+                                    <th>Nama User</th>
+                                    <th>Nama - Unit</th>
+                                    <th>Jenis & Tipe</th>
                                     <th>Bank</th>
                                     <th>Status Dokumen</th>
                                     <th>Tgl Verifikasi</th>
@@ -589,31 +585,28 @@ h3.text-dark {
                                         <td>
                                             <span class="fw-bold">
                                                 <i class="mdi mdi-home-city-outline text-primary me-1"></i>
-                                                {{ $application->unit->unit_name ?? '-' }}
+                                                {{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}
                                             </span>
                                         </td>
 
                                         <td>
-                                            @if($unitType === 'subsidi')
-                                                <span class="badge-type badge-subsidi">
-                                                    <i class="mdi mdi-home me-1"></i>Subsidi
+                                            @php
+                                                $jenisUnit = $application->unit->jenis ?? '';
+                                                $tipeUnit = $application->unit->type ?? '-';
+                                            @endphp
+                                            @if (strtolower($jenisUnit) == 'subsidi')
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
                                                 </span>
-                                            @elseif($unitType === 'komersil')
-                                                <span class="badge-type badge-komersil">
-                                                    <i class="mdi mdi-home me-1"></i>Komersil
+                                            @elseif(strtolower($jenisUnit) == 'komersil')
+                                                <span class="badge badge-gradient-primary">
+                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
                                                 </span>
                                             @else
-                                                <span class="badge-type badge-komersil">
-                                                    <i class="mdi mdi-home me-1"></i>{{ ucfirst($application->unit->type ?? '-') }}
+                                                <span class="badge badge-gradient-secondary">
+                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenisUnit ?: '-') . ' - ' . $tipeUnit }}
                                                 </span>
                                             @endif
-                                        </td>
-
-                                        <td>
-                                            <span class="fw-bold">
-                                                <i class="mdi mdi-home-outline text-primary me-1"></i>
-                                                {{ $application->unit->unit_code ?? '-' }}
-                                            </span>
                                         </td>
 
                                         <td>
@@ -691,8 +684,8 @@ h3.text-dark {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">
-                                            Tidak ada data customer KPR rejected
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            Tidak ada data user KPR rejected
                                         </td>
                                     </tr>
                                 @endforelse
