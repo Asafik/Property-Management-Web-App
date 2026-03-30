@@ -77,20 +77,6 @@
             border: none;
         }
 
-<<<<<<< HEAD
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
-.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
-.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
-=======
         .filter-card .form-label {
             font-size: 0.85rem;
             font-weight: 600;
@@ -98,7 +84,7 @@
             margin-bottom: 0.4rem;
             letter-spacing: 0.3px;
         }
->>>>>>> 3e3d24660ff86f4f993d43d36200c2c1d2d865a3
+
 
         .filter-card .form-control,
         .filter-card .form-select {
@@ -177,23 +163,7 @@
             border-radius: 10px;
         }
 
-<<<<<<< HEAD
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-account-cancel me-2" style="color: #9a55ff;"></i>
-                            Daftar User KPR Rejected
-                        </h3>
-                        <p class="text-muted mb-0">
-                            Kelola data user KPR yang telah rejected
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-home-alert-outline" style="font-size: 2.6rem; color: #9a55ff; opacity: 0.2;"></i>
-=======
+
         .btn-icon-only i {
             font-size: 1.1rem;
             margin: 0;
@@ -706,44 +676,10 @@
                             </div>
                         </div>
 
-<<<<<<< HEAD
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Nama User</th>
-                                    <th>Nama - Unit</th>
-                                    <th>Jenis & Tipe</th>
-                                    <th>Bank</th>
-                                    <th>Status Dokumen</th>
-                                    <th>Tgl Verifikasi</th>
-                                    <th>Catatan</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($kprApplications as $index => $application)
-                                    @php
-                                        $customerName = $application->customer->full_name ?? '-';
-                                        $words = explode(' ', trim($customerName));
-                                        $initial = '';
-                                        foreach ($words as $word) {
-                                            if ($word !== '') {
-                                                $initial .= strtoupper(substr($word, 0, 1));
-                                            }
-                                        }
-                                        $initial = substr($initial, 0, 2) ?: '-';
 
-                                        $status = strtolower($application->status ?? '');
-                                        $unitType = strtolower($application->unit->type ?? '');
-                                        $catatan = $application->catatan ?? '-';
-                                    @endphp
-=======
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead>
->>>>>>> 3e3d24660ff86f4f993d43d36200c2c1d2d865a3
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Customer</th>
@@ -777,40 +713,7 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
 
-<<<<<<< HEAD
-                                        <td>
-                                            <span class="fw-bold">
-                                                <i class="mdi mdi-home-city-outline text-primary me-1"></i>
-                                                {{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}
-                                            </span>
-                                        </td>
 
-                                        <td>
-                                            @php
-                                                $jenisUnit = $application->unit->jenis ?? '';
-                                                $tipeUnit = $application->unit->type ?? '-';
-                                            @endphp
-                                            @if (strtolower($jenisUnit) == 'subsidi')
-                                                <span class="badge badge-gradient-success">
-                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
-                                                </span>
-                                            @elseif(strtolower($jenisUnit) == 'komersil')
-                                                <span class="badge badge-gradient-primary">
-                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
-                                                </span>
-                                            @else
-                                                <span class="badge badge-gradient-secondary">
-                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenisUnit ?: '-') . ' - ' . $tipeUnit }}
-                                                </span>
-                                            @endif
-                                        </td>
-
-                                        <td>
-                                            <span class="fw-bold">
-                                                <i class="mdi mdi-bank text-success me-1"></i>{{ $application->bank->bank_name ?? '-' }}
-                                            </span>
-                                        </td>
-=======
                                             <td>
                                                 <div class="customer-wrap">
                                                     <div class="customer-initial">{{ $initial }}</div>
@@ -848,7 +751,7 @@
                                                     {{ $application->unit->unit_code ?? '-' }}
                                                 </span>
                                             </td>
->>>>>>> 3e3d24660ff86f4f993d43d36200c2c1d2d865a3
+
 
                                             <td>
                                                 <span class="fw-bold">
@@ -929,25 +832,6 @@
                                                             <i class="mdi mdi-map-marker-path"></i>Lanjut ke Survey
                                                         </a>
                                                     @endif
-<<<<<<< HEAD
-                                                @else
-                                                    <a href="{{ route('kpr.survey', $application->id) }}" class="btn-table-action btn-survey">
-                                                        <i class="mdi mdi-map-marker-path"></i>Lanjut ke Survey
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
-                                            Tidak ada data user KPR rejected
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-=======
                                                 </div>
                                             </td>
                                         </tr>
@@ -992,8 +876,6 @@
                                 </nav>
                             </div>
                         @endif
-
->>>>>>> 3e3d24660ff86f4f993d43d36200c2c1d2d865a3
                     </div>
                 </div>
             </div>
