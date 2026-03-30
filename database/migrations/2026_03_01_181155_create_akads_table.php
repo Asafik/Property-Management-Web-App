@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('catatan')->nullable();
 
             // Status akad
-            $table->enum('status', ['selesai', 'batal'])->default('selesai');
+            $table->enum('status', ['selesai','batal'])->default('selesai');
 
             // Jika batal
             $table->text('alasan_batal')->nullable();
