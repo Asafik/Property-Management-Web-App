@@ -1,11 +1,6 @@
 @extends('layouts.partial.app')
 
 @section('title', 'Verifikasi KPR - Properti Management')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/transaksi.css') }}">
-@endpush
-
 @section('content')
     <div class="transaksi-page">
         <div class="row">

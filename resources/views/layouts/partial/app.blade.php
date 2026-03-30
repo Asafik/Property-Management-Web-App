@@ -28,6 +28,9 @@
     {{-- Leaflet CSS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
+    {{-- Global CSS TRANSAKSI --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/transaksi.css') }}">
+
     {{-- Page-specific CSS --}}
     @stack('styles')
 </head>

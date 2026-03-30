@@ -209,6 +209,7 @@
 .customer-name {
     font-weight: 700;
     color: #2c2e3f;
+    font-size: 0.9rem;
 }
 
 .badge-status {
@@ -731,25 +732,13 @@ h3.text-dark, h4.text-dark {
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th class="sortable" data-field="name" data-direction="{{ request('sort') == 'name_asc' ? 'desc' : 'asc' }}">
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sort', 'latest') == 'name_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
                                         Nama User
-                                        @if(request('sort') == 'name_asc')
-                                            <i class="mdi mdi-arrow-up"></i>
-                                        @elseif(request('sort') == 'name_desc')
-                                            <i class="mdi mdi-arrow-down"></i>
-                                        @else
-                                            <i class="mdi mdi-swap-vertical"></i>
-                                        @endif
+                                        <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'name_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
                                     </th>
-                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort') == 'unit_asc' ? 'desc' : 'asc' }}">
+                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
                                         Nama - Unit
-                                        @if(request('sort') == 'unit_asc')
-                                            <i class="mdi mdi-arrow-up"></i>
-                                        @elseif(request('sort') == 'unit_desc')
-                                            <i class="mdi mdi-arrow-down"></i>
-                                        @else
-                                            <i class="mdi mdi-swap-vertical"></i>
-                                        @endif
+                                        <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'unit_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
                                     </th>
                                     <th>Jenis & Tipe</th>
                                     <th>Harga</th>
