@@ -1,0 +1,36 @@
+/* ============================================================
+   CORE CARD SYSTEM
+   ============================================================ */
+.card {
+    transition: all 0.3s ease; margin-bottom: 1rem;
+    border: none !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
+
+.card-header {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-bottom: 1px solid #e9ecef; padding: 0.75rem;
+}
+
+.card-title { font-size: 0.9rem; font-weight: 600; color: #9a55ff; margin-bottom: 0; }
+
+.form-control, .form-select {
+    border: 1px solid #e9ecef; border-radius: 8px;
+    padding: 0.6rem 0.8rem; transition: all 0.2s ease;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #9a55ff; box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1); outline: none;
+}
+
+/* ============================================================
+   SELECT2 CUSTOM (Wajib ada agar filter Select2 cakep)
+   ============================================================ */
+.select2-container--bootstrap-5 .select2-selection {
+    border: 1px solid #e9ecef !important; border-radius: 10px !important;
+    min-height: 42px !important; padding: 0.5rem 0.8rem !important;
+}
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+    color: #2c2e3f !important; font-size: 0.9rem !important;
+}
+.select2-limited-items .select2-results__options { max-height: 200px !important; overflow-y: auto !important; }
+/* ... tambahkan sisa style scrollbar select2 dari kode asli kamu ... */
