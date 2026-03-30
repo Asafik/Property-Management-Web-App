@@ -367,10 +367,31 @@
             display: inline-block;
             white-space: nowrap;
         }
-        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
-        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
-        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
+
+        @media (min-width: 576px) {
+            .badge {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        .badge-gradient-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: #ffffff;
+            border: none;
+        }
+
+        .badge-gradient-primary {
+            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+            border: none;
+        }
+
+        .badge-gradient-secondary {
+            background: #6c757d !important;
+            color: #ffffff !important;
+            border: none;
+        }
 
         .jenis-badge {
             background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
@@ -411,7 +432,7 @@
         .kpr-doc-action.disabled,
         .kpr-doc-action:disabled {
             border-color: #eaecf0;
-            color: #b3b9c5;
+            < color: #b3b9c5;
             background: #f9fafb;
             cursor: not-allowed;
         }
@@ -444,12 +465,12 @@
             box-shadow: 0 8px 20px rgba(43, 31, 73, 0.07);
         }
 
-        .kpr-decision-card.approve input[type="radio"]:checked + .kpr-decision-label {
+        .kpr-decision-card.approve input[type="radio"]:checked+.kpr-decision-label {
             border-color: #7bd3a6;
             background: #edf9f3;
         }
 
-        .kpr-decision-card.reject input[type="radio"]:checked + .kpr-decision-label {
+        .kpr-decision-card.reject input[type="radio"]:checked+.kpr-decision-label {
             border-color: #f3a7b2;
             background: #fff1f3;
         }
@@ -498,7 +519,7 @@
             margin-top: 2px;
         }
 
-        .kpr-decision-card input[type="radio"]:checked + .kpr-decision-label .kpr-decision-check {
+        .kpr-decision-card input[type="radio"]:checked+.kpr-decision-label .kpr-decision-check {
             color: #9a55ff;
         }
 
@@ -673,7 +694,7 @@
             background: #faf7ff;
         }
 
-        .kpr-next-card input[type="radio"]:checked + .kpr-next-label {
+        .kpr-next-card input[type="radio"]:checked+.kpr-next-label {
             border-color: #9a55ff;
             background: #f7f2ff;
             box-shadow: inset 0 0 0 1px rgba(154, 85, 255, 0.05);
@@ -717,7 +738,7 @@
             margin-top: 2px;
         }
 
-        .kpr-next-card input[type="radio"]:checked + .kpr-next-label .kpr-next-check {
+        .kpr-next-card input[type="radio"]:checked+.kpr-next-label .kpr-next-check {
             color: #9a55ff;
         }
 
@@ -728,7 +749,7 @@
             background: #fff;
         }
 
-        .kpr-sidebar-section + .kpr-sidebar-section {
+        .kpr-sidebar-section+.kpr-sidebar-section {
             margin-top: 1rem;
         }
 
@@ -897,7 +918,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div
+                            class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
                                     <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
@@ -907,9 +929,15 @@
                                         {{ $booking->customer->full_name ?? '-' }}
                                         @php
                                             $jenis = strtolower($booking->unit->jenis ?? '');
-                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $badgeClass =
+                                                $jenis == 'subsidi'
+                                                    ? 'badge-gradient-success'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'badge-gradient-primary'
+                                                        : 'badge-gradient-secondary');
                                         @endphp
-                                        <span class="badge {{ $badgeClass }} ms-2" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                        <span class="badge {{ $badgeClass }} ms-2"
+                                            style="font-size: 0.85rem; padding: 0.4rem 1rem;">
                                             <i class="mdi mdi-home-outline me-1"></i>
                                             {{ strtoupper($booking->unit->jenis ?? '-') }}
                                         </span>
@@ -929,7 +957,8 @@
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
-                                    <span class="text-primary fw-bold">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                                    <span class="text-primary fw-bold">Rp
+                                        {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -966,7 +995,11 @@
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="kpr-step-title">Pengajuan</span>
-                                <small>{{ $booking->kprApplication->submitted_at ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('d F Y') : '-' }}</small>
+                                <small>
+                                    {{ optional($booking->kprApplication)->submitted_at
+                                        ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('d F Y')
+                                        : '-' }}
+                                </small>
                             </div>
 
                             <div class="kpr-step active">
@@ -977,14 +1010,14 @@
                                 <small>Dalam Proses</small>
                             </div>
 
-                            @if($jenis == 'komersil')
-                            <div class="kpr-step">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-home-search-outline"></i>
+                            @if ($jenis == 'komersil')
+                                <div class="kpr-step">
+                                    <div class="kpr-step-icon">
+                                        <i class="mdi mdi-home-search-outline"></i>
+                                    </div>
+                                    <span class="kpr-step-title">Survey</span>
+                                    <small>Menunggu</small>
                                 </div>
-                                <span class="kpr-step-title">Survey</span>
-                                <small>Menunggu</small>
-                            </div>
                             @endif
 
                             <div class="kpr-step">
@@ -1022,7 +1055,8 @@
                             </div>
                             <div class="kpr-detail-item">
                                 <span>Jumlah Pinjaman</span>
-                                <span>Rp {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
+                                <span>Rp
+                                    {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="kpr-detail-item">
                                 <span>Tenor</span>
@@ -1030,7 +1064,8 @@
                             </div>
                             <div class="kpr-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp
+                                    {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -1060,22 +1095,14 @@
                             <span>Kelengkapan Dokumen</span>
                         </div>
 
-                        @if (
-                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                ->count() < 8
-                        )
+                        @if (collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() < 8)
                             <div class="kpr-inline-alert warning">
                                 <i class="mdi mdi-alert-circle-outline"></i>
                                 <div>
                                     Masih ada
                                     <strong>
-                                        {{
-                                            8 -
-                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                                ->count()
-                                        }}
+                                        {{ 8 -
+                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() }}
                                         dokumen
                                     </strong>
                                     yang perlu dilengkapi sebelum proses verifikasi final.
@@ -1101,7 +1128,10 @@
                                 <tbody>
                                     @forelse (['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'] as $type)
                                         @php
-                                            $doc = collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type);
+                                            $doc = collect($booking->kprApplication->documents ?? [])->firstWhere(
+                                                'type',
+                                                $type,
+                                            );
                                         @endphp
                                         <tr>
                                             <td>
@@ -1111,7 +1141,8 @@
                                                     </div>
                                                     <div>
                                                         <div>{{ strtoupper(str_replace('_', ' ', $type)) }}</div>
-                                                        <small class="kpr-muted">{{ $doc ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
+                                                        <small
+                                                            class="kpr-muted">{{ $doc ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
@@ -1127,17 +1158,13 @@
                                             </td>
                                             <td>
                                                 @if ($doc)
-                                                    <a href="{{ asset('storage/' . $doc->path) }}"
-                                                        target="_blank"
-                                                        class="kpr-doc-action"
-                                                        title="Lihat dokumen">
+                                                    <a href="{{ asset('storage/' . $doc->path) }}" target="_blank"
+                                                        class="kpr-doc-action" title="Lihat dokumen">
                                                         <i class="mdi mdi-eye-outline"></i>
                                                     </a>
                                                 @else
-                                                    <button type="button"
-                                                        class="kpr-doc-action disabled"
-                                                        title="Dokumen belum tersedia"
-                                                        disabled>
+                                                    <button type="button" class="kpr-doc-action disabled"
+                                                        title="Dokumen belum tersedia" disabled>
                                                         <i class="mdi mdi-eye-off-outline"></i>
                                                     </button>
                                                 @endif
@@ -1172,11 +1199,7 @@
                             </div>
 
                             <div class="mb-3">
-                                @if (
-                                    collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                        ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                        ->count() === 8
-                                )
+                                @if (collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() === 8)
                                     <div class="kpr-status-banner success">
                                         <i class="mdi mdi-check-circle-outline"></i>
                                         Semua Dokumen Lengkap
@@ -1193,48 +1216,33 @@
                                 <div class="kpr-summary-box success">
                                     <div class="label">Dokumen Lengkap</div>
                                     <div class="value">
-                                        {{
-                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                                ->count()
-                                        }}
+                                        {{ collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() }}
                                     </div>
                                 </div>
                                 <div class="kpr-summary-box danger">
                                     <div class="label">Dokumen Kurang</div>
                                     <div class="value">
-                                        {{
-                                            8 -
-                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                                ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                                ->count()
-                                        }}
+                                        {{ 8 -
+                                            collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() }}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="kpr-sidebar-section">
                                 <div class="kpr-sidebar-title">Rekomendasi Sistem</div>
-                                @if (
-                                    collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                        ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                        ->count() === 8
-                                )
+                                @if (collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() === 8)
                                     <div class="kpr-inline-alert success mb-0">
                                         <i class="mdi mdi-check-decagram-outline"></i>
-                                        <div>Dokumen sudah lengkap. Verifikasi dapat dilanjutkan ke pengambilan keputusan.</div>
+                                        <div>Dokumen sudah lengkap. Verifikasi dapat dilanjutkan ke pengambilan keputusan.
+                                        </div>
                                     </div>
                                 @else
                                     <div class="kpr-inline-alert warning mb-0">
                                         <i class="mdi mdi-file-alert-outline"></i>
                                         <div>
                                             Fokus utama saat ini adalah melengkapi
-                                            {{
-                                                8 -
-                                                collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])
-                                                    ->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))
-                                                    ->count()
-                                            }}
+                                            {{ 8 -
+                                                collect(['ktp', 'kk', 'npwp', 'slip_gaji', 'rekening_koran', 'surat_nikah', 'sku', 'ktp_pasangan'])->filter(fn($type) => collect($booking->kprApplication->documents ?? [])->firstWhere('type', $type))->count() }}
                                             dokumen yang belum tersedia.
                                         </div>
                                     </div>
@@ -1290,7 +1298,8 @@
 
                         <div class="kpr-inline-alert info mb-4" id="decisionHint">
                             <i class="mdi mdi-information-outline"></i>
-                            <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai status verifikasi.</div>
+                            <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai
+                                status verifikasi.</div>
                         </div>
 
                         <div class="kpr-inline-alert danger kpr-error-box" id="decisionErrorBox">
@@ -1298,21 +1307,24 @@
                             <div>Silakan pilih keputusan verifikasi terlebih dahulu sebelum submit.</div>
                         </div>
 
-                        <form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST" enctype="multipart/form-data" id="formVerifikasiKpr">
+                        <form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST"
+                            enctype="multipart/form-data" id="formVerifikasiKpr">
                             @csrf
                             <input type="hidden" name="status" id="statusVerifikasiInput" value="">
 
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-md-6">
                                     <div class="kpr-decision-card approve">
-                                        <input type="radio" name="decision_choice" id="decisionApprove" value="survey">
+                                        <input type="radio" name="decision_choice" id="decisionApprove"
+                                            value="survey">
                                         <label for="decisionApprove" class="kpr-decision-label">
                                             <div class="kpr-decision-icon">
                                                 <i class="mdi mdi-check-bold"></i>
                                             </div>
                                             <div class="kpr-decision-content">
                                                 <div class="kpr-decision-title">Setujui Verifikasi</div>
-                                                <p class="kpr-decision-desc mb-0">Dokumen dan data dinilai memadai untuk lanjut ke tahap survey.</p>
+                                                <p class="kpr-decision-desc mb-0">Dokumen dan data dinilai memadai untuk
+                                                    lanjut ke tahap survey.</p>
                                             </div>
                                             <div class="kpr-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
@@ -1323,14 +1335,16 @@
 
                                 <div class="col-12 col-md-6">
                                     <div class="kpr-decision-card reject">
-                                        <input type="radio" name="decision_choice" id="decisionReject" value="rejected">
+                                        <input type="radio" name="decision_choice" id="decisionReject"
+                                            value="rejected">
                                         <label for="decisionReject" class="kpr-decision-label">
                                             <div class="kpr-decision-icon">
                                                 <i class="mdi mdi-close-thick"></i>
                                             </div>
                                             <div class="kpr-decision-content">
                                                 <div class="kpr-decision-title">Tolak Verifikasi</div>
-                                                <p class="kpr-decision-desc mb-0">Pengajuan belum dapat dilanjutkan dan perlu tindakan lanjutan.</p>
+                                                <p class="kpr-decision-desc mb-0">Pengajuan belum dapat dilanjutkan dan
+                                                    perlu tindakan lanjutan.</p>
                                             </div>
                                             <div class="kpr-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
@@ -1345,16 +1359,14 @@
 
                                 <div class="kpr-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
-                                    <div><strong>Verifikasi disetujui.</strong> Pengajuan akan diarahkan ke tahap <strong>Survey</strong>.</div>
+                                    <div><strong>Verifikasi disetujui.</strong> Pengajuan akan diarahkan ke tahap
+                                        <strong>Survey</strong>.</div>
                                 </div>
 
                                 <div class="kpr-form-group">
                                     <label class="kpr-form-label" for="catatan_setuju">Catatan Verifikasi</label>
-                                    <textarea id="catatan_setuju"
-                                              class="kpr-form-control"
-                                              name="catatan_setuju"
-                                              rows="4"
-                                              placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey."></textarea>
+                                    <textarea id="catatan_setuju" class="kpr-form-control" name="catatan_setuju" rows="4"
+                                        placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey."></textarea>
                                 </div>
 
                                 <div class="kpr-form-group mb-0">
@@ -1377,16 +1389,14 @@
 
                                 <div class="kpr-inline-alert danger">
                                     <i class="mdi mdi-close-circle-outline"></i>
-                                    <div><strong>Verifikasi ditolak.</strong> Pilih alasan dan tindakan lanjutan agar proses tetap jelas untuk customer dan internal.</div>
+                                    <div><strong>Verifikasi ditolak.</strong> Pilih alasan dan tindakan lanjutan agar proses
+                                        tetap jelas untuk customer dan internal.</div>
                                 </div>
 
                                 <div class="kpr-form-group">
                                     <label class="kpr-form-label" for="catatan_tolak">Catatan / Alasan</label>
-                                    <textarea id="catatan_tolak"
-                                              class="kpr-form-control"
-                                              name="catatan_tolak"
-                                              rows="4"
-                                              placeholder="Contoh: NPWP belum tersedia dan rekening koran belum sesuai periode yang diminta."></textarea>
+                                    <textarea id="catatan_tolak" class="kpr-form-control" name="catatan_tolak" rows="4"
+                                        placeholder="Contoh: NPWP belum tersedia dan rekening koran belum sesuai periode yang diminta."></textarea>
                                 </div>
 
                                 <div class="kpr-form-group">
@@ -1408,14 +1418,16 @@
 
                                     <div class="kpr-next-step-grid">
                                         <div class="kpr-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanLengkapi" value="Lengkapi Dokumen" checked>
+                                            <input type="radio" name="tindakan" id="tindakanLengkapi"
+                                                value="Lengkapi Dokumen" checked>
                                             <label class="kpr-next-label" for="tindakanLengkapi">
                                                 <div class="kpr-next-icon">
                                                     <i class="mdi mdi-file-document-edit-outline"></i>
                                                 </div>
                                                 <div class="kpr-next-content">
                                                     <span class="kpr-next-title">Lengkapi Dokumen</span>
-                                                    <span class="kpr-next-desc">Customer diminta melengkapi dokumen yang belum tersedia atau belum valid.</span>
+                                                    <span class="kpr-next-desc">Customer diminta melengkapi dokumen yang
+                                                        belum tersedia atau belum valid.</span>
                                                 </div>
                                                 <div class="kpr-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1424,14 +1436,16 @@
                                         </div>
 
                                         <div class="kpr-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanUlang" value="Ajukan ke Bank Lain">
+                                            <input type="radio" name="tindakan" id="tindakanUlang"
+                                                value="Ajukan ke Bank Lain">
                                             <label class="kpr-next-label" for="tindakanUlang">
                                                 <div class="kpr-next-icon">
                                                     <i class="mdi mdi-bank-transfer-out"></i>
                                                 </div>
                                                 <div class="kpr-next-content">
                                                     <span class="kpr-next-title">Ajukan ke Bank Lain</span>
-                                                    <span class="kpr-next-desc">Pengajuan diulang ke bank lain dengan penyesuaian kelengkapan bila diperlukan.</span>
+                                                    <span class="kpr-next-desc">Pengajuan diulang ke bank lain dengan
+                                                        penyesuaian kelengkapan bila diperlukan.</span>
                                                 </div>
                                                 <div class="kpr-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1440,14 +1454,16 @@
                                         </div>
 
                                         <div class="kpr-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanCash" value="Pindah ke Cash">
+                                            <input type="radio" name="tindakan" id="tindakanCash"
+                                                value="Pindah ke Cash">
                                             <label class="kpr-next-label" for="tindakanCash">
                                                 <div class="kpr-next-icon">
                                                     <i class="mdi mdi-cash-multiple"></i>
                                                 </div>
                                                 <div class="kpr-next-content">
                                                     <span class="kpr-next-title">Pindah ke Cash</span>
-                                                    <span class="kpr-next-desc">Customer melanjutkan pembelian dengan metode pembayaran tunai.</span>
+                                                    <span class="kpr-next-desc">Customer melanjutkan pembelian dengan
+                                                        metode pembayaran tunai.</span>
                                                 </div>
                                                 <div class="kpr-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1456,14 +1472,16 @@
                                         </div>
 
                                         <div class="kpr-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanBatal" value="Batalkan Transaksi">
+                                            <input type="radio" name="tindakan" id="tindakanBatal"
+                                                value="Batalkan Transaksi">
                                             <label class="kpr-next-label" for="tindakanBatal">
                                                 <div class="kpr-next-icon">
                                                     <i class="mdi mdi-cancel"></i>
                                                 </div>
                                                 <div class="kpr-next-content">
                                                     <span class="kpr-next-title">Batalkan Transaksi</span>
-                                                    <span class="kpr-next-desc">Customer membatalkan transaksi pembelian dan proses diarahkan ke refund.</span>
+                                                    <span class="kpr-next-desc">Customer membatalkan transaksi pembelian
+                                                        dan proses diarahkan ke refund.</span>
                                                 </div>
                                                 <div class="kpr-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1472,14 +1490,16 @@
                                         </div>
 
                                         <div class="kpr-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanBanding" value="Banding Ulang">
+                                            <input type="radio" name="tindakan" id="tindakanBanding"
+                                                value="Banding Ulang">
                                             <label class="kpr-next-label" for="tindakanBanding">
                                                 <div class="kpr-next-icon">
                                                     <i class="mdi mdi-scale-balance"></i>
                                                 </div>
                                                 <div class="kpr-next-content">
                                                     <span class="kpr-next-title">Banding Ulang</span>
-                                                    <span class="kpr-next-desc">Ajukan banding atau review ulang ke bank yang sama dengan catatan tambahan.</span>
+                                                    <span class="kpr-next-desc">Ajukan banding atau review ulang ke bank
+                                                        yang sama dengan catatan tambahan.</span>
                                                 </div>
                                                 <div class="kpr-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1543,7 +1563,8 @@
                                     </li>
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Pilih tindakan lanjutan yang paling relevan agar proses berikutnya tidak ambigu.</span>
+                                        <span>Pilih tindakan lanjutan yang paling relevan agar proses berikutnya tidak
+                                            ambigu.</span>
                                     </li>
                                 </ul>
                             </div>
