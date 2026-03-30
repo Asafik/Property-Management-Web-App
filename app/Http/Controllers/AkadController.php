@@ -70,7 +70,7 @@ class AkadController extends Controller
 
             // ===== FORM SELESAI =====
             if ($request->filled('tanggal_akad')) {
-               $noAkad = $request->no_akad ?? $this->generateNoAkad();
+                $noAkad = $request->no_akad ?? $this->generateNoAkad();
 
                 Akad::create([
                     'booking_id' => $booking->id,
@@ -135,15 +135,15 @@ class AkadController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses akad. Silakan coba lagi.');
         }
     }
- public function akadKPR($id)
-{
-    // Cari KPR yang kolom booking_id nya sesuai dengan ID dari URL
-    $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
+    public function akadKPR($id)
+    {
+        // Cari KPR yang kolom booking_id nya sesuai dengan ID dari URL
+        $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
             ->where('booking_id', $id)
             ->firstOrFail(); // Melempar 404 jika booking_id tidak ditemukan di tabel KPR
 
-    return view('marketing.akad_closing', compact('kpr'));
-}
+        return view('marketing.akad_closing', compact('kpr'));
+    }
     public function storeKPR(Request $request, Booking $booking)
     {
         try {
@@ -178,10 +178,10 @@ class AkadController extends Controller
                 Log::info('Dokumen akad diupload', ['file' => $filePath]);
             }
 
-            // ===== FORM SELESAI =====
-            if ($request->filled('tanggal_akad')) {
+            // ===== SELESAI =====
+            if ($request->status === 'completed') {
 
-             $noAkad = $request->no_akad ?? $this->generateNoAkad();
+                $noAkad = $request->no_akad ?? $this->generateNoAkad();
 
                 Akad::create([
                     'booking_id' => $booking->id,
@@ -192,32 +192,27 @@ class AkadController extends Controller
                     'status' => 'selesai'
                 ]);
 
-        
                 $booking->update([
                     'status_akad' => 'done',
                     'status' => 'akad',
                     'akad_date' => now()
                 ]);
 
-               
                 $kpr = KprApplication::where('booking_id', $booking->id)->first();
 
                 if ($kpr) {
                     $kpr->update([
-                        'status' => 'akad' // atau status_kpr kalau nama field beda
+                        'status' => 'akad'
                     ]);
                 }
-
-                Log::info('Akad selesai berhasil diproses', [
-                    'booking_id' => $booking->id,
-                    'no_akad' => $noAkad
-                ]);
 
                 return redirect()->back()->with('success', 'Akad selesai berhasil diproses.');
             }
 
-            // ===== FORM BATAL =====
-            if ($request->filled('alasan_batal')) {
+
+            // ===== TUNDA / CANCEL =====
+            if ($request->status === 'cancelled') {
+
                 Akad::create([
                     'booking_id' => $booking->id,
                     'no_akad' => null,
@@ -228,18 +223,11 @@ class AkadController extends Controller
                     'tindakan' => $request->tindakan
                 ]);
 
-                // Update status akad di booking
                 $booking->update([
                     'status_akad' => 'cancelled'
                 ]);
 
-                Log::info('Akad dibatalkan', [
-                    'booking_id' => $booking->id,
-                    'alasan' => $request->alasan_batal,
-                    'tindakan' => $request->tindakan
-                ]);
-
-                return redirect()->back()->with('success', 'Akad dibatalkan dan tindakan berhasil diproses.');
+                return redirect()->back()->with('success', 'Akad ditunda / dibatalkan.');
             }
 
             Log::warning('Form tidak lengkap atau tidak valid', ['booking_id' => $booking->id]);

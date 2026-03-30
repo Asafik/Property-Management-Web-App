@@ -473,6 +473,11 @@
             background: #fff8e6;
         }
 
+        .akad-choice-card.danger input[type="radio"]:checked + .akad-choice-label {
+            border-color: #ffc9d0;
+            background: #fff1f3;
+        }
+
         .akad-choice-icon {
             width: 48px;
             height: 48px;
@@ -492,6 +497,11 @@
         .akad-choice-card.warning .akad-choice-icon {
             background: #fff1cc;
             color: #f59f00;
+        }
+
+        .akad-choice-card.danger .akad-choice-icon {
+            background: #ffe3e6;
+            color: #dc3545;
         }
 
         .akad-choice-content {
@@ -543,6 +553,11 @@
             border-color: #ffe5ab;
         }
 
+        .akad-form-shell.danger {
+            background: linear-gradient(180deg, #fff1f3, #ffffff);
+            border-color: #ffc9d0;
+        }
+
         .akad-form-title {
             font-size: 1rem;
             font-weight: 800;
@@ -555,6 +570,10 @@
 
         .akad-form-title.warning {
             color: #f59f00;
+        }
+
+        .akad-form-title.danger {
+            color: #dc3545;
         }
 
         .akad-form-group {
@@ -1286,14 +1305,14 @@
                                 </div>
 
                                 <div class="col-12 col-md-6 d-flex">
-                                    <div class="akad-choice-card warning w-100">
-                                        <input type="radio" name="akad_choice" id="choiceTunda" value="problem">
+                                    <div class="akad-choice-card danger w-100">
+                                        <input type="radio" name="akad_choice" id="choiceTunda" value="cancelled">
                                         <label for="choiceTunda" class="akad-choice-label">
                                             <div class="akad-choice-icon">
                                                 <i class="mdi mdi-alert-outline"></i>
                                             </div>
                                             <div class="akad-choice-content">
-                                                <div class="akad-choice-title">Tunda / Bermasalah</div>
+                                                <div class="akad-choice-title">Tolak akad / Bermasalah</div>
                                                 <p class="akad-choice-desc mb-0">
                                                     Ada kendala saat proses akad dan perlu tindak lanjut lebih lanjut.
                                                 </p>
@@ -1351,6 +1370,7 @@
                                             <input type="text"
                                                 class="akad-form-control"
                                                 name="nomor_akad"
+                                                id="nomor_akad_selesai"
                                                 value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
                                         </div>
                                     </div>
@@ -1379,12 +1399,20 @@
                                 </div>
                             </div>
 
-                            <div id="formTunda" class="akad-form-shell warning">
-                                <div class="akad-form-title warning">Form Penundaan / Kendala Akad</div>
+                            <div id="formTunda" class="akad-form-shell danger">
+                                <div class="akad-form-title danger">Form Penundaan / Kendala Akad</div>
 
-                                <div class="kpr-inline-alert warning">
+                                <div class="kpr-inline-alert danger">
                                     <i class="mdi mdi-alert-circle-outline"></i>
                                     <div><strong>Akad ditunda atau bermasalah.</strong> Pilih alasan dan tindakan lanjutan agar proses tetap jelas untuk tim dan customer.</div>
+                                </div>
+
+                                <div class="akad-form-group">
+                                    <label class="akad-form-label">Nomor Akad</label>
+                                    <input type="text"
+                                        class="akad-form-control"
+                                        id="nomor_akad_tunda"
+                                        value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
                                 </div>
 
                                 <div class="akad-form-group">
@@ -1586,10 +1614,14 @@
                     $statusInput.val('completed');
                     $formSelesai.stop(true, true).slideDown(180);
                     $formTunda.stop(true, true).slideUp(180);
-                } else if (type === 'problem') {
-                    $statusInput.val('problem');
+                    $('#nomor_akad_selesai').attr('name', 'nomor_akad');
+                    $('#nomor_akad_tunda').removeAttr('name');
+                } else if (type === 'cancelled') {
+                    $statusInput.val('cancelled');
                     $formTunda.stop(true, true).slideDown(180);
                     $formSelesai.stop(true, true).slideUp(180);
+                    $('#nomor_akad_tunda').attr('name', 'nomor_akad');
+                    $('#nomor_akad_selesai').removeAttr('name');
                 }
             }
 
@@ -1601,7 +1633,7 @@
 
             $choiceTunda.on('change', function() {
                 if ($(this).is(':checked')) {
-                    switchAkad('problem');
+                    switchAkad('cancelled');
                 }
             });
 
