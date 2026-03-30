@@ -1,4 +1,3 @@
-
 @extends('layouts.partial.app')
 
 @section('title', 'Daftar Customer KPR Terverifikasi - Demo UI')
