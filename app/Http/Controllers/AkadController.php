@@ -157,11 +157,12 @@ class AkadController extends Controller
             return redirect()->back()->with('error', 'Booking belum lunas.');
         }
 
-        // ✅ VALIDASI UTAMA
         $request->validate([
             'status' => 'required|in:completed,cancelled',
             'tanggal_akad' => 'nullable|date',
-            'dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'tanggal_akad_tolak' => 'nullable|date',
+            'dokumen_akad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'dokumen_tolak' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'catatan' => 'nullable|string',
             'no_akad' => 'nullable|string',
 
@@ -169,10 +170,16 @@ class AkadController extends Controller
             'tindakan' => 'nullable|in:jadwal_ulang,lengkapi_dokumen,koordinasi_bank,review_internal',
         ]);
 
-        // Upload file
+        // Upload file untuk form selesai
         $filePath = null;
-        if ($request->hasFile('dokumen')) {
-            $filePath = $request->file('dokumen')->store('dokumen_akad', 'public');
+        if ($request->hasFile('dokumen_akad')) {
+            $filePath = $request->file('dokumen_akad')->store('dokumen_akad', 'public');
+        }
+
+        // Upload file untuk form tolak
+        $filePathTolak = null;
+        if ($request->hasFile('dokumen_tolak')) {
+            $filePathTolak = $request->file('dokumen_tolak')->store('dokumen_akad', 'public');
         }
 
         // =========================
@@ -214,8 +221,8 @@ class AkadController extends Controller
             Akad::create([
                 'booking_id' => $booking->id,
                 'no_akad' => null,
-                'tanggal_akad' => null, // ⛔ wajib null
-                'dokumen' => $filePath,
+                'tanggal_akad' => $request->tanggal_akad_tolak,
+                'dokumen' => $filePathTolak,
                 'catatan' => $request->catatan ?? $request->catatan_masalah,
                 'status' => 'batal',
                 'tindakan' => $request->tindakan

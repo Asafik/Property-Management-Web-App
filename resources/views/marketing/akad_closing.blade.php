@@ -1407,12 +1407,39 @@
                                     <div><strong>Akad ditunda atau bermasalah.</strong> Pilih alasan dan tindakan lanjutan agar proses tetap jelas untuk tim dan customer.</div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="akad-form-group">
+                                            <label class="akad-form-label">Nomor Akad</label>
+                                            <input type="text"
+                                                class="akad-form-control"
+                                                id="nomor_akad_tunda"
+                                                value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="akad-form-group">
+                                            <label class="akad-form-label">Tanggal Akad</label>
+                                            <input type="date"
+                                                class="akad-form-control"
+                                                name="tanggal_akad_tolak"
+                                                value="{{ optional($kpr->booking->akad)->tanggal_akad ?? date('Y-m-d') }}">
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="akad-form-group">
-                                    <label class="akad-form-label">Nomor Akad</label>
-                                    <input type="text"
-                                        class="akad-form-control"
-                                        id="nomor_akad_tunda"
-                                        value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
+                                    <label class="akad-form-label">Upload Dokumen Pendukung</label>
+                                    <div class="verifikasi-file-upload">
+                                        <input type="file" name="dokumen_tolak" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="verifikasi-file-label">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="verifikasi-file-info">
+                                                <span>Upload Dokumen Pendukung</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="akad-form-group">

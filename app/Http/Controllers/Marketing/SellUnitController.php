@@ -30,8 +30,9 @@ class SellUnitController extends Controller
         $user = Auth::user();
         $query = LandBankUnit::with([
             'landBank',
+            'activeBooking',
             'activeBooking.sales',
-            'activeBooking.customer'
+            'activeBooking.customer',
         ]);
         // jika posisi marketing → hanya unit miliknya
         if (($user->position->name ?? '') === 'Marketing') {
