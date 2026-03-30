@@ -16,8 +16,8 @@ return new class extends Migration
                   ->onDelete('cascade');
 
             // Data akad
-            $table->string('no_akad')->unique();
-            $table->date('tanggal_akad');
+            $table->string('no_akad')->unique()->nullable();
+            $table->date('tanggal_akad')->nullable();   
 
             // Dokumen upload (pdf / scan)
             $table->string('dokumen')->nullable();
@@ -30,7 +30,10 @@ return new class extends Migration
 
             // Jika batal
             $table->text('alasan_batal')->nullable();
-            $table->enum('tindakan', ['refund', 'hangus'])->nullable();
+            $table->enum('tindakan', ['jadwal_ulang',
+            'lengkapi_dokumen',
+            'koordinasi_bank',
+            'review_internal'])->nullable();
 
             $table->timestamps();
         });

@@ -1439,7 +1439,7 @@
 
                                     <div class="akad-next-grid">
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanJadwalUlang" value="Jadwal Ulang" checked>
+                                            <input type="radio" name="tindakan" id="tindakanJadwalUlang" value="jadwal_ulang" checked>
                                             <label class="akad-next-label" for="tindakanJadwalUlang">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-calendar-clock-outline"></i>
@@ -1455,7 +1455,7 @@
                                         </div>
 
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanLengkapi" value="Lengkapi Dokumen">
+                                            <input type="radio" name="tindakan" id="tindakanLengkapi" value="lengkapi_dokumen">
                                             <label class="akad-next-label" for="tindakanLengkapi">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-file-document-edit-outline"></i>
@@ -1471,7 +1471,7 @@
                                         </div>
 
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanKoordinasiBank" value="Koordinasi Ulang dengan Bank">
+                                            <input type="radio" name="tindakan" id="tindakanKoordinasiBank" value="koordinasi_ulang_dengan_bank">
                                             <label class="akad-next-label" for="tindakanKoordinasiBank">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-bank-transfer"></i>
@@ -1487,7 +1487,7 @@
                                         </div>
 
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanReviewInternal" value="Review Internal">
+                                            <input type="radio" name="tindakan" id="tindakanReviewInternal" value="review_internal">
                                             <label class="akad-next-label" for="tindakanReviewInternal">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-clipboard-search-outline"></i>
