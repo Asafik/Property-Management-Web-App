@@ -333,6 +333,16 @@
     background-color: #f8f9fa;
 }
 
+.table tbody tr.table-warning {
+    background-color: #fff4db !important;
+    border-left: 4px solid #ffc107;
+    transition: all 0.3s ease;
+}
+
+.table tbody tr.table-warning:hover {
+    background-color: #ffe8a1 !important;
+}
+
 .booking-id {
     display: inline-flex;
     align-items: center;
@@ -1085,7 +1095,7 @@ h3.text-dark {
                                         $methodClass = str_replace('_', '-', strtolower($booking->purchase_type ?? ''));
                                     @endphp
 
-                                    <tr id="booking-{{ $booking->id }}">
+                                    <tr id="booking-{{ $booking->id }}" class="{{ request('booking_id') == $booking->id ? 'table-warning' : '' }}">
                                         <td class="text-center fw-bold">
                                             {{ ($bookings->firstItem() ?? 1) + $index }}
                                         </td>
