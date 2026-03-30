@@ -1287,7 +1287,7 @@
 
                                 <div class="col-12 col-md-6 d-flex">
                                     <div class="akad-choice-card warning w-100">
-                                        <input type="radio" name="akad_choice" id="choiceTunda" value="problem">
+                                        <input type="radio" name="akad_choice" id="choiceTunda" value="cancelled">
                                         <label for="choiceTunda" class="akad-choice-label">
                                             <div class="akad-choice-icon">
                                                 <i class="mdi mdi-alert-outline"></i>
@@ -1586,8 +1586,8 @@
                     $statusInput.val('completed');
                     $formSelesai.stop(true, true).slideDown(180);
                     $formTunda.stop(true, true).slideUp(180);
-                } else if (type === 'problem') {
-                    $statusInput.val('problem');
+                } else if (type === 'cancelled') {
+                    $statusInput.val('cancelled');
                     $formTunda.stop(true, true).slideDown(180);
                     $formSelesai.stop(true, true).slideUp(180);
                 }
@@ -1601,7 +1601,7 @@
 
             $choiceTunda.on('change', function() {
                 if ($(this).is(':checked')) {
-                    switchAkad('problem');
+                    switchAkad('cancelled');
                 }
             });
 
