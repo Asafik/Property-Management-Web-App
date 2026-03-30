@@ -270,19 +270,21 @@ public function setAgency(Request $request, $unitId)
             ->first();
 
         if (!$booking) {
-            Log::warning('Booking tidak ditemukan');
-            return back()->with('error', 'Booking untuk unit ini belum dibuat.');
+            Log::warning('Booking tidak ditemukan untuk unit ID: ' . $unitId);
+            return response()->json([
+                'message' => 'Booking untuk unit ini belum dibuat. Pilih customer terlebih dahulu.'
+            ], 422);
         }
 
-        // Bersihkan format rupiah
-        $agentFee = str_replace(['.', ','], '', $request->agent_fee);
+        // Bersihkan format rupiah (hapus titik dan koma)
+        $agentFee = str_replace(['.', ',', ' '], '', $request->agent_fee);
 
         $booking->update([
             'sales_id'  => $request->sales_id,
             'agent_fee' => $agentFee
         ]);
 
-        Log::info('Sales & Agent Fee berhasil diupdate');
+        Log::info('Sales & Agent Fee berhasil diupdate. Sales ID: ' . $request->sales_id . ', Agent Fee: ' . $agentFee);
 
         // =============================
         // KIRIM NOTIFIKASI
@@ -304,17 +306,23 @@ public function setAgency(Request $request, $unitId)
 
         Log::info('Notifikasi berhasil dikirim');
 
-        return back()->with('success', 'Sales & Agent Fee berhasil diupdate');
+        return response()->json([
+            'message' => 'Agency & Agent Fee berhasil disimpan'
+        ], 200);
 
     } catch (\Illuminate\Validation\ValidationException $e) {
 
         Log::error('VALIDATION ERROR', $e->errors());
-        return back()->withErrors($e->errors())->withInput();
+        return response()->json([
+            'message' => 'Validasi gagal: ' . implode(', ', array_merge(...array_values($e->errors())))
+        ], 422);
 
     } catch (\Exception $e) {
 
         Log::error('GENERAL ERROR: ' . $e->getMessage());
-        return back()->with('error', 'Terjadi kesalahan saat update sales.');
+        return response()->json([
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
 }
     public function exportExcel()

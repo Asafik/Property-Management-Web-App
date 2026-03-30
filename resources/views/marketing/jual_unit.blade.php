@@ -2296,16 +2296,20 @@
             // Pilih Agency
             $(document).on('click', '.pilihAgency', function () {
                 let salesId = $(this).data('id');
-                let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
-                if (!agentFee || parseInt(agentFee) <= 0) {
+                let agentFeeRaw = $('#agent_fee_modal').val().replace(/\./g, '').replace(/,/g, '').trim();
+                if (!agentFeeRaw || parseInt(agentFeeRaw) <= 0) {
                     Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Agent fee wajib diisi dan lebih dari 0!' });
                     return;
                 }
                 let unitId = $('#modalAgency').data('unit');
+                if (!unitId) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Unit tidak valid! Silakan coba lagi.' });
+                    return;
+                }
 
                 Swal.fire({
                     title: 'Yakin pilih agency ini?',
-                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
+                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFeeRaw)}</b>`,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Pilih!',
@@ -2314,10 +2318,12 @@
                     cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        Swal.fire({ title: 'Memproses...', text: 'Harap tunggu', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
                         let formData = new FormData();
                         formData.append('_token', '{{ csrf_token() }}');
                         formData.append('sales_id', salesId);
-                        formData.append('agent_fee', agentFee);
+                        formData.append('agent_fee', agentFeeRaw);
                         let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
 
                         $.ajax({
@@ -2328,10 +2334,12 @@
                             contentType: false,
                             success: function (response) {
                                 $('#modalAgency').modal('hide');
-                                Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Agency berhasil dipilih', showConfirmButton: false, timer: 1500 }).then(() => location.reload());
+                                Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message || 'Agency berhasil dipilih', showConfirmButton: false, timer: 1500 }).then(() => location.reload());
                             },
                             error: function (xhr) {
-                                Swal.fire({ icon: 'error', title: 'Gagal', text: xhr.responseJSON?.message || 'Terjadi kesalahan' });
+                                let errMsg = 'Terjadi kesalahan';
+                                if (xhr.responseJSON && xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
+                                Swal.fire({ icon: 'error', title: 'Gagal', text: errMsg });
                             }
                         });
                     }
