@@ -527,7 +527,6 @@
                             <i class="mdi mdi-home-alert-outline"
                                 style="font-size: 2.6rem; color: #9a55ff; opacity: 0.2;"></i>
                         </div>
->>>>>>> 3e3d24660ff86f4f993d43d36200c2c1d2d865a3
                     </div>
                 </div>
             </div>
