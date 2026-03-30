@@ -30,10 +30,7 @@ return new class extends Migration
 
             // Jika batal
             $table->text('alasan_batal')->nullable();
-            $table->enum('tindakan', ['jadwal_ulang',
-            'lengkapi_dokumen',
-            'koordinasi_bank',
-            'review_internal'])->nullable();
+            $table->enum('tindakan', ['jadwal_ulang','lengkapi_dokumen','koordinasi_bank','review_internal'])->nullable();
 
             $table->timestamps();
         });
