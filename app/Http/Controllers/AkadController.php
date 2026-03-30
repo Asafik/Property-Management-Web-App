@@ -7,6 +7,7 @@ use App\Models\Akad;
 use App\Models\KprApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class AkadController extends Controller
 {
@@ -144,7 +145,7 @@ class AkadController extends Controller
 
         return view('marketing.akad_closing', compact('kpr'));
     }
-   public function storeKPR(Request $request, Booking $booking)
+  public function storeKPR(Request $request, Booking $booking)
 {
     try {
         Log::info('Proses store akad', [
@@ -157,26 +158,52 @@ class AkadController extends Controller
             return redirect()->back()->with('error', 'Booking belum lunas.');
         }
 
-        $request->validate([
-            'status' => 'required|in:completed,cancelled',
-            'tanggal_akad' => 'nullable|date',
-            'tanggal_akad_tolak' => 'nullable|date',
+        // List tindakan valid
+        $tindakanList = [
+            'jadwal_ulang',
+            'lengkapi_dokumen',
+            'koordinasi_ulang_dengan_bank',
+            'review_internal'
+        ];
+
+        // =========================
+        // VALIDASI DINAMIS
+        // =========================
+        $rules = [
+            'status' => ['required', Rule::in(['completed', 'cancelled'])],
             'dokumen_akad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'dokumen_tolak' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'catatan' => 'nullable|string',
-            'no_akad' => 'nullable|string',
+        ];
 
-            // hanya untuk cancelled
-            'tindakan' => 'nullable|in:jadwal_ulang,lengkapi_dokumen,koordinasi_bank,review_internal',
-        ]);
+        if ($request->status === 'completed') {
+            $rules += [
+                'tanggal_akad' => 'required|date',
+                'lokasi_akad' => 'required|string',
+                'nama_notaris' => 'required|string',
+                'nomor_akad' => 'nullable|string',
+                'catatan' => 'nullable|string',
+            ];
+        }
 
-        // Upload file untuk form selesai
+        if ($request->status === 'cancelled') {
+            $rules += [
+                'tanggal_akad_tolak' => 'required|date',
+                'alasan_masalah' => 'required|string',
+                'tindakan' => ['required', Rule::in($tindakanList)],
+                'catatan_masalah' => 'nullable|string',
+            ];
+        }
+
+        $request->validate($rules);
+
+        // =========================
+        // UPLOAD FILE
+        // =========================
         $filePath = null;
         if ($request->hasFile('dokumen_akad')) {
             $filePath = $request->file('dokumen_akad')->store('dokumen_akad', 'public');
         }
 
-        // Upload file untuk form tolak
         $filePathTolak = null;
         if ($request->hasFile('dokumen_tolak')) {
             $filePathTolak = $request->file('dokumen_tolak')->store('dokumen_akad', 'public');
@@ -187,16 +214,18 @@ class AkadController extends Controller
         // =========================
         if ($request->status === 'completed') {
 
-            $noAkad = $request->no_akad ?? $this->generateNoAkad();
+            $noAkad = $request->nomor_akad ?? $this->generateNoAkad();
 
             Akad::create([
                 'booking_id' => $booking->id,
                 'no_akad' => $noAkad,
                 'tanggal_akad' => $request->tanggal_akad,
+                'lokasi_akad' => $request->lokasi_akad,
+                'nama_notaris' => $request->nama_notaris,
                 'dokumen' => $filePath,
                 'catatan' => $request->catatan,
                 'status' => 'selesai',
-                'tindakan' => null // ⛔ pastikan kosong
+                'tindakan' => null
             ]);
 
             $booking->update([
@@ -223,7 +252,7 @@ class AkadController extends Controller
                 'no_akad' => null,
                 'tanggal_akad' => $request->tanggal_akad_tolak,
                 'dokumen' => $filePathTolak,
-                'catatan' => $request->catatan ?? $request->catatan_masalah,
+                'catatan' => $request->catatan_masalah,
                 'status' => 'batal',
                 'tindakan' => $request->tindakan
             ]);

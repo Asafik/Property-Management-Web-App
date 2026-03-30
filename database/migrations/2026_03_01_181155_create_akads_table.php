@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +13,12 @@ return new class extends Migration
 
             // Relasi ke booking
             $table->foreignId('booking_id')
-                  ->constrained()
-                  ->onDelete('cascade');
+                ->constrained()
+                ->onDelete('cascade');
 
             // Data akad
             $table->string('no_akad')->unique()->nullable();
-            $table->date('tanggal_akad')->nullable();   
+            $table->date('tanggal_akad')->nullable();
 
             // Dokumen upload (pdf / scan)
             $table->string('dokumen')->nullable();
@@ -26,11 +27,16 @@ return new class extends Migration
             $table->text('catatan')->nullable();
 
             // Status akad
-            $table->enum('status', ['selesai','batal'])->default('selesai');
+            $table->enum('status', ['selesai', 'batal'])->default('selesai');
 
             // Jika batal
             $table->text('alasan_batal')->nullable();
-            $table->enum('tindakan', ['jadwal_ulang','lengkapi_dokumen','koordinasi_bank','review_internal'])->nullable();
+            $table->enum('tindakan', [
+                'jadwal_ulang',
+                'lengkapi_dokumen',
+                'koordinasi_ulang_dengan_bank',
+                'review_internal'
+            ])->nullable();
 
             $table->timestamps();
         });

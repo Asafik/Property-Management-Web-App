@@ -1350,7 +1350,7 @@
                                                 class="akad-form-control"
                                                 name="lokasi_akad"
                                                 value="{{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}">
-                                        </div>
+                                        </div>  
                                     </div>
                                 </div>
 
