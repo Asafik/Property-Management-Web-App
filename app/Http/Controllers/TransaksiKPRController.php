@@ -125,6 +125,7 @@ public function storeVerifikasi(Request $request, $bookingId)
                 'akad_at'           => $request->akad_at ?? now(),
                 'status'            => 'approved',
                 'harga_unit'        => $request->jumlah_pinjaman ?? $kpr->harga_unit,
+                'submitted_at'      => $kpr->submitted_at ?? now(),
             ]);
 
             // Update status di table Booking
@@ -142,6 +143,7 @@ public function storeVerifikasi(Request $request, $bookingId)
         if ($request->status === 'rejected') {
             $kpr->status = 'rejected';
             $kpr->rejected_at = now();
+            $kpr->submitted_at = null;
             
             // Update status di table Booking jika ditolak (opsional, silakan sesuaikan)
             $booking->status_cash = 'rejected'; 
