@@ -185,6 +185,8 @@
         }
         @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
         .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
+        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
         .badge-gradient-warning { background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f; }
         .badge-gradient-danger { background: linear-gradient(135deg, #dc3545, #e4606d); color: #ffffff; }
 
@@ -296,8 +298,8 @@
             gap: 0.25rem;
         }
 
-        /* ===== TABLE STYLING DARI UI PERTAMA ===== */
-        .table-responsive {
+        /* ===== TABEL UTAMA: UI selaras list_pengajuan.blade.php (#tableView saja) ===== */
+        #tableView .table-responsive {
             overflow-x: auto;
             overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
@@ -306,40 +308,90 @@
             scrollbar-width: thin;
             scrollbar-color: #9a55ff #f0f0f0;
         }
-        .table-responsive::-webkit-scrollbar { width: 8px; height: 8px; }
-        .table-responsive::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
-        .table-responsive::-webkit-scrollbar-thumb { background: #9a55ff; border-radius: 10px; }
-        .table {
+        #tableView .table-responsive::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        #tableView .table-responsive::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        #tableView .table-responsive::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+        #tableView .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+        #tableView .table-responsive::-webkit-scrollbar-corner {
+            background: #f0f0f0;
+        }
+        #tableView .table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 0;
             min-width: 1200px;
         }
-        .table thead th {
+        #tableView .table thead th {
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             color: #9a55ff;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #e9ecef;
-            padding: 0.85rem 0.55rem;
+            padding: 0.8rem 0.5rem;
             white-space: nowrap;
         }
-        .table thead th:first-child,
-        .table tbody td:first-child {
-            width: 55px;
+        @media (min-width: 576px) {
+            #tableView .table thead th {
+                font-size: 0.85rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+        @media (min-width: 768px) {
+            #tableView .table thead th {
+                font-size: 0.9rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+        #tableView .table thead th:first-child {
+            width: 40px;
             text-align: center;
         }
-        .table tbody td {
+        #tableView .table tbody td:first-child {
+            font-weight: 500;
+            width: 40px;
+            text-align: center;
+        }
+        #tableView .table tbody td {
             vertical-align: middle;
-            font-size: 0.88rem;
-            padding: 0.85rem 0.55rem;
+            font-size: 0.85rem;
+            padding: 0.8rem 0.5rem;
             border-bottom: 1px solid #e9ecef;
             color: #2c2e3f;
             white-space: nowrap;
         }
-        .table tbody tr:hover { background-color: #f8f9fa; }
+        @media (min-width: 576px) {
+            #tableView .table tbody td {
+                font-size: 0.9rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+        @media (min-width: 768px) {
+            #tableView .table tbody td {
+                font-size: 0.95rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+        #tableView .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        #tableView .customer-initial {
+            width: 38px;
+            height: 38px;
+            font-size: 0.9rem;
+        }
 
         /* ===== CSS LAINNYA DARI UI KEDUA ===== */
         .text-primary { color: #9a55ff !important; }
@@ -355,8 +407,6 @@
             margin-bottom: 0.5rem !important;
         }
         @media (max-width: 576px) {
-            .table thead th { font-size: 0.75rem; padding: 0.6rem 0.3rem; }
-            .table tbody td { font-size: 0.8rem; padding: 0.6rem 0.3rem; }
             h3.text-dark { font-size: 1.2rem !important; }
         }
         .filter-text {
@@ -647,7 +697,7 @@
                     <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                         <h5 class="card-title mb-2 mb-md-0">
                             <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Unit Kavling
+                            Daftar Unit
                         </h5>
                         <div class="d-flex gap-2">
                             <a href="{{ route('marketing.jual-unit.export.excel') }}" class="btn btn-sm btn-gradient-success">
@@ -788,7 +838,7 @@
                                         <tr>
                                             <th class="text-center">No</th>
                                             <th>Proyek</th>
-                                            <th>Block/Unit</th>
+                                            <th>Nama - Unit</th>
                                             <th>Jenis & Tipe</th>
                                             <th class="d-none d-md-table-cell">Lokasi</th>
                                             <th>Luas Tanah</th>
@@ -857,23 +907,25 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="icon-text">
-                                                    <i class="mdi mdi-home-outline"></i>
-                                                    <span class="fw-bold">{{ $unit->unit_code }}</span>
-                                                </span>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-home-outline text-primary me-2" style="font-size: 1.1rem;"></i>
+                                                    <span class="fw-bold">
+                                                        {{ $unit->unit_name ?? '-' }} - {{ $unit->unit_code ?? (($unit->block ?? '') . ' ' . ($unit->unit_number ?? '')) }}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td>
                                                 @if (strtolower($unit->jenis ?? '') == 'subsidi')
                                                     <span class="badge badge-gradient-success">
-                                                        <i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}
+                                                        <i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }} - {{ $unit->type ?? '-' }}
                                                     </span>
                                                 @elseif(strtolower($unit->jenis ?? '') == 'komersil')
                                                     <span class="badge badge-gradient-primary">
-                                                        <i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}
+                                                        <i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }} - {{ $unit->type ?? '-' }}
                                                     </span>
                                                 @else
                                                     <span class="badge badge-gradient-secondary">
-                                                        <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . '/' . ($unit->type ?? '-') }}
+                                                        <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . ' - ' . ($unit->type ?? '-') }}
                                                     </span>
                                                 @endif
                                             </td>
@@ -1028,15 +1080,15 @@
                                                         <i class="mdi mdi-home-outline" style="font-size: 36px; color: #9a55ff;"></i>
                                                     </div>
                                                 </div>
-                                                <h6 class="mt-2 fw-bold"><i class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}</h6>
+                                                <h6 class="mt-2 fw-bold"><i class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_name ?? '-' }} - {{ $unit->unit_code ?? (($unit->block ?? '') . ' ' . ($unit->unit_number ?? '')) }}</h6>
                                                 <p class="text-muted small mb-1"><i class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}</p>
                                                 <p class="text-muted small mb-1">
                                                     @if (strtolower($unit->jenis ?? '') == 'subsidi')
-                                                        <span class="badge badge-gradient-success"><i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}</span>
+                                                        <span class="badge badge-gradient-success"><i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }} - {{ $unit->type ?? '-' }}</span>
                                                     @elseif(strtolower($unit->jenis ?? '') == 'komersil')
-                                                        <span class="badge badge-gradient-primary"><i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }}/{{ $unit->type ?? '-' }}</span>
+                                                        <span class="badge badge-gradient-primary"><i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }} - {{ $unit->type ?? '-' }}</span>
                                                     @else
-                                                        <span class="badge badge-gradient-secondary"><i class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . '/' . ($unit->type ?? '-') }}</span>
+                                                        <span class="badge badge-gradient-secondary"><i class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . ' - ' . ($unit->type ?? '-') }}</span>
                                                     @endif
                                                 </p>
                                                 <p class="small mb-1"><i class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }} m² | <i class="mdi mdi-currency-usd me-1"></i>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>

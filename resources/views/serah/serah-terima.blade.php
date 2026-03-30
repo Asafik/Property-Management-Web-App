@@ -930,12 +930,22 @@
                             </div>
 
                             <!-- Step: Serah Terima (Always Active) -->
-                            <div class="kpr-step active">
+                            <div class="kpr-step @if($booking->status == 'completed' && $booking->serah_terima_date) completed @else active @endif">
                                 <div class="kpr-step-icon">
-                                    <i class="mdi mdi-key"></i>
+                                    @if($booking->status == 'completed' && $booking->serah_terima_date)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-key"></i>
+                                    @endif
                                 </div>
                                 <span class="kpr-step-title">Serah Terima</span>
-                                <small>{{ date('j F Y') }}</small>
+                                <small>
+                                    @if($booking->status == 'completed' && $booking->serah_terima_date)
+                                        {{ \Carbon\Carbon::parse($booking->serah_terima_date)->translatedFormat('j F Y') }}
+                                    @else
+                                        {{ date('j F Y') }}
+                                    @endif
+                                </small>
                             </div>
                         </div>
                     </div>

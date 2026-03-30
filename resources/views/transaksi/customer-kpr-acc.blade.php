@@ -573,11 +573,10 @@ h3.text-dark {
                                         <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'name_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
                                     </th>
                                     <th class="sortable" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
-                                        Unit Rumah
+                                        Nama - Unit
                                         <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'unit_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
                                     </th>
                                     <th>Jenis & Tipe</th>
-                                    <th>Unit Code</th>
                                     <th>Bank</th>
                                     <th>Status</th>
                                     <th>Tanggal Verifikasi</th>
@@ -619,9 +618,9 @@ h3.text-dark {
 
                                         <td>
                                             <div class="unit-info">
-                                                <span class="unit-name">
+                                                <span class="unit-name fw-bold">
                                                     <i class="mdi mdi-home-outline text-primary me-1"></i>
-                                                    {{ $application->unit->unit_name ?? '-' }}
+                                                    {{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}
                                                 </span>
                                             </div>
                                         </td>
@@ -635,16 +634,11 @@ h3.text-dark {
                                             @endphp
                                             <span class="badge {{ $badgeClass }}">
                                                 <i class="mdi {{ $icon }} me-1"></i>
-                                                {{ ucfirst($jenis ?: '-') }}/{{ $tipe }}
+                                                {{ ucfirst($jenis ?: '-') }} - {{ $tipe }}
                                             </span>
                                         </td>
 
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-tag-outline text-muted me-2" style="font-size: 1rem;"></i>
-                                                <span>{{ $application->unit->unit_code ?? '-' }}</span>
-                                            </div>
-                                        </td>
+
 
                                         <td>
                                             <div class="d-flex align-items-center">

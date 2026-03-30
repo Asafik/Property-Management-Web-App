@@ -1005,7 +1005,7 @@ h3.text-dark {
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th>Unit</th>
+                                    <th>Nama - Unit</th>
                                     <th>Jenis & Tipe</th>
                                     <th class="sortable {{ request('sort') == 'purchase_type' ? 'active-sort' : '' }}" data-field="purchase_type" data-direction="{{ request('sort') == 'purchase_type' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Metode
@@ -1108,7 +1108,7 @@ h3.text-dark {
                                             <div class="d-flex align-items-center">
                                                 <i class="mdi mdi-home-outline text-primary me-2" style="font-size: 1.1rem;"></i>
                                                 <span class="fw-bold">
-                                                    {{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}
+                                                    {{ $booking->unit->unit_name ?? '-' }} - {{ $booking->unit->unit_code ?? (($booking->unit->block ?? '') . ' ' . ($booking->unit->unit_number ?? '')) }}
                                                 </span>
                                             </div>
                                         </td>
@@ -1120,15 +1120,15 @@ h3.text-dark {
                                             @endphp
                                             @if (strtolower($jenis) == 'subsidi')
                                                 <span class="badge badge-gradient-success">
-                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenis }}/{{ $tipe }}
+                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenis }} - {{ $tipe }}
                                                 </span>
                                             @elseif(strtolower($jenis) == 'komersil')
                                                 <span class="badge badge-gradient-primary">
-                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenis }}/{{ $tipe }}
+                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenis }} - {{ $tipe }}
                                                 </span>
                                             @else
                                                 <span class="badge badge-gradient-secondary">
-                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenis ?: '-') . '/' . $tipe }}
+                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenis ?: '-') . ' - ' . $tipe }}
                                                 </span>
                                             @endif
                                         </td>
@@ -1186,10 +1186,27 @@ h3.text-dark {
                                         </td>
 
                                         <td>
-                                            <div class="agent-sales">
-                                                <i class="mdi mdi-account-tie"></i>
-                                                <span>{{ $booking->sales->name ?? '-' }}</span>
-                                            </div>
+                                            @if ($booking->sales)
+                                                @php
+                                                    $salesName = $booking->sales->name;
+                                                    $sInitials = '';
+                                                    foreach (explode(' ', trim($salesName)) as $word) {
+                                                        if ($word !== '') {
+                                                            $sInitials .= strtoupper(substr($word, 0, 1));
+                                                        }
+                                                    }
+                                                    $sInitials = substr($sInitials ?: 'S', 0, 2);
+                                                @endphp
+                                                <div class="customer-info">
+                                                    <div class="customer-initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                        {{ $sInitials }}
+                                                    </div>
+                                                    <span>{{ $salesName }}</span>
+                                                </div>
+                                            @else
+                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                -
+                                            @endif
                                         </td>
 
                                         <td class="text-center">

@@ -818,14 +818,6 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" width="5%">No</th>
-                                    <th class="sortable" width="15%" data-field="customer_id" data-direction="{{ request('sortField') == 'customer_id' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        ID User
-                                        @if(request('sortField') == 'customer_id')
-                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
-                                        @else
-                                            <i class="mdi mdi-swap-vertical"></i>
-                                        @endif
-                                    </th>
                                     <th class="sortable" width="25%" data-field="full_name" data-direction="{{ request('sortField') == 'full_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Nama User
                                         @if(request('sortField') == 'full_name')
@@ -834,9 +826,9 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th class="sortable" width="15%" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        No. HP
-                                        @if(request('sortField') == 'phone')
+                                    <th class="sortable" width="20%" data-field="email" data-direction="{{ request('sortField') == 'email' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Email
+                                        @if(request('sortField') == 'email')
                                             <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                         @else
                                             <i class="mdi mdi-swap-vertical"></i>
@@ -850,6 +842,14 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
+                                    <th class="sortable" width="15%" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nomor Hp
+                                        @if(request('sortField') == 'phone')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
                                     <th class="text-center" width="15%">Aksi</th>
                                 </tr>
                             </thead>
@@ -858,29 +858,18 @@
                                 <tr>
                                     <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <i class="mdi mdi-card-account-details text-primary" style="font-size: 1.2rem;"></i>
-                                            <span class="fw-bold">{{ $customer->customer_id }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-circle avatar-sm me-2">
-                                                {{ strtoupper(substr($customer->full_name, 0, 2)) }}
+                                                {{ strtoupper(substr(trim($customer->full_name), 0, 2)) }}
                                             </div>
-                                            <div>
-                                                <span class="fw-bold">{{ $customer->full_name }}</span>
-                                                @if($customer->email)
-                                                <small class="text-muted d-block">{{ $customer->email }}</small>
-                                                @endif
-                                            </div>
+                                            <span class="fw-bold">{{ $customer->full_name }}</span>
                                         </div>
                                     </td>
                                     <td>
-                                        @if($customer->phone)
+                                        @if($customer->email)
                                         <div class="d-flex align-items-center gap-2">
-                                            <i class="mdi mdi-whatsapp text-success" style="font-size: 1.2rem;"></i>
-                                            <span>{{ $customer->phone }}</span>
+                                            <i class="mdi mdi-email-outline text-primary" style="font-size: 1.2rem;"></i>
+                                            <span>{{ $customer->email }}</span>
                                         </div>
                                         @else
                                         <span class="text-muted">-</span>
@@ -889,6 +878,16 @@
                                     <td>
                                         @if($customer->job_status)
                                         <span class="badge bg-light text-dark">{{ $customer->job_status }}</span>
+                                        @else
+                                        <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($customer->phone)
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="mdi mdi-whatsapp text-success" style="font-size: 1.2rem;"></i>
+                                            <span>{{ $customer->phone }}</span>
+                                        </div>
                                         @else
                                         <span class="text-muted">-</span>
                                         @endif

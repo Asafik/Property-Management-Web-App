@@ -4,8 +4,6 @@
 
 @section('content')
 
-@section('content')
-
 <style>
 /* Table Responsive dengan Scrollbar */
 .table-responsive {
@@ -230,10 +228,29 @@
 }
 .btn-icon-only-mobile i { font-size: 1.2rem; margin: 0; }
 
-.table-responsive {
+.info-with-icon {
     display: flex;
     align-items: center;
     gap: 0.45rem;
+}
+.customer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+.customer-initial {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
 }
 .info-with-icon i {
     font-size: 1rem;
@@ -456,9 +473,21 @@ h3.text-dark {
                                     <tr>
                                         <td class="text-center fw-bold">{{ $employees->firstItem() + $index }}</td>
                                         <td>
-                                            <div class="info-with-icon">
-                                                <i class="mdi mdi-account"></i>
-                                                <span class="fw-bold">{{ $user->name }}</span>
+                                            @php
+                                                $agentName = $user->name ?? '-';
+                                                $aInitials = '';
+                                                foreach (explode(' ', trim($agentName)) as $word) {
+                                                    if ($word !== '') {
+                                                        $aInitials .= strtoupper(substr($word, 0, 1));
+                                                    }
+                                                }
+                                                $aInitials = substr($aInitials ?: 'A', 0, 2);
+                                            @endphp
+                                            <div class="customer-info">
+                                                <div class="customer-initial">
+                                                    {{ $aInitials }}
+                                                </div>
+                                                <span class="fw-bold">{{ $agentName }}</span>
                                             </div>
                                         </td>
                                         <td>{{ $user->username }}</td>

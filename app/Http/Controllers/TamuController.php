@@ -15,7 +15,7 @@ class TamuController extends Controller
     //
     public function index(Request $request)
     {
-        $agents = Employee::where('position_id', 4)->get();
+        $agents = Employee::where('position_id', 2)->get();
         $projects = LandBank::with('units')->get();
         $units = LandBankUnit::all(); // ambil semua unit
         $statuses = [

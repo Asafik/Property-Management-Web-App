@@ -889,12 +889,22 @@
                                 <small>{{ \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
-                            <div class="kpr-step active">
+                            <div class="kpr-step @if($application->booking->status == 'completed' && $application->booking->serah_terima_date) completed @else active @endif">
                                 <div class="kpr-step-icon">
-                                    <i class="mdi mdi-key"></i>
+                                    @if($application->booking->status == 'completed' && $application->booking->serah_terima_date)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-key"></i>
+                                    @endif
                                 </div>
                                 <span class="kpr-step-title">Serah Terima</span>
-                                <small>{{ date('d F Y') }}</small>
+                                <small>
+                                    @if($application->booking->status == 'completed' && $application->booking->serah_terima_date)
+                                        {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
+                                    @else
+                                        {{ date('d F Y') }}
+                                    @endif
+                                </small>
                             </div>
                         </div>
                     </div>

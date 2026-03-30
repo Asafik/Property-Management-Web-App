@@ -135,6 +135,43 @@
             padding-right: 2rem;
         }
 
+        .kavling-input-group-rp {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .kavling-input-group-rp .kavling-form-control {
+            flex: 1;
+            min-width: 0;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: none;
+        }
+
+        .kavling-input-group-rp-addon {
+            display: flex;
+            align-items: center;
+            padding: 0 0.75rem;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6c757d;
+            white-space: nowrap;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .kavling-input-group-rp:focus-within .kavling-form-control {
+            border-color: #9a55ff;
+        }
+
+        .kavling-input-group-rp:focus-within .kavling-input-group-rp-addon {
+            border-color: #9a55ff;
+        }
+
         .kavling-btn {
             font-size: 0.8rem;
             padding: 0.5rem 1rem;
@@ -828,22 +865,25 @@
 
         /* Modal Custom Style */
         .modal-custom .modal-content {
-            border-radius: 20px;
             border: none;
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
         }
 
         .modal-custom .modal-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 2px solid #e9ecef;
-            border-radius: 20px 20px 0 0;
-            padding: 1.2rem 1.5rem;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-custom .modal-header .btn-close {
+            filter: brightness(0) invert(1);
         }
 
         .modal-custom .modal-title {
-            font-weight: 700;
-            color: #9a55ff;
-            font-size: 1.2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
         .modal-custom .modal-body {
@@ -853,10 +893,30 @@
         }
 
         .modal-custom .modal-footer {
-            background: #f8f9fa;
             border-top: 1px solid #e9ecef;
-            border-radius: 0 0 20px 20px;
             padding: 1rem 1.5rem;
+        }
+
+        .modal-scroll-body {
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #9a55ff #f1f1f1;
+        }
+        .modal-scroll-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-scroll-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .modal-scroll-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #da8cff, #9a55ff);
+            border-radius: 10px;
+        }
+        .modal-scroll-body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #c678ff, #7f3dff);
         }
 
         /* Modal tabs wrapper di dalam modal */
@@ -885,7 +945,7 @@
             display: flex;
             align-items: center;
             padding: 8px 14px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 500;
             color: #6c7383;
             background: transparent;
@@ -896,6 +956,23 @@
             white-space: nowrap;
             gap: 6px;
             cursor: pointer;
+        }
+
+        @media (max-width: 576px) {
+            .modal-tab-link {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+                justify-content: center;
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .modal-tab-link {
+                padding: 8px 6px;
+                font-size: 0.75rem;
+                gap: 4px;
+            }
         }
 
         .modal-tab-link i {
@@ -924,6 +1001,134 @@
             animation: addFadeIn 0.3s ease;
         }
 
+        @media (max-width: 992px) {
+            .modal-tabs-wrapper {
+                padding: 4px;
+                margin-bottom: 1rem;
+            }
+
+            .modal-tabs {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 2px;
+            }
+
+            .modal-tab-item {
+                flex: 1;
+            }
+
+            .modal-tab-link {
+                padding: 10px 6px;
+                font-size: 0.75rem;
+                justify-content: center;
+                text-align: center;
+                gap: 4px;
+                min-height: 44px;
+            }
+
+            .modal-tab-link i {
+                font-size: 0.9rem;
+                display: block;
+                margin-bottom: 1px;
+            }
+
+            .modal-tab-link span {
+                display: block;
+                font-size: 0.65rem;
+                line-height: 1.1;
+            }
+
+            /* Modal responsif untuk 992px ke bawah */
+            .modal-custom .modal-dialog {
+                margin: 0.5rem;
+                max-width: calc(100% - 1rem);
+            }
+
+            .modal-custom .modal-body {
+                padding: 1rem;
+            }
+
+            .modal-custom .modal-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .modal-custom .modal-footer {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-tabs-wrapper {
+                padding: 4px;
+                margin-bottom: 1rem;
+            }
+
+            .modal-tabs {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 2px;
+            }
+
+            .modal-tab-item {
+                flex: 1;
+            }
+
+            .modal-tab-link {
+                padding: 10px 6px;
+                font-size: 0.75rem;
+                justify-content: center;
+                text-align: center;
+                gap: 4px;
+                min-height: 44px;
+            }
+
+            .modal-tab-link i {
+                font-size: 0.9rem;
+                display: block;
+                margin-bottom: 1px;
+            }
+
+            .modal-tab-link span {
+                display: block;
+                font-size: 0.65rem;
+                line-height: 1.1;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .modal-tab-link {
+                padding: 8px 4px;
+                font-size: 0.7rem;
+                gap: 2px;
+                min-height: 40px;
+            }
+
+            .modal-tab-link i {
+                font-size: 0.8rem;
+            }
+
+            .modal-tab-link span {
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .modal-tab-link span {
+                display: none;
+            }
+
+            .modal-tab-link {
+                padding: 10px;
+                justify-content: center;
+                gap: 0;
+            }
+
+            .modal-tab-link i {
+                margin: 0;
+                font-size: 1rem;
+            }
+        }
+
         @media (max-width: 767px) {
             .filter-row-desktop {
                 display: none;
@@ -934,12 +1139,21 @@
                 margin-top: 1rem;
             }
 
-            .modal-tab-link span {
-                display: none;
+            .modal-custom .modal-dialog {
+                margin: 0.5rem;
+                max-width: calc(100% - 1rem);
             }
 
-            .modal-tab-link i {
-                margin: 0;
+            .modal-custom .modal-body {
+                padding: 1rem;
+            }
+
+            .modal-custom .modal-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .modal-custom .modal-footer {
+                padding: 0.75rem 1rem;
             }
         }
 
@@ -976,13 +1190,6 @@
                 </div>
             </div>
         </div>
-
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
 
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show">
@@ -1082,43 +1289,18 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-12 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Input Tanah</span>
-                            <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Verifikasi Legal</span>
-                            <span class="text-primary"><i class="mdi mdi-progress-clock me-1"></i>Buat Kavling</span>
-                            <span class="text-muted"><i class="mdi mdi-circle-outline me-1"></i>Siap Jual</span>
-                        </div>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-success" style="width: 50%"></div>
-                            <div class="progress-bar bg-primary" style="width: 25%"></div>
-                        </div>
-                        <p class="text-muted small mt-2">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Tahap 3 dari 4: Buat Kavling / Master Unit
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row">
-            <div class="col-12 grid-margin">
+            <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                         <h5 class="card-title mb-0">
                             <i class="mdi mdi-format-list-bulleted me-2"></i>
                             Daftar Unit Kavling
                         </h5>
                         <div class="d-flex gap-2 align-items-center">
-                            <span class="badge badge-primary">
-                                <i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }} unit
-                            </span>
                             <button type="button" class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal" data-bs-target="#tambahUnitModal">
-                                <i class="mdi mdi-plus me-1"></i>Tambah Unit
+                                <i class="mdi mdi-plus me-1"></i>Tambah
                             </button>
                         </div>
                     </div>
@@ -1274,14 +1456,14 @@
                                             </div>
 
                                             <div class="col-6">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100">
-                                                    <i class="mdi mdi-filter"></i> Filter
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" title="Filter">
+                                                    <i class="mdi mdi-filter"></i>
                                                 </button>
                                             </div>
 
                                             <div class="col-6">
-                                                <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100">
-                                                    <i class="mdi mdi-refresh"></i> Reset
+                                                <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset">
+                                                    <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -1291,15 +1473,14 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle" style="min-width: 1300px;">
+                            <table class="table table-hover align-middle" style="min-width: 1150px;">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
-                                        <th>Unit</th>
-                                        <th>Nama Unit</th>
+                                        <th>Nama - Unit</th>
                                         <th>Luas Tanah</th>
                                         <th>Luas Bangunan</th>
-                                        <th>Jenis</th>
+                                        <th>Jenis & Tipe</th>
                                         <th>Harga</th>
                                         <th>Harga IJB</th>
                                         <th>Harga AJB</th>
@@ -1317,21 +1498,12 @@
                                                 @php
                                                     $blok = $unit->block ?? (explode('.', $unit->unit_code)[0] ?? '-');
                                                     $nomor = $unit->unit_number ?? (explode('.', $unit->unit_code)[1] ?? '-');
+                                                    $kodeTampil = $unit->unit_code ?? ($blok . '.' . $nomor);
                                                 @endphp
                                                 <span class="info-inline-icon">
                                                     <i class="mdi mdi-home-outline"></i>
-                                                    {{ $blok }}.{{ $nomor }}
+                                                    <span class="fw-bold">{{ $unit->unit_name ?? '-' }} - {{ $kodeTampil }}</span>
                                                 </span>
-                                            </td>
-
-                                            <td>
-                                                <div class="nama-unit-wrap">
-                                                    <span class="main-text">
-                                                        <i class="mdi mdi-home-city-outline text-primary"></i>
-                                                        {{ $unit->unit_name ?? '-' }}
-                                                    </span>
-                                                    <small>{{ $unit->type ?? 'Tipe Unit' }}</small>
-                                                </div>
                                             </td>
 
                                             <td>
@@ -1352,10 +1524,12 @@
                                                 @if(($unit->jenis ?? $unit->type) == 'subsidi')
                                                     <span class="badge badge-success">
                                                         <i class="mdi mdi-home-assistant me-1"></i>Subsidi
+                                                        <span class="font-weight-normal" style="opacity: 0.92"> - {{ $unit->type ?: '-' }}</span>
                                                     </span>
                                                 @else
                                                     <span class="badge badge-primary">
                                                         <i class="mdi mdi-office-building me-1"></i>Komersil
+                                                        <span class="font-weight-normal" style="opacity: 0.92"> - {{ $unit->type ?: '-' }}</span>
                                                     </span>
                                                 @endif
                                             </td>
@@ -1416,7 +1590,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="12" class="text-center text-muted py-4">
+                                            <td colspan="10" class="text-center text-muted py-4">
                                                 Tidak ada data unit kavling
                                             </td>
                                         </tr>
@@ -1780,12 +1954,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="tambahUnitModalLabel">
-                        <i class="mdi mdi-plus-circle me-2" style="color: #9a55ff;"></i>
-                        Tambah Unit Kavling Baru
+                        <i class="mdi mdi-plus-circle me-2"></i>Tambah Unit Kavling Baru
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body modal-scroll-body">
                     <!-- Tab Navigation di dalam modal -->
                     <div class="modal-tabs-wrapper">
                         <ul class="modal-tabs" id="modalTab" role="tablist">
@@ -1849,37 +2022,52 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="kavling-form-group">
-                                        <label>Luas (m²)</label>
-                                        <input type="number" name="area" class="kavling-form-control"
-                                            placeholder="200">
+                                        <label>Luas</label>
+                                        <div class="kavling-input-group-rp">
+                                            <span class="kavling-input-group-rp-addon">m²</span>
+                                            <input type="number" name="area" class="kavling-form-control"
+                                                placeholder="200" min="1" step="any">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="kavling-form-group">
-                                        <label>Luas Bangunan(m²)</label>
-                                        <input type="number" name="building_area" class="kavling-form-control"
-                                            placeholder="200">
+                                        <label>Luas Bangunan</label>
+                                        <div class="kavling-input-group-rp">
+                                            <span class="kavling-input-group-rp-addon">m²</span>
+                                            <input type="number" name="building_area" class="kavling-form-control"
+                                                placeholder="200" min="1" step="any">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="kavling-form-group">
-                                        <label>Harga (Rp)</label>
-                                        <input type="text" name="price" class="kavling-form-control price-format"
-                                            placeholder="500.000.000">
+                                        <label>Harga</label>
+                                        <div class="kavling-input-group-rp">
+                                            <span class="kavling-input-group-rp-addon">Rp</span>
+                                            <input type="text" name="price" class="kavling-form-control price-format"
+                                                placeholder="500.000.000">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="kavling-form-group">
-                                        <label>Harga IJB (Rp)</label>
-                                        <input type="text" name="ijb_price" class="kavling-form-control price-format"
-                                            placeholder="500.000.000">
+                                        <label>Harga IJB</label>
+                                        <div class="kavling-input-group-rp">
+                                            <span class="kavling-input-group-rp-addon">Rp</span>
+                                            <input type="text" name="ijb_price" class="kavling-form-control price-format"
+                                                placeholder="500.000.000">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="kavling-form-group">
-                                        <label>Harga AJB (Rp)</label>
-                                        <input type="text" name="ajb_price" class="kavling-form-control price-format"
-                                            placeholder="500.000.000">
+                                        <label>Harga AJB</label>
+                                        <div class="kavling-input-group-rp">
+                                            <span class="kavling-input-group-rp-addon">Rp</span>
+                                            <input type="text" name="ajb_price" class="kavling-form-control price-format"
+                                                placeholder="500.000.000">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -1913,13 +2101,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col-md-12">
-                                    <button type="submit" class="kavling-btn kavling-btn-primary w-100">
-                                        <i class="mdi mdi-plus me-1"></i>Tambah Unit
-                                    </button>
-                                </div>
-                            </div>
                         </form>
                     </div>
 
@@ -1945,7 +2126,7 @@
                                         </div>
                                     </div>
                                     <form action="{{ route('kavling.import', $land->id) }}" method="POST"
-                                        enctype="multipart/form-data" id="formImportExcel">
+                                        enctype="multipart/form-data" id="formImportExcelModal">
                                         @csrf
 
                                         <div class="kavling-form-group">
@@ -1966,10 +2147,6 @@
                                             </div>
                                         </div>
 
-                                        <button class="kavling-btn kavling-btn-primary w-100" type="submit"
-                                            id="importButtonModal" disabled>
-                                            <i class="mdi mdi-import me-1"></i>Import Data
-                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -1977,8 +2154,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="kavling-btn kavling-btn-light" data-bs-dismiss="modal">
-                        <i class="mdi mdi-close me-1"></i>Tutup
+                    <button type="button" class="btn btn-gradient-primary" id="modalActionBtn"
+                        onclick='$("#formTambahUnitManual").trigger("submit")'>
+                        <i class="mdi mdi-content-save me-1"></i>Simpan
+                    </button>
+                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
                     </button>
                 </div>
             </div>
@@ -1997,23 +2178,32 @@
                 $(this).addClass('active');
 
                 var target = $(this).data('modal-tab');
+                var actionBtn = $('#modalActionBtn');
 
                 $('.modal-tab-pane').removeClass('active');
                 if (target === 'manual') {
                     $('#modal-manual-pane').addClass('active');
+                    // Ubah button untuk tab manual
+                    actionBtn.html('<i class="mdi mdi-content-save me-1"></i>Simpan');
+                    actionBtn.attr('onclick', '$("#formTambahUnitManual").trigger("submit")');
+                    actionBtn.prop('disabled', false);
                 } else if (target === 'import') {
                     $('#modal-import-pane').addClass('active');
+                    // Ubah button untuk tab import
+                    actionBtn.html('<i class="mdi mdi-import me-1"></i>Import');
+                    actionBtn.attr('onclick', '$("#formImportExcelModal").trigger("submit")');
+                    actionBtn.prop('disabled', !$('#uploadExcelModal').val());
                 }
             });
 
             // File upload handler untuk modal import
             $('#uploadExcelModal').on('change', function(e) {
                 const file = e.target.files[0];
-                const button = $('#importButtonModal');
+                const actionBtn = $('#modalActionBtn');
                 const fileNameSpan = $('#fileNameModal');
 
                 if (!file) {
-                    button.prop('disabled', true);
+                    actionBtn.prop('disabled', true);
                     fileNameSpan.text("Upload File Excel");
                     return;
                 }
@@ -2021,13 +2211,13 @@
                 if (file.size > 5 * 1024 * 1024) {
                     alert("File maksimal 5MB!");
                     $(this).val("");
-                    button.prop('disabled', true);
+                    actionBtn.prop('disabled', true);
                     fileNameSpan.text("Upload File Excel");
                     return;
                 }
 
                 fileNameSpan.text(file.name);
-                button.prop('disabled', false);
+                actionBtn.prop('disabled', false);
             });
 
             // Format harga untuk form manual di modal
@@ -2048,19 +2238,42 @@
                 }
             });
 
-            // Submit form manual - hapus titik sebelum submit
-            $('#formTambahUnitManual').on('submit', function() {
+            // Submit form manual - hapus titik sebelum submit + loading Swal
+            $('#formTambahUnitManual').on('submit', function(e) {
+                e.preventDefault();
                 $('.price-format').each(function() {
                     let nilai = $(this).val().replace(/\./g, '');
                     $(this).val(nilai);
                 });
-                return true;
+                Swal.fire({
+                    title: 'Memuat...',
+                    html: 'Sedang menyimpan data unit kavling',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                var form = this;
+                setTimeout(function() {
+                    form.submit();
+                }, 150);
             });
 
-            // Submit form import
-            $('#formImportExcel').on('submit', function() {
-                // Biarkan form submit normal
-                return true;
+            // Submit form import + loading Swal
+            $('#formImportExcelModal').on('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Memuat...',
+                    html: 'Sedang mengimpor data dari Excel',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                var form = this;
+                setTimeout(function() {
+                    form.submit();
+                }, 150);
             });
 
             // Validasi blok maksimal 5 karakter
@@ -2075,18 +2288,58 @@
             // Reset form saat modal ditutup
             $('#tambahUnitModal').on('hidden.bs.modal', function() {
                 $('#formTambahUnitManual')[0].reset();
-                $('#formImportExcel')[0].reset();
+                $('#formImportExcelModal')[0].reset();
                 $('.price-format').val('');
                 $('#fileNameModal').text("Upload File Excel");
-                $('#importButtonModal').prop('disabled', true);
-                $('#uploadExcelModal').val('');
 
                 // Reset ke tab manual
                 $('.modal-tab-link').removeClass('active');
                 $('.modal-tab-link[data-modal-tab="manual"]').addClass('active');
                 $('.modal-tab-pane').removeClass('active');
                 $('#modal-manual-pane').addClass('active');
+
+                // Reset button action ke default
+                $('#modalActionBtn').html('<i class="mdi mdi-content-save me-1"></i>Simpan');
+                $('#modalActionBtn').attr('onclick', '$("#formTambahUnitManual").trigger("submit")');
+                $('#modalActionBtn').prop('disabled', false);
             });
         });
     </script>
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: @json(session('success')),
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: @json(session('error'))
+                });
+            });
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi gagal',
+                    html: @json(implode('<br>', $errors->all()))
+                });
+            });
+        </script>
+    @endif
 @endpush

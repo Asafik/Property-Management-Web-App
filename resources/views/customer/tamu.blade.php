@@ -4,16 +4,6 @@
 
 @section('content')
 
-@php
-    $statusLabels = [
-        'new' => 'Baru',
-        'follow_up' => 'Sudah Dihubungi',
-        'negotiation' => 'Negosiasi',
-        'converted' => 'Dikonversi / Deal',
-        'lost' => 'Gagal / Batal'
-    ];
-@endphp
-
 <style>
 .card {
     transition: all 0.3s ease;
@@ -312,11 +302,84 @@
     display: inline-block;
     color: #fff;
 }
-.badge-status.new { background: linear-gradient(135deg, #667eea, #764ba2); }
-.badge-status.follow_up { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.badge-status.new { background: linear-gradient(135deg, #da8cff, #9a55ff); }
+.badge-status.follow_up { background: linear-gradient(135deg, #4facfe, #00f2fe); }
 .badge-status.negotiation { background: linear-gradient(135deg, #ffc107, #ff9800); }
-.badge-status.converted { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.badge-status.converted { background: linear-gradient(135deg, #43e97b, #38f9d7); }
 .badge-status.lost { background: linear-gradient(135deg, #dc3545, #e4606d); }
+
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+
+.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c) !important; color: #ffffff !important; }
+.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.btn-action i { font-size: 1rem; }
+.btn-action.edit { background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f; }
+.btn-action.edit:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255,193,7,0.3); }
+.btn-action.delete { background: linear-gradient(135deg, #dc3545, #e4606d); color: white; }
+.btn-action.delete:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(220,53,69,0.3); }
+.btn-action.info { background: linear-gradient(135deg, #17a2b8, #5bc0de); color: white; }
+.btn-action.info:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(23,162,184,0.3); }
+.btn-action.success { background: linear-gradient(135deg, #28a745, #5cb85c); color: white; }
+.btn-action.success:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(40,167,69,0.3); }
+
+.customer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.customer-initial {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+}
+
+.name-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem !important;
+    color: #9a55ff;
+    flex-shrink: 0;
+    background: rgba(154, 85, 255, 0.1);
+    border: 1px solid rgba(154, 85, 255, 0.2);
+}
 
 .info-icon {
     color: #9a55ff;
@@ -673,11 +736,11 @@ h3.text-dark {
                                             <label class="form-label">Status</label>
                                             <select class="form-control" name="status" id="statusSelect">
                                                 <option value="">Semua Status</option>
-                                                @foreach ($statuses as $s)
-                                                    <option value="{{ $s }}" {{ request('status') == $s ? 'selected' : '' }}>
-                                                        {{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}
-                                                    </option>
-                                                @endforeach
+                                                <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
+                                                <option value="follow_up" {{ request('status') == 'follow_up' ? 'selected' : '' }}>Sudah Dihubungi</option>
+                                                <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>Negosiasi</option>
+                                                <option value="converted" {{ request('status') == 'converted' ? 'selected' : '' }}>Dikonversi / Deal</option>
+                                                <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>Gagal / Batal</option>
                                             </select>
                                         </div>
 
@@ -734,11 +797,11 @@ h3.text-dark {
                                             <label class="form-label">Status</label>
                                             <select class="form-control" name="status">
                                                 <option value="">Semua Status</option>
-                                                @foreach ($statuses as $s)
-                                                    <option value="{{ $s }}" {{ request('status') == $s ? 'selected' : '' }}>
-                                                        {{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}
-                                                    </option>
-                                                @endforeach
+                                                <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
+                                                <option value="follow_up" {{ request('status') == 'follow_up' ? 'selected' : '' }}>Sudah Dihubungi</option>
+                                                <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>Negosiasi</option>
+                                                <option value="converted" {{ request('status') == 'converted' ? 'selected' : '' }}>Dikonversi / Deal</option>
+                                                <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>Gagal / Batal</option>
                                             </select>
                                         </div>
                                         <div class="col-12 mb-2">
@@ -752,12 +815,12 @@ h3.text-dark {
                                         </div>
                                         <div class="col-6">
                                             <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" onclick="showFilterLoading()">
-                                                <i class="mdi mdi-filter"></i> 
+                                                <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <a href="{{ route('customer.tamu') }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" onclick="showResetLoading(event)">
-                                                <i class="mdi mdi-refresh"></i> 
+                                                <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -789,7 +852,9 @@ h3.text-dark {
                                     </th>
                                     <th>Email</th>
                                     <th>Sumber Info</th>
-                                    <th>Proyek / Unit</th>
+                                    <th>Proyek</th>
+                                    <th>Nama - Unit</th>
+                                    <th>Jenis & Tipe</th>
                                     <th class="sortable" width="12%" data-field="assigned_to" data-direction="{{ request('sortField') == 'assigned_to' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Agent
                                         @if(request('sortField') == 'assigned_to')
@@ -852,17 +917,68 @@ h3.text-dark {
                                             <i class="mdi mdi-bullhorn-outline info-icon"></i>{{ $guest->source }}
                                         </td>
                                         <td>
-                                            <div><i class="mdi mdi-home-city-outline info-icon"></i>{{ $guest->project?->name ?? '-' }}</div>
-                                            <small class="text-muted">
-                                                <i class="mdi mdi-home-outline info-icon"></i> {{ $guest->unit ? $guest->unit->unit_code . ' - ' . $guest->unit->type : '' }}
-                                            </small>
+                                            <span class="icon-text">
+                                                <i class="mdi mdi-office-building info-icon"></i>
+                                                <span class="fw-bold">{{ $guest->project->name ?? '-' }}</span>
+                                            </span>
                                         </td>
                                         <td>
-                                            <i class="mdi mdi-account-tie-outline info-icon"></i>{{ $guest->employee->name ?? '-' }}
+                                            <span class="icon-text">
+                                                <i class="mdi mdi-home-outline info-icon"></i>
+                                                <span class="fw-bold">{{ $guest->unit->unit_name ?? '-' }} - {{ $guest->unit->unit_code ?? '-' }}</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if($guest->unit)
+                                                @if (strtolower($guest->unit->jenis ?? '') == 'subsidi')
+                                                    <span class="badge badge-gradient-success">
+                                                        <i class="mdi mdi-home-assistant me-1"></i>{{ $guest->unit->jenis }}/{{ $guest->unit->type ?? '-' }}
+                                                    </span>
+                                                @elseif(strtolower($guest->unit->jenis ?? '') == 'komersil')
+                                                    <span class="badge badge-gradient-primary">
+                                                        <i class="mdi mdi-office-building me-1"></i>{{ $guest->unit->jenis }}/{{ $guest->unit->type ?? '-' }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-gradient-secondary">
+                                                        <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($guest->unit->jenis ?? '-') . '/' . ($guest->unit->type ?? '-') }}
+                                                    </span>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($guest->employee)
+                                                @php
+                                                    $agentName = $guest->employee->name;
+                                                    $aInitials = '';
+                                                    foreach (explode(' ', trim($agentName)) as $word) {
+                                                        if ($word !== '') {
+                                                            $aInitials .= strtoupper(substr($word, 0, 1));
+                                                        }
+                                                    }
+                                                    $aInitials = substr($aInitials ?: 'A', 0, 2);
+                                                @endphp
+                                                <div class="customer-info">
+                                                    <div class="customer-initial">
+                                                        {{ $aInitials }}
+                                                    </div>
+                                                    <span class="fw-bold">{{ $agentName }}</span>
+                                                </div>
+                                            @else
+                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                -
+                                            @endif
                                         </td>
                                         <td>
                                             <span class="badge-status {{ $guest->status }}">
-                                                {{ $statusLabels[$guest->status] ?? ucfirst(str_replace('_', ' ', $guest->status)) }}
+                                                @if($guest->status == 'new') Baru
+                                                @elseif($guest->status == 'follow_up') Sudah Dihubungi
+                                                @elseif($guest->status == 'negotiation') Negosiasi
+                                                @elseif($guest->status == 'converted') Dikonversi / Deal
+                                                @elseif($guest->status == 'lost') Gagal / Batal
+                                                @else {{ ucfirst(str_replace('_', ' ', $guest->status)) }}
+                                                @endif
                                             </span>
                                         </td>
                                         <td>
@@ -875,7 +991,7 @@ h3.text-dark {
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-1">
-                                                <button class="btn btn-sm btn-gradient-info" title="Follow Up"
+                                                <button class="btn-action info" title="Follow Up"
                                                     onclick="openFollowUpModal({{ $guest->id }}, '{{ addslashes($guest->name) }}')">
                                                     <i class="mdi mdi-phone-log"></i>
                                                 </button>
@@ -883,22 +999,22 @@ h3.text-dark {
                                                 <form action="{{ route('costomer.guests.convert', $guest->id) }}" method="POST" style="display:inline;"
                                                     id="convertForm{{ $guest->id }}">
                                                     @csrf
-                                                    <button type="button" class="btn btn-sm btn-gradient-success" title="Konversi ke Customer"
+                                                    <button type="button" class="btn-action success" title="Konversi ke Customer"
                                                         onclick="confirmConvert({{ $guest->id }}, '{{ addslashes($guest->name) }}')">
                                                         <i class="mdi mdi-account-convert"></i>
                                                     </button>
                                                 </form>
 
-                                                <button class="btn btn-sm btn-gradient-warning btnEditTamu" title="Edit"
+                                                <button class="btn-action edit btnEditTamu" title="Edit"
                                                     data-id="{{ $guest->id }}">
-                                                    <i class="mdi mdi-account-edit"></i>
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </button>
 
                                                 <form action="/customer/guest/{{ $guest->id }}" method="POST"
                                                     id="deleteForm{{ $guest->id }}" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-gradient-danger" title="Hapus"
+                                                    <button type="button" class="btn-action delete" title="Hapus"
                                                         onclick="confirmDelete({{ $guest->id }})">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
@@ -908,7 +1024,7 @@ h3.text-dark {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="11" class="text-center text-muted py-4">
+                                        <td colspan="13" class="text-center text-muted py-4">
                                             <i class="mdi mdi-account-off" style="font-size: 2rem; opacity: 0.3;"></i>
                                             <p class="mt-2 mb-0">Tidak ada data tamu / prospek</p>
                                         </td>
@@ -1053,9 +1169,11 @@ h3.text-dark {
                             <label class="form-label">Status <span class="text-danger">*</span></label>
                             <select class="form-control" name="status" required>
                                 <option value="">Pilih Status</option>
-                                @foreach ($statuses as $s)
-                                    <option value="{{ $s }}">{{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}</option>
-                                @endforeach
+                                <option value="new">Baru</option>
+                                <option value="follow_up">Sudah Dihubungi</option>
+                                <option value="negotiation">Negosiasi</option>
+                                <option value="converted">Dikonversi / Deal</option>
+                                <option value="lost">Gagal / Batal</option>
                             </select>
                         </div>
 
@@ -1150,9 +1268,11 @@ h3.text-dark {
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Status Prospek <span class="text-danger">*</span></label>
                             <select name="status" id="edit_status" class="form-control" required>
-                                @foreach ($statuses as $s)
-                                    <option value="{{ $s }}">{{ $statusLabels[$s] ?? ucfirst(str_replace('_',' ',$s)) }}</option>
-                                @endforeach
+                                <option value="new">Baru</option>
+                                <option value="follow_up">Sudah Dihubungi</option>
+                                <option value="negotiation">Negosiasi</option>
+                                <option value="converted">Dikonversi / Deal</option>
+                                <option value="lost">Gagal / Batal</option>
                             </select>
                         </div>
 
