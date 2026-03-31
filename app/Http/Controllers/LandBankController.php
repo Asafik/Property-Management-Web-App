@@ -121,9 +121,9 @@ class LandBankController extends Controller
 
                         $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-                        $destination = public_path('uploads/landbank/' . $land->id . '/' . $typeId);
+                        // 🔥 FIX DI SINI
+                        $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/landbank/' . $land->id . '/' . $typeId;
 
-                        // buat folder jika belum ada
                         if (!file_exists($destination)) {
                             mkdir($destination, 0755, true);
                         }
