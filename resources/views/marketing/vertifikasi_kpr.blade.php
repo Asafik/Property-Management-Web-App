@@ -453,7 +453,7 @@
                                 <div class="transaksi-form-group mb-0">
                                     <label class="transaksi-form-label">Upload Berita Acara (Opsional)</label>
                                     <div class="transaksi-file-upload">
-                                        <input type="file" name="berita_acara_setuju" accept=".jpg,.jpeg,.png,.pdf">
+                                        <input type="file" name="berita_acara" accept=".jpg,.jpeg,.png,.pdf">
                                         <div class="transaksi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="transaksi-file-info">
