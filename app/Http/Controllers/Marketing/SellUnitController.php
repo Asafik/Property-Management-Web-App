@@ -119,7 +119,7 @@ class SellUnitController extends Controller
         // =========================
         $projects = LandBank::select('id', 'name')->orderBy('name')->get();
         $customers = Customer::latest()->get();
-        $agencies = Employee::where('position_id', 5)->latest()->get();
+        $agencies = Employee::where('position_id', 2)->latest()->get();
         $types = LandBankUnit::select('type')->distinct()->pluck('type');
 
         $unitPaths = [
@@ -299,7 +299,7 @@ public function setAgency(Request $request, $unitId)
         }
 
         // ADMIN
-        $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
+        $admins = Employee::whereRelation('position', 'name', 'Staff Marketing')->get();
         $users = $users->merge($admins);
 
         Notification::send($users, new BookingNotification($booking));
