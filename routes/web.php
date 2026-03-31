@@ -57,6 +57,7 @@ use App\Http\Controllers\DocumentPreviewController;
 | Landing Page
 |--------------------------------------------------------------------------
 */
+
 Route::get('/beranda', function () {
     return view('home.index');
 });
@@ -141,7 +142,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     */
     Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
     // Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
-// Route untuk halaman web (dengan 2 tab)
+    // Route untuk halaman web (dengan 2 tab)
     Route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])
         ->name('cetak.invoice_cash');
     Route::get('/invoice/{id}/wa', [InvoiceController::class, 'sendToWa'])
@@ -254,15 +255,15 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     )->name('pengajuan.search-customer');
 
     // Route::get('/dashboard-cash-pengajuan', function () {
-//     return view('marketing.cash_pengajuan');
-// });
+    //     return view('marketing.cash_pengajuan');
+    // });
 
     Route::get('/marketing/cash/{booking}', [CashController::class, 'index'])->name('marketing.cash_tempo');
     Route::post('/marketin/cash-tempo/store', [CashController::class, 'store'])->name('cash-tempo.store');
 
     // Route::get('/dashboard-akad-cash', function () {
-//     return view('marketing.akad_cash');
-// });
+    //     return view('marketing.akad_cash');
+    // });
 
     Route::get('/dashboard-cash-dokument-legal', function () {
         return view('marketing.cash_dokument_legal');
@@ -270,7 +271,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
 
     // Route::get('/dashboard-lokasi', function () {
-//     return view('lokasi.lokasi');
+    //     return view('lokasi.lokasi');
 
     // });
     Route::prefix('lokasi')->name('lokasi.')->group(function () {
@@ -281,12 +282,12 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
 
     // Route::get('/dashboard-promo', function () {
-//     return view('promo.promo');
-// });
+    //     return view('promo.promo');
+    // });
 
     // Route::get('/dashboard-pt', function () {
-//     return view('pt.pt');
-// });
+    //     return view('pt.pt');
+    // });
 
 
 
@@ -298,8 +299,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
 
     // Route::get('/dashboard-dokument', function () {
-//     return view('dokument.dokument');
-// });
+    //     return view('dokument.dokument');
+    // });
 
 
 
@@ -328,8 +329,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::post('/akad/akad-cash/serah-terima/{booking}/store', [SerahTerimaController::class, 'store'])->name('serah-terima.store');
 
     // Route::get('/akad-serah-unit', function () {
-//     return view('marketing.serah_unit');
-// });
+    //     return view('marketing.serah_unit');
+    // });
 
     Route::get('/data-dokument/user/persiapan/legal', [DocumentPersiapanPecahLegalController::class, 'index'])->name('document.user.persiapan-legal');
     Route::get('/document-legal/detail/{booking}', [DocumentPersiapanPecahLegalController::class, 'detail'])
@@ -372,7 +373,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     Route::get('/customer-kpr-komersil/', [TransaksiKPRController::class, 'analisaKPRKomersil'])->name('analisa.kpr.komersil');
     // Route::get('/dashboard-dedline-rab', function () {
-//     return view('properti.dedline_rab');
+    //     return view('properti.dedline_rab');
 
     // Route::get('/rab-deadline/{progressId}', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
 
@@ -383,8 +384,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     });
 
     // Route::get('/devisi', function () {
-//     return view('master_data.devisi');
-// });
+    //     return view('master_data.devisi');
+    // });
 
 
     // MASTER DATA USER/CUSTOMER
@@ -455,8 +456,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::post('/menu/permissions/{position_id}/update', [MenuController::class, 'updatePermissions'])->name('positions.update_permissions');
     Route::post('/menu/store-positions', [MenuController::class, 'storePositions'])->name('menu.store_positions');
     // Route::get('/done', function () {
-//     return view('marketing.done_sell');
-// });
+    //     return view('marketing.done_sell');
+    // });
     Route::get('customer/unit/booking/done/{bookingId}', [SerahTerimaController::class, 'SellDone'])
         ->name('unit.selesai');
 
@@ -465,12 +466,12 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::post('/pengaturan', [CompanySettingController::class, 'update'])->name('setting.update');
 
     // Route::get('/all-pra-landbank', function () {
-//     return view('land_bank.all_pra_land_bank');
-// });
+    //     return view('land_bank.all_pra_land_bank');
+    // });
 
     // Route::get('/cash-tempo-timline', function () {
-//     return view('transaksi.timline_pembayaran');
-// });
+    //     return view('transaksi.timline_pembayaran');
+    // });
     Route::get('/cash-tempo-timeline', [TimelineCashTempoController::class, 'index'])->name('cash-tempo.timeline');
     Route::get('/cash-tempo/timeline/{id}', [TimelineCashTempoController::class, 'timeline']);
     Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
@@ -478,7 +479,17 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
 
-    // Dokumen Preview — stream PDF inline / redirect gambar ke tab baru
-    Route::get('/dokumen/preview', [DocumentPreviewController::class, 'preview'])->name('dokumen.preview');
+    Route::get('/dokumen/preview/{path}', function ($path) {
 
+        // decode path (biar spasi balik normal)
+        $path = urldecode($path);
+
+        $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $path;
+
+        if (!file_exists($fullPath)) {
+            abort(404);
+        }
+
+        return response()->file($fullPath);
+    })->where('path', '.*')->name('dokumen.preview');
 });

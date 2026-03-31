@@ -110,18 +110,22 @@ class CustomerController extends Controller
 
                     $file = $request->file($inputName);
 
-                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+                    $cleanName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+
+                    $extension = $file->getClientOriginalExtension();
+
+                    $filename = time() . '_' . $cleanName . '.' . $extension;
 
                     $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/customer_documents';
 
-                    
                     if (!file_exists($destination)) {
                         mkdir($destination, 0755, true);
                     }
 
                     $file->move($destination, $filename);
 
-                    // simpan path ke database
                     $path = 'customer_documents/' . $filename;
 
                     CustomerDocument::create([
