@@ -139,17 +139,33 @@ public function store(Request $request)
             'ktp'
         ];
 
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
-                $path = $request->file($field)->store('kpr', 'public');
+       foreach ($fileFields as $field) {
 
-                KprDocument::create([
-                    'kpr_application_id' => $kprApplication->id,
-                    'type'               => $field,
-                    'path'               => $path,
-                ]);
-            }
+    if ($request->hasFile($field)) {
+
+        $file = $request->file($field);
+
+        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+       
+        $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
+
+        // buat folder jika belum ada
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
         }
+
+        $file->move($destination, $filename);
+
+        $path = 'kpr/' . $filename;
+
+        KprDocument::create([
+            'kpr_application_id' => $kprApplication->id,
+            'type'               => $field,
+            'path'               => $path,
+        ]);
+    }
+}
 
         DB::commit();
 
