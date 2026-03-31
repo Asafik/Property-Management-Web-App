@@ -17,7 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div
+                            class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
                                     <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
@@ -27,14 +28,21 @@
                                         {{ $kpr->booking->customer->full_name ?? '-' }}
                                         @php
                                             $jenis = strtolower($kpr->booking->unit->jenis ?? '');
-                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
+                                            $badgeClass =
+                                                $jenis == 'subsidi'
+                                                    ? 'badge-gradient-success'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'badge-gradient-primary'
+                                                        : 'badge-gradient-secondary');
                                         @endphp
-                                        <span class="badge {{ $badgeClass }} ms-2" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                        <span class="badge {{ $badgeClass }} ms-2"
+                                            style="font-size: 0.85rem; padding: 0.4rem 1rem;">
                                             <i class="mdi mdi-home-outline me-1"></i>
                                             {{ strtoupper($kpr->booking->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
-                                    <p class="customer-booking mb-0">Booking ID: {{ $kpr->booking->booking_code ?? '-' }}</p>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $kpr->booking->booking_code ?? '-' }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -49,7 +57,8 @@
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
-                                    <span class="text-primary fw-bold">Rp {{ number_format($kpr->unit->price ?? 0, 0, ',', '.') }}</span>
+                                    <span class="text-primary fw-bold">Rp
+                                        {{ number_format($kpr->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -93,14 +102,40 @@
                                 <small>{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') : \Carbon\Carbon::parse($kpr->updated_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
-                            <div class="transaksi-step">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-home-city"></i>
-                                </div>
-                                <span class="transaksi-step-title">Pembangunan</span>
-                                <small>Menunggu</small>
-                            </div>
+                            @php
+                                $status = strtolower($kpr->unit->construction_progress ?? '');
 
+                                $statusText = [
+                                    'belum_mulai' => 'Belum mulai pembangunan',
+                                    'pondasi' => 'Tahap pondasi',
+                                    'dinding' => 'Tahap dinding',
+                                    'atap' => 'Tahap atap',
+                                    'finishing' => 'Tahap finishing',
+                                    'selesai' => 'Pembangunan selesai',
+                                ];
+
+                                // pisahin icon & warna biar fleksibel
+                                $statusConfig = [
+                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
+                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
+                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
+                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
+                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
+                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
+                                ];
+
+                                $config = $statusConfig[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
+                            @endphp
+
+                            <div class="transaksi-step">
+                                <div
+                                    class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                    <i class="mdi {{ $config['icon'] }}"></i>
+                                </div>
+
+                                <span class="transaksi-step-title">Pembangunan</span>
+                                <small>{{ $statusText[$status] ?? '-' }}</small>
+                            </div>
                             <div class="transaksi-step active">
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-handshake-outline"></i>
@@ -152,7 +187,8 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp
+                                    {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -217,8 +253,10 @@
                                                         <i class="mdi mdi-file-document-outline"></i>
                                                     </div>
                                                     <div>
-                                                        <div>{{ strtoupper(str_replace('_', ' ', $doc->type ?? '-')) }}</div>
-                                                        <small class="transaksi-muted">{{ $doc->path ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
+                                                        <div>{{ strtoupper(str_replace('_', ' ', $doc->type ?? '-')) }}
+                                                        </div>
+                                                        <small
+                                                            class="transaksi-muted">{{ $doc->path ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
@@ -239,17 +277,13 @@
 
                                             <td>
                                                 @if ($doc->path)
-                                                    <a href="{{ asset('storage/' . $doc->path) }}"
-                                                        target="_blank"
-                                                        class="transaksi-doc-action"
-                                                        title="Lihat dokumen">
+                                                    <a href="{{ asset('storage/' . $doc->path) }}" target="_blank"
+                                                        class="transaksi-doc-action" title="Lihat dokumen">
                                                         <i class="mdi mdi-eye-outline"></i>
                                                     </a>
                                                 @else
-                                                    <button type="button"
-                                                        class="transaksi-doc-action disabled"
-                                                        title="Dokumen belum tersedia"
-                                                        disabled>
+                                                    <button type="button" class="transaksi-doc-action disabled"
+                                                        title="Dokumen belum tersedia" disabled>
                                                         <i class="mdi mdi-eye-off-outline"></i>
                                                     </button>
                                                 @endif
@@ -316,7 +350,8 @@
                                 @else
                                     <div class="transaksi-inline-alert warning mb-0">
                                         <i class="mdi mdi-file-alert-outline"></i>
-                                        <div>Masih ada dokumen yang perlu dilengkapi agar proses akad berjalan lebih aman dan jelas.</div>
+                                        <div>Masih ada dokumen yang perlu dilengkapi agar proses akad berjalan lebih aman
+                                            dan jelas.</div>
                                     </div>
                                 @endif
                             </div>
@@ -350,7 +385,8 @@
                             @if ($akadSelesai)
                                 <div class="transaksi-sidebar-section">
                                     <div class="transaksi-sidebar-title">Langkah Berikutnya</div>
-                                    <a href="{{ route('kpr.serahterima', $kpr->id) }}" class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
+                                    <a href="{{ route('kpr.serahterima', $kpr->id) }}"
+                                        class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
                                         <i class="mdi mdi-home-check-outline"></i>
                                         Proses Serah Terima
                                     </a>
@@ -373,10 +409,12 @@
 
                         <div class="transaksi-inline-alert info mb-4" id="akadHint">
                             <i class="mdi mdi-information-outline"></i>
-                            <div>Pilih salah satu status di bawah ini. Form akan menyesuaikan secara otomatis sesuai hasil proses akad.</div>
+                            <div>Pilih salah satu status di bawah ini. Form akan menyesuaikan secara otomatis sesuai hasil
+                                proses akad.</div>
                         </div>
 
-                        <form action="{{ route('akad.kpr.store', $kpr->booking_id) }}" method="POST" enctype="multipart/form-data" id="formProsesAkad">
+                        <form action="{{ route('akad.kpr.store', $kpr->booking_id) }}" method="POST"
+                            enctype="multipart/form-data" id="formProsesAkad">
                             @csrf
                             <input type="hidden" name="status" id="statusAkadInput" value="">
 
@@ -391,7 +429,8 @@
                                             <div class="akad-choice-content">
                                                 <div class="akad-choice-title">Selesai Akad</div>
                                                 <p class="akad-choice-desc mb-0">
-                                                    Dokumen dan proses closing telah selesai dan siap lanjut ke tahap berikutnya.
+                                                    Dokumen dan proses closing telah selesai dan siap lanjut ke tahap
+                                                    berikutnya.
                                                 </p>
                                             </div>
                                             <div class="akad-choice-check">
@@ -427,25 +466,22 @@
 
                                 <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
-                                    <div><strong>Akad selesai.</strong> Pengajuan dapat diarahkan ke proses <strong>Serah Terima</strong>.</div>
+                                    <div><strong>Akad selesai.</strong> Pengajuan dapat diarahkan ke proses <strong>Serah
+                                            Terima</strong>.</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Tanggal Akad</label>
-                                            <input type="date"
-                                                class="akad-form-control"
-                                                name="tanggal_akad"
+                                            <input type="date" class="akad-form-control" name="tanggal_akad"
                                                 value="{{ optional($kpr->booking->akad)->tanggal_akad ?? '2025-03-20' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Lokasi Akad</label>
-                                            <input type="text"
-                                                class="akad-form-control"
-                                                name="lokasi_akad"
+                                            <input type="text" class="akad-form-control" name="lokasi_akad"
                                                 value="{{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}">
                                         </div>
                                     </div>
@@ -455,18 +491,14 @@
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Nama Notaris</label>
-                                            <input type="text"
-                                                class="akad-form-control"
-                                                name="nama_notaris"
+                                            <input type="text" class="akad-form-control" name="nama_notaris"
                                                 value="{{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Nomor Akad</label>
-                                            <input type="text"
-                                                class="akad-form-control"
-                                                name="nomor_akad"
+                                            <input type="text" class="akad-form-control" name="nomor_akad"
                                                 id="nomor_akad_selesai"
                                                 value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
                                         </div>
@@ -489,9 +521,7 @@
 
                                 <div class="akad-form-group mb-0">
                                     <label class="akad-form-label">Catatan Akad</label>
-                                    <textarea class="akad-form-control"
-                                        name="catatan"
-                                        rows="3"
+                                    <textarea class="akad-form-control" name="catatan" rows="3"
                                         placeholder="Contoh: Proses akad selesai, seluruh dokumen telah ditandatangani dan siap lanjut serah terima."></textarea>
                                 </div>
                             </div>
@@ -501,25 +531,22 @@
 
                                 <div class="transaksi-inline-alert danger">
                                     <i class="mdi mdi-alert-circle-outline"></i>
-                                    <div><strong>Akad ditunda atau bermasalah.</strong> Pilih alasan dan tindakan lanjutan agar proses tetap jelas untuk tim dan customer.</div>
+                                    <div><strong>Akad ditunda atau bermasalah.</strong> Pilih alasan dan tindakan lanjutan
+                                        agar proses tetap jelas untuk tim dan customer.</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Nomor Akad</label>
-                                            <input type="text"
-                                                class="akad-form-control"
-                                                id="nomor_akad_tunda"
+                                            <input type="text" class="akad-form-control" id="nomor_akad_tunda"
                                                 value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Tanggal Akad</label>
-                                            <input type="date"
-                                                class="akad-form-control"
-                                                name="tanggal_akad_tolak"
+                                            <input type="date" class="akad-form-control" name="tanggal_akad_tolak"
                                                 value="{{ optional($kpr->booking->akad)->tanggal_akad ?? date('Y-m-d') }}">
                                         </div>
                                     </div>
@@ -552,9 +579,7 @@
 
                                 <div class="akad-form-group">
                                     <label class="akad-form-label">Catatan / Keterangan</label>
-                                    <textarea class="akad-form-control"
-                                        name="catatan_masalah"
-                                        rows="3"
+                                    <textarea class="akad-form-control" name="catatan_masalah" rows="3"
                                         placeholder="Jelaskan detail kendala akad secara spesifik..."></textarea>
                                 </div>
 
@@ -563,14 +588,16 @@
 
                                     <div class="akad-next-grid">
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanJadwalUlang" value="jadwal_ulang" checked>
+                                            <input type="radio" name="tindakan" id="tindakanJadwalUlang"
+                                                value="jadwal_ulang" checked>
                                             <label class="akad-next-label" for="tindakanJadwalUlang">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-calendar-clock-outline"></i>
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Jadwal Ulang</span>
-                                                    <span class="akad-next-desc">Atur ulang jadwal akad dengan pihak customer, bank, dan notaris.</span>
+                                                    <span class="akad-next-desc">Atur ulang jadwal akad dengan pihak
+                                                        customer, bank, dan notaris.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -579,14 +606,16 @@
                                         </div>
 
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanLengkapi" value="lengkapi_dokumen">
+                                            <input type="radio" name="tindakan" id="tindakanLengkapi"
+                                                value="lengkapi_dokumen">
                                             <label class="akad-next-label" for="tindakanLengkapi">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-file-document-edit-outline"></i>
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Lengkapi Dokumen</span>
-                                                    <span class="akad-next-desc">Dokumen perlu dilengkapi sebelum akad dilanjutkan kembali.</span>
+                                                    <span class="akad-next-desc">Dokumen perlu dilengkapi sebelum akad
+                                                        dilanjutkan kembali.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -595,14 +624,16 @@
                                         </div>
 
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanKoordinasiBank" value="koordinasi_ulang_dengan_bank">
+                                            <input type="radio" name="tindakan" id="tindakanKoordinasiBank"
+                                                value="koordinasi_ulang_dengan_bank">
                                             <label class="akad-next-label" for="tindakanKoordinasiBank">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-bank-transfer"></i>
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Koordinasi Ulang Bank</span>
-                                                    <span class="akad-next-desc">Lakukan follow up ulang ke pihak bank untuk kendala administrasi/SP3K.</span>
+                                                    <span class="akad-next-desc">Lakukan follow up ulang ke pihak bank
+                                                        untuk kendala administrasi/SP3K.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -611,14 +642,16 @@
                                         </div>
 
                                         <div class="akad-next-card">
-                                            <input type="radio" name="tindakan" id="tindakanReviewInternal" value="review_internal">
+                                            <input type="radio" name="tindakan" id="tindakanReviewInternal"
+                                                value="review_internal">
                                             <label class="akad-next-label" for="tindakanReviewInternal">
                                                 <div class="akad-next-icon">
                                                     <i class="mdi mdi-clipboard-search-outline"></i>
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Review Internal</span>
-                                                    <span class="akad-next-desc">Perlu review tambahan dari tim internal sebelum menentukan jadwal berikutnya.</span>
+                                                    <span class="akad-next-desc">Perlu review tambahan dari tim internal
+                                                        sebelum menentukan jadwal berikutnya.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -664,7 +697,8 @@
                                 <ul class="transaksi-mini-list mb-0">
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Gunakan jika seluruh proses penandatanganan dan closing telah selesai tanpa kendala material.</span>
+                                        <span>Gunakan jika seluruh proses penandatanganan dan closing telah selesai tanpa
+                                            kendala material.</span>
                                     </li>
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
@@ -682,7 +716,8 @@
                                 <ul class="transaksi-mini-list mb-0">
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Gunakan jika ada hambatan jadwal, dokumen, kesiapan customer, atau proses dari bank/notaris.</span>
+                                        <span>Gunakan jika ada hambatan jadwal, dokumen, kesiapan customer, atau proses dari
+                                            bank/notaris.</span>
                                     </li>
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
@@ -690,7 +725,8 @@
                                     </li>
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Pilih tindakan lanjutan yang paling relevan agar proses berikutnya tidak ambigu.</span>
+                                        <span>Pilih tindakan lanjutan yang paling relevan agar proses berikutnya tidak
+                                            ambigu.</span>
                                     </li>
                                 </ul>
                             </div>
