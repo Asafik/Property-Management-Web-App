@@ -385,7 +385,7 @@
             <span>
                 Dokumen:
                 @if(optional($kpr->booking->akad)->dokumen_akad)
-                    <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen_akad) }}" target="_blank">
+                    <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}" target="_blank">
                         Lihat Dokumen
                     </a>
                 @else
