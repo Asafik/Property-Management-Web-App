@@ -105,10 +105,24 @@ class CustomerController extends Controller
             ];
 
             foreach ($documents as $inputName => $docName) {
+
                 if ($request->hasFile($inputName)) {
+
                     $file = $request->file($inputName);
-                    $filename = time().'_'.$file->getClientOriginalName();
-                    $path = $file->storeAs('customer_documents', $filename, 'public');
+
+                    $filename = time() . '_' . $file->getClientOriginalName();
+
+                    $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/customer_documents';
+
+                    
+                    if (!file_exists($destination)) {
+                        mkdir($destination, 0755, true);
+                    }
+
+                    $file->move($destination, $filename);
+
+                    // simpan path ke database
+                    $path = 'customer_documents/' . $filename;
 
                     CustomerDocument::create([
                         'customer_id' => $customer->id,
@@ -127,10 +141,9 @@ class CustomerController extends Controller
             DB::commit();
 
             return redirect()->route('customer.data')->with('success', 'Customer berhasil disimpan');
-
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error simpan customer: '.$e->getMessage());
+            Log::error('Error simpan customer: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
     }
@@ -141,9 +154,9 @@ class CustomerController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('customer_id', 'like', "%{$search}%");
+                    ->orWhere('customer_id', 'like', "%{$search}%");
             });
         }
 
@@ -154,15 +167,15 @@ class CustomerController extends Controller
         // Sorting
         $allowedSortFields = ['full_name', 'customer_id', 'job_status', 'created_at'];
         $sortField     = in_array($request->input('sortField'), $allowedSortFields)
-                         ? $request->input('sortField')
-                         : 'created_at';
+            ? $request->input('sortField')
+            : 'created_at';
         $sortDirection = $request->input('sortDirection') === 'asc' ? 'asc' : 'desc';
 
         $perPage   = $request->input('per_page', 10);
         $customers = $query->withCount(['units', 'documents'])
-                           ->orderBy($sortField, $sortDirection)
-                           ->paginate($perPage)
-                           ->withQueryString();
+            ->orderBy($sortField, $sortDirection)
+            ->paginate($perPage)
+            ->withQueryString();
 
         $totalCustomer  = Customer::count();
         $customerAktif  = Customer::whereHas('units')->count();
@@ -170,7 +183,11 @@ class CustomerController extends Controller
         $customerKpr    = Customer::whereNull('job_status')->count();         // placeholder
 
         return view('customer.customer', compact(
-            'customers', 'totalCustomer', 'customerAktif', 'customerCash', 'customerKpr'
+            'customers',
+            'totalCustomer',
+            'customerAktif',
+            'customerCash',
+            'customerKpr'
         ));
     }
 
@@ -272,7 +289,7 @@ class CustomerController extends Controller
             foreach ($documents as $inputName => $docName) {
                 if ($request->hasFile($inputName)) {
                     $file = $request->file($inputName);
-                    $filename = time().'_'.$file->getClientOriginalName();
+                    $filename = time() . '_' . $file->getClientOriginalName();
                     $path = $file->storeAs('customer_documents', $filename, 'public');
 
                     CustomerDocument::create([
@@ -288,10 +305,9 @@ class CustomerController extends Controller
             DB::commit();
 
             return redirect()->route('customer.data')->with('success', 'Customer berhasil diperbarui');
-
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error update customer: '.$e->getMessage());
+            Log::error('Error update customer: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data.');
         }
     }
@@ -316,7 +332,7 @@ class CustomerController extends Controller
             return redirect()->route('customer.data')->with('success', 'Customer berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error hapus customer: '.$e->getMessage());
+            Log::error('Error hapus customer: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
     }
