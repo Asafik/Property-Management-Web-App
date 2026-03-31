@@ -276,7 +276,7 @@
 
                                             <td>
                                                 @if ($doc->path)
-                                                    <a href="{{ asset('storage/' . $doc->path) }}" target="_blank"
+                                                    <a href="{{ asset('uploads/' . $doc->path) }}" target="_blank"
                                                         class="transaksi-doc-action" title="Lihat dokumen">
                                                         <i class="mdi mdi-eye-outline"></i>
                                                     </a>
