@@ -49,6 +49,7 @@ use App\Http\Controllers\CompanySettingController;
 use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TimelineCashTempoController;
+use App\Http\Controllers\DocumentPreviewController;
 
 
 /*
@@ -476,5 +477,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
 
     Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
+
+    // Dokumen Preview — stream PDF inline / redirect gambar ke tab baru
+    Route::get('/dokumen/preview', [DocumentPreviewController::class, 'preview'])->name('dokumen.preview');
 
 });

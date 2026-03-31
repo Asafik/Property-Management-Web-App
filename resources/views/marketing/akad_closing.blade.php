@@ -177,18 +177,17 @@
                                 <span>Bank Tujuan</span>
                                 <span>{{ $kpr->bank->bank_name ?? '-' }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Jumlah Pinjaman</span>
                                 <span>Rp {{ number_format($kpr->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Tenor</span>
                                 <span>{{ $kpr->tenor ?? '-' }} Tahun</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp
-                                    {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 

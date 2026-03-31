@@ -227,17 +227,13 @@
                                             </td>
                                             <td>
                                                 @if ($doc)
-                                                    @php
-                                                        $fileExt = strtolower(pathinfo($doc->path, PATHINFO_EXTENSION));
-                                                    @endphp
-                                                    <button type="button"
-                                                        class="transaksi-doc-action btn-preview-doc"
-                                                        title="Lihat dokumen"
-                                                        data-url="{{ $fileUrl }}"
-                                                        data-ext="{{ $fileExt }}"
-                                                        data-label="{{ $docLabel }}">
+                                                    <a href="{{ route('dokumen.preview', ['path' => $doc->path]) }}"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        class="transaksi-doc-action"
+                                                        title="Lihat dokumen di tab baru">
                                                         <i class="mdi mdi-eye-outline"></i>
-                                                    </button>
+                                                    </a>
                                                 @else
                                                     <button type="button" class="transaksi-doc-action disabled" title="Dokumen belum tersedia" disabled>
                                                         <i class="mdi mdi-eye-off-outline"></i>
