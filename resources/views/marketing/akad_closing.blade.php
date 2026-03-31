@@ -187,7 +187,8 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp
+                                    {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -355,46 +356,47 @@
                                 @endif
                             </div>
 
-                           <div class="transaksi-sidebar-section">
-    <div class="transaksi-sidebar-title">Rencana Akad</div>
-    <ul class="transaksi-mini-list mb-0">
-        <li>
-            <i class="mdi mdi-calendar-outline"></i>
-            <span>Rencana akad:
-                {{ optional($kpr->booking->akad)->tanggal_akad
-                    ? \Carbon\Carbon::parse($kpr->booking->akad->tanggal_akad)->translatedFormat('d F Y')
-                    : '20 Maret 2025' }}
-            </span>
-        </li>
-        <li>
-            <i class="mdi mdi-map-marker-outline"></i>
-            <span>Lokasi:
-                {{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}
-            </span>
-        </li>
-        <li>
-            <i class="mdi mdi-account-tie-outline"></i>
-            <span>Notaris:
-                {{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}
-            </span>
-        </li>
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Rencana Akad</div>
+                                <ul class="transaksi-mini-list mb-0">
+                                    <li>
+                                        <i class="mdi mdi-calendar-outline"></i>
+                                        <span>Rencana akad:
+                                            {{ optional($kpr->booking->akad)->tanggal_akad
+                                                ? \Carbon\Carbon::parse($kpr->booking->akad->tanggal_akad)->translatedFormat('d F Y')
+                                                : '20 Maret 2025' }}
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <i class="mdi mdi-map-marker-outline"></i>
+                                        <span>Lokasi:
+                                            {{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <i class="mdi mdi-account-tie-outline"></i>
+                                        <span>Notaris:
+                                            {{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}
+                                        </span>
+                                    </li>
 
-        {{-- Tambahan Dokumen Akad --}}
-        <li>
-            <i class="mdi mdi-file-document-outline"></i>
-            <span>
-                Dokumen:
-                @if(optional($kpr->booking->akad)->dokumen_akad)
-                    <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}" target="_blank">
-                        Lihat Dokumen
-                    </a>
-                @else
-                    <span class="text-muted">Belum tersedia</span>
-                @endif
-            </span>
-        </li>
-    </ul>
-</div>
+                                    {{-- Tambahan Dokumen Akad --}}
+                                    <li>
+                                        <i class="mdi mdi-file-document-outline"></i>
+                                        <span>
+                                            Dokumen:
+                                            @if (optional($kpr->booking->akad)->dokumen)
+                                                <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}"
+                                                    target="_blank" class="btn btn-sm btn-primary ms-2">
+                                                    Lihat
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Belum tersedia</span>
+                                            @endif
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
 
                             @if ($akadSelesai)
                                 <div class="transaksi-sidebar-section">
