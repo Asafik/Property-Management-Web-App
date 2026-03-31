@@ -760,10 +760,10 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
-                                           class="btn-action view" title="Lihat Dokumen">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
+                                        <a href="{{ asset('uploads/' . $doc->file_path) }}"
+                                                                target="_blank" class="btn-outline-purple px-3 py-1">
+                                                                <i class="mdi mdi-eye m-0"></i>
+                                                            </a>
 
                                         @if ($doc->status == 'pending')
                                             <form action="{{ route('dokumen.approve', $doc->id) }}" method="POST" class="d-inline">
