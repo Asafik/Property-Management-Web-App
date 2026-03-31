@@ -60,27 +60,19 @@
                         @php
                             $jenis = strtolower($booking->unit->jenis ?? '');
                             $totalSteps = 6;
-                            $currentStep = 2; // Verifikasi pada halaman ini
+                            $currentStep = 2;
 
                             $developmentDone = ($booking->status_pembangunan ?? 0) == 1 || optional($booking->kprApplication)->status_pembangunan == 'done';
-                            if ($developmentDone) {
-                                $currentStep = 3;
-                            }
+                            if ($developmentDone) $currentStep = 3;
 
                             $akadDone = ($booking->status_akad ?? 0) == 1 || optional($booking->kprApplication)->status_akad == 1;
-                            if ($akadDone) {
-                                $currentStep = 4;
-                            }
+                            if ($akadDone) $currentStep = 4;
 
                             $surveyDone = ($booking->status_survey ?? 0) == 1 || optional($booking->kprApplication)->status_survey == 'done';
-                            if ($surveyDone) {
-                                $currentStep = 5;
-                            }
+                            if ($surveyDone) $currentStep = 5;
 
                             $serahTerimaDone = ($booking->status_serahterima ?? 0) == 1 || optional($booking->kprApplication)->status_serahterima == 1;
-                            if ($serahTerimaDone) {
-                                $currentStep = 6;
-                            }
+                            if ($serahTerimaDone) $currentStep = 6;
 
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepsStyle = 'style="grid-template-columns: repeat(6, 1fr);"';
@@ -102,31 +94,26 @@
                                 <span class="transaksi-step-title">Pengajuan</span>
                                 <small>{{ optional($booking->kprApplication)->submitted_at ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('d F Y') : '-' }}</small>
                             </div>
-
                             <div class="transaksi-step {{ $stepClass(2) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-file-document-edit-outline"></i></div>
                                 <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ $currentStep == 2 ? 'Dalam Proses' : ($currentStep > 2 ? 'Selesai' : 'Menunggu') }}</small>
                             </div>
-
                             <div class="transaksi-step {{ $stepClass(3) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-home-city"></i></div>
                                 <span class="transaksi-step-title">Pembangunan</span>
                                 <small>{{ $developmentDone ? 'Sedang/ Selesai' : ($currentStep == 3 ? 'Dalam Proses' : 'Menunggu') }}</small>
                             </div>
-
                             <div class="transaksi-step {{ $stepClass(4) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
                                 <span class="transaksi-step-title">Akad</span>
                                 <small>{{ $akadDone ? 'Selesai' : ($currentStep == 4 ? 'Dalam Proses' : 'Menunggu') }}</small>
                             </div>
-
                             <div class="transaksi-step {{ $stepClass(5) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
                                 <span class="transaksi-step-title">Survey</span>
                                 <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
                             </div>
-
                             <div class="transaksi-step {{ $stepClass(6) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
                                 <span class="transaksi-step-title">Serah Terima</span>
@@ -144,7 +131,6 @@
                             <i class="mdi mdi-bank-outline"></i>
                             <span>Detail KPR</span>
                         </div>
-
                         <div class="transaksi-detail-list">
                             <div class="transaksi-detail-item">
                                 <span>Bank Tujuan</span>
@@ -163,9 +149,7 @@
                                 <span class="highlight">Rp {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
-
                         <hr class="my-4">
-
                         <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
                         <div class="transaksi-handler">
                             <div class="transaksi-handler-icon"><i class="mdi mdi-account-tie"></i></div>
@@ -217,14 +201,16 @@
                                 <tbody>
                                     @foreach ($documentTypes as $type)
                                         @php
-                                            $doc = collect($documents)->firstWhere('type', $type);
+                                            $doc      = collect($documents)->firstWhere('type', $type);
+                                            $fileUrl  = $doc ? asset('storage/' . $doc->path) : null;
+                                            $docLabel = strtoupper(str_replace('_', ' ', $type));
                                         @endphp
                                         <tr>
                                             <td>
                                                 <div class="transaksi-doc-name">
                                                     <div class="transaksi-doc-icon"><i class="mdi mdi-file-document-outline"></i></div>
                                                     <div>
-                                                        <div>{{ strtoupper(str_replace('_', ' ', $type)) }}</div>
+                                                        <div>{{ $docLabel }}</div>
                                                         <small class="transaksi-muted">{{ $doc ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
                                                     </div>
                                                 </div>
@@ -241,9 +227,17 @@
                                             </td>
                                             <td>
                                                 @if ($doc)
-                                                    <a href="{{ asset('storage/' . $doc->path) }}" target="_blank" class="transaksi-doc-action" title="Lihat dokumen">
+                                                    @php
+                                                        $fileExt = strtolower(pathinfo($doc->path, PATHINFO_EXTENSION));
+                                                    @endphp
+                                                    <button type="button"
+                                                        class="transaksi-doc-action btn-preview-doc"
+                                                        title="Lihat dokumen"
+                                                        data-url="{{ $fileUrl }}"
+                                                        data-ext="{{ $fileExt }}"
+                                                        data-label="{{ $docLabel }}">
                                                         <i class="mdi mdi-eye-outline"></i>
-                                                    </a>
+                                                    </button>
                                                 @else
                                                     <button type="button" class="transaksi-doc-action disabled" title="Dokumen belum tersedia" disabled>
                                                         <i class="mdi mdi-eye-off-outline"></i>
@@ -375,7 +369,6 @@
                                         </label>
                                     </div>
                                 </div>
-
                                 <div class="col-12 col-md-6">
                                     <div class="transaksi-decision-card reject">
                                         <input type="radio" name="decision_choice" id="decisionReject" value="rejected">
@@ -547,6 +540,64 @@
             </div>
         </div>
     </div>
+
+    {{-- MODAL PREVIEW DOKUMEN --}}
+    <div class="modal fade" id="modalPreviewDokumen" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="mdi mdi-file-eye-outline" id="modalDocIcon" style="font-size:1.3rem;"></i>
+                        <h5 class="modal-title mb-0" id="modalDocLabel">Preview Dokumen</h5>
+                        <span class="badge bg-secondary ms-1" id="modalDocExt" style="font-size:0.7rem;"></span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="#" id="btnDownloadDoc" class="btn btn-sm btn-outline-secondary" download title="Download">
+                            <i class="mdi mdi-download"></i>
+                        </a>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body p-0" style="background:#f0f0f0; min-height:70vh; position:relative;">
+                    {{-- Loading --}}
+                    <div id="previewLoading" class="d-flex flex-column align-items-center justify-content-center gap-3" style="height:70vh;">
+                        <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem;"></div>
+                        <span class="text-muted small">Memuat dokumen...</span>
+                    </div>
+
+                    {{-- Error --}}
+                    <div id="previewError" class="d-none flex-column align-items-center justify-content-center gap-3 text-center p-4" style="height:70vh;">
+                        <i class="mdi mdi-file-alert-outline" style="font-size:3rem; color:#dc3545; opacity:.6;"></i>
+                        <div>
+                            <div class="fw-semibold text-danger">Dokumen tidak dapat ditampilkan</div>
+                            <small class="text-muted">Coba download untuk melihat isinya.</small>
+                        </div>
+                        <a href="#" id="btnErrorDownload" class="btn btn-sm btn-primary" download>
+                            <i class="mdi mdi-download me-1"></i> Download Dokumen
+                        </a>
+                    </div>
+
+                    {{-- PDF via iframe blob --}}
+                    <iframe id="iframePreview" src="" class="d-none"
+                        style="width:100%; height:75vh; border:none; display:block;"></iframe>
+
+                    {{-- Gambar --}}
+                    <div id="divImagePreview" class="d-none align-items-center justify-content-center p-3"
+                        style="min-height:70vh; background:#1a1a1a;">
+                        <img id="imgPreview" src="" alt="Preview"
+                            style="max-width:100%; max-height:75vh; object-fit:contain; border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,.5);" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <small class="text-muted me-auto" id="previewFooterInfo"></small>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -562,20 +613,23 @@
     @endif
 
     <script>
-        $(document).ready(function() {
-            const $decisionApprove = $('#decisionApprove');
-            const $decisionReject = $('#decisionReject');
-            const $statusInput = $('#statusVerifikasiInput');
-            const $formSetuju = $('#formSetuju');
-            const $formTolak = $('#formTolak');
+        $(document).ready(function () {
+
+            /* =====================================================
+               VERIFIKASI FORM LOGIC
+               ===================================================== */
+            const $decisionApprove  = $('#decisionApprove');
+            const $decisionReject   = $('#decisionReject');
+            const $statusInput      = $('#statusVerifikasiInput');
+            const $formSetuju       = $('#formSetuju');
+            const $formTolak        = $('#formTolak');
             const $decisionErrorBox = $('#decisionErrorBox');
-            const $decisionSummary = $('#decisionSummary');
-            const $decisionStateText = $('#decisionStateText');
+            const $decisionStateText   = $('#decisionStateText');
             const $decisionSummaryList = $('#decisionSummaryList');
+            const $decisionSummary     = $('#decisionSummary');
 
             function renderSummary(type) {
                 $decisionSummary.removeClass('approve reject').show();
-
                 if (type === 'survey') {
                     $decisionSummary.addClass('approve');
                     $decisionStateText.text('Verifikasi Disetujui');
@@ -611,19 +665,19 @@
                 }
             }
 
-            $decisionApprove.on('change', function() {
+            $decisionApprove.on('change', function () {
                 if ($(this).is(':checked')) switchDecision('survey');
             });
 
-            $decisionReject.on('change', function() {
+            $decisionReject.on('change', function () {
                 if ($(this).is(':checked')) switchDecision('rejected');
             });
 
-            $(document).on('change', 'input[name="tindakan"]', function() {
+            $(document).on('change', 'input[name="tindakan"]', function () {
                 if ($decisionReject.is(':checked')) renderSummary('rejected');
             });
 
-            $(document).on('change', 'input[type="file"]', function(e) {
+            $(document).on('change', 'input[type="file"]', function (e) {
                 const file = e.target.files[0];
                 const $container = $(this).closest('.transaksi-file-upload');
                 if (file) {
@@ -633,13 +687,124 @@
                 }
             });
 
-            $('#formVerifikasiKpr').on('submit', function(e) {
+            $('#formVerifikasiKpr').on('submit', function (e) {
                 if (!$statusInput.val()) {
                     e.preventDefault();
                     $decisionErrorBox.stop(true, true).slideDown(160);
                     $('html, body').animate({ scrollTop: $decisionErrorBox.offset().top - 120 }, 300);
                 }
             });
+
+        }); // end document.ready
+    </script>
+
+    <script>
+        /* =====================================================
+           MODAL PREVIEW DOKUMEN — fetch → blob → iframe/img
+           Cara kerja:
+           - JS fetch file dari storage (raw bytes)
+           - Convert ke Blob URL (browser render langsung, tidak download)
+           - PDF  → ditampilkan di <iframe> dalam modal
+           - Gambar → ditampilkan di <img> dalam modal
+           ===================================================== */
+
+        const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+        const PDF_EXTS   = ['pdf'];
+        let   activeBlobUrl = null;
+
+        function resetPreviewState() {
+            $('#previewLoading').removeClass('d-none').css('display', 'flex');
+            $('#previewError').addClass('d-none').css('display', 'none');
+            $('#iframePreview').addClass('d-none').attr('src', '');
+            $('#divImagePreview').addClass('d-none').css('display', 'none');
+            $('#imgPreview').attr('src', '');
+            if (activeBlobUrl) {
+                URL.revokeObjectURL(activeBlobUrl);
+                activeBlobUrl = null;
+            }
+        }
+
+        function showError(url) {
+            $('#previewLoading').addClass('d-none').css('display', 'none');
+            $('#previewError').removeClass('d-none').css('display', 'flex');
+            $('#btnErrorDownload').attr('href', url);
+        }
+
+        function previewPdf(blob) {
+            activeBlobUrl = URL.createObjectURL(blob);
+            const $iframe = $('#iframePreview');
+            $iframe.off('load').on('load', function () {
+                $('#previewLoading').addClass('d-none').css('display', 'none');
+                $iframe.removeClass('d-none');
+            });
+            $iframe.attr('src', activeBlobUrl);
+        }
+
+        function previewImage(blob) {
+            activeBlobUrl = URL.createObjectURL(blob);
+            const $img = $('#imgPreview');
+            $img.off('load error')
+                .on('load', function () {
+                    $('#previewLoading').addClass('d-none').css('display', 'none');
+                    $('#divImagePreview').removeClass('d-none').css('display', 'flex');
+                    $('#previewFooterInfo').text($img[0].naturalWidth + ' × ' + $img[0].naturalHeight + ' px');
+                })
+                .on('error', function () {
+                    showError($('#btnDownloadDoc').attr('href'));
+                });
+            $img.attr('src', activeBlobUrl);
+        }
+
+        $(document).on('click', '.btn-preview-doc', function () {
+            const url   = $(this).data('url');
+            const ext   = $(this).data('ext').toLowerCase();
+            const label = $(this).data('label');
+
+            // Set info modal
+            $('#modalDocLabel').text(label);
+            $('#modalDocExt').text(ext.toUpperCase());
+            $('#btnDownloadDoc').attr('href', url);
+            $('#btnErrorDownload').attr('href', url);
+            $('#previewFooterInfo').text(url.split('/').pop());
+
+            // Icon sesuai tipe
+            if (PDF_EXTS.includes(ext)) {
+                $('#modalDocIcon').attr('class', 'mdi mdi-file-pdf-box').css('color', '#e53935');
+            } else if (IMAGE_EXTS.includes(ext)) {
+                $('#modalDocIcon').attr('class', 'mdi mdi-image-outline').css('color', '#1e88e5');
+            } else {
+                $('#modalDocIcon').attr('class', 'mdi mdi-file-document-outline').css('color', '');
+            }
+
+            // Reset & buka modal
+            resetPreviewState();
+            new bootstrap.Modal(document.getElementById('modalPreviewDokumen')).show();
+
+            // Fetch file → blob
+            fetch(url)
+                .then(function (res) {
+                    if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+                    return res.blob();
+                })
+                .then(function (blob) {
+                    if (PDF_EXTS.includes(ext)) {
+                        // Paksa MIME type PDF supaya browser render, bukan download
+                        const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+                        previewPdf(pdfBlob);
+                    } else if (IMAGE_EXTS.includes(ext)) {
+                        previewImage(blob);
+                    } else {
+                        showError(url);
+                    }
+                })
+                .catch(function () {
+                    showError(url);
+                });
+        });
+
+        // Bersihkan blob URL saat modal ditutup
+        document.getElementById('modalPreviewDokumen').addEventListener('hidden.bs.modal', function () {
+            resetPreviewState();
         });
     </script>
 @endpush

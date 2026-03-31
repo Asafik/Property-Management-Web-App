@@ -1927,25 +1927,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ url('/properti/verifikasi-legal') }}" class="kavling-btn kavling-btn-light me-2">
-                                <i class="mdi mdi-arrow-left me-1"></i>Kembali
-                            </a>
-                        </div>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button class="kavling-btn kavling-btn-success" onclick="alert('Kavling berhasil disimpan.')">
-                                <i class="mdi mdi-check-circle me-1"></i>Simpan Kavling
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Modal Tambah Unit dengan 2 Metode -->

@@ -208,13 +208,21 @@
 
 .transaksi-step.completed .transaksi-step-icon {
     background: var(--success) !important;
-    color: var(--white);
+    color: var(--white) !important;
+}
+
+.transaksi-step.completed .transaksi-step-icon i {
+    color: var(--white) !important;
 }
 
 .transaksi-step.active .transaksi-step-icon {
     background: var(--warning) !important;
-    color: var(--white);
+    color: var(--white) !important;
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}
+
+.transaksi-step.active .transaksi-step-icon i {
+    color: var(--white) !important;
 }
 
 .transaksi-step-title {
