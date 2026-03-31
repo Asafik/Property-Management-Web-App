@@ -59,6 +59,7 @@
 
                         @php
                             $jenis = strtolower($booking->unit->jenis ?? '');
+                            $isSubsidi = $jenis === 'subsidi';
                             $totalSteps = 6;
                             $currentStep = 2;
 
@@ -66,10 +67,15 @@
                             if ($developmentDone) $currentStep = 3;
 
                             $akadDone = ($booking->status_akad ?? 0) == 1 || optional($booking->kprApplication)->status_akad == 1;
-                            if ($akadDone) $currentStep = 4;
-
                             $surveyDone = ($booking->status_survey ?? 0) == 1 || optional($booking->kprApplication)->status_survey == 'done';
-                            if ($surveyDone) $currentStep = 5;
+                            
+                            if ($isSubsidi) {
+                                if ($surveyDone) $currentStep = 4;
+                                if ($akadDone) $currentStep = 5;
+                            } else {
+                                if ($akadDone) $currentStep = 4;
+                                if ($surveyDone) $currentStep = 5;
+                            }
 
                             $serahTerimaDone = ($booking->status_serahterima ?? 0) == 1 || optional($booking->kprApplication)->status_serahterima == 1;
                             if ($serahTerimaDone) $currentStep = 6;
@@ -99,21 +105,67 @@
                                 <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ $currentStep == 2 ? 'Dalam Proses' : ($currentStep > 2 ? 'Selesai' : 'Menunggu') }}</small>
                             </div>
-                            <div class="transaksi-step {{ $stepClass(3) }}">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-home-city"></i></div>
+                            @php
+                                $statusProgress = strtolower($booking->unit->construction_progress ?? '');
+
+                                $statusText = [
+                                    'belum_mulai' => 'Belum mulai pembangunan',
+                                    'pondasi' => 'Tahap pondasi',
+                                    'dinding' => 'Tahap dinding',
+                                    'atap' => 'Tahap atap',
+                                    'finishing' => 'Tahap finishing',
+                                    'selesai' => 'Pembangunan selesai',
+                                ];
+
+                                $statusConfig = [
+                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
+                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
+                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
+                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
+                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
+                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
+                                ];
+
+                                $config = $statusConfig[$statusProgress] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
+                            @endphp
+
+                            <div class="transaksi-step {{ $statusProgress == 'selesai' ? 'completed' : ($currentStep == 3 ? 'active' : '') }}">
+                                @if ($statusProgress == 'selesai')
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                @else
+                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                        <i class="mdi {{ $config['icon'] }}"></i>
+                                    </div>
+                                @endif
                                 <span class="transaksi-step-title">Pembangunan</span>
-                                <small>{{ $developmentDone ? 'Sedang/ Selesai' : ($currentStep == 3 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                                <small>{{ $statusText[$statusProgress] ?? ($developmentDone ? 'Pembangunan selesai' : ($currentStep == 3 ? 'Dalam Proses' : 'Menunggu')) }}</small>
                             </div>
-                            <div class="transaksi-step {{ $stepClass(4) }}">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                <span class="transaksi-step-title">Akad</span>
-                                <small>{{ $akadDone ? 'Selesai' : ($currentStep == 4 ? 'Dalam Proses' : 'Menunggu') }}</small>
-                            </div>
-                            <div class="transaksi-step {{ $stepClass(5) }}">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                <span class="transaksi-step-title">Survey</span>
-                                <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
-                            </div>
+
+                            @if ($isSubsidi)
+                                <div class="transaksi-step {{ $stepClass(4) }}">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 4 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                                </div>
+                                <div class="transaksi-step {{ $stepClass(5) }}">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>{{ $akadDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                                </div>
+                            @else
+                                <div class="transaksi-step {{ $stepClass(4) }}">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>{{ $akadDone ? 'Selesai' : ($currentStep == 4 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                                </div>
+                                <div class="transaksi-step {{ $stepClass(5) }}">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                                </div>
+                            @endif
                             <div class="transaksi-step {{ $stepClass(6) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
                                 <span class="transaksi-step-title">Serah Terima</span>

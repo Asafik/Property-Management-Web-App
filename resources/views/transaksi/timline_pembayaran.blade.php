@@ -11,19 +11,44 @@
     border: none !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+}
 
 .card-header {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border-bottom: 1px solid #e9ecef;
     padding: 0.75rem;
 }
-@media (min-width: 576px) { .card-header { padding: 1rem; } }
-@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
 
-.card-body { padding: 0.75rem; }
-@media (min-width: 576px) { .card-body { padding: 1rem; } }
-@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
+@media (min-width: 576px) {
+    .card-header {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-header {
+        padding: 1.2rem;
+    }
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-body {
+        padding: 1.2rem;
+    }
+}
 
 .card-title {
     font-size: 0.9rem;
@@ -31,8 +56,18 @@
     color: #9a55ff;
     margin-bottom: 0;
 }
-@media (min-width: 576px) { .card-title { font-size: 1rem; } }
-@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
+
+@media (min-width: 576px) {
+    .card-title {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-title {
+        font-size: 1.1rem;
+    }
+}
 
 .filter-card {
     background: linear-gradient(135deg, #f9f7ff, #f2ecff);
@@ -42,7 +77,8 @@
     border: none;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     border: 1px solid #e9ecef;
     border-radius: 10px;
     padding: 0.7rem 1rem;
@@ -53,11 +89,14 @@
     height: auto;
     min-height: 42px;
 }
-.form-control:focus, .form-select:focus {
+
+.form-control:focus,
+.form-select:focus {
     border-color: #9a55ff;
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
     outline: none;
 }
+
 .form-label {
     font-size: 0.85rem;
     font-weight: 600;
@@ -76,6 +115,7 @@
     font-family: 'Nunito', sans-serif;
     border: none;
 }
+
 @media (min-width: 576px) {
     .btn {
         font-size: 0.9rem;
@@ -83,6 +123,7 @@
         border-radius: 10px;
     }
 }
+
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -92,10 +133,12 @@
     background: linear-gradient(to right, #da8cff, #9a55ff) !important;
     color: #ffffff !important;
 }
+
 .btn-gradient-secondary {
     background: #6c757d !important;
     color: #ffffff !important;
 }
+
 .btn-gradient-secondary:hover {
     background: #5a6268 !important;
 }
@@ -113,12 +156,16 @@
     border: none;
     cursor: pointer;
 }
-.btn-action i { font-size: 1.05rem; }
+
+.btn-action i {
+    font-size: 1.05rem;
+}
 
 .btn-action.document {
     background: linear-gradient(135deg, #17a2b8, #56c6d8);
     color: #fff;
 }
+
 .btn-action.document:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(23, 162, 184, 0.35);
@@ -128,24 +175,17 @@
     background: linear-gradient(135deg, #0d6efd, #6ea8fe);
     color: #fff;
 }
+
 .btn-action.view:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(13, 110, 253, 0.35);
-}
-
-.btn-action.edit {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-.btn-action.edit:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
 }
 
 .btn-action.delete {
     background: linear-gradient(135deg, #dc3545, #e4606d);
     color: #fff;
 }
+
 .btn-action.delete:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
@@ -160,7 +200,11 @@
     justify-content: center;
     border-radius: 10px;
 }
-.btn-icon-only i { font-size: 1.15rem; margin: 0; }
+
+.btn-icon-only i {
+    font-size: 1.15rem;
+    margin: 0;
+}
 
 .table-responsive {
     overflow-x: auto;
@@ -171,17 +215,21 @@
     scrollbar-width: thin;
     scrollbar-color: #9a55ff #f0f0f0;
 }
+
 .table-responsive::-webkit-scrollbar {
     height: 8px;
 }
+
 .table-responsive::-webkit-scrollbar-track {
     background: #f0f0f0;
     border-radius: 10px;
 }
+
 .table-responsive::-webkit-scrollbar-thumb {
     background: #9a55ff;
     border-radius: 10px;
 }
+
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #7a3fcc;
 }
@@ -192,6 +240,7 @@
     border-collapse: collapse;
     margin-bottom: 0;
 }
+
 .table thead th {
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
     color: #9a55ff;
@@ -203,8 +252,20 @@
     padding: 0.8rem 0.5rem;
     white-space: nowrap;
 }
-@media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
-@media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
+
+@media (min-width: 576px) {
+    .table thead th {
+        font-size: 0.85rem;
+        padding: 0.9rem 0.6rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .table thead th {
+        font-size: 0.9rem;
+        padding: 1rem 0.75rem;
+    }
+}
 
 .table thead th:first-child,
 .table tbody td:first-child {
@@ -220,10 +281,24 @@
     color: #2c2e3f;
     white-space: nowrap;
 }
-@media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
-@media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
 
-.table tbody tr:hover { background-color: #f8f9fa; }
+@media (min-width: 576px) {
+    .table tbody td {
+        font-size: 0.9rem;
+        padding: 0.9rem 0.6rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .table tbody td {
+        font-size: 0.95rem;
+        padding: 1rem 0.75rem;
+    }
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
 
 .sortable-link {
     color: #9a55ff !important;
@@ -233,6 +308,7 @@
     gap: 0.25rem;
     font-weight: 600;
 }
+
 .sortable-link:hover {
     color: #7a3fcc !important;
 }
@@ -242,6 +318,7 @@
     align-items: center;
     gap: 0.75rem;
 }
+
 .name-initial {
     width: 38px;
     height: 38px;
@@ -256,11 +333,13 @@
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
 }
+
 .name-info {
     display: flex;
     flex-direction: column;
     line-height: 1.3;
 }
+
 .name-title {
     font-weight: 700;
     color: #2c2e3f;
@@ -275,10 +354,12 @@
     font-size: 0.82rem;
     font-weight: 700;
 }
+
 .info-chip.tenor {
     background: rgba(154, 85, 255, 0.1);
     color: #9a55ff;
 }
+
 .info-chip.penalty {
     background: rgba(220, 53, 69, 0.1);
     color: #dc3545;
@@ -293,20 +374,27 @@
     align-items: center;
     gap: 0.4rem;
 }
+
 .badge-status.active {
     background: linear-gradient(135deg, #28a745, #5dd39e);
     color: #fff;
 }
+
 .badge-status.inactive {
     background: linear-gradient(135deg, #6c757d, #9aa0a6);
     color: #fff;
 }
+
 .badge-status.process {
     background: linear-gradient(135deg, #ffc107, #ffdb6d);
     color: #2c2e3f;
 }
 
-.pagination { margin: 0; gap: 3px; }
+.pagination {
+    margin: 0;
+    gap: 3px;
+}
+
 .page-item .page-link {
     border: 1px solid #e9ecef;
     padding: 0.35rem 0.7rem;
@@ -319,12 +407,14 @@
     text-align: center;
     text-decoration: none;
 }
+
 .page-item.active .page-link {
     background: linear-gradient(to right, #da8cff, #9a55ff);
     border-color: transparent;
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
 }
+
 .pagination-info {
     font-size: 0.8rem;
     color: #6c7383;
@@ -334,22 +424,27 @@
     border: none;
     border-radius: 16px;
 }
+
 .modal-header {
     background: linear-gradient(135deg, #da8cff, #9a55ff);
     color: white;
     border-radius: 16px 16px 0 0;
     padding: 1rem 1.5rem;
 }
+
 .modal-header .btn-close {
     filter: brightness(0) invert(1);
 }
+
 .modal-title {
     font-weight: 600;
     font-size: 1.1rem;
 }
+
 .modal-body {
     padding: 1.5rem;
 }
+
 .modal-footer {
     border-top: 1px solid #e9ecef;
     padding: 1rem 1.5rem;
@@ -362,17 +457,21 @@
     scrollbar-width: thin;
     scrollbar-color: #9a55ff #f0f0f0;
 }
+
 .modal-scroll-body::-webkit-scrollbar {
     width: 8px;
 }
+
 .modal-scroll-body::-webkit-scrollbar-track {
     background: #f0f0f0;
     border-radius: 10px;
 }
+
 .modal-scroll-body::-webkit-scrollbar-thumb {
     background: #9a55ff;
     border-radius: 10px;
 }
+
 .modal-scroll-body::-webkit-scrollbar-thumb:hover {
     background: #7a3fcc;
 }
@@ -384,12 +483,14 @@
     padding: 1rem;
     margin-bottom: 1rem;
 }
+
 .timeline-detail-title {
     font-size: 0.95rem;
     font-weight: 700;
     color: #9a55ff;
     margin-bottom: 0.85rem;
 }
+
 .timeline-detail-item {
     background: #ffffff;
     border: 1px solid #efe6ff;
@@ -397,17 +498,20 @@
     padding: 0.75rem 0.85rem;
     height: 100%;
 }
+
 .timeline-detail-label {
     font-size: 0.75rem;
     color: #8b8fa3;
     margin-bottom: 0.2rem;
     font-weight: 600;
 }
+
 .timeline-detail-value {
     font-size: 0.92rem;
     color: #2c2e3f;
     font-weight: 700;
 }
+
 .timeline-detail-value.price {
     color: #28a745;
     font-weight: 800;
@@ -435,10 +539,12 @@
     border: 1.5px solid #9a55ff;
     text-decoration: none !important;
 }
+
 .btn-eye-purple i {
     font-size: 1rem;
     margin: 0 !important;
 }
+
 .btn-eye-purple:hover,
 .btn-eye-purple:focus,
 .btn-eye-purple:active {
@@ -458,23 +564,37 @@
     display: inline-block;
     letter-spacing: 0.3px;
 }
+
 .badge-payment-status.active {
     background: linear-gradient(135deg, #28c76f, #48da89);
     color: #ffffff;
 }
+
 .badge-payment-status.pending {
     background: linear-gradient(135deg, #ffc107, #ffdb6d);
     color: #2c2e3f;
 }
+
 .badge-payment-status.late {
     background: linear-gradient(135deg, #dc3545, #ff6b6b);
     color: #ffffff;
 }
 
-.text-primary  { color: #9a55ff !important; }
-.text-danger   { color: #dc3545 !important; }
-.text-muted    { color: #a5b3cb !important; }
-.fw-bold       { font-weight: 600 !important; }
+.text-primary {
+    color: #9a55ff !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-muted {
+    color: #a5b3cb !important;
+}
+
+.fw-bold {
+    font-weight: 600 !important;
+}
 
 h3.text-dark {
     font-size: 1.3rem !important;
@@ -482,16 +602,29 @@ h3.text-dark {
     color: #2c2e3f !important;
     margin-bottom: 0.5rem !important;
 }
-@media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
-@media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
 
-.mdi { vertical-align: middle; }
+@media (min-width: 576px) {
+    h3.text-dark {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    h3.text-dark {
+        font-size: 1.7rem !important;
+    }
+}
+
+.mdi {
+    vertical-align: middle;
+}
 
 .filter-row {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
 .filter-row .filter-text {
     display: flex;
     align-items: center;
@@ -500,6 +633,7 @@ h3.text-dark {
     font-weight: 600;
     font-size: 0.95rem;
 }
+
 .action-group {
     display: flex;
     align-items: center;
@@ -507,7 +641,6 @@ h3.text-dark {
     gap: 4px;
 }
 
-/* Select2 */
 .select2-container--bootstrap-5 .select2-selection {
     border: 1px solid #e9ecef !important;
     border-radius: 10px !important;
@@ -516,42 +649,51 @@ h3.text-dark {
     font-family: 'Nunito', sans-serif !important;
     background-color: #ffffff !important;
 }
+
 .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
     color: #2c2e3f !important;
     font-size: 0.92rem !important;
     line-height: 1.6 !important;
     padding-left: 0 !important;
 }
+
 .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
     height: 40px !important;
     right: 10px !important;
 }
+
 .select2-container--bootstrap-5 .select2-selection:hover {
     border-color: #9a55ff !important;
 }
+
 .select2-container--bootstrap-5.select2-container--focus .select2-selection,
 .select2-container--bootstrap-5.select2-container--open .select2-selection {
     border-color: #9a55ff !important;
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
 }
+
 .select2-container--bootstrap-5 .select2-dropdown {
     border-color: #e9ecef !important;
     border-radius: 10px !important;
     overflow: hidden !important;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
 }
+
 .select2-container--bootstrap-5 .select2-results__option {
     padding: 0.65rem 0.9rem !important;
     font-size: 0.9rem !important;
 }
+
 .select2-container--bootstrap-5 .select2-results__option--selected {
     background-color: #9a55ff !important;
     color: #ffffff !important;
 }
+
 .select2-container--bootstrap-5 .select2-results__option--highlighted {
     background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
     color: #ffffff !important;
 }
+
 .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
     border: 1px solid #e9ecef !important;
     border-radius: 8px !important;
@@ -559,17 +701,18 @@ h3.text-dark {
     margin: 0.5rem !important;
     width: calc(100% - 1rem) !important;
 }
+
 .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
     border-color: #9a55ff !important;
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
     outline: none !important;
 }
 
-/* Modern file upload */
 .modern-file-upload {
     position: relative;
     width: 100%;
 }
+
 .modern-file-upload input[type="file"] {
     position: absolute;
     opacity: 0;
@@ -578,6 +721,7 @@ h3.text-dark {
     cursor: pointer;
     z-index: 2;
 }
+
 .modern-file-upload .file-label {
     display: flex;
     flex-direction: column;
@@ -593,6 +737,7 @@ h3.text-dark {
     transition: all 0.3s ease;
     min-height: 100px;
 }
+
 @media (min-width: 576px) {
     .modern-file-upload .file-label {
         flex-direction: row;
@@ -602,12 +747,14 @@ h3.text-dark {
         min-height: auto;
     }
 }
+
 .modern-file-upload:hover .file-label {
     border-color: #9a55ff;
     background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
 }
+
 .modern-file-upload .file-label i {
     font-size: 1.6rem;
     color: #9a55ff;
@@ -615,10 +762,12 @@ h3.text-dark {
     padding: 8px;
     border-radius: 50%;
 }
+
 .modern-file-upload .file-label .file-info {
     flex: 1;
     width: 100%;
 }
+
 .modern-file-upload .file-label .file-info span {
     display: block;
     font-weight: 600;
@@ -626,12 +775,14 @@ h3.text-dark {
     font-size: 0.8rem;
     word-break: break-word;
 }
+
 .modern-file-upload .file-label .file-info small {
     color: #6c7383;
     font-size: 0.65rem;
     display: block;
     margin-top: 2px;
 }
+
 .modern-file-upload .file-label .file-size {
     font-size: 0.7rem;
     color: #9a55ff;
@@ -642,6 +793,7 @@ h3.text-dark {
     white-space: nowrap;
     margin-top: 5px;
 }
+
 @media (min-width: 576px) {
     .modern-file-upload .file-label .file-size {
         margin-top: 0;
@@ -733,8 +885,7 @@ h3.text-dark {
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
+                                <th class="text-center">No</th>
 
                                     <th>
                                         <a href="{{ route('cash-tempo.timeline', array_merge(request()->query(), ['sort' => request('sort') == 'name_asc' ? 'name_desc' : 'name_asc'])) }}" class="sortable-link btn-sort-link">
@@ -882,22 +1033,6 @@ h3.text-dark {
                                                     <i class="mdi mdi-eye-outline"></i>
                                                 </button>
 
-                                                <button
-                                                    class="btn-action edit"
-                                                    title="Edit"
-                                                    type="button"
-                                                    onclick="openEditModal(
-                                                        '{{ $tenor->id }}',
-                                                        @js($customerName),
-                                                        @js($tenorText),
-                                                        @js($tenor->tenor_bulan . ' Bulan'),
-                                                        @js('Setiap tanggal ' . $jatuhTempoDay),
-                                                        @js($tenor->denda_persen . '% per bulan'),
-                                                        @js($statusText)
-                                                    )">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </button>
-
                                                 <button class="btn-action delete btn-delete-tenor" title="Hapus" type="button" data-id="{{ $tenor->id }}">
                                                     <i class="mdi mdi-delete"></i>
                                                 </button>
@@ -1042,60 +1177,6 @@ h3.text-dark {
     </div>
 </div>
 
-<div class="modal fade" id="modalTenor" tabindex="-1" aria-labelledby="modalTenorLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTenorLabel">
-                    <i class="mdi mdi-pencil-circle me-2"></i>
-                    <span id="modalTitle">Detail Tenor</span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <input type="hidden" id="tenorId" name="id">
-
-            <div class="modal-body modal-scroll-body">
-                <div class="mb-3">
-                    <label class="form-label">Nama</label>
-                    <input type="text" class="form-control" id="namaTenor" readonly>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Tenor</label>
-                    <input type="text" class="form-control" id="tenorValue" readonly>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Total Bulan</label>
-                    <input type="text" class="form-control" id="totalBulan" readonly>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Jatuh Tempo</label>
-                    <input type="text" class="form-control" id="jatuhTempo" readonly>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Denda Keterlambatan</label>
-                    <input type="text" class="form-control" id="dendaValue" readonly>
-                </div>
-
-                <div class="mb-0">
-                    <label class="form-label">Status</label>
-                    <input type="text" class="form-control" id="statusValue" readonly>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                    <i class="mdi mdi-close me-1"></i>Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal fade" id="modalDetailTimeline" tabindex="-1" aria-labelledby="modalDetailTimelineLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
@@ -1174,8 +1255,7 @@ h3.text-dark {
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead>
-                            <tr>
-                                <th style="width: 60px;">No</th>
+                            32<th style="width: 60px;">No</th>
                                 <th>Tanggal Jatuh Tempo</th>
                                 <th>Nominal Angsuran</th>
                                 <th>Status</th>
@@ -1208,19 +1288,6 @@ function showLoading(message = 'Mohon tunggu sebentar') {
             Swal.showLoading();
         }
     });
-}
-
-function openEditModal(id, nama, tenor, totalBulan, jatuhTempo, denda, status) {
-    document.getElementById('tenorId').value = id;
-    document.getElementById('namaTenor').value = nama;
-    document.getElementById('tenorValue').value = tenor;
-    document.getElementById('totalBulan').value = totalBulan;
-    document.getElementById('jatuhTempo').value = jatuhTempo;
-    document.getElementById('dendaValue').value = denda;
-    document.getElementById('statusValue').value = status;
-
-    const modal = new bootstrap.Modal(document.getElementById('modalTenor'));
-    modal.show();
 }
 
 function showAction(type, id) {

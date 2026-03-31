@@ -965,10 +965,10 @@
         </form>
     </div>
 @endsection
-
 @push('scripts')
     <script>
         $(document).ready(function() {
+            // 1. Logika Preview Input File (Menampilkan Nama & Ukuran File)
             $('.serah-file-upload-modern input[type="file"]').change(function(e) {
                 const file = e.target.files[0];
                 const $container = $(this).closest('.serah-file-upload-modern');
@@ -979,65 +979,82 @@
                     const fileName = file.name;
                     const fileSize = (file.size / (1024 * 1024)).toFixed(2);
 
+                    // Potong nama file jika terlalu panjang
                     label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
                     sizeSpan.text(fileSize + ' MB').show();
                 } else {
-                    if ($(this).attr('name') === 'foto_serah_kunci') {
-                        label.text('Upload Foto Kunci');
-                    } else {
-                        label.text('Upload Foto Unit');
-                    }
+                    // Kembalikan ke teks default jika batal pilih file
+                    const defaultText = $(this).attr('name') === 'foto_serah_kunci' ? 'Upload Foto Kunci' : 'Upload Foto Unit';
+                    label.text(defaultText);
                     sizeSpan.text('').hide();
                 }
             });
 
+            // 2. Notifikasi Sukses Setelah Refresh (Session Laravel)
             @if(session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: '{{ session("success") }}',
                     confirmButtonColor: '#9a55ff',
-                    timer: 4000,
+                    timer: 3500,
                     timerProgressBar: true
                 });
             @endif
 
+            // 3. Notifikasi Error Jika Terjadi Kesalahan
             @if(session('error'))
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
                     text: '{{ session("error") }}',
-                    confirmButtonColor: '#9a55ff'
+                    confirmButtonColor: '#ff4747'
                 });
             @endif
-        });
 
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const form = this;
+            // 4. Intercept Submit Form untuk Konfirmasi & Loading
+            $('form').on('submit', function(e) {
+                e.preventDefault(); // Stop form agar tidak langsung pindah halaman
+                const form = this;
 
-            Swal.fire({
-                title: 'Proses Serah Terima?',
-                text: 'Pastikan semua checklist dan dokumen sudah lengkap.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Proses',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
+                // Cek apakah checkbox persetujuan sudah di-centang (Validasi HTML5)
+                if (!$('#persetujuan').is(':checked')) {
                     Swal.fire({
-                        title: 'Memproses...',
-                        text: 'Mohon tunggu, sedang memproses serah terima unit',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                            form.submit();
-                        }
+                        icon: 'warning',
+                        title: 'Perhatian',
+                        text: 'Silakan centang pernyataan persetujuan terlebih dahulu.',
+                        confirmButtonColor: '#9a55ff'
                     });
+                    return false;
                 }
+
+                // Munculkan Konfirmasi SweetAlert
+                Swal.fire({
+                    title: 'Proses Serah Terima?',
+                    text: 'Pastikan data dan dokumentasi sudah sesuai..',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Proses Sekarang',
+                    cancelButtonText: 'Cek Kembali'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // TAMPILKAN LOADING (Sangat Penting)
+                        Swal.fire({
+                            title: 'Sedang Memproses...',
+                            text: 'Mohon tunggu sebentar, jangan menutup halaman ini.',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Kirim Form secara synchronous (akan trigger refresh dari Controller)
+                        form.submit();
+                    }
+                });
             });
         });
     </script>

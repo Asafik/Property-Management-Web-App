@@ -456,12 +456,18 @@
 
                         @php
                             $jenis = strtolower($application->unit->jenis ?? '');
+                            $isSubsidi = $jenis === 'subsidi';
                             $totalSteps = 6;
-                            $pembangunanDone = !empty($application->pembangunan_date);
-                            $akadDone = !empty($application->akad_at);
-                            $surveyDone = !empty($application->survey_date);
-                            $serahTerimaDone = $application->booking->status == 'completed' && $application->booking->serah_terima_date;
-                            $currentStep = $serahTerimaDone ? 6 : ($surveyDone ? 5 : ($akadDone ? 4 : ($pembangunanDone ? 3 : 2)));
+                            
+                            // Di halaman Serah Terima, asumsinya semua tahap sebelumnya sudah selesai
+                            $pembangunanDone = true;
+                            $akadDone = true; 
+                            $surveyDone = true;
+                            $serahTerimaDone = $application->booking->status == 'completed' && !empty($application->booking->serah_terima_date);
+                            
+                            // Jika Serah terima sudah tersubmit dan berstatus completed, current step = 6 (selesai).
+                            // Jika belum disubmit (ada di form ini), masih tahap 6 tapi belum selesai (active).
+                            $currentStep = 6; 
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
                         @endphp
@@ -492,29 +498,47 @@
                                 <small>{{ \Carbon\Carbon::parse($application->approved_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
-                            <div class="transaksi-step {{ $pembangunanDone ? 'completed' : ($akadDone || $surveyDone || $serahTerimaDone ? 'active' : '') }}">
+                            <div class="transaksi-step completed">
                                 <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-home-city"></i>
+                                    <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="transaksi-step-title">Pembangunan</span>
-                                <small>{{ $pembangunanDone ? \Carbon\Carbon::parse($application->pembangunan_date)->translatedFormat('d F Y') : 'Menunggu' }}</small>
+                                <small>{{ $application->pembangunan_date ? \Carbon\Carbon::parse($application->pembangunan_date)->translatedFormat('d F Y') : '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step {{ $akadDone ? 'completed' : ($surveyDone || $serahTerimaDone ? 'active' : '') }}">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-handshake-outline"></i>
+                            @if ($isSubsidi)
+                                <div class="transaksi-step completed">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : '-' }}</small>
                                 </div>
-                                <span class="transaksi-step-title">Akad</span>
-                                <small>{{ $akadDone ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') : 'Menunggu' }}</small>
-                            </div>
 
-                            <div class="transaksi-step {{ $surveyDone ? 'completed' : ($serahTerimaDone ? 'active' : '') }}">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-home-search-outline"></i>
+                                <div class="transaksi-step completed">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') : '-' }}</small>
                                 </div>
-                                <span class="transaksi-step-title">Survey</span>
-                                <small>{{ $surveyDone ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : 'Menunggu' }}</small>
-                            </div>
+                            @else
+                                <div class="transaksi-step completed">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') : '-' }}</small>
+                                </div>
+
+                                <div class="transaksi-step completed">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : '-' }}</small>
+                                </div>
+                            @endif
 
                             <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : 'active' }}">
                                 <div class="transaksi-step-icon">
@@ -526,10 +550,10 @@
                                 </div>
                                 <span class="transaksi-step-title">Serah Terima</span>
                                 <small>
-                                    @if($application->booking->status == 'completed' && $application->booking->serah_terima_date)
+                                    @if($serahTerimaDone)
                                         {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
                                     @else
-                                        {{ date('d F Y') }}
+                                        Progress
                                     @endif
                                 </small>
                             </div>

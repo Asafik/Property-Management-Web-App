@@ -159,8 +159,15 @@
 
                         @php
                             $jenis = strtolower($application->unit->jenis ?? '');
+                            $isSubsidi = $jenis === 'subsidi';
+                            $surveyDone = !empty($application->rekomendasi) || strtolower($application->status_survey ?? '') == 'done' || ($application->booking->status_survey ?? 0) == 1;
+
                             $totalSteps = 6;
-                            $currentStep = 4; // Akad aktif, step 4 dari 6
+                            // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 5.
+                            $currentStep = $isSubsidi ? 4 : 5; 
+                            if ($surveyDone) {
+                                $currentStep++; // Tambah 1 jika progress survey sudah centang (Selesai)
+                            }
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepsStyle = $totalSteps ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"' : '';
                         @endphp
@@ -187,23 +194,78 @@
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-home-city"></i></div>
+                            @php
+                                $status = strtolower($application->unit->construction_progress ?? '');
+
+                                $statusText = [
+                                    'belum_mulai' => 'Belum mulai pembangunan',
+                                    'pondasi' => 'Tahap pondasi',
+                                    'dinding' => 'Tahap dinding',
+                                    'atap' => 'Tahap atap',
+                                    'finishing' => 'Tahap finishing',
+                                    'selesai' => 'Pembangunan selesai',
+                                ];
+
+                                $statusConfig = [
+                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
+                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
+                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
+                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
+                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
+                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
+                                ];
+
+                                $config = $statusConfig[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
+                            @endphp
+
+                            <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
+                                @if ($status == 'selesai')
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                @else
+                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                        <i class="mdi {{ $config['icon'] }}"></i>
+                                    </div>
+                                @endif
+
                                 <span class="transaksi-step-title">Pembangunan</span>
-                                <small>Menunggu</small>
+                                <small>{{ $statusText[$status] ?? '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                <span class="transaksi-step-title">Akad</span>
-                                <small>Menunggu</small>
-                            </div>
+                            @if ($isSubsidi)
+                                <div class="transaksi-step {{ $surveyDone ? 'completed' : 'active' }}">
+                                    @if ($surveyDone)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                    @endif
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $surveyDone ? 'Selesai' : 'Progress' }}</small>
+                                </div>
 
-                            <div class="transaksi-step active">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                <span class="transaksi-step-title">Survey</span>
-                                <small>Progress</small>
-                            </div>
+                                <div class="transaksi-step {{ $surveyDone ? 'active' : '' }}">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>{{ $surveyDone ? 'Progress' : 'Menunggu' }}</small>
+                                </div>
+                            @else
+                                <div class="transaksi-step">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>Menunggu</small>
+                                </div>
+
+                                <div class="transaksi-step {{ $surveyDone ? 'completed' : 'active' }}">
+                                    @if ($surveyDone)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                    @endif
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $surveyDone ? 'Selesai' : 'Progress' }}</small>
+                                </div>
+                            @endif
 
                             <div class="transaksi-step">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
@@ -487,12 +549,29 @@
                 });
 
                 $('#formSurveyKpr').on('submit', function(e) {
+                    e.preventDefault();
+                    var form = this;
+                    
                     Swal.fire({
-                        title: 'Mohon tunggu...',
-                        html: 'Sedang menyimpan hasil survey',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
+                        title: 'Simpan Hasil Survey?',
+                        text: "Data survey yang Anda masukkan akan disimpan ke sistem.",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#9a55ff', // Warna primary theme
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Simpan',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: 'Mohon tunggu...',
+                                html: 'Sedang menyimpan data survey KPR.',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                            form.submit();
                         }
                     });
                 });
@@ -503,9 +582,9 @@
             <script>
                 Swal.fire({
                     icon: 'success',
-                    title: 'Berhasil!',
+                    title: 'Berhasil Menyimpan!',
                     text: '{{ session('success') }}',
-                    timer: 2500,
+                    timer: 3000,
                     timerProgressBar: true,
                     showConfirmButton: false
                 });

@@ -7,8 +7,14 @@
         $documentsCount = $kpr->documents->whereNotNull('path')->count();
         $missingDocuments = max(0, 8 - $documentsCount);
         $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
+        $isSubsidi = strtolower($kpr->booking->unit->jenis ?? '') === 'subsidi';
         $totalSteps = 6;
-        $currentStep = $akadSelesai ? 5 : 4;
+        
+        if ($isSubsidi) {
+            $currentStep = $akadSelesai ? 6 : 5;
+        } else {
+            $currentStep = $akadSelesai ? 5 : 4;
+        }
         $progressWidth = intval(($currentStep / $totalSteps) * 100);
     @endphp
 
@@ -141,21 +147,39 @@
                                 <span class="transaksi-step-title">Pembangunan</span>
                                 <small>{{ $statusText[$status] ?? '-' }}</small>
                             </div>
-                            <div class="transaksi-step active">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-handshake-outline"></i>
+                            @if ($isSubsidi)
+                                <div class="transaksi-step completed">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>Selesai</small>
                                 </div>
-                                <span class="transaksi-step-title">Akad</span>
-                                <small>Proses Closing</small>
-                            </div>
 
-                            <div class="transaksi-step">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-home-search-outline"></i>
+                                <div class="transaksi-step active">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-handshake-outline"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>Proses Closing</small>
                                 </div>
-                                <span class="transaksi-step-title">Survey</span>
-                                <small>Menunggu</small>
-                            </div>
+                            @else
+                                <div class="transaksi-step active">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-handshake-outline"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>Proses Closing</small>
+                                </div>
+
+                                <div class="transaksi-step">
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-home-search-outline"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>Menunggu</small>
+                                </div>
+                            @endif
 
                             <div class="transaksi-step">
                                 <div class="transaksi-step-icon">
