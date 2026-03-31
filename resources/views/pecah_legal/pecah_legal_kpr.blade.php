@@ -523,7 +523,7 @@
                         <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ asset('storage/'.$documents['ktp']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                        <a href="{{ asset('uploads/'.$documents['ktp']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
                             <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
                         </a>
                     </div>
@@ -561,7 +561,7 @@
                         <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ asset('storage/'.$documents['kk']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                        <a href="{{ asset('uploads/'.$documents['kk']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
                             <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
                         </a>
                     </div>
@@ -599,7 +599,7 @@
                         <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ asset('storage/'.$documents['npwp']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                        <a href="{{ asset('uploads/'.$documents['npwp']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
                             <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
                         </a>
                     </div>
@@ -637,7 +637,7 @@
                         <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ asset('storage/'.$documents['slip_gaji']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                        <a href="{{ asset('uploads/'.$documents['slip_gaji']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
                             <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
                         </a>
                     </div>
@@ -675,7 +675,7 @@
                         <span class="fw-bold" style="color:#22a06b; font-size: 0.85rem;">Sudah Upload</span>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ asset('storage/'.$documents['rekening_koran']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
+                        <a href="{{ asset('uploads/'.$documents['rekening_koran']->path) }}" target="_blank" class="btn w-100" style="background: rgba(154,85,255,0.1); color: #9a55ff; border: 1px solid rgba(154,85,255,0.3); padding: 0.4rem;">
                             <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
                         </a>
                     </div>

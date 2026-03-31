@@ -760,7 +760,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
+                                        <a href="{{ asset('uploads/' . $doc->file_path) }}" target="_blank"
                                            class="btn-action view" title="Lihat Dokumen">
                                             <i class="mdi mdi-eye"></i>
                                         </a>

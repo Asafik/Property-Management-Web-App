@@ -1073,7 +1073,7 @@ $(document).ready(function() {
 
     function formatStorageUrl(path) {
         if (!path) return '#';
-        return "{{ asset('storage') }}/" + path;
+        return "{{ asset('uploads') }}/" + path;
     }
 
     $(document).on('click', '.btnOpenDocumentModal', function() {
