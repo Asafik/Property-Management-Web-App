@@ -7,6 +7,9 @@
         $documentsCount = $kpr->documents->whereNotNull('path')->count();
         $missingDocuments = max(0, 8 - $documentsCount);
         $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
+        $totalSteps = 6;
+        $currentStep = $akadSelesai ? 5 : 4;
+        $progressWidth = intval(($currentStep / $totalSteps) * 100);
     @endphp
 
     <div class="transaksi-page">
@@ -66,14 +69,14 @@
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            <span>Tahap 3 dari 4</span>
+                            <span>Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
-                            <div class="transaksi-progress-bar" style="width: 75%;"></div>
+                            <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
                         </div>
 
-                        <div class="transaksi-steps">
+                        <div class="transaksi-steps" style="grid-template-columns: repeat(6, 1fr);">
                             <div class="transaksi-step completed">
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
@@ -90,12 +93,28 @@
                                 <small>{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') : \Carbon\Carbon::parse($kpr->updated_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-home-city"></i>
+                                </div>
+                                <span class="transaksi-step-title">Pembangunan</span>
+                                <small>Menunggu</small>
+                            </div>
+
                             <div class="transaksi-step active">
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-handshake-outline"></i>
                                 </div>
                                 <span class="transaksi-step-title">Akad</span>
                                 <small>Proses Closing</small>
+                            </div>
+
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-home-search-outline"></i>
+                                </div>
+                                <span class="transaksi-step-title">Survey</span>
+                                <small>Menunggu</small>
                             </div>
 
                             <div class="transaksi-step">

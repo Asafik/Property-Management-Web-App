@@ -59,14 +59,37 @@
 
                         @php
                             $jenis = strtolower($booking->unit->jenis ?? '');
-                            $totalSteps = $jenis == 'komersil' ? 5 : 4;
-                            $progressWidth = $jenis == 'komersil' ? 40 : 50;
-                            $stepsStyle = $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '';
+                            $totalSteps = 6;
+                            $currentStep = 2; // Verifikasi pada halaman ini
+
+                            $developmentDone = ($booking->status_pembangunan ?? 0) == 1 || optional($booking->kprApplication)->status_pembangunan == 'done';
+                            if ($developmentDone) {
+                                $currentStep = 3;
+                            }
+
+                            $akadDone = ($booking->status_akad ?? 0) == 1 || optional($booking->kprApplication)->status_akad == 1;
+                            if ($akadDone) {
+                                $currentStep = 4;
+                            }
+
+                            $surveyDone = ($booking->status_survey ?? 0) == 1 || optional($booking->kprApplication)->status_survey == 'done';
+                            if ($surveyDone) {
+                                $currentStep = 5;
+                            }
+
+                            $serahTerimaDone = ($booking->status_serahterima ?? 0) == 1 || optional($booking->kprApplication)->status_serahterima == 1;
+                            if ($serahTerimaDone) {
+                                $currentStep = 6;
+                            }
+
+                            $progressWidth = intval(($currentStep / $totalSteps) * 100);
+                            $stepsStyle = 'style="grid-template-columns: repeat(6, 1fr);"';
+                            $stepClass = fn($index) => $index < $currentStep ? 'completed' : ($index == $currentStep ? 'active' : '');
                         @endphp
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            <span>Tahap 2 dari {{ $totalSteps }}</span>
+                            <span>Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -74,36 +97,40 @@
                         </div>
 
                         <div class="transaksi-steps" {!! $stepsStyle !!}>
-                            <div class="transaksi-step completed">
+                            <div class="transaksi-step {{ $stepClass(1) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
                                 <span class="transaksi-step-title">Pengajuan</span>
                                 <small>{{ optional($booking->kprApplication)->submitted_at ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('d F Y') : '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step active">
+                            <div class="transaksi-step {{ $stepClass(2) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-file-document-edit-outline"></i></div>
                                 <span class="transaksi-step-title">Verifikasi</span>
-                                <small>Dalam Proses</small>
+                                <small>{{ $currentStep == 2 ? 'Dalam Proses' : ($currentStep > 2 ? 'Selesai' : 'Menunggu') }}</small>
                             </div>
 
-                            @if ($jenis == 'komersil')
-                                <div class="transaksi-step">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>Menunggu</small>
-                                </div>
-                            @endif
+                            <div class="transaksi-step {{ $stepClass(3) }}">
+                                <div class="transaksi-step-icon"><i class="mdi mdi-home-city"></i></div>
+                                <span class="transaksi-step-title">Pembangunan</span>
+                                <small>{{ $developmentDone ? 'Sedang/ Selesai' : ($currentStep == 3 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                            </div>
 
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $stepClass(4) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
                                 <span class="transaksi-step-title">Akad</span>
-                                <small>Menunggu</small>
+                                <small>{{ $akadDone ? 'Selesai' : ($currentStep == 4 ? 'Dalam Proses' : 'Menunggu') }}</small>
                             </div>
 
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $stepClass(5) }}">
+                                <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                <span class="transaksi-step-title">Survey</span>
+                                <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                            </div>
+
+                            <div class="transaksi-step {{ $stepClass(6) }}">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
                                 <span class="transaksi-step-title">Serah Terima</span>
-                                <small>Menunggu</small>
+                                <small>{{ $serahTerimaDone ? 'Selesai' : ($currentStep == 6 ? 'Dalam Proses' : 'Menunggu') }}</small>
                             </div>
                         </div>
                     </div>

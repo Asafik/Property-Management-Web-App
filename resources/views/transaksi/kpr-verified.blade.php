@@ -291,10 +291,7 @@
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(154, 85, 255, 0.18);
 }
-.customer-name {
-    font-weight: 700;
-    color: #2c2e3f;
-}
+
 
 .info-with-icon {
     display: inline-flex;
@@ -644,7 +641,7 @@ h3.text-dark {
                                         <td>
                                             <div class="customer-cell">
                                                 <span class="customer-initial">{{ $initial }}</span>
-                                                <span class="customer-name">{{ $customerName }}</span>
+                                                <span class="fw-bold">{{ $customerName }}</span>
                                             </div>
                                         </td>
 

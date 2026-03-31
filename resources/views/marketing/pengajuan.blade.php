@@ -148,6 +148,16 @@
         button {
             font-size: 16px !important;
         }
+
+        /* Error styling for missing uploads */
+        .properti-file-upload-modern.error .properti-file-label-modern {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #fff0f0, #ffe6e6);
+        }
+
+        .properti-file-upload-modern.error .properti-file-label-modern i {
+            color: #dc3545;
+        }
     </style>
 
     <div class="container-fluid p-3 p-md-4">
@@ -285,7 +295,7 @@
                                 <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-2">
                                     <div class="pengajuan-form-group">
                                         <label>Jenis Unit</label>
-                                        <input type="text" class="pengajuan-form-control" 
+                                        <input type="text" class="pengajuan-form-control"
                                          value="{{ Str::upper($booking->unit->jenis ?? '-') }}" readonly>
                                     </div>
                                 </div>
@@ -416,6 +426,12 @@
                                 <i class="mdi mdi-file-document"></i>Upload Dokumen Pendukung
                             </div>
                             <p class="pengajuan-text-muted small mb-3">Dokumen tambahan untuk pengajuan KPR</p>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-info" id="uploadCounter">0 / 8 Dokumen</span>
+                                    <small class="text-muted">Semua dokumen wajib diupload</small>
+                                </div>
+                            </div>
 
                             <div class="pengajuan-row">
                                 @php
@@ -434,10 +450,10 @@
                                 @foreach ($uploadFields as $field => $label)
                                     <div class="pengajuan-col-12 pengajuan-col-md-6 mb-3">
                                         <div class="pengajuan-form-group">
-                                            <label for="{{ $field }}">{{ $label }}</label>
+                                            <label for="{{ $field }}">{{ $label }} *</label>
                                             <div class="properti-file-upload-modern">
                                                 <input type="file" id="{{ $field }}"
-                                                    name="{{ $field }}" accept=".jpg,.jpeg,.png,.pdf">
+                                                    name="{{ $field }}" accept=".jpg,.jpeg,.png,.pdf" required>
                                                 <div class="properti-file-label-modern">
                                                     <i class="fas fa-cloud-upload-alt"></i>
                                                     <div class="properti-file-info-modern">
@@ -470,6 +486,25 @@
         <script>
             // File upload modern preview
             document.addEventListener('DOMContentLoaded', function() {
+                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'];
+                const counterElement = document.getElementById('uploadCounter');
+
+                function updateCounter() {
+                    let uploadedCount = 0;
+                    uploadFields.forEach(field => {
+                        const input = document.getElementById(field);
+                        if (input.files && input.files.length > 0) {
+                            uploadedCount++;
+                        }
+                    });
+                    counterElement.textContent = uploadedCount + ' / 8 Dokumen';
+                    if (uploadedCount === 8) {
+                        counterElement.className = 'badge bg-success';
+                    } else {
+                        counterElement.className = 'badge bg-info';
+                    }
+                }
+
                 document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
                     input.addEventListener('change', function(e) {
                         const fileName = e.target.files[0]?.name;
@@ -495,8 +530,19 @@
                             label.textContent = 'Upload ' + labelText;
                             sizeSpan.textContent = '';
                         }
+
+                        // Update counter
+                        updateCounter();
+
+                        // Remove error class if file is uploaded
+                        if (fileName) {
+                            this.closest('.properti-file-upload-modern').classList.remove('error');
+                        }
                     });
                 });
+
+                // Initial counter update
+                updateCounter();
             });
 
             // Auto hide alert
@@ -547,6 +593,37 @@
                 tenorSelect.addEventListener('change', hitungAngsuran);
 
                 hitungPinjaman();
+            });
+
+            // Validasi form submit untuk upload dokumen
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.querySelector('.pengajuan-form-sample');
+                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'];
+
+                form.addEventListener('submit', function(e) {
+                    let isValid = true;
+                    let missingFields = [];
+
+                    // Reset previous error styling
+                    document.querySelectorAll('.properti-file-upload-modern').forEach(el => {
+                        el.classList.remove('error');
+                    });
+
+                    uploadFields.forEach(field => {
+                        const input = document.getElementById(field);
+                        if (!input.files || input.files.length === 0) {
+                            isValid = false;
+                            missingFields.push(field.replace('_', ' ').toUpperCase());
+                            input.closest('.properti-file-upload-modern').classList.add('error');
+                        }
+                    });
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        alert('Dokumen berikut belum diupload:\n' + missingFields.join('\n') + '\n\nSilakan lengkapi semua dokumen sebelum mengajukan KPR.');
+                        return false;
+                    }
+                });
             });
         </script>
     @endpush

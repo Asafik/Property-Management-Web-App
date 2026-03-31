@@ -376,10 +376,7 @@
     box-shadow: 0 4px 10px rgba(154, 85, 255, 0.2);
 }
 
-.customer-name {
-    font-weight: 600;
-    color: #2c2e3f;
-}
+
 
 .badge-method,
 .badge-status {
@@ -1110,7 +1107,7 @@ h3.text-dark {
                                         <td>
                                             <div class="customer-info">
                                                 <div class="customer-initial">{{ $initials }}</div>
-                                                <span class="customer-name">{{ $customerName }}</span>
+                                                <span class="fw-bold">{{ $customerName }}</span>
                                             </div>
                                         </td>
 

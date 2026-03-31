@@ -33,13 +33,13 @@ class Booking extends Model
     'akad_date' => 'date',
     'serah_terima_date' => 'date',
 ];
-    
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    
+
 
     // Booking -> Unit
     public function unit()
@@ -65,7 +65,7 @@ class Booking extends Model
         return $this->hasOne(KprApplication::class, 'booking_id');
     }
 
-    
+
     public function payments()
     {
         return $this->hasMany(Payment::class, 'booking_id');

@@ -4,39 +4,8 @@
 
 @section('content')
     <style>
-        .kpr-page .card {
-            border: 1px solid #ebe7f2;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(29, 21, 44, 0.05);
-            overflow: hidden;
-            transition: all 0.25s ease;
-        }
-
-        .kpr-page .card:hover {
-            box-shadow: 0 12px 28px rgba(29, 21, 44, 0.08);
-        }
-
-        .kpr-page .card-body {
-            padding: 1.25rem;
-        }
-
-        .kpr-section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 1rem;
-        }
-
-        .kpr-section-title i {
-            color: #9a55ff;
-        }
-
-        .customer-header {
-            min-height: 110px;
-        }
+        /* Gunakan CSS global transaksi.css sebisa mungkin. */
+        /* Tambahkan hanya yang spesifik halaman ini. */
 
         .jenis-badge {
             background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
@@ -55,293 +24,36 @@
             font-size: 0.95rem;
         }
 
-        .customer-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #b57cff, #8f52ff);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.20);
-        }
-
-        .customer-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #2c2e3f;
-            line-height: 1.2;
-        }
-
-        .customer-booking {
-            font-size: 1rem;
-            color: #8c8c8c;
-        }
-
-        .customer-unit-info {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(90px, auto));
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .customer-unit-info .info-item small {
-            display: block;
-            font-size: 0.8rem;
-            color: #9a9a9a;
-            margin-bottom: 2px;
-        }
-
-        .customer-unit-info .info-item span {
-            display: block;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #2c2e3f;
-            line-height: 1.3;
-        }
-
-        .kpr-muted {
-            color: #6c7383 !important;
-        }
-
-        .kpr-progress-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 0.5rem;
-        }
-
-        .kpr-progress-top span:last-child {
-            color: #9a55ff;
-            font-weight: 700;
-        }
-
-        .kpr-progress {
-            width: 100%;
-            height: 12px;
-            background: #ece9f3;
-            border-radius: 999px;
-            overflow: hidden;
-            margin-bottom: 1.25rem;
-        }
-
-        .kpr-progress-bar {
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #c184ff, #9a55ff);
-        }
-
-        .kpr-steps {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        .kpr-step {
-            text-align: center;
-            position: relative;
-        }
-
-        .kpr-step-icon {
-            width: 42px;
-            height: 42px;
-            margin: 0 auto 0.6rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f0eef5;
-            color: #9aa0ac;
-            font-size: 18px;
-            transition: all 0.25s ease;
-        }
-
-        .kpr-step.completed .kpr-step-icon {
-            background: #28a745 !important;
-            color: #fff;
-        }
-
-        .kpr-step.active .kpr-step-icon {
-            background: #ffc107 !important;
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
-        }
-
-        .kpr-step-title {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #2c2e3f;
-        }
-
-        .kpr-step small {
-            display: block;
-            color: #6c7383;
-            font-size: 0.72rem;
-            line-height: 1.35;
-        }
-
-        .kpr-detail-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .kpr-detail-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .kpr-detail-item span:first-child {
-            color: #6c7383;
-        }
-
-        .kpr-detail-item span:last-child {
-            color: #2c2e3f;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        .kpr-detail-item .highlight {
-            color: #9a55ff !important;
-        }
-
-        .kpr-handler {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.85rem;
-            background: #fbf9fe;
-            border: 1px solid #ebe7f2;
-            border-radius: 14px;
-        }
-
-        .kpr-handler-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: #f4ecff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9a55ff;
-            flex-shrink: 0;
-        }
-
-        .kpr-inline-alert {
-            border-radius: 14px;
-            padding: 0.9rem 1rem;
-            font-size: 0.88rem;
-            margin-bottom: 1rem;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .kpr-inline-alert i {
-            font-size: 1rem;
-            margin-top: 2px;
-        }
-
-        .kpr-inline-alert.info {
-            background: #f6f7fb;
-            border-color: #e7eaf3;
-            color: #4b5565;
-        }
-
-        .kpr-inline-alert.warning {
-            background: #fff8e6;
-            border-color: #ffe29b;
-            color: #8a6a00;
-        }
-
-        .kpr-inline-alert.success {
-            background: #edf9f3;
-            border-color: #b9e7cf;
-            color: #146c43;
-        }
-
-        .kpr-inline-alert.danger {
-            background: #fff1f3;
-            border-color: #ffc9d0;
-            color: #b42318;
-        }
-
-        .kpr-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .kpr-summary-box {
-            border: 1px solid #ebe7f2;
-            background: #fbf9fe;
-            border-radius: 16px;
-            padding: 1rem;
-        }
-
-        .kpr-summary-box .label {
-            font-size: 0.75rem;
-            color: #6c7383;
-            margin-bottom: 0.35rem;
-        }
-
-        .kpr-summary-box .value {
-            font-size: 1.2rem;
-            font-weight: 800;
-            line-height: 1.45;
-            word-break: break-word;
-        }
-
-        .kpr-summary-box.success .value {
-            color: #22a06b;
-        }
-
-        .kpr-summary-box.warning .value {
-            color: #f59f00;
-        }
-
-        .kpr-status-banner {
+        .payment-method-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 0.55rem 0.9rem;
-            border-radius: 999px;
-            font-size: 0.86rem;
-            font-weight: 700;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            gap: 3px;
+            white-space: nowrap;
+            max-width: 100px;
         }
 
-        .kpr-status-banner.success {
-            background: #edf9f3;
-            color: #22a06b;
+        .payment-method-badge i {
+            font-size: 0.75rem;
         }
 
-        .kpr-status-banner.warning {
-            background: #fff8e6;
-            color: #8a6a00;
-        }
-
-        .badge {
-            padding: 0.35rem 0.6rem;
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
+            gap: 4px;
             white-space: nowrap;
         }
-        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
-        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
-        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
+
+        .header-badge i {
+            font-size: 0.8rem;
+        }
 
         .serah-form-group {
             margin-bottom: 1rem;
@@ -623,44 +335,6 @@
             }
         }
 
-        .kpr-sidebar-section {
-            border: 1px solid #ebe7f2;
-            border-radius: 16px;
-            padding: 1rem;
-            background: #fff;
-        }
-
-        .kpr-sidebar-section + .kpr-sidebar-section {
-            margin-top: 1rem;
-        }
-
-        .kpr-sidebar-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.75rem;
-        }
-
-        .kpr-mini-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .kpr-mini-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 0.84rem;
-            color: #6c7383;
-            margin-bottom: 0.55rem;
-        }
-
-        .kpr-mini-list li i {
-            color: #9a55ff;
-            margin-top: 2px;
-        }
-
         .serah-btn {
             border: none;
             border-radius: 12px;
@@ -693,11 +367,6 @@
             box-shadow: 0 12px 24px rgba(40, 167, 69, 0.28);
         }
 
-        .kpr-sticky {
-            position: sticky;
-            top: 20px;
-        }
-
         .approval-check-green .check-label {
             border-color: #d7eadf;
             background: #fff;
@@ -727,65 +396,9 @@
         .approval-check-green input[type="checkbox"]:checked + .check-label .check-text {
             color: #146c43;
         }
-
-        @media (max-width: 991.98px) {
-            .kpr-sticky {
-                position: static;
-            }
-
-            .customer-unit-info {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .customer-header {
-                min-height: auto;
-            }
-
-            .customer-avatar {
-                width: 48px;
-                height: 48px;
-                font-size: 1.1rem;
-            }
-
-            .customer-name {
-                font-size: 1.15rem;
-            }
-
-            .customer-booking {
-                font-size: 0.9rem;
-            }
-
-            .customer-unit-info {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 1rem;
-                margin-top: 0.5rem;
-            }
-
-            .kpr-steps,
-            .kpr-summary-grid,
-            .serah-checklist-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            .kpr-step small {
-                display: none !important;
-            }
-
-            .kpr-step-icon {
-                width: 32px !important;
-                height: 32px !important;
-            }
-
-            .kpr-step-icon i {
-                font-size: 15px !important;
-            }
-        }
     </style>
 
-    <div class="kpr-page">
+    <div class="transaksi-page">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -803,8 +416,8 @@
                                             $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
                                             $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
                                         @endphp
-                                        <span class="badge {{ $badgeClass }}" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
-                                            <i class="mdi {{ $icon }} me-1"></i>
+                                        <span class="header-badge {{ $badgeClass }}">
+                                            <i class="mdi {{ $icon }}"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
@@ -836,68 +449,82 @@
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="kpr-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-timeline-text"></i>
                             <span>Tahapan Serah Terima Unit</span>
                         </div>
 
-                        <div class="kpr-progress-top">
-                            <span class="kpr-muted">Progress Transaksi</span>
-                            <span>Tahap Akhir: Serah Terima</span>
-                        </div>
-
-                        <div class="kpr-progress">
-                            <div class="kpr-progress-bar" style="width: 100%;"></div>
-                        </div>
-
                         @php
                             $jenis = strtolower($application->unit->jenis ?? '');
+                            $totalSteps = 6;
+                            $pembangunanDone = !empty($application->pembangunan_date);
+                            $akadDone = !empty($application->akad_at);
+                            $surveyDone = !empty($application->survey_date);
+                            $serahTerimaDone = $application->booking->status == 'completed' && $application->booking->serah_terima_date;
+                            $currentStep = $serahTerimaDone ? 6 : ($surveyDone ? 5 : ($akadDone ? 4 : ($pembangunanDone ? 3 : 2)));
+                            $progressWidth = intval(($currentStep / $totalSteps) * 100);
+                            $stepStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
                         @endphp
 
-                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
+                        <div class="transaksi-progress-top">
+                            <span class="transaksi-muted">Progress Transaksi</span>
+                            <span>Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
+                        </div>
+
+                        <div class="transaksi-progress">
+                            <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
+                        </div>
+
+                        <div class="transaksi-steps" {!! $stepStyle !!}>
+                            <div class="transaksi-step completed">
+                                <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="kpr-step-title">Pengajuan</span>
+                                <span class="transaksi-step-title">Pengajuan</span>
                                 <small>{{ \Carbon\Carbon::parse($application->booking->booking_date)->translatedFormat('d F Y') }}</small>
                             </div>
 
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
+                            <div class="transaksi-step completed">
+                                <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="kpr-step-title">Verifikasi</span>
+                                <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ \Carbon\Carbon::parse($application->approved_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
-                            @if($jenis == 'komersil')
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-check"></i>
+                            <div class="transaksi-step {{ $pembangunanDone ? 'completed' : ($akadDone || $surveyDone || $serahTerimaDone ? 'active' : '') }}">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-home-city"></i>
                                 </div>
-                                <span class="kpr-step-title">Survey</span>
-                                <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : 'Selesai' }}</small>
-                            </div>
-                            @endif
-
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-check"></i>
-                                </div>
-                                <span class="kpr-step-title">Akad</span>
-                                <small>{{ \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') }}</small>
+                                <span class="transaksi-step-title">Pembangunan</span>
+                                <small>{{ $pembangunanDone ? \Carbon\Carbon::parse($application->pembangunan_date)->translatedFormat('d F Y') : 'Menunggu' }}</small>
                             </div>
 
-                            <div class="kpr-step @if($application->booking->status == 'completed' && $application->booking->serah_terima_date) completed @else active @endif">
-                                <div class="kpr-step-icon">
-                                    @if($application->booking->status == 'completed' && $application->booking->serah_terima_date)
+                            <div class="transaksi-step {{ $akadDone ? 'completed' : ($surveyDone || $serahTerimaDone ? 'active' : '') }}">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-handshake-outline"></i>
+                                </div>
+                                <span class="transaksi-step-title">Akad</span>
+                                <small>{{ $akadDone ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') : 'Menunggu' }}</small>
+                            </div>
+
+                            <div class="transaksi-step {{ $surveyDone ? 'completed' : ($serahTerimaDone ? 'active' : '') }}">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-home-search-outline"></i>
+                                </div>
+                                <span class="transaksi-step-title">Survey</span>
+                                <small>{{ $surveyDone ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : 'Menunggu' }}</small>
+                            </div>
+
+                            <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : 'active' }}">
+                                <div class="transaksi-step-icon">
+                                    @if($serahTerimaDone)
                                         <i class="mdi mdi-check"></i>
                                     @else
                                         <i class="mdi mdi-key"></i>
                                     @endif
                                 </div>
-                                <span class="kpr-step-title">Serah Terima</span>
+                                <span class="transaksi-step-title">Serah Terima</span>
                                 <small>
                                     @if($application->booking->status == 'completed' && $application->booking->serah_terima_date)
                                         {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
@@ -914,50 +541,50 @@
             <div class="col-12 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="kpr-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-cash-multiple"></i>
                             <span>Status KPR</span>
                         </div>
 
-                        <div class="kpr-detail-list">
-                            <div class="kpr-detail-item">
+                        <div class="transaksi-detail-list">
+                            <div class="transaksi-detail-item">
                                 <span>Harga Unit</span>
                                 <span>Rp {{ number_format($application->unit->price, 0, ',', '.') }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Uang Muka (DP)</span>
                                 <span class="highlight">Rp {{ number_format($application->booking->booking_fee, 0, ',', '.') }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Bank</span>
                                 <span>{{ $application->bank->bank_name }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Status KPR</span>
                                 <span>
-                                    <span class="badge badge-gradient-success text-white">
-                                        <i class="mdi mdi-check-circle-outline me-1"></i>Disetujui
+                                    <span class="payment-method-badge badge-gradient-success text-white">
+                                        <i class="mdi mdi-check-circle-outline"></i>Disetujui
                                     </span>
                                 </span>
                             </div>
-                            <div class="kpr-detail-item mt-2">
+                            <div class="transaksi-detail-item mt-2">
                                 <span>Metode Pembayaran</span>
-                                <span class="badge badge-gradient-success text-white">
-                                    <i class="mdi mdi-bank me-1"></i>KPR
+                                <span class="payment-method-badge badge-gradient-success text-white">
+                                    <i class="mdi mdi-bank"></i>KPR
                                 </span>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <small class="kpr-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="kpr-handler">
-                            <div class="kpr-handler-icon">
+                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
+                        <div class="transaksi-handler">
+                            <div class="transaksi-handler-icon">
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
                                 <div class="fw-bold">{{ $application->booking->sales->name ?? '-' }}</div>
-                                {{-- <small class="kpr-muted">{{ $application->booking->sales->phone ?? '-' }}</small> --}}
+                                {{-- <small class="transaksi-muted">{{ $application->booking->sales->phone ?? '-' }}</small> --}}
                             </div>
                         </div>
                     </div>
@@ -972,12 +599,12 @@
                 <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                     <div class="card">
                         <div class="card-body">
-                            <div class="kpr-section-title">
+                            <div class="transaksi-section-title">
                                 <i class="mdi mdi-key"></i>
                                 <span>Form Serah Terima Unit</span>
                             </div>
 
-                            <div class="kpr-inline-alert info">
+                            <div class="transaksi-inline-alert info">
                                 <i class="mdi mdi-information-outline"></i>
                                 <div>Silakan isi data serah terima, checklist kondisi unit, dokumen yang diserahkan, dan dokumentasi pendukung tanpa mengubah isi proses yang sudah berjalan.</div>
                             </div>
@@ -1011,7 +638,7 @@
 
                             <hr>
 
-                            <div class="kpr-section-title mb-3">
+                            <div class="transaksi-section-title mb-3">
                                 <i class="mdi mdi-home-check-outline"></i>
                                 <span>Checklist Kondisi Unit</span>
                             </div>
@@ -1048,7 +675,7 @@
 
                             <hr>
 
-                            <div class="kpr-section-title mb-3">
+                            <div class="transaksi-section-title mb-3">
                                 <i class="mdi mdi-file-document-multiple-outline"></i>
                                 <span>Dokumen yang Diserahkan</span>
                             </div>
@@ -1083,7 +710,7 @@
 
                             <hr>
 
-                            <div class="kpr-section-title mb-3">
+                            <div class="transaksi-section-title mb-3">
                                 <i class="mdi mdi-camera-outline"></i>
                                 <span>Dokumentasi Serah Terima</span>
                             </div>
@@ -1133,34 +760,34 @@
                 </div>
 
                 <div class="col-12 col-lg-4">
-                    <div class="kpr-sticky">
+                    <div class="transaksi-sticky">
                         <div class="card">
                             <div class="card-body">
-                                <div class="kpr-section-title">
+                                <div class="transaksi-section-title">
                                     <i class="mdi mdi-clipboard-check-outline"></i>
                                     <span>Informasi Serah Terima</span>
                                 </div>
 
                                 <div class="mb-3">
-                                    <div class="kpr-status-banner success">
+                                    <div class="transaksi-status-banner success">
                                         <i class="mdi mdi-key-variant"></i>
                                         Tahap Final Transaksi
                                     </div>
                                 </div>
 
-                                <div class="kpr-summary-grid">
-                                    <div class="kpr-summary-box success">
+                                <div class="transaksi-summary-grid">
+                                    <div class="transaksi-summary-box success">
                                         <div class="label">Status Unit</div>
                                         <div class="value">Siap</div>
                                     </div>
-                                    <div class="kpr-summary-box warning">
+                                    <div class="transaksi-summary-box warning">
                                         <div class="label">Tahap</div>
                                         <div class="value">Serah Terima</div>
                                     </div>
                                 </div>
 
-                                <div class="kpr-sidebar-section">
-                                    <div class="kpr-sidebar-title">Persetujuan</div>
+                                <div class="transaksi-sidebar-section">
+                                    <div class="transaksi-sidebar-title">Persetujuan</div>
 
                                     <div class="serah-form-group">
                                         <label class="serah-form-label">Saksi (Opsional)</label>
@@ -1182,9 +809,9 @@
                                     </div>
                                 </div>
 
-                                <div class="kpr-sidebar-section">
-                                    <div class="kpr-sidebar-title">Panduan Proses</div>
-                                    <ul class="kpr-mini-list mb-0">
+                                <div class="transaksi-sidebar-section">
+                                    <div class="transaksi-sidebar-title">Panduan Proses</div>
+                                    <ul class="transaksi-mini-list mb-0">
                                         <li>
                                             <i class="mdi mdi-arrow-right-circle-outline"></i>
                                             <span>Pastikan checklist kondisi unit telah dicek sebelum proses disimpan.</span>
@@ -1208,7 +835,7 @@
                                 </div>
 
                                 <div class="text-center mt-3">
-                                    <small class="kpr-muted">
+                                    <small class="transaksi-muted">
                                         <i class="mdi mdi-information-outline me-1"></i>
                                         Pastikan semua checklist terisi
                                     </small>
@@ -1249,3 +876,4 @@
         });
     </script>
 @endpush
+

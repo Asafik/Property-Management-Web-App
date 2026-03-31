@@ -64,12 +64,18 @@ class SurveyController extends Controller
 
         try {
 
+            // Normalisasi input numeric agar empty string tidak mengakibatkan error DB
+            $normalizeNumeric = function ($value, $pattern = '/[^0-9]/') {
+                $clean = preg_replace($pattern, '', $value);
+                return $clean === '' ? null : $clean;
+            };
+
             $request->merge([
                 // Bersihkan angka
-                'appraisal_value'      => preg_replace('/[^0-9]/', '', $request->appraisal_value),
-                'luas_tanah'           => preg_replace('/[^0-9]/', '', $request->luas_tanah),
-                'luas_bangunan'        => preg_replace('/[^0-9]/', '', $request->luas_bangunan),
-                'persentase_kelayakan' => preg_replace('/[^0-9.]/', '', $request->persentase_kelayakan),
+                'appraisal_value'      => $normalizeNumeric($request->appraisal_value, '/[^0-9]/'),
+                'luas_tanah'           => $normalizeNumeric($request->luas_tanah, '/[^0-9]/'),
+                'luas_bangunan'        => $normalizeNumeric($request->luas_bangunan, '/[^0-9]/'),
+                'persentase_kelayakan' => $normalizeNumeric($request->persentase_kelayakan, '/[^0-9.]/'),
 
                 // Normalisasi checkbox
                 'listrik'    => $request->has('listrik') ? 1 : 0,
