@@ -848,7 +848,7 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Pekerjaan</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->job_status }}</span>
+                                <span class="info-value">{{ $unit->activeBooking->customer->job_status ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
