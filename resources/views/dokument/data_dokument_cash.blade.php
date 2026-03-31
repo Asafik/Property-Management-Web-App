@@ -690,13 +690,13 @@
             justify-content: center;
             text-align: center;
             gap: 6px;
-            padding: 1rem 0.6rem;
+            padding: 0.75rem 0.5rem;
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             border: 2px dashed #d0d4db;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-height: 100px;
+            min-height: 60px;
         }
 
         @media (min-width: 576px) {
@@ -704,8 +704,8 @@
                 flex-direction: row;
                 text-align: left;
                 gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
+                padding: 0.4rem 0.75rem;
+                min-height: 40px;
             }
         }
 
@@ -717,15 +717,16 @@
         }
 
         .properti-file-upload-modern .properti-file-label-modern i {
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             color: #9a55ff;
             background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
+            padding: 6px;
             border-radius: 50%;
         }
 
         .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
             flex: 1;
+            min-width: 0;
             width: 100%;
         }
 
@@ -733,15 +734,19 @@
             display: block;
             font-weight: 600;
             color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
         }
 
         .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
             color: #6c7383;
             font-size: 0.65rem;
             display: block;
-            margin-top: 2px;
+            margin-top: 1px;
+            line-height: 1.2;
         }
 
         .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
@@ -1049,7 +1054,7 @@
                                         </th>
                                         <th class="sortable" data-field="unit"
                                             data-direction="{{ request('sortField') == 'unit' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                            Unit
+                                            Nama - Unit
                                             @if (request('sortField') == 'unit')
                                                 <i
                                                     class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -1057,7 +1062,7 @@
                                                 <i class="mdi mdi-swap-vertical"></i>
                                             @endif
                                         </th>
-                                        <th>Jenis & Tipe</th>
+                                        <th>Jenis - Tipe</th>
                                         <th>Kelengkapan</th>
                                         <th>Status</th>
                                         <th class="text-center">Aksi</th>
@@ -1112,8 +1117,7 @@
                                                         <i class="mdi mdi-home-city-outline"></i>
                                                     </span>
                                                     <div>
-                                                        <span class="fw-bold d-block">{{ $booking->unit->unit_name ?? '-' }}</span>
-                                                        <small class="text-muted">{{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}</small>
+                                                        <span class="fw-bold d-block">{{ $booking->unit->unit_name ?? '-' }} - {{ $booking->unit->block ?? '' }} {{ $booking->unit->unit_number ?? '' }}</span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -1121,17 +1125,17 @@
                                                 @if ($jenisUnit == 'komersil' || $jenisUnit == 'komersial')
                                                     <span class="badge-status status-komersil">
                                                         <i class="mdi mdi-storefront-outline"></i>
-                                                        Komersil/{{ $booking->unit->type ?? '-' }}
+                                                        Komersil - {{ $booking->unit->type ?? '-' }}
                                                     </span>
                                                 @elseif ($jenisUnit == 'subsidi')
                                                     <span class="badge-status status-subsidi">
                                                         <i class="mdi mdi-home-percent-outline"></i>
-                                                        Subsidi/{{ $booking->unit->type ?? '-' }}
+                                                        Subsidi - {{ $booking->unit->type ?? '-' }}
                                                     </span>
                                                 @else
                                                     <span class="badge-status status-lainnya">
                                                         <i class="mdi mdi-shape-outline"></i>
-                                                        {{ $booking->unit->jenis ?? '-' }}/{{ $booking->unit->type ?? '-' }}
+                                                        {{ $booking->unit->jenis ?? '-' }} - {{ $booking->unit->type ?? '-' }}
                                                     </span>
                                                 @endif
                                             </td>
@@ -1397,10 +1401,11 @@
 
             <div class="properti-file-label-modern">
                 <i class="mdi mdi-cloud-upload-outline"></i>
-                <div>
+                <div class="properti-file-info-modern">
                     <span>Pilih File</span>
                     <small>PDF/JPG/PNG</small>
                 </div>
+                <span class="properti-file-size" style="display: none;"></span>
             </div>
         </div>
 
@@ -1460,10 +1465,12 @@
                         if (fileSize) {
                             const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
                             sizeSpan.textContent = sizeInMB + ' MB';
+                            sizeSpan.style.display = 'inline-block';
                         }
                     } else {
                         label.textContent = 'Pilih File';
                         sizeSpan.textContent = '';
+                        sizeSpan.style.display = 'none';
                     }
                 });
             });

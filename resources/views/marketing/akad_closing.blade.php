@@ -127,11 +127,16 @@
                                 $config = $statusConfig[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
                             @endphp
 
-                            <div class="transaksi-step">
-                                <div
-                                    class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
-                                    <i class="mdi {{ $config['icon'] }}"></i>
-                                </div>
+                            <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
+                                @if ($status == 'selesai')
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                @else
+                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                        <i class="mdi {{ $config['icon'] }}"></i>
+                                    </div>
+                                @endif
 
                                 <span class="transaksi-step-title">Pembangunan</span>
                                 <small>{{ $statusText[$status] ?? '-' }}</small>
@@ -499,7 +504,8 @@
                                             <label class="akad-form-label">Nomor Akad</label>
                                             <input type="text" class="akad-form-control" name="nomor_akad"
                                                 id="nomor_akad_selesai"
-                                                value="{{ optional($kpr->booking->akad)->nomor_akad ?? 'AKD/2025/03/123' }}">
+                                                value="{{ $noAkadDraf }}"
+                                                placeholder="Kosongkan untuk otomatis (opsional)">
                                         </div>
                                     </div>
                                 </div>

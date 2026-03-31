@@ -862,10 +862,6 @@ h3.text-dark {
                                                     <a href="{{ route('document.user.persiapan-legal') }}" class="btn-action document" title="Dokumen">
                                                         <i class="mdi mdi-file-document-outline"></i>
                                                     </a>
-                                                @else
-                                                    <button class="btn-action document" title="Dokumen" type="button" onclick="showAction('Dokumen', {{ $tenor->id }})">
-                                                        <i class="mdi mdi-file-document-outline"></i>
-                                                    </button>
                                                 @endif
 
                                                 <button

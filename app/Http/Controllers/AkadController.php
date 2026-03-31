@@ -20,10 +20,10 @@ class AkadController extends Controller
 
         return view('marketing.akad_cash', compact('booking'));
     }
-    function generateNoAkad()
+    function generateNoAkad($type = 'CASH')
     {
         $year = date('Y');
-        $prefix = "AKAD/CASH/$year/";
+        $prefix = "AKAD/$type/$year/";
 
         $lastNumber = Akad::whereYear('created_at', $year)->count() + 1;
 
@@ -50,16 +50,17 @@ class AkadController extends Controller
                 return redirect()->back()->with('error', 'Booking belum lunas.');
             }
 
-            // Validasi request
             $request->validate([
                 'tanggal_akad' => 'nullable|date',
                 'dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
                 'catatan' => 'nullable|string',
-                'no_akad' => 'nullable|string',
+                'no_akad' => 'nullable|string|unique:akads,no_akad',
                 'alasan_batal' => 'nullable|string',
                 'alasan_lainnya' => 'nullable|string',
                 'tindakan' => 'nullable|string',
                 'status_pembayaran' => 'nullable|string'
+            ], [
+                'no_akad.unique' => 'Nomor akad tersebut sudah pernah digunakan di sistem.'
             ]);
 
             // Upload dokumen jika ada
@@ -143,7 +144,10 @@ class AkadController extends Controller
             ->where('booking_id', $id)
             ->firstOrFail(); // Melempar 404 jika booking_id tidak ditemukan di tabel KPR
 
-        return view('marketing.akad_closing', compact('kpr'));
+        // Generate Nomor Akad secara otomatis jika belum ada
+        $noAkadDraf = $kpr->booking->akad->no_akad ?? $this->generateNoAkad('KPR');
+
+        return view('marketing.akad_closing', compact('kpr', 'noAkadDraf'));
     }
   public function storeKPR(Request $request, Booking $booking)
 {
@@ -180,7 +184,7 @@ class AkadController extends Controller
                 'tanggal_akad' => 'required|date',
                 'lokasi_akad' => 'required|string',
                 'nama_notaris' => 'required|string',
-                'nomor_akad' => 'nullable|string',
+                'nomor_akad' => 'nullable|string|unique:akads,no_akad',
                 'catatan' => 'nullable|string',
             ];
         }
@@ -194,7 +198,9 @@ class AkadController extends Controller
             ];
         }
 
-        $request->validate($rules);
+        $request->validate($rules, [
+            'nomor_akad.unique' => 'Nomor akad tersebut sudah pernah digunakan di sistem.'
+        ]);
 
         // =========================
         // UPLOAD FILE

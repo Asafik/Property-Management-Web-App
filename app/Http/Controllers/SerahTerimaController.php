@@ -129,7 +129,7 @@ class SerahTerimaController extends Controller
                 'booking_id' => $booking->id,
                 'no_bast' => $noBast
             ]);
-            return redirect()->route('unit.selesai')
+            return redirect()->route('unit.selesai', $booking->id)
                 ->with('success', 'Serah terima berhasil diproses.');
         } catch (\Exception $e) {
 
@@ -150,8 +150,8 @@ class SerahTerimaController extends Controller
 
     public function SellDone($bookingId)
     {
-        // Ambil booking beserta unit dan customer
-        $booking = Booking::with('unit', 'customer')->find($bookingId);
+        // Ambil booking beserta unit, customer, dan serah terima
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'serahTerima'])->find($bookingId);
 
         if (!$booking) {
             abort(404, 'Booking tidak ditemukan');
