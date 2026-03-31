@@ -6,24 +6,33 @@
     <title>Properti Management</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/zc5rd26/favicon.png">
 
-    {{-- CSS Local --}}
+    {{-- CSS Local - Template Inti (Dibiarkan menyala untuk styling dasar) --}}
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
 
+    {{-- DIMATIKAN: Datepicker bawaan template (Tidak dibutuhkan untuk Navbar/Sidebar) --}}
+    {{-- <link rel="stylesheet" href="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}"> --}}
+
+    {{-- Plugin Tambahan Kamu (Dibiarkan menyala) --}}
     {{-- DataTables CSS --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
-                             
+                                 
     {{-- Select2 CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     {{-- Leaflet CSS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    {{-- Global CSS TRANSAKSI --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/transaksi.css') }}">
+
+    {{-- Page-specific CSS --}}
+    @stack('styles')
 </head>
 
 <body>
@@ -46,25 +55,28 @@
     </div>
 </div>
 
-{{-- URUTAN SCRIPT YANG BENAR --}}
-<!-- jQuery pertama (wajib) -->
+{{-- Script Inti (Wajib) --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap 4 (bukan 5!) untuk template -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
-<!-- Template vendor scripts -->
+
+{{-- Script Vendor Template (Wajib untuk UI dasar template berjalan) --}}
 <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
-<script src="{{ asset('admin/assets/vendors/chart.js/chart.umd.js') }}"></script>
-<script src="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 
-<!-- Template custom scripts (urutan penting) -->
-<script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script>
-<script src="{{ asset('admin/assets/js/misc.js') }}"></script>
-<script src="{{ asset('admin/assets/js/settings.js') }}"></script>
-<script src="{{ asset('admin/assets/js/todolist.js') }}"></script>
-<script src="{{ asset('admin/assets/js/jquery.cookie.js') }}"></script>
+{{-- DIMATIKAN: Chart dan Datepicker bawaan template (Bikin berat jika di-load global padahal tidak dipakai) --}}
+{{-- <script src="{{ asset('admin/assets/vendors/chart.js/chart.umd.js') }}"></script> --}}
+{{-- <script src="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script> --}}
 
+{{-- Script Custom Template (Hanya sisakan untuk fungsional Sidebar & Navbar) --}}
+<script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script> {{-- Wajib untuk toggle sidebar di mode mobile --}}
+<script src="{{ asset('admin/assets/js/misc.js') }}"></script> {{-- Wajib untuk interaksi dasar UI seperti dropdown sidebar --}}
+
+{{-- DIMATIKAN: Biang kerok CSS looping & fitur tidak terpakai --}}
+{{-- <script src="{{ asset('admin/assets/js/settings.js') }}"></script> --}} {{-- Menyebabkan infinite loop CSS --}}
+{{-- <script src="{{ asset('admin/assets/js/todolist.js') }}"></script> --}} {{-- Fitur to-do list bawaan yang tidak kamu pakai --}}
+{{-- <script src="{{ asset('admin/assets/js/jquery.cookie.js') }}"></script> --}} {{-- Pasangan dari settings.js --}}
+
+{{-- Plugin Tambahan Kamu (Dibiarkan menyala) --}}
 {{-- DataTables JS --}}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
