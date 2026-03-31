@@ -79,7 +79,7 @@
                             <i class="mdi {{ $main->icon }} menu-icon"></i>
                         @endif
                     </a>
-                    
+                    s
                     <div class="collapse {{ $hasActiveSub ? 'show' : '' }}" id="{{ $collapseId }}">
                         <ul class="nav flex-column sub-menu">
                             @foreach ($subMenus as $sub)
