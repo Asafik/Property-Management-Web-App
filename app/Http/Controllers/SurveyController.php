@@ -124,7 +124,7 @@ class SurveyController extends Controller
             $kpr->rekomendasi = $request->rekomendasi;
             $kpr->persentase_kelayakan = $request->persentase_kelayakan;
             $kpr->surveyor_id = $request->surveyor_id;
-
+            $kpr->status = 'survey';
             // Upload foto jika ada
             foreach (['foto_depan', 'foto_interior', 'foto_lingkungan'] as $fileField) {
                 if ($request->hasFile($fileField)) {
@@ -135,9 +135,7 @@ class SurveyController extends Controller
 
             // Update status survey selesai - gunakan rekomendasi sebagai penanda utama
             // Jika rekomendasi diisi, berarti survey sudah selesai
-            // if ($request->filled('rekomendasi')) {
-            //    $kpr->status = 'survey_done'; // ERROR: 'survey_done' tidak valid di enum kpr_applications
-            // }
+           
             $kpr->save();
 
             DB::commit();

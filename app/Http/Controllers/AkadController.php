@@ -138,12 +138,19 @@ class AkadController extends Controller
     }
     public function akadKPR($id)
     {
-        // Cari KPR yang kolom booking_id nya sesuai dengan ID dari URL
         $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
             ->where('booking_id', $id)
-            ->firstOrFail(); // Melempar 404 jika booking_id tidak ditemukan di tabel KPR
+            ->firstOrFail();
 
-        return view('marketing.akad_closing', compact('kpr'));
+
+        $noAkadDraf = 'AKAD/' . date('m/Y') . '/' . str_pad(
+            KprApplication::count() + 1,
+            3,
+            '0',
+            STR_PAD_LEFT
+        );
+
+        return view('marketing.akad_closing', compact('kpr', 'noAkadDraf'));
     }
     public function storeKPR(Request $request, Booking $booking)
     {

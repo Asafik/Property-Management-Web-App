@@ -89,115 +89,130 @@ class TransaksiKPRController extends Controller
         return view('marketing.vertifikasi_kpr', compact('booking'));
     }
 
-    public function storeVerifikasi(Request $request, $bookingId)
-    {
-        DB::beginTransaction();
-        try {
-            $booking = Booking::findOrFail($bookingId);
-            $kpr = $booking->kprApplication;
+ public function storeVerifikasi(Request $request, $bookingId)
+{
+    DB::beginTransaction();
 
-            if (!$kpr) {
-                throw new \Exception("KPR Application untuk booking ID {$bookingId} tidak ditemukan");
-            }
+    try {
+        $booking = Booking::findOrFail($bookingId);
+        $kpr = $booking->kprApplication;
 
-            // Validasi
-            $request->validate([
-                'catatan' => 'nullable|string',
-                'status' => 'required|string',
-                'jumlah_pinjaman' => 'nullable|numeric',
-                'estimasi_angsuran' => 'nullable|numeric',
-                'tenor' => 'nullable|numeric',
-                'bunga' => 'nullable|numeric',
-                'no_sp3k' => 'nullable|string',
-                'akad_at' => 'nullable|date',
-                'berita_acara' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            ]);
-
-            // Jika KPR disetujui / survey
-            if ($request->status === 'survey') {
-                // Update KPR application
-                $kpr->fill([
-                    'jumlah_pinjaman'   => $request->jumlah_pinjaman ?? $kpr->jumlah_pinjaman,
-                    'estimasi_angsuran' => $request->estimasi_angsuran ?? $kpr->estimasi_angsuran,
-                    'tenor'             => $request->tenor ?? $kpr->tenor,
-                    'bunga'             => $request->bunga ?? $kpr->bunga,
-                    'no_sp3k'           => $request->no_sp3k ?? $kpr->no_sp3k,
-                    'akad_at'           => $request->akad_at ?? now(),
-                    'status'            => 'approved',
-                    'harga_unit'        => $request->jumlah_pinjaman ?? $kpr->harga_unit,
-                    'submitted_at'      => $kpr->submitted_at ?? now(),
-                ]);
-
-                // Update status di table Booking
-                $booking->status_cash = 'done'; // Update sesuai permintaan Anda
-                $booking->status = 'cash_process';
-                // Update harga di LandBankUnit
-                if ($kpr->unit) {
-                    $kpr->unit->update([
-                        'price' => $request->jumlah_pinjaman ?? $kpr->unit->price
-                    ]);
-                }
-            }
-
-            // Jika KPR ditolak
-            if ($request->status === 'rejected') {
-                $kpr->status = 'rejected';
-                $kpr->rejected_at = now();
-                $kpr->submitted_at = null;
-
-                // Update status di table Booking jika ditolak (opsional, silakan sesuaikan)
-                $booking->status_cash = 'rejected';
-            }
-
-            // Update catatan & Berita Acara
-            $kpr->catatan = $request->catatan;
-            if ($request->hasFile('berita_acara')) {
-
-                $file = $request->file('berita_acara');
-
-                // ambil nama asli tanpa extension
-                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-
-                // bersihkan nama (anti spasi & karakter aneh)
-                $cleanName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
-
-                $extension = $file->getClientOriginalExtension();
-
-                $filename = time() . '_' . $cleanName . '.' . $extension;
-
-
-                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr/verifikasi';
-
-                if (!file_exists($destination)) {
-                    mkdir($destination, 0755, true);
-                }
-
-                $file->move($destination, $filename);
-
-                // simpan ke database TANPA "uploads/"
-                $path = 'kpr/verifikasi/' . $filename;
-
-                $kpr->berita_acara = $path;
-            }
-
-            // Simpan semua perubahan
-            $kpr->save();
-            $booking->save(); // Simpan perubahan pada table booking
-
-            DB::commit();
-
-            Log::info('Verifikasi KPR berhasil disimpan', [
-                'booking_id' => $bookingId,
-                'status' => $request->status,
-            ]);
-
-            return redirect()->back()->with('success', 'Verifikasi berhasil disimpan!');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            Log::error('Gagal menyimpan verifikasi KPR: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan.');
+        if (!$kpr) {
+            throw new \Exception("KPR Application untuk booking ID {$bookingId} tidak ditemukan");
         }
+
+        // VALIDASI
+        $request->validate([
+            'catatan' => 'nullable|string',
+            'status' => 'required|string',
+            'jumlah_pinjaman' => 'nullable|numeric',
+            'estimasi_angsuran' => 'nullable|numeric',
+            'tenor' => 'nullable|numeric',
+            'bunga' => 'nullable|numeric',
+            'no_sp3k' => 'nullable|string',
+            'akad_at' => 'nullable|date',
+            'berita_acara' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        // =========================
+        // PROSES SURVEY / APPROVAL
+        // =========================
+        if ($request->status === 'survey') {
+
+            // cek jenis unit (AMAN dari null)
+            $unitType = optional($kpr->unit)->jenis;
+
+            // tentukan status KPR
+            $kprStatus = $unitType === 'komersil' ? 'analisa' : 'approved';
+
+            $kpr->fill([
+                'jumlah_pinjaman'   => $request->jumlah_pinjaman ?? $kpr->jumlah_pinjaman,
+                'estimasi_angsuran' => $request->estimasi_angsuran ?? $kpr->estimasi_angsuran,
+                'tenor'             => $request->tenor ?? $kpr->tenor,
+                'bunga'             => $request->bunga ?? $kpr->bunga,
+                'no_sp3k'           => $request->no_sp3k ?? $kpr->no_sp3k,
+                'akad_at'           => $request->akad_at ?? now(),
+                'status'            => $kprStatus, // 🔥 LOGIC UTAMA
+                'harga_unit'        => $request->jumlah_pinjaman ?? $kpr->harga_unit,
+                'submitted_at'      => $kpr->submitted_at ?? now(),
+            ]);
+
+            // update booking
+            $booking->status_cash = 'done';
+            $booking->status = 'cash_process';
+
+            // update harga unit
+            if ($kpr->unit) {
+                $kpr->unit->update([
+                    'price' => $request->jumlah_pinjaman ?? $kpr->unit->price
+                ]);
+            }
+        }
+
+        // =========================
+        // JIKA DITOLAK
+        // =========================
+        if ($request->status === 'rejected') {
+            $kpr->status = 'rejected';
+            $kpr->rejected_at = now();
+            $kpr->submitted_at = null;
+
+            $booking->status_cash = 'rejected';
+        }
+
+        // =========================
+        // CATATAN + FILE
+        // =========================
+        $kpr->catatan = $request->catatan;
+
+        if ($request->hasFile('berita_acara')) {
+
+            $file = $request->file('berita_acara');
+
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $cleanName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+            $extension = $file->getClientOriginalExtension();
+
+            $filename = time() . '_' . $cleanName . '.' . $extension;
+
+            $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr/verifikasi';
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+
+            $path = 'kpr/verifikasi/' . $filename;
+
+            $kpr->berita_acara = $path;
+        }
+
+        // =========================
+        // SAVE
+        // =========================
+        $kpr->save();
+        $booking->save();
+
+        DB::commit();
+
+        Log::info('Verifikasi KPR berhasil disimpan', [
+            'booking_id' => $bookingId,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Verifikasi berhasil disimpan!');
+    } catch (\Throwable $e) {
+
+        DB::rollBack();
+
+        Log::error('Gagal menyimpan verifikasi KPR: ' . $e->getMessage());
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Terjadi kesalahan.');
     }
+}
     public function verified(Request $request)
     {
         $query = KprApplication::with(['customer', 'unit', 'bank'])
@@ -254,65 +269,80 @@ class TransaksiKPRController extends Controller
     }
 
 
-    public function analisaKPRKomersil(Request $request)
-    {
-        $perPage = $request->input('per_page', 10);
-        $perPage = in_array((int) $perPage, [10, 15, 25]) ? (int) $perPage : 10;
+public function analisaKPRKomersil(Request $request)
+{
+    $perPage = $request->input('per_page', 10);
+    $perPage = in_array((int) $perPage, [10, 15, 25]) ? (int) $perPage : 10;
 
-        $search = $request->input('search');
-        $bankId = $request->input('bank');
+    $search = $request->input('search');
+    $bankId = $request->input('bank');
 
-        $sortField = $request->input('sortField', 'name');
-        $sortDirection = $request->input('sortDirection', 'asc');
-        $allowedSortFields = ['name', 'unit', 'bank', 'price', 'appraisal'];
+    $sortField = $request->input('sortField', 'name');
+    $sortDirection = $request->input('sortDirection', 'asc');
+    $allowedSortFields = ['name', 'unit', 'bank', 'price', 'appraisal'];
 
-        if (!in_array($sortField, $allowedSortFields)) {
-            $sortField = 'name';
-        }
-        if (!in_array($sortDirection, ['asc', 'desc'])) {
-            $sortDirection = 'asc';
-        }
-
-        $applications = KprApplication::with(['customer', 'unit', 'bank'])
-            ->where('kpr_applications.status', 'survey')
-            ->when($search, function ($query) use ($search) {
-                $query->whereHas('customer', function (\Illuminate\Database\Eloquent\Builder $q) use ($search) {
-                    $q->where('full_name', 'like', '%' . $search . '%');
-                });
-            })
-            ->when($bankId, function ($query) use ($bankId) {
-                $query->where('banks_id', $bankId);
-            })
-            ->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
-            ->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
-            ->leftJoin('banks', 'kpr_applications.banks_id', '=', 'banks.id')
-            ->when($sortField == 'name', function ($q) use ($sortDirection) {
-                $q->orderBy('customers.full_name', $sortDirection);
-            })
-            ->when($sortField == 'unit', function ($q) use ($sortDirection) {
-                $q->orderBy('land_bank_units.unit_name', $sortDirection);
-            })
-            ->when($sortField == 'bank', function ($q) use ($sortDirection) {
-                $q->orderBy('banks.bank_name', $sortDirection);
-            })
-            ->when($sortField == 'price', function ($q) use ($sortDirection) {
-                $q->orderBy('land_bank_units.price', $sortDirection);
-            })
-            ->when($sortField == 'appraisal', function ($q) use ($sortDirection) {
-                $q->orderBy('kpr_applications.appraisal_value', $sortDirection);
-            })
-            ->select('kpr_applications.*')
-            ->paginate($perPage)
-            ->withQueryString();
-
-        $banks = Banks::orderBy('bank_name')->get();
-
-        return view('marketing.analisa_kpr_komersil', compact(
-            'applications',
-            'banks',
-            'search',
-            'bankId',
-            'perPage'
-        ));
+    if (!in_array($sortField, $allowedSortFields)) {
+        $sortField = 'name';
     }
+
+    if (!in_array($sortDirection, ['asc', 'desc'])) {
+        $sortDirection = 'asc';
+    }
+
+    $applications = KprApplication::with(['customer', 'unit', 'bank'])
+
+       
+        ->where('kpr_applications.status', 'analisa')
+        ->whereHas('unit', function ($q) {
+            $q->where('jenis', 'komersil');
+        })
+
+       
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('customer', function ($q) use ($search) {
+                $q->where('full_name', 'like', '%' . $search . '%');
+            });
+        })
+
+       
+        ->when($bankId, function ($query) use ($bankId) {
+            $query->where('banks_id', $bankId);
+        })
+
+        
+        ->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+        ->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+        ->leftJoin('banks', 'kpr_applications.banks_id', '=', 'banks.id')
+
+      
+        ->when($sortField == 'name', function ($q) use ($sortDirection) {
+            $q->orderBy('customers.full_name', $sortDirection);
+        })
+        ->when($sortField == 'unit', function ($q) use ($sortDirection) {
+            $q->orderBy('land_bank_units.unit_name', $sortDirection);
+        })
+        ->when($sortField == 'bank', function ($q) use ($sortDirection) {
+            $q->orderBy('banks.bank_name', $sortDirection);
+        })
+        ->when($sortField == 'price', function ($q) use ($sortDirection) {
+            $q->orderBy('land_bank_units.price', $sortDirection);
+        })
+        ->when($sortField == 'appraisal', function ($q) use ($sortDirection) {
+            $q->orderBy('kpr_applications.appraisal_value', $sortDirection);
+        })
+
+        ->select('kpr_applications.*')
+        ->paginate($perPage)
+        ->withQueryString();
+
+    $banks = Banks::orderBy('bank_name')->get();
+
+    return view('marketing.analisa_kpr_komersil', compact(
+        'applications',
+        'banks',
+        'search',
+        'bankId',
+        'perPage'
+    ));
+}
 }

@@ -647,10 +647,11 @@
                                             @endif
 
                                             @if(($app->unit->construction_progress ?? null) == 'selesai')
-                                                <a href="{{ route('kpr.akad', $app->id) }}"
+                                                <a href="{{ route('kpr.survey', $app->id) }}"
                                                     class="btn btn-gradient-success btn-sm" title="Proses Akad">
                                                     <i class="mdi mdi-file-document"></i>
                                                 </a>
+                                                  
                                             @endif
                                         </td>
                                     </tr>

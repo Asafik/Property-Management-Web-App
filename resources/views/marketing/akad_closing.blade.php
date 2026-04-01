@@ -553,7 +553,7 @@
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Nomor Akad</label>
                                             <input type="text" class="akad-form-control" name="nomor_akad"
-                                                id="nomor_akad_selesai"
+                                                id="no_akad"
                                                 value="{{ $noAkadDraf }}"
                                                 placeholder="Kosongkan untuk otomatis (opsional)">
                                         </div>
