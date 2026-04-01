@@ -259,6 +259,7 @@
 .customer-name {
     font-weight: 700;
     color: #2c2e3f;
+    font-size: 0.9rem;
 }
 
 .unit-info {
@@ -651,7 +652,7 @@
                                                     class="btn btn-gradient-success btn-sm" title="Proses Akad">
                                                     <i class="mdi mdi-file-document"></i>
                                                 </a>
-                                                  
+
                                             @endif
                                         </td>
                                     </tr>
