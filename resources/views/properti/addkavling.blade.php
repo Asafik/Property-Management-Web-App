@@ -2135,10 +2135,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-gradient-primary" id="modalActionBtn"
-                        onclick='$("#formTambahUnitManual").trigger("submit")'>
-                        <i class="mdi mdi-content-save me-1"></i>Simpan
-                    </button>
                     <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
                         <i class="mdi mdi-close me-1"></i>Batal
                     </button>

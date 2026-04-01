@@ -8,8 +8,9 @@
         $missingDocuments = max(0, 8 - $documentsCount);
         $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
         $isSubsidi = strtolower($kpr->booking->unit->jenis ?? '') === 'subsidi';
+        $surveyDone = !empty($kpr->rekomendasi) || strtolower($kpr->status_survey ?? '') == 'done' || ($kpr->booking->status_survey ?? 0) == 1;
         $totalSteps = 6;
-        
+
         if ($isSubsidi) {
             $currentStep = $akadSelesai ? 6 : 5;
         } else {
@@ -148,36 +149,44 @@
                                 <small>{{ $statusText[$status] ?? '-' }}</small>
                             </div>
                             @if ($isSubsidi)
-                                <div class="transaksi-step completed">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-check"></i>
-                                    </div>
+                                <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
+                                    @if ($surveyDone)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                    @endif
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>Selesai</small>
+                                    <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
                                 </div>
 
-                                <div class="transaksi-step active">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-handshake-outline"></i>
-                                    </div>
+                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
+                                    @if ($akadSelesai)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    @endif
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>Proses Closing</small>
+                                    <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
                                 </div>
                             @else
-                                <div class="transaksi-step active">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-handshake-outline"></i>
-                                    </div>
+                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
+                                    @if ($akadSelesai)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    @endif
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>Proses Closing</small>
+                                    <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
                                 </div>
 
-                                <div class="transaksi-step">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-home-search-outline"></i>
-                                    </div>
+                                <div class="transaksi-step {{ $surveyDone ? 'completed' : ($akadSelesai ? 'active' : '') }}">
+                                    @if ($surveyDone)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                    @endif
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>Menunggu</small>
+                                    <small>{{ $surveyDone ? 'Selesai' : ($akadSelesai ? 'Progress' : 'Menunggu') }}</small>
                                 </div>
                             @endif
 

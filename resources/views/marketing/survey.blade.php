@@ -164,10 +164,7 @@
 
                             $totalSteps = 6;
                             // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 5.
-                            $currentStep = $isSubsidi ? 4 : 5; 
-                            if ($surveyDone) {
-                                $currentStep++; // Tambah 1 jika progress survey sudah centang (Selesai)
-                            }
+                            $currentStep = $isSubsidi ? 4 : 5;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepsStyle = $totalSteps ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"' : '';
                         @endphp
@@ -244,10 +241,10 @@
                                     <small>{{ $surveyDone ? 'Selesai' : 'Progress' }}</small>
                                 </div>
 
-                                <div class="transaksi-step {{ $surveyDone ? 'active' : '' }}">
+                                <div class="transaksi-step">
                                     <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $surveyDone ? 'Progress' : 'Menunggu' }}</small>
+                                    <small>Menunggu</small>
                                 </div>
                             @else
                                 <div class="transaksi-step">
@@ -551,7 +548,7 @@
                 $('#formSurveyKpr').on('submit', function(e) {
                     e.preventDefault();
                     var form = this;
-                    
+
                     Swal.fire({
                         title: 'Simpan Hasil Survey?',
                         text: "Data survey yang Anda masukkan akan disimpan ke sistem.",

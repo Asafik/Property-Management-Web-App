@@ -487,7 +487,7 @@
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="transaksi-step-title">Pengajuan</span>
-                                <small>{{ \Carbon\Carbon::parse($application->booking->booking_date)->translatedFormat('d F Y') }}</small>
+                                <small>{{ \Carbon\Carbon::parse($application->created_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
                             <div class="transaksi-step completed">
@@ -495,15 +495,46 @@
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="transaksi-step-title">Verifikasi</span>
-                                <small>{{ \Carbon\Carbon::parse($application->approved_at)->translatedFormat('d F Y') }}</small>
+                                <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step completed">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-check"></i>
-                                </div>
+                            @php
+                                $status = strtolower($application->unit->construction_progress ?? '');
+
+                                $statusText = [
+                                    'belum_mulai' => 'Belum mulai pembangunan',
+                                    'pondasi' => 'Tahap pondasi',
+                                    'dinding' => 'Tahap dinding',
+                                    'atap' => 'Tahap atap',
+                                    'finishing' => 'Tahap finishing',
+                                    'selesai' => 'Pembangunan selesai',
+                                ];
+
+                                $statusConfig = [
+                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
+                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
+                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
+                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
+                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
+                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
+                                ];
+
+                                $config = $statusConfig[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
+                            @endphp
+
+                            <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
+                                @if ($status == 'selesai')
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                @else
+                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                        <i class="mdi {{ $config['icon'] }}"></i>
+                                    </div>
+                                @endif
+
                                 <span class="transaksi-step-title">Pembangunan</span>
-                                <small>{{ $application->pembangunan_date ? \Carbon\Carbon::parse($application->pembangunan_date)->translatedFormat('d F Y') : '-' }}</small>
+                                <small>{{ $statusText[$status] ?? '-' }}</small>
                             </div>
 
                             @if ($isSubsidi)
@@ -512,7 +543,7 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : '-' }}</small>
+                                    <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
                                 </div>
 
                                 <div class="transaksi-step completed">
@@ -520,7 +551,7 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') : '-' }}</small>
+                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') : '-' }}</small>
                                 </div>
                             @else
                                 <div class="transaksi-step completed">
@@ -528,7 +559,7 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('d F Y') : '-' }}</small>
+                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') : '-' }}</small>
                                 </div>
 
                                 <div class="transaksi-step completed">
@@ -536,7 +567,7 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('d F Y') : '-' }}</small>
+                                    <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
                                 </div>
                             @endif
 
