@@ -544,7 +544,7 @@
     }
     .sorting, .sorting_asc, .sorting_desc { cursor: pointer; }
     .mdi { vertical-align: middle; }
-    
+
     h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !important; margin-bottom: 0.5rem !important; }
     @media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
     @media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
@@ -708,7 +708,7 @@
                             <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
                         </button>
                         <a href="{{ route('customer.create') }}" class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
-                            <i class="mdi mdi-account-multiple-plus-outline"></i><span class="d-none d-sm-inline"> Tambah</span>
+                            <i class="mdi mdi-account-multiple-plus-outline"></i><span class="d-none d-sm-inline"> Tambah User Baru</span>
                         </a>
                     </div>
                 </div>
@@ -893,10 +893,11 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn-action edit me-1" title="Edit">
+                                        <a href="{{ route('customer.edit', $customer->id) }}" class="btn-action edit me-1" title="Edit">
                                             <i class="mdi mdi-pencil"></i>
-                                        </button>
-                                        <button class="btn-action delete" title="Hapus">
+                                        </a>
+                                        <button class="btn-action delete" title="Hapus"
+                                            onclick="deleteCustomer({{ $customer->id }}, '{{ $customer->full_name }}')">
                                             <i class="mdi mdi-delete"></i>
                                         </button>
                                     </td>
@@ -1078,10 +1079,9 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Sorting functionality
+    // 1. Fungsi Sorting (Mengurutkan Data)
     $('.sortable').click(function() {
         let field = $(this).data('field');
         let direction = $(this).data('direction');
@@ -1103,89 +1103,112 @@ $(document).ready(function() {
         window.location.href = url.toString();
     });
 
-    $('#filterFormMobile, #filterFormDesktop').on('submit', function() {
-        Swal.fire({
-            title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+    // 2. Handle Submit Filter Form (Desktop & Mobile)
+    $('#filterFormMobile, #filterFormDesktop, form').on('submit', function() {
+        // Cek jika ini form pencarian/filter, tampilkan loading
+        if($(this).attr('method')?.toUpperCase() === 'GET') {
+            showFilterLoading();
+        }
     });
 
+    // 3. Handle klik link navigasi/breadcumb ke data customer
     $('a[href="{{ route('customer.data') }}"]').on('click', function(e) {
-        e.preventDefault();
-        let href = $(this).attr('href');
-
-        Swal.fire({
-            title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        window.location.href = href;
+        if (!$(this).hasClass('page-link')) { // Supaya tidak tabrakan dengan pagination
+            e.preventDefault();
+            let href = $(this).attr('href');
+            Swal.fire({
+                title: 'Memuat...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location.href = href;
+        }
     });
 
-    $('.btn-action.edit').click(function() {
+    // 4. Inisialisasi Session Flash Messages (SweetAlert)
+    @if(session('success'))
         Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: 'Fitur edit akan segera tersedia',
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            timer: 3000,
+            timerProgressBar: true,
+            confirmButtonText: 'OK',
             confirmButtonColor: '#9a55ff'
         });
-    });
+    @endif
 
-    $('.btn-action.delete').click(function() {
+    @if(session('error'))
         Swal.fire({
-            title: 'Hapus Customer?',
-            text: "Data customer akan dihapus (demo)",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Customer berhasil dihapus (demo)',
-                    confirmButtonColor: '#9a55ff',
-                    timer: 2000
-                });
-            }
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ session('error') }}",
+            confirmButtonColor: '#9a55ff',
+            confirmButtonText: 'OK'
         });
-    });
+    @endif
 });
 
-@if(session('success'))
+function deleteCustomer(id, name) {
     Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
-    });
-@endif
+        title: 'Hapus User?',
+        html: `Apakah Anda yakin ingin menghapus user <strong>${name}</strong>?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Menghapus...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
 
-@if(session('error'))
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
-    });
-@endif
+            $.ajax({
+                // PERBAIKAN URL DI SINI
+                url: "/customer/" + id + "/destroy",
+                type: 'DELETE',
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'User berhasil dihapus',
+                        confirmButtonColor: '#9a55ff',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    // Jika controller mengirim error (misal: relasi masih ada)
+                    let errorMsg = 'Terjadi kesalahan saat menghapus data.';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMsg = xhr.responseJSON.error;
+                    }
 
-// Fungsi loading untuk pagination
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: errorMsg,
+                        confirmButtonColor: '#9a55ff'
+                    });
+                }
+            });
+        }
+    });
+}
+
+// 6. Fungsi loading untuk pagination (Klik nomor halaman)
 function showPaginationLoading(event) {
     event.preventDefault();
     Swal.fire({
@@ -1199,6 +1222,7 @@ function showPaginationLoading(event) {
     window.location.href = event.currentTarget.href;
 }
 
+// 7. Fungsi loading untuk filter
 function showFilterLoading() {
     Swal.fire({
         title: 'Memuat...',
@@ -1210,6 +1234,7 @@ function showFilterLoading() {
     });
 }
 
+// 8. Fungsi loading untuk reset filter
 function showResetLoading(event) {
     event.preventDefault();
     Swal.fire({

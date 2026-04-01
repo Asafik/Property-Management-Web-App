@@ -191,12 +191,14 @@ class CustomerController extends Controller
         return response()->json($customers);
     }
 
-    public function edit($id)
+   public function edit($id)
     {
+        // Mengambil data customer beserta dokumennya
         $customer = Customer::with('documents')->findOrFail($id);
-        return view('customer.edit_customer', compact('customer'));
-    }
 
+        // GANTI: dari 'customer.edit_customer' menjadi 'customer.tambah_customer'
+        return view('customer.tambah_customer', compact('customer'));
+    }
     public function update(Request $request, $id)
     {
         $customer = Customer::findOrFail($id);
@@ -300,24 +302,32 @@ class CustomerController extends Controller
     {
         $customer = Customer::withCount(['units', 'documents'])->findOrFail($id);
 
+        // Cek relasi agar data tidak rusak
         if ($customer->units_count > 0) {
-            return redirect()->back()->with('error', 'Customer tidak dapat dihapus karena masih memiliki unit.');
+            return response()->json(['error' => 'Customer tidak dapat dihapus karena masih memiliki unit properti.'], 422);
         }
 
         if ($customer->documents_count > 0) {
-            return redirect()->back()->with('error', 'Customer tidak dapat dihapus karena masih memiliki dokumen.');
+            return response()->json(['error' => 'Customer tidak dapat dihapus karena masih memiliki dokumen terupload.'], 422);
         }
 
         DB::beginTransaction();
-
         try {
+            // (Opsional) Hapus file fisik di storage jika ingin benar-benar bersih
+            foreach($customer->documents as $doc) {
+                if (\Storage::disk('public')->exists($doc->file)) {
+                    \Storage::disk('public')->delete($doc->file);
+                }
+            }
+
             $customer->delete();
             DB::commit();
-            return redirect()->route('customer.data')->with('success', 'Customer berhasil dihapus');
+
+            return response()->json(['success' => 'Customer berhasil dihapus']);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error hapus customer: '.$e->getMessage());
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
+            return response()->json(['error' => 'Terjadi kesalahan saat menghapus data.'], 500);
         }
     }
 

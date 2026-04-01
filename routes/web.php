@@ -96,6 +96,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
         return back();
     })->name('notifications.read');
+
     /*
     |--------------------------------------------------------------------------
     | ========================= MARKETING =========================
@@ -246,12 +247,10 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('pengajuan.store');
     Route::get('/kpr/serah-terima/{id}', [KprApplicationController::class, 'serahTerima'])->name('kpr.serahterima');
-    Route::get('/kpr/pecah-legal/{id}', [KprApplicationController::class, 'pecahLegal'])
-        ->name('kpr.pecahlegal');
-    Route::get(
-        '/pengajuan/search-customer',
-        [CustomerController::class, 'search']
-    )->name('pengajuan.search-customer');
+    Route::get('/kpr/pecah-legal/{id}', [KprApplicationController::class, 'pecahLegal'])->name('kpr.pecahlegal');
+
+
+    Route::get('/pengajuan/search-customer',[CustomerController::class, 'search'])->name('pengajuan.search-customer');
 
     // Route::get('/dashboard-cash-pengajuan', function () {
 //     return view('marketing.cash_pengajuan');
@@ -391,9 +390,9 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
-    // Route::get('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
-
-
+    Route::get('/customer/{id}/edit', [CustomerController::class, 'edit'])->name('customer.edit');
+    Route::put('/customer/{id}/update', [CustomerController::class, 'update'])->name('customer.update');
+    Route::delete('/customer/{id}/destroy', [CustomerController::class, 'destroy'])->name('customer.destroy');
     // MASTER DATA DOKUMEN PASCA LANDBANK/DOKUMEN TYPE
     Route::get('/dokument-tanah-induk', [LandBankDocumentController::class, 'index'])->name('dokument.index');
     Route::post('/dokument/store', [LandBankDocumentController::class, 'store'])->name('document-types.store');

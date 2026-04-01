@@ -928,7 +928,73 @@
                     sizeSpan.text('').hide();
                 }
             });
+
+            // Notifikasi Sukses Setelah Refresh
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session("success") }}',
+                    confirmButtonColor: '#9a55ff',
+                    timer: 3500,
+                    timerProgressBar: true
+                });
+            @endif
+
+            // Notifikasi Error Jika Terjadi Kesalahan
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session("error") }}',
+                    confirmButtonColor: '#ff4747'
+                });
+            @endif
+
+            // Intercept Submit Form untuk Konfirmasi & Loading
+            $('form').on('submit', function(e) {
+                e.preventDefault(); 
+                const form = this;
+
+                // Cek apakah checkbox persetujuan sudah di-centang
+                if (!$('#persetujuan').is(':checked')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian',
+                        text: 'Silakan centang pernyataan persetujuan terlebih dahulu.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    return false;
+                }
+
+                // Munculkan Konfirmasi SweetAlert
+                Swal.fire({
+                    title: 'Proses Serah Terima?',
+                    text: 'Pastikan data dan dokumentasi sudah sesuai.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Proses Sekarang',
+                    cancelButtonText: 'Cek Kembali'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // TAMPILKAN LOADING
+                        Swal.fire({
+                            title: 'Sedang Memproses...',
+                            text: 'Mohon tunggu sebentar, jangan menutup halaman ini.',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Kirim Form
+                        form.submit();
+                    }
+                });
+            });
         });
     </script>
 @endpush
-
