@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             //Dokumen
              DocumentTypeSeeder::class,
+             DocumentSeeder::class,
             //Master Data
             PromoSeeder::class,
             CompanyProfileSeeder::class,

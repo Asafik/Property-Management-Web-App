@@ -65,16 +65,35 @@ class TimelineCashTempoController extends Controller
         return view('transaksi.timline_pembayaran', compact('tenors'));
     }
 
-    public function timeline($id)
-    {
-        $cashTempo = CashTempo::with([
-            'installments',
-            'booking.customer',
-            'booking.unit'
-        ])->findOrFail($id);
+public function timeline($id)
+{
+    $cashTempo = CashTempo::with([
+        'installments',
+        'booking.customer',
+        'booking.unit'
+    ])->findOrFail($id);
 
-        return response()->json($cashTempo);
-    }
+  
+    $cashTempo->installments->transform(function ($item, $index) {
+        return [
+            'no' => $index + 1,
+            'tanggal' => $item->tanggal_jatuh_tempo,
+            'nominal' => $item->nominal_angsuran,
+            'status' => $item->status,
+            'denda' => $item->denda ?? 0,
+            'total' => $item->total ?? $item->nominal_angsuran,
+
+            'bukti' => $item->bukti_pembayaran,
+
+           
+            'bukti_url' => $item->bukti_pembayaran
+                ? asset('uploads/bukti_pembayaran/' . basename($item->bukti_pembayaran))
+                : null,
+        ];
+    });
+
+    return response()->json($cashTempo);
+}
 
     public function update(Request $request)
     {

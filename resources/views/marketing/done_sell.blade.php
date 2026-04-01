@@ -820,13 +820,11 @@
                                 <i class="mdi mdi-account"></i>
                             </div>
                             <div>
-                                <h4 class="customer-name">
-                                    {{ $booking->customer->full_name ?? '-' }}
-                                </h4>
-                                
-                                <p class="customer-booking">
-                                    Booking ID: {{ $booking->booking_code ?? '-' }}
-                                </p>                   </div>
+
+                                <h4 class="customer-name">{{ $booking->customer->full_name ?? '-' }}</h4>
+                                <p class="customer-booking">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
+                            </div>
+
                         </div>
 
                         <div class="detail-card">

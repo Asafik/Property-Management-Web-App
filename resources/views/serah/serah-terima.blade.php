@@ -431,12 +431,12 @@
 
                             <div class="customer-unit-info">
                                 <div class="info-item">
-                                    <small>Unit</small>
-                                    <span>{{ $booking->unit->unit_name ?? $booking->unit->landBank->name ?? '-' }}</span>
+                                     <small>Nama - Unit</small>
+                                    <span>{{ $booking->unit->unit_name ?? $booking->unit->landBank->name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
-                                    <small>Blok/No</small>
-                                    <span>{{ $booking->unit->unit_code ?? '-' }}</span>
+                                    <small>Tipe</small>
+                                    <span>{{ $booking->unit->type ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
@@ -462,10 +462,10 @@
                         @php
                             $jenis = strtolower($booking->unit->jenis ?? '');
 
-                            // Untuk Cash: 4 steps - Booking, Verifikasi, Akad, Serah Terima
+                            // Untuk Cash: 6 steps - Booking, Pelunasan, Persiapan Legal, Pembangunan, Akad, Serah Terima
                             // Untuk KPR: 6 steps - Booking, Verifikasi, Pembangunan, Akad, Survey, Serah Terima
                             $isKpr = strtolower($booking->purchase_type ?? '') == 'kpr';
-                            $totalSteps = $isKpr ? 6 : 4;
+                            $totalSteps = 6;
 
                             // Determine current step based on booking status
                             $bookingDone = !empty($booking->booking_date);
@@ -473,7 +473,7 @@
                             $pembangunanDone = ($booking->status_pembangunan ?? 0) == 1;
                             $akadDone = ($booking->status_akad ?? 0) == 1;
                             $surveyDone = ($booking->status_survey ?? 0) == 1;
-                            $serahTerimaDone = ($booking->status_serahterima ?? 0) == 1;
+                            $serahTerimaDone = ($booking->status_serahterima ?? 0) == 1 || ($booking->status ?? '') == 'completed' || !empty($booking->serah_terima_date);
 
                             // Halaman ini adalah tahap Serah Terima (step terakhir), bar selalu penuh
                             $currentStep = $totalSteps;
@@ -541,7 +541,7 @@
                                     @endif
                                 </div>
                                 <span class="transaksi-step-title">Serah Terima</span>
-                                <small>{{ $serahTerimaDone ? 'Selesai' : 'Dalam Proses' }}</small>
+                                <small>{{ $serahTerimaDone ? ($booking->serah_terima_date ? \Carbon\Carbon::parse($booking->serah_terima_date)->translatedFormat('d F Y') : 'Selesai') : 'Dalam Proses' }}</small>
                             </div>
                         </div>
                         @else
@@ -558,7 +558,23 @@
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="transaksi-step-title">Verifikasi</span>
+                                <span class="transaksi-step-title">Pelunasan</span>
+                                <small>Selesai</small>
+                            </div>
+
+                            <div class="transaksi-step completed">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                                <span class="transaksi-step-title">Persiapan Legal</span>
+                                <small>Selesai</small>
+                            </div>
+
+                            <div class="transaksi-step completed">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-check"></i>
+                                </div>
+                                <span class="transaksi-step-title">Pembangunan</span>
                                 <small>Selesai</small>
                             </div>
 
@@ -579,7 +595,7 @@
                                     @endif
                                 </div>
                                 <span class="transaksi-step-title">Serah Terima</span>
-                                <small>{{ $serahTerimaDone ? 'Selesai' : 'Dalam Proses' }}</small>
+                                <small>{{ $serahTerimaDone ? ($booking->serah_terima_date ? \Carbon\Carbon::parse($booking->serah_terima_date)->translatedFormat('d F Y') : 'Selesai') : 'Dalam Proses' }}</small>
                             </div>
                         </div>
                         @endif
@@ -596,35 +612,83 @@
                         </div>
 
                         <div class="transaksi-detail-list">
-                            <div class="transaksi-detail-item">
-                                <span>Harga Unit</span>
-                                <span>Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Uang Muka (DP)</span>
-                                <span class="highlight">Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                            @if(strtolower($booking->purchase_type ?? '') == 'kpr')
-                            <div class="transaksi-detail-item">
-                                <span>Bank</span>
-                                <span>{{ $booking->kprApplication->bank->bank_name ?? '-' }}</span>
-                            </div>
-                            @endif
-                            <div class="transaksi-detail-item">
-                                <span>Status Verifikasi</span>
-                                <span>
-                                    <span class="payment-method-badge badge-gradient-success text-white">
-                                        <i class="mdi mdi-check-circle-outline"></i>Disetujui
+                            @if(in_array(strtolower($booking->purchase_type ?? ''), ['cash', 'cash_tempo']))
+                                @php
+                                    $hargaUnit = $booking->unit->price ?? 0;
+                                    $hargaNego = (!empty($booking->harga_nego) && $booking->harga_nego > 0) ? $booking->harga_nego : $hargaUnit;
+                                    $diskon = max(0, $hargaUnit - $hargaNego);
+                                    $bookingFee = $booking->booking_fee ?? 0;
+                                    $sisaPembayaran = max(0, $hargaNego - $bookingFee);
+                                @endphp
+                                <div class="transaksi-detail-item">
+                                    <span>Harga Unit</span>
+                                    <span>Rp {{ number_format($hargaUnit, 0, ',', '.') }}</span>
+                                </div>
+                                @if(strtolower($booking->purchase_type) != 'cash_tempo')
+                                <div class="transaksi-detail-item">
+                                    <span>Diskon / Negosiasi</span>
+                                    <span class="highlight">- Rp {{ number_format($diskon, 0, ',', '.') }}</span>
+                                </div>
+                                @endif
+                                <div class="transaksi-detail-item">
+                                    <span>Harga Final</span>
+                                    <span class="highlight">Rp {{ number_format($hargaNego, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Booking Fee</span>
+                                    <span>Rp {{ number_format($bookingFee, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Sisa Pembayaran</span>
+                                    <span class="highlight">Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="transaksi-detail-item mt-2 align-items-center">
+                                    <span>Status Pembayaran</span>
+                                    <div class="ms-auto text-end" style="flex: 1;">
+                                        <span class="badge bg-success text-white">
+                                            <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="transaksi-detail-item mt-2 align-items-center">
+                                    <span>Metode Pembayaran</span>
+                                    <div class="ms-auto text-end" style="flex: 1;">
+                                        <span class="badge bg-success text-white">
+                                            <i class="mdi mdi-cash me-1"></i>{{ strtolower($booking->purchase_type) == 'cash' ? 'Cash Keras' : 'Cash Tempo' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="transaksi-detail-item">
+                                    <span>Harga Unit</span>
+                                    <span>Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Uang Muka (DP)</span>
+                                    <span class="highlight">Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                @if(strtolower($booking->purchase_type ?? '') == 'kpr')
+                                <div class="transaksi-detail-item">
+                                    <span>Bank</span>
+                                    <span>{{ $booking->kprApplication->bank->bank_name ?? '-' }}</span>
+                                </div>
+                                @endif
+                                <div class="transaksi-detail-item">
+                                    <span>Status Verifikasi</span>
+                                    <span>
+                                        <span class="payment-method-badge badge-gradient-success text-white">
+                                            <i class="mdi mdi-check-circle-outline"></i>Disetujui
+                                        </span>
                                     </span>
-                                </span>
-                            </div>
-                            <div class="transaksi-detail-item mt-2">
-                                <span>Metode Pembayaran</span>
-                                <span class="payment-method-badge {{ $booking->purchase_type == 'kpr' ? 'bg-primary' : 'badge-gradient-success' }} text-white">
-                                    <i class="mdi {{ $booking->purchase_type == 'kpr' ? 'mdi-bank' : 'mdi-cash' }}"></i>
-                                    {{ strtoupper($booking->purchase_type ?? '-') }}
-                                </span>
-                            </div>
+                                </div>
+                                <div class="transaksi-detail-item mt-2">
+                                    <span>Metode Pembayaran</span>
+                                    <span class="payment-method-badge {{ strtolower($booking->purchase_type ?? '') == 'kpr' ? 'bg-primary' : 'badge-gradient-success' }} text-white">
+                                        <i class="mdi {{ strtolower($booking->purchase_type ?? '') == 'kpr' ? 'mdi-bank' : 'mdi-cash' }}"></i>
+                                        {{ strtoupper(str_replace('_', ' ', $booking->purchase_type ?? '-')) }}
+                                    </span>
+                                </div>
+                            @endif
                         </div>
 
                         <hr class="my-4">
@@ -901,10 +965,10 @@
         </form>
     </div>
 @endsection
-
 @push('scripts')
     <script>
         $(document).ready(function() {
+            // 1. Logika Preview Input File (Menampilkan Nama & Ukuran File)
             $('.serah-file-upload-modern input[type="file"]').change(function(e) {
                 const file = e.target.files[0];
                 const $container = $(this).closest('.serah-file-upload-modern');
@@ -915,16 +979,82 @@
                     const fileName = file.name;
                     const fileSize = (file.size / (1024 * 1024)).toFixed(2);
 
+                    // Potong nama file jika terlalu panjang
                     label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
                     sizeSpan.text(fileSize + ' MB').show();
                 } else {
-                    if ($(this).attr('name') === 'foto_serah_kunci') {
-                        label.text('Upload Foto Kunci');
-                    } else {
-                        label.text('Upload Foto Unit');
-                    }
+                    // Kembalikan ke teks default jika batal pilih file
+                    const defaultText = $(this).attr('name') === 'foto_serah_kunci' ? 'Upload Foto Kunci' : 'Upload Foto Unit';
+                    label.text(defaultText);
                     sizeSpan.text('').hide();
                 }
+            });
+
+            // 2. Notifikasi Sukses Setelah Refresh (Session Laravel)
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session("success") }}',
+                    confirmButtonColor: '#9a55ff',
+                    timer: 3500,
+                    timerProgressBar: true
+                });
+            @endif
+
+            // 3. Notifikasi Error Jika Terjadi Kesalahan
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session("error") }}',
+                    confirmButtonColor: '#ff4747'
+                });
+            @endif
+
+            // 4. Intercept Submit Form untuk Konfirmasi & Loading
+            $('form').on('submit', function(e) {
+                e.preventDefault(); // Stop form agar tidak langsung pindah halaman
+                const form = this;
+
+                // Cek apakah checkbox persetujuan sudah di-centang (Validasi HTML5)
+                if (!$('#persetujuan').is(':checked')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian',
+                        text: 'Silakan centang pernyataan persetujuan terlebih dahulu.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    return false;
+                }
+
+                // Munculkan Konfirmasi SweetAlert
+                Swal.fire({
+                    title: 'Proses Serah Terima?',
+                    text: 'Pastikan data dan dokumentasi sudah sesuai..',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Proses Sekarang',
+                    cancelButtonText: 'Cek Kembali'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // TAMPILKAN LOADING (Sangat Penting)
+                        Swal.fire({
+                            title: 'Sedang Memproses...',
+                            text: 'Mohon tunggu sebentar, jangan menutup halaman ini.',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Kirim Form secara synchronous (akan trigger refresh dari Controller)
+                        form.submit();
+                    }
+                });
             });
         });
     </script>

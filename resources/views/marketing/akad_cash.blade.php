@@ -4,473 +4,22 @@
 
 @section('content')
     <style>
-        .akad-page .card {
-            border: 1px solid #ebe7f2;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(29, 21, 44, 0.05);
-            overflow: hidden;
-        }
+        /* ============================================
+           CSS LOKAL (Spesifik Halaman Akad Cash)
+           ============================================ */
 
-        .akad-page .card-body {
-            padding: 1.25rem;
-        }
-
-        .akad-section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 1rem;
-        }
-
-        .akad-section-title i {
-            color: #9a55ff;
-        }
-
-        /* HEADER CUSTOMER */
-        .customer-header {
-            min-height: 110px;
-        }
-
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
-        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
-        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
-
-        .customer-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #b57cff, #8f52ff);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.20);
-        }
-
-        .customer-name {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #2c2e3f;
-            line-height: 1.2;
-        }
-
-        .customer-booking {
-            font-size: 1rem;
-            color: #8c8c8c;
-        }
-
-        .customer-unit-info {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(90px, auto));
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .customer-unit-info .info-item small {
-            display: block;
-            font-size: 0.8rem;
-            color: #9a9a9a;
-            margin-bottom: 2px;
-        }
-
-        .customer-unit-info .info-item span {
-            display: block;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #2c2e3f;
-            line-height: 1.3;
-        }
-
-        .akad-muted {
-            color: #6c7383 !important;
-        }
-
-        .akad-progress-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 0.5rem;
-        }
-
-        .akad-progress-top span:last-child {
-            color: #9a55ff;
-            font-weight: 700;
-        }
-
-        .akad-progress {
-            width: 100%;
-            height: 12px;
-            background: #ece9f3;
-            border-radius: 999px;
-            overflow: hidden;
-            margin-bottom: 1.25rem;
-        }
-
-        .akad-progress-bar {
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #c184ff, #9a55ff);
-        }
-
-        .akad-steps {
-            display: grid;
+        /* Override jumlah step menjadi 6 kolom (Global default 4) */
+        .transaksi-steps {
             grid-template-columns: repeat(6, 1fr);
-            gap: 12px;
+        }
+        @media (max-width: 767.98px) {
+            .transaksi-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
-        .akad-step {
-            text-align: center;
-            position: relative;
-        }
-
-        .akad-step-icon {
-            width: 42px;
-            height: 42px;
-            margin: 0 auto 0.6rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f0eef5;
-            color: #9aa0ac;
-            font-size: 18px;
-            transition: all 0.25s ease;
-        }
-
-        .akad-step.completed .akad-step-icon {
-            background: #28a745 !important;
-            color: #fff;
-        }
-
-        .akad-step.active .akad-step-icon {
-            background: #ffc107 !important;
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
-        }
-
-        .akad-step-title {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #2c2e3f;
-        }
-
-        .akad-step small {
-            display: block;
-            color: #6c7383;
-            font-size: 0.72rem;
-            line-height: 1.35;
-        }
-
-        .akad-detail-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .akad-detail-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .akad-detail-item span:first-child {
-            color: #6c7383;
-        }
-
-        .akad-detail-item span:last-child {
-            color: #2c2e3f;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        .akad-detail-item .highlight {
-            color: #9a55ff !important;
-        }
-
-        .akad-handler {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.85rem;
-            background: #fbf9fe;
-            border: 1px solid #ebe7f2;
-            border-radius: 14px;
-        }
-
-        .akad-handler-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: #f4ecff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9a55ff;
-            flex-shrink: 0;
-        }
-
-        .akad-inline-alert {
-            border-radius: 14px;
-            padding: 0.9rem 1rem;
-            font-size: 0.88rem;
-            margin-bottom: 1rem;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .akad-inline-alert i {
-            font-size: 1rem;
-            margin-top: 2px;
-        }
-
-        .akad-inline-alert.info {
-            background: #f6f7fb;
-            border-color: #e7eaf3;
-            color: #4b5565;
-        }
-
-        .akad-inline-alert.warning {
-            background: #fff8e6;
-            border-color: #ffe29b;
-            color: #8a6a00;
-        }
-
-        .akad-inline-alert.success {
-            background: #edf9f3;
-            border-color: #b9e7cf;
-            color: #146c43;
-        }
-
-        .akad-inline-alert.danger {
-            background: #fff1f3;
-            border-color: #ffc9d0;
-            color: #b42318;
-        }
-
-        .akad-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .akad-summary-box {
-            border: 1px solid #ebe7f2;
-            background: #fbf9fe;
-            border-radius: 16px;
-            padding: 1rem;
-        }
-
-        .akad-summary-box .label {
-            font-size: 0.75rem;
-            color: #6c7383;
-            margin-bottom: 0.35rem;
-        }
-
-        .akad-summary-box .value {
-            font-size: 1.2rem;
-            font-weight: 800;
-        }
-
-        .akad-summary-box.success .value {
-            color: #22a06b;
-        }
-
-        .akad-summary-box.danger .value {
-            color: #dc3545;
-        }
-
-        .akad-status-banner {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.55rem 0.9rem;
-            border-radius: 999px;
-            font-size: 0.86rem;
-            font-weight: 700;
-        }
-
-        .akad-status-banner.success {
-            background: #edf9f3;
-            color: #22a06b;
-        }
-
-        .akad-status-banner.warning {
-            background: #fff8e6;
-            color: #8a6a00;
-        }
-
-        /* DECISION CARDS - SAMA PERSIS DENGAN VERIFIKASI KPR */
-        .akad-decision-card {
-            position: relative;
-        }
-
-        .akad-decision-card input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .akad-decision-label {
-            border: 2px solid #ebe7f2;
-            border-radius: 18px;
-            padding: 1rem;
-            cursor: pointer;
-            background: #fff;
-            transition: all 0.25s ease;
-            height: 100%;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .akad-decision-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(43, 31, 73, 0.07);
-        }
-
-        .akad-decision-card.selesai input[type="radio"]:checked + .akad-decision-label {
-            border-color: #7bd3a6;
-            background: #edf9f3;
-        }
-
-        .akad-decision-card.batal input[type="radio"]:checked + .akad-decision-label {
-            border-color: #f3a7b2;
-            background: #fff1f3;
-        }
-
-        .akad-decision-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 22px;
-        }
-
-        .akad-decision-card.selesai .akad-decision-icon {
-            background: #d9f3e6;
-            color: #22a06b;
-        }
-
-        .akad-decision-card.batal .akad-decision-icon {
-            background: #ffe2e8;
-            color: #dc3545;
-        }
-
-        .akad-decision-content {
-            flex: 1;
-        }
-
-        .akad-decision-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.15rem;
-        }
-
-        .akad-decision-desc {
-            font-size: 0.82rem;
-            color: #6c7383;
-            margin-bottom: 0;
-        }
-
-        .akad-decision-check {
-            color: #c6ccd8;
-            font-size: 1.2rem;
-            margin-top: 2px;
-        }
-
-        .akad-decision-card input[type="radio"]:checked + .akad-decision-label .akad-decision-check {
-            color: #9a55ff;
-        }
-
-        /* FORM SHELL */
-        .akad-form-shell {
-            margin-top: 1rem;
-            border-radius: 18px;
-            border: 1px solid #ebe7f2;
-            padding: 1rem;
-            background: #fff;
-            display: none;
-        }
-
-        .akad-form-shell.selesai {
-            background: linear-gradient(180deg, #fbfffd, #ffffff);
-            border-color: #cfe9da;
-        }
-
-        .akad-form-shell.batal {
-            background: linear-gradient(180deg, #fffafb, #ffffff);
-            border-color: #ffd7de;
-        }
-
-        .akad-form-title {
-            font-size: 1rem;
-            font-weight: 800;
-            margin-bottom: 0.9rem;
-        }
-
-        .akad-form-title.selesai {
-            color: #22a06b;
-        }
-
-        .akad-form-title.batal {
-            color: #dc3545;
-        }
-
-        .akad-form-group {
-            margin-bottom: 1rem;
-        }
-
-        .akad-form-label {
-            display: block;
-            font-size: 0.86rem;
-            font-weight: 700;
-            color: #2c2e3f;
-            margin-bottom: 0.45rem;
-        }
-
-        .akad-form-control {
-            width: 100%;
-            border: 1px solid #e6e8ef;
-            border-radius: 14px;
-            padding: 0.85rem 0.95rem;
-            font-size: 0.9rem;
-            color: #2c2e3f;
-            transition: all 0.2s ease;
-            background: #fff;
-        }
-
-        .akad-form-control:focus {
-            border-color: #c6a6ff;
-            box-shadow: 0 0 0 4px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        select.akad-form-control {
+        /* Custom Icon Arrow pada Select */
+        select.transaksi-form-control {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -478,361 +27,59 @@
             background-size: 14px;
         }
 
-        .akad-input-group {
+        /* Custom Input Group (untuk Prefix Rp) */
+        .transaksi-input-group {
             display: flex;
-            align-items: center;
+            align-items: stretch;
         }
-
-        .akad-input-group-prepend {
+        .transaksi-input-group-prepend {
+            display: flex;
             margin-right: -1px;
         }
-
-        .akad-input-group-text {
-            background: #f8f9fa;
-            border: 1px solid #e6e8ef;
-            border-radius: 14px 0 0 14px;
+        .transaksi-input-group-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
             padding: 0.85rem 0.95rem;
             font-size: 0.9rem;
-            color: #9a55ff;
+            color: var(--primary);
             font-weight: 600;
         }
-
-        .akad-input-group .akad-form-control {
-            border-radius: 0 14px 14px 0;
+        .transaksi-input-group .transaksi-form-control {
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            z-index: 0;
         }
 
-        .akad-file-upload {
-            position: relative;
-            width: 100%;
-        }
-
-        .akad-file-upload input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .akad-file-upload .akad-file-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
-
-        @media (min-width: 576px) {
-            .akad-file-upload .akad-file-label {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
-
-        .akad-file-upload:hover .akad-file-label {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-        }
-
-        .akad-file-upload .akad-file-label i {
-            font-size: 1.6rem;
-            color: #9a55ff;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .akad-file-upload .akad-file-label .akad-file-info {
-            flex: 1;
-            width: 100%;
-        }
-
-        .akad-file-upload .akad-file-label .akad-file-info span {
-            display: block;
-            font-weight: 600;
-            color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
-
-        .akad-file-upload .akad-file-label .akad-file-info small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
-
-        /* TINDAKAN GRID - SAMA DENGAN VERIFIKASI KPR */
-        .akad-tindakan-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .akad-tindakan-card {
-            position: relative;
-        }
-
-        .akad-tindakan-card input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .akad-tindakan-label {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            padding: 1rem;
-            border-radius: 18px;
-            border: 2px solid #ebe7f2;
-            background: #fff;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .akad-tindakan-label:hover {
-            border-color: #cab0ff;
-            background: #faf7ff;
-        }
-
-        .akad-tindakan-card input[type="radio"]:checked + .akad-tindakan-label {
-            border-color: #9a55ff;
-            background: #f7f2ff;
-            box-shadow: inset 0 0 0 1px rgba(154, 85, 255, 0.05);
-        }
-
-        .akad-tindakan-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            background: #f4ecff;
-            color: #9a55ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .akad-tindakan-content {
-            flex: 1;
-        }
-
-        .akad-tindakan-title {
-            display: block;
-            font-size: 0.97rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.15rem;
-        }
-
-        .akad-tindakan-desc {
-            display: block;
-            font-size: 0.8rem;
-            color: #6c7383;
-            line-height: 1.4;
-        }
-
-        .akad-tindakan-check {
-            font-size: 1.1rem;
-            color: #c6ccd8;
-            margin-top: 2px;
-        }
-
-        .akad-tindakan-card input[type="radio"]:checked + .akad-tindakan-label .akad-tindakan-check {
-            color: #9a55ff;
-        }
-
-        .akad-sidebar-section {
-            border: 1px solid #ebe7f2;
-            border-radius: 16px;
-            padding: 1rem;
-            background: #fff;
-        }
-
-        .akad-sidebar-section + .akad-sidebar-section {
-            margin-top: 1rem;
-        }
-
-        .akad-sidebar-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.75rem;
-        }
-
-        .akad-mini-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .akad-mini-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 0.84rem;
-            color: #6c7383;
-            margin-bottom: 0.55rem;
-        }
-
-        .akad-mini-list li i {
-            color: #9a55ff;
-            margin-top: 2px;
-        }
-
-        .akad-action-bar {
-            margin-top: 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .akad-btn {
-            border: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            padding: 0.82rem 1.2rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.25s ease;
-            cursor: pointer;
-        }
-
-        .akad-btn:hover {
-            transform: translateY(-1px);
-            text-decoration: none;
-        }
-
-        .akad-btn-primary {
-            background: linear-gradient(90deg, #c784ff, #9a55ff);
-            color: #fff;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.22);
-        }
-
-        .akad-btn-primary:hover {
-            color: #fff;
-            box-shadow: 0 12px 24px rgba(154, 85, 255, 0.28);
-        }
-
-        .akad-btn-secondary {
-            background: #fff;
-            color: #2c2e3f;
-            border: 1px solid #ebe7f2;
-        }
-
-        .akad-btn-secondary:hover {
-            border-color: #cab0ff;
-            color: #7f3df0;
-            background: #faf7ff;
-        }
-
-        .akad-file-upload.has-file .akad-file-label {
-            border-color: #28a745;
+        /* State Interaktif untuk File Upload ketika sudah ada file */
+        .transaksi-file-upload.has-file .transaksi-file-label {
+            border-color: var(--success);
             background: linear-gradient(135deg, #f0fff4, #ffffff);
             transition: all 0.3s ease;
         }
-
-        .akad-file-upload.has-file:hover .akad-file-label {
+        .transaksi-file-upload.has-file:hover .transaksi-file-label {
             border-color: #218838;
-            background: #28a745 !important;
+            background: var(--success) !important;
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.25);
             transform: translateY(-2px);
         }
-
-        .akad-file-upload.has-file:hover .akad-file-label i,
-        .akad-file-upload.has-file:hover .akad-file-label .akad-file-info span,
-        .akad-file-upload.has-file:hover .akad-file-label .akad-file-info small {
+        .transaksi-file-upload.has-file:hover .transaksi-file-label i,
+        .transaksi-file-upload.has-file:hover .transaksi-file-label .transaksi-file-info span,
+        .transaksi-file-upload.has-file:hover .transaksi-file-label .transaksi-file-info small {
             color: #ffffff !important;
         }
-
-        .akad-file-upload.has-file:hover .akad-file-label i {
+        .transaksi-file-upload.has-file:hover .transaksi-file-label i {
             background: rgba(255, 255, 255, 0.2);
         }
-
-        .akad-file-upload.has-file .akad-file-label i {
-            color: #28a745;
+        .transaksi-file-upload.has-file .transaksi-file-label i {
+            color: var(--success);
             background: rgba(40, 167, 69, 0.1);
-        }
-
-        .akad-error-box {
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .akad-sticky {
-            position: sticky;
-            top: 20px;
-        }
-
-        @media (max-width: 991.98px) {
-            .akad-sticky {
-                position: static;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .customer-header {
-                min-height: auto;
-            }
-
-            .customer-avatar {
-                width: 48px;
-                height: 48px;
-                font-size: 1.1rem;
-            }
-
-            .customer-name {
-                font-size: 1.25rem;
-            }
-
-            .customer-booking {
-                font-size: 0.9rem;
-            }
-
-            .customer-unit-info {
-                width: 100%;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 1rem;
-                margin-top: 0.5rem;
-            }
-
-            .akad-steps,
-            .akad-tindakan-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .akad-action-bar {
-                flex-direction: column-reverse;
-            }
-
-            .akad-btn {
-                justify-content: center;
-                width: 100%;
-            }
         }
     </style>
 
-    <div class="akad-page">
+    <div class="transaksi-page">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -843,14 +90,14 @@
                                     {{ strtoupper(substr($booking->customer->full_name ?? 'C', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h4 class="customer-name mb-1 d-flex align-items-center gap-2" style="font-size: 1.4rem;">
+                                    <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
                                         {{ $booking->customer->full_name ?? '-' }}
                                         @php
                                             $jenis = strtolower($booking->unit->jenis ?? '');
                                             $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
                                             $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
                                         @endphp
-                                        <span class="badge {{ $badgeClass }}" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                        <span class="badge {{ $badgeClass }}">
                                             <i class="mdi {{ $icon }} me-1"></i>
                                             {{ strtoupper($booking->unit->jenis ?? '-') }}
                                         </span>
@@ -861,16 +108,12 @@
 
                             <div class="customer-unit-info">
                                 <div class="info-item">
-                                    <small>Unit</small>
-                                    <span>{{ $booking->unit->LandBank->name ?? '-' }}</span>
+                                    <small>Nama - Unit</small>
+                                    <span>{{ $booking->unit->unit_name ?? $booking->unit->landBank->name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Tipe</small>
                                     <span>{{ $booking->unit->type ?? '-' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <small>Blok/No</small>
-                                    <span>{{ $booking->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
@@ -887,7 +130,7 @@
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="akad-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-timeline-text"></i>
                             <span>Tahapan Akad Cash</span>
                         </div>
@@ -902,7 +145,7 @@
                                 'completed' => 'Serah Terima',
                             ];
                             $isBookingDone = !empty($booking->booking_date);
-                            $isCashDone = strtolower($booking->status_cash ?? '') == 'done';
+                            $isCashDone = strtolower($booking->status_cash ?? '') == 'done' || in_array(strtolower($booking->purchase_type), ['cash', 'cash_tempo']);
                             $isLegalDone = strtolower($booking->status_legal ?? '') == 'done';
                             $construction = strtolower($booking->unit->construction_progress ?? '');
                             $isBuildDone = $construction == 'selesai';
@@ -919,16 +162,16 @@
                             $progressPercent = ($completedCount / 6) * 100;
                         @endphp
 
-                        <div class="akad-progress-top">
-                            <span class="akad-muted">Progress Akad</span>
+                        <div class="transaksi-progress-top">
+                            <span class="transaksi-muted">Progress Akad</span>
                             <span>{{ $completedCount }} dari 6 tahap selesai</span>
                         </div>
 
-                        <div class="akad-progress">
-                            <div class="akad-progress-bar" style="width: {{ $progressPercent }}%;"></div>
+                        <div class="transaksi-progress">
+                            <div class="transaksi-progress-bar" style="width: {{ $progressPercent }}%;"></div>
                         </div>
 
-                        <div class="akad-steps">
+                        <div class="transaksi-steps">
                             @foreach ($steps as $key => $label)
                                 @php
                                     $isStepCompleted = false;
@@ -964,8 +207,8 @@
                                     }
                                 @endphp
 
-                                <div class="akad-step {{ $isStepCompleted ? 'completed' : ($isStepActive ? 'active' : '') }}">
-                                    <div class="akad-step-icon">
+                                <div class="transaksi-step {{ $isStepCompleted ? 'completed' : ($isStepActive ? 'active' : '') }}">
+                                    <div class="transaksi-step-icon">
                                         @if ($isStepCompleted)
                                             <i class="mdi mdi-check"></i>
                                         @else
@@ -984,7 +227,7 @@
                                             @endif
                                         @endif
                                     </div>
-                                    <span class="akad-step-title">{{ $label }}</span>
+                                    <span class="transaksi-step-title">{{ $label }}</span>
                                     <small>
                                         @if ($key == 'booking' && $booking->booking_date)
                                             {{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('j F Y') }}
@@ -1004,43 +247,71 @@
             <div class="col-12 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="akad-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-cash-multiple"></i>
                             <span>Detail Pembayaran</span>
                         </div>
 
-                        <div class="akad-detail-list">
-                            <div class="akad-detail-item">
+                        <div class="transaksi-detail-list">
+                            @php
+                                $hargaUnit = $booking->unit->price ?? 0;
+                                $hargaNego = (!empty($booking->harga_nego) && $booking->harga_nego > 0) ? $booking->harga_nego : $hargaUnit;
+                                $diskon = max(0, $hargaUnit - $hargaNego);
+                                $bookingFee = $booking->booking_fee ?? 0;
+                                $sisaPembayaran = max(0, $hargaNego - $bookingFee);
+                            @endphp
+                            <div class="transaksi-detail-item">
                                 <span>Harga Unit</span>
-                                <span>Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                                <span>Rp {{ number_format($hargaUnit, 0, ',', '.') }}</span>
                             </div>
-                            <div class="akad-detail-item">
+                            @if(strtolower($booking->purchase_type) != 'cash_tempo')
+                            <div class="transaksi-detail-item">
                                 <span>Diskon / Negosiasi</span>
-                                <span class="highlight">- Rp {{ number_format($booking->unit->harga_nego ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">- Rp {{ number_format($diskon, 0, ',', '.') }}</span>
                             </div>
-                            <div class="akad-detail-item">
+                            @endif
+                            <div class="transaksi-detail-item">
                                 <span>Harga Final</span>
-                                <span class="highlight">Rp {{ number_format(($booking->unit->price ?? 0) - ($booking->unit->harga_nego ?? 0), 0, ',', '.') }}</span>
+                                <span class="highlight">Rp {{ number_format($hargaNego, 0, ',', '.') }}</span>
                             </div>
-                            <div class="akad-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Booking Fee</span>
-                                <span>Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}</span>
+                                <span>Rp {{ number_format($bookingFee, 0, ',', '.') }}</span>
                             </div>
-                            <div class="akad-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Sisa Pembayaran</span>
-                                <span class="highlight">Rp {{ number_format((($booking->unit->price ?? 0) - ($booking->unit->harga_nego ?? 0)) - ($booking->booking_fee ?? 0), 0, ',', '.') }}</span>
+                                <span class="highlight">Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</span>
                             </div>
-                            <div class="akad-detail-item mt-2">
+                            <div class="transaksi-detail-item mt-2 align-items-center">
                                 <span>Status Pembayaran</span>
-                                <span class="badge bg-success text-white" style="font-size: 0.75rem;">
-                                    <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
-                                </span>
+                                <div class="ms-auto text-end" style="flex: 1;">
+                                    <span class="badge bg-success text-white">
+                                        <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
+                                    </span>
+                                </div>
                             </div>
-                            <div class="akad-detail-item mt-2">
+                            <div class="transaksi-detail-item mt-2 align-items-center">
                                 <span>Metode Pembayaran</span>
-                                <span class="badge bg-success text-white" style="font-size: 0.75rem;">
-                                    <i class="mdi mdi-cash me-1"></i>{{ $booking->purchase_type == 'cash' ? 'Cash Keras' : ($booking->purchase_type == 'cash_tempo' ? 'Cash Tempo' : 'Cash') }}
-                                </span>
+                                <div class="ms-auto text-end" style="flex: 1;">
+                                    <span class="badge bg-success text-white">
+                                        <i class="mdi mdi-cash me-1"></i>{{ $booking->purchase_type == 'cash' ? 'Cash Keras' : ($booking->purchase_type == 'cash_tempo' ? 'Cash Tempo' : 'Cash') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="transaksi-sidebar-section">
+                            <div class="transaksi-sidebar-title mb-2" style="font-size: 0.86rem; font-weight: 700; color: #4b5565;">Ditangani oleh</div>
+                            <div class="transaksi-handler">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-account-tie"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ $booking->sales->name ?? 'Marketing' }}</div>
+                                    <!-- <small class="transaksi-muted">{{ $booking->sales->role ?? 'Marketing Staff' }}</small> -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1052,17 +323,17 @@
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card">
                     <div class="card-body">
-                        <div class="akad-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-handshake"></i>
                             <span>Konfirmasi Akad Cash</span>
                         </div>
 
-                        <div class="akad-inline-alert info mb-4">
+                        <div class="transaksi-inline-alert info mb-4">
                             <i class="mdi mdi-information-outline"></i>
                             <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai status akad.</div>
                         </div>
 
-                        <div class="akad-inline-alert danger akad-error-box" id="akadErrorBox">
+                        <div class="transaksi-inline-alert danger transaksi-error-box" id="akadErrorBox">
                             <i class="mdi mdi-alert-circle-outline"></i>
                             <div>Silakan pilih status akad terlebih dahulu sebelum submit.</div>
                         </div>
@@ -1071,20 +342,19 @@
                             @csrf
                             <input type="hidden" name="status_akad" id="statusAkadInput" value="">
 
-                            <!-- DECISION CARDS - SAMA PERSIS DENGAN VERIFIKASI KPR -->
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-md-6">
-                                    <div class="akad-decision-card selesai">
+                                    <div class="transaksi-decision-card approve">
                                         <input type="radio" name="decision_choice" id="decisionSelesai" value="selesai">
-                                        <label for="decisionSelesai" class="akad-decision-label">
-                                            <div class="akad-decision-icon">
+                                        <label for="decisionSelesai" class="transaksi-decision-label">
+                                            <div class="transaksi-decision-icon">
                                                 <i class="mdi mdi-check-bold"></i>
                                             </div>
-                                            <div class="akad-decision-content">
-                                                <div class="akad-decision-title">Akad Selesai</div>
-                                                <p class="akad-decision-desc mb-0">Proses akad telah selesai dan siap lanjut ke serah terima unit.</p>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">Akad Selesai</div>
+                                                <p class="transaksi-decision-desc mb-0">Proses akad telah selesai dan siap lanjut ke serah terima unit.</p>
                                             </div>
-                                            <div class="akad-decision-check">
+                                            <div class="transaksi-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
@@ -1092,17 +362,17 @@
                                 </div>
 
                                 <div class="col-12 col-md-6">
-                                    <div class="akad-decision-card batal">
+                                    <div class="transaksi-decision-card reject">
                                         <input type="radio" name="decision_choice" id="decisionBatal" value="batal">
-                                        <label for="decisionBatal" class="akad-decision-label">
-                                            <div class="akad-decision-icon">
+                                        <label for="decisionBatal" class="transaksi-decision-label">
+                                            <div class="transaksi-decision-icon">
                                                 <i class="mdi mdi-close-thick"></i>
                                             </div>
-                                            <div class="akad-decision-content">
-                                                <div class="akad-decision-title">Akad Batal</div>
-                                                <p class="akad-decision-desc mb-0">Proses akad dibatalkan dan perlu tindakan lanjutan.</p>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">Akad Batal</div>
+                                                <p class="transaksi-decision-desc mb-0">Proses akad dibatalkan dan perlu tindakan lanjutan.</p>
                                             </div>
-                                            <div class="akad-decision-check">
+                                            <div class="transaksi-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
@@ -1110,27 +380,26 @@
                                 </div>
                             </div>
 
-                            <!-- FORM AKAD SELESAI -->
-                            <div id="formSelesai" class="akad-form-shell selesai">
-                                <div class="akad-form-title selesai">Form Akad Selesai</div>
+                            <div id="formSelesai" class="transaksi-form-shell approve">
+                                <div class="transaksi-form-title approve">Form Akad Selesai</div>
 
-                                <div class="akad-inline-alert success">
+                                <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
                                     <div><strong>Akad disetujui.</strong> Pengajuan akan diarahkan ke tahap <strong>Serah Terima</strong>.</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="akad-form-group">
-                                            <label class="akad-form-label">No. Akad</label>
-                                            <input type="text" name="no_akad" class="akad-form-control"
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">No. Akad</label>
+                                            <input type="text" name="no_akad" class="transaksi-form-control"
                                                 value="AKAD/CASH/{{ date('Y') }}/{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="akad-form-group">
-                                            <label class="akad-form-label">Tanggal Akad</label>
-                                            <input type="date" name="tanggal_akad" class="akad-form-control"
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Tanggal Akad</label>
+                                            <input type="date" name="tanggal_akad" class="transaksi-form-control"
                                                 value="{{ date('Y-m-d') }}">
                                         </div>
                                     </div>
@@ -1138,22 +407,22 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="akad-form-group">
-                                            <label class="akad-form-label">Total Pembayaran</label>
-                                            <div class="akad-input-group">
-                                                <div class="akad-input-group-prepend">
-                                                    <span class="akad-input-group-text">Rp</span>
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Total Pembayaran</label>
+                                            <div class="transaksi-input-group">
+                                                <div class="transaksi-input-group-prepend">
+                                                    <span class="transaksi-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="akad-form-control"
-                                                    value="{{ number_format(($booking->unit->price ?? 0) - ($booking->unit->harga_nego ?? 0), 0, ',', '.') }}"
+                                                <input type="text" class="transaksi-form-control"
+                                                    value="{{ number_format($sisaPembayaran, 0, ',', '.') }}"
                                                     readonly>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="akad-form-group">
-                                            <label class="akad-form-label">Status Pembayaran</label>
-                                            <select name="status_pembayaran" class="akad-form-control">
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Status Pembayaran</label>
+                                            <select name="status_pembayaran" class="transaksi-form-control">
                                                 <option value="lunas" selected>Lunas</option>
                                                 <option value="bertahap">Bertahap (Belum Lunas)</option>
                                             </select>
@@ -1161,13 +430,13 @@
                                     </div>
                                 </div>
 
-                                <div class="akad-form-group">
-                                    <label class="akad-form-label">Upload Dokumen Akad</label>
-                                    <div class="akad-file-upload">
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Upload Dokumen Akad</label>
+                                    <div class="transaksi-file-upload">
                                         <input type="file" name="dokumen" id="uploadDokumenSelesai" accept=".jpg,.jpeg,.png,.pdf">
-                                        <div class="akad-file-label">
+                                        <div class="transaksi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="akad-file-info">
+                                            <div class="transaksi-file-info">
                                                 <span>Upload Dokumen Akad</span>
                                                 <small>Format: JPG, PNG, PDF (Max 5MB)</small>
                                             </div>
@@ -1175,24 +444,23 @@
                                     </div>
                                 </div>
 
-                                <div class="akad-form-group">
-                                    <label class="akad-form-label">Catatan Akad</label>
-                                    <textarea name="catatan" class="akad-form-control" rows="3" placeholder="Contoh: Proses akad berjalan lancar, seluruh dokumen telah ditandatangani."></textarea>
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Catatan Akad</label>
+                                    <textarea name="catatan" class="transaksi-form-control" rows="3" placeholder="Contoh: Proses akad berjalan lancar, seluruh dokumen telah ditandatangani."></textarea>
                                 </div>
                             </div>
 
-                            <!-- FORM AKAD BATAL -->
-                            <div id="formBatal" class="akad-form-shell batal">
-                                <div class="akad-form-title batal">Form Pembatalan Akad</div>
+                            <div id="formBatal" class="transaksi-form-shell reject">
+                                <div class="transaksi-form-title reject">Form Pembatalan Akad</div>
 
-                                <div class="akad-inline-alert danger">
+                                <div class="transaksi-inline-alert danger">
                                     <i class="mdi mdi-close-circle-outline"></i>
                                     <div><strong>Akad dibatalkan.</strong> Pilih alasan dan tindakan lanjutan.</div>
                                 </div>
 
-                                <div class="akad-form-group">
-                                    <label class="akad-form-label">Alasan Pembatalan</label>
-                                    <select name="alasan_batal" id="alasanBatalSelect" class="akad-form-control">
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Alasan Pembatalan</label>
+                                    <select name="alasan_batal" id="alasanBatalSelect" class="transaksi-form-control">
                                         <option value="">-- Pilih Alasan --</option>
                                         <option value="customer batal">Customer Batal Beli</option>
                                         <option value="dana tidak cukup">Dana Tidak Cukup</option>
@@ -1202,47 +470,47 @@
                                     </select>
                                 </div>
 
-                                <div class="akad-form-group" id="alasanLainnyaGroup" style="display: none;">
-                                    <label class="akad-form-label">Tulis Alasan Lainnya</label>
-                                    <input type="text" name="alasan_lainnya" class="akad-form-control" placeholder="Contoh: Masalah internal perusahaan">
+                                <div class="transaksi-form-group" id="alasanLainnyaGroup" style="display: none;">
+                                    <label class="transaksi-form-label">Tulis Alasan Lainnya</label>
+                                    <input type="text" name="alasan_lainnya" class="transaksi-form-control" placeholder="Contoh: Masalah internal perusahaan">
                                 </div>
 
-                                <div class="akad-form-group">
-                                    <label class="akad-form-label">Catatan Pembatalan</label>
-                                    <textarea name="catatan" class="akad-form-control" rows="3" placeholder="Detail pembatalan..."></textarea>
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Catatan Pembatalan</label>
+                                    <textarea name="catatan" class="transaksi-form-control" rows="3" placeholder="Detail pembatalan..."></textarea>
                                 </div>
 
                                 <hr class="my-4">
 
-                                <label class="akad-form-label">Tindakan Selanjutnya</label>
-                                <div class="akad-tindakan-grid">
-                                    <div class="akad-tindakan-card">
+                                <label class="transaksi-form-label">Tindakan Selanjutnya</label>
+                                <div class="transaksi-next-step-grid">
+                                    <div class="transaksi-next-card">
                                         <input type="radio" name="tindakan" id="tindakanRefund" value="refund" checked>
-                                        <label class="akad-tindakan-label" for="tindakanRefund">
-                                            <div class="akad-tindakan-icon">
+                                        <label class="transaksi-next-label" for="tindakanRefund">
+                                            <div class="transaksi-next-icon">
                                                 <i class="mdi mdi-cash-refund"></i>
                                             </div>
-                                            <div class="akad-tindakan-content">
-                                                <span class="akad-tindakan-title">Refund DP</span>
-                                                <span class="akad-tindakan-desc">Kembalikan uang muka sesuai ketentuan</span>
+                                            <div class="transaksi-next-content">
+                                                <span class="transaksi-next-title">Refund DP</span>
+                                                <span class="transaksi-next-desc">Kembalikan uang muka sesuai ketentuan</span>
                                             </div>
-                                            <div class="akad-tindakan-check">
+                                            <div class="transaksi-next-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
                                     </div>
 
-                                    <div class="akad-tindakan-card">
+                                    <div class="transaksi-next-card">
                                         <input type="radio" name="tindakan" id="tindakanHangus" value="hangus">
-                                        <label class="akad-tindakan-label" for="tindakanHangus">
-                                            <div class="akad-tindakan-icon">
+                                        <label class="transaksi-next-label" for="tindakanHangus">
+                                            <div class="transaksi-next-icon">
                                                 <i class="mdi mdi-cancel"></i>
                                             </div>
-                                            <div class="akad-tindakan-content">
-                                                <span class="akad-tindakan-title">DP Hangus</span>
-                                                <span class="akad-tindakan-desc">Sesuai perjanjian yang telah disepakati</span>
+                                            <div class="transaksi-next-content">
+                                                <span class="transaksi-next-title">DP Hangus</span>
+                                                <span class="transaksi-next-desc">Sesuai perjanjian yang telah disepakati</span>
                                             </div>
-                                            <div class="akad-tindakan-check">
+                                            <div class="transaksi-next-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
@@ -1250,13 +518,13 @@
                                 </div>
                             </div>
 
-                            <div class="akad-action-bar">
-                                <a href="{{ url('/marketing/booking') }}" class="akad-btn akad-btn-secondary">
+                            <div class="transaksi-action-bar">
+                                <a href="{{ url('/marketing/booking') }}" class="transaksi-btn transaksi-btn-secondary">
                                     <i class="mdi mdi-arrow-left"></i>
                                     Kembali
                                 </a>
 
-                                <button type="submit" class="akad-btn akad-btn-primary">
+                                <button type="submit" class="transaksi-btn transaksi-btn-primary">
                                     <i class="mdi mdi-content-save-outline"></i>
                                     Simpan Konfirmasi
                                 </button>
@@ -1267,48 +535,35 @@
             </div>
 
             <div class="col-12 col-lg-4">
-                <div class="akad-sticky">
+                <div class="transaksi-sticky">
                     <div class="card">
                         <div class="card-body">
-                            <div class="akad-section-title">
+                            <div class="transaksi-section-title">
                                 <i class="mdi mdi-lightbulb-on-outline"></i>
                                 <span>Informasi & Panduan</span>
                             </div>
 
-                            <div class="akad-sidebar-section">
-                                <div class="akad-sidebar-title">Ditangani oleh</div>
-                                <div class="akad-handler">
-                                    <div class="akad-handler-icon">
-                                        <i class="mdi mdi-account-tie"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold">{{ $booking->sales->name ?? 'Marketing' }}</div>
-                                        <small class="akad-muted">{{ $booking->sales->role ?? 'Marketing Staff' }}</small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="akad-sidebar-section">
-                                <div class="akad-sidebar-title">Status Akad Saat Ini</div>
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Status Akad Saat Ini</div>
                                 @if($booking->status_akad == 'done')
-                                    <div class="akad-status-banner success">
+                                    <div class="transaksi-status-banner success">
                                         <i class="mdi mdi-check-circle-outline"></i>
                                         Akad telah selesai
                                     </div>
                                     @if($booking->status != 'completed')
                                         <div class="mt-3">
-                                            <a href="{{ route('booking.serah-terima', $booking->id) }}" class="akad-btn akad-btn-primary w-100">
+                                            <a href="{{ route('booking.serah-terima', $booking->id) }}" class="transaksi-btn transaksi-btn-primary w-100">
                                                 <i class="mdi mdi-key me-1"></i> Lanjut Serah Terima Unit
                                             </a>
                                         </div>
                                     @endif
                                 @elseif($booking->status_akad == 'cancelled')
-                                    <div class="akad-status-banner warning">
+                                    <div class="transaksi-status-banner warning">
                                         <i class="mdi mdi-close-circle-outline"></i>
                                         Akad dibatalkan
                                     </div>
                                 @else
-                                    <div class="akad-status-banner warning">
+                                    <div class="transaksi-status-banner warning">
                                         <i class="mdi mdi-progress-clock"></i>
                                         Menunggu konfirmasi akad
                                     </div>
@@ -1317,9 +572,9 @@
 
                             <hr class="my-4">
 
-                        <div class="akad-sidebar-section">
-                            <div class="akad-sidebar-title">Panduan Konfirmasi</div>
-                                <ul class="akad-mini-list">
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Panduan Konfirmasi</div>
+                                <ul class="transaksi-mini-list">
                                     <li>
                                         <i class="mdi mdi-check-circle-outline"></i>
                                         <span>Pastikan seluruh dokumen akad telah ditandatangani</span>
@@ -1339,9 +594,9 @@
                                 </ul>
                             </div>
 
-                            <div class="akad-sidebar-section">
-                                <div class="akad-sidebar-title">Checklist Akad</div>
-                                <ul class="akad-mini-list mb-0">
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Checklist Akad</div>
+                                <ul class="transaksi-mini-list mb-0">
                                     <li>
                                         <i class="mdi mdi-file-document-outline"></i>
                                         <span>Akta Jual Beli (AJB) ditandatangani</span>
@@ -1417,17 +672,17 @@
             // File upload handler
             $('#uploadDokumenSelesai').on('change', function(e) {
                 const file = e.target.files[0];
-                const $container = $(this).closest('.akad-file-upload');
+                const $container = $(this).closest('.transaksi-file-upload');
 
                 if (file) {
                     $container.addClass('has-file');
                     const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                    $container.find('.akad-file-info span').text(file.name.length > 40 ? file.name.substring(0, 40) + '...' : file.name);
-                    $container.find('.akad-file-info small').text(sizeInMB + ' MB | Format: ' + file.type.split('/').pop().toUpperCase());
+                    $container.find('.transaksi-file-info span').text(file.name.length > 40 ? file.name.substring(0, 40) + '...' : file.name);
+                    $container.find('.transaksi-file-info small').text(sizeInMB + ' MB | Format: ' + file.type.split('/').pop().toUpperCase());
                 } else {
                     $container.removeClass('has-file');
-                    $container.find('.akad-file-info span').text('Upload Dokumen Akad');
-                    $container.find('.akad-file-info small').text('Format: JPG, PNG, PDF (Max 5MB)');
+                    $container.find('.transaksi-file-info span').text('Upload Dokumen Akad');
+                    $container.find('.transaksi-file-info small').text('Format: JPG, PNG, PDF (Max 5MB)');
                 }
             });
 
