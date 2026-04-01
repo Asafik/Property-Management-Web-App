@@ -776,7 +776,7 @@
                                                     </a>
 
                                                    
-                                                    <a href="{{ route('dokument.persiapan') }}"
+                                                    <a href="{{ route('kpr.pecahlegal) }}"
                                                         class="btn btn-gradient-warning btn-sm" title="Dokumen Persiapan">
                                                         <i class="mdi mdi-folder-file-outline"></i>
                                                     </a>
