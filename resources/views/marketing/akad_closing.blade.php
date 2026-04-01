@@ -225,7 +225,8 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp
+                                    {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -314,7 +315,7 @@
 
                                             <td>
                                                 @if ($doc->path)
-                                                    <a href="{{ asset('storage/' . $doc->path) }}" target="_blank"
+                                                    <a href="{{ asset('uploads/' . $doc->path) }}" target="_blank"
                                                         class="transaksi-doc-action" title="Lihat dokumen">
                                                         <i class="mdi mdi-eye-outline"></i>
                                                     </a>
@@ -414,6 +415,22 @@
                                         <i class="mdi mdi-account-tie-outline"></i>
                                         <span>Notaris:
                                             {{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}
+                                        </span>
+                                    </li>
+
+                                    {{-- Tambahan Dokumen Akad --}}
+                                    <li>
+                                        <i class="mdi mdi-file-document-outline"></i>
+                                        <span>
+                                            Dokumen:
+                                            @if (optional($kpr->booking->akad)->dokumen)
+                                                <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}"
+                                                    target="_blank" class="btn btn-sm btn-primary ms-2">
+                                                    Lihat
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Belum tersedia</span>
+                                            @endif
                                         </span>
                                     </li>
                                 </ul>
@@ -536,7 +553,7 @@
                                         <div class="akad-form-group">
                                             <label class="akad-form-label">Nomor Akad</label>
                                             <input type="text" class="akad-form-control" name="nomor_akad"
-                                                id="nomor_akad_selesai"
+                                                id="no_akad"
                                                 value="{{ $noAkadDraf }}"
                                                 placeholder="Kosongkan untuk otomatis (opsional)">
                                         </div>

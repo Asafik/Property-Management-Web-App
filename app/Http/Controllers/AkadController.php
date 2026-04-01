@@ -20,10 +20,10 @@ class AkadController extends Controller
 
         return view('marketing.akad_cash', compact('booking'));
     }
-    function generateNoAkad($type = 'CASH')
+    function generateNoAkad()
     {
         $year = date('Y');
-        $prefix = "AKAD/$type/$year/";
+        $prefix = "AKAD/CASH/$year/";
 
         $lastNumber = Akad::whereYear('created_at', $year)->count() + 1;
 
@@ -50,17 +50,16 @@ class AkadController extends Controller
                 return redirect()->back()->with('error', 'Booking belum lunas.');
             }
 
+            // Validasi request
             $request->validate([
                 'tanggal_akad' => 'nullable|date',
                 'dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
                 'catatan' => 'nullable|string',
-                'no_akad' => 'nullable|string|unique:akads,no_akad',
+                'no_akad' => 'nullable|string',
                 'alasan_batal' => 'nullable|string',
                 'alasan_lainnya' => 'nullable|string',
                 'tindakan' => 'nullable|string',
                 'status_pembayaran' => 'nullable|string'
-            ], [
-                'no_akad.unique' => 'Nomor akad tersebut sudah pernah digunakan di sistem.'
             ]);
 
             // Upload dokumen jika ada
@@ -139,146 +138,182 @@ class AkadController extends Controller
     }
     public function akadKPR($id)
     {
-        // Cari KPR yang kolom booking_id nya sesuai dengan ID dari URL
         $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
             ->where('booking_id', $id)
-            ->firstOrFail(); // Melempar 404 jika booking_id tidak ditemukan di tabel KPR
+            ->firstOrFail();
 
-        // Generate Nomor Akad secara otomatis jika belum ada
-        $noAkadDraf = $kpr->booking->akad->no_akad ?? $this->generateNoAkad('KPR');
+
+        $noAkadDraf = 'AKAD/' . date('m/Y') . '/' . str_pad(
+            KprApplication::count() + 1,
+            3,
+            '0',
+            STR_PAD_LEFT
+        );
 
         return view('marketing.akad_closing', compact('kpr', 'noAkadDraf'));
     }
-  public function storeKPR(Request $request, Booking $booking)
-{
-    try {
-        Log::info('Proses store akad', [
-            'booking_id' => $booking->id,
-            'request' => $request->all()
-        ]);
-
-        // Validasi status pembayaran
-        if (!in_array($booking->status_cash, ['process', 'done'])) {
-            return redirect()->back()->with('error', 'Booking belum lunas.');
-        }
-
-        // List tindakan valid
-        $tindakanList = [
-            'jadwal_ulang',
-            'lengkapi_dokumen',
-            'koordinasi_ulang_dengan_bank',
-            'review_internal'
-        ];
-
-        // =========================
-        // VALIDASI DINAMIS
-        // =========================
-        $rules = [
-            'status' => ['required', Rule::in(['completed', 'cancelled'])],
-            'dokumen_akad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'dokumen_tolak' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ];
-
-        if ($request->status === 'completed') {
-            $rules += [
-                'tanggal_akad' => 'required|date',
-                'lokasi_akad' => 'required|string',
-                'nama_notaris' => 'required|string',
-                'nomor_akad' => 'nullable|string|unique:akads,no_akad',
-                'catatan' => 'nullable|string',
-            ];
-        }
-
-        if ($request->status === 'cancelled') {
-            $rules += [
-                'tanggal_akad_tolak' => 'required|date',
-                'alasan_masalah' => 'required|string',
-                'tindakan' => ['required', Rule::in($tindakanList)],
-                'catatan_masalah' => 'nullable|string',
-            ];
-        }
-
-        $request->validate($rules, [
-            'nomor_akad.unique' => 'Nomor akad tersebut sudah pernah digunakan di sistem.'
-        ]);
-
-        // =========================
-        // UPLOAD FILE
-        // =========================
-        $filePath = null;
-        if ($request->hasFile('dokumen_akad')) {
-            $filePath = $request->file('dokumen_akad')->store('dokumen_akad', 'public');
-        }
-
-        $filePathTolak = null;
-        if ($request->hasFile('dokumen_tolak')) {
-            $filePathTolak = $request->file('dokumen_tolak')->store('dokumen_akad', 'public');
-        }
-
-        // =========================
-        // ✅ SELESAI
-        // =========================
-        if ($request->status === 'completed') {
-
-            $noAkad = $request->nomor_akad ?? $this->generateNoAkad();
-
-            Akad::create([
+    public function storeKPR(Request $request, Booking $booking)
+    {
+        try {
+            Log::info('Proses store akad', [
                 'booking_id' => $booking->id,
-                'no_akad' => $noAkad,
-                'tanggal_akad' => $request->tanggal_akad,
-                'lokasi_akad' => $request->lokasi_akad,
-                'nama_notaris' => $request->nama_notaris,
-                'dokumen' => $filePath,
-                'catatan' => $request->catatan,
-                'status' => 'selesai',
-                'tindakan' => null
+                'request' => $request->all()
             ]);
 
-            $booking->update([
-                'status_akad' => 'done',
-                'status' => 'akad',
-                'akad_date' => now()
-            ]);
-
-            $kpr = KprApplication::where('booking_id', $booking->id)->first();
-            if ($kpr) {
-                $kpr->update(['status' => 'akad']);
+            // Validasi status pembayaran
+            if (!in_array($booking->status_cash, ['process', 'done'])) {
+                return redirect()->back()->with('error', 'Booking belum lunas.');
             }
 
-            return redirect()->back()->with('success', 'Akad selesai berhasil diproses.');
-        }
+            // List tindakan valid
+            $tindakanList = [
+                'jadwal_ulang',
+                'lengkapi_dokumen',
+                'koordinasi_ulang_dengan_bank',
+                'review_internal'
+            ];
 
-        // =========================
-        // ❌ CANCELLED / TUNDA
-        // =========================
-        if ($request->status === 'cancelled') {
+            // =========================
+            // VALIDASI DINAMIS
+            // =========================
+            $rules = [
+                'status' => ['required', Rule::in(['completed', 'cancelled'])],
+                'dokumen_akad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+                'dokumen_tolak' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            ];
 
-            Akad::create([
+            if ($request->status === 'completed') {
+                $rules += [
+                    'tanggal_akad' => 'required|date',
+                    'lokasi_akad' => 'required|string',
+                    'nama_notaris' => 'required|string',
+                    'nomor_akad' => 'nullable|string',
+                    'catatan' => 'nullable|string',
+                ];
+            }
+
+            if ($request->status === 'cancelled') {
+                $rules += [
+                    'tanggal_akad_tolak' => 'required|date',
+                    'alasan_masalah' => 'required|string',
+                    'tindakan' => ['required', Rule::in($tindakanList)],
+                    'catatan_masalah' => 'nullable|string',
+                ];
+            }
+
+            $request->validate($rules);
+
+            // =========================
+            // UPLOAD FILE
+            // =========================
+            $filePath = null;
+            if ($request->hasFile('dokumen_akad')) {
+
+                $file = $request->file('dokumen_akad');
+
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $cleanName    = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+                $extension    = $file->getClientOriginalExtension();
+
+                $filename = time() . '_' . $cleanName . '.' . $extension;
+
+                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/dokumen_akad';
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+
+                $filePath = 'dokumen_akad/' . $filename;
+            }
+
+
+            $filePathTolak = null;
+            if ($request->hasFile('dokumen_tolak')) {
+
+                $file = $request->file('dokumen_tolak');
+
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $cleanName    = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+                $extension    = $file->getClientOriginalExtension();
+
+                $filename = time() . '_tolak_' . $cleanName . '.' . $extension;
+
+                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/dokumen_akad';
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+
+                $filePathTolak = 'dokumen_akad/' . $filename;
+            }
+
+            // =========================
+            // ✅ SELESAI
+            // =========================
+            if ($request->status === 'completed') {
+
+                $noAkad = $request->nomor_akad ?? $this->generateNoAkad();
+
+                Akad::create([
+                    'booking_id' => $booking->id,
+                    'no_akad' => $noAkad,
+                    'tanggal_akad' => $request->tanggal_akad,
+                    'lokasi_akad' => $request->lokasi_akad,
+                    'nama_notaris' => $request->nama_notaris,
+                    'dokumen' => $filePath,
+                    'catatan' => $request->catatan,
+                    'status' => 'selesai',
+                    'tindakan' => null
+                ]);
+
+                $booking->update([
+                    'status_akad' => 'done',
+                    'status' => 'akad',
+                    'akad_date' => now()
+                ]);
+
+                $kpr = KprApplication::where('booking_id', $booking->id)->first();
+                if ($kpr) {
+                    $kpr->update(['status' => 'akad']);
+                }
+
+                return redirect()->back()->with('success', 'Akad selesai berhasil diproses.');
+            }
+
+            // =========================
+            // ❌ CANCELLED / TUNDA
+            // =========================
+            if ($request->status === 'cancelled') {
+
+                Akad::create([
+                    'booking_id' => $booking->id,
+                    'no_akad' => null,
+                    'tanggal_akad' => $request->tanggal_akad_tolak,
+                    'dokumen' => $filePathTolak,
+                    'catatan' => $request->catatan_masalah,
+                    'status' => 'batal',
+                    'tindakan' => $request->tindakan
+                ]);
+
+                $booking->update([
+                    'status_akad' => 'cancelled'
+                ]);
+
+                return redirect()->back()->with('success', 'Akad ditunda / dibatalkan.');
+            }
+
+            return redirect()->back()->with('error', 'Status tidak valid.');
+        } catch (\Exception $e) {
+            Log::error('Error saat store akad', [
                 'booking_id' => $booking->id,
-                'no_akad' => null,
-                'tanggal_akad' => $request->tanggal_akad_tolak,
-                'dokumen' => $filePathTolak,
-                'catatan' => $request->catatan_masalah,
-                'status' => 'batal',
-                'tindakan' => $request->tindakan
+                'message' => $e->getMessage()
             ]);
 
-            $booking->update([
-                'status_akad' => 'cancelled'
-            ]);
-
-            return redirect()->back()->with('success', 'Akad ditunda / dibatalkan.');
+            return redirect()->back()->with('error', 'Terjadi kesalahan.');
         }
-
-        return redirect()->back()->with('error', 'Status tidak valid.');
-
-    } catch (\Exception $e) {
-        Log::error('Error saat store akad', [
-            'booking_id' => $booking->id,
-            'message' => $e->getMessage()
-        ]);
-
-        return redirect()->back()->with('error', 'Terjadi kesalahan.');
     }
-}
 }

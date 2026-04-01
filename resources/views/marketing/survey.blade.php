@@ -38,7 +38,7 @@
             min-height: 64px;
         }
 
-        .survey-checkbox-input:checked + .survey-checkbox-label {
+        .survey-checkbox-input:checked+.survey-checkbox-label {
             border-color: var(--primary);
             background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
             box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
@@ -52,7 +52,7 @@
             padding: 4px;
         }
 
-        .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
+        .survey-checkbox-input:checked+.survey-checkbox-label .survey-check-icon {
             color: var(--primary);
         }
 
@@ -90,7 +90,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div
+                            class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
                                     <i class="mdi mdi-account text-white"></i>
@@ -100,13 +101,23 @@
                                         {{ $application->customer->full_name ?? '-' }}
                                         @php
                                             $jenis = strtolower($application->unit->jenis ?? '');
-                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
-                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                            $badgeClass =
+                                                $jenis == 'subsidi'
+                                                    ? 'badge-gradient-success'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'badge-gradient-primary'
+                                                        : 'badge-gradient-secondary');
+                                            $icon =
+                                                $jenis == 'subsidi'
+                                                    ? 'mdi-home-assistant'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'mdi-office-building'
+                                                        : 'mdi-help-circle-outline');
                                         @endphp
                                         <span class="badge {{ $badgeClass }}">
-                                             <i class="mdi {{ $icon }} me-1"></i>
-                                             {{ strtoupper($application->unit->jenis ?? '-') }}
-                                         </span>
+                                            <i class="mdi {{ $icon }} me-1"></i>
+                                            {{ strtoupper($application->unit->jenis ?? '-') }}
+                                        </span>
                                     </h4>
                                     <p class="customer-booking mb-0">
                                         Booking ID: {{ optional($application->unit->activeBooking)->booking_code ?? '-' }}
@@ -160,13 +171,18 @@
                         @php
                             $jenis = strtolower($application->unit->jenis ?? '');
                             $isSubsidi = $jenis === 'subsidi';
-                            $surveyDone = !empty($application->rekomendasi) || strtolower($application->status_survey ?? '') == 'done' || ($application->booking->status_survey ?? 0) == 1;
+                            $surveyDone =
+                                !empty($application->rekomendasi) ||
+                                strtolower($application->status_survey ?? '') == 'done' ||
+                                ($application->booking->status_survey ?? 0) == 1;
 
                             $totalSteps = 6;
-                            // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 5.
-                            $currentStep = $isSubsidi ? 4 : 5;
+                            // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 4.
+                            $currentStep = 4;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
-                            $stepsStyle = $totalSteps ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"' : '';
+                            $stepsStyle = $totalSteps
+                                ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"'
+                                : '';
                         @endphp
 
                         <div class="transaksi-progress-top">
@@ -221,7 +237,8 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                 @else
-                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                    <div
+                                        class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
                                         <i class="mdi {{ $config['icon'] }}"></i>
                                     </div>
                                 @endif
@@ -247,12 +264,6 @@
                                     <small>Menunggu</small>
                                 </div>
                             @else
-                                <div class="transaksi-step">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>Menunggu</small>
-                                </div>
-
                                 <div class="transaksi-step {{ $surveyDone ? 'completed' : 'active' }}">
                                     @if ($surveyDone)
                                         <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
@@ -261,6 +272,12 @@
                                     @endif
                                     <span class="transaksi-step-title">Survey</span>
                                     <small>{{ $surveyDone ? 'Selesai' : 'Progress' }}</small>
+                                </div>
+
+                                <div class="transaksi-step">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>Menunggu</small>
                                 </div>
                             @endif
 
@@ -297,7 +314,8 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp
+                                    {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -320,7 +338,8 @@
         {{-- FORM SURVEY --}}
         <div class="row mt-2">
             <div class="col-12 col-lg-8">
-                <form id="formSurveyKpr" action="{{ route('kpr.survey.store', $application->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="formSurveyKpr" action="{{ route('kpr.survey.store', $application->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -338,13 +357,15 @@
                                 <div class="col-md-4">
                                     <div class="transaksi-form-group">
                                         <label class="transaksi-form-label">Tanggal Survey</label>
-                                        <input type="date" class="transaksi-form-control" name="survey_date" value="{{ $application->survey_date?->format('Y-m-d') ?? '' }}">
+                                        <input type="date" class="transaksi-form-control" name="survey_date"
+                                            value="{{ $application->survey_date?->format('Y-m-d') ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="transaksi-form-group">
                                         <label class="transaksi-form-label">Jam Survey</label>
-                                        <input type="time" class="transaksi-form-control" name="survey_time" value="{{ $application->survey_time?->format('H:i') ?? '' }}">
+                                        <input type="time" class="transaksi-form-control" name="survey_time"
+                                            value="{{ $application->survey_time?->format('H:i') ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -353,7 +374,8 @@
                                         <select class="transaksi-form-control" name="surveyor_id">
                                             <option value="">Pilih Surveyor</option>
                                             @foreach ($surveyors as $surveyor)
-                                                <option value="{{ $surveyor->id }}" {{ $application->surveyor_id == $surveyor->id ? 'selected' : '' }}>
+                                                <option value="{{ $surveyor->id }}"
+                                                    {{ $application->surveyor_id == $surveyor->id ? 'selected' : '' }}>
                                                     {{ $surveyor->name }}
                                                 </option>
                                             @endforeach
@@ -367,19 +389,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Nilai Pasar Unit <span class="text-danger">*</span></label>
+                                        <label class="transaksi-form-label">Nilai Pasar Unit <span
+                                                class="text-danger">*</span></label>
                                         <div class="survey-input-group">
                                             <span class="survey-input-group-text">Rp</span>
-                                            <input type="text" class="transaksi-form-control" name="harga_unit" value="{{ number_format($application->harga_unit ?? 0, 0, ',', '.') }}">
+                                            <input type="text" class="transaksi-form-control" name="harga_unit"
+                                                value="{{ number_format($application->harga_unit ?? 0, 0, ',', '.') }}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Nilai Appraisal <span class="text-danger">*</span></label>
+                                        <label class="transaksi-form-label">Nilai Appraisal <span
+                                                class="text-danger">*</span></label>
                                         <div class="survey-input-group">
                                             <span class="survey-input-group-text">Rp</span>
-                                            <input type="text" class="transaksi-form-control" name="appraisal_value" value="{{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}">
+                                            <input type="text" class="transaksi-form-control" name="appraisal_value"
+                                                value="{{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -395,7 +421,8 @@
                             <div class="survey-checklist-grid">
                                 @foreach (['listrik' => 'Instalasi Listrik', 'air' => 'PDAM / Air Bersih', 'akses' => 'Akses Jalan', 'sertifikat' => 'Sertifikat Sesuai', 'imb' => 'IMB'] as $field => $label)
                                     <div class="survey-checkbox-wrapper">
-                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}" name="{{ $field }}" {{ $application->$field ? 'checked' : '' }}>
+                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}"
+                                            name="{{ $field }}" {{ $application->$field ? 'checked' : '' }}>
                                         <label class="survey-checkbox-label" for="{{ $field }}">
                                             <i class="mdi mdi-check-circle survey-check-icon"></i>
                                             <span class="survey-check-text">{{ $label }}</span>
@@ -417,7 +444,8 @@
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">{{ $label }}</label>
                                             <div class="transaksi-file-upload">
-                                                <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png">
+                                                <input type="file" name="{{ $field }}"
+                                                    accept=".jpg,.jpeg,.png">
                                                 <div class="transaksi-file-label">
                                                     <i class="mdi mdi-camera"></i>
                                                     <div class="transaksi-file-info">
@@ -444,14 +472,18 @@
                                         <label class="transaksi-form-label">Rekomendasi</label>
                                         <select class="transaksi-form-control" name="rekomendasi">
                                             <option value="">Pilih Kelayakan</option>
-                                            <option value="Layak" {{ $application->rekomendasi == 'Layak' ? 'selected' : '' }}>Layak</option>
-                                            <option value="Tidak Layak" {{ $application->rekomendasi == 'Tidak Layak' ? 'selected' : '' }}>Tidak Layak</option>
+                                            <option value="Layak"
+                                                {{ $application->rekomendasi == 'Layak' ? 'selected' : '' }}>Layak</option>
+                                            <option value="Tidak Layak"
+                                                {{ $application->rekomendasi == 'Tidak Layak' ? 'selected' : '' }}>Tidak
+                                                Layak</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="submit" class="transaksi-btn transaksi-btn-primary w-100 justify-content-center mt-3">
+                            <button type="submit"
+                                class="transaksi-btn transaksi-btn-primary w-100 justify-content-center mt-3">
                                 <i class="mdi mdi-content-save-outline"></i> Simpan Hasil Survey
                             </button>
                         </div>
@@ -470,9 +502,9 @@
                             </div>
 
                             <div class="mb-3">
-                                @if ($application->rekomendasi)
+                                @if ($application->status === 'survey')
                                     <div class="transaksi-status-banner success">
-                                        <i class="mdi mdi-check-circle-outline"></i> Survey Selesai
+                                        <i class="mdi mdi-check-circle-outline"></i> Sudah selesai melakukan survey
                                     </div>
                                 @else
                                     <div class="transaksi-status-banner warning">
@@ -484,11 +516,15 @@
                             <div class="transaksi-summary-grid">
                                 <div class="transaksi-summary-box success">
                                     <div class="label">Appraisal</div>
-                                    <div class="value">Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}</div>
+                                    <div class="value">
+                                        Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}
+                                    </div>
                                 </div>
                                 <div class="transaksi-summary-box">
                                     <div class="label">Kelayakan</div>
-                                    <div class="value">{{ $application->rekomendasi ? $application->rekomendasi : 'Belum ditentukan' }}</div>
+                                    <div class="value">
+                                        {{ $application->rekomendasi ? $application->rekomendasi : 'Belum ditentukan' }}
+                                    </div>
                                 </div>
                             </div>
 
@@ -500,6 +536,17 @@
                                     <li><i class="mdi mdi-check-circle-outline"></i> Foto dokumentasi lengkap.</li>
                                 </ul>
                             </div>
+
+                            {{-- ✅ BUTTON AKAD / CLOSING --}}
+                            @if ($application->status === 'survey')
+                                <div class="mt-3">
+                                    <a href="{{ route('kpr.approve', $application->id) }}" class="btn btn-success w-100">
+                                        <i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>
+                                        Lanjut ke Akad / Closing
+                                    </a>
+                                </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>

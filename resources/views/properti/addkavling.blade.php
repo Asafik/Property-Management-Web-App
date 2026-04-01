@@ -904,17 +904,21 @@
             scrollbar-width: thin;
             scrollbar-color: #9a55ff #f1f1f1;
         }
+
         .modal-scroll-body::-webkit-scrollbar {
             width: 8px;
         }
+
         .modal-scroll-body::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
+
         .modal-scroll-body::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, #da8cff, #9a55ff);
             border-radius: 10px;
         }
+
         .modal-scroll-body::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, #c678ff, #7f3dff);
         }
@@ -1258,7 +1262,8 @@
                                     @else
                                         <p class="fw-bold">
                                             <span class="badge badge-warning">
-                                                <i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($land->legal_status) ?? '-' }}
+                                                <i
+                                                    class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($land->legal_status) ?? '-' }}
                                             </span>
                                         </p>
                                     @endif
@@ -1299,7 +1304,8 @@
                             Daftar Unit Kavling
                         </h5>
                         <div class="d-flex gap-2 align-items-center">
-                            <button type="button" class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal" data-bs-target="#tambahUnitModal">
+                            <button type="button" class="btn btn-sm btn-gradient-primary" data-bs-toggle="modal"
+                                data-bs-target="#tambahUnitModal">
                                 <i class="mdi mdi-plus me-1"></i>Tambah
                             </button>
                         </div>
@@ -1319,7 +1325,8 @@
                                             <div class="col-md-3">
                                                 <label class="form-label">Cari Unit</label>
                                                 <input type="text" class="form-control" name="search" id="searchInput"
-                                                    value="{{ request('search') }}" placeholder="Cari blok / unit / nama unit...">
+                                                    value="{{ request('search') }}"
+                                                    placeholder="Cari blok / unit / nama unit...">
                                             </div>
 
                                             <div class="col-md-2">
@@ -1328,7 +1335,8 @@
                                                     <option value="">Semua Type</option>
                                                     @foreach ($land->units->pluck('type')->unique() as $type)
                                                         @if ($type)
-                                                            <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                                            <option value="{{ $type }}"
+                                                                {{ request('type') == $type ? 'selected' : '' }}>
                                                                 {{ $type }}
                                                             </option>
                                                         @endif
@@ -1342,7 +1350,8 @@
                                                     <option value="">Semua Posisi</option>
                                                     @foreach ($land->units->pluck('position')->unique() as $position)
                                                         @if ($position)
-                                                            <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                                                            <option value="{{ $position }}"
+                                                                {{ request('position') == $position ? 'selected' : '' }}>
                                                                 {{ $position }}
                                                             </option>
                                                         @endif
@@ -1356,7 +1365,8 @@
                                                     <option value="">Semua Hadap</option>
                                                     @foreach ($land->units->pluck('facing')->unique() as $facing)
                                                         @if ($facing)
-                                                            <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
+                                                            <option value="{{ $facing }}"
+                                                                {{ request('facing') == $facing ? 'selected' : '' }}>
                                                                 {{ $facing }}
                                                             </option>
                                                         @endif
@@ -1367,20 +1377,28 @@
                                             <div class="col-md-1">
                                                 <label class="form-label">Tampil</label>
                                                 <select name="per_page" id="showData" class="form-control">
-                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                                    <option value="10"
+                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25"
+                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50"
+                                                        {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100"
+                                                        {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                                 </select>
                                             </div>
 
                                             <div class="col-md-2">
                                                 <label class="form-label invisible d-none d-md-block">Aksi</label>
                                                 <div class="d-flex gap-2">
-                                                    <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter">
+                                                    <button type="submit"
+                                                        class="btn btn-gradient-primary btn-icon-only flex-fill"
+                                                        title="Filter">
                                                         <i class="mdi mdi-filter"></i>
                                                     </button>
-                                                    <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset">
+                                                    <a href="{{ url()->current() }}"
+                                                        class="btn btn-gradient-secondary btn-icon-only flex-fill"
+                                                        title="Reset">
                                                         <i class="mdi mdi-refresh"></i>
                                                     </a>
                                                 </div>
@@ -1399,8 +1417,9 @@
                                         <div class="row g-2">
                                             <div class="col-12 mb-2">
                                                 <label class="form-label">Cari Unit</label>
-                                                <input type="text" class="form-control" name="search" id="searchInputMobile"
-                                                    value="{{ request('search') }}" placeholder="Cari blok / unit / nama unit...">
+                                                <input type="text" class="form-control" name="search"
+                                                    id="searchInputMobile" value="{{ request('search') }}"
+                                                    placeholder="Cari blok / unit / nama unit...">
                                             </div>
 
                                             <div class="col-12 mb-2">
@@ -1409,7 +1428,8 @@
                                                     <option value="">Semua Type</option>
                                                     @foreach ($land->units->pluck('type')->unique() as $type)
                                                         @if ($type)
-                                                            <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                                            <option value="{{ $type }}"
+                                                                {{ request('type') == $type ? 'selected' : '' }}>
                                                                 {{ $type }}
                                                             </option>
                                                         @endif
@@ -1423,7 +1443,8 @@
                                                     <option value="">Semua Posisi</option>
                                                     @foreach ($land->units->pluck('position')->unique() as $position)
                                                         @if ($position)
-                                                            <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
+                                                            <option value="{{ $position }}"
+                                                                {{ request('position') == $position ? 'selected' : '' }}>
                                                                 {{ $position }}
                                                             </option>
                                                         @endif
@@ -1437,7 +1458,8 @@
                                                     <option value="">Semua Hadap</option>
                                                     @foreach ($land->units->pluck('facing')->unique() as $facing)
                                                         @if ($facing)
-                                                            <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
+                                                            <option value="{{ $facing }}"
+                                                                {{ request('facing') == $facing ? 'selected' : '' }}>
                                                                 {{ $facing }}
                                                             </option>
                                                         @endif
@@ -1448,21 +1470,31 @@
                                             <div class="col-12 mb-2">
                                                 <label class="form-label">Tampil</label>
                                                 <select name="per_page" id="showDataMobile" class="form-control">
-                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 Data</option>
-                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 Data</option>
-                                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 Data</option>
-                                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 Data</option>
+                                                    <option value="10"
+                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 Data
+                                                    </option>
+                                                    <option value="25"
+                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25 Data</option>
+                                                    <option value="50"
+                                                        {{ request('per_page') == 50 ? 'selected' : '' }}>50 Data</option>
+                                                    <option value="100"
+                                                        {{ request('per_page') == 100 ? 'selected' : '' }}>100 Data
+                                                    </option>
                                                 </select>
                                             </div>
 
                                             <div class="col-6">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" title="Filter">
+                                                <button type="submit"
+                                                    class="btn btn-gradient-primary btn-icon-only-mobile w-100"
+                                                    title="Filter">
                                                     <i class="mdi mdi-filter"></i>
                                                 </button>
                                             </div>
 
                                             <div class="col-6">
-                                                <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset">
+                                                <a href="{{ url()->current() }}"
+                                                    class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
+                                                    title="Reset">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
@@ -1497,12 +1529,15 @@
                                             <td>
                                                 @php
                                                     $blok = $unit->block ?? (explode('.', $unit->unit_code)[0] ?? '-');
-                                                    $nomor = $unit->unit_number ?? (explode('.', $unit->unit_code)[1] ?? '-');
-                                                    $kodeTampil = $unit->unit_code ?? ($blok . '.' . $nomor);
+                                                    $nomor =
+                                                        $unit->unit_number ??
+                                                        (explode('.', $unit->unit_code)[1] ?? '-');
+                                                    $kodeTampil = $unit->unit_code ?? $blok . '.' . $nomor;
                                                 @endphp
                                                 <span class="info-inline-icon">
                                                     <i class="mdi mdi-home-outline"></i>
-                                                    <span class="fw-bold">{{ $unit->unit_name ?? '-' }} - {{ $kodeTampil }}</span>
+                                                    <span class="fw-bold">{{ $unit->unit_name ?? '-' }} -
+                                                        {{ $kodeTampil }}</span>
                                                 </span>
                                             </td>
 
@@ -1521,15 +1556,17 @@
                                             </td>
 
                                             <td>
-                                                @if(($unit->jenis ?? $unit->type) == 'subsidi')
+                                                @if (($unit->jenis ?? $unit->type) == 'subsidi')
                                                     <span class="badge badge-success">
                                                         <i class="mdi mdi-home-assistant me-1"></i>Subsidi
-                                                        <span class="font-weight-normal" style="opacity: 0.92"> - {{ $unit->type ?: '-' }}</span>
+                                                        <span class="font-weight-normal" style="opacity: 0.92"> -
+                                                            {{ $unit->type ?: '-' }}</span>
                                                     </span>
                                                 @else
                                                     <span class="badge badge-primary">
                                                         <i class="mdi mdi-office-building me-1"></i>Komersil
-                                                        <span class="font-weight-normal" style="opacity: 0.92"> - {{ $unit->type ?: '-' }}</span>
+                                                        <span class="font-weight-normal" style="opacity: 0.92"> -
+                                                            {{ $unit->type ?: '-' }}</span>
                                                     </span>
                                                 @endif
                                             </td>
@@ -1577,7 +1614,8 @@
                                                     <i class="mdi mdi-progress-check"></i>
                                                 </a>
 
-                                                <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
+                                                <form
+                                                    action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
                                                     method="POST" style="display:inline-block;"
                                                     onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
                                                     @csrf
@@ -1599,14 +1637,15 @@
                             </table>
                         </div>
 
-                        @if($units->count() > 0)
+                        @if ($units->count() > 0)
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                                 <div class="pagination-info mb-2 mb-sm-0">
-                                    Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} data
+                                    Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari
+                                    {{ $units->total() }} data
                                 </div>
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                        @if($units->onFirstPage())
+                                        @if ($units->onFirstPage())
                                             <li class="page-item disabled">
                                                 <span class="page-link">
                                                     <i class="mdi mdi-chevron-left"></i>
@@ -1626,7 +1665,7 @@
                                             </li>
                                         @endforeach
 
-                                        @if($units->hasMorePages())
+                                        @if ($units->hasMorePages())
                                             <li class="page-item">
                                                 <a class="page-link" href="{{ $units->nextPageUrl() }}">
                                                     <i class="mdi mdi-chevron-right"></i>
@@ -1823,8 +1862,7 @@
                                                         switch ($unitFound->construction_progress) {
                                                             case 'belum_mulai':
                                                                 $borderStyle = '2px dashed #000';
-                                                                $extraStyle =
-                                                                    'background-image: repeating-linear-gradient(
+                                                                $extraStyle = 'background-image: repeating-linear-gradient(
                                                                 45deg,
                                                                 rgba(255,255,255,0.2),
                                                                 rgba(255,255,255,0.2) 5px,
@@ -1930,7 +1968,8 @@
     </div>
 
     <!-- Modal Tambah Unit dengan 2 Metode -->
-    <div class="modal fade modal-custom" id="tambahUnitModal" tabindex="-1" aria-labelledby="tambahUnitModalLabel" aria-hidden="true">
+    <div class="modal fade modal-custom" id="tambahUnitModal" tabindex="-1" aria-labelledby="tambahUnitModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1944,7 +1983,8 @@
                     <div class="modal-tabs-wrapper">
                         <ul class="modal-tabs" id="modalTab" role="tablist">
                             <li class="modal-tab-item">
-                                <a class="modal-tab-link active" id="modal-manual-tab" data-modal-tab="manual" role="tab">
+                                <a class="modal-tab-link active" id="modal-manual-tab" data-modal-tab="manual"
+                                    role="tab">
                                     <i class="mdi mdi-pencil"></i>
                                     <span>Manual Satu per Satu</span>
                                 </a>
@@ -1960,7 +2000,8 @@
 
                     <!-- Tab Pane Manual -->
                     <div class="modal-tab-pane active" id="modal-manual-pane">
-                        <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST" id="formTambahUnitManual">
+                        <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST"
+                            id="formTambahUnitManual">
                             @csrf
                             <div class="row">
                                 <div class="col-md-3">
@@ -2026,8 +2067,8 @@
                                         <label>Harga</label>
                                         <div class="kavling-input-group-rp">
                                             <span class="kavling-input-group-rp-addon">Rp</span>
-                                            <input type="text" name="price" class="kavling-form-control price-format"
-                                                placeholder="500.000.000">
+                                            <input type="text" name="price"
+                                                class="kavling-form-control price-format" placeholder="500.000.000">
                                         </div>
                                     </div>
                                 </div>
@@ -2036,8 +2077,8 @@
                                         <label>Harga IJB</label>
                                         <div class="kavling-input-group-rp">
                                             <span class="kavling-input-group-rp-addon">Rp</span>
-                                            <input type="text" name="ijb_price" class="kavling-form-control price-format"
-                                                placeholder="500.000.000">
+                                            <input type="text" name="ijb_price"
+                                                class="kavling-form-control price-format" placeholder="500.000.000">
                                         </div>
                                     </div>
                                 </div>
@@ -2046,8 +2087,8 @@
                                         <label>Harga AJB</label>
                                         <div class="kavling-input-group-rp">
                                             <span class="kavling-input-group-rp-addon">Rp</span>
-                                            <input type="text" name="ajb_price" class="kavling-form-control price-format"
-                                                placeholder="500.000.000">
+                                            <input type="text" name="ajb_price"
+                                                class="kavling-form-control price-format" placeholder="500.000.000">
                                         </div>
                                     </div>
                                 </div>
@@ -2137,6 +2178,16 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
                         <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+
+                    <!-- Submit Manual -->
+                    <button type="submit" form="formTambahUnitManual" class="btn btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan Unit
+                    </button>
+
+                    <!-- Submit Import Excel -->
+                    <button type="submit" form="formImportExcelModal" class="btn btn-gradient-success">
+                        <i class="mdi mdi-upload me-1"></i>Import Excel
                     </button>
                 </div>
             </div>
