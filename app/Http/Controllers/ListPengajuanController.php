@@ -129,4 +129,11 @@ class ListPengajuanController extends Controller
 
         return view('marketing.cash', compact('booking', 'unit', 'promos'));
     }
+    public function destroy($id)
+{
+    $booking = Booking::findOrFail($id);
+    $booking->delete();
+
+    return redirect()->back()->with('success', 'Data berhasil dihapus');
+}
 }
