@@ -177,8 +177,8 @@
                                 ($application->booking->status_survey ?? 0) == 1;
 
                             $totalSteps = 6;
-                            // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 5.
-                            $currentStep = $isSubsidi ? 4 : 5;
+                            // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 4.
+                            $currentStep = 4;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepsStyle = $totalSteps
                                 ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"'
@@ -264,12 +264,6 @@
                                     <small>Menunggu</small>
                                 </div>
                             @else
-                                <div class="transaksi-step">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>Menunggu</small>
-                                </div>
-
                                 <div class="transaksi-step {{ $surveyDone ? 'completed' : 'active' }}">
                                     @if ($surveyDone)
                                         <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
@@ -278,6 +272,12 @@
                                     @endif
                                     <span class="transaksi-step-title">Survey</span>
                                     <small>{{ $surveyDone ? 'Selesai' : 'Progress' }}</small>
+                                </div>
+
+                                <div class="transaksi-step">
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>Menunggu</small>
                                 </div>
                             @endif
 
