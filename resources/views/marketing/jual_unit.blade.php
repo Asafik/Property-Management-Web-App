@@ -2080,13 +2080,14 @@
                         top: {{ $unit->pos_y ?? 100 }},
                         width: {{ $unit->width ?? 80 }},
                         height: {{ $unit->height ?? 60 }},
+                        angle: {{ $unit->angle ?? 0 }},
                         fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
                         opacity: 0.6,
                         stroke: 'black',
                         strokeWidth: 1,
                         hasControls: true,
                         hasBorders: true,
-                        lockRotation: true
+                        lockRotation: false
                     });
                     rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
                     rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
@@ -2125,7 +2126,8 @@
                         pos_x: Math.round(obj.left),
                         pos_y: Math.round(obj.top),
                         width: Math.round(obj.getScaledWidth()),
-                        height: Math.round(obj.getScaledHeight())
+                        height: Math.round(obj.getScaledHeight()),
+                        angle: Math.round(obj.angle)
                     });
                 }
             });
