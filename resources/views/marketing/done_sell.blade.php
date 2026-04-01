@@ -820,35 +820,39 @@
                                 <i class="mdi mdi-account"></i>
                             </div>
                             <div>
-                                <h4 class="customer-name">{{ $unit->activeBooking->customer->full_name ?? '-' }}</h4>
-                                <p class="customer-booking">Booking ID: {{ $unit->activeBooking->booking_code ?? '-' }}</p>
-                            </div>
+                                <h4 class="customer-name">
+                                    {{ $booking->customer->full_name ?? '-' }}
+                                </h4>
+                                
+                                <p class="customer-booking">
+                                    Booking ID: {{ $booking->booking_code ?? '-' }}
+                                </p>                   </div>
                         </div>
 
                         <div class="detail-card">
                             <div class="info-row">
                                 <span class="info-label">NIK</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->nik ?? '-' }}</span>
+                                <span class="info-value">{{ $booking->customer->nik ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">NPWP</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->npwp ?? '-' }}</span>
+                                <span class="info-value">{{ $booking->customer->npwp ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">No. HP</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->phone ?? '-' }}</span>
+                                <span class="info-value">{{ $booking->customer->phone ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Email</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->email ?? '-' }}</span>
+                                <span class="info-value">{{ $booking->customer->email ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Alamat</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->address ?? '-' }}</span>
+                                <span class="info-value">{{ $booking->customer->address ?? '-' }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Pekerjaan</span>
-                                <span class="info-value">{{ $unit->activeBooking->customer->job_status ?? '-' }}</span>
+                                <span class="info-value">{{ $booking->customer->job_status ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
