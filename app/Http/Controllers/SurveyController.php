@@ -21,11 +21,18 @@ class SurveyController extends Controller
 
     $query = KprApplication::with(['customer', 'unit', 'bank'])
         ->select('kpr_applications.*')
+
+       
+        ->whereHas('unit', function ($q) {
+            $q->where('jenis', 'subsidi');
+        })
+
         ->when($request->filled('search'), function ($q) use ($request) {
             $q->whereHas('customer', function ($qc) use ($request) {
                 $qc->where('full_name', 'like', '%' . $request->search . '%');
             });
         })
+
         ->when($request->filled('status'), function ($q) use ($request) {
             $q->where('kpr_applications.status', $request->status);
         });
@@ -35,18 +42,22 @@ class SurveyController extends Controller
             $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
                   ->orderBy('customers.full_name', 'asc');
             break;
+
         case 'name_desc':
             $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
                   ->orderBy('customers.full_name', 'desc');
             break;
+
         case 'unit_asc':
             $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
                   ->orderBy('land_bank_units.unit_name', 'asc');
             break;
+
         case 'unit_desc':
             $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
                   ->orderBy('land_bank_units.unit_name', 'desc');
             break;
+
         case 'latest':
         default:
             $query->latest('kpr_applications.created_at');
