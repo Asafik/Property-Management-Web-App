@@ -169,16 +169,6 @@
                                     <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
                                 </div>
                             @else
-                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
-                                    @if ($akadSelesai)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                    @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    @endif
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
-                                </div>
-
                                 <div class="transaksi-step {{ $surveyDone ? 'completed' : ($akadSelesai ? 'active' : '') }}">
                                     @if ($surveyDone)
                                         <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
@@ -187,6 +177,16 @@
                                     @endif
                                     <span class="transaksi-step-title">Survey</span>
                                     <small>{{ $surveyDone ? 'Selesai' : ($akadSelesai ? 'Progress' : 'Menunggu') }}</small>
+                                </div>
+
+                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
+                                    @if ($akadSelesai)
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                    @else
+                                        <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                    @endif
+                                    <span class="transaksi-step-title">Akad</span>
+                                    <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
                                 </div>
                             @endif
 
