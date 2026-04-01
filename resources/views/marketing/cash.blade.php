@@ -731,12 +731,12 @@
 
                             <div class="customer-unit-info">
                                 <div class="info-item">
-                                    <small>Unit</small>
-                                    <span>{{ $booking->unit->landBank->name ?? '-' }}</span>
+                                    <small>Nama - Unit</small>
+                                    <span>{{ $booking->unit->unit_name ?? $booking->unit->landBank->name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
-                                    <small>Blok/No</small>
-                                    <span>{{ $booking->unit->unit_code ?? '-' }}</span>
+                                    <small>Tipe</small>
+                                    <span>{{ $booking->unit->type ?? '-' }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Status Pembangunan</small>

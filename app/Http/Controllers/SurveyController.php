@@ -133,8 +133,11 @@ class SurveyController extends Controller
                 }
             }
 
-            // Update status survey selesai
-            $kpr->status = 'survey';
+            // Update status survey selesai - gunakan rekomendasi sebagai penanda utama
+            // Jika rekomendasi diisi, berarti survey sudah selesai
+            // if ($request->filled('rekomendasi')) {
+            //    $kpr->status = 'survey_done'; // ERROR: 'survey_done' tidak valid di enum kpr_applications
+            // }
             $kpr->save();
 
             DB::commit();

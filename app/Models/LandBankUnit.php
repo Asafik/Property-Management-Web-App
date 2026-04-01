@@ -77,7 +77,7 @@ class LandBankUnit extends Model
 public function activeBooking()
 {
     return $this->hasOne(Booking::class, 'unit_id')
-        ->whereNotIn('status', ['cancelled', 'completed', 'lunas'])
+        ->whereNotIn('status', ['cancelled'])
         ->latestOfMany();
 }
 

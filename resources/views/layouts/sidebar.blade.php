@@ -42,7 +42,7 @@
                 // Generate ID unik untuk dropdown collapse Bootstrap
                 $collapseId = 'menu-' . $main->id;
 
-                // Logika untuk mendeteksi apakah salah satu sub-menu sedang dibuka (agar dropdown tetap terbuka)
+                // Logika untuk mendeteksi apakah salah satu sub-menu sedang dibuka
                 $hasActiveSub = false;
                 if($subMenus->isNotEmpty()) {
                     foreach($subMenus as $sub) {
@@ -56,7 +56,7 @@
 
             @if ($subMenus->isEmpty())
                 <li class="nav-item">
-                    <a class="nav-link {{ $main->route && request()->routeIs($main->route) ? 'active' : '' }}" 
+                    <a class="nav-link {{ $main->route && request()->routeIs($main->route) ? 'active' : '' }}"
                        href="{{ $main->route ? route($main->route) : '#' }}">
                         <span class="menu-title">{{ $main->name }}</span>
                         @if($main->icon)
@@ -66,25 +66,25 @@
                 </li>
             @else
                 <li class="nav-item">
-                    <a class="nav-link {{ $hasActiveSub ? 'active' : '' }}" 
-                       data-bs-toggle="collapse" 
-                       href="#{{ $collapseId }}" 
-                       aria-expanded="{{ $hasActiveSub ? 'true' : 'false' }}" 
+                    <a class="nav-link {{ $hasActiveSub ? 'active' : '' }}"
+                       data-bs-toggle="collapse"
+                       href="#{{ $collapseId }}"
+                       aria-expanded="{{ $hasActiveSub ? 'true' : 'false' }}"
                        aria-controls="{{ $collapseId }}">
-                        
+
                         <span class="menu-title">{{ $main->name }}</span>
                         <i class="menu-arrow"></i>
-                        
+
                         @if($main->icon)
                             <i class="mdi {{ $main->icon }} menu-icon"></i>
                         @endif
                     </a>
-                    
+
                     <div class="collapse {{ $hasActiveSub ? 'show' : '' }}" id="{{ $collapseId }}">
                         <ul class="nav flex-column sub-menu">
                             @foreach ($subMenus as $sub)
                                 <li class="nav-item">
-                                    <a class="nav-link {{ $sub->route && request()->routeIs($sub->route) ? 'active' : '' }}" 
+                                    <a class="nav-link {{ $sub->route && request()->routeIs($sub->route) ? 'active' : '' }}"
                                        href="{{ $sub->route ? route($sub->route) : '#' }}">
                                         {{ $sub->name }}
                                     </a>
@@ -95,6 +95,6 @@
                 </li>
             @endif
         @endforeach
-        
+
     </ul>
 </nav>
