@@ -537,7 +537,7 @@
                                 </ul>
                             </div>
 
-                            {{-- ✅ BUTTON AKAD / CLOSING --}}
+                           
                             @if ($application->status === 'survey')
                                 <div class="mt-3">
                                     <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-success w-100">
