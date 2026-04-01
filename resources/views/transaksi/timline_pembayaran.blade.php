@@ -1255,12 +1255,12 @@ h3.text-dark {
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead>
-                            32<th style="width: 60px;">No</th>
-                                <th>Tanggal Jatuh Tempo</th>
-                                <th>Nominal Angsuran</th>
-                                <th>Status</th>
-                                <th>Denda</th>
-                                <th>Bukti Pembayaran</th>
+                            <th style="width: 60px;">No</th>
+                            <th>Tanggal Jatuh Tempo</th>
+                            <th>Nominal Angsuran</th>
+                            <th>Status</th>
+                            <th>Denda</th>
+                            <th>Bukti Pembayaran</th>
                                 <th>Total Bayar</th>
                             </tr>
                         </thead>

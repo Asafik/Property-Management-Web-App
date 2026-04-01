@@ -44,40 +44,145 @@ class SellUnitController extends Controller
         // FILTER SECTION
         // =========================
 
+        // Debug semua parameter
+        Log::info('All request params: ' . json_encode($request->all()));
+        Log::info('Jenis param: ' . $request->jenis);
+        Log::info('Status param: ' . $request->status);
+
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
+                // Search in unit fields
                 $q->where('block', 'like', '%' . $request->search . '%')
                     ->orWhere('unit_number', 'like', '%' . $request->search . '%')
-                    ->orWhere('unit_code', 'like', '%' . $request->search . '%');
+                    ->orWhere('unit_code', 'like', '%' . $request->search . '%')
+                    // Search in agent/sales name
+                    ->orWhereHas('activeBooking.sales', function ($subQ) use ($request) {
+                        $subQ->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    // Search in customer name - gunakan full_name
+                    ->orWhereHas('activeBooking', function ($subQ) use ($request) {
+                        $subQ->whereHas('customer', function ($customerQ) use ($request) {
+                            $customerQ->where('full_name', 'like', '%' . $request->search . '%');
+                        });
+                    });
             });
         }
 
-        if ($request->filled('project')) {
-            $query->whereHas('landBank', function ($q) use ($request) {
-                $q->where('name', $request->project);
-            });
+        if ($request->filled('jenis')) {
+            Log::info('Filter jenis: ' . $request->jenis);
+            $query->where('jenis', $request->jenis);
         }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+        // =========================
+        // SEARCH BY AGENT/SALES
+        // =========================
+        if ($request->filled('agent')) {
+            $query->whereHas('activeBooking.sales', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->agent . '%');
+            });
         }
 
-        if ($request->filled('jenis')) {
-            $query->where('jenis', $request->jenis);
+        // =========================
+        // SEARCH BY CUSTOMER
+        // =========================
+        if ($request->filled('customer')) {
+            $query->whereHas('activeBooking.customer', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->customer . '%');
+            });
         }
 
-        if ($request->filled('price')) {
-            if ($request->price == '<500') {
-                $query->where('price', '<', 500000000);
-            } elseif ($request->price == '500-1000') {
-                $query->whereBetween('price', [500000000, 1000000000]);
-            } elseif ($request->price == '>1000') {
-                $query->where('price', '>', 1000000000);
-            }
+        // =========================
+        // SEARCH BY UNIT NAME (BLOCK - UNIT)
+        // =========================
+        if ($request->filled('unit_name')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('block', 'like', '%' . $request->unit_name . '%')
+                  ->orWhere('unit_number', 'like', '%' . $request->unit_name . '%')
+                  ->orWhereRaw("CONCAT(block, ' - ', unit_number) LIKE ?", ['%' . $request->unit_name . '%']);
+            });
+        }
+
+        // =========================
+        // SEARCH BY AGENT/SALES
+        // =========================
+        if ($request->filled('agent')) {
+            $query->whereHas('activeBooking.sales', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->agent . '%');
+            });
+        }
+
+        // =========================
+        // SEARCH BY CUSTOMER
+        // =========================
+        if ($request->filled('customer')) {
+            $query->whereHas('activeBooking', function ($q) use ($request) {
+                $q->whereHas('customer', function ($customerQ) use ($request) {
+                    $customerQ->where('full_name', 'like', '%' . $request->customer . '%');
+                });
+            });
+        }
+
+        // =========================
+        // SORTING SECTION
+        // =========================
+
+        // Default sorting
+        $sortField = $request->get('sort', 'block');
+        $sortDirection = $request->get('direction', 'asc');
+
+        // Validate sort field
+        $allowedSortFields = ['block', 'unit_number', 'jenis', 'agent_name', 'customer_name'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'block';
+        }
+
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Apply sorting
+        switch ($sortField) {
+            case 'block':
+                $query->orderBy('block', $sortDirection)
+                      ->orderBy('unit_number', $sortDirection);
+                break;
+
+            case 'unit_number':
+                $query->orderBy('unit_number', $sortDirection)
+                      ->orderBy('block', $sortDirection);
+                break;
+
+            case 'jenis':
+                $query->orderBy('jenis', $sortDirection)
+                      ->orderBy('block', $sortDirection);
+                break;
+
+            case 'agent_name':
+                $query->leftJoin('bookings as b', function($join) {
+                    $join->on('b.unit_id', '=', 'land_bank_units.id')
+                         ->where('b.status', '!=', 'cancelled');
+                })
+                ->leftJoin('employees as e', 'e.id', '=', 'b.sales_id')
+                ->select('land_bank_units.*', 'e.name as agent_name')
+                ->orderBy('agent_name', $sortDirection)
+                ->orderBy('block', $sortDirection);
+                break;
+
+            case 'customer_name':
+                $query->leftJoin('bookings as b', function($join) {
+                    $join->on('b.unit_id', '=', 'land_bank_units.id')
+                         ->where('b.status', '!=', 'cancelled');
+                })
+                ->leftJoin('customers as c', 'c.id', '=', 'b.customer_id')
+                ->select('land_bank_units.*', 'c.full_name as customer_name')
+                ->orderBy('customer_name', $sortDirection)
+                ->orderBy('block', $sortDirection);
+                break;
         }
 
         // =========================
@@ -88,7 +193,15 @@ class SellUnitController extends Controller
         // =========================
         // PAGINATION
         // =========================
-        $units = $query->paginate(10)->withQueryString();
+        $perPage = $request->get('perPage', 10);
+        if (!in_array($perPage, [10, 15, 25])) {
+            $perPage = 10;
+        }
+        $units = $query->paginate($perPage)->withQueryString();
+
+        // Debug SQL
+        Log::info('SQL Query: ' . $query->toSql());
+        Log::info('Bindings: ' . json_encode($query->getBindings()));
 
         // =========================
         // STATISTIK (AKURAT SESUAI FILTER)
@@ -161,8 +274,9 @@ class SellUnitController extends Controller
             'projects',
             'types',
             'unitsForSvg',
-            'unitPaths'
-
+            'unitPaths',
+            'sortField',
+            'sortDirection'
         ));
     }
 
