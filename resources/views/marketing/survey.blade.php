@@ -540,9 +540,9 @@
                             {{-- ✅ BUTTON AKAD / CLOSING --}}
                             @if ($application->status === 'survey')
                                 <div class="mt-3">
-                                    <a href="{{ route('kpr.approve', $application->id) }}" class="btn btn-success w-100">
+                                    <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-success w-100">
                                         <i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>
-                                        Lanjut ke Akad / Closing
+                                        Lanjut ke Pecah Legal Unit
                                     </a>
                                 </div>
                             @endif
