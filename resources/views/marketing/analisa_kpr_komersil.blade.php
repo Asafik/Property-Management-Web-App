@@ -775,11 +775,14 @@
                                                         <i class="mdi mdi-file-document"></i>
                                                     </a>
 
-                                                   
-                                                    <a href="{{ route('kpr.pecahlegal', $app->id) }}"
-                                                        class="btn btn-gradient-warning btn-sm" title="Dokumen Persiapan">
-                                                        <i class="mdi mdi-folder-file-outline"></i>
-                                                    </a>
+                                                    {{-- ✅ MUNCUL HANYA JIKA STATUS SURVEY --}}
+                                                    @if ($app->status === 'survey')
+                                                        <a href="{{ route('kpr.pecahlegal', $app->id) }}"
+                                                            class="btn btn-gradient-warning btn-sm"
+                                                            title="Dokumen Persiapan">
+                                                            <i class="mdi mdi-folder-file-outline"></i>
+                                                        </a>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>

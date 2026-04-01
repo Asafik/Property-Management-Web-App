@@ -292,9 +292,9 @@ public function analisaKPRKomersil(Request $request)
     $applications = KprApplication::with(['customer', 'unit', 'bank'])
 
        
-        ->where('kpr_applications.status', 'analisa')
-        ->whereHas('unit', function ($q) {
-            $q->where('jenis', 'komersil');
+        ->where(function ($query) {
+            $query->where('kpr_applications.status', 'analisa')
+                  ->orWhere('kpr_applications.status', 'survey');
         })
 
        
