@@ -1,3 +1,4 @@
+
 @extends('layouts.partial.app')
 
 @section('title', 'Analisa KPR Komersil - Property Management App')
@@ -312,6 +313,7 @@
         .customer-name {
             font-weight: 700;
             color: #2c2e3f;
+            font-size: 0.9rem;
         }
 
         .unit-info {

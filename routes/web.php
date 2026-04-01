@@ -117,6 +117,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
         ->name('marketing.jual-unit.export.pdf');
 
     Route::get('marketing/list-pengajuan', [ListPengajuanController::class, 'index'])->name('marketing.list_pengajuan');
+    Route::delete('/marketing/pengajuan/{id}', [ListPengajuanController::class, 'destroy'])
+    ->name('pengajuan.destroy');
 
     /*
     |--------------------------------------------------------------------------

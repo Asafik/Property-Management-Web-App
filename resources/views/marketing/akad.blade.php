@@ -4,712 +4,91 @@
 
 @section('content')
     <style>
-        .kpr-page .card {
-            border: 1px solid #ebe7f2;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(29, 21, 44, 0.05);
-            overflow: hidden;
-        }
+        /* ============================================
+           CSS LOKAL (Spesifik Halaman KPR)
+           ============================================ */
 
-        .kpr-page .card-body {
-            padding: 1.25rem;
-        }
-
-        .kpr-section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 1rem;
-        }
-
-        .kpr-section-title i {
-            color: #9a55ff;
-        }
-
-        /* HEADER CUSTOMER */
-        .customer-header {
-            min-height: 110px;
-        }
-
-        .jenis-badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-        @media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-        .badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; border:none; }
-        .badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; border:none; }
-        .badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; border:none; }
-
-        .customer-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #b57cff, #8f52ff);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.20);
-        }
-
-        .customer-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #2c2e3f;
-            line-height: 1.2;
-        }
-
-        .customer-booking {
-            font-size: 1rem;
-            color: #8c8c8c;
-        }
-
-        .customer-unit-info {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(90px, auto));
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .customer-unit-info .info-item small {
-            display: block;
-            font-size: 0.8rem;
-            color: #9a9a9a;
-            margin-bottom: 2px;
-        }
-
-        .customer-unit-info .info-item span {
-            display: block;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #2c2e3f;
-            line-height: 1.3;
-        }
-
-        .kpr-muted {
-            color: #6c7383 !important;
-        }
-
-        .kpr-progress-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 0.5rem;
-        }
-
-        .kpr-progress-top span:last-child {
-            color: #9a55ff;
-            font-weight: 700;
-        }
-
-        .kpr-progress {
-            width: 100%;
+        /* Progress Bar Khusus Halaman Akad */
+        .akad-progress {
             height: 12px;
-            background: #ece9f3;
+            background: #e9ecef;
             border-radius: 999px;
             overflow: hidden;
             margin-bottom: 1.25rem;
         }
 
-        .kpr-progress-bar {
+        .akad-progress-bar {
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, #c184ff, #9a55ff);
+            background: linear-gradient(90deg, #c784ff, #9a55ff);
+            transition: width 0.3s ease;
+            max-width: 50%;
         }
 
-        .kpr-steps {
-            display: grid;
+        /* Override jumlah step menjadi 5 kolom (Global default 4) */
+        .transaksi-steps.steps-5 {
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+        }
+        /* Override jumlah step menjadi 6 kolom untuk unit komersil */
+        .transaksi-steps.steps-6 {
+            grid-template-columns: repeat(6, 1fr);
+        }
+        @media (max-width: 767.98px) {
+            .transaksi-steps.steps-5,
+            .transaksi-steps.steps-6 {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .kpr-step {
-            text-align: center;
-            position: relative;
+        /* Custom Input Group (untuk Prefix Rp & Suffix %) */
+        .transaksi-input-group {
+            display: flex;
+            align-items: stretch;
         }
-
-        .kpr-step-icon {
-            width: 42px;
-            height: 42px;
-            margin: 0 auto 0.6rem;
-            border-radius: 50%;
+        .transaksi-input-group-prepend,
+        .transaksi-input-group-append {
+            display: flex;
+        }
+        .transaksi-input-group-text {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: #f0eef5;
-            color: #9aa0ac;
-            font-size: 18px;
-            transition: all 0.25s ease;
-        }
-
-        .kpr-step.completed .kpr-step-icon {
-            background: #28a745 !important;
-            color: #fff;
-        }
-
-        .kpr-step.active .kpr-step-icon {
-            background: #9a55ff !important;
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.2);
-        }
-
-        .kpr-step-title {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #2c2e3f;
-        }
-
-        .kpr-step small {
-            display: block;
-            color: #6c7383;
-            font-size: 0.72rem;
-            line-height: 1.35;
-        }
-
-        .kpr-detail-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .kpr-detail-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .kpr-detail-item span:first-child {
-            color: #6c7383;
-        }
-
-        .kpr-detail-item span:last-child {
-            color: #2c2e3f;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        .kpr-detail-item .highlight {
-            color: #9a55ff !important;
-        }
-
-        .kpr-handler {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.85rem;
-            background: #fbf9fe;
-            border: 1px solid #ebe7f2;
-            border-radius: 14px;
-        }
-
-        .kpr-handler-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: #f4ecff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9a55ff;
-            flex-shrink: 0;
-        }
-
-        .kpr-inline-alert {
-            border-radius: 14px;
-            padding: 0.9rem 1rem;
-            font-size: 0.88rem;
-            margin-bottom: 1rem;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .kpr-inline-alert i {
-            font-size: 1rem;
-            margin-top: 2px;
-        }
-
-        .kpr-inline-alert.info {
-            background: #f6f7fb;
-            border-color: #e7eaf3;
-            color: #4b5565;
-        }
-
-        .kpr-inline-alert.warning {
-            background: #fff8e6;
-            border-color: #ffe29b;
-            color: #8a6a00;
-        }
-
-        .kpr-inline-alert.success {
-            background: #edf9f3;
-            border-color: #b9e7cf;
-            color: #146c43;
-        }
-
-        .kpr-inline-alert.danger {
-            background: #fff1f3;
-            border-color: #ffc9d0;
-            color: #b42318;
-        }
-
-        .kpr-decision-card {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .kpr-decision-card input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .kpr-decision-label {
-            border: 2px solid #ebe7f2;
-            border-radius: 18px;
-            padding: 1rem;
-            cursor: pointer;
-            background: #fff;
-            transition: all 0.25s ease;
-            height: 100%;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .kpr-decision-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(43, 31, 73, 0.07);
-        }
-
-        .kpr-decision-card.approve input[type="radio"]:checked+.kpr-decision-label {
-            border-color: #7bd3a6;
-            background: #edf9f3;
-        }
-
-        .kpr-decision-card.reject input[type="radio"]:checked+.kpr-decision-label {
-            border-color: #f3a7b2;
-            background: #fff1f3;
-        }
-
-        .kpr-decision-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 22px;
-        }
-
-        .kpr-decision-card.approve .kpr-decision-icon {
-            background: #d9f3e6;
-            color: #22a06b;
-        }
-
-        .kpr-decision-card.reject .kpr-decision-icon {
-            background: #ffe2e8;
-            color: #dc3545;
-        }
-
-        .kpr-decision-content {
-            flex: 1;
-        }
-
-        .kpr-decision-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.15rem;
-        }
-
-        .kpr-decision-desc {
-            font-size: 0.82rem;
-            color: #6c7383;
-            margin-bottom: 0;
-        }
-
-        .kpr-decision-check {
-            color: #c6ccd8;
-            font-size: 1.2rem;
-            margin-top: 2px;
-        }
-
-        .kpr-decision-card input[type="radio"]:checked+.kpr-decision-label .kpr-decision-check {
-            color: #9a55ff;
-        }
-
-        .kpr-form-shell {
-            margin-top: 1rem;
-            border-radius: 18px;
-            border: 1px solid #ebe7f2;
-            padding: 1rem;
-            background: #fff;
-            display: none;
-        }
-
-        .kpr-form-shell.approve {
-            background: linear-gradient(180deg, #fbfffd, #ffffff);
-            border-color: #cfe9da;
-        }
-
-        .kpr-form-shell.reject {
-            background: linear-gradient(180deg, #fffafb, #ffffff);
-            border-color: #ffd7de;
-        }
-
-        .kpr-form-title {
-            font-size: 1rem;
-            font-weight: 800;
-            margin-bottom: 0.9rem;
-        }
-
-        .kpr-form-title.approve {
-            color: #22a06b;
-        }
-
-        .kpr-form-title.reject {
-            color: #dc3545;
-        }
-
-        .kpr-form-group {
-            margin-bottom: 1rem;
-        }
-
-        .kpr-form-label {
-            display: block;
-            font-size: 0.86rem;
-            font-weight: 700;
-            color: #2c2e3f;
-            margin-bottom: 0.45rem;
-        }
-
-        .kpr-form-control {
-            width: 100%;
-            border: 1px solid #e6e8ef;
-            border-radius: 14px;
             padding: 0.85rem 0.95rem;
-            font-size: 0.9rem;
-            color: #2c2e3f;
-            transition: all 0.2s ease;
-            background: #fff;
+            background: #f8f9fc;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-600);
+            font-weight: 500;
         }
 
-        .kpr-form-control:focus {
-            border-color: #c6a6ff;
-            box-shadow: 0 0 0 4px rgba(154, 85, 255, 0.1);
-            outline: none;
+        /* Prepend (Rp) */
+        .transaksi-input-group-prepend .transaksi-input-group-text {
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+        }
+        .transaksi-input-group:not(.append) .transaksi-form-control {
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            border-left: none;
         }
 
-        select.kpr-form-control {
+        /* Append (%) */
+        .transaksi-input-group.append .transaksi-form-control {
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+            border-right: none;
+        }
+        .transaksi-input-group.append .transaksi-input-group-text {
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            border-left: none;
+        }
+
+        /* Custom Icon Arrow pada Select */
+        select.transaksi-form-control {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c7383' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 1em;
         }
-
-        .kpr-input-group {
-            display: flex;
-            align-items: stretch;
-        }
-
-        .kpr-input-group-prepend {
-            display: flex;
-        }
-
-        .kpr-input-group-text {
-            display: flex;
-            align-items: center;
-            padding: 0.85rem 0.95rem;
-            background: #f8f9fc;
-            border: 1px solid #e6e8ef;
-            border-radius: 14px 0 0 14px;
-            color: #6c7383;
-            font-weight: 500;
-        }
-
-        .kpr-input-group .kpr-form-control {
-            border-radius: 0 14px 14px 0;
-            border-left: none;
-        }
-
-        .kpr-input-group-append {
-            display: flex;
-        }
-
-        .kpr-input-group.append .kpr-form-control {
-            border-radius: 14px 0 0 14px;
-            border-left: 1px solid #e6e8ef;
-            border-right: none;
-        }
-
-        .kpr-input-group.append .kpr-input-group-text {
-            border-radius: 0 14px 14px 0;
-            border-left: none;
-        }
-
-        .kpr-btn.justify-content-center {
-            justify-content: center !important;
-        }
-
-        .kpr-file-upload {
-            position: relative;
-            width: 100%;
-        }
-
-        .kpr-file-upload input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .kpr-file-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
-
-        @media (min-width: 576px) {
-            .kpr-file-label {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
-
-        .kpr-file-upload:hover .kpr-file-label {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-        }
-
-        .kpr-file-upload .kpr-file-label i {
-            font-size: 1.6rem;
-            color: #9a55ff;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .kpr-file-info {
-            flex: 1;
-            width: 100%;
-        }
-
-        .kpr-file-info span {
-            display: block;
-            font-weight: 600;
-            color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
-
-        .kpr-file-info small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .kpr-sidebar-section {
-            border: 1px solid #ebe7f2;
-            border-radius: 16px;
-            padding: 1rem;
-            background: #fff;
-        }
-
-        .kpr-sidebar-section+.kpr-sidebar-section {
-            margin-top: 1rem;
-        }
-
-        .kpr-sidebar-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.75rem;
-        }
-
-        .kpr-mini-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .kpr-mini-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 0.84rem;
-            color: #6c7383;
-            margin-bottom: 0.55rem;
-        }
-
-        .kpr-mini-list li i {
-            color: #9a55ff;
-            margin-top: 2px;
-        }
-
-        .kpr-action-bar {
-            margin-top: 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .kpr-btn {
-            border: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            padding: 0.82rem 1.2rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.25s ease;
-            cursor: pointer;
-        }
-
-        .kpr-btn:hover {
-            transform: translateY(-1px);
-            text-decoration: none;
-        }
-
-        .kpr-btn-primary {
-            background: linear-gradient(90deg, #c784ff, #9a55ff);
-            color: #fff;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.22);
-        }
-
-        .kpr-btn-primary:hover {
-            color: #fff;
-            box-shadow: 0 12px 24px rgba(154, 85, 255, 0.28);
-        }
-
-        .kpr-btn-secondary {
-            background: #fff;
-            color: #2c2e3f;
-            border: 1px solid #ebe7f2;
-        }
-
-        .kpr-btn-secondary:hover {
-            border-color: #cab0ff;
-            color: #7f3df0;
-            background: #faf7ff;
-        }
-
-        .kpr-error-box {
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .kpr-sticky {
-            position: sticky;
-            top: 20px;
-        }
-
-        .kpr-status-banner {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.55rem 0.9rem;
-            border-radius: 999px;
-            font-size: 0.86rem;
-            font-weight: 700;
-        }
-
-        .kpr-status-banner.warning {
-            background: #fff8e6;
-            color: #8a6a00;
-        }
-
-        .kpr-status-banner.success {
-            background: #edf9f3;
-            color: #22a06b;
-        }
-
-        @media (max-width: 991.98px) {
-            .kpr-sticky {
-                position: static;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .customer-header {
-                min-height: auto;
-            }
-
-            .customer-avatar {
-                width: 48px;
-                height: 48px;
-                font-size: 1.1rem;
-            }
-
-            .customer-name {
-                font-size: 1.15rem;
-            }
-
-            .customer-booking {
-                font-size: 0.9rem;
-            }
-
-            .customer-unit-info {
-                width: 100%;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 1rem;
-                margin-top: 0.5rem;
-            }
-
-            .kpr-steps {
-                grid-template-columns: 1fr;
-            }
-
-            .kpr-action-bar {
-                flex-direction: column-reverse;
-            }
-
-            .kpr-btn {
-                justify-content: center;
-                width: 100%;
-            }
-        }
     </style>
 
-    <div class="kpr-page">
-        <!-- Header Customer -->
+    <div class="transaksi-page">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -727,7 +106,7 @@
                                             $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
                                             $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
                                         @endphp
-                                        <span class="jenis-badge {{ $badgeClass }}">
+                                        <span class="badge {{ $badgeClass }}">
                                             <i class="mdi {{ $icon }} me-1"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
@@ -756,74 +135,142 @@
             </div>
         </div>
 
-        <!-- Progress Steps & Detail KPR -->
         <div class="row mt-4">
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="kpr-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-timeline-text"></i>
-                            <span>Tahapan Konfirmasi KPR</span>
+                            <span>Tahapan Verifikasi KPR</span>
                         </div>
 
                         @php
                             $jenis = strtolower($application->unit->jenis ?? '');
+                            $surveyDone = !empty($application->rekomendasi) ||
+                                       strtolower($application->status_survey ?? '') == 'done' ||
+                                       ($application->booking->status_survey ?? 0) == 1;
                         @endphp
 
-                        <div class="kpr-progress-top">
-                            <span class="kpr-muted">Progress Konfirmasi</span>
-                            <span>Tahap {{ $jenis == 'komersil' ? '4 dari 5' : '3 dari 4' }} (Proses Akad)</span>
+                        <div class="transaksi-progress-top">
+                            <span class="transaksi-muted">Progress Proses</span>
+                            @if($jenis == 'komersil')
+                                @if($surveyDone)
+                                    <span>Tahap 5 dari 6 (Proses Akad)</span>
+                                @else
+                                    <span>Menunggu</span>
+                                @endif
+                            @else
+                                @if($surveyDone)
+                                    <span>Tahap 4 dari 5 (Proses Akad)</span>
+                                @else
+                                    <span>Menunggu</span>
+                                @endif
+                            @endif
                         </div>
 
-                        <div class="kpr-progress">
-                            <div class="kpr-progress-bar" style="width: {{ $jenis == 'komersil' ? '80' : '75' }}%;"></div>
+                        <div class="akad-progress">
+                            <div class="akad-progress-bar"></div>
                         </div>
 
-                        <div class="kpr-steps" {!! $jenis == 'komersil' ? 'style="grid-template-columns: repeat(5, 1fr);"' : '' !!}>
-                            <!-- Step 1: Pengajuan - COMPLETED -->
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
+                        <div class="transaksi-steps {{ $jenis == 'komersil' ? 'steps-6' : 'steps-5' }}" {!! $jenis == 'subsidi' ? 'style="grid-template-columns: repeat(5, 1fr);"' : ($jenis != 'komersil' && $jenis != 'subsidi' ? 'style="grid-template-columns: repeat(4, 1fr);"' : '') !!}>
+                            <div class="transaksi-step completed">
+                                <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="kpr-step-title">Pengajuan</span>
+                                <span class="transaksi-step-title">Pengajuan</span>
                                 <small>{{ \Carbon\Carbon::parse($application->submitted_at ?? now())->translatedFormat('j F Y') }}</small>
                             </div>
 
-                            <!-- Step 2: Verifikasi - COMPLETED -->
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
+                            <div class="transaksi-step completed">
+                                <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
-                                <span class="kpr-step-title">Verifikasi</span>
+                                <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ \Carbon\Carbon::parse($application->created_at ?? now())->translatedFormat('j F Y') }}</small>
                             </div>
 
+                            @php
+                                $status = strtolower($application->unit->construction_progress ?? '');
+                                $statusText = [
+                                    'belum_mulai' => 'Belum mulai pembangunan',
+                                    'pondasi' => 'Tahap pondasi',
+                                    'dinding' => 'Tahap dinding',
+                                    'atap' => 'Tahap atap',
+                                    'finishing' => 'Tahap finishing',
+                                    'selesai' => 'Pembangunan selesai',
+                                ];
+                                $config = [
+                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
+                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
+                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
+                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
+                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
+                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
+                                ];
+                                $statusConfig = $config[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
+                            @endphp
+
+                            <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
+                                @if ($status == 'selesai')
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                @else
+                                    <div class="transaksi-step-icon border border-{{ $statusConfig['color'] }} text-{{ $statusConfig['color'] }}">
+                                        <i class="mdi {{ $statusConfig['icon'] }}"></i>
+                                    </div>
+                                @endif
+                                <span class="transaksi-step-title">Pembangunan</span>
+                                <small>{{ $statusText[$status] ?? 'Pembangunan selesai' }}</small>
+                            </div>
+
                             @if($jenis == 'komersil')
-                            <!-- Step 3: Survey - COMPLETED (Assuming survey done before Akad) -->
-                            <div class="kpr-step completed">
-                                <div class="kpr-step-icon">
-                                    <i class="mdi mdi-check"></i>
-                                </div>
-                                <span class="kpr-step-title">Survey</span>
-                                <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('j F Y') : 'Selesai' }}</small>
+                            <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
+                                @if($surveyDone)
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('j F Y') : 'Selesai' }}</small>
+                                @else
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-home-search-outline"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>Menunggu</small>
+                                @endif
+                            </div>
+                            @else
+                            <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
+                                @if($surveyDone)
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('j F Y') : 'Selesai' }}</small>
+                                @else
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-home-search-outline"></i>
+                                    </div>
+                                    <span class="transaksi-step-title">Survey</span>
+                                    <small>Menunggu</small>
+                                @endif
                             </div>
                             @endif
 
-                            <!-- Step Akad - ACTIVE -->
-                            <div class="kpr-step active">
-                                <div class="kpr-step-icon">
+                            <div class="transaksi-step active">
+                                <div class="transaksi-step-icon">
                                     <i class="mdi mdi-handshake-outline"></i>
                                 </div>
-                                <span class="kpr-step-title">Akad</span>
-                                <small>Sedang diproses</small>
+                                <span class="transaksi-step-title">Akad</span>
+                                <small>Progress</small>
                             </div>
 
-                            <!-- Step Serah Terima - PENDING -->
-                            <div class="kpr-step">
-                                <div class="kpr-step-icon">
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
                                     <i class="mdi mdi-key-variant"></i>
                                 </div>
-                                <span class="kpr-step-title">Serah Terima</span>
+                                <span class="transaksi-step-title">Serah Terima</span>
                                 <small>Menunggu</small>
                             </div>
                         </div>
@@ -834,35 +281,42 @@
             <div class="col-12 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="kpr-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-bank-outline"></i>
                             <span>Detail Pengajuan KPR</span>
                         </div>
 
-                        <div class="kpr-detail-list">
-                            <div class="kpr-detail-item">
+                        <div class="transaksi-detail-list">
+                            <div class="transaksi-detail-item">
                                 <span>Bank Tujuan</span>
                                 <span>{{ $application->bank->bank_name ?? '-' }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Jumlah Pinjaman</span>
                                 <span>Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Tenor</span>
                                 <span>{{ $application->tenor ?? '-' }} Tahun</span>
                             </div>
-                            <div class="kpr-detail-item">
+                            <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
                                 <span class="highlight">Rp {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Metode Pembayaran</span>
+                                <span class="badge badge-gradient-primary">
+                                    <i class="mdi mdi-bank-transfer-in me-1"></i>
+                                    KPR
+                                </span>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <small class="kpr-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="kpr-handler">
-                            <div class="kpr-handler-icon">
+                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
+                        <div class="transaksi-handler">
+                            <div class="transaksi-handler-icon">
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
@@ -874,36 +328,35 @@
             </div>
         </div>
 
-        <!-- Form Konfirmasi & Sidebar -->
         <div class="row mt-4">
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card">
                     <div class="card-body">
-                        <div class="kpr-section-title">
+                        <div class="transaksi-section-title">
                             <i class="mdi mdi-shield-check-outline"></i>
                             <span>Konfirmasi Persetujuan KPR</span>
                         </div>
 
                         @if (session('success'))
-                            <div class="kpr-inline-alert success">
+                            <div class="transaksi-inline-alert success">
                                 <i class="mdi mdi-check-circle-outline"></i>
                                 <div>{{ session('success') }}</div>
                             </div>
                         @endif
 
                         @if (session('error'))
-                            <div class="kpr-inline-alert danger">
+                            <div class="transaksi-inline-alert danger">
                                 <i class="mdi mdi-alert-circle-outline"></i>
                                 <div>{{ session('error') }}</div>
                             </div>
                         @endif
 
-                        <div class="kpr-inline-alert info mb-4">
+                        <div class="transaksi-inline-alert info mb-4">
                             <i class="mdi mdi-information-outline"></i>
                             <div>Pilih status persetujuan dari bank. Keputusan ini akan menentukan langkah selanjutnya.</div>
                         </div>
 
-                        <div class="kpr-inline-alert danger kpr-error-box" id="decisionErrorBox">
+                        <div class="transaksi-inline-alert danger transaksi-error-box" id="decisionErrorBox">
                             <i class="mdi mdi-alert-circle-outline"></i>
                             <div>Silakan pilih keputusan persetujuan terlebih dahulu sebelum submit.</div>
                         </div>
@@ -914,17 +367,17 @@
 
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-md-6">
-                                    <div class="kpr-decision-card approve" id="cardSetuju">
+                                    <div class="transaksi-decision-card approve" id="cardSetuju">
                                         <input type="radio" name="decision_choice" id="decisionApprove" value="survey">
-                                        <label for="decisionApprove" class="kpr-decision-label">
-                                            <div class="kpr-decision-icon">
+                                        <label for="decisionApprove" class="transaksi-decision-label">
+                                            <div class="transaksi-decision-icon">
                                                 <i class="mdi mdi-check-bold"></i>
                                             </div>
-                                            <div class="kpr-decision-content">
-                                                <div class="kpr-decision-title">KPR DISETUJUI</div>
-                                                <p class="kpr-decision-desc mb-0">Lanjut ke proses Survey / Akad</p>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">KPR DISETUJUI</div>
+                                                <p class="transaksi-decision-desc mb-0">Lanjut ke proses Survey / Akad</p>
                                             </div>
-                                            <div class="kpr-decision-check">
+                                            <div class="transaksi-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
@@ -932,17 +385,17 @@
                                 </div>
 
                                 <div class="col-12 col-md-6">
-                                    <div class="kpr-decision-card reject" id="cardTolak">
+                                    <div class="transaksi-decision-card reject" id="cardTolak">
                                         <input type="radio" name="decision_choice" id="decisionReject" value="rejected">
-                                        <label for="decisionReject" class="kpr-decision-label">
-                                            <div class="kpr-decision-icon">
+                                        <label for="decisionReject" class="transaksi-decision-label">
+                                            <div class="transaksi-decision-icon">
                                                 <i class="mdi mdi-close-thick"></i>
                                             </div>
-                                            <div class="kpr-decision-content">
-                                                <div class="kpr-decision-title">KPR DITOLAK</div>
-                                                <p class="kpr-decision-desc mb-0">Pindah ke Cash / Pengajuan Ulang</p>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">KPR DITOLAK</div>
+                                                <p class="transaksi-decision-desc mb-0">Pindah ke Cash / Pengajuan Ulang</p>
                                             </div>
-                                            <div class="kpr-decision-check">
+                                            <div class="transaksi-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
@@ -950,44 +403,43 @@
                                 </div>
                             </div>
 
-                            <!-- FORM KPR DISETUJUI -->
-                            <div id="formSetuju" class="kpr-form-shell approve">
-                                <div class="kpr-form-title approve">Form Persetujuan KPR</div>
+                            <div id="formSetuju" class="transaksi-form-shell approve">
+                                <div class="transaksi-form-title approve">Form Persetujuan KPR</div>
 
-                                <div class="kpr-inline-alert success">
+                                <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
                                     <div><strong>KPR disetujui.</strong> Silakan isi detail persetujuan dari bank.</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <div class="kpr-form-group">
-                                            <label class="kpr-form-label">Nilai Disetujui</label>
-                                            <div class="kpr-input-group">
-                                                <div class="kpr-input-group-prepend">
-                                                    <span class="kpr-input-group-text">Rp</span>
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Nilai Disetujui</label>
+                                            <div class="transaksi-input-group">
+                                                <div class="transaksi-input-group-prepend">
+                                                    <span class="transaksi-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="kpr-form-control" name="jumlah_pinjaman" value="{{ $application->jumlah_pinjaman ?? '' }}">
+                                                <input type="text" class="transaksi-form-control" name="jumlah_pinjaman" value="{{ $application->jumlah_pinjaman ?? '' }}">
                                             </div>
-                                            <small class="kpr-muted">Bisa berbeda dari pengajuan</small>
+                                            <small class="transaksi-muted">Bisa berbeda dari pengajuan</small>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="kpr-form-group">
-                                            <label class="kpr-form-label">Angsuran Disetujui</label>
-                                            <div class="kpr-input-group">
-                                                <div class="kpr-input-group-prepend">
-                                                    <span class="kpr-input-group-text">Rp</span>
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Angsuran Disetujui</label>
+                                            <div class="transaksi-input-group">
+                                                <div class="transaksi-input-group-prepend">
+                                                    <span class="transaksi-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="kpr-form-control" name="estimasi_angsuran" value="{{ $application->estimasi_angsuran ?? '' }}">
+                                                <input type="text" class="transaksi-form-control" name="estimasi_angsuran" value="{{ $application->estimasi_angsuran ?? '' }}">
                                             </div>
-                                            <small class="kpr-muted">Bisa berbeda dari pengajuan</small>
+                                            <small class="transaksi-muted">Bisa berbeda dari pengajuan</small>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="kpr-form-group">
-                                            <label class="kpr-form-label">Tenor Disetujui</label>
-                                            <select class="kpr-form-control" name="tenor">
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Tenor Disetujui</label>
+                                            <select class="transaksi-form-control" name="tenor">
                                                 <option value="5" {{ ($application->tenor ?? '') == 5 ? 'selected' : '' }}>5 Tahun</option>
                                                 <option value="10" {{ ($application->tenor ?? '') == 10 ? 'selected' : '' }}>10 Tahun</option>
                                                 <option value="15" {{ ($application->tenor ?? '') == 15 ? 'selected' : '' }}>15 Tahun</option>
@@ -996,12 +448,12 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="kpr-form-group">
-                                            <label class="kpr-form-label">Bunga Final</label>
-                                            <div class="kpr-input-group append">
-                                                <input type="text" class="kpr-form-control" name="bunga" value="{{ $application->bunga ?? '' }}">
-                                                <div class="kpr-input-group-append">
-                                                    <span class="kpr-input-group-text">%</span>
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Bunga Final</label>
+                                            <div class="transaksi-input-group append">
+                                                <input type="text" class="transaksi-form-control" name="bunga" value="{{ $application->bunga ?? '' }}">
+                                                <div class="transaksi-input-group-append">
+                                                    <span class="transaksi-input-group-text">%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1010,26 +462,26 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="kpr-form-group">
-                                            <label class="kpr-form-label">No. Surat Persetujuan (SP3K)</label>
-                                            <input type="text" class="kpr-form-control" name="no_sp3k" value="SP3K/2025/021/ABC">
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">No. Surat Persetujuan (SP3K)</label>
+                                            <input type="text" class="transaksi-form-control" name="no_sp3k" value="SP3K/2025/021/ABC">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="kpr-form-group">
-                                            <label class="kpr-form-label">Tanggal Persetujuan</label>
-                                            <input type="date" class="kpr-form-control" name="approved_at" value="{{ date('Y-m-d') }}">
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Tanggal Persetujuan</label>
+                                            <input type="date" class="transaksi-form-control" name="approved_at" value="{{ date('Y-m-d') }}">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="kpr-form-group">
-                                    <label class="kpr-form-label">Upload Surat Persetujuan Prinsip</label>
-                                    <div class="kpr-file-upload">
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Upload Surat Persetujuan Prinsip</label>
+                                    <div class="transaksi-file-upload">
                                         <input type="file" name="berita_acara" accept=".jpg,.jpeg,.png,.pdf">
-                                        <div class="kpr-file-label">
+                                        <div class="transaksi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="kpr-file-info">
+                                            <div class="transaksi-file-info">
                                                 <span>Upload Surat Persetujuan</span>
                                                 <small>Format: JPG, PNG, PDF (Max 5MB)</small>
                                             </div>
@@ -1037,24 +489,23 @@
                                     </div>
                                 </div>
 
-                                <div class="kpr-form-group mb-0">
-                                    <label class="kpr-form-label">Catatan Persetujuan</label>
-                                    <textarea class="kpr-form-control" name="catatan" rows="2">Disetujui dengan nilai Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}, bunga {{ $application->bunga ?? '' }}%</textarea>
+                                <div class="transaksi-form-group mb-0">
+                                    <label class="transaksi-form-label">Catatan Persetujuan</label>
+                                    <textarea class="transaksi-form-control" name="catatan" rows="2">Disetujui dengan nilai Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}, bunga {{ $application->bunga ?? '' }}%</textarea>
                                 </div>
                             </div>
 
-                            <!-- FORM KPR DITOLAK -->
-                            <div id="formTolak" class="kpr-form-shell reject">
-                                <div class="kpr-form-title reject">Form Penolakan KPR</div>
+                            <div id="formTolak" class="transaksi-form-shell reject">
+                                <div class="transaksi-form-title reject">Form Penolakan KPR</div>
 
-                                <div class="kpr-inline-alert danger">
+                                <div class="transaksi-inline-alert danger">
                                     <i class="mdi mdi-close-circle-outline"></i>
                                     <div><strong>KPR DITOLAK</strong> - Pilih alasan penolakan dari bank.</div>
                                 </div>
 
-                                <div class="kpr-form-group">
-                                    <label class="kpr-form-label">Alasan Penolakan dari Bank</label>
-                                    <select class="kpr-form-control" name="alasan_tolak" id="alasanTolak">
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Alasan Penolakan dari Bank</label>
+                                    <select class="transaksi-form-control" name="alasan_tolak" id="alasanTolak">
                                         <option value="">-- Pilih Alasan --</option>
                                         <option value="BI Checking">BI Checking / SLIK Bermasalah</option>
                                         <option value="Kemampuan Bayar">Kemampuan Bayar Kurang</option>
@@ -1065,24 +516,24 @@
                                     </select>
                                 </div>
 
-                                <div class="kpr-form-group" id="alasanLainnya" style="display: none;">
-                                    <label class="kpr-form-label">Tulis Alasan Lainnya</label>
-                                    <input type="text" class="kpr-form-control" name="alasan_lainnya" placeholder="Contoh: Kebijakan bank baru">
+                                <div class="transaksi-form-group" id="alasanLainnya" style="display: none;">
+                                    <label class="transaksi-form-label">Tulis Alasan Lainnya</label>
+                                    <input type="text" class="transaksi-form-control" name="alasan_lainnya" placeholder="Contoh: Kebijakan bank baru">
                                 </div>
 
-                                <div class="kpr-form-group mb-0">
-                                    <label class="kpr-form-label">Catatan Penolakan</label>
-                                    <textarea class="kpr-form-control" name="catatan" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
+                                <div class="transaksi-form-group mb-0">
+                                    <label class="transaksi-form-label">Catatan Penolakan</label>
+                                    <textarea class="transaksi-form-control" name="catatan" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
                                 </div>
                             </div>
 
-                            <div class="kpr-action-bar">
-                                <a href="{{ url('/marketing/kpr') }}" class="kpr-btn kpr-btn-secondary">
+                            <div class="transaksi-action-bar">
+                                <a href="{{ url('/marketing/kpr') }}" class="transaksi-btn transaksi-btn-secondary">
                                     <i class="mdi mdi-arrow-left"></i>
                                     Kembali
                                 </a>
 
-                                <button type="submit" class="kpr-btn kpr-btn-primary">
+                                <button type="submit" class="transaksi-btn transaksi-btn-primary">
                                     <i class="mdi mdi-content-save-outline"></i>
                                     Simpan Konfirmasi
                                 </button>
@@ -1093,11 +544,10 @@
             </div>
 
             <div class="col-12 col-lg-4">
-                <div class="kpr-sticky">
-                    <!-- Card Serah Terima Unit -->
+                <div class="transaksi-sticky">
                     <div class="card">
                         <div class="card-body">
-                            <div class="kpr-section-title">
+                            <div class="transaksi-section-title">
                                 <i class="mdi mdi-home-key"></i>
                                 <span>Serah Terima Unit</span>
                             </div>
@@ -1108,7 +558,7 @@
                                     <p class="mt-3 mb-2 fw-medium">Akad telah disetujui</p>
                                     <p class="text-muted small">Unit siap untuk proses serah terima</p>
                                 </div>
-                                <a href="{{ route('booking.serah-terima', $application->booking->id ?? 0) }}" class="kpr-btn kpr-btn-primary w-100 justify-content-center">
+                                <a href="{{ route('booking.serah-terima', $application->booking->id ?? 0) }}" class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
                                     <i class="mdi mdi-key me-1"></i> Proses Serah Terima
                                 </a>
                             @else
@@ -1120,17 +570,16 @@
                         </div>
                     </div>
 
-                    <!-- Card Panduan Konfirmasi -->
                     <div class="card mt-4">
                         <div class="card-body">
-                            <div class="kpr-section-title">
+                            <div class="transaksi-section-title">
                                 <i class="mdi mdi-lightbulb-on-outline"></i>
                                 <span>Panduan Konfirmasi</span>
                             </div>
 
-                            <div class="kpr-sidebar-section">
-                                <div class="kpr-sidebar-title">Saat Disetujui</div>
-                                <ul class="kpr-mini-list mb-0">
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Saat Disetujui</div>
+                                <ul class="transaksi-mini-list mb-0">
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
                                         <span>Isi nilai pinjaman dan angsuran yang disetujui bank.</span>
@@ -1146,9 +595,9 @@
                                 </ul>
                             </div>
 
-                            <div class="kpr-sidebar-section">
-                                <div class="kpr-sidebar-title">Saat Ditolak</div>
-                                <ul class="kpr-mini-list mb-0">
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Saat Ditolak</div>
+                                <ul class="transaksi-mini-list mb-0">
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
                                         <span>Pilih alasan penolakan yang sesuai dari bank.</span>
@@ -1219,14 +668,29 @@
             // File upload preview
             $(document).on('change', 'input[type="file"]', function(e) {
                 const file = e.target.files[0];
-                const $container = $(this).closest('.kpr-file-upload');
+                const $container = $(this).closest('.transaksi-file-upload');
 
                 if (file) {
                     const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                    $container.find('.kpr-file-info span').text(file.name);
-                    $container.find('.kpr-file-info small').text(sizeInMB + ' MB');
+                    $container.find('.transaksi-file-info span').text(file.name);
+                    $container.find('.transaksi-file-info small').text(sizeInMB + ' MB');
                 }
             });
+
+            // Set progress bar width dynamically
+            const jenis = '{{ $jenis ?? '' }}';
+            const surveyDone = {{ $surveyDone ? 'true' : 'false' }};
+
+            if (surveyDone) {
+                // Survey sudah selesai, progress sampai Akad
+                const progressWidth = jenis === 'komersil' ? '50%' : '40%';
+                $('.akad-progress-bar').css('width', progressWidth);
+            } else {
+                // Survey belum selesai, progress berhenti di Survey
+                const progressWidth = jenis === 'komersil' ? '33%' : '25%';
+                $('.akad-progress-bar').css('width', progressWidth);
+            }
+        });
 
             // Form validation
             $('#formKonfirmasiKpr').on('submit', function(e) {
