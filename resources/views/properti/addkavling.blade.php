@@ -332,6 +332,23 @@
             margin-top: 2px;
         }
 
+        .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-size {
+            font-size: 0.7rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
+
+        @media (min-width: 576px) {
+            .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-size {
+                margin-top: 0;
+            }
+        }
+
         .form-control,
         .form-select {
             border: 1px solid #e9ecef;
@@ -2143,8 +2160,17 @@
                                 <div class="col-md-4">
                                     <div class="kavling-form-group">
                                         <label>Dokumen SPK (PDF)</label>
-                                        <input type="file" name="dokumen_spk" class="kavling-form-control"
-                                            accept=".pdf">
+                                        <div class="kavling-file-upload-modern">
+                                            <input type="file" name="dokumen_spk" id="uploadSPK" accept=".pdf">
+                                            <div class="kavling-file-label-modern">
+                                                <i class="mdi mdi-cloud-upload"></i>
+                                                <div class="kavling-file-info-modern">
+                                                    <span id="spkFileName">Upload Dokumen SPK</span>
+                                                    <small>Format: PDF (Max: 5MB)</small>
+                                                </div>
+                                                <span class="kavling-file-size" id="spkFileSize"></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2338,12 +2364,45 @@
                 }
             });
 
+            // SPK file upload handler
+            $('#uploadSPK').on('change', function(e) {
+                const file = e.target.files[0];
+                const fileNameSpan = $('#spkFileName');
+                const fileSizeSpan = $('#spkFileSize');
+
+                if (!file) {
+                    fileNameSpan.text("Upload Dokumen SPK");
+                    fileSizeSpan.text("");
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("File maksimal 5MB!");
+                    $(this).val("");
+                    fileNameSpan.text("Upload Dokumen SPK");
+                    fileSizeSpan.text("");
+                    return;
+                }
+
+                fileNameSpan.text(file.name);
+
+                const sizeKB = (file.size / 1024).toFixed(0);
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                if (file.size >= 1024 * 1024) {
+                    fileSizeSpan.text(sizeMB + " MB");
+                } else {
+                    fileSizeSpan.text(sizeKB + " KB");
+                }
+            });
+
             // Reset form saat modal ditutup
             $('#tambahUnitModal').on('hidden.bs.modal', function() {
                 $('#formTambahUnitManual')[0].reset();
                 $('#formImportExcelModal')[0].reset();
                 $('.price-format').val('');
                 $('#fileNameModal').text("Upload File Excel");
+                $('#spkFileName').text("Upload Dokumen SPK");
+                $('#spkFileSize').text("");
 
                 // Reset ke tab manual
                 $('.modal-tab-link').removeClass('active');

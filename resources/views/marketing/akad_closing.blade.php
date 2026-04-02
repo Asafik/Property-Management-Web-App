@@ -9,12 +9,12 @@
         $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
         $isSubsidi = strtolower($kpr->booking->unit->jenis ?? '') === 'subsidi';
         $surveyDone = !empty($kpr->rekomendasi) || strtolower($kpr->status_survey ?? '') == 'done' || ($kpr->booking->status_survey ?? 0) == 1;
-        $totalSteps = 6;
+        $totalSteps = 7;
 
         if ($isSubsidi) {
-            $currentStep = $akadSelesai ? 6 : 5;
+            $currentStep = $akadSelesai ? 7 : 6;
         } else {
-            $currentStep = $akadSelesai ? 5 : 4;
+            $currentStep = $akadSelesai ? 6 : 5;
         }
         $progressWidth = intval(($currentStep / $totalSteps) * 100);
     @endphp
@@ -92,7 +92,7 @@
                             <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
                         </div>
 
-                        <div class="transaksi-steps" style="grid-template-columns: repeat(6, 1fr);">
+                        <div class="transaksi-steps" style="grid-template-columns: repeat(7, 1fr);">
                             <div class="transaksi-step completed">
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
@@ -107,6 +107,14 @@
                                 </div>
                                 <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') : \Carbon\Carbon::parse($kpr->updated_at)->translatedFormat('d F Y') }}</small>
+                            </div>
+
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-clipboard-text"></i>
+                                </div>
+                                <span class="transaksi-step-title">SPK</span>
+                                <small>Menunggu</small>
                             </div>
 
                             @php

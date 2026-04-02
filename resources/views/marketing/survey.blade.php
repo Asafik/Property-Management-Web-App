@@ -176,9 +176,9 @@
                                 strtolower($application->status_survey ?? '') == 'done' ||
                                 ($application->booking->status_survey ?? 0) == 1;
 
-                            $totalSteps = 6;
-                            // Jika subsidi, Survey adalah tahap 4. Jika komersil, Survey tahap 4.
-                            $currentStep = 4;
+                            $totalSteps = 7;
+                            // Jika subsidi, Survey adalah tahap 5. Jika komersil, Survey tahap 5.
+                            $currentStep = 5;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepsStyle = $totalSteps
                                 ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"'
@@ -205,6 +205,14 @@
                                 <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
                                 <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
+                            </div>
+
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-clipboard-text"></i>
+                                </div>
+                                <span class="transaksi-step-title">SPK</span>
+                                <small>Menunggu</small>
                             </div>
 
                             @php
@@ -537,12 +545,7 @@
                                 </ul>
                             </div>
 
-<<<<<<< HEAD
-                           
-=======
-                            
->>>>>>> main
-                            @if ($application->status === 'survey')
+                            @if ($application->status === 'survey' && !$isSubsidi)
                                 <div class="mt-3">
                                     <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-success w-100">
                                         <i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>

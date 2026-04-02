@@ -462,10 +462,10 @@
                         @php
                             $jenis = strtolower($booking->unit->jenis ?? '');
 
-                            // Untuk Cash: 6 steps - Booking, Pelunasan, Persiapan Legal, Pembangunan, Akad, Serah Terima
+                            // Untuk Cash: 7 steps - Booking, Pelunasan, Persiapan Legal, SPK, Pembangunan, Akad, Serah Terima
                             // Untuk KPR: 6 steps - Booking, Verifikasi, Pembangunan, Akad, Survey, Serah Terima
                             $isKpr = strtolower($booking->purchase_type ?? '') == 'kpr';
-                            $totalSteps = 6;
+                            $totalSteps = $isKpr ? 6 : 7;
 
                             // Determine current step based on booking status
                             $bookingDone = !empty($booking->booking_date);
@@ -568,6 +568,14 @@
                                 </div>
                                 <span class="transaksi-step-title">Persiapan Legal</span>
                                 <small>Selesai</small>
+                            </div>
+
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-clipboard-text"></i>
+                                </div>
+                                <span class="transaksi-step-title">SPK</span>
+                                <small>Menunggu</small>
                             </div>
 
                             <div class="transaksi-step completed">

@@ -457,17 +457,17 @@
                         @php
                             $jenis = strtolower($application->unit->jenis ?? '');
                             $isSubsidi = $jenis === 'subsidi';
-                            $totalSteps = 6;
-                            
+                            $totalSteps = 7;
+
                             // Di halaman Serah Terima, asumsinya semua tahap sebelumnya sudah selesai
                             $pembangunanDone = true;
-                            $akadDone = true; 
+                            $akadDone = true;
                             $surveyDone = true;
                             $serahTerimaDone = $application->booking->status == 'completed' && !empty($application->booking->serah_terima_date);
-                            
-                            // Jika Serah terima sudah tersubmit dan berstatus completed, current step = 6 (selesai).
-                            // Jika belum disubmit (ada di form ini), masih tahap 6 tapi belum selesai (active).
-                            $currentStep = 6; 
+
+                            // Jika Serah terima sudah tersubmit dan berstatus completed, current step = 7 (selesai).
+                            // Jika belum disubmit (ada di form ini), masih tahap 7 tapi belum selesai (active).
+                            $currentStep = 7;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                             $stepStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
                         @endphp
@@ -496,6 +496,14 @@
                                 </div>
                                 <span class="transaksi-step-title">Verifikasi</span>
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
+                            </div>
+
+                            <div class="transaksi-step">
+                                <div class="transaksi-step-icon">
+                                    <i class="mdi mdi-clipboard-text"></i>
+                                </div>
+                                <span class="transaksi-step-title">SPK</span>
+                                <small>Menunggu</small>
                             </div>
 
                             @php
@@ -953,7 +961,7 @@
 
             // Intercept Submit Form untuk Konfirmasi & Loading
             $('form').on('submit', function(e) {
-                e.preventDefault(); 
+                e.preventDefault();
                 const form = this;
 
                 // Cek apakah checkbox persetujuan sudah di-centang

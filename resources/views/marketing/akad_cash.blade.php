@@ -8,9 +8,9 @@
            CSS LOKAL (Spesifik Halaman Akad Cash)
            ============================================ */
 
-        /* Override jumlah step menjadi 6 kolom (Global default 4) */
+        /* Override jumlah step menjadi 7 kolom (Global default 4) */
         .transaksi-steps {
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(7, 1fr);
         }
         @media (max-width: 767.98px) {
             .transaksi-steps {
@@ -77,6 +77,52 @@
             color: var(--success);
             background: rgba(40, 167, 69, 0.1);
         }
+
+        /* Custom style untuk step yang off/default */
+        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) .transaksi-step-icon {
+            background: #e5e7eb !important;
+            color: #6b7280 !important;
+            border: 2px solid #d1d5db !important;
+            box-shadow: none !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) .transaksi-step-icon i {
+            color: #6b7280 !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) .transaksi-step-title {
+            color: #6b7280 !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) small {
+            color: #9ca3af !important;
+        }
+
+        /* Override global CSS untuk default step */
+        .transaksi-page .transaksi-steps .transaksi-step .transaksi-step-icon {
+            background: #e5e7eb !important;
+            color: #6b7280 !important;
+            border: 2px solid #d1d5db !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step .transaksi-step-icon i {
+            color: #6b7280 !important;
+        }
+
+        /* Override untuk active dan completed */
+        .transaksi-page .transaksi-steps .transaksi-step.active .transaksi-step-icon {
+            background: var(--warning) !important;
+            color: var(--white) !important;
+            border: none !important;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2) !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step.active .transaksi-step-icon i {
+            color: var(--white) !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step.completed .transaksi-step-icon {
+            background: var(--success) !important;
+            color: var(--white) !important;
+            border: none !important;
+        }
+        .transaksi-page .transaksi-steps .transaksi-step.completed .transaksi-step-icon i {
+            color: var(--white) !important;
+        }
     </style>
 
     <div class="transaksi-page">
@@ -140,6 +186,7 @@
                                 'booking' => 'Booking',
                                 'cash' => 'Pelunasan',
                                 'legal' => 'Persiapan Legal',
+                                'spk' => 'SPK',
                                 'construction' => 'Pembangunan',
                                 'akad' => 'Akad',
                                 'completed' => 'Serah Terima',
@@ -147,6 +194,7 @@
                             $isBookingDone = !empty($booking->booking_date);
                             $isCashDone = strtolower($booking->status_cash ?? '') == 'done' || in_array(strtolower($booking->purchase_type), ['cash', 'cash_tempo']);
                             $isLegalDone = strtolower($booking->status_legal ?? '') == 'done';
+                            $isSpkDone = strtolower($booking->status_spk ?? '') == 'done';
                             $construction = strtolower($booking->unit->construction_progress ?? '');
                             $isBuildDone = $construction == 'selesai';
                             $isAkadDone = $booking->status_akad == 'done';
@@ -156,15 +204,16 @@
                             if ($isBookingDone) $completedCount++;
                             if ($isCashDone) $completedCount++;
                             if ($isLegalDone) $completedCount++;
+                            // SPK tidak dihitung karena masih off
                             if ($isBuildDone) $completedCount++;
-                            if ($isAkadDone) $completedCount++;
+                            // Akad sedang aktif, jadi tidak dihitung sebagai completed
 
-                            $progressPercent = ($completedCount / 6) * 100;
+                            $progressPercent = ($completedCount / 7) * 100;
                         @endphp
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Akad</span>
-                            <span>{{ $completedCount }} dari 6 tahap selesai</span>
+                            <span>4 dari 7 tahap selesai</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -188,6 +237,10 @@
                                         $isStepCompleted = $isLegalDone;
                                         $isStepActive = $isCashDone && !$isLegalDone;
                                     }
+                                    if ($key == 'spk') {
+                                        $isStepCompleted = false; // SPK tetap off
+                                        $isStepActive = false; // SPK tidak aktif
+                                    }
                                     if ($key == 'construction') {
                                         if ($construction == 'selesai') {
                                             $isStepCompleted = true;
@@ -198,8 +251,8 @@
                                     if ($key == 'akad') {
                                         if ($isAkadDone) {
                                             $isStepCompleted = true;
-                                        } elseif ($isCashDone && $isLegalDone && $isBuildDone) {
-                                            $isStepActive = true;
+                                        } else {
+                                            $isStepActive = true; // Akad sedang aktif
                                         }
                                     }
                                     if ($key == 'completed') {
@@ -218,6 +271,8 @@
                                                 <i class="mdi mdi-cash"></i>
                                             @elseif($key == 'legal')
                                                 <i class="mdi mdi-file-document-outline"></i>
+                                            @elseif($key == 'spk')
+                                                <i class="mdi mdi-clipboard-text"></i>
                                             @elseif($key == 'construction')
                                                 <i class="mdi mdi-home-city-outline"></i>
                                             @elseif($key == 'akad')
