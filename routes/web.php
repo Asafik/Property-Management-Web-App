@@ -494,6 +494,10 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
         return response()->file($fullPath);
     })->where('path', '.*')->name('dokumen.preview');
 
+
+    Route::get('/coba', function () {return view('land_bank.pra_landbank');})->name('landbank');
+
+
     // Master data laporan job staf marketing
     Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
     Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');
