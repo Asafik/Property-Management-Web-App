@@ -10,9 +10,9 @@ use App\Notifications\NewTaskNotification;
 class JobStaffMarketingController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-       $tugas = MarketingTask::all();
+       $tugas = MarketingTask::paginate($request->input('limit', 15));
        $marketingStaff = Employee::whereHas('position', function ($query) {
         $query->where('name', 'Staff Marketing');
        })->get();
