@@ -296,7 +296,7 @@
                                     <div class="pengajuan-form-group">
                                         <label>Jenis Unit</label>
                                         <input type="text" class="pengajuan-form-control"
-                                         value="{{ Str::upper($booking->unit->jenis ?? '-') }}" readonly>
+                                            value="{{ Str::upper($booking->unit->jenis ?? '-') }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -354,6 +354,22 @@
                                             <input type="number" class="pengajuan-form-control" name="dp"
                                                 id="dp" required value="{{ $booking->booking_fee ?? 0 }}">
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+                                    <div class="pengajuan-form-group">
+                                        <label>Promo / Diskon</label>
+                                        <select class="pengajuan-form-control" name="promo_id" id="promoSelect">
+                                            <option value="">-- Pilih Promo --</option>
+                                            @foreach ($promos as $promo)
+                                                <option value="{{ $promo->id }}"
+                                                    data-nominal="{{ $promo->nominal }}">
+                                                    {{ $promo->name }} (Rp
+                                                    {{ number_format($promo->value, 0, ',', '.') }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-muted">Pilih promo dari developer</small>
                                     </div>
                                 </div>
 
@@ -486,7 +502,9 @@
         <script>
             // File upload modern preview
             document.addEventListener('DOMContentLoaded', function() {
-                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'];
+                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah',
+                    'ktp_pasangan'
+                ];
                 const counterElement = document.getElementById('uploadCounter');
 
                 function updateCounter() {
@@ -598,7 +616,9 @@
             // Validasi form submit untuk upload dokumen
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.querySelector('.pengajuan-form-sample');
-                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'];
+                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah',
+                    'ktp_pasangan'
+                ];
 
                 form.addEventListener('submit', function(e) {
                     let isValid = true;
@@ -620,7 +640,8 @@
 
                     if (!isValid) {
                         e.preventDefault();
-                        alert('Dokumen berikut belum diupload:\n' + missingFields.join('\n') + '\n\nSilakan lengkapi semua dokumen sebelum mengajukan KPR.');
+                        alert('Dokumen berikut belum diupload:\n' + missingFields.join('\n') +
+                            '\n\nSilakan lengkapi semua dokumen sebelum mengajukan KPR.');
                         return false;
                     }
                 });

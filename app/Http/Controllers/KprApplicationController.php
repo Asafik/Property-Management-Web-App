@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
 use App\Models\KprDocument;
+use App\Models\Promo;
 class KprApplicationController extends Controller
 {
     /**
@@ -22,9 +23,9 @@ class KprApplicationController extends Controller
 
     // ambil daftar bank aktif
     $banks = Banks::where('is_active', 1)->get();
-
+    $promos = Promo::all();
     // tampilkan form KPR untuk booking ini
-    return view('marketing.pengajuan', compact('booking', 'banks'));
+    return view('marketing.pengajuan', compact('booking', 'banks', 'promos'));
 }
 
 

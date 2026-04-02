@@ -469,14 +469,20 @@
                                     </div>
                                 </div>
 
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
-                                        <label>Diskon</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" id="diskon"
-                                                name="diskon" value="25000000">
-                                        </div>
+                                        <label>Promo / Diskon</label>
+                                        <select class="pengajuan-form-control" name="promo_id" id="promoSelect">
+                                            <option value="">-- Pilih Promo --</option>
+                                            @foreach ($promos as $promo)
+                                                <option value="{{ $promo->id }}"
+                                                    data-nominal="{{ $promo->nominal }}">
+                                                    {{ $promo->name }} (Rp
+                                                    {{ number_format($promo->value, 0, ',', '.') }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-muted">Pilih promo dari developer</small>
                                     </div>
                                 </div>
                             </div>

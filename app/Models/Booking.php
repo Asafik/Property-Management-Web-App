@@ -86,4 +86,10 @@ public function documentUploads()
 {
     return $this->hasMany(DocumentUpload::class);
 }
+public function promos()
+{
+    return $this->belongsToMany(Promo::class, 'booking_promos')
+                ->withPivot('nominal') // optional kalau mau simpan nilai saat itu
+                ->withTimestamps();
+}
 }
