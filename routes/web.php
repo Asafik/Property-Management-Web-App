@@ -50,7 +50,7 @@ use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TimelineCashTempoController;
 use App\Http\Controllers\DocumentPreviewController;
-
+use App\Http\Controllers\JobStaffMarketingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -493,4 +493,12 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
         return response()->file($fullPath);
     })->where('path', '.*')->name('dokumen.preview');
+
+    // Master data laporan job staf marketing
+    Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
+    Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');
+    Route::post('/job-staff-marketing/store', [JobStaffMarketingController::class, 'store'])->name('marketing.tugas.store');
+    Route::delete('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'destroy'])->name('marketing.tugas.destroy');
+    Route::put('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'update'])->name('marketing.tugas.update');
+    Route::get('/job-staff-marketing/progress/{id}', [JobStaffMarketingController::class, 'progress'])->name('marketing.tugas.progress');
 });

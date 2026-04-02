@@ -8,6 +8,7 @@ use App\Models\Guest;
 use App\Models\LandBank;
 use App\Models\LandBankUnit;
 use App\Models\Customer;
+use App\Models\MarketingTask;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
 class TamuController extends Controller
@@ -15,6 +16,7 @@ class TamuController extends Controller
     //
     public function index(Request $request)
     {
+        $marketingTasks = MarketingTask::all();
         $agents = Employee::where('position_id', 2)->get();
         $projects = LandBank::with('units')->get();
         $units = LandBankUnit::all(); // ambil semua unit
@@ -73,7 +75,8 @@ class TamuController extends Controller
             'statuses',
             'totalGuests',
             'totalProspek',
-            'totalFollowUp'
+            'totalFollowUp',
+            'marketingTasks'
         ));
     }
 
@@ -81,6 +84,7 @@ class TamuController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'marketing_task_id' => 'nullable|exists:marketing_tasks,id',
             'phone' => 'required',
             'email' => 'nullable|email',
             'source' => 'required',
@@ -93,6 +97,7 @@ class TamuController extends Controller
 
         Guest::create([
             'name' => $request->name,
+            'marketing_task_id' => $request->marketing_task_id,
             'phone' => $request->phone,
             'email' => $request->email,
             'source' => $request->source,
