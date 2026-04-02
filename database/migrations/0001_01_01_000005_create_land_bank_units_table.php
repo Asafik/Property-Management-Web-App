@@ -57,7 +57,7 @@ return new class extends Migration
             // ===== POSISI DENAH =====
             $table->json('coordinates')->nullable();
             $table->float('map_scale')->nullable(); // optional untuk responsive
-
+            
             $table->timestamps();
         });
     }

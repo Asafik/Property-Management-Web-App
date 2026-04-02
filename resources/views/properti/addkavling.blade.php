@@ -2001,7 +2001,7 @@
                     <!-- Tab Pane Manual -->
                     <div class="modal-tab-pane active" id="modal-manual-pane">
                         <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST"
-                            id="formTambahUnitManual">
+                            id="formTambahUnitManual" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-3">
@@ -2120,6 +2120,31 @@
                                         <label>Keterangan</label>
                                         <input type="text" name="description" class="kavling-form-control"
                                             placeholder="Opsional">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <div class="kavling-form-group">
+                                        <label>No SPK</label>
+                                        <input type="text" name="no_spk" class="kavling-form-control"
+                                            placeholder="Contoh: SPK/001/IV/2026">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="kavling-form-group">
+                                        <label>Kontraktor</label>
+                                        <input type="text" name="kontraktor" class="kavling-form-control"
+                                            placeholder="Nama Kontraktor">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="kavling-form-group">
+                                        <label>Dokumen SPK (PDF)</label>
+                                        <input type="file" name="dokumen_spk" class="kavling-form-control"
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>

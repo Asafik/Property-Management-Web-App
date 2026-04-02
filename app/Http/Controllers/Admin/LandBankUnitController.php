@@ -63,68 +63,83 @@ class LandBankUnitController extends Controller
     //     // kode lain
     // }
     public function store(Request $request, $land_bank_id)
-    {
-        $land = LandBank::findOrFail($land_bank_id);
+{
+    $land = LandBank::findOrFail($land_bank_id);
 
-        $priceClean = $request->price ? str_replace(['.', ','], '', $request->price) : null;
-        $request->merge(['price' => $priceClean]);
+    $priceClean = $request->price ? str_replace(['.', ','], '', $request->price) : null;
+    $request->merge(['price' => $priceClean]);
 
-        $request->validate([
-            'block'         => 'required|string|max:5',
-            'unit_number'   => 'required|string|max:5',
-            'jenis'         => 'required|string|max:255',
-            'type'          => 'required|string|max:50',
-            'unit_name'     => 'nullable|string|max:255',
-            'area'          => 'required|numeric|min:1',
-            'building_area' => 'required|numeric|min:1',
-            'price'         => 'nullable|numeric|min:0',
-            'ijb_price'     => 'nullable|numeric|min:0',
-            'ajb_price'     => 'nullable|numeric|min:0',
-            'facing'        => 'nullable|in:Utara,Selatan,Timur,Barat',
-            'position'      => 'nullable|in:Hook,Tengah,Sudut',
-            'description'   => 'nullable|string|max:255',
-        ]);
+    $request->validate([
+        'block'         => 'required|string|max:5',
+        'unit_number'   => 'required|string|max:5',
+        'jenis'         => 'required|string|max:255',
+        'type'          => 'required|string|max:50',
+        'unit_name'     => 'nullable|string|max:255',
+        'area'          => 'required|numeric|min:1',
+        'building_area' => 'required|numeric|min:1',
+        'price'         => 'nullable|numeric|min:0',
+        'ijb_price'     => 'nullable|numeric|min:0',
+        'ajb_price'     => 'nullable|numeric|min:0',
+        'facing'        => 'nullable|in:Utara,Selatan,Timur,Barat',
+        'position'      => 'nullable|in:Hook,Tengah,Sudut',
+        'description'   => 'nullable|string|max:255',
+        'no_spk'        => 'nullable|string|max:255',
+        'kontraktor'    => 'nullable|string|max:255',
+        'dokumen_spk'   => 'nullable|file|mimes:pdf|max:5120',
+    ]);
 
-
-    
-        if ($request->area > $land->remaining_area) {
-            return back()->with('error', 'Luas unit melebihi sisa lahan!');
-        }
-        $unit_code = $request->block . '.' . $request->unit_number;
-
-        if (LandBankUnit::where('unit_code', $unit_code)
-            ->where('land_bank_id', $land->id)
-            ->exists()
-        ) {
-
-            return back()->with('error', 'Unit ' . $unit_code . ' sudah ada di proyek ini.');
-        }
-
-        LandBankUnit::create([
-            'land_bank_id' => $land->id,
-            'block'        => $request->block,
-            'unit_number'  => $request->unit_number,
-            'unit_code'    => $unit_code,
-            'jenis'        => $request->jenis,
-            'type'         => $request->type,
-            'unit_name'    => $request->unit_name,
-            'area'         => $request->area,
-            'building_area' => $request->building_area,
-            'price'        => $request->price ?? 0,
-            'ijb_price'    => $request->ijb_price ?? 0,
-            'ajb_price'    => $request->ajb_price ?? 0,
-            'facing'       => $request->facing,
-            'position'     => $request->position,
-            'description'  => $request->description,
-            'status'       => 'draft',
-        ]);
-
-        $land->remaining_area = max(0, $land->remaining_area - $request->area);
-        $land->development_status = 'progress'; // 🔥 UPDATE STATUS
-        $land->save();
-
-        return back()->with('success', 'Unit ' . $unit_code . ' berhasil ditambahkan.');
+    if ($request->area > $land->remaining_area) {
+        return back()->with('error', 'Luas unit melebihi sisa lahan!');
     }
+
+    $unit_code = $request->block . '.' . $request->unit_number;
+
+    if (LandBankUnit::where('unit_code', $unit_code)
+        ->where('land_bank_id', $land->id)
+        ->exists()
+    ) {
+        return back()->with('error', 'Unit ' . $unit_code . ' sudah ada di proyek ini.');
+    }
+
+   
+    $dokumenSpkPath = null;
+    if ($request->hasFile('dokumen_spk')) {
+        $file = $request->file('dokumen_spk');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads'), $filename);
+        $dokumenSpkPath = 'uploads/' . $filename;
+    }
+
+    LandBankUnit::create([
+        'land_bank_id'  => $land->id,
+        'block'         => $request->block,
+        'unit_number'   => $request->unit_number,
+        'unit_code'     => $unit_code,
+        'jenis'         => $request->jenis,
+        'type'          => $request->type,
+        'unit_name'     => $request->unit_name,
+        'area'          => $request->area,
+        'building_area' => $request->building_area,
+        'price'         => $request->price ?? 0,
+        'ijb_price'     => $request->ijb_price ?? 0,
+        'ajb_price'     => $request->ajb_price ?? 0,
+        'facing'        => $request->facing,
+        'position'      => $request->position,
+        'description'   => $request->description,
+        'status'        => 'draft',
+
+       
+        'no_spk'        => $request->no_spk,
+        'kontraktor'    => $request->kontraktor,
+        'dokumen_spk'   => $dokumenSpkPath,
+    ]);
+
+    $land->remaining_area = max(0, $land->remaining_area - $request->area);
+    $land->development_status = 'progress';
+    $land->save();
+
+    return back()->with('success', 'Unit ' . $unit_code . ' berhasil ditambahkan.');
+}
 
 
     // public function store(Request $request, $land_bank_id)
