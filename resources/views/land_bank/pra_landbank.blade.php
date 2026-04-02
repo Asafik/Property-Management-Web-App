@@ -592,31 +592,33 @@ h3.text-dark {
                                     <i class="mdi mdi-filter-outline"></i>
                                     <span>Filter data pra tanah</span>
                                 </div>
-                                <div class="row g-2 align-items-end w-100">
-                                    <div class="col-md-8">
-                                        <label class="form-label">Cari Nama Tanah / Makelar</label>
-                                        <input type="text" class="form-control" id="searchInput" placeholder="Nama tanah atau makelar..." value="">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">Tampil</label>
-                                        <select class="form-control" id="limitSelect">
-                                            <option value="5">5</option>
-                                            <option value="10" selected>10</option>
-                                            <option value="15">15</option>
-                                            <option value="25">25</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="d-flex gap-2">
-                                            <button type="button" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter" onclick="filterData()">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="resetFilter()">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </button>
+                                <form id="filterForm" method="GET" onsubmit="return showFilterLoading()">
+                                    <div class="row g-2 align-items-end w-100">
+                                        <div class="col-md-8">
+                                            <label class="form-label">Cari Nama Tanah / Makelar</label>
+                                            <input type="text" class="form-control" name="search" id="searchInput" placeholder="Nama tanah atau makelar..." value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="limit" id="limitSelect">
+                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5</option>
+                                                <option value="10" {{ request('limit', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
 
                             <!-- Mobile Filter -->
@@ -625,31 +627,33 @@ h3.text-dark {
                                     <i class="mdi mdi-filter-outline"></i>
                                     <span>Filter data pra tanah</span>
                                 </div>
-                                <div class="row g-2">
-                                    <div class="col-12 mb-2">
-                                        <label class="form-label">Cari Nama Tanah / Makelar</label>
-                                        <input type="text" class="form-control" id="searchInputMobile" placeholder="Nama tanah atau makelar..." value="">
+                                <form method="GET" onsubmit="return showFilterLoading()">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Cari Nama Tanah / Makelar</label>
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile" placeholder="Nama tanah atau makelar..." value="{{ request('search') }}">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label">Tampil</label>
+                                            <select class="form-control" name="limit" id="limitSelectMobile">
+                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5</option>
+                                                <option value="10" {{ request('limit', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100">
+                                                <i class="mdi mdi-filter"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i> Reset
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="col-12 mb-2">
-                                        <label class="form-label">Tampil</label>
-                                        <select class="form-control" id="limitSelectMobile">
-                                            <option value="5">5</option>
-                                            <option value="10" selected>10</option>
-                                            <option value="15">15</option>
-                                            <option value="25">25</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="button" class="btn btn-gradient-primary btn-icon-only-mobile w-100" onclick="filterData()">
-                                            <i class="mdi mdi-filter"></i> Filter
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="button" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" onclick="resetFilter()">
-                                            <i class="mdi mdi-refresh"></i> Reset
-                                        </button>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -1167,6 +1171,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         });
     }
+
+
+    // Loading functions for filter
+    window.showFilterLoading = function() {
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang memfilter data',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        return true;
+    };
+
+    window.showResetLoading = function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang mereset filter',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        
+        // Reset inputs and reload (simulate reset)
+        setTimeout(() => {
+            window.location.href = window.location.pathname;
+        }, 500);
+    };
 
     function initMapFase2() {
         // Koordinat default Jember jika input kosong

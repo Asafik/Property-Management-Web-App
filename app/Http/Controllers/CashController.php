@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\CashTempo;
 use App\Models\CashTempoInstallment;
+use App\Models\Promo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,8 +20,8 @@ class CashController extends Controller
             'customer.documents',
             'unit'
         ]);
-
-        return view('marketing.cash_pengajuan', compact('booking'));
+        $promos = Promo::all();
+        return view('marketing.cash_pengajuan', compact('booking', 'promos'));
     }
    public function store(Request $request)
 {

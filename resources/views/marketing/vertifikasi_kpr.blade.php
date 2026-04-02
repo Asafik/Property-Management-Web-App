@@ -68,37 +68,64 @@
                             $jenis = strtolower($booking->unit->jenis ?? '');
                             $isSubsidi = $jenis === 'subsidi';
                             $isKomersil = $jenis === 'komersil';
-                            $totalSteps = 7; // Semua unit ada SPK
-                            $currentStep = 2;
+
+                            $totalSteps = 7;
+                            $currentStep = 2; // default: verifikasi
+
+                            // =======================
+                            // STATUS CHECK
+                            // =======================
+
+                            $spkDone = !empty($booking->unit->dokumen_spk);
 
                             $developmentDone =
                                 ($booking->status_pembangunan ?? 0) == 1 ||
                                 optional($booking->kprApplication)->status_pembangunan == 'done';
-                            if ($developmentDone) {
-                                $currentStep = 3;
-                            }
 
+                            $surveyDone =
+                                ($booking->status_survey ?? 0) == 1 ||
+                                optional($booking->kprApplication)->status_survey == 'done';
 
-                            $akadDone = ($booking->status_akad ?? 0) == 1 || optional($booking->kprApplication)->status_akad == 1;
-                            $surveyDone = ($booking->status_survey ?? 0) == 1 || optional($booking->kprApplication)->status_survey == 'done';
-
-                            if ($isSubsidi) {
-                                if ($surveyDone) $currentStep = 4;
-                                if ($akadDone) $currentStep = 5;
-                            } else {
-                                if ($surveyDone) $currentStep = 4;
-                                if ($akadDone) $currentStep = 5;
-                            }
+                            $akadDone =
+                                ($booking->status_akad ?? 0) == 1 ||
+                                optional($booking->kprApplication)->status_akad == 1;
 
                             $serahTerimaDone =
                                 ($booking->status_serahterima ?? 0) == 1 ||
                                 optional($booking->kprApplication)->status_serahterima == 1;
+
+                            // =======================
+                            // STEP FLOW (URUT)
+                            // =======================
+
+                            if ($spkDone) {
+                                $currentStep = 3;
+                            }
+
+                            if ($developmentDone) {
+                                $currentStep = 4;
+                            }
+
+                            if ($surveyDone) {
+                                $currentStep = 5;
+                            }
+
+                            if ($akadDone) {
+                                $currentStep = 6;
+                            }
+
                             if ($serahTerimaDone) {
                                 $currentStep = 7;
                             }
 
+                            // =======================
+                            // UI HELPER
+                            // =======================
+
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
+
                             $stepsStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
+
                             $stepClass = fn($index) => $index < $currentStep
                                 ? 'completed'
                                 : ($index == $currentStep
@@ -127,12 +154,21 @@
                                 <small>{{ $currentStep == 2 ? 'Dalam Proses' : ($currentStep > 2 ? 'Selesai' : 'Menunggu') }}</small>
                             </div>
 
-                            <div class="transaksi-step">
-                                <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-clipboard-text"></i>
-                                </div>
+                            <div class="transaksi-step {{ $spkDone ? 'completed' : ($currentStep == 3 ? 'active' : '') }}">
+                                @if ($spkDone)
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-check"></i>
+                                    </div>
+                                @else
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-clipboard-text"></i>
+                                    </div>
+                                @endif
+
                                 <span class="transaksi-step-title">SPK</span>
-                                <small>Menunggu</small>
+                                <small>
+                                    {{ $spkDone ? 'Selesai' : ($currentStep == 3 ? 'Dalam Proses' : 'Menunggu') }}
+                                </small>
                             </div>
 
                             @php
@@ -156,16 +192,21 @@
                                     'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
                                 ];
 
-                                $config = $statusConfig[$statusProgress] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
+                                $config = $statusConfig[$statusProgress] ?? [
+                                    'icon' => 'mdi-home-city',
+                                    'color' => 'secondary',
+                                ];
                             @endphp
 
-                            <div class="transaksi-step {{ $statusProgress == 'selesai' ? 'completed' : ($currentStep == 4 ? 'active' : '') }}">
+                            <div
+                                class="transaksi-step {{ $statusProgress == 'selesai' ? 'completed' : ($currentStep == 4 ? 'active' : '') }}">
                                 @if ($statusProgress == 'selesai')
                                     <div class="transaksi-step-icon">
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                 @else
-                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                    <div
+                                        class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
                                         <i class="mdi {{ $config['icon'] }}"></i>
                                     </div>
                                 @endif
@@ -498,7 +539,8 @@
                                 <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
                                     <div><strong>Verifikasi disetujui.</strong> Pengajuan akan diarahkan ke tahap
-                                        <strong>Survey</strong>.</div>
+                                        <strong>Survey</strong>.
+                                    </div>
                                 </div>
                                 <div class="transaksi-form-group">
                                     <label class="transaksi-form-label" for="catatan_setuju">Catatan Verifikasi</label>
@@ -842,13 +884,13 @@
 
     <script>
         /* =====================================================
-               MODAL PREVIEW DOKUMEN — fetch → blob → iframe/img
-               Cara kerja:
-               - JS fetch file dari storage (raw bytes)
-               - Convert ke Blob URL (browser render langsung, tidak download)
-               - PDF  → ditampilkan di <iframe> dalam modal
-               - Gambar → ditampilkan di <img> dalam modal
-               ===================================================== */
+                           MODAL PREVIEW DOKUMEN — fetch → blob → iframe/img
+                           Cara kerja:
+                           - JS fetch file dari storage (raw bytes)
+                           - Convert ke Blob URL (browser render langsung, tidak download)
+                           - PDF  → ditampilkan di <iframe> dalam modal
+                           - Gambar → ditampilkan di <img> dalam modal
+                           ===================================================== */
 
         const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
         const PDF_EXTS = ['pdf'];
