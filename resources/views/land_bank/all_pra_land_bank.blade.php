@@ -1,10 +1,10 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Semua Pra Tanah - Property Management App')
+@section('title', 'Pra Tanah - Property Management App')
 
 @section('content')
+
     <style>
-        /* ===== CARD ===== */
         .card {
             transition: all 0.3s ease;
             margin-bottom: 1rem;
@@ -19,20 +19,32 @@
         .card-header {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
             border-bottom: 1px solid #e9ecef;
-            padding: 0.9rem 1.2rem;
+            padding: 0.75rem;
+        }
+
+        @media (min-width: 576px) {
+            .card-header {
+                padding: 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-header {
+                padding: 1.2rem;
+            }
         }
 
         .card-body {
             padding: 0.75rem;
         }
 
-        @media (min-width:576px) {
+        @media (min-width: 576px) {
             .card-body {
                 padding: 1rem;
             }
         }
 
-        @media (min-width:768px) {
+        @media (min-width: 768px) {
             .card-body {
                 padding: 1.2rem;
             }
@@ -45,19 +57,18 @@
             margin-bottom: 0;
         }
 
-        @media (min-width:576px) {
+        @media (min-width: 576px) {
             .card-title {
                 font-size: 1rem;
             }
         }
 
-        @media (min-width:768px) {
+        @media (min-width: 768px) {
             .card-title {
                 font-size: 1.1rem;
             }
         }
 
-        /* ===== FILTER ===== */
         .filter-card {
             background: linear-gradient(135deg, #f9f7ff, #f2ecff);
             border-radius: 12px;
@@ -84,7 +95,6 @@
             border: 1px solid #e0e4e9;
         }
 
-        /* ===== FORM ===== */
         .form-control,
         .form-select {
             border: 1px solid #e9ecef;
@@ -95,6 +105,16 @@
             background-color: #ffffff;
             color: #2c2e3f;
             height: auto;
+        }
+
+        @media (min-width: 576px) {
+
+            .form-control,
+            .form-select {
+                padding: 0.7rem 1rem;
+                font-size: 0.95rem;
+                border-radius: 10px;
+            }
         }
 
         .form-control:focus,
@@ -113,7 +133,6 @@
             font-family: 'Nunito', sans-serif;
         }
 
-        /* ===== BUTTON ===== */
         .btn {
             font-size: 0.85rem;
             padding: 0.6rem 1rem;
@@ -124,7 +143,7 @@
             border: none;
         }
 
-        @media (min-width:576px) {
+        @media (min-width: 576px) {
             .btn {
                 font-size: 0.9rem;
                 padding: 0.7rem 1.2rem;
@@ -135,12 +154,6 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
         }
 
         .btn-gradient-primary {
@@ -155,6 +168,594 @@
 
         .btn-gradient-secondary:hover {
             background: #5a6268 !important;
+        }
+
+        .btn-gradient-info {
+            background: linear-gradient(135deg, #17a2b8, #56c6d8) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-warning {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
+            color: #2c2e3f !important;
+        }
+
+        .btn-gradient-danger {
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-success {
+            background: linear-gradient(135deg, #28a745, #6fdf8c) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-action i {
+            font-size: 1.1rem;
+        }
+
+        .btn-action.fase1 {
+            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            color: white;
+        }
+
+        .btn-action.fase2 {
+            background: linear-gradient(135deg, #17a2b8, #56c6d8);
+            color: white;
+        }
+
+        .btn-action.fase3 {
+            background: linear-gradient(135deg, #28a745, #6fdf8c);
+            color: white;
+        }
+
+        .btn-action.edit {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .btn-action.delete {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: white;
+        }
+
+        .btn-action.view {
+            background: linear-gradient(135deg, #6c757d, #8a8f97);
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* TABEL - DENGAN SCROLLBAR */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #9a55ff #f0f0f0;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #7b3fcc;
+        }
+
+        .table {
+            width: 100%;
+            table-layout: auto;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+            padding: 0.8rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .table thead th {
+                font-size: 0.85rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table thead th {
+                font-size: 0.9rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .table thead th:first-child {
+            padding-left: 0.5rem;
+            width: 50px;
+            text-align: center;
+        }
+
+        .table tbody td:first-child {
+            padding-left: 0.5rem;
+            font-weight: 500;
+            width: 50px;
+            text-align: center;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.85rem;
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #2c2e3f;
+        }
+
+        @media (min-width: 576px) {
+            .table tbody td {
+                font-size: 0.9rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .table tbody td {
+                font-size: 0.95rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Progress Bar Styling */
+        .progress-fase {
+            width: 100%;
+            min-width: 180px;
+        }
+
+        .progress-fase .progress-label {
+            font-size: 0.65rem;
+            color: #9a55ff;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .progress-fase .progress-bar-container {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fase .progress-bar-fill {
+            background: linear-gradient(to right, #9a55ff, #da8cff);
+            border-radius: 10px;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fase .progress-percent {
+            font-size: 0.6rem;
+            color: #6c7383;
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        /* FASE Badge */
+        .fase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .fase-badge.fase1 {
+            background: rgba(154, 85, 255, 0.15);
+            color: #9a55ff;
+        }
+
+        .fase-badge.fase2 {
+            background: rgba(23, 162, 184, 0.15);
+            color: #17a2b8;
+        }
+
+        .fase-badge.fase3 {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .fase-badge.completed {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .fase-badge.cancelled {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+        }
+
+        .badge-status {
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        .badge-status.nego {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .badge-status.survey {
+            background: linear-gradient(135deg, #17a2b8, #56c6d8);
+            color: #fff;
+        }
+
+        .badge-status.deal {
+            background: linear-gradient(135deg, #28a745, #6fdf8c);
+            color: #fff;
+        }
+
+        .badge-status.batal {
+            background: linear-gradient(135deg, #dc3545, #e4606d);
+            color: #fff;
+        }
+
+        .badge-status.pending {
+            background: linear-gradient(135deg, #6c757d, #8a8f97);
+            color: #fff;
+        }
+
+        .pagination {
+            margin: 0;
+            gap: 3px;
+        }
+
+        .page-item .page-link {
+            border: 1px solid #e9ecef;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            color: #6c7383;
+            background-color: #ffffff;
+            border-radius: 6px !important;
+            transition: all 0.2s ease;
+            min-width: 32px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        }
+
+        .pagination-info {
+            font-size: 0.8rem;
+            color: #6c7383;
+        }
+
+        /* MODAL STYLING */
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1rem 1.5rem;
+        }
+
+        /* Section dalam Modal */
+        .modal-section {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 1rem;
+        }
+
+        .modal-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .modal-section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #9a55ff;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-section-title i {
+            font-size: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .info-label {
+            width: 120px;
+            font-weight: 600;
+            color: #6c7383;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #2c2e3f;
+        }
+
+        .text-primary {
+            color: #9a55ff !important;
+        }
+
+        .text-muted {
+            color: #a5b3cb !important;
+        }
+
+        .fw-bold {
+            font-weight: 600 !important;
+        }
+
+        h3.text-dark {
+            font-size: 1.3rem !important;
+            font-weight: 700;
+            color: #2c2e3f !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        @media (min-width: 576px) {
+            h3.text-dark {
+                font-size: 1.5rem !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            h3.text-dark {
+                font-size: 1.7rem !important;
+            }
+        }
+
+        .mdi {
+            vertical-align: middle;
+        }
+
+
+        /* MODERN CHECKBOX & UPLOAD STYLES FROM PRA_LAND_BANK */
+        .pratanah-checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: flex-start;
+            margin-top: 0.5rem;
+        }
+
+        .pratanah-checkbox-wrapper {
+            position: relative;
+            min-width: 130px;
+            flex: 1 1 auto;
+        }
+
+        .pratanah-checkbox-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .pratanah-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pratanah-checkbox-input:checked+.pratanah-checkbox-label {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .pratanah-check-icon {
+            font-size: 1.2rem;
+            color: #d0d4db;
+            transition: all 0.3s ease;
+        }
+
+        .pratanah-checkbox-input:checked+.pratanah-checkbox-label .pratanah-check-icon {
+            color: #9a55ff;
+        }
+
+        .pratanah-check-text {
+            font-size: 0.85rem;
+            color: #2c2e3f;
+            font-weight: 500;
+        }
+
+        .pratanah-checkbox-input:checked+.pratanah-checkbox-label .pratanah-check-text {
+            color: #9a55ff;
+            font-weight: 600;
+        }
+
+        /* Modern File Upload */
+        .pratanah-file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .pratanah-file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .pratanah-file-label-modern {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pratanah-file-upload-modern:hover .pratanah-file-label-modern {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+        }
+
+        .pratanah-file-label-modern i {
+            font-size: 1.5rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .pratanah-file-info-modern {
+            flex: 1;
+        }
+
+        .pratanah-file-info-modern span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.8rem;
+        }
+
+        .pratanah-file-info-modern small {
+            color: #6c7383;
+            font-size: 0.65rem;
+        }
+
+        .pratanah-file-size {
+            font-size: 0.7rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        /* Map Container */
+        .pratanah-map-container {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+            height: 300px;
+            margin-top: 0.5rem;
+        }
+
+        /* Filter Styles from posisi.blade.php */
+        .filter-row-desktop {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .filter-row-desktop .filter-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .filter-row-mobile {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .filter-row-desktop {
+                display: none;
+            }
+
+            .filter-row-mobile {
+                display: block;
+                margin-top: 1rem;
+            }
         }
 
         .btn-icon-only {
@@ -172,606 +773,292 @@
             margin: 0;
         }
 
-        /* ===== ACTION ===== */
-        .btn-action {
-            width: 34px;
-            height: 34px;
+        .btn-icon-only-mobile {
+            width: 100%;
+            height: 40px;
             padding: 0;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            margin: 0 2px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-action i {
-            font-size: 1rem;
-        }
-
-        .btn-action.view {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #fff;
-        }
-
-        .btn-action.view:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
-        }
-
-        .btn-action.edit {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .btn-action.edit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-        }
-
-        /* ===== TABLE ===== */
-        .table-responsive {
-            overflow-x: auto;
-            overflow-y: visible;
-            -webkit-overflow-scrolling: touch;
             border-radius: 8px;
-            margin-bottom: 0.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #9a55ff #f0f0f0;
         }
 
-        .table-responsive::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .table-responsive::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .table thead th:hover {
-            color: #7a3fcc;
-        }
-
-        .table thead th.no-sort {
-            cursor: default;
-        }
-
-        .table thead th.no-sort:hover {
-            color: #9a55ff;
-        }
-
-        .table thead th i.sort-icon {
-            font-size: 0.8rem;
-            margin-left: 4px;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-        }
-
-        .table thead th.active-sort i.sort-icon {
-            opacity: 1;
-            color: #7a3fcc;
-        }
-
-        @media (min-width:576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width:768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table thead th:first-child {
-            padding-left: 0.5rem;
-            width: 40px;
-            text-align: center;
-            cursor: default;
-        }
-
-        .table thead th:first-child:hover {
-            color: #9a55ff;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.5rem;
-            font-weight: 500;
-            width: 40px;
-            text-align: center;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-            white-space: nowrap;
-        }
-
-        @media (min-width:576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width:768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* ===== BADGE STATUS ===== */
-        .badge-status {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .badge-deal {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #fff;
-        }
-
-        .badge-almost {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #fff;
-        }
-
-        .badge-cancel {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #fff;
-        }
-
-        .badge-negotiate {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        /* ===== PAGINATION ===== */
-        .pagination {
+        .btn-icon-only-mobile i {
+            font-size: 1.2rem;
             margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        @media (min-width:576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width:768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #f8f9fa;
-            color: #a5b3cb;
-            pointer-events: none;
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        /* ===== MISC ===== */
-        h3.text-dark {
-            font-size: 1.3rem !important;
-            font-weight: 700;
-            color: #2c2e3f !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        @media (min-width:576px) {
-            h3.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width:768px) {
-            h3.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-
-        .text-primary {
-            color: #9a55ff !important;
-        }
-
-        .text-muted {
-            color: #a5b3cb !important;
-        }
-
-        .fw-bold {
-            font-weight: 600 !important;
-        }
-
-        .filter-row-desktop {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            gap: 0.5rem;
-        }
-
-        .filter-row-mobile {
-            display: none;
-        }
-
-        @media (max-width:767px) {
-            .filter-row-desktop {
-                display: none;
-            }
-
-            .filter-row-mobile {
-                display: block;
-                margin-top: 1rem;
-            }
         }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
 
-        {{-- Header --}}
         <div class="row mb-3 mb-sm-3 mb-md-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-map-marker-multiple me-2" style="color:#9a55ff;"></i>
-                                Semua Pra Tanah / Pra Landbank
+                                <i class="mdi mdi-hand-holding-usd me-2" style="color: #9a55ff;"></i>Pra Tanah / Pra Pelepasan
                             </h3>
                             <p class="text-muted mb-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Daftar seluruh tanah dalam tahap pra-pelepasan (penawaran/negosiasi)
+                                Kelola data tanah yang masih dalam tahap penawaran dan negosiasi
                             </p>
                         </div>
                         <div class="d-none d-sm-block">
-                            <i class="mdi mdi-map-marker-multiple" style="font-size:2.5rem;color:#9a55ff;opacity:0.2;"></i>
+                            <i class="mdi mdi-hand-holding-usd"
+                                style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Tabel Card --}}
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div
+                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                         <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Semua Pra Tanah
+                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Pra Tanah
                         </h5>
-
-                        <a href="{{ route('pra-landbank') }}" class="btn btn-primary btn-sm">
-                            <i class="mdi mdi-plus me-1"></i> Tambah Pra Landbank
-                        </a>
+                        <button class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;"
+                            onclick="openModal('modalFase1')">
+                            <i class="mdi mdi-plus me-1"></i>Tambah Pra Tanah
+                        </button>
                     </div>
 
                     <div class="card-body">
-
-                        {{-- FILTER --}}
                         <div class="filter-card mb-4">
                             <div class="card-body">
-                                <h6 style="font-size:0.95rem;font-weight:700;color:#9a55ff;margin-bottom:1rem;">
-                                    <i class="mdi mdi-filter-outline me-1"></i>Filter Data Pra Landbank
-                                </h6>
-
-                                {{-- DESKTOP --}}
+                                <!-- Desktop Filter -->
                                 <div class="filter-row-desktop">
-                                    <div class="row g-2 align-items-end w-100">
-
-                                        {{-- Search Nama Tanah --}}
-                                        <div class="col-md-4">
-                                            <label class="form-label">Cari Nama Tanah</label>
-                                            <input type="text" class="form-control" id="searchInput"
-                                                placeholder="Ketik nama tanah..." value="{{ request('search') }}">
+                                    <div class="filter-text">
+                                        <i class="mdi mdi-filter-outline"></i>
+                                        <span>Filter data pra tanah</span>
+                                    </div>
+                                    <form id="filterForm" method="GET" onsubmit="return showFilterLoading()">
+                                        <div class="row g-2 align-items-end w-100">
+                                            <div class="col-md-8">
+                                                <label class="form-label">Cari Nama Tanah / Makelar</label>
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Nama tanah atau makelar..."
+                                                    value="{{ request('search') }}">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">Tampil</label>
+                                                <select class="form-control" name="limit" id="limitSelect">
+                                                    <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5
+                                                    </option>
+                                                    <option value="10"
+                                                        {{ request('limit', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15
+                                                    </option>
+                                                    <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="d-flex gap-2">
+                                                    <button type="submit"
+                                                        class="btn btn-gradient-primary btn-icon-only flex-fill"
+                                                        title="Filter">
+                                                        <i class="mdi mdi-filter"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        class="btn btn-gradient-secondary btn-icon-only flex-fill"
+                                                        title="Reset" onclick="showResetLoading(event)">
+                                                        <i class="mdi mdi-refresh"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </form>
+                                </div>
 
-                                        {{-- Status Negosiasi --}}
-                                        <div class="col-md-3">
-                                            <label class="form-label">Status Negosiasi</label>
-                                            <select class="form-control" id="statusSelect">
-                                                <option value="">Semua Status</option>
-                                                <option value="negotiation"
-                                                    {{ request('negotiation_status') == 'negotiation' ? 'selected' : '' }}>
-                                                    Masih
-                                                    Negosiasi</option>
-                                                <option value="almost_deal"
-                                                    {{ request('negotiation_status') == 'almost_deal' ? 'selected' : '' }}>
-                                                    Hampir
-                                                    Deal</option>
-                                                <option value="deal"
-                                                    {{ request('negotiation_status') == 'deal' ? 'selected' : '' }}>Sudah
-                                                    Deal
-                                                </option>
-                                                <option value="cancel"
-                                                    {{ request('negotiation_status') == 'cancel' ? 'selected' : '' }}>Batal
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        {{-- Tampil --}}
-                                        <div class="col-md-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" id="perPageSelect">
-                                                <option value="10" {{ request('perPage', 10) == 10 ? 'selected' : '' }}>
-                                                    10
-                                                </option>
-                                                <option value="15" {{ request('perPage') == 15 ? 'selected' : '' }}>15
-                                                </option>
-                                                <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        {{-- Tombol --}}
-                                        <div class="col-md-3">
-                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                            <div class="d-flex gap-2">
-                                                <button type="button"
-                                                    class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn"
-                                                    title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
+                                <!-- Mobile Filter -->
+                                <div class="filter-row-mobile">
+                                    <div class="filter-text mb-2">
+                                        <i class="mdi mdi-filter-outline"></i>
+                                        <span>Filter data pra tanah</span>
+                                    </div>
+                                    <form method="GET" onsubmit="return showFilterLoading()">
+                                        <div class="row g-2">
+                                            <div class="col-12 mb-2">
+                                                <label class="form-label">Cari Nama Tanah / Makelar</label>
+                                                <input type="text" class="form-control" name="search"
+                                                    id="searchInputMobile" placeholder="Nama tanah atau makelar..."
+                                                    value="{{ request('search') }}">
+                                            </div>
+                                            <div class="col-12 mb-2">
+                                                <label class="form-label">Tampil</label>
+                                                <select class="form-control" name="limit" id="limitSelectMobile">
+                                                    <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5
+                                                    </option>
+                                                    <option value="10"
+                                                        {{ request('limit', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15
+                                                    </option>
+                                                    <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="submit"
+                                                    class="btn btn-gradient-primary btn-icon-only-mobile w-100">
+                                                    <i class="mdi mdi-filter"></i> Filter
                                                 </button>
+                                            </div>
+                                            <div class="col-6">
                                                 <button type="button"
-                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                    id="resetBtn" title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
+                                                    class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
+                                                    onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i> Reset
                                                 </button>
                                             </div>
                                         </div>
-
-                                    </div>
+                                    </form>
                                 </div>
-
-                                {{-- MOBILE --}}
-                                <div class="filter-row-mobile">
-                                    <div class="row g-2">
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Cari Nama Tanah</label>
-                                            <input type="text" class="form-control" id="searchInputMobile"
-                                                placeholder="Ketik nama tanah..." value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Status Negosiasi</label>
-                                            <select class="form-control" id="statusSelectMobile">
-                                                <option value="">Semua Status</option>
-                                                <option value="negotiation"
-                                                    {{ request('negotiation_status') == 'negotiation' ? 'selected' : '' }}>
-                                                    Masih
-                                                    Negosiasi</option>
-                                                <option value="almost_deal"
-                                                    {{ request('negotiation_status') == 'almost_deal' ? 'selected' : '' }}>
-                                                    Hampir
-                                                    Deal</option>
-                                                <option value="deal"
-                                                    {{ request('negotiation_status') == 'deal' ? 'selected' : '' }}>Sudah
-                                                    Deal
-                                                </option>
-                                                <option value="cancel"
-                                                    {{ request('negotiation_status') == 'cancel' ? 'selected' : '' }}>Batal
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" id="perPageSelectMobile">
-                                                <option value="10"
-                                                    {{ request('perPage', 10) == 10 ? 'selected' : '' }}>10
-                                                </option>
-                                                <option value="15" {{ request('perPage') == 15 ? 'selected' : '' }}>15
-                                                </option>
-                                                <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-primary w-100"
-                                                id="filterBtnMobile">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button" class="btn btn-gradient-secondary w-100"
-                                                id="resetBtnMobile">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
 
-                        {{-- TABEL --}}
-
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle" style="width:100%;margin-bottom:0;">
+                        <div class="table-wrapper">
+                            <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
-                                        <th class="text-center no-sort">No</th>
-                                        <th class="sortable" data-field="land_name"
-                                            data-direction="{{ request('sortField') == 'land_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                            Nama Tanah
-                                            @if (request('sortField') == 'land_name')
-                                                <i
-                                                    class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }} sort-icon"></i>
-                                            @else
-                                                <i class="mdi mdi-swap-vertical sort-icon"></i>
-                                            @endif
-                                        </th>
-                                        <th>Makelar / Sumber</th>
-                                        <th>Lokasi</th>
-                                        <th class="sortable" data-field="estimated_price"
-                                            data-direction="{{ request('sortField') == 'estimated_price' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                            Harga Negosiasi
-                                            @if (request('sortField') == 'estimated_price')
-                                                <i
-                                                    class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }} sort-icon"></i>
-                                            @else
-                                                <i class="mdi mdi-swap-vertical sort-icon"></i>
-                                            @endif
-                                        </th>
-                                        <th class="sortable" data-field="negotiation_status"
-                                            data-direction="{{ request('sortField') == 'negotiation_status' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                            Status
-                                            @if (request('sortField') == 'negotiation_status')
-                                                <i
-                                                    class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }} sort-icon"></i>
-                                            @else
-                                                <i class="mdi mdi-swap-vertical sort-icon"></i>
-                                            @endif
-                                        </th>
-                                        <th class="text-center no-sort">Aksi</th>
+                                        <th class="text-center">No</th>
+                                        <th>Nama Tanah</th>
+                                        <th>Makelar</th>
+                                        <th>Harga Negosiasi</th>
+                                        <th>Progress 3 FASE</th>
+                                        <th>Status</th>
+                                        <th>Prioritas</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @forelse($praLandBank as $item)
-                                        <tr>
-                                            <td class="text-center fw-bold">
-                                                {{ $loop->iteration + ($praLandBank->currentPage() - 1) * $praLandBank->perPage() }}
-                                            </td>
+                                <tbody id="tableBody">
+                                    @forelse ($praLandBank as $index => $land)
+                                        @php
+                                            $priorityColor = match (strtolower($land->priority ?? 'normal')) {
+                                                'urgent' => '#dc3545',
+                                                'high' => '#ffc107',
+                                                'normal' => '#0dcaf0',
+                                                'low' => '#6c757d',
+                                                default => '#0dcaf0',
+                                            };
+                                            switch ($land->status) {
+                                                case 'fase1':
+                                                    $fase = 1;
+                                                    $percent = 33;
+                                                    break;
+
+                                                case 'fase2':
+                                                    $fase = 2;
+                                                    $percent = 66;
+                                                    break;
+
+                                                case 'fase3':
+                                                case 'approved':
+                                                    $fase = 3;
+                                                    $percent = 100;
+                                                    break;
+
+                                                case 'rejected':
+                                                    $fase = 0;
+                                                    $percent = 0;
+                                                    break;
+
+                                                default:
+                                                    $fase = 1;
+                                                    $percent = 33;
+                                            }
+                                        @endphp
+
+                                        <tr id="row-{{ $land->id }}">
+                                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
+
                                             <td>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="mdi mdi-home-variant text-primary"
-                                                        style="font-size:1.2rem;"></i>
-                                                    <span class="fw-bold">{{ $item->land_name ?? '-' }}</span>
+                                                <i class="mdi mdi-map-marker text-primary me-2"></i>
+                                                <span class="fw-bold">{{ $land->land_name }}</span>
+                                            </td>
+
+                                            <td>
+                                                <i class="mdi mdi-account-tie me-1"></i>
+                                                {{ $land->land_owner ?? '-' }}
+                                            </td>
+
+                                            <td class="text-nowrap">
+                                                Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}
+                                            </td>
+
+                                            <td>
+                                                <div class="progress-fase">
+
+                                                    <!-- LABEL -->
+                                                    <div class="progress-label">
+                                                        @if ($land->status == 'rejected')
+                                                            <span class="text-danger fw-bold">REJECTED</span>
+                                                        @elseif($land->status == 'approved')
+                                                            <span class="text-success fw-bold">APPROVED</span>
+                                                        @else
+                                                            FASE {{ $fase }}/3
+                                                        @endif
+                                                    </div>
+
+                                                    <!-- BAR -->
+                                                    <div class="progress-bar-container">
+                                                        <div class="progress-bar-fill
+                {{ $land->status == 'approved' ? 'bg-success' : '' }}
+                {{ $land->status == 'rejected' ? 'bg-danger' : '' }}"
+                                                            style="width: {{ $percent }}%">
+                                                        </div>
+                                                    </div>
+
+
+
                                                 </div>
                                             </td>
+
                                             <td>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="mdi mdi-account-tie"
-                                                        style="font-size:1.2rem;color:#17a2b8;"></i>
-                                                    <span>{{ $item->land_source ?? '-' }}</span>
-                                                </div>
+                                                <span
+                                                    class="badge-status 
+                                   {{ $land->status == 'approved' ? 'success' : 'nego' }}">
+                                                    {{ ucfirst($land->status) }}
+                                                </span>
                                             </td>
+
                                             <td>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="mdi mdi-map-marker"
-                                                        style="font-size:1.2rem;color:#dc3545;"></i>
-                                                    <span>{{ Str::limit($item->address ?? '-', 30) }}</span>
-                                                </div>
+                                                <span class="badge-status"
+                                                    style="background:{{ $priorityColor }};color:#2c2e3f;">
+                                                    🟠 {{ ucfirst($land->priority ?? 'Normal') }}
+                                                </span>
                                             </td>
-                                            <td>
-                                                <span class="fw-bold" style="color:#28a745;">Rp
-                                                    {{ number_format($item->estimated_price ?? 0, 0, ',', '.') }}</span>
-                                            </td>
-                                            <td>
-                                                @php $ns = $item->negotiation_status ?? ''; @endphp
-                                                @if ($ns == 'deal')
-                                                    <span class="badge-status badge-deal"><i
-                                                            class="mdi mdi-check-circle"></i> Sudah Deal</span>
-                                                @elseif($ns == 'almost_deal')
-                                                    <span class="badge-status badge-almost"><i class="mdi mdi-check"></i>
-                                                        Hampir Deal</span>
-                                                @elseif($ns == 'cancel')
-                                                    <span class="badge-status badge-cancel"><i
-                                                            class="mdi mdi-close-circle"></i> Batal</span>
-                                                @else
-                                                    <span class="badge-status badge-negotiate"><i
-                                                            class="mdi mdi-clock-outline"></i> Masih Negosiasi</span>
-                                                @endif
-                                            </td>
+
                                             <td class="text-center">
-                                                <button class="btn-action view" title="Lihat Detail">
-                                                    <i class="mdi mdi-eye"></i>
+                                                <button class="btn-action fase1 me-1" title="FASE 1">
+                                                    <i class="mdi mdi-account-tie"></i>
                                                 </button>
-                                                <button class="btn-action edit" title="Edit">
-                                                    <i class="mdi mdi-pencil"></i>
+
+                                                <button class="btn-action fase2 me-1" title="FASE 2">
+                                                    <i class="mdi mdi-magnify"></i>
                                                 </button>
+
+                                                <button class="btn-action fase3 me-1" title="FASE 3">
+                                                    <i class="mdi mdi-check-decagram"></i>
+                                                </button>
+
+                                                <form action="{{ route('pra-landbanks.destroy', $land->id) }}"
+                                                    method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn-action delete" title="Hapus">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center text-muted py-5">
-                                                <i class="mdi mdi-hand-holding" style="font-size:3rem;opacity:0.3;"></i>
-                                                <p class="mt-2 mb-0">Tidak ada data pra tanah yang tersedia.</p>
+                                            <td colspan="8" class="text-center text-muted">
+                                                Tidak ada data
                                             </td>
                                         </tr>
                                     @endforelse
@@ -779,63 +1066,21 @@
                             </table>
                         </div>
 
-                        {{-- Pagination --}}
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                Menampilkan <strong>{{ $praLandBank->firstItem() ?? 0 }}</strong> -
-                                <strong>{{ $praLandBank->lastItem() ?? 0 }}</strong> dari
-                                <strong>{{ $praLandBank->total() }}</strong> data
+                            <div class="pagination-info mb-2 mb-sm-0" id="paginationInfo">
+                                Menampilkan 1 - 1 dari 1 data
                             </div>
-                            <nav>
-                                <ul class="pagination">
-                                    {{-- Prev --}}
-                                    @if ($praLandBank->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link"><i class="mdi mdi-chevron-left"></i></span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                                href="{{ $praLandBank->appends(request()->query())->previousPageUrl() }}"
-                                                onclick="showPaginationLoading(event)">
-                                                <i class="mdi mdi-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Halaman --}}
-                                    @foreach ($praLandBank->getUrlRange(max(1, $praLandBank->currentPage() - 2), min($praLandBank->lastPage(), $praLandBank->currentPage() + 2)) as $page => $url)
-                                        @if ($page == $praLandBank->currentPage())
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ $page }}</span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $praLandBank->appends(request()->query())->url($page) }}"
-                                                    onclick="showPaginationLoading(event)">{{ $page }}</a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-
-                                    {{-- Next --}}
-                                    @if ($praLandBank->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                                href="{{ $praLandBank->appends(request()->query())->nextPageUrl() }}"
-                                                onclick="showPaginationLoading(event)">
-                                                <i class="mdi mdi-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link"><i class="mdi mdi-chevron-right"></i></span>
-                                        </li>
-                                    @endif
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
+                                    id="pagination">
+                                    <li class="page-item disabled"><span class="page-link"><i
+                                                class="mdi mdi-chevron-left"></i></span></li>
+                                    <li class="page-item active"><span class="page-link">1</span></li>
+                                    <li class="page-item disabled"><span class="page-link"><i
+                                                class="mdi mdi-chevron-right"></i></span></li>
                                 </ul>
                             </nav>
                         </div>
-
 
                     </div>
                 </div>
@@ -843,165 +1088,749 @@
         </div>
 
     </div>
+
+    <!-- MODAL FASE 1: Informasi dari Makelar -->
+    <div class="modal fade" id="modalFase1" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <form id="formFase1">
+                    @csrf
+                    <input type="hidden" id="fase1_id" name="id">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="mdi mdi-account-tie me-2"></i>
+                            FASE 1: Informasi dari Makelar
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden" id="fase1_id" name="id">
+
+                        <!-- ================= DATA MAKELAR ================= -->
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-account-tie"></i> Data Makelar
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nama Makelar *</label>
+                                    <input type="text" class="form-control" id="fase1_makelar" name="land_owner">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Perusahaan</label>
+                                    <input type="text" class="form-control" id="fase1_perusahaan" name="land_source">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">No. WA</label>
+                                    <input type="text" class="form-control" id="fase1_kontak" name="owner_contact">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tanggal Penawaran</label>
+                                    <input type="date" class="form-control" id="fase1_tgl_penawaran"
+                                        name="survey_date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ================= DATA TANAH ================= -->
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-map-marker"></i> Data Tanah
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nama Tanah *</label>
+                                    <input type="text" class="form-control" id="fase1_nama_tanah" name="land_name">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Pemilik</label>
+                                    <input type="text" class="form-control" id="fase1_pemilik"
+                                        name="certificate_owner">
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Alamat *</label>
+                                    <input type="text" class="form-control" id="fase1_alamat" name="address">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Luas (m²)</label>
+                                    <input type="number" class="form-control" id="fase1_luas" name="area">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Lebar Jalan (m)</label>
+                                    <input type="number" class="form-control" id="fase1_lebar_jalan" name="road_width">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Jenis Jalan</label>
+                                    <select class="form-select" id="fase1_jenis_jalan" name="road_type">
+                                        <option value="">Pilih</option>
+                                        <option value="aspal">Aspal</option>
+                                        <option value="beton">Beton</option>
+                                        <option value="paving">Paving</option>
+                                        <option value="tanah">Tanah</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ================= HARGA ================= -->
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-handshake"></i> Negosiasi Harga
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Harga Awal</label>
+                                    <input type="text" class="form-control" id="fase1_harga_awal" name="offer_price"
+                                        oninput="formatRupiah(this)">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Harga Negosiasi</label>
+                                    <input type="text" class="form-control" id="fase1_harga_nego"
+                                        name="estimated_price" oninput="formatRupiah(this)">
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="fase1_status_nego" name="status">
+                                        <option value="fase1">Fase 1</option>
+                                        <option value="fase2">Fase 2</option>
+                                        <option value="fase3">Fase 3</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Tutup
+                        </button>
+
+                        <button type="button" class="btn btn-primary" onclick="saveFase1()">
+                            Simpan FASE 1
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL FASE 2: Verifikasi & Kelayakan -->
+    <div class="modal fade" id="modalFase2" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <form id="formFase2" method="POST" enctype="multipart/form-data>
+                    @csrf
+                    <input type="hidden" name="id" id="fase2_id">
+                    <input type="hidden" name="fase" value="fase2">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="mdi mdi-magnify me-2"></i>
+                            FASE 2: Verifikasi & Kelayakan
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-clipboard-list"></i> Survey Lapangan
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Tanggal Survey</label>
+                                    <input type="date" class="form-control" id="fase2_tgl_survey" name="tgl_survey">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Petugas Survey</label>
+                                    <input type="text" class="form-control" id="fase2_petugas" name="petugas"
+                                        placeholder="Nama Petugas">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Hasil Survey</label>
+                                    <select class="form-select" id="fase2_hasil_survey" name="hasil_survey">
+                                        <option value="belum">Belum Survey</option>
+                                        <option value="sesuai">Sesuai</option>
+                                        <option value="tidak_sesuai">Tidak Sesuai</option>
+                                        <option value="survey_ulang">Perlu Survey Ulang</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Catatan Survey</label>
+                                    <textarea class="form-control" id="fase2_catatan_survey" name="catatan_survey" rows="2"
+                                        placeholder="Catatan hasil survey..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-check-decagram"></i> Status Kelayakan
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Status Kejelasan Tanah</label>
+                                    <select class="form-select" id="fase2_status_tanah" name="status_tanah">
+                                        <option value="clear">Clear & Clean (Bebas Sengketa)</option>
+                                        <option value="checking">Dalam Pengecekan</option>
+                                        <option value="problem">Bermasalah</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Keterangan Masalah</label>
+                                    <input type="text" class="form-control" id="fase2_keterangan_masalah"
+                                        name="keterangan_masalah" placeholder="Jika bermasalah">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-domain"></i> Perizinan & Fasilitas
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Zonasi/Peruntukan</label>
+                                    <input type="text" class="form-control" id="fase2_zonasi" name="zoning"
+                                        placeholder="Contoh: Perumahan, Komersial">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tingkat Kesulitan Izin</label>
+                                    <select class="form-select" id="fase2_kesulitan_izin" name="kesulitan_izin">
+                                        <option value="mudah">Mudah</option>
+                                        <option value="sedang">Sedang</option>
+                                        <option value="sulit">Sulit</option>
+                                        <option value="very_sulit">Sangat Sulit</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Fasilitas Sekitar</label>
+                                    <div class="pratanah-checkbox-group">
+                                        <div class="pratanah-checkbox-wrapper">
+                                            <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]"
+                                                value="sekolah" id="fac_sekolah">
+                                            <label class="pratanah-checkbox-label" for="fac_sekolah">
+                                                <i class="mdi mdi-check-circle pratanah-check-icon"></i>
+                                                <span class="pratanah-check-text">Sekolah</span>
+                                            </label>
+                                        </div>
+                                        <div class="pratanah-checkbox-wrapper">
+                                            <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]"
+                                                value="rumah_sakit" id="fac_rs">
+                                            <label class="pratanah-checkbox-label" for="fac_rs">
+                                                <i class="mdi mdi-check-circle pratanah-check-icon"></i>
+                                                <span class="pratanah-check-text">Rumah Sakit</span>
+                                            </label>
+                                        </div>
+                                        <div class="pratanah-checkbox-wrapper">
+                                            <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]"
+                                                value="pasar" id="fac_pasar">
+                                            <label class="pratanah-checkbox-label" for="fac_pasar">
+                                                <i class="mdi mdi-check-circle pratanah-check-icon"></i>
+                                                <span class="pratanah-check-text">Pasar</span>
+                                            </label>
+                                        </div>
+                                        <div class="pratanah-checkbox-wrapper">
+                                            <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]"
+                                                value="transportasi" id="fac_trans">
+                                            <label class="pratanah-checkbox-label" for="fac_trans">
+                                                <i class="mdi mdi-check-circle pratanah-check-icon"></i>
+                                                <span class="pratanah-check-text">Transportasi</span>
+                                            </label>
+                                        </div>
+                                        <div class="pratanah-checkbox-wrapper">
+                                            <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]"
+                                                value="mall" id="fac_mall">
+                                            <label class="pratanah-checkbox-label" for="fac_mall">
+                                                <i class="mdi mdi-check-circle pratanah-check-icon"></i>
+                                                <span class="pratanah-check-text">Mall</span>
+                                            </label>
+                                        </div>
+                                        <div class="pratanah-checkbox-wrapper">
+                                            <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]"
+                                                value="bank" id="fac_bank">
+                                            <label class="pratanah-checkbox-label" for="fac_bank">
+                                                <i class="mdi mdi-check-circle pratanah-check-icon"></i>
+                                                <span class="pratanah-check-text">Bank/ATM</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                    @foreach($documentTypes as $doc)
+                                
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">{{ $doc->name }}</label>
+
+                                            <div class="pratanah-file-upload-modern">
+
+                                            
+                                                <input type="file" name="documents[{{ $doc->id }}][file]"
+                                                    accept=".pdf,.jpg,.jpeg,.png">
+
+                                                
+                                                <input type="text" class="form-control mt-2"
+                                                    name="documents[{{ $doc->id }}][number]"
+                                                    placeholder="Nomor {{ $doc->name }}">
+
+                                                <div class="pratanah-file-label-modern">
+                                                    <i class="mdi mdi-file"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span>Upload {{ $doc->name }}</span>
+                                                        <small>PDF / JPG / PNG</small>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    @endforeach
+                               
+                            </div>
+                        </div>
+
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-map-marker-radius"></i> Koordinat Lokasi
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 mb-3">
+                                    <label class="form-label">Latitude</label>
+                                    <input type="text" class="form-control" id="fase2_lat" name="lat"
+                                        placeholder="-8.1727">
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label class="form-label">Longitude</label>
+                                    <input type="text" class="form-control" id="fase2_lng" name="lng"
+                                        placeholder="113.7000">
+                                </div>
+                                <div class="col-md-2 mb-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-gradient-info w-100"
+                                        onclick="getCurrentLocation()">
+                                        <i class="mdi mdi-crosshairs-gps"></i>
+                                    </button>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Pilih Lokasi di Peta</label>
+                                    <div class="pratanah-map-container">
+                                        <div id="map-fase2" style="height: 100%; width: 100%;"></div>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">
+                                        Klik pada peta atau geser marker untuk menentukan koordinat.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                            Tutup
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary" onclick="saveFase2()">
+                            Simpan FASE 2
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FASE 3: Keputusan Akhir -->
+    <div class="modal fade" id="modalFase3" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form id="formFase3">
+                    @csrf
+                    <input type="hidden" name="id" id="fase3_id">
+                    <input type="hidden" name="fase" value="fase3">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="mdi mdi-check-decagram me-2"></i>
+                            FASE 3: Keputusan Akhir
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="modal-section">
+                            <div class="modal-section-title">
+                                <i class="mdi mdi-tag"></i> Status Akhir
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Status Tanah <span class="text-danger">*</span>
+                                </label>
+
+
+                                <select class="form-select" id="fase3_status_akhir" name="status">
+                                    <option value="approved">DIAMBIL - Deal dan akan diproses</option>
+                                    <option value="pending">DIPENDING - Ditunda sementara</option>
+                                    <option value="rejected">DIBATALKAN - Tidak jadi dibeli</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Prioritas</label>
+                                <select class="form-select" id="fase3_prioritas" name="prioritas">
+                                    <option value="urgent">Urgent (Harus segera diputuskan)</option>
+                                    <option value="high">Tinggi</option>
+                                    <option value="normal">Normal</option>
+                                    <option value="low">Rendah</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Catatan & Kesimpulan</label>
+                                <textarea class="form-control" id="fase3_catatan" name="catatan" rows="3"
+                                    placeholder="Catatan kesimpulan akhir..."></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i>Tutup
+                        </button>
+
+                        <button type="button" class="btn btn-gradient-primary" onclick="saveFase3()">
+                            <i class="mdi mdi-content-save me-1"></i>Simpan FASE 3
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 
-
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        $(document).ready(function() {
+        // ===============================
+        // GLOBAL
+        // ===============================
+        function openModal(modalId) {
+            const modal = new bootstrap.Modal(document.getElementById(modalId));
+            modal.show();
+        }
 
-            // =============================================
-            // Helper: build URL params lalu redirect
-            // =============================================
-            function applyFilter(isMobile) {
-                var search = isMobile ? $('#searchInputMobile').val() : $('#searchInput').val();
-                var status = isMobile ? $('#statusSelectMobile').val() : $('#statusSelect').val();
-                var perPage = isMobile ? $('#perPageSelectMobile').val() : $('#perPageSelect').val();
+        // ===============================
+        // FORMAT RUPIAH
+        // ===============================
+        function formatRupiah(input) {
+            let value = input.value.replace(/[^,\d]/g, '');
 
-                showFilterLoading();
+            let split = value.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-                var params = new URLSearchParams({
-                    search: search,
-                    negotiation_status: status,
-                    perPage: perPage,
-                    sortField: '{{ request('sortField', 'created_at') }}',
-                    sortDirection: '{{ request('sortDirection', 'desc') }}'
-                });
-                window.location.href = '{{ route('pralandbank.all') }}?' + params.toString();
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
             }
 
-            // Filter & Reset — Desktop
-            $('#filterBtn').on('click', function() {
-                applyFilter(false);
-            });
-            $('#resetBtn').on('click', function() {
-                showResetLoading({
-                    preventDefault: function() {},
-                    currentTarget: {
-                        href: '{{ route('pralandbank.all') }}'
-                    }
-                });
-            });
+            input.value = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+        }
 
-            // Filter & Reset — Mobile
-            $('#filterBtnMobile').on('click', function() {
-                applyFilter(true);
-            });
-            $('#resetBtnMobile').on('click', function() {
-                showResetLoading({
-                    preventDefault: function() {},
-                    currentTarget: {
-                        href: '{{ route('pralandbank.all') }}'
-                    }
-                });
-            });
-
-            // Enter → filter
-            $('#searchInput').on('keypress', function(e) {
-                if (e.which === 13) {
-                    applyFilter(false);
-                }
-            });
-            $('#searchInputMobile').on('keypress', function(e) {
-                if (e.which === 13) {
-                    applyFilter(true);
+        // ===============================
+        // HELPER FETCH
+        // ===============================
+        async function fetchJSON(url, formData) {
+            const res = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
                 }
             });
 
-            // =============================================
-            // Sort kolom (klik header th.sortable)
-            // =============================================
-            $('.sortable').on('click', function() {
-                var field = $(this).data('field');
-                var direction = $(this).data('direction');
+            const text = await res.text();
 
-                Swal.fire({
-                    title: 'Memuat...',
-                    html: 'Sedang mengurutkan data',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
+            try {
+                return JSON.parse(text);
+            } catch {
+                console.error("Bukan JSON:", text);
+                throw new Error("Response server error");
+            }
+        }
+
+        // ===============================
+        // SWEET ALERT
+        // ===============================
+        function showSuccess(msg) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: msg,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function showError(msg) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: msg
+            });
+        }
+
+        function showLoading() {
+            Swal.fire({
+                title: 'Menyimpan...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+        }
+
+        // ===============================
+        // SAVE FASE 1 (CREATE)
+        // ===============================
+        async function saveFase1() {
+            try {
+                showLoading();
+
+                let form = document.getElementById('formFase1');
+                let formData = new FormData(form);
+
+                formData.append('fase', 'fase1');
+
+                let res = await fetchJSON('/properti/pra-landbank/store', formData);
+
+                Swal.close();
+
+                if (res.success) {
+                    document.getElementById('fase1_id').value = res.id;
+                    document.getElementById('fase2_id').value = res.id;
+                    document.getElementById('fase3_id').value = res.id;
+
+                    showSuccess('Fase 1 berhasil disimpan');
+                } else {
+                    showError(res.message);
+                }
+
+            } catch (err) {
+                Swal.close();
+                showError(err.message);
+            }
+        }
+
+        // ===============================
+        // SAVE FASE 2 (UPDATE)
+        // ===============================
+      async function saveFase2() {
+    try {
+        let form = document.getElementById('formFase2');
+
+        let id = document.getElementById('fase2_id').value;
+
+        if (!id) {
+            return showError('Simpan Fase 1 dulu!');
+        }
+
+        showLoading();
+
+        // 🔥 AMBIL SEMUA INPUT TERMASUK documents[]
+        let formData = new FormData(form);
+
+        // tambahan manual (kalau perlu override)
+        formData.set('id', id);
+        formData.set('fase', 'fase2');
+
+        let res = await fetchJSON('/properti/pra-landbank/store', formData);
+
+        Swal.close();
+
+        if (res.success) {
+            showSuccess(res.message);
+        } else {
+            showError(res.message);
+        }
+
+    } catch (err) {
+        Swal.close();
+        showError(err.message);
+    }
+}
+
+        // ===============================
+        // SAVE FASE 3 (UPDATE)
+        // ===============================
+        async function saveFase3() {
+            try {
+                let form = document.getElementById('formFase3');
+                let formData = new FormData(form); // 🔥 ambil semua input otomatis
+
+                let id = document.getElementById('fase3_id').value;
+
+                if (!id) {
+                    return showError('Simpan Fase 1 dulu!');
+                }
+
+                showLoading();
+
+                formData.set('id', id); // pastikan id ikut
+                formData.set('fase', 'fase3');
+
+                let res = await fetchJSON('/properti/pra-landbank/store', formData);
+
+                Swal.close();
+
+                if (res.success) {
+                    showSuccess(res.message);
+
+                    setTimeout(() => {
+                        location.reload(); // biar kelihatan berubah
+                    }, 1000);
+
+                } else {
+                    showError(res.message);
+                }
+
+            } catch (err) {
+                Swal.close();
+                showError(err.message);
+            }
+        }
+
+        // ===============================
+        // INIT
+        // ===============================
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // BUTTON FASE 1
+            document.querySelectorAll('.btn-action.fase1').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.closest('tr')?.id?.replace('row-', '');
+                    if (id) document.getElementById('fase1_id').value = id;
+                    openModal('modalFase1');
+                });
+            });
+
+            // BUTTON FASE 2
+            document.querySelectorAll('.btn-action.fase2').forEach(btn => {
+                btn.addEventListener('click', function() {
+
+                    const id = this.closest('tr')?.id?.replace('row-', '');
+
+                    if (!id) {
+                        return showError('ID tidak ditemukan');
                     }
-                });
 
-                var params = new URLSearchParams({
-                    search: '{{ request('search') }}',
-                    negotiation_status: '{{ request('negotiation_status') }}',
-                    perPage: '{{ request('perPage', 10) }}',
-                    sortField: field,
-                    sortDirection: direction
-                });
-                window.location.href = '?' + params.toString();
-            });
+                    document.getElementById('fase2_id').value = id;
 
-            // =============================================
-            // Pagination loading
-            // =============================================
-            $(document).on('click', '.pagination a', function(e) {
-                showPaginationLoading(e);
-            });
+                    openModal('modalFase2');
 
-            // =============================================
-            // Tombol Aksi
-            // =============================================
-            $('.btn-action.view').on('click', function() {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Fitur Detail',
-                    text: 'Fitur lihat detail akan segera tersedia.',
-                    confirmButtonColor: '#9a55ff'
-                });
-            });
-            $('.btn-action.edit').on('click', function() {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Fitur Edit',
-                    text: 'Fitur edit akan segera tersedia.',
-                    confirmButtonColor: '#9a55ff'
+                    setTimeout(() => initMapFase2(), 500);
                 });
             });
 
+            // BUTTON FASE 3
+            document.querySelectorAll('.btn-action.fase3').forEach(btn => {
+                btn.addEventListener('click', function() {
+
+                    const id = this.closest('tr')?.id?.replace('row-', '');
+                    if (!id) {
+                        return showError('ID tidak ditemukan');
+                    }
+                    document.getElementById('fase3_id').value = id;
+
+                    openModal('modalFase3');
+                });
+            });
         });
 
-        // Fungsi loading untuk filter
-        function showFilterLoading() {
-            Swal.fire({
-                title: 'Memuat...',
-                html: 'Sedang memfilter data',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-            return true;
+        // ===============================
+        // MAP
+        // ===============================
+        let mapFase2, markerFase2;
+
+        function initMapFase2() {
+            let lat = document.getElementById('fase2_lat')?.value || -8.1727;
+            let lng = document.getElementById('fase2_lng')?.value || 113.7000;
+
+            if (!mapFase2) {
+                mapFase2 = L.map('map-fase2').setView([lat, lng], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapFase2);
+
+                markerFase2 = L.marker([lat, lng], {
+                    draggable: true
+                }).addTo(mapFase2);
+
+                markerFase2.on('dragend', function() {
+                    let pos = markerFase2.getLatLng();
+                    fase2_lat.value = pos.lat.toFixed(6);
+                    fase2_lng.value = pos.lng.toFixed(6);
+                });
+
+                mapFase2.on('click', function(e) {
+                    markerFase2.setLatLng(e.latlng);
+                    fase2_lat.value = e.latlng.lat.toFixed(6);
+                    fase2_lng.value = e.latlng.lng.toFixed(6);
+                });
+
+            } else {
+                mapFase2.invalidateSize();
+            }
         }
 
-        // Fungsi loading untuk reset
-        function showResetLoading(event) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Memuat...',
-                html: 'Sedang mereset filter',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-            window.location.href = event.currentTarget.href;
-        }
+        // ===============================
+        // GEOLOCATION
+        // ===============================
+        function getCurrentLocation() {
+            navigator.geolocation.getCurrentPosition(pos => {
+                let lat = pos.coords.latitude;
+                let lng = pos.coords.longitude;
 
-        // Fungsi loading untuk pagination
-        function showPaginationLoading(event) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Memuat...',
-                html: 'Sedang memuat halaman',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
+                fase2_lat.value = lat.toFixed(6);
+                fase2_lng.value = lng.toFixed(6);
+
+                if (mapFase2) {
+                    mapFase2.setView([lat, lng], 15);
+                    markerFase2.setLatLng([lat, lng]);
                 }
-            });
-            window.location.href = event.currentTarget.href;
+
+                showSuccess(`Lokasi ditemukan`);
+
+            }, () => showError('Gagal mengambil lokasi'));
         }
     </script>
 @endpush

@@ -16,7 +16,7 @@ return new class extends Migration
 
             // ===== BASIC LAND INFO =====
             $table->string('land_name')->nullable();
-            $table->decimal('area', 12,2)->nullable();
+            $table->decimal('area', 12, 2)->nullable();
             $table->bigInteger('offer_price')->nullable();
             $table->bigInteger('estimated_price')->nullable();
 
@@ -35,8 +35,8 @@ return new class extends Migration
             $table->string('province')->nullable();
 
             // ===== MAP =====
-            $table->decimal('lat',10,8)->nullable();
-            $table->decimal('lng',11,8)->nullable();
+            $table->decimal('lat', 10, 8)->nullable();
+            $table->decimal('lng', 11, 8)->nullable();
 
             // ===== SURVEY =====
             $table->date('survey_date')->nullable();
@@ -59,8 +59,14 @@ return new class extends Migration
             $table->string('photo')->nullable();
 
             // ===== APPROVAL =====
-            $table->enum('status', ['draft','survey','review','approved','rejected'])
-                  ->default('draft');
+            $table->enum('status', [
+                'pending',  // baru masuk, belum survey
+                'fase1',   // input makelar
+                'fase2',   // survey & validasi
+                'fase3',   // keputusan
+                'approved', // masuk landbank
+                'rejected' // ditolak
+            ])->default('pending');
 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();

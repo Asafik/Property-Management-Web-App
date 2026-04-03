@@ -31,4 +31,8 @@ class PraLandbank extends Model
         'file_certificate',
         'photo'
     ];
+    public function documents()
+{
+    return $this->hasMany(pra_landbank_documents::class);
+}
 }

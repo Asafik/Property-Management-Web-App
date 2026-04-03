@@ -176,8 +176,9 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::get('/all-pra-landbank', [PraLandBankController::class, 'indexpra'])->name('pralandbank.all');
     // tambah properti
     Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
-    Route::get('/create-pralandbank', [PraLandBankController::class, 'index'])->name('pra-landbank');
+    Route::get('/create-pralandbank', [PraLandBankController    ::class, 'index'])->name('pra-landbank');
     Route::post('/properti/pra-landbank/store', [PraLandBankController::class, 'store'])->name('pra-landbanks.store');
+    Route::delete('/properti/pra-landbank/{id}', [PraLandBankController::class, 'destroy'])->name('pra-landbanks.destroy');
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
 
@@ -493,11 +494,6 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
         return response()->file($fullPath);
     })->where('path', '.*')->name('dokumen.preview');
-
-
-    Route::get('/coba', function () {return view('land_bank.pra_landbank');})->name('landbank');
-
-
     // Master data laporan job staf marketing
     Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
     Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');
