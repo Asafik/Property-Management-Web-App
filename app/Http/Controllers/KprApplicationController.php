@@ -13,9 +13,7 @@ use App\Models\KprDocument;
 use App\Models\Promo;
 class KprApplicationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+  
     public function show(Booking $booking)
 {
     // load relasi customer + unit
@@ -48,6 +46,7 @@ class KprApplicationController extends Controller
  
 public function store(Request $request)
 {
+   
     DB::beginTransaction();
 
     try {
@@ -63,6 +62,7 @@ public function store(Request $request)
             'dp'          => 'required|numeric|min:0',
             'tenor'       => 'required|numeric|min:1',
             'bunga'       => 'required|numeric|min:0',
+            'promo_id'    => 'nullable|exists:promos,id',
         ]);
 
         // =============================
@@ -84,9 +84,28 @@ public function store(Request $request)
         }
 
         // =============================
+        // AMBIL PROMO (SNAPSHOT UNTUK AUDIT)
+        // =============================
+        $promoId    = $request->promo_id;
+        $promoValue = 0;
+        $promoName  = null;
+
+        if ($promoId) {
+            $promo = Promo::find($promoId);
+            $promoValue = $promo->value ?? 0;
+            $promoName  = $promo->name ?? null;
+        }
+
+        // =============================
         // HITUNG PINJAMAN & ANGSURAN
         // =============================
-        $jumlahPinjaman   = $hargaUnit - $dp;
+        $hargaSetelahPromo = $hargaUnit - $promoValue;
+        $jumlahPinjaman    = $hargaSetelahPromo - $dp;
+
+        if ($jumlahPinjaman < 0) {
+            $jumlahPinjaman = 0;
+        }
+
         $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
         $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
         $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
@@ -101,6 +120,12 @@ public function store(Request $request)
             'banks_id'          => $request->banks_id,
             'produk_kpr'        => $request->produk_kpr,
             'harga_unit'        => $hargaUnit,
+
+           
+            'promo_id'          => $promoId,
+            'promo_name'        => $promoName,
+            'promo_value'       => $promoValue,
+
             'jumlah_pinjaman'   => $jumlahPinjaman,
             'dp'                => $dp,
             'tenor'             => $tenor,
@@ -123,11 +148,10 @@ public function store(Request $request)
         $booking->status_akad   = 'pending';
         $booking->status_legal  = 'pending';
         $booking->status        = 'lanjut_kpr';
-
         $booking->save();
 
         // =============================
-        // UPLOAD FILE DOKUMEN
+        // UPLOAD FILE (ROOT - SESUAI PUNYAMU)
         // =============================
         $fileFields = [
             'slip_gaji',
@@ -140,33 +164,30 @@ public function store(Request $request)
             'ktp'
         ];
 
-       foreach ($fileFields as $field) {
+        foreach ($fileFields as $field) {
 
-    if ($request->hasFile($field)) {
+            if ($request->hasFile($field)) {
 
-        $file = $request->file($field);
+                $file = $request->file($field);
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
 
-       
-        $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
 
-        // buat folder jika belum ada
-        if (!file_exists($destination)) {
-            mkdir($destination, 0755, true);
+                $file->move($destination, $filename);
+
+                $path = 'kpr/' . $filename;
+
+                KprDocument::create([
+                    'kpr_application_id' => $kprApplication->id,
+                    'type'               => $field,
+                    'path'               => $path,
+                ]);
+            }
         }
-
-        $file->move($destination, $filename);
-
-        $path = 'kpr/' . $filename;
-
-        KprDocument::create([
-            'kpr_application_id' => $kprApplication->id,
-            'type'               => $field,
-            'path'               => $path,
-        ]);
-    }
-}
 
         DB::commit();
 

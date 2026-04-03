@@ -271,7 +271,23 @@
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
                                 <span class="highlight">Rp
-                                    {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                    {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span>
+                                    {{ $booking->kprApplication->promo_name ?? '-' }}
+                                </span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Nilai Promo</span>
+                                <span>
+                                    Rp {{ number_format($booking->kprApplication->promo_value ?? 0, 0, ',', '.') }}
+                                </span>
                             </div>
                         </div>
                         <hr class="my-4">
@@ -884,13 +900,13 @@
 
     <script>
         /* =====================================================
-                           MODAL PREVIEW DOKUMEN — fetch → blob → iframe/img
-                           Cara kerja:
-                           - JS fetch file dari storage (raw bytes)
-                           - Convert ke Blob URL (browser render langsung, tidak download)
-                           - PDF  → ditampilkan di <iframe> dalam modal
-                           - Gambar → ditampilkan di <img> dalam modal
-                           ===================================================== */
+                               MODAL PREVIEW DOKUMEN — fetch → blob → iframe/img
+                               Cara kerja:
+                               - JS fetch file dari storage (raw bytes)
+                               - Convert ke Blob URL (browser render langsung, tidak download)
+                               - PDF  → ditampilkan di <iframe> dalam modal
+                               - Gambar → ditampilkan di <img> dalam modal
+                               ===================================================== */
 
         const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
         const PDF_EXTS = ['pdf'];

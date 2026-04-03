@@ -136,7 +136,7 @@
             transform: translateY(-2px);
         }
 
-        .serah-checklist-item input[type="checkbox"]:checked + .check-label {
+        .serah-checklist-item input[type="checkbox"]:checked+.check-label {
             border-color: #9a55ff;
             background: #f7f2ff;
             box-shadow: inset 0 0 0 1px rgba(154, 85, 255, 0.05);
@@ -159,7 +159,7 @@
             font-size: 1.3rem;
         }
 
-        .serah-checklist-item input[type="checkbox"]:checked + .check-label .check-icon {
+        .serah-checklist-item input[type="checkbox"]:checked+.check-label .check-icon {
             color: #9a55ff;
             background: #ede1ff;
         }
@@ -200,7 +200,7 @@
             transform: translateX(4px);
         }
 
-        .serah-doc-item input[type="checkbox"]:checked + .doc-label {
+        .serah-doc-item input[type="checkbox"]:checked+.doc-label {
             border-color: #9a55ff;
             background: #f7f2ff;
         }
@@ -238,7 +238,7 @@
             white-space: nowrap;
         }
 
-        .serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-badge {
+        .serah-doc-item input[type="checkbox"]:checked+.doc-label .doc-badge {
             background: linear-gradient(135deg, #9a55ff, #da8cff);
             color: #fff;
         }
@@ -382,18 +382,18 @@
             color: #a7b3ad;
         }
 
-        .approval-check-green input[type="checkbox"]:checked + .check-label {
+        .approval-check-green input[type="checkbox"]:checked+.check-label {
             border-color: #7bd3a6;
             background: #edf9f3;
             box-shadow: inset 0 0 0 1px rgba(34, 160, 107, 0.05);
         }
 
-        .approval-check-green input[type="checkbox"]:checked + .check-label .check-icon {
+        .approval-check-green input[type="checkbox"]:checked+.check-label .check-icon {
             background: #d9f3e6;
             color: #22a06b;
         }
 
-        .approval-check-green input[type="checkbox"]:checked + .check-label .check-text {
+        .approval-check-green input[type="checkbox"]:checked+.check-label .check-text {
             color: #146c43;
         }
     </style>
@@ -403,7 +403,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div
+                            class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
                                     <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
@@ -413,15 +414,26 @@
                                         {{ $application->customer->full_name }}
                                         @php
                                             $jenis = strtolower($application->unit->jenis ?? '');
-                                            $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : ($jenis == 'komersil' ? 'badge-gradient-primary' : 'badge-gradient-secondary');
-                                            $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : ($jenis == 'komersil' ? 'mdi-office-building' : 'mdi-help-circle-outline');
+                                            $badgeClass =
+                                                $jenis == 'subsidi'
+                                                    ? 'badge-gradient-success'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'badge-gradient-primary'
+                                                        : 'badge-gradient-secondary');
+                                            $icon =
+                                                $jenis == 'subsidi'
+                                                    ? 'mdi-home-assistant'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'mdi-office-building'
+                                                        : 'mdi-help-circle-outline');
                                         @endphp
                                         <span class="header-badge {{ $badgeClass }}">
                                             <i class="mdi {{ $icon }}"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
-                                    <p class="customer-booking mb-0">Id Booking: {{ $application->booking->booking_code ?? '-' }}</p>
+                                    <p class="customer-booking mb-0">Id Booking:
+                                        {{ $application->booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
 
@@ -436,7 +448,8 @@
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
-                                    <span class="text-primary fw-bold">Rp {{ number_format($application->unit->price ?? 0, 0, ',', '.') }}</span>
+                                    <span class="text-primary fw-bold">Rp
+                                        {{ number_format($application->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -463,7 +476,10 @@
                             $pembangunanDone = true;
                             $akadDone = true;
                             $surveyDone = true;
-                            $serahTerimaDone = $application->booking->status == 'completed' && !empty($application->booking->serah_terima_date);
+                            $serahTerimaDone =
+                                $application->booking->status == 'completed' &&
+                                !empty($application->booking->serah_terima_date);
+                            $spkDone = !empty($application->unit->dokumen_spk);
 
                             // Jika Serah terima sudah tersubmit dan berstatus completed, current step = 7 (selesai).
                             // Jika belum disubmit (ada di form ini), masih tahap 7 tapi belum selesai (active).
@@ -498,12 +514,24 @@
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
                                 <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-clipboard-text"></i>
+                                    @if ($spkDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-clipboard-text"></i>
+                                    @endif
                                 </div>
+
                                 <span class="transaksi-step-title">SPK</span>
-                                <small>Menunggu</small>
+
+                                <small>
+                                    @if ($spkDone)
+                                        Selesai
+                                    @else
+                                        Menunggu
+                                    @endif
+                                </small>
                             </div>
 
                             @php
@@ -536,7 +564,8 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                 @else
-                                    <div class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                    <div
+                                        class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
                                         <i class="mdi {{ $config['icon'] }}"></i>
                                     </div>
                                 @endif
@@ -581,7 +610,7 @@
 
                             <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : 'active' }}">
                                 <div class="transaksi-step-icon">
-                                    @if($serahTerimaDone)
+                                    @if ($serahTerimaDone)
                                         <i class="mdi mdi-check"></i>
                                     @else
                                         <i class="mdi mdi-key"></i>
@@ -589,7 +618,7 @@
                                 </div>
                                 <span class="transaksi-step-title">Serah Terima</span>
                                 <small>
-                                    @if($serahTerimaDone)
+                                    @if ($serahTerimaDone)
                                         {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
                                     @else
                                         Progress
@@ -616,7 +645,8 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Uang Muka (DP)</span>
-                                <span class="highlight">Rp {{ number_format($application->booking->booking_fee, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp
+                                    {{ number_format($application->booking->booking_fee, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Bank</span>
@@ -669,7 +699,8 @@
 
                             <div class="transaksi-inline-alert info">
                                 <i class="mdi mdi-information-outline"></i>
-                                <div>Silakan isi data serah terima, checklist kondisi unit, dokumen yang diserahkan, dan dokumentasi pendukung tanpa mengubah isi proses yang sudah berjalan.</div>
+                                <div>Silakan isi data serah terima, checklist kondisi unit, dokumen yang diserahkan, dan
+                                    dokumentasi pendukung tanpa mengubah isi proses yang sudah berjalan.</div>
                             </div>
 
                             <div class="row">
@@ -723,8 +754,10 @@
                                 @foreach ($items as $index => $item)
                                     <div class="serah-checklist-item">
                                         <div class="form-check">
-                                            <input type="hidden" name="items[{{ $index }}][name]" value="{{ $item }}">
-                                            <input type="checkbox" name="items[{{ $index }}][checked]" value="1" id="item_{{ $index }}" class="form-check-input">
+                                            <input type="hidden" name="items[{{ $index }}][name]"
+                                                value="{{ $item }}">
+                                            <input type="checkbox" name="items[{{ $index }}][checked]"
+                                                value="1" id="item_{{ $index }}" class="form-check-input">
                                             <label for="item_{{ $index }}" class="check-label">
                                                 <span class="check-icon">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -757,8 +790,10 @@
                                 @foreach ($documents as $index => $doc)
                                     <div class="serah-doc-item">
                                         <div class="form-check">
-                                            <input type="hidden" name="documents[{{ $index }}][name]" value="{{ $doc['name'] }}">
-                                            <input type="checkbox" name="documents[{{ $index }}][submitted]" value="1" id="doc_{{ $index }}" class="form-check-input">
+                                            <input type="hidden" name="documents[{{ $index }}][name]"
+                                                value="{{ $doc['name'] }}">
+                                            <input type="checkbox" name="documents[{{ $index }}][submitted]"
+                                                value="1" id="doc_{{ $index }}" class="form-check-input">
                                             <label for="doc_{{ $index }}" class="doc-label">
                                                 <span class="doc-icon">
                                                     <i class="mdi mdi-{{ $doc['icon'] }}"></i>
@@ -854,18 +889,21 @@
 
                                     <div class="serah-form-group">
                                         <label class="serah-form-label">Saksi (Opsional)</label>
-                                        <input type="text" name="saksi" class="serah-form-control" placeholder="Nama saksi">
+                                        <input type="text" name="saksi" class="serah-form-control"
+                                            placeholder="Nama saksi">
                                     </div>
 
                                     <div class="serah-form-group mb-0">
                                         <div class="serah-checklist-item approval-check-green" style="width: 100%;">
                                             <div class="form-check">
-                                                <input type="checkbox" name="persetujuan" value="1" id="persetujuan" class="form-check-input" required>
+                                                <input type="checkbox" name="persetujuan" value="1"
+                                                    id="persetujuan" class="form-check-input" required>
                                                 <label for="persetujuan" class="check-label">
                                                     <span class="check-icon">
                                                         <i class="mdi mdi-check-circle"></i>
                                                     </span>
-                                                    <span class="check-text">Saya menyatakan unit diterima dalam kondisi baik.</span>
+                                                    <span class="check-text">Saya menyatakan unit diterima dalam kondisi
+                                                        baik.</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -877,7 +915,8 @@
                                     <ul class="transaksi-mini-list mb-0">
                                         <li>
                                             <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                            <span>Pastikan checklist kondisi unit telah dicek sebelum proses disimpan.</span>
+                                            <span>Pastikan checklist kondisi unit telah dicek sebelum proses
+                                                disimpan.</span>
                                         </li>
                                         <li>
                                             <i class="mdi mdi-arrow-right-circle-outline"></i>
@@ -938,11 +977,11 @@
             });
 
             // Notifikasi Sukses Setelah Refresh
-            @if(session('success'))
+            @if (session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: '{{ session("success") }}',
+                    text: '{{ session('success') }}',
                     confirmButtonColor: '#9a55ff',
                     timer: 3500,
                     timerProgressBar: true
@@ -950,11 +989,11 @@
             @endif
 
             // Notifikasi Error Jika Terjadi Kesalahan
-            @if(session('error'))
+            @if (session('error'))
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: '{{ session("error") }}',
+                    text: '{{ session('error') }}',
                     confirmButtonColor: '#ff4747'
                 });
             @endif

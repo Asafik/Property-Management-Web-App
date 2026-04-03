@@ -120,8 +120,8 @@ class SerahTerimaController extends Controller
                 'no_bast' => $noBast
             ]);
 
-            return redirect()->route('unit.selesai')
-                ->with('success', 'Serah terima berhasil diproses.');
+            return redirect()->route('unit.selesai', ['bookingId' => $booking->id])
+    ->with('success', 'Serah terima berhasil diproses.');
         } catch (\Exception $e) {
             DB::rollBack();
 
