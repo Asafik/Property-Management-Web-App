@@ -19,7 +19,7 @@
         .pratanah-form-label {
             font-size: 0.8rem;
             font-weight: 600;
-            color: #9a55ff !important;
+            color: #9a55ff !important;  
             margin-bottom: 0.3rem;
             letter-spacing: 0.3px;
             font-family: 'Nunito', sans-serif;
