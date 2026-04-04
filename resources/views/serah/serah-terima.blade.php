@@ -475,6 +475,8 @@
                             $surveyDone = ($booking->status_survey ?? 0) == 1;
                             $serahTerimaDone = ($booking->status_serahterima ?? 0) == 1 || ($booking->status ?? '') == 'completed' || !empty($booking->serah_terima_date);
 
+                            $spkDone = !empty($booking->unit->dokumen_spk);
+
                             // Halaman ini adalah tahap Serah Terima (step terakhir), bar selalu penuh
                             $currentStep = $totalSteps;
                             $progressWidth = 100;
@@ -570,12 +572,12 @@
                                 <small>Selesai</small>
                             </div>
 
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
                                 <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-clipboard-text"></i>
+                                    <i class="mdi {{ $spkDone ? 'mdi-check' : 'mdi-clipboard-text' }}"></i>
                                 </div>
                                 <span class="transaksi-step-title">SPK</span>
-                                <small>Menunggu</small>
+                                <small>{{ $spkDone ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
 
                             <div class="transaksi-step completed">

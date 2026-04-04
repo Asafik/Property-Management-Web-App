@@ -194,7 +194,7 @@
                             $isBookingDone = !empty($booking->booking_date);
                             $isCashDone = strtolower($booking->status_cash ?? '') == 'done' || in_array(strtolower($booking->purchase_type), ['cash', 'cash_tempo']);
                             $isLegalDone = strtolower($booking->status_legal ?? '') == 'done';
-                            $isSpkDone = strtolower($booking->status_spk ?? '') == 'done';
+                            $isSpkDone = !empty($booking->unit->dokumen_spk);
                             $construction = strtolower($booking->unit->construction_progress ?? '');
                             $isBuildDone = $construction == 'selesai';
                             $isAkadDone = $booking->status_akad == 'done';
@@ -204,7 +204,7 @@
                             if ($isBookingDone) $completedCount++;
                             if ($isCashDone) $completedCount++;
                             if ($isLegalDone) $completedCount++;
-                            // SPK tidak dihitung karena masih off
+                            if ($isSpkDone) $completedCount++;
                             if ($isBuildDone) $completedCount++;
                             // Akad sedang aktif, jadi tidak dihitung sebagai completed
 
@@ -238,8 +238,8 @@
                                         $isStepActive = $isCashDone && !$isLegalDone;
                                     }
                                     if ($key == 'spk') {
-                                        $isStepCompleted = false; // SPK tetap off
-                                        $isStepActive = false; // SPK tidak aktif
+                                        $isStepCompleted = $isSpkDone;
+                                        $isStepActive = $isLegalDone && !$isSpkDone;
                                     }
                                     if ($key == 'construction') {
                                         if ($construction == 'selesai') {

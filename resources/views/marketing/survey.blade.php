@@ -176,6 +176,8 @@
                                 strtolower($application->status_survey ?? '') == 'done' ||
                                 ($application->booking->status_survey ?? 0) == 1;
 
+                            $spkDone = !empty($application->unit->dokumen_spk);
+
                             $totalSteps = 7;
                             // Jika subsidi, Survey adalah tahap 5. Jika komersil, Survey tahap 5.
                             $currentStep = 5;
@@ -207,12 +209,12 @@
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
                             </div>
 
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
                                 <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-clipboard-text"></i>
+                                    <i class="mdi {{ $spkDone ? 'mdi-check' : 'mdi-clipboard-text' }}"></i>
                                 </div>
                                 <span class="transaksi-step-title">SPK</span>
-                                <small>Menunggu</small>
+                                <small>{{ $spkDone ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
 
                             @php
@@ -524,13 +526,13 @@
                             <div class="transaksi-summary-grid">
                                 <div class="transaksi-summary-box success">
                                     <div class="label">Appraisal</div>
-                                    <div class="value">
+                                    <div class="value" style="font-size: 0.95rem; font-weight: 700;">
                                         Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}
                                     </div>
                                 </div>
                                 <div class="transaksi-summary-box">
                                     <div class="label">Kelayakan</div>
-                                    <div class="value">
+                                    <div class="value" style="font-size: 0.95rem; font-weight: 700;">
                                         {{ $application->rekomendasi ? $application->rekomendasi : 'Belum ditentukan' }}
                                     </div>
                                 </div>

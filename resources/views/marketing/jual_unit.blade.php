@@ -1,4 +1,4 @@
-﻿@extends('layouts.partial.app')
+@extends('layouts.partial.app')
 
 @section('title', 'Marketing Jual Unit - Property Management App')
 
@@ -762,7 +762,7 @@
             min-width: 70px;
             display: inline-block;
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 50px;
             font-size: 12px;
             font-weight: 600;
             color: white;
@@ -1594,12 +1594,12 @@
                                                 </td>
                                                 <td>
                                                     <span class="info-badge-icon land-badge">
-                                                        <i class="mdi mdi-arrow-expand-all"></i>{{ $unit->area ?? '-' }} mÂ²
+                                                        <i class="mdi mdi-arrow-expand-all"></i>{{ $unit->area ?? '-' }}
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <span class="info-badge-icon building-badge">
-                                                        <i class="mdi mdi-home-floor-1"></i>{{ $unit->building_area ?? '-' }} mÂ²
+                                                        <i class="mdi mdi-home-floor-1"></i>{{ $unit->building_area ?? '-' }} 
                                                     </span>
                                                 </td>
                                                 <td class="price-text">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
@@ -2533,11 +2533,10 @@
             canvas.setHeight(img.height);
             canvas.setBackgroundImage(img, function () {
                 @foreach ($unitsForSvg as $unit)
-                    const rect{{ $unit->id }} = new fabric.Rect({
+                    const circle{{ $unit->id }} = new fabric.Circle({
                         left: {{ $unit->pos_x ?? 100 }},
                         top: {{ $unit->pos_y ?? 100 }},
-                        width: {{ $unit->width ?? 80 }},
-                        height: {{ $unit->height ?? 60 }},
+                        radius: {{ ($unit->width ?? 80) / 2 }},
                         angle: {{ $unit->angle ?? 0 }},
                         fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
                         opacity: 0.6,
@@ -2547,10 +2546,10 @@
                         hasBorders: true,
                         lockRotation: false
                     });
-                    rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
-                    rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    rect{{ $unit->id }}.status = "{{ $unit->status }}";
-                    canvas.add(rect{{ $unit->id }});
+                    circle{{ $unit->id }}.unitId = "{{ $unit->id }}";
+                    circle{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
+                    circle{{ $unit->id }}.status = "{{ $unit->status }}";
+                    canvas.add(circle{{ $unit->id }});
                 @endforeach
                 canvas.renderAll();
             }, { originX: 'left', originY: 'top' });

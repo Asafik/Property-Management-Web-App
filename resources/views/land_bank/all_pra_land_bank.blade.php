@@ -1241,7 +1241,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
 
-                <form id="formFase2" method="POST" enctype="multipart/form-data>
+                <form id="formFase2" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" id="fase2_id">
                     <input type="hidden" name="fase" value="fase2">
@@ -1385,16 +1385,13 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">{{ $doc->name }}</label>
 
-                                            <div class="pratanah-file-upload-modern">
+                                            <input type="text" class="form-control mb-2"
+                                                name="documents[{{ $doc->id }}][number]"
+                                                placeholder="Nomor {{ $doc->name }}">
 
-                                            
+                                            <div class="pratanah-file-upload-modern">
                                                 <input type="file" name="documents[{{ $doc->id }}][file]"
                                                     accept=".pdf,.jpg,.jpeg,.png">
-
-                                                
-                                                <input type="text" class="form-control mt-2"
-                                                    name="documents[{{ $doc->id }}][number]"
-                                                    placeholder="Nomor {{ $doc->name }}">
 
                                                 <div class="pratanah-file-label-modern">
                                                     <i class="mdi mdi-file"></i>
@@ -1403,7 +1400,6 @@
                                                         <small>PDF / JPG / PNG</small>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
                                     @endforeach
@@ -1637,11 +1633,8 @@
                 Swal.close();
 
                 if (res.success) {
-                    document.getElementById('fase1_id').value = res.id;
-                    document.getElementById('fase2_id').value = res.id;
-                    document.getElementById('fase3_id').value = res.id;
-
-                    showSuccess('Fase 1 berhasil disimpan');
+                    sessionStorage.setItem('success_message', 'Fase 1 berhasil disimpan');
+                    location.reload();
                 } else {
                     showError(res.message);
                 }
@@ -1679,7 +1672,8 @@
         Swal.close();
 
         if (res.success) {
-            showSuccess(res.message);
+            sessionStorage.setItem('success_message', res.message || 'Fase 2 berhasil disimpan');
+            location.reload();
         } else {
             showError(res.message);
         }
@@ -1714,12 +1708,8 @@
                 Swal.close();
 
                 if (res.success) {
-                    showSuccess(res.message);
-
-                    setTimeout(() => {
-                        location.reload(); // biar kelihatan berubah
-                    }, 1000);
-
+                    sessionStorage.setItem('success_message', res.message || 'Fase 3 berhasil disimpan');
+                    location.reload();
                 } else {
                     showError(res.message);
                 }
@@ -1734,6 +1724,12 @@
         // INIT
         // ===============================
         document.addEventListener('DOMContentLoaded', function() {
+            // Cek pesan sukses dari sessionStorage (setelah reload)
+            const pendingMsg = sessionStorage.getItem('success_message');
+            if (pendingMsg) {
+                showSuccess(pendingMsg);
+                sessionStorage.removeItem('success_message');
+            }
 
             // BUTTON FASE 1
             document.querySelectorAll('.btn-action.fase1').forEach(btn => {
@@ -1773,6 +1769,38 @@
                     document.getElementById('fase3_id').value = id;
 
                     openModal('modalFase3');
+                });
+            });
+
+            // HANDLE MULTIPLE FILE UPLOADS
+            document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const container = this.closest('.pratanah-file-upload-modern');
+                    const label = container.querySelector('.pratanah-file-label-modern');
+                    const fileName = container.querySelector('.pratanah-file-info-modern span');
+                    const fileInfo = container.querySelector('.pratanah-file-info-modern small');
+                    const icon = container.querySelector('i');
+
+                    if (this.files && this.files.length > 0) {
+                        const file = this.files[0];
+                        const size = (file.size / 1024).toFixed(1) + ' KB';
+
+                        // Update UI
+                        fileName.textContent = file.name;
+                        fileInfo.textContent = size;
+                        fileInfo.className = 'pratanah-file-size'; // use the badge style
+                        icon.className = 'mdi mdi-check-circle';
+                        label.style.borderColor = '#9a55ff';
+                        label.style.background = 'linear-gradient(135deg, #f1f0ff, #f8f9fa)';
+                    } else {
+                        // Reset if cleared
+                        fileName.textContent = 'Upload File';
+                        fileInfo.textContent = 'PDF / JPG / PNG';
+                        fileInfo.className = '';
+                        icon.className = 'mdi mdi-file';
+                        label.style.borderColor = '#d0d4db';
+                        label.style.background = 'linear-gradient(135deg, #f8f9fa, #f1f3f5)';
+                    }
                 });
             });
         });
