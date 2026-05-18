@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'RAB Pembangunan - Property Management App')
+@section('title', 'RAP Pembangunan - Property Management App')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('assets/css/cetak/rab.css') }}">
@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <h3 class="text-dark fw-bold mb-1">
                             <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>
-                            Rencana Anggaran Biaya (RAB) Pembangunan
+                            Rencana Anggaran Pekerjaan (RAP)
                         </h3>
                         <p class="text-muted mb-0">
                             <i class="mdi mdi-information-outline me-1"></i>
