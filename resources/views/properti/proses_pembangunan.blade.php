@@ -337,12 +337,12 @@
 
                                 <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
                                     class="aksi-btn rab-btn-primary">
-                                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                                    <i class="mdi mdi-printer me-1"></i>Cetak RAP
                                 </a>
 
                                 <button type="button" class="aksi-btn rab-btn-warning acc-btn"
                                     data-id="{{ $selectedUnit->id }}">
-                                    <i class="mdi mdi-check me-1"></i>ACC RAB
+                                    <i class="mdi mdi-check me-1"></i>ACC RAP
                                 </button>
                             </div>
                         </div>
