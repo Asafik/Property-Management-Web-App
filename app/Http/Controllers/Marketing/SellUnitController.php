@@ -243,7 +243,7 @@ class SellUnitController extends Controller
         ];
 
         // ambil unit dari DB
-        $unitsForSvg = (clone $statsQuery)->get(['id', 'unit_code', 'status', 'type', 'pos_x', 'pos_y']); // pastikan ada kolom tipe
+        $unitsForSvg = (clone $statsQuery)->get(); // ambil semua kolom dan relasi agar detail unit lengkap terisi di siteplan
 
         // set warna sesuai tipe
         // Tentukan warna berdasarkan status & type

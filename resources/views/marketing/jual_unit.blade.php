@@ -755,6 +755,7 @@
             border-radius: 16px;
             padding: 2rem;
             min-height: 400px;
+            position: relative !important;
         }
 
         .unit-box {
@@ -856,12 +857,21 @@
         /* Siteplan */
         .siteplan-scroll-container {
             width: 100%;
-            overflow-x: auto;
-            overflow-y: auto;
+            overflow: hidden !important; /* Pure viewport navigation */
             border: 2px solid #9a55ff;
             border-radius: 12px;
             background: #f8f9fa;
             max-height: 700px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            user-select: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .siteplan-scroll-container .canvas-container {
+            margin: auto !important;
         }
 
         #siteplanCanvas {
@@ -884,6 +894,76 @@
         .btn-save-position:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Fullscreen Mode Styling */
+        .denah-container.fullscreen-mode {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 9999 !important;
+            background: linear-gradient(135deg, #1e1e2f, #0f0f1a) !important;
+            padding: 1.5rem !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+        .denah-container.fullscreen-mode .siteplan-scroll-container {
+            flex-grow: 1;
+            max-height: calc(100vh - 120px) !important;
+            border-color: #9a55ff;
+            background: #12121e;
+        }
+        .denah-container.fullscreen-mode .fw-bold.text-primary {
+            color: #da8cff !important;
+        }
+
+        /* Floating Siteplan Controls (Mockup Style) */
+        .siteplan-floating-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .siteplan-control-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e4eaf2;
+            box-shadow: 0 4px 10px rgba(160, 175, 195, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            padding: 0;
+        }
+
+        .siteplan-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(154, 85, 255, 0.15);
+            border-color: #9a55ff;
+            color: #9a55ff;
+        }
+
+        .siteplan-control-btn:active {
+            transform: translateY(0);
+        }
+
+        .siteplan-control-btn i {
+            font-size: 1.3rem;
         }
 
         /* Modal Detail Sederhana */
@@ -1985,6 +2065,22 @@
                         <!-- SITEPLAN VIEW -->
                         <div id="sitePlandView" style="display: none;">
                             <div class="denah-container" style="padding: 1rem;">
+                                <!-- Floating Controls (Vertical Stack matching user's image) -->
+                                <div class="siteplan-floating-controls">
+                                    <button type="button" class="siteplan-control-btn" onclick="zoom(1.2)" title="Zoom In">
+                                        <i class="mdi mdi-plus"></i>
+                                    </button>
+                                    <button type="button" class="siteplan-control-btn" onclick="zoom(0.8)" title="Zoom Out">
+                                        <i class="mdi mdi-minus"></i>
+                                    </button>
+                                    <button type="button" class="siteplan-control-btn" onclick="resetZoom()" title="Reset Zoom" style="position: relative;">
+                                        <i class="mdi mdi-refresh"></i>
+                                        <span id="zoomPercent" class="badge bg-primary text-white" style="position: absolute; bottom: -5px; right: -5px; font-size: 0.65rem; padding: 2px 4px; border-radius: 4px;">63%</span>
+                                    </button>
+                                    <button type="button" class="siteplan-control-btn" id="btnFullscreen" onclick="toggleFullscreen()" title="Fullscreen">
+                                        <i class="mdi mdi-fullscreen"></i>
+                                    </button>
+                                </div>
                                 <div class="siteplan-scroll-container">
                                     <canvas id="siteplanCanvas"></canvas>
                                 </div>
@@ -2444,11 +2540,85 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
     <script>
+        // ========== POPULATE DETAIL MODAL DIRECTLY ==========
+        window.populateModalDirectly = function (data) {
+            // ---- Informasi Unit ----
+            document.getElementById('m_unit_name').innerText   = data.unitName || '-';
+            document.getElementById('m_block').innerText       = data.block || '-';
+            document.getElementById('m_unit_number').innerText = data.unitNumber || '-';
+            document.getElementById('m_jenis').innerText       = data.jenis || '-';
+            document.getElementById('m_type').innerText        = data.type || '-';
+            document.getElementById('m_area').innerText        = new Intl.NumberFormat('id-ID').format(data.area || 0) + ' m\u00b2';
+            document.getElementById('m_building').innerText    = new Intl.NumberFormat('id-ID').format(data.building || 0) + ' m\u00b2';
+            document.getElementById('m_price').innerText       = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
+            document.getElementById('m_direction').innerText   = data.direction || '-';
+            document.getElementById('m_address').innerText     = data.address || '-';
+
+            // ---- Badge Status Unit ----
+            const statusRaw  = data.statusRaw || '';
+            const statusText = data.statusText || statusRaw;
+            const jenisRaw   = (data.jenis || '').toLowerCase();
+            const typeRaw    = (data.type || '').toLowerCase();
+            let statusBadgeHtml = '';
+            if (statusRaw === 'ready' || statusRaw === 'tersedia') {
+                const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' : 'badge-available-komersil';
+                statusBadgeHtml = `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
+            } else if (statusRaw === 'booked') {
+                statusBadgeHtml = `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
+            } else if (statusRaw === 'sold') {
+                statusBadgeHtml = `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
+            } else {
+                statusBadgeHtml = `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
+            }
+            document.getElementById('m_status').innerHTML = statusBadgeHtml;
+
+            // ---- Progress Pembangunan ----
+            const progressMap = { belum_mulai:0, pondasi:20, dinding:40, atap:60, finishing:80, selesai:100 };
+            const pct = progressMap[data.construction] !== undefined ? progressMap[data.construction] : 0;
+            document.getElementById('m_progress_bar').style.width = pct + '%';
+            document.getElementById('m_progress_bar').className   = 'progress-bar-custom ' + (pct < 100 ? 'progress-green' : 'progress-dark-green');
+            document.getElementById('m_progress_pct').innerText   = pct + '%';
+
+            // ---- Booking Card Show/Hide ----
+            const hasBooking = data.hasBooking === 1 || data.hasBooking === '1' || data.hasBooking === true;
+            document.getElementById('m_booking_card').style.display    = hasBooking ? '' : 'none';
+            document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
+
+            if (hasBooking) {
+                const customerName = data.customer || '-';
+                const salesName    = data.sales || '-';
+
+                document.getElementById('m_customer').innerText         = customerName;
+                document.getElementById('m_customer_initial').innerText = (customerName !== '-' && customerName) ? customerName.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_sales').innerText            = salesName;
+                document.getElementById('m_sales_initial').innerText    = (salesName !== '-' && salesName) ? salesName.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_booking_date').innerText     = data.bookingDate || '-';
+                document.getElementById('m_booking_fee').innerText      = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+                document.getElementById('m_agent_fee').innerText        = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
+
+                // Badge Status Booking
+                const bookingStatus = data.bookingStatus || '-';
+                let bookingBadgeHtml = '';
+                if (bookingStatus === 'active') {
+                    bookingBadgeHtml = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                } else if (bookingStatus === 'completed' || bookingStatus === 'lunas') {
+                    bookingBadgeHtml = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                } else if (bookingStatus === 'cancelled') {
+                    bookingBadgeHtml = `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                } else {
+                    const bLabel = bookingStatus.charAt(0).toUpperCase() + bookingStatus.slice(1);
+                    bookingBadgeHtml = `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
+                }
+                document.getElementById('m_booking_status').innerHTML = bookingBadgeHtml;
+            }
+        };
+
         // ========== DETAIL MODAL HANDLER ==========
         const detailModal = document.getElementById('detailUnitModal');
         if (detailModal) {
             detailModal.addEventListener('show.bs.modal', function (event) {
                 let button = event.relatedTarget;
+                if (!button) return; // Triggered programmatically, already populated!
 
                 // ---- Informasi Unit ----
                 document.getElementById('m_unit_name').innerText   = button.getAttribute('data-unit_name') || '-';
@@ -2527,10 +2697,39 @@
         // ========== SITEPLAN CANVAS ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
         const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
+        let originalWidth = 0;
+        let originalHeight = 0;
+        let zoomLevel = 1.0;
+        
+        // Canvas Focus to avoid Page Scroll Hijacking
+        let isCanvasFocused = false;
 
         fabric.Image.fromURL(siteplanImage, function (img) {
-            canvas.setWidth(img.width);
-            canvas.setHeight(img.height);
+            originalWidth = img.width;
+            originalHeight = img.height;
+            
+            // Set canvas size dynamically to match the container card width
+            let initialWidth = 1100;
+            const cardBody = document.querySelector('.card-body');
+            if (cardBody && cardBody.clientWidth > 0) {
+                initialWidth = cardBody.clientWidth - 40;
+            }
+            
+            zoomLevel = 0.63; // default zoom at 63%
+            
+            canvas.setWidth(initialWidth);
+            canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
+            
+            // Calculate pan offset to center the 63% zoomed siteplan perfectly
+            const panX = (initialWidth - originalWidth * zoomLevel) / 2;
+            const panY = 0; // Vertically fits exactly
+            
+            canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
+            updateZoomText();
+            
+            // Premium grab cursors
+            canvas.defaultCursor = 'grab';
+            
             canvas.setBackgroundImage(img, function () {
                 @foreach ($unitsForSvg as $unit)
                     const circle{{ $unit->id }} = new fabric.Circle({
@@ -2548,11 +2747,205 @@
                     });
                     circle{{ $unit->id }}.unitId = "{{ $unit->id }}";
                     circle{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    circle{{ $unit->id }}.status = "{{ $unit->status }}";
+                    circle{{ $unit->id }}.unitName = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}";
+                    circle{{ $unit->id }}.unitNumber = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}";
+                    circle{{ $unit->id }}.block = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}";
+                    circle{{ $unit->id }}.jenis = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}";
+                    circle{{ $unit->id }}.type = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}";
+                    circle{{ $unit->id }}.address = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}";
+                    circle{{ $unit->id }}.area = {{ $unit->area ?? 0 }};
+                    circle{{ $unit->id }}.building = {{ $unit->building_area ?? 0 }};
+                    circle{{ $unit->id }}.price = {{ $unit->price ?? 0 }};
+                    circle{{ $unit->id }}.direction = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}";
+                    circle{{ $unit->id }}.statusRaw = "{{ $unit->status }}";
+                    circle{{ $unit->id }}.statusText = "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}";
+                    circle{{ $unit->id }}.construction = "{{ $unit->construction_progress ?? 'belum_mulai' }}";
+                    circle{{ $unit->id }}.hasBooking = {{ $unit->activeBooking ? 1 : 0 }};
+                    circle{{ $unit->id }}.customer = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}";
+                    circle{{ $unit->id }}.sales = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}";
+                    circle{{ $unit->id }}.bookingDate = "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}";
+                    circle{{ $unit->id }}.bookingFee = {{ $unit->activeBooking->booking_fee ?? 0 }};
+                    circle{{ $unit->id }}.agentFee = {{ $unit->activeBooking->agent_fee ?? 0 }};
+                    circle{{ $unit->id }}.bookingStatus = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
                     canvas.add(circle{{ $unit->id }});
                 @endforeach
                 canvas.renderAll();
             }, { originX: 'left', originY: 'top' });
+        });
+
+        // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)
+        canvas.on('mouse:wheel', function (opt) {
+            if (!isCanvasFocused) return; // Allow page scroll if not clicked/activated first!
+            
+            if (typeof originalWidth === 'undefined' || originalWidth === 0) return;
+            const delta = opt.e.deltaY;
+            let zoomVal = canvas.getZoom();
+            
+            zoomVal *= (delta < 0 ? 1.1 : 0.9);
+            
+            if (zoomVal > 3.0) zoomVal = 3.0;
+            if (zoomVal < 0.2) zoomVal = 0.2;
+            
+            zoomLevel = zoomVal;
+            
+            const pointer = canvas.getPointer(opt.e);
+            canvas.zoomToPoint(new fabric.Point(pointer.x, pointer.y), zoomLevel);
+            
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+            canvas.renderAll();
+            updateZoomText();
+        });
+
+        // Background Drag to Pan (Figma/Canva style!)
+        let isDragging = false;
+        let lastPosX, lastPosY;
+
+        canvas.on('mouse:down', function (opt) {
+            const evt = opt.e;
+            if (!canvas.getActiveObject()) {
+                isDragging = true;
+                canvas.selection = false;
+                canvas.defaultCursor = 'grabbing';
+                canvas.setCursor('grabbing');
+                lastPosX = evt.clientX;
+                lastPosY = evt.clientY;
+            }
+        });
+
+        canvas.on('mouse:move', function (opt) {
+            if (isDragging) {
+                const e = opt.e;
+                const vpt = canvas.viewportTransform;
+                vpt[4] += e.clientX - lastPosX;
+                vpt[5] += e.clientY - lastPosY;
+                canvas.requestRenderAll();
+                lastPosX = e.clientX;
+                lastPosY = e.clientY;
+            }
+        });
+
+        canvas.on('mouse:up', function (opt) {
+            canvas.setViewportTransform(canvas.viewportTransform);
+            isDragging = false;
+            canvas.selection = true;
+            canvas.defaultCursor = 'grab';
+            canvas.setCursor('grab');
+        });
+
+        // CANVAS FOCUS LOGIC TO AVOID SCROLL HIJACKING
+        const siteplanScrollContainer = document.querySelector('.siteplan-scroll-container');
+
+        if (siteplanScrollContainer) {
+            siteplanScrollContainer.addEventListener('click', function (e) {
+                isCanvasFocused = true;
+                siteplanScrollContainer.style.borderColor = '#28a745'; // Glowing green active border
+                siteplanScrollContainer.style.boxShadow = '0 0 15px rgba(40, 167, 69, 0.3)';
+                e.stopPropagation();
+            });
+        }
+
+        document.addEventListener('click', function (e) {
+            if (siteplanScrollContainer && !siteplanScrollContainer.contains(e.target)) {
+                isCanvasFocused = false;
+                siteplanScrollContainer.style.borderColor = '#9a55ff'; // Restore default purple
+                siteplanScrollContainer.style.boxShadow = 'none';
+            }
+        });
+
+        // Zoom Functions
+        function zoom(factor) {
+            if (zoomLevel * factor > 3.0 || zoomLevel * factor < 0.2) return;
+            zoomLevel = zoomLevel * factor;
+            canvas.zoomToPoint(new fabric.Point(canvas.getWidth() / 2, canvas.getHeight() / 2), zoomLevel);
+            updateZoomText();
+        }
+
+        function resetZoom() {
+            zoomLevel = 0.63;
+            const containerWidth = canvas.getWidth();
+            canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
+            
+            const panX = (containerWidth - originalWidth * zoomLevel) / 2;
+            const panY = 0;
+            
+            canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
+            canvas.renderAll();
+            updateZoomText();
+        }
+
+        function updateZoomText() {
+            const txt = document.getElementById('zoomPercent');
+            if (txt) {
+                txt.textContent = Math.round(zoomLevel * 100) + '%';
+            }
+        }
+
+        // Fullscreen Functions
+        function toggleFullscreen() {
+            const container = document.querySelector('#sitePlandView .denah-container');
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Listen for fullscreen events
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            const container = document.querySelector('#sitePlandView .denah-container');
+            const btn = document.getElementById('btnFullscreen');
+            if (document.fullscreenElement) {
+                container.classList.add('fullscreen-mode');
+                if (btn) btn.innerHTML = '<i class="mdi mdi-fullscreen-exit"></i>';
+            } else {
+                container.classList.remove('fullscreen-mode');
+                if (btn) btn.innerHTML = '<i class="mdi mdi-fullscreen"></i>';
+            }
+            if (typeof canvas !== 'undefined' && canvas) {
+                canvas.calcOffset();
+                canvas.renderAll();
+            }
+        }
+
+        // Keyboard navigation for micro-adjustments (Arrow Keys)
+        document.addEventListener('keydown', function (e) {
+            if (typeof canvas === 'undefined' || !canvas) return;
+            const activeObject = canvas.getActiveObject();
+            if (!activeObject) return;
+
+            const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (keys.includes(e.key)) {
+                e.preventDefault();
+            }
+
+            const step = e.shiftKey ? 10 : 1; // 10px if Shift is held, otherwise 1px
+
+            if (e.key === 'ArrowUp') {
+                activeObject.set('top', activeObject.top - step);
+            } else if (e.key === 'ArrowDown') {
+                activeObject.set('top', activeObject.top + step);
+            } else if (e.key === 'ArrowLeft') {
+                activeObject.set('left', activeObject.left - step);
+            } else if (e.key === 'ArrowRight') {
+                activeObject.set('left', activeObject.left + step);
+            }
+
+            activeObject.setCoords();
+            canvas.renderAll();
         });
 
         function getColor(status, type) {
@@ -2565,11 +2958,33 @@
 
         canvas.on('mouse:dblclick', function (e) {
             if (e.target && e.target.unitId) {
-                document.querySelector('#myModal .unit-code').textContent = e.target.unitCode || '-';
-                document.querySelector('#myModal .unit-status').textContent = e.target.status || '-';
-                document.querySelector('#myModal .unit-pos').textContent = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
-                document.querySelector('#myModal .unit-size').textContent = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
-                const modal = new bootstrap.Modal(document.getElementById('myModal'));
+                const target = e.target;
+                const data = {
+                    unitName: target.unitName,
+                    unitCode: target.unitCode,
+                    unitNumber: target.unitNumber,
+                    block: target.block,
+                    jenis: target.jenis,
+                    type: target.type,
+                    address: target.address,
+                    area: target.area,
+                    building: target.building,
+                    price: target.price,
+                    direction: target.direction,
+                    statusRaw: target.statusRaw,
+                    statusText: target.statusText,
+                    construction: target.construction,
+                    hasBooking: target.hasBooking,
+                    customer: target.customer,
+                    sales: target.sales,
+                    bookingDate: target.bookingDate,
+                    bookingFee: target.bookingFee,
+                    agentFee: target.agentFee,
+                    bookingStatus: target.bookingStatus
+                };
+                
+                window.populateModalDirectly(data);
+                const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
                 modal.show();
             }
         });
@@ -2623,6 +3038,24 @@
             } else if (view === 'sitepland') {
                 document.getElementById('sitePlandView').style.display = 'block';
                 document.getElementById('btnSitePlandView').classList.add('active');
+                if (typeof canvas !== 'undefined' && canvas) {
+                    // Update canvas width dynamically in case screen size is different or resized
+                    let newWidth = 1100;
+                    const cardBody = document.querySelector('.card-body');
+                    if (cardBody && cardBody.clientWidth > 0) {
+                        newWidth = cardBody.clientWidth - 40;
+                    }
+                    canvas.setWidth(newWidth);
+                    if (typeof originalHeight !== 'undefined' && originalHeight > 0) {
+                        canvas.setHeight(originalHeight * 0.63);
+                    }
+                    
+                    // Re-center on tab active!
+                    resetZoom();
+                    
+                    canvas.calcOffset();
+                    canvas.renderAll();
+                }
             }
         }
 
@@ -2655,6 +3088,8 @@
         };
 
         $(document).ready(function () {
+
+
             // Format Rupiah
             $('#booking_fee, #agent_fee_modal').on('input', function () {
                 let value = $(this).val().replace(/[^0-9]/g, '');
