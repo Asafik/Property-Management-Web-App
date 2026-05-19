@@ -17,13 +17,21 @@ class KprApplicationController extends Controller
     public function show(Booking $booking)
 {
     // load relasi customer + unit
-    $booking->load(['customer', 'unit']);
+    $booking->load(['customer.documents', 'unit']);
+
+    // Map customer documents for easy lookup in the view
+    $existingCustomerDocs = [];
+    if ($booking->customer && $booking->customer->documents) {
+        foreach ($booking->customer->documents as $doc) {
+            $existingCustomerDocs[$doc->document_name] = $doc->file;
+        }
+    }
 
     // ambil daftar bank aktif
     $banks = Banks::where('is_active', 1)->get();
     $promos = Promo::all();
     // tampilkan form KPR untuk booking ini
-    return view('marketing.pengajuan', compact('booking', 'banks', 'promos'));
+    return view('marketing.pengajuan', compact('booking', 'banks', 'promos', 'existingCustomerDocs'));
 }
 
 
@@ -164,6 +172,13 @@ public function store(Request $request)
             'ktp'
         ];
 
+        $docMap = [
+            'ktp' => 'KTP',
+            'kk' => 'Kartu Keluarga',
+            'npwp' => 'NPWP',
+            'ktp_pasangan' => 'KTP Pasangan'
+        ];
+
         foreach ($fileFields as $field) {
 
             if ($request->hasFile($field)) {
@@ -186,6 +201,19 @@ public function store(Request $request)
                     'type'               => $field,
                     'path'               => $path,
                 ]);
+            } elseif (isset($docMap[$field])) {
+                // If not uploaded but exists in customer documents, copy/reference the existing customer document path!
+                $customerDoc = \App\Models\CustomerDocument::where('customer_id', $request->customer_id)
+                    ->where('document_name', $docMap[$field])
+                    ->first();
+                
+                if ($customerDoc && $customerDoc->file) {
+                    KprDocument::create([
+                        'kpr_application_id' => $kprApplication->id,
+                        'type'               => $field,
+                        'path'               => $customerDoc->file,
+                    ]);
+                }
             }
         }
 

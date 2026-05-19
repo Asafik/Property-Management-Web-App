@@ -14,15 +14,15 @@ class DocumentPreviewController extends Controller
      *
      * Cara kerja:
      *  - PDF  → di-stream dengan Content-Disposition: inline (browser render langsung)
-     *  - Gambar → redirect ke URL storage (langsung tampil di tab baru)
+     *  - Gambar → di-stream dengan Content-Disposition: inline (browser render langsung)
      *  - Lainnya → download (Content-Disposition: attachment)
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\RedirectResponse
      */
     public function preview(Request $request)
     {
-        // Ambil path dari query string, contoh: ?path=kpr/dokumen/xxx.pdf
+        // Ambil path dari query string, contoh: ?path=uploads/customer_documents/xxx.pdf
         $path = $request->query('path');
 
         if (!$path) {
@@ -35,33 +35,36 @@ class DocumentPreviewController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        // Pastikan file ada di storage
-        if (!Storage::disk('public')->exists($path)) {
-            abort(404, 'File tidak ditemukan.');
+        // Tentukan full path file. Coba di public_path terlebih dahulu (karena kita simpan uploads di public)
+        $fullPath = public_path($path);
+
+        if (!file_exists($fullPath)) {
+            // Coba di storage disk public
+            if (Storage::disk('public')->exists($path)) {
+                $fullPath = Storage::disk('public')->path($path);
+            } else {
+                abort(404, 'File tidak ditemukan.');
+            }
         }
 
-        $fullPath   = Storage::disk('public')->path($path);
-        $ext        = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        $fileName   = basename($path);
+        $ext        = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+        $fileName   = basename($fullPath);
 
         $imageExts  = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
         $pdfExts    = ['pdf'];
 
+        $mimeType = 'application/octet-stream';
         if (in_array($ext, $pdfExts)) {
-            // Stream PDF inline → browser render langsung di tab baru
-            return response()->file($fullPath, [
-                'Content-Type'        => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="' . $fileName . '"',
-                'X-Frame-Options'     => 'SAMEORIGIN',
-            ]);
+            $mimeType = 'application/pdf';
+        } elseif (in_array($ext, $imageExts)) {
+            $mimeType = 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
         }
 
-        if (in_array($ext, $imageExts)) {
-            // Untuk gambar, cukup redirect ke URL storage publik
-            return redirect(asset('storage/' . $path));
-        }
-
-        // File lain → download
-        return response()->download($fullPath, $fileName);
+        // Kembalikan response inline agar dirender langsung oleh browser di tab baru
+        return response()->file($fullPath, [
+            'Content-Type'        => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+            'X-Frame-Options'     => 'SAMEORIGIN',
+        ]);
     }
 }

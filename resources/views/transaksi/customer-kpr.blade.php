@@ -462,7 +462,7 @@ h3.text-dark, h4.text-dark {
     transition: all 0.25s ease;
 }
 
-.btn-action-purple i {
+.btn-action-purple i, .btn-action-green i {
     font-size: 1rem;
 }
 
@@ -471,6 +471,29 @@ h3.text-dark, h4.text-dark {
     color: #fff;
     border-color: #9a55ff;
     box-shadow: 0 6px 18px rgba(154, 85, 255, 0.22);
+    transform: translateY(-2px);
+}
+
+.btn-action-green {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    border: 1.5px solid #28c76f;
+    background: #fff;
+    color: #28c76f;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-action-green:hover {
+    background: linear-gradient(135deg, #48da89, #28c76f);
+    color: #fff;
+    border-color: #28c76f;
+    box-shadow: 0 6px 18px rgba(40, 199, 111, 0.22);
     transform: translateY(-2px);
 }
 
@@ -1020,8 +1043,6 @@ h3.text-dark, h4.text-dark {
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
 $(document).ready(function() {
     $('.sortable').click(function() {
@@ -1121,32 +1142,19 @@ $(document).ready(function() {
 
             if (docUrl) {
                 actionHtml = `
-                    <a href="${docUrl}" target="_blank" class="btn-action-purple">
-                        <i class="mdi mdi-eye-outline me-1"></i>Lihat
-                    </a>`;
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="${docUrl}" target="_blank" class="btn-action-purple">
+                            <i class="mdi mdi-eye-outline me-1"></i>Lihat
+                        </a>
+                        <a href="${docUrl}" download class="btn-action-green">
+                            <i class="mdi mdi-download me-1"></i>Download
+                        </a>
+                    </div>`;
             } else {
                 actionHtml = `
-                    <div class="d-flex flex-column gap-1 mt-1 text-end">
-                        <span class="text-danger small fw-bold mb-1" style="font-size: 0.75rem;">
-                            <i class="mdi mdi-alert-circle-outline"></i> Belum Upload
-                        </span>
-                        <div class="d-flex align-items-stretch justify-content-end gap-2">
-                            <div class="properti-file-upload-modern text-start" style="width: 240px;">
-                                <input type="file" accept=".pdf,.jpg,.jpeg,.png">
-                                <div class="properti-file-label-modern m-0 h-100 flex-row text-start" style="padding: 0.4rem 0.6rem; min-height: 42px; justify-content: flex-start; border-radius: 10px;">
-                                    <i class="mdi mdi-cloud-upload-outline" style="font-size: 1.3rem; padding: 4px; margin-right: 4px; min-width: 30px; text-align: center;"></i>
-                                    <div class="properti-file-info-modern" style="line-height: 1.2;">
-                                        <span style="font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">Pilih File</span>
-                                        <small style="font-size: 0.6rem;">Format: PDF/JPG/PNG</small>
-                                    </div>
-                                    <span class="properti-file-size" style="font-size: 0.65rem; padding: 2px 6px; margin: 0 0 0 auto;"></span>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-sm btn-gradient-primary text-nowrap d-flex align-items-center justify-content-center" style="padding: 0 1rem; border-radius: 10px; height: auto;">
-                                <i class="mdi mdi-upload me-1"></i> Upload
-                            </button>
-                        </div>
-                    </div>
+                    <span class="text-danger small fw-bold" style="font-size: 0.82rem;">
+                        <i class="mdi mdi-alert-circle-outline"></i> Belum Di-upload
+                    </span>
                 `;
             }
 
@@ -1170,23 +1178,7 @@ $(document).ready(function() {
 
     });
 
-    $(document).on('change', '.properti-file-upload-modern input[type="file"]', function(e) {
-        const fileName = e.target.files[0]?.name;
-        const fileSize = e.target.files[0]?.size;
-        const label = $(this).closest('.properti-file-upload-modern').find('.properti-file-info-modern span');
-        const sizeSpan = $(this).closest('.properti-file-upload-modern').find('.properti-file-size');
 
-        if (fileName) {
-            label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-            if (fileSize) {
-                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                sizeSpan.text(sizeInMB + ' MB');
-            }
-        } else {
-            label.text('Pilih File');
-            sizeSpan.text('');
-        }
-    });
 
     $(document).on('click', '.btnApproveKpr', function(e) {
         e.preventDefault();

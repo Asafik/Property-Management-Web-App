@@ -98,6 +98,8 @@
                             // STEP FLOW (URUT)
                             // =======================
 
+                            $verifikasiDone = in_array(strtolower(optional($booking->kprApplication)->status ?? ''), ['approved', 'rejected', 'analisa']);
+
                             if ($spkDone) {
                                 $currentStep = 3;
                             }
@@ -118,6 +120,11 @@
                                 $currentStep = 7;
                             }
 
+                            // If not verified yet, we are still on step 1 (Pengajuan) in terms of overall progress
+                            if (!$verifikasiDone) {
+                                $currentStep = 1;
+                            }
+
                             // =======================
                             // UI HELPER
                             // =======================
@@ -126,11 +133,19 @@
 
                             $stepsStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
 
-                            $stepClass = fn($index) => $index < $currentStep
-                                ? 'completed'
-                                : ($index == $currentStep
-                                    ? 'active'
-                                    : '');
+                            $stepClass = function($index) use ($currentStep, $verifikasiDone) {
+                                if ($index === 1) {
+                                    return 'completed';
+                                }
+                                if (!$verifikasiDone && $index >= 2) {
+                                    return '';
+                                }
+                                return $index < $currentStep
+                                    ? 'completed'
+                                    : ($index == $currentStep
+                                        ? 'active'
+                                        : '');
+                            };
                         @endphp
 
                         <div class="transaksi-progress-top">
@@ -149,9 +164,15 @@
                                 <small>{{ optional($booking->kprApplication)->submitted_at ? \Carbon\Carbon::parse($booking->kprApplication->submitted_at)->translatedFormat('d F Y') : '-' }}</small>
                             </div>
                             <div class="transaksi-step {{ $stepClass(2) }}">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-file-document-edit-outline"></i></div>
+                                <div class="transaksi-step-icon">
+                                    @if ($verifikasiDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-file-document-edit-outline"></i>
+                                    @endif
+                                </div>
                                 <span class="transaksi-step-title">Verifikasi</span>
-                                <small>{{ $currentStep == 2 ? 'Dalam Proses' : ($currentStep > 2 ? 'Selesai' : 'Menunggu') }}</small>
+                                <small>{{ $verifikasiDone ? 'Selesai' : 'Belum Selesai' }}</small>
                             </div>
 
                             <div class="transaksi-step {{ $spkDone ? 'completed' : ($currentStep == 3 ? 'active' : '') }}">

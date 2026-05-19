@@ -120,6 +120,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::delete('/marketing/pengajuan/{id}', [ListPengajuanController::class, 'destroy'])
     ->name('pengajuan.destroy');
 
+    Route::get('/document-preview', [DocumentPreviewController::class, 'preview'])->name('document.preview');
+
     /*
     |--------------------------------------------------------------------------
     | VIEW MARKETING (sementara static)

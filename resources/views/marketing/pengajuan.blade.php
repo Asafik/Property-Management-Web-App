@@ -55,6 +55,27 @@
             box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
         }
 
+        /* Deactivate hover effect when document already exists */
+        .properti-file-upload-modern.has-existing-doc:hover .properti-file-label-modern {
+            transform: none !important;
+            box-shadow: none !important;
+            border-color: #28a745 !important;
+            background: linear-gradient(135deg, #f0fff4, #f8f9fa) !important;
+        }
+
+        /* Elevate Lihat & Download buttons above the file input and give them their own premium hover */
+        .properti-file-upload-modern .btn {
+            position: relative;
+            z-index: 3;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .properti-file-upload-modern .btn:hover {
+            transform: translateY(-1px) scale(1.03) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+            opacity: 0.95;
+        }
+
         .properti-file-upload-modern .properti-file-label-modern i {
             font-size: 1.6rem;
             color: #9a55ff;
@@ -158,6 +179,104 @@
         .properti-file-upload-modern.error .properti-file-label-modern i {
             color: #dc3545;
         }
+
+        /* ===== SELECT2 CUSTOM STYLING FROM PROPERTI/INDEX ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.8rem !important;
+            min-height: 40px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 38px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #d5bfff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #9a55ff;
+        }
     </style>
 
     <div class="container-fluid p-3 p-md-4">
@@ -250,9 +369,9 @@
                             <input type="hidden" name="booking_id" value="{{ $booking->id }}">
 
                             <!-- Alert Info -->
-                            <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-start gap-2 mb-4">
-                                <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
-                                <span>Pastikan data customer sudah lengkap di menu <strong>Tambah Customer</strong> sebelum
+                            <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-center gap-2 mb-4" style="padding-left: 1.25rem !important;">
+                                <i class="mdi mdi-information-outline flex-shrink-0" style="font-size: 1.15rem; color: #9a55ff; line-height: 1; display: inline-flex; align-items: center; justify-content: center;"></i>
+                                <span style="line-height: 1.5; font-size: 0.82rem;">Pastikan data customer sudah lengkap di menu <strong>Tambah Customer</strong> sebelum
                                     mengajukan KPR.</span>
                             </div>
 
@@ -311,7 +430,7 @@
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
                                     <div class="pengajuan-form-group">
                                         <label>Bank Tujuan *</label>
-                                        <select class="pengajuan-form-control" name="banks_id" required>
+                                        <select class="pengajuan-form-control" name="banks_id" id="bankSelect" required>
                                             <option value="">-- Pilih Bank --</option>
                                             @foreach ($banks as $bank)
                                                 <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
@@ -323,7 +442,7 @@
                                 <div class="pengajuan-col-12 pengajuan-col-md-6">
                                     <div class="pengajuan-form-group">
                                         <label>Produk KPR</label>
-                                        <select class="pengajuan-form-control" name="produk_kpr">
+                                        <select class="pengajuan-form-control" name="produk_kpr" id="produkSelect">
                                             <option value="subsidi">KPR Subsidi</option>
                                             <option value="non_subsidi">KPR Non Subsidi</option>
                                             <option value="syariah">KPR Syariah</option>
@@ -339,8 +458,8 @@
                                         <label>Harga Unit</label>
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" id="hargaUnit"
-                                                value="{{ $booking->unit->price ?? 0 }}" readonly>
+                                            <input type="text" class="pengajuan-form-control" id="hargaUnit"
+                                                value="{{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -362,11 +481,7 @@
                                         <select class="pengajuan-form-control" name="promo_id" id="promoSelect">
                                             <option value="">-- Pilih Promo --</option>
                                             @foreach ($promos as $promo)
-                                                <option value="{{ $promo->id }}"
-                                                    data-nominal="{{ $promo->nominal }}">
-                                                    {{ $promo->name }} (Rp
-                                                    {{ number_format($promo->value, 0, ',', '.') }})
-                                                </option>
+                                                <option value="{{ $promo->id }}" data-nominal="{{ $promo->nominal }}">{{ $promo->name }} (Rp {{ number_format($promo->value, 0, ',', '.') }})</option>
                                             @endforeach
                                         </select>
                                         <small class="text-muted">Pilih promo dari developer</small>
@@ -374,7 +489,7 @@
                                 </div>
 
                                 <!-- Tenor -->
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
+                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
                                     <div class="pengajuan-form-group">
                                         <label>Tenor *</label>
                                         <select class="pengajuan-form-control" name="tenor" id="tenor" required>
@@ -392,7 +507,7 @@
                                     <div class="pengajuan-form-group">
                                         <label>Bunga (%) *</label>
                                         <input type="number" class="pengajuan-form-control" name="bunga"
-                                            step="0.1" required>
+                                            id="bunga" step="0.1" required>
                                     </div>
                                 </div>
 
@@ -408,8 +523,8 @@
                                         <label>Jumlah Pinjaman</label>
                                         <div class="pengajuan-input-group">
                                             <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" name="jumlah_pinjaman"
-                                                value="{{ $jumlahPinjaman }}" readonly>
+                                            <input type="text" class="pengajuan-form-control" name="jumlah_pinjaman"
+                                                id="jumlahPinjaman" value="{{ number_format($jumlahPinjaman, 0, ',', '.') }}" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -419,9 +534,11 @@
                                 <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
                                     <div class="pengajuan-form-group">
                                         <label>Estimasi Angsuran</label>
-                                        <input type="number" class="pengajuan-form-control" name="estimasi_angsuran"
-                                            placeholder="Estimasi Angsuran akan di perhitungkan secara otomatis oleh sistem"
-                                            id="angsuran" readonly>
+                                        <div class="pengajuan-input-group">
+                                            <span class="pengajuan-input-group-text">Rp</span>
+                                            <input type="text" class="pengajuan-form-control" name="estimasi_angsuran"
+                                                id="angsuran" readonly placeholder="0">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -445,15 +562,15 @@
                             <div class="mb-3">
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="badge bg-info" id="uploadCounter">0 / 8 Dokumen</span>
-                                    <small class="text-muted">Semua dokumen wajib diupload</small>
+                                    <small class="text-muted">Lengkapi dokumen yang belum diunggah</small>
                                 </div>
                             </div>
 
                             <div class="pengajuan-row">
                                 @php
                                     $uploadFields = [
-                                        'ktp' => 'KTP', // ditambahkan
-                                        'kk' => 'KK', // ditambahkan
+                                        'ktp' => 'KTP',
+                                        'kk' => 'KK',
                                         'slip_gaji' => 'Slip Gaji',
                                         'rekening_koran' => 'Rekening Koran',
                                         'npwp' => 'NPWP',
@@ -461,23 +578,62 @@
                                         'surat_nikah' => 'Surat Nikah',
                                         'ktp_pasangan' => 'KTP Pasangan',
                                     ];
+                                    $docMap = [
+                                        'ktp' => 'KTP',
+                                        'kk' => 'Kartu Keluarga',
+                                        'npwp' => 'NPWP',
+                                        'ktp_pasangan' => 'KTP Pasangan'
+                                    ];
                                 @endphp
 
                                 @foreach ($uploadFields as $field => $label)
+                                    @php
+                                        $mappedName = $docMap[$field] ?? null;
+                                        $hasDoc = $mappedName && isset($existingCustomerDocs[$mappedName]) && $existingCustomerDocs[$mappedName];
+                                        $fileUrl = '';
+                                        $previewUrl = '';
+                                        if ($hasDoc) {
+                                            $docPath = $existingCustomerDocs[$mappedName];
+                                            $fileUrl = \Illuminate\Support\Str::startsWith($docPath, 'uploads/') ? asset($docPath) : asset('uploads/' . $docPath);
+                                            
+                                            $relativePath = \Illuminate\Support\Str::startsWith($docPath, 'uploads/') ? $docPath : 'uploads/' . $docPath;
+                                            $previewUrl = route('document.preview', ['path' => $relativePath]);
+                                        }
+                                    @endphp
                                     <div class="pengajuan-col-12 pengajuan-col-md-6 mb-3">
                                         <div class="pengajuan-form-group">
                                             <label for="{{ $field }}">{{ $label }} *</label>
-                                            <div class="properti-file-upload-modern">
+                                            <div class="properti-file-upload-modern {{ $hasDoc ? 'has-existing-doc' : '' }}">
                                                 <input type="file" id="{{ $field }}"
-                                                    name="{{ $field }}" accept=".jpg,.jpeg,.png,.pdf" required>
-                                                <div class="properti-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <div class="properti-file-info-modern">
-                                                        <span>Upload {{ $label }}</span>
-                                                        <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                                    name="{{ $field }}" accept=".jpg,.jpeg,.png,.pdf" {{ $hasDoc ? '' : 'required' }}>
+                                                
+                                                @if ($hasDoc)
+                                                    <div class="properti-file-label-modern" style="border-color: #28a745; background: linear-gradient(135deg, #f0fff4, #f8f9fa);">
+                                                        <i class="fas fa-check-circle" style="color: #28a745; background: rgba(40, 167, 69, 0.1); padding: 8px; border-radius: 50%;"></i>
+                                                        <div class="properti-file-info-modern">
+                                                            <span style="color: #28a745; font-weight: 600;">{{ $label }} Sudah Terunggah (Customer)</span>
+                                                            <small class="text-muted">Gunakan dokumen customer yang ada atau upload baru untuk mengganti</small>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                                                            <a href="{{ $previewUrl }}" target="_blank" class="btn btn-sm btn-outline-success border-0 px-2 py-1 text-success d-flex align-items-center gap-1" style="font-size: 0.75rem; border-radius: 6px; background: rgba(40, 167, 69, 0.05);">
+                                                                <i class="fas fa-eye" style="font-size: 0.75rem; color: inherit; background: none; padding: 0;"></i> Lihat
+                                                            </a>
+                                                            <a href="{{ $fileUrl }}" download class="btn btn-sm btn-outline-primary border-0 px-2 py-1 text-primary d-flex align-items-center gap-1" style="font-size: 0.75rem; border-radius: 6px; background: rgba(0, 123, 255, 0.05);">
+                                                                <i class="fas fa-download" style="font-size: 0.75rem; color: inherit; background: none; padding: 0;"></i> Download
+                                                            </a>
+                                                            <span class="properti-file-size"></span>
+                                                        </div>
                                                     </div>
-                                                    <span class="properti-file-size"></span>
-                                                </div>
+                                                @else
+                                                    <div class="properti-file-label-modern">
+                                                        <i class="fas fa-cloud-upload-alt"></i>
+                                                        <div class="properti-file-info-modern">
+                                                            <span>Upload {{ $label }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                                        </div>
+                                                        <span class="properti-file-size"></span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -500,6 +656,45 @@
     {{-- Script untuk File Upload --}}
     @push('scripts')
         <script>
+            $(document).ready(function() {
+                // Select2 Bank Tujuan (Searchable)
+                $('#bankSelect').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: '-- Pilih Bank --',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownCssClass: 'select2-limited-items'
+                });
+
+                // Select2 Produk KPR (Searchable)
+                $('#produkSelect').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: '-- Pilih Produk --',
+                    allowClear: false,
+                    width: '100%',
+                    dropdownCssClass: 'select2-limited-items'
+                });
+
+                // Select2 Promo / Diskon (Searchable)
+                $('#promoSelect').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: '-- Pilih Promo --',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownCssClass: 'select2-limited-items'
+                });
+
+                // Select2 Tenor (Searchable)
+                $('#tenor').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: '-- Pilih --',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownCssClass: 'select2-limited-items'
+                });
+            });
+        </script>
+        <script>
             // File upload modern preview
             document.addEventListener('DOMContentLoaded', function() {
                 const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah',
@@ -511,7 +706,8 @@
                     let uploadedCount = 0;
                     uploadFields.forEach(field => {
                         const input = document.getElementById(field);
-                        if (input.files && input.files.length > 0) {
+                        const container = input.closest('.properti-file-upload-modern');
+                        if ((input.files && input.files.length > 0) || container.classList.contains('has-existing-doc')) {
                             uploadedCount++;
                         }
                     });
@@ -527,9 +723,10 @@
                     input.addEventListener('change', function(e) {
                         const fileName = e.target.files[0]?.name;
                         const fileSize = e.target.files[0]?.size;
-                        const label = this.closest('.properti-file-upload-modern').querySelector(
+                        const container = this.closest('.properti-file-upload-modern');
+                        const label = container.querySelector(
                             '.properti-file-info-modern span');
-                        const sizeSpan = this.closest('.properti-file-upload-modern').querySelector(
+                        const sizeSpan = container.querySelector(
                             '.properti-file-size');
 
                         if (fileName) {
@@ -538,6 +735,19 @@
                             if (fileSize) {
                                 const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
                                 sizeSpan.textContent = sizeInMB + ' MB';
+                            }
+                            
+                            // Adjust display if there was a pre-existing document
+                            if (container.classList.contains('has-existing-doc')) {
+                                const smallText = container.querySelector('.properti-file-info-modern small');
+                                if (smallText) {
+                                    smallText.textContent = 'File baru dipilih (menggantikan file customer)';
+                                    smallText.style.color = '#9a55ff';
+                                }
+                                const viewLink = container.querySelector('a');
+                                if (viewLink) {
+                                    viewLink.style.display = 'none';
+                                }
                             }
                         } else {
                             // Reset ke teks awal
@@ -584,10 +794,16 @@
                 const angsuranInput = document.querySelector('#angsuran');
                 const jumlahPinjamanInput = document.querySelector('#jumlahPinjaman');
 
+                function formatRupiah(angka) {
+                    return new Intl.NumberFormat('id-ID').format(angka);
+                }
+
                 function hitungPinjaman() {
                     const dp = parseFloat(dpInput.value) || 0;
                     const jumlahPinjaman = Math.max(hargaUnitInput - dp, 0);
-                    jumlahPinjamanInput.value = jumlahPinjaman;
+                    if (jumlahPinjamanInput) {
+                        jumlahPinjamanInput.value = formatRupiah(jumlahPinjaman);
+                    }
                     return jumlahPinjaman;
                 }
 
@@ -600,15 +816,21 @@
                         const bungaTotal = jumlahPinjaman * (bunga / 100);
                         const totalPinjaman = jumlahPinjaman + bungaTotal;
                         const angsuran = totalPinjaman / (tenor * 12);
-                        angsuranInput.value = Math.round(angsuran);
+                        angsuranInput.value = formatRupiah(Math.round(angsuran));
                     } else {
                         angsuranInput.value = '';
                     }
                 }
 
-                dpInput.addEventListener('input', hitungAngsuran);
-                bungaInput.addEventListener('input', hitungAngsuran);
-                tenorSelect.addEventListener('change', hitungAngsuran);
+                if (dpInput) dpInput.addEventListener('input', hitungAngsuran);
+                if (bungaInput) bungaInput.addEventListener('input', hitungAngsuran);
+                
+                // Gunakan jQuery on change untuk Select2 Tenor agar sinkron sempurna
+                if (tenorSelect) {
+                    $('#tenor').on('change', function() {
+                        hitungAngsuran();
+                    });
+                }
 
                 hitungPinjaman();
             });
@@ -631,7 +853,8 @@
 
                     uploadFields.forEach(field => {
                         const input = document.getElementById(field);
-                        if (!input.files || input.files.length === 0) {
+                        const isRequired = input.hasAttribute('required');
+                        if (isRequired && (!input.files || input.files.length === 0)) {
                             isValid = false;
                             missingFields.push(field.replace('_', ' ').toUpperCase());
                             input.closest('.properti-file-upload-modern').classList.add('error');
