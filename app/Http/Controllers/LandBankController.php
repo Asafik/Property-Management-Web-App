@@ -155,7 +155,7 @@ class LandBankController extends Controller
 
             DB::commit();
 
-            return redirect()->route('properti')
+            return redirect()->route('properti-all')
                 ->with('success', 'Data properti berhasil disimpan dan menunggu verifikasi disemua tanah');
         } catch (\Exception $e) {
 

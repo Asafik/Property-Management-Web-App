@@ -1621,10 +1621,10 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
-                                                    class="btn-action edit me-1" title="Edit">
+                                                <button type="button" class="btn-action edit me-1" data-bs-toggle="modal"
+                                                    data-bs-target="#editUnitModal{{ $unit->id }}" title="Edit">
                                                     <i class="mdi mdi-pencil"></i>
-                                                </a>
+                                                </button>
 
                                                 <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
                                                     class="btn-action progress me-1" title="Progress">
@@ -1641,6 +1641,200 @@
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
                                                 </form>
+
+                                                <!-- Modal Edit Unit -->
+                                                <div class="modal fade modal-custom" id="editUnitModal{{ $unit->id }}" tabindex="-1" aria-labelledby="editUnitModalLabel{{ $unit->id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editUnitModalLabel{{ $unit->id }}">
+                                                                    <i class="mdi mdi-pencil-circle me-2"></i>Edit Unit Kavling - {{ $unit->unit_code }}
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body modal-scroll-body text-start">
+                                                                <form action="{{ route('properti.kavling.update', ['unit' => $unit->id]) }}" method="POST" id="formEditUnitManual{{ $unit->id }}" enctype="multipart/form-data">
+                                                                    @csrf
+                                                                    @method('PUT')
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Blok / No. Unit</label>
+                                                                                <input type="text" name="block" class="kavling-form-control" value="{{ $unit->block }}" placeholder="Contoh: A" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Nomor Unit</label>
+                                                                                <input type="text" name="unit_number" class="kavling-form-control" value="{{ $unit->unit_number }}" placeholder="1" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Jenis Unit</label>
+                                                                                <select name="jenis" class="kavling-form-control" required>
+                                                                                    <option value="">-- Pilih Jenis --</option>
+                                                                                    <option value="subsidi" {{ ($unit->jenis ?? $unit->type) == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
+                                                                                    <option value="komersil" {{ ($unit->jenis ?? $unit->type) == 'komersil' ? 'selected' : '' }}>Komersil</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Type Unit</label>
+                                                                                <input type="text" name="type" class="kavling-form-control" value="{{ $unit->type }}" placeholder="60/80" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Nama Unit</label>
+                                                                                <input type="text" name="unit_name" class="kavling-form-control" value="{{ $unit->unit_name }}" placeholder="Cluster Mawar">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Luas</label>
+                                                                                <div class="kavling-input-group-rp">
+                                                                                    <span class="kavling-input-group-rp-addon">m²</span>
+                                                                                    <input type="number" name="area" class="kavling-form-control" value="{{ $unit->area }}" placeholder="200" min="1" step="any" required>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Luas Bangunan</label>
+                                                                                <div class="kavling-input-group-rp">
+                                                                                    <span class="kavling-input-group-rp-addon">m²</span>
+                                                                                    <input type="number" name="building_area" class="kavling-form-control" value="{{ $unit->building_area }}" placeholder="200" min="1" step="any" required>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Harga</label>
+                                                                                <div class="kavling-input-group-rp">
+                                                                                    <span class="kavling-input-group-rp-addon">Rp</span>
+                                                                                    <input type="text" name="price" class="kavling-form-control price-format" value="{{ number_format($unit->price ?? 0, 0, ',', '.') }}" placeholder="500.000.000">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Harga IJB</label>
+                                                                                <div class="kavling-input-group-rp">
+                                                                                    <span class="kavling-input-group-rp-addon">Rp</span>
+                                                                                    <input type="text" name="ijb_price" class="kavling-form-control price-format" value="{{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}" placeholder="500.000.000">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Harga AJB</label>
+                                                                                <div class="kavling-input-group-rp">
+                                                                                    <span class="kavling-input-group-rp-addon">Rp</span>
+                                                                                    <input type="text" name="ajb_price" class="kavling-form-control price-format" value="{{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}" placeholder="500.000.000">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Hadap</label>
+                                                                                <select name="facing" class="kavling-form-control">
+                                                                                    <option value="Utara" {{ $unit->facing == 'Utara' ? 'selected' : '' }}>Utara</option>
+                                                                                    <option value="Selatan" {{ $unit->facing == 'Selatan' ? 'selected' : '' }}>Selatan</option>
+                                                                                    <option value="Timur" {{ $unit->facing == 'Timur' ? 'selected' : '' }}>Timur</option>
+                                                                                    <option value="Barat" {{ $unit->facing == 'Barat' ? 'selected' : '' }}>Barat</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Posisi</label>
+                                                                                <select name="position" class="kavling-form-control">
+                                                                                    <option value="Hook" {{ $unit->position == 'Hook' ? 'selected' : '' }}>Hook</option>
+                                                                                    <option value="Tengah" {{ $unit->position == 'Tengah' ? 'selected' : '' }}>Tengah</option>
+                                                                                    <option value="Sudut" {{ $unit->position == 'Sudut' ? 'selected' : '' }}>Sudut</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-2">
+                                                                        <div class="col-md-12">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Keterangan</label>
+                                                                                <input type="text" name="description" class="kavling-form-control" value="{{ $unit->description }}" placeholder="Opsional">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>No SPK</label>
+                                                                                <input type="text" name="no_spk" class="kavling-form-control" value="{{ $unit->no_spk }}" placeholder="Contoh: SPK/001/IV/2026">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Kontraktor</label>
+                                                                                <input type="text" name="kontraktor" class="kavling-form-control" value="{{ $unit->kontraktor }}" placeholder="Nama Kontraktor">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
+                                                                            <div class="kavling-form-group">
+                                                                                <label>Dokumen SPK (PDF)</label>
+                                                                                <div class="kavling-file-upload-modern">
+                                                                                    <input type="file" name="dokumen_spk" id="uploadSPKEdit{{ $unit->id }}" accept=".pdf">
+                                                                                    <div class="kavling-file-label-modern">
+                                                                                        <i class="mdi mdi-cloud-upload"></i>
+                                                                                        <div class="kavling-file-info-modern">
+                                                                                            <span id="spkFileNameEdit{{ $unit->id }}">Upload Dokumen SPK Baru</span>
+                                                                                            <small>Format: PDF (Max: 5MB)</small>
+                                                                                        </div>
+                                                                                        <span class="kavling-file-size" id="spkFileSizeEdit{{ $unit->id }}"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    @if ($unit->dokumen_spk)
+                                                                        <div class="mt-3 p-3 rounded" style="background-color: #f1f0ff; border: 1px solid #da8cff;">
+                                                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                                                <div class="d-flex align-items-center gap-2">
+                                                                                    <i class="mdi mdi-file-pdf text-danger" style="font-size: 24px;"></i>
+                                                                                    <div>
+                                                                                        <span class="fw-bold d-block text-dark small" style="word-break: break-all;">
+                                                                                            {{ basename($unit->dokumen_spk) }}
+                                                                                        </span>
+                                                                                        <small class="text-muted d-block">Dokumen SPK saat ini telah terunggah</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="d-flex gap-2">
+                                                                                    <a href="{{ asset($unit->dokumen_spk) }}" target="_blank" class="btn btn-sm btn-gradient-primary text-white" style="font-size:0.75rem; padding: 6px 12px; border-radius: 6px;">
+                                                                                        <i class="mdi mdi-eye me-1"></i>Lihat
+                                                                                    </a>
+                                                                                    <a href="{{ asset($unit->dokumen_spk) }}" download class="btn btn-sm btn-gradient-success text-white" style="font-size:0.75rem; padding: 6px 12px; border-radius: 6px;">
+                                                                                        <i class="mdi mdi-download me-1"></i>Download
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
+                                                                    <i class="mdi mdi-close me-1"></i>Batal
+                                                                </button>
+                                                                <button type="submit" form="formEditUnitManual{{ $unit->id }}" class="btn btn-gradient-primary">
+                                                                    <i class="mdi mdi-content-save me-1"></i>Simpan Perubahan
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -2338,6 +2532,27 @@
                 }, 150);
             });
 
+            // Submit form edit manual - hapus titik sebelum submit + loading Swal
+            $(document).on('submit', '[id^="formEditUnitManual"]', function(e) {
+                e.preventDefault();
+                $(this).find('.price-format').each(function() {
+                    let nilai = $(this).val().replace(/\./g, '');
+                    $(this).val(nilai);
+                });
+                Swal.fire({
+                    title: 'Memuat...',
+                    html: 'Sedang menyimpan perubahan data unit',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                var form = this;
+                setTimeout(function() {
+                    form.submit();
+                }, 150);
+            });
+
             // Submit form import + loading Swal
             $('#formImportExcelModal').on('submit', function(e) {
                 e.preventDefault();
@@ -2361,6 +2576,38 @@
                 if (nilai.length > 5) {
                     $(this).val(nilai.substring(0, 5));
                     alert('Blok maksimal 5 karakter');
+                }
+            });
+
+            // File upload handler untuk modal SPK edit
+            $(document).on('change', 'input[id^="uploadSPKEdit"]', function(e) {
+                const file = e.target.files[0];
+                const id = $(this).attr('id').replace('uploadSPKEdit', '');
+                const fileNameSpan = $('#spkFileNameEdit' + id);
+                const fileSizeSpan = $('#spkFileSizeEdit' + id);
+
+                if (!file) {
+                    fileNameSpan.text("Upload Dokumen SPK Baru");
+                    fileSizeSpan.text("");
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("File maksimal 5MB!");
+                    $(this).val("");
+                    fileNameSpan.text("Upload Dokumen SPK Baru");
+                    fileSizeSpan.text("");
+                    return;
+                }
+
+                fileNameSpan.text(file.name);
+
+                const sizeKB = (file.size / 1024).toFixed(0);
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                if (file.size >= 1024 * 1024) {
+                    fileSizeSpan.text(sizeMB + " MB");
+                } else {
+                    fileSizeSpan.text(sizeKB + " KB");
                 }
             });
 

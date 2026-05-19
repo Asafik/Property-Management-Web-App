@@ -208,6 +208,32 @@
             font-size: 1rem;
         }
 
+        /* Tombol download dengan warna green */
+        .btn-outline-green {
+            background: transparent;
+            border: 2px solid #28a745 !important;
+            color: #28a745;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-decoration: none;
+        }
+
+        .btn-outline-green:hover {
+            background: #28a745;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-outline-green i {
+            font-size: 1rem;
+        }
+
         .table-responsive {
             overflow-x: auto;
             overflow-y: visible;
@@ -1195,6 +1221,16 @@
                                                                 target="_blank" class="btn-outline-purple px-3 py-1">
                                                                 <i class="mdi mdi-eye m-0"></i>
                                                             </a>
+                                                             @php
+                                                                 $ext = pathinfo($doc->file_path, PATHINFO_EXTENSION);
+                                                                 $cleanDocName = str_replace(' ', '_', $doc->documentType->name ?? 'Dokumen');
+                                                                 $cleanPropName = str_replace(' ', '_', $item->name);
+                                                                 $downloadName = $cleanDocName . '_' . $cleanPropName . '.' . $ext;
+                                                             @endphp
+                                                             <a href="{{ asset('uploads/' . $doc->file_path) }}"
+                                                                 download="{{ $downloadName }}" class="btn-outline-green px-3 py-1 ms-1" title="Download">
+                                                                 <i class="mdi mdi-download m-0"></i>
+                                                             </a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
