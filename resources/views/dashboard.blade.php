@@ -5,12 +5,6 @@
 @section('content')
 
 
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <!-- Select2 Bootstrap5 Theme -->
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
-
     <style>
         /* ====== CSS ====== */
         .card {
@@ -1658,13 +1652,7 @@
     @endsection
 
     @push('scripts')
-        <!-- Select2 JS -->
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <!-- Select2 Bootstrap5 Theme -->
-        <script src="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.js">
-        </script>
-        <!-- SweetAlert2 -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
         <script>
             $(document).ready(function() {
@@ -1768,21 +1756,10 @@
             });
 
             function lihatDetail(id) {
-                // Show loading state
-                Swal.fire({
-                    title: 'Memuat detail...',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
                 $.ajax({
                     url: '/dashboard/detail/' + id,
                     type: 'GET',
                     success: function(item) {
-                        Swal.close();
-
                         // Fill main information
                         $('#detail-name').text(item.name || '-');
                         $('#detail-company').text(item.company_profile ? item.company_profile.name : '-');
@@ -1883,7 +1860,6 @@
                         $('#modalDetailLandbank').modal('show');
                     },
                     error: function(err) {
-                        Swal.close();
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',

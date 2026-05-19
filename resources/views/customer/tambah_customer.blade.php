@@ -283,7 +283,21 @@
                                                     </div>
                                                     @if($isEdit)
                                                         @php $doc = $customer->documents->where('document_name', str_replace('upload', '', $f) == 'Ktp' ? 'KTP' : (str_replace('upload', '', $f) == 'Kk' ? 'Kartu Keluarga' : (str_replace('upload', '', $f) == 'Npwp' ? 'NPWP' : 'KTP Pasangan')))->first(); @endphp
-                                                        @if($doc) <div class="mt-2 text-end"><a href="{{ asset('storage/' . $doc->file) }}" target="_blank" class="btn btn-sm btn-outline-info py-1"> <i class="mdi mdi-eye me-1"></i> Lihat Dokumen Saat Ini </a></div> @endif
+                                                        @if($doc) 
+                                                             @php
+                                                                 $fileUrl = file_exists(public_path('uploads/' . $doc->file)) ? asset('uploads/' . $doc->file) : asset('storage/' . $doc->file);
+                                                                 $ext = pathinfo($doc->file, PATHINFO_EXTENSION);
+                                                                 $downloadName = str_replace(' ', '_', $l) . '_' . str_replace(' ', '_', $customer->full_name) . '.' . $ext;
+                                                             @endphp
+                                                             <div class="mt-2 text-end d-flex justify-content-end gap-2">
+                                                                 <a href="{{ $fileUrl }}" target="_blank" class="btn btn-sm btn-outline-info py-1"> 
+                                                                     <i class="mdi mdi-eye me-1"></i> Lihat
+                                                                 </a>
+                                                                 <a href="{{ $fileUrl }}" download="{{ $downloadName }}" class="btn btn-sm btn-outline-success py-1"> 
+                                                                     <i class="mdi mdi-download me-1"></i> Download
+                                                                 </a>
+                                                             </div> 
+                                                         @endif
                                                     @endif
                                                 </div>
                                             </div>

@@ -922,6 +922,10 @@
         .denah-container.fullscreen-mode .fw-bold.text-primary {
             color: #da8cff !important;
         }
+        .denah-container.fullscreen-mode .modal-detail-unit {
+            background: rgba(15, 15, 26, 0.75) !important;
+            backdrop-filter: blur(8px) !important;
+        }
 
         /* Floating Siteplan Controls (Mockup Style) */
         .siteplan-floating-controls {
@@ -2694,6 +2698,22 @@
         }
 
         
+        // Move detail modal inside the fullscreen element when shown in fullscreen
+        $(document).ready(function () {
+            $('#detailUnitModal').on('show.bs.modal', function () {
+                if (document.fullscreenElement) {
+                    const container = document.querySelector('#sitePlandView .denah-container');
+                    if (container) {
+                        container.appendChild(this);
+                    }
+                }
+            });
+            $('#detailUnitModal').on('hidden.bs.modal', function () {
+                // Always move it back to body when hidden to prevent styling or visibility issues on other tabs
+                document.body.appendChild(this);
+            });
+        });
+        
         // ========== SITEPLAN CANVAS ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
         const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
@@ -2864,10 +2884,11 @@
         function resetZoom() {
             zoomLevel = 0.63;
             const containerWidth = canvas.getWidth();
-            canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
+            const containerHeight = canvas.getHeight();
             
+            // Pan to center the image both horizontally and vertically inside the canvas viewport!
             const panX = (containerWidth - originalWidth * zoomLevel) / 2;
-            const panY = 0;
+            const panY = (containerHeight - originalHeight * zoomLevel) / 2;
             
             canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
             canvas.renderAll();
@@ -2908,14 +2929,42 @@
         function handleFullscreenChange() {
             const container = document.querySelector('#sitePlandView .denah-container');
             const btn = document.getElementById('btnFullscreen');
+            const scrollContainer = document.querySelector('.siteplan-scroll-container');
+            const cardBody = document.querySelector('.card-body');
+            
             if (document.fullscreenElement) {
                 container.classList.add('fullscreen-mode');
                 if (btn) btn.innerHTML = '<i class="mdi mdi-fullscreen-exit"></i>';
+                
+                // Fullscreen canvas size adjustment
+                if (typeof canvas !== 'undefined' && canvas && scrollContainer) {
+                    // Let canvas take the full width/height of the fullscreen container minus paddings
+                    const newWidth = scrollContainer.clientWidth - 40;
+                    const newHeight = scrollContainer.clientHeight - 40;
+                    
+                    canvas.setWidth(newWidth > 0 ? newWidth : window.innerWidth - 80);
+                    canvas.setHeight(newHeight > 0 ? newHeight : window.innerHeight - 160);
+                }
             } else {
                 container.classList.remove('fullscreen-mode');
                 if (btn) btn.innerHTML = '<i class="mdi mdi-fullscreen"></i>';
+                
+                // Restore normal canvas size
+                if (typeof canvas !== 'undefined' && canvas) {
+                    let normalWidth = 1100;
+                    if (cardBody && cardBody.clientWidth > 0) {
+                        normalWidth = cardBody.clientWidth - 40;
+                    }
+                    canvas.setWidth(normalWidth);
+                    if (typeof originalHeight !== 'undefined' && originalHeight > 0) {
+                        canvas.setHeight(originalHeight * 0.63);
+                    }
+                }
             }
+            
             if (typeof canvas !== 'undefined' && canvas) {
+                // Re-center and reset zoom to perfectly fit the new dimensions
+                resetZoom();
                 canvas.calcOffset();
                 canvas.renderAll();
             }

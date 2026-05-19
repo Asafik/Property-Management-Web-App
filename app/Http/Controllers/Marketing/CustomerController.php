@@ -295,8 +295,19 @@ class CustomerController extends Controller
             foreach ($documents as $inputName => $docName) {
                 if ($request->hasFile($inputName)) {
                     $file = $request->file($inputName);
-                    $filename = time() . '_' . $file->getClientOriginalName();
-                    $path = $file->storeAs('customer_documents', $filename, 'public');
+                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $cleanName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = time() . '_' . $cleanName . '.' . $extension;
+
+                    $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/customer_documents';
+
+                    if (!file_exists($destination)) {
+                        mkdir($destination, 0755, true);
+                    }
+
+                    $file->move($destination, $filename);
+                    $path = 'customer_documents/' . $filename;
 
                     CustomerDocument::create([
                         'customer_id' => $customer->id,
@@ -333,8 +344,12 @@ class CustomerController extends Controller
 
         DB::beginTransaction();
         try {
-            // (Opsional) Hapus file fisik di storage jika ingin benar-benar bersih
+            // Hapus file fisik di public/uploads maupun storage
             foreach($customer->documents as $doc) {
+                $publicPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $doc->file;
+                if (file_exists($publicPath)) {
+                    @unlink($publicPath);
+                }
                 if (\Storage::disk('public')->exists($doc->file)) {
                     \Storage::disk('public')->delete($doc->file);
                 }
