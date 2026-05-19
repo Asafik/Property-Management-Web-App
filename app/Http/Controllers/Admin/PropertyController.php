@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\LandBank;
 use App\Models\CompanyProfile;
 use App\Models\LandBankUnit;
+use App\Models\DocumentTypes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -69,7 +71,10 @@ class PropertyController extends Controller
 
 public function kavlingindex(Request $request)
 {
-    $query = LandBank::where('legal_status', 'verified');
+    $query = LandBank::where(function($q) {
+        $q->where('legal_status', 'verified')
+          ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
+    });
 
     // Filter Search Nama
     if ($request->filled('search')) {
@@ -116,12 +121,159 @@ public function kavlingindex(Request $request)
     $lands = $query->paginate($perPage)->withQueryString();
 
     // Untuk dropdown filter
-    $types = LandBank::where('legal_status', 'verified')
+    $types = LandBank::where(function($q) {
+            $q->where('legal_status', 'verified')
+              ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
+        })
         ->whereNotNull('zoning')
         ->distinct()
         ->orderBy('zoning')
         ->pluck('zoning');
 
     return view('properti.kavling', compact('lands', 'types'));
+}
+
+public function updateCompanyAjax(Request $request, $id)
+{
+    try {
+        $request->validate([
+            'company_profile_id' => 'required|exists:company_profiles,id',
+        ]);
+
+        $land = LandBank::findOrFail($id);
+        $land->update([
+            'company_profile_id' => $request->company_profile_id
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'PT Mitra berhasil diperbarui!'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+public function edit($id)
+{
+    $land = LandBank::with('documents')->findOrFail($id);
+    $companies = CompanyProfile::withCount('landBanks')->get();
+    $documentTypes = DocumentTypes::orderBy('name')->get();
+    return view('properti.edit', compact('land', 'companies', 'documentTypes'));
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'namaTanah' => 'required|string|max:200',
+        'company_profile_id' => 'nullable|exists:company_profiles,id',
+        'statusKepemilikan' => 'nullable|string',
+        'lokasi' => 'required|string',
+        'luasTanah' => 'required|numeric',
+        'hargaPerolehan' => 'required',
+        'tanggalPerolehan' => 'nullable|date',
+        'statusLegal' => 'nullable|string',
+        'statusKavling' => 'nullable|string',
+        'fee_document_verification' => 'nullable|string',
+        'elevasi_awal'     => 'nullable|numeric',
+        'elevasi_rencana'  => 'nullable|numeric',
+        'volume_cut'       => 'nullable|numeric',
+        'volume_fill'      => 'nullable|numeric',
+        'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
+        'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:2048',
+        'documents.*.number' => 'nullable|string|max:255',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $harga = preg_replace('/[^0-9]/', '', $request->hargaPerolehan);
+        $fee_verification = $request->fee_document_verification ? preg_replace('/[^0-9]/', '', $request->fee_document_verification) : null;
+        $land = LandBank::findOrFail($id);
+        
+        $land->update([
+            'name' => $request->namaTanah,
+            'company_profile_id' => $request->company_profile_id ?? 1,
+            'ownership_status' => $request->statusKepemilikan ?? 'SHM',
+            'address' => $request->lokasi,
+            'village' => $request->kelurahan,
+            'district' => $request->kecamatan,
+            'city' => $request->kota,
+            'province' => $request->provinsi,
+            'postal_code' => $request->kodePos,
+            'area' => $request->luasTanah,
+            'remaining_area' => $request->luasTanah,
+            'acquisition_price' => $harga,
+            'acquisition_date' => $request->tanggalPerolehan ?? now()->format('Y-m-d'),
+            'zoning' => $request->zonasi,
+            'road_width' => $request->lebarJalan,
+            'road_type' => $request->jenisJalan,
+            'facility_school' => $request->has('fasSekolah'),
+            'facility_hospital' => $request->has('fasRumahSakit'),
+            'facility_mall' => $request->has('fasMall'),
+            'facility_transport' => $request->has('fasTransportasi'),
+            'description' => $request->deskripsi,
+            'legal_status' => $request->statusLegal ?? 'pending',
+            'development_status' => $request->statusKavling ?? 'Belum',
+            'priority' => $request->prioritas,
+            'elevasi_awal' => $request->elevasi_awal,
+            'elevasi_rencana' => $request->elevasi_rencana,
+            'volume_cut' => $request->volume_cut,
+            'volume_fill' => $request->volume_fill,
+            'status_cut_fill' => $request->status_cut_fill ?? 'planned',
+            'fee_document_verification' => $fee_verification,
+        ]);
+
+        // HANDLE DOCUMENTS
+        if ($request->has('documents')) {
+            foreach ($request->documents as $typeId => $doc) {
+                if (empty($doc['number']) && empty($doc['file'])) {
+                    continue;
+                }
+
+                $existingDoc = \App\Models\LandBankDocument::where('land_bank_id', $land->id)
+                    ->where('document_type_id', $typeId)
+                    ->first();
+
+                $filePath = $existingDoc ? $existingDoc->file_path : null;
+
+                if (!empty($doc['file'])) {
+                    $file = $doc['file'];
+                    $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/landbank/' . $land->id . '/' . $typeId;
+
+                    if (!file_exists($destination)) {
+                        mkdir($destination, 0755, true);
+                    }
+
+                    $file->move($destination, $filename);
+                    $filePath = 'landbank/' . $land->id . '/' . $typeId . '/' . $filename;
+                }
+
+                if ($existingDoc) {
+                    $existingDoc->update([
+                        'document_number' => $doc['number'] ?? $existingDoc->document_number,
+                        'file_path'       => $filePath,
+                    ]);
+                } else {
+                    \App\Models\LandBankDocument::create([
+                        'land_bank_id'     => $land->id,
+                        'document_type_id' => $typeId,
+                        'document_number'  => $doc['number'] ?? null,
+                        'file_path'        => $filePath,
+                        'status'           => 'pending',
+                    ]);
+                }
+            }
+        }
+
+        DB::commit();
+        return redirect()->route('properti-all')->with('success', 'Data Properti berhasil diperbarui!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->with('error', 'Gagal memperbarui properti: ' . $e->getMessage())->withInput();
+    }
 }
 }

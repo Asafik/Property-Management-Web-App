@@ -944,7 +944,16 @@
                                                 'low' => '#6c757d',
                                                 default => '#0dcaf0',
                                             };
-                                            switch ($land->status) {
+                                            $isTerminActive = $land->payment_method == 'termin' && $land->payments->where('status', 'belum')->count() > 0;
+                                            if ($isTerminActive) {
+                                                $paidCount = $land->payments->where('status', 'lunas')->count();
+                                                $totalPayments = $land->payments->count();
+                                                $percent = $totalPayments > 0 ? round(($paidCount / $totalPayments) * 100) : 0;
+                                                $fase = 3;
+                                            }
+                                            switch ($isTerminActive ? 'termin_active_bypass' : $land->status) {
+                                                case 'termin_active_bypass':
+                                                    break;
                                                 case 'fase1':
                                                     $fase = 1;
                                                     $percent = 33;
@@ -964,6 +973,16 @@
                                                 case 'rejected':
                                                     $fase = 0;
                                                     $percent = 0;
+                                                    break;
+
+                                                case 'pending':
+                                                    if (!empty($land->survey_date) || !empty($land->survey_by)) {
+                                                        $fase = 3;
+                                                        $percent = 100;
+                                                    } else {
+                                                        $fase = 1;
+                                                        $percent = 33;
+                                                    }
                                                     break;
 
                                                 default:
@@ -996,6 +1015,8 @@
                                                     <div class="progress-label">
                                                         @if ($land->status == 'rejected')
                                                             <span class="text-danger fw-bold">REJECTED</span>
+                                                        @elseif($isTerminActive)
+                                                            <span class="text-warning fw-bold">CICILAN ({{ $paidCount }}/{{ $totalPayments }})</span>
                                                         @elseif($land->status == 'approved')
                                                             <span class="text-success fw-bold">APPROVED</span>
                                                         @else
@@ -1005,7 +1026,7 @@
 
                                                     <!-- BAR -->
                                                     <div class="progress-bar-container">
-                                                        <div class="progress-bar-fill
+                                                                                                                 <div class="progress-bar-fill {{ $isTerminActive ? 'bg-warning' : '' }}
                 {{ $land->status == 'approved' ? 'bg-success' : '' }}
                 {{ $land->status == 'rejected' ? 'bg-danger' : '' }}"
                                                             style="width: {{ $percent }}%">
@@ -1017,12 +1038,17 @@
                                                 </div>
                                             </td>
 
-                                            <td>
-                                                <span
-                                                    class="badge-status 
+                                                                                        <td>
+                                                @if($isTerminActive)
+                                                    <span class="badge-status warning" style="background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">
+                                                        Cicilan Aktif
+                                                    </span>
+                                                @else
+                                                    <span class="badge-status 
                                    {{ $land->status == 'approved' ? 'success' : 'nego' }}">
-                                                    {{ ucfirst($land->status) }}
-                                                </span>
+                                                        {{ ucfirst($land->status) }}
+                                                    </span>
+                                                @endif
                                             </td>
 
                                             <td>
@@ -1041,15 +1067,17 @@
                                                     <i class="mdi mdi-magnify"></i>
                                                 </a>
 
-                                                <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" class="btn-action fase3 me-1 d-inline-flex align-items-center justify-content-center text-decoration-none" title="FASE 3" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(40, 167, 69, 0.1); color: #28a745; border: none; display: inline-flex;">
-                                                    <i class="mdi mdi-check-decagram"></i>
-                                                </a>
+                                                @if($land->status !== 'fase1' && ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
+                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" class="btn-action fase3 me-1 d-inline-flex align-items-center justify-content-center text-decoration-none" title="FASE 3" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(40, 167, 69, 0.1); color: #28a745; border: none; display: inline-flex;">
+                                                        <i class="mdi mdi-check-decagram"></i>
+                                                    </a>
+                                                @endif
 
                                                 <form action="{{ route('pra-landbanks.destroy', $land->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="btn-action delete" title="Hapus">
+                                                    <button type="button" class="btn-action delete delete-btn" title="Hapus">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
                                                 </form>
@@ -1107,6 +1135,73 @@
                 });
                 sessionStorage.removeItem('success_message');
             }
+
+            // Konfirmasi hapus dengan SweetAlert2
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('form');
+                    const url = form.getAttribute('action');
+                    const token = form.querySelector('input[name="_token"]').value;
+                    
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data Pra Land Bank yang dihapus tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading
+                            Swal.fire({
+                                title: 'Menghapus...',
+                                text: 'Mohon tunggu sebentar',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            // Kirim request AJAX
+                            fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': token
+                                },
+                                body: JSON.stringify({
+                                    _method: 'DELETE'
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    sessionStorage.setItem('success_message', 'Data Pra Land Bank berhasil dihapus.');
+                                    window.location.reload();
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal',
+                                        text: data.message || 'Gagal menghapus data.',
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Terjadi kesalahan sistem saat menghapus data.',
+                                });
+                            });
+                        }
+                    });
+                });
+            });
         });
     </script>
 @endpush

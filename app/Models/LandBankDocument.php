@@ -13,8 +13,8 @@ class LandBankDocument extends Model
         'file_path',
         'document_number',
         'status',
-        'catatan_admin',
-        'revisi_ke'
+        'admin_notes',
+        'revision_number'
     ];
 
     // Relasi ke LandBank

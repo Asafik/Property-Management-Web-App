@@ -24,15 +24,44 @@ class PraLandbank extends Model
         'survey_date',
         'survey_by',
         'survey_result',
+        'land_status',
+        'water_condition',
+        'survey_notes',
         'zoning',
         'road_width',
         'road_type',
+        'legal_status',
+        'legal_issue_note',
+        'permit_difficulty',
+        'facility_school',
+        'facility_hospital',
+        'facility_market',
+        'facility_transport',
+        'facility_mall',
+        'facility_bank',
         'status',
         'file_certificate',
-        'photo'
+        'photo',
+        'priority',
+        'cost_ijb',
+        'cost_tax',
+        'cost_broker',
+        'cost_other',
+        'file_ijb',
+        'file_tax',
+        'payment_method',
+        'installment_duration',
+        'installment_count',
+        'notes'
     ];
+
     public function documents()
-{
-    return $this->hasMany(pra_landbank_documents::class);
-}
+    {
+        return $this->hasMany(pra_landbank_documents::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(PraLandbankPayment::class, 'pra_landbank_id');
+    }
 }

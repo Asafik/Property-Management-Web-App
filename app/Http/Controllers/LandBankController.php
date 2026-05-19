@@ -34,6 +34,7 @@ class LandBankController extends Controller
                 'tanggalPerolehan' => 'required|date',
                 'statusLegal' => 'required|string',
                 'statusKavling' => 'required|string',
+                'fee_document_verification' => 'nullable|string',
 
                 'elevasi_awal'     => 'nullable|numeric',
                 'elevasi_rencana'  => 'nullable|numeric',
@@ -59,6 +60,7 @@ class LandBankController extends Controller
         try {
 
             $harga = preg_replace('/[^0-9]/', '', $request->hargaPerolehan);
+            $fee_verification = $request->fee_document_verification ? preg_replace('/[^0-9]/', '', $request->fee_document_verification) : null;
 
             $land = LandBank::create([
                 'name' => $request->namaTanah,
@@ -93,6 +95,7 @@ class LandBankController extends Controller
                 'volume_cut' => $request->volume_cut,
                 'volume_fill' => $request->volume_fill,
                 'status_cut_fill' => $request->status_cut_fill ?? 'planned',
+                'fee_document_verification' => $fee_verification,
             ]);
 
             if (!$land) {
@@ -178,6 +181,10 @@ class LandBankController extends Controller
     public function verifikasiLegal($id)
     {
         $land = LandBank::with('documents')->findOrFail($id);
+        if ($land->isFromPraLandbank()) {
+            return redirect()->route('properti-all')
+                ->with('error', 'Properti hasil dari Pra-Landbank sudah otomatis terverifikasi secara legal.');
+        }
         return view('properti.verifikasi_legal', compact('land'));
     }
 
@@ -203,12 +210,12 @@ class LandBankController extends Controller
         $doc = LandBankDocument::findOrFail($id);
 
         $doc->update([
-            'status' => 'ditolak',
-            'catatan_admin' => $request->catatan_admin,
-            'revisi_ke' => $doc->revisi_ke + 1
+            'status' => 'rejected',
+            'admin_notes' => $request->catatan_admin,
+            'revision_number' => ($doc->revision_number ?? 0) + 1
         ]);
 
-        return back()->with('success', 'Dokumen ditolak & menunggu revisi.');
+        return redirect()->route('properti-all')->with('success', 'Dokumen ditolak & menunggu revisi.');
     }
 
 
@@ -262,22 +269,49 @@ class LandBankController extends Controller
     public function updateDocument(Request $request, $id)
     {
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png'
+            'document_number' => 'nullable|string|max:255',
+            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'file_dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         $doc = LandBankDocument::findOrFail($id);
 
-        $path = $request->file('file')
-            ->store('landbank/' . $doc->type, 'public');
+        $updateData = [
+            'status' => 'pending',
+            'revision_number' => ($doc->revision_number ?? 0) + 1
+        ];
 
-        $doc->update([
-            'file_path' => $path,
-            'status' => 'pending'
-        ]);
+        if ($request->has('document_number')) {
+            $updateData['document_number'] = $request->document_number;
+        }
 
-        return redirect()
-            ->route('properti.verifikasi', $doc->land_bank_id)
-            ->with('success', 'Dokumen berhasil direvisi, menunggu verifikasi ulang');
+        // Handle file upload
+        $file = $request->file('file') ?? $request->file('file_dokumen');
+
+        if ($file) {
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/landbank/' . $doc->land_bank_id . '/' . $doc->document_type_id;
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+
+            // Delete old file if exists
+            if (!empty($doc->file_path)) {
+                $oldFile = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $doc->file_path;
+                if (file_exists($oldFile) && is_file($oldFile)) {
+                    @unlink($oldFile);
+                }
+            }
+
+            $updateData['file_path'] = 'landbank/' . $doc->land_bank_id . '/' . $doc->document_type_id . '/' . $filename;
+        }
+
+        $doc->update($updateData);
+
+        return back()->with('success', 'Dokumen berhasil direvisi dan dikirim kembali untuk verifikasi!');
     }
     // ===============================
     // MASS APPROVE & REJECT
@@ -304,7 +338,7 @@ class LandBankController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Semua dokumen berhasil disetujui');
+        return redirect()->route('properti-all')->with('success', 'Semua dokumen berhasil disetujui');
     }
 
 
@@ -321,11 +355,11 @@ class LandBankController extends Controller
         foreach ($land->documents as $doc) {
             $doc->update([
                 'status' => 'rejected',
-                'catatan_admin' => $request->catatan_admin,
-                'revisi_ke' => $doc->revisi_ke + 1
+                'admin_notes' => $request->catatan_admin,
+                'revision_number' => ($doc->revision_number ?? 0) + 1
             ]);
         }
 
-        return back()->with('success', 'Semua dokumen ditolak & menunggu revisi.');
+        return redirect()->route('properti-all')->with('success', 'Semua dokumen ditolak & menunggu revisi.');
     }
 }

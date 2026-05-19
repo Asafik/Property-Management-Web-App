@@ -184,6 +184,9 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::delete('/properti/pra-landbank/{id}', [PraLandBankController::class, 'destroy'])->name('pra-landbanks.destroy');
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
+    Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
+    Route::post('/properti/{id}/update', [PropertyController::class, 'update'])->name('properti.update');
+    Route::get('/properti/{id}/edit', [PropertyController::class, 'edit'])->name('properti.edit');
 
 
     /*

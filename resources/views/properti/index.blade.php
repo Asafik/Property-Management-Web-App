@@ -234,6 +234,111 @@
             font-size: 1rem;
         }
 
+        /* Tombol revisi dengan warna red */
+        .btn-outline-red {
+            background: transparent;
+            border: 2px solid #dc3545 !important;
+            color: #dc3545;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-outline-red:hover {
+            background: #dc3545;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-outline-red i {
+            font-size: 1rem;
+        }
+
+        .bg-soft-danger {
+            background-color: #fdf2f2 !important;
+        }
+
+        /* Modern File Upload */
+        .properti-file-upload-modern {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .properti-file-input-modern {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .properti-file-label-modern {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #9a55ff;
+            border-radius: 12px;
+            padding: 1.25rem 1rem;
+            background-color: #fafdff;
+            color: #9a55ff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .properti-file-label-modern:hover {
+            background-color: #f6f0ff;
+            border-color: #7a3fcc;
+            transform: translateY(-1px);
+        }
+
+        .properti-file-icon-modern {
+            font-size: 1.8rem;
+            margin-bottom: 0.4rem;
+            color: #9a55ff;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .properti-file-label-modern:hover .properti-file-icon-modern {
+            transform: translateY(-3px);
+            color: #7a3fcc;
+        }
+
+        .properti-file-info-modern span {
+            display: block;
+            line-height: 1.2;
+        }
+
+        .properti-file-size {
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+            border: none !important;
+        }
+
+        .btn-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.3);
+        }
+
         .table-responsive {
             overflow-x: auto;
             overflow-y: visible;
@@ -1074,17 +1179,20 @@
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
                                                     data-bs-target="#modalDokumen{{ $item->id }}">
                                                     <i
-                                                        class="mdi mdi-file-document-multiple-outline"></i>{{ $item->documents->count() }}
+                                                        class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
                                                 </button>
                                             </td>
                                             <td class="text-center">
-                                                @if ($item->documents->count() == 0)
+                                                @if ($item->isFromPraLandbank())
                                                     <span class="action-text action-text-verified"><i
                                                             class="mdi mdi-check-circle me-1"></i>Sudah Verifikasi</span>
-                                                @elseif($item->documents->contains('status', 'rejected'))
+                                                @elseif ($item->merged_documents->count() == 0)
+                                                    <span class="action-text action-text-verified"><i
+                                                            class="mdi mdi-check-circle me-1"></i>Sudah Verifikasi</span>
+                                                @elseif($item->merged_documents->contains('status', 'rejected'))
                                                     <span class="action-text action-text-rejected"><i
                                                             class="mdi mdi-close-circle me-1"></i>Ditolak</span>
-                                                @elseif($item->documents->every(fn($d) => $d->status == 'verified'))
+                                                @elseif($item->merged_documents->every(fn($d) => $d->status == 'verified'))
                                                     <span class="action-text action-text-verified"><i
                                                             class="mdi mdi-check-circle me-1"></i>Sudah Verifikasi</span>
                                                 @else
@@ -1093,6 +1201,13 @@
                                                         <i class="mdi mdi-check-decagram me-1"></i>Verifikasi
                                                     </a>
                                                 @endif
+                                                <a href="{{ route('properti.edit', $item->id) }}" class="btn-action edit ms-2 d-inline-flex align-items-center justify-content-center text-decoration-none" 
+                                                        style="padding: 4px 12px; height: 30px; border-radius: 8px; background: #ffc107; color: #1f2937; border: none; display: inline-flex; transition: all 0.2s; box-shadow: 0 2px 4px rgba(255, 193, 7, 0.2); font-size: 11px; font-weight: bold;" 
+                                                        title="Edit Properti"
+                                                        onmouseover="this.style.background='#ffb300'; this.style.transform='scale(1.05)';"
+                                                        onmouseout="this.style.background='#ffc107'; this.style.transform='scale(1)';">
+                                                    Edit
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty
@@ -1166,6 +1281,24 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        @if ($item->fee_document_verification)
+                            <!-- FEE VERIFIKASI DOKUMEN -->
+                            <div class="alert alert-success border-0 p-3 mb-4 d-flex align-items-center" 
+                                 style="background-color: #ebfbee; border-radius: 12px; border-left: 4px solid #2e7d32 !important; margin: 0 4px 20px 4px;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle bg-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; box-shadow: 0 2px 4px rgba(46, 125, 50, 0.1);">
+                                        <i class="mdi mdi-cash-multiple text-success" style="font-size: 1.4rem; color: #2e7d32 !important;"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-semibold" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Fee Dokumen Verifikasi Pasca</div>
+                                        <div class="text-success fw-bold" style="font-size: 1.25rem; color: #2e7d32 !important; font-weight: 800;">
+                                            Rp {{ number_format($item->fee_document_verification, 0, ',', '.') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- DAFTAR DOKUMEN -->
                         <div class="card border-0 shadow-sm mb-4">
                             <div class="card-header bg-light fw-bold">
@@ -1174,7 +1307,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: unset;">
-                                    @if ($item->documents->count() > 0)
+                                    @if ($item->merged_documents->count() > 0)
                                         <table class="table table-hover mb-0">
                                             <thead class="table-light">
                                                 <tr>
@@ -1186,7 +1319,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($item->documents as $idx => $doc)
+                                                @foreach ($item->merged_documents as $idx => $doc)
                                                     <tr>
                                                         <td class="text-center">{{ $idx + 1 }}</td>
                                                         <td class="fw-bold">{{ $doc->document_number ?? '-' }}</td>
@@ -1194,17 +1327,23 @@
                                                             <div class="d-flex align-items-center gap-2">
                                                                 <i class="mdi mdi-file-{{ $doc->type == 'sertifikat' ? 'certificate' : 'document' }}-outline text-primary"
                                                                     style="font-size: 1.2rem;"></i>
-                                                                <span>{{ $doc->documentType->name ?? '-' }}</span>
+                                                                <span class="fw-semibold text-dark">{{ $doc->documentType->name ?? '-' }}</span>
                                                             </div>
-                                                            @if ($doc->status === 'rejected' && !empty($doc->catatan_admin))
-                                                                <div class="text-danger small mt-1">
-                                                                    <i class="mdi mdi-alert-circle me-1"></i>Alasan:
-                                                                    {{ $doc->catatan_admin }}
+                                                            @if ($doc->status === 'rejected')
+                                                                <div class="alert alert-danger border-0 p-2 mt-2 mb-0 d-flex align-items-start gap-2 text-danger small" style="background-color: #fff5f5; border-radius: 8px; font-weight: 500;">
+                                                                    <i class="mdi mdi-alert-circle text-danger mt-0.5" style="font-size: 1.1rem; line-height: 1;"></i>
+                                                                    <div>
+                                                                        <strong class="text-danger">Alasan Penolakan:</strong> 
+                                                                        <span class="text-muted d-block mt-0.5" style="font-weight: normal; line-height: 1.4;">{{ $doc->admin_notes ?? 'Tidak ada catatan khusus.' }}</span>
+                                                                    </div>
                                                                 </div>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
-                                                            @if ($doc->status == 'pending')
+                                                            @if ($item->isFromPraLandbank())
+                                                                <span class="badge rounded-pill bg-success px-3 py-2"><i
+                                                                        class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
+                                                            @elseif ($doc->status == 'pending')
                                                                 <span
                                                                     class="badge rounded-pill bg-warning text-dark px-3 py-2"><i
                                                                         class="mdi mdi-clock-outline me-1"></i>Pending</span>
@@ -1217,8 +1356,8 @@
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="{{ asset('uploads/' . $doc->file_path) }}"
-                                                                target="_blank" class="btn-outline-purple px-3 py-1">
+                                                            <a href="{{ asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path) }}"
+                                                                target="_blank" class="btn-outline-purple px-2 py-1" title="Lihat">
                                                                 <i class="mdi mdi-eye m-0"></i>
                                                             </a>
                                                              @php
@@ -1226,11 +1365,25 @@
                                                                  $cleanDocName = str_replace(' ', '_', $doc->documentType->name ?? 'Dokumen');
                                                                  $cleanPropName = str_replace(' ', '_', $item->name);
                                                                  $downloadName = $cleanDocName . '_' . $cleanPropName . '.' . $ext;
+                                                                 $filePathUrl = asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path);
                                                              @endphp
-                                                             <a href="{{ asset('uploads/' . $doc->file_path) }}"
-                                                                 download="{{ $downloadName }}" class="btn-outline-green px-3 py-1 ms-1" title="Download">
-                                                                 <i class="mdi mdi-download m-0"></i>
-                                                             </a>
+                                                             @if($item->isFromPraLandbank() || $doc->status != 'rejected')
+                                                                 <a href="{{ $filePathUrl }}"
+                                                                     download="{{ $downloadName }}" class="btn-outline-green px-2 py-1 ms-1" title="Download">
+                                                                     <i class="mdi mdi-download m-0"></i>
+                                                                 </a>
+                                                             @endif
+                                                             @if(!$item->isFromPraLandbank() && $doc->status == 'rejected')
+                                                                 <button type="button" 
+                                                                     class="btn-outline-red px-2 py-1 ms-1 btn-revisi-trigger" 
+                                                                     data-doc-id="{{ $doc->id }}" 
+                                                                     data-doc-name="{{ $doc->documentType->name ?? 'Dokumen' }}"
+                                                                     data-doc-reason="{{ $doc->admin_notes ?? 'Tidak ada catatan khusus.' }}"
+                                                                     data-property-id="{{ $item->id }}"
+                                                                     title="Upload Revisi">
+                                                                     <i class="mdi mdi-upload m-0"></i>
+                                                                 </button>
+                                                             @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -1244,6 +1397,51 @@
                                         </div>
                                     @endif
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- UPLOAD REVISI FORM (COLLAPSED BY DEFAULT) -->
+                        <div class="card border-0 shadow-sm mb-4 d-none" id="revisionCard{{ $item->id }}">
+                            <div class="card-header bg-soft-danger fw-bold text-danger d-flex align-items-center justify-content-between p-3" style="border-radius: 12px 12px 0 0;">
+                                <span>
+                                    <i class="mdi mdi-cloud-upload-outline me-2"></i>
+                                    Form Upload Revisi Dokumen: <span id="revisionDocName{{ $item->id }}" class="text-dark"></span>
+                                </span>
+                                <button type="button" class="btn-close-revision" data-target="#revisionCard{{ $item->id }}" style="background: none; border: none; font-size: 1.5rem; color: #dc3545; cursor: pointer; font-weight: bold;">&times;</button>
+                            </div>
+                            <div class="card-body p-4">
+                                <form action="#" method="POST" enctype="multipart/form-data" id="revisionForm{{ $item->id }}">
+                                    @csrf
+                                    <!-- Hidden input for document ID -->
+                                    <input type="hidden" name="document_id" id="revisionDocId{{ $item->id }}">
+                                    
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3 text-start">
+                                            <label class="form-label fw-bold text-muted small mb-2 d-block" style="color: #9a55ff !important;">Nomor Dokumen Baru <span class="text-danger">*</span></label>
+                                            <input type="text" name="document_number" class="form-control" placeholder="Masukkan nomor dokumen baru" required style="border-radius: 10px; padding: 0.7rem 0.8rem; font-size: 0.85rem; border: 1px solid #e9ecef; width: 100%;">
+                                        </div>
+                                        <div class="col-md-6 mb-3 text-start">
+                                            <label class="form-label fw-bold text-muted small mb-2 d-block" style="color: #9a55ff !important;">Pilih File Baru (PDF/Gambar) <span class="text-danger">*</span></label>
+                                            <div class="properti-file-upload-modern">
+                                                <input type="file" name="file_dokumen" id="fileRevision{{ $item->id }}" class="properti-file-input-modern" accept=".pdf,.jpg,.jpeg,.png" required>
+                                                <label for="fileRevision{{ $item->id }}" class="properti-file-label-modern w-100">
+                                                    <div class="properti-file-info-modern">
+                                                        <i class="mdi mdi-cloud-upload-outline properti-file-icon-modern" style="font-size: 1.8rem;"></i>
+                                                        <span class="d-block mt-1">Pilih File Revisi</span>
+                                                        <small class="properti-file-size d-block text-muted mt-1"></small>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end gap-2 mt-3">
+                                        <button type="button" class="btn btn-gradient-secondary btn-sm px-4 btn-close-revision" data-target="#revisionCard{{ $item->id }}" style="border-radius: 8px;">Batal</button>
+                                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4" style="border-radius: 8px;">
+                                            <i class="mdi mdi-check-circle-outline me-1"></i>Kirim Revisi
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -1260,12 +1458,7 @@
 @endsection
 
 @push('scripts')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         function showLoading(message = 'Memproses data...') {
@@ -1407,27 +1600,86 @@
                 $('#filterCompany').val($(this).val()).trigger('change');
             });
 
-            // Handle verification button
+            // Handle verification button (shows loader instantly upon click)
             $('.btn-verifikasi').on('click', function(e) {
-                e.preventDefault();
-                let link = $(this).attr('href');
-
-                Swal.fire({
-                    title: 'Verifikasi Properti?',
-                    text: "Properti akan ditandai sebagai sudah diverifikasi.",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#198754',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Verifikasi',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        showLoading('Memverifikasi properti...');
-                        window.location.href = link;
-                    }
-                });
+                showLoading('Memverifikasi properti...');
             });
+
+            // Trigger Revision Form
+            $('.btn-revisi-trigger').on('click', function() {
+                let docId = $(this).data('doc-id');
+                let docName = $(this).data('doc-name');
+                let propertyId = $(this).data('property-id');
+                
+                let card = $('#revisionCard' + propertyId);
+                $('#revisionDocId' + propertyId).val(docId);
+                $('#revisionDocName' + propertyId).text(docName);
+                
+                // Set form action dynamically
+                let formAction = "{{ route('dokumen.update', ':id') }}".replace(':id', docId);
+                $('#revisionForm' + propertyId).attr('action', formAction);
+                
+                // Show revision card
+                card.removeClass('d-none');
+                
+                // Smooth scroll to the form card inside modal body
+                let modalBody = $(this).closest('.modal-body');
+                modalBody.animate({
+                    scrollTop: card.offset().top - modalBody.offset().top + modalBody.scrollTop()
+                }, 500);
+            });
+
+            // Close/Batal Revision Form
+            $('.btn-close-revision').on('click', function() {
+                let target = $(this).data('target');
+                $(target).addClass('d-none');
+            });
+
+            // Handle file input preview for revision files
+            $('.properti-file-input-modern').on('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                const fileSize = e.target.files[0]?.size;
+                const label = $(this).next('.properti-file-label-modern').find('.properti-file-info-modern span');
+                const sizeSpan = $(this).next('.properti-file-label-modern').find('.properti-file-info-modern .properti-file-size');
+
+                if (fileName) {
+                    label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
+                    if (fileSize) {
+                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+                        sizeSpan.text(sizeInMB + ' MB');
+                    }
+                } else {
+                    label.text('Pilih File Revisi');
+                    sizeSpan.text('');
+                }
+            });
+
+            window.formatRupiahEdit = function(input) {
+                let value = input.value.replace(/\D/g, '');
+                if (value) {
+                    value = parseInt(value).toLocaleString('id-ID');
+                    input.value = value;
+                }
+            }
+
+            // Handle session flash messages with beautiful SweetAlert
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#9a55ff'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#dc3545'
+                });
+            @endif
         });
     </script>
 @endpush

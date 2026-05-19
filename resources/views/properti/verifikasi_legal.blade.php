@@ -668,8 +668,8 @@
 
         {{-- ================= PROGRESS ================= --}}
         @php
-            $total = $land->documents->count();
-            $verified = $land->documents->where('status', 'verified')->count();
+            $total = $land->merged_documents->count();
+            $verified = $land->merged_documents->where('status', 'verified')->count();
             $percent = $total > 0 ? ($verified / $total) * 100 : 0;
         @endphp
 
@@ -704,7 +704,7 @@
                     <i class="mdi mdi-file-document-multiple me-2"></i>Daftar Dokumen
                 </h5>
                 <span class="badge" style="background:linear-gradient(135deg,#da8cff,#9a55ff);color:#fff;padding:0.4rem 0.9rem;border-radius:20px;font-size:0.82rem;">
-                    {{ $land->documents->count() }} Dokumen
+                    {{ $land->merged_documents->count() }} Dokumen
                 </span>
             </div>
             <div class="card-body p-0">
@@ -721,7 +721,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($land->documents as $doc)
+                            @forelse($land->merged_documents as $doc)
                                 <tr>
                                     <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td>
@@ -760,7 +760,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ asset('uploads/' . $doc->file_path) }}" target="_blank"
+                                        <a href="{{ asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path) }}" target="_blank"
                                            class="btn-action view" title="Lihat Dokumen">
                                             <i class="mdi mdi-eye"></i>
                                         </a>
@@ -853,7 +853,7 @@
 
                             <!-- Kanan - SOLID BUTTONS -->
                             <div class="d-flex gap-2 flex-wrap">
-                                @if ($land->documents->where('status', 'ditolak')->count() > 0)
+                                @if ($land->merged_documents->where('status', 'ditolak')->count() > 0)
                                     <a href="{{ route('properti.revisi', $land->id) }}" class="btn btn-warning">
                                         <i class="mdi mdi-file-replace me-1"></i> Revisi Dokumen
                                     </a>
@@ -867,8 +867,7 @@
                                 <form id="formSetujuiSemua" method="POST"
                                     action="{{ route('properti.approveAll', $land->id) }}">
                                     @csrf
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#confirmModal">
+                                    <button type="submit" class="btn btn-success btn-simpan-dokumen-all">
                                         <i class="mdi mdi-check-all me-1"></i> Simpan dokument
                                     </button>
                                 </form>
@@ -879,39 +878,7 @@
             </div>
         </div>
 
-        <!-- Modal Konfirmasi Setuju Semua -->
-        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmModalLabel">
-                            <i class="mdi mdi-check-circle text-success me-2"></i>
-                            Konfirmasi
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            <i class="mdi mdi-help-circle text-warning me-2" style="font-size: 1.2rem;"></i>
-                            Apakah Anda yakin ingin menyetujui semua?
-                        </p>
-                        <small class="text-muted">
-                            <i class="mdi mdi-alert me-1"></i>
-                            Silakan dicek kembali dokumennya sebelum menyetujui.
-                        </small>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="mdi mdi-close me-1"></i> Batal
-                        </button>
-                        <button type="button" class="btn btn-success" id="confirmSubmit">
-                            <i class="mdi mdi-check me-1"></i> Ya, Setujui
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Modal Tolak Semua -->
         <div class="modal fade" id="modalTolak" tabindex="-1" aria-labelledby="modalTolakLabel" aria-hidden="true">
@@ -980,8 +947,56 @@
             });
         });
 
-        document.getElementById('confirmSubmit').addEventListener('click', function() {
-            document.getElementById('formSetujuiSemua').submit();
+        function showLoading(message = 'Memproses data...') {
+            Swal.fire({
+                title: message,
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Handle Simpan Semua Dokumen / Setujui Semua dengan SweetAlert
+            $('.btn-simpan-dokumen-all').on('click', function(e) {
+                e.preventDefault();
+                let form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Setujui Semua Dokumen?',
+                    text: "Apakah Anda yakin ingin menyetujui semua dokumen properti ini?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Setujui Semua',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showLoading('Menyetujui semua dokumen & menyimpan...');
+                        form.submit();
+                    }
+                });
+            });
+
+            // Show loader when submitting mass rejection form
+            $('#modalTolak form').on('submit', function() {
+                showLoading('Menolak semua dokumen...');
+            });
+
+            // Show loader when submitting individual rejection form
+            $('div[id^="rejectModal"] form').on('submit', function() {
+                showLoading('Menolak dokumen...');
+            });
+
+            // Show loader when approving individual document
+            $('.btn-action.approve').closest('form').on('submit', function() {
+                showLoading('Menyetujui dokumen...');
+            });
         });
     </script>
 @endpush

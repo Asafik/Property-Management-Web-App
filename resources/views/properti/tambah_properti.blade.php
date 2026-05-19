@@ -1241,6 +1241,27 @@
                                 </div>
                             </div>
 
+                            <div class="properti-row mt-3">
+                                <div class="properti-col-md-4">
+                                    <div class="properti-form-group">
+                                        <label class="properti-form-label">Fee Dokumen Verifikasi Pasca</label>
+                                        <div class="properti-input-group" style="display: flex;">
+                                            <div class="properti-input-group-prepend">
+                                                <span class="properti-input-group-text" style="border-radius: 10px 0 0 10px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-right: none; display: flex; align-items: center; padding: 0.45rem 0.75rem; color: #6c757d; font-size: 0.9rem; height: 100%;">Rp</span>
+                                            </div>
+                                            <input type="text" name="fee_document_verification"
+                                                class="properti-form-control @error('fee_document_verification') is-invalid @enderror"
+                                                value="{{ old('fee_document_verification') }}"
+                                                placeholder="Contoh: 5.000.000"
+                                                style="border-radius: 0 10px 10px 0; flex: 1;">
+                                        </div>
+                                        @error('fee_document_verification')
+                                            <div class="properti-text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr class="properti-hr">
                             {{-- ================= STATUS ================= --}}
                             <h5 class="properti-section-title">
@@ -1387,18 +1408,18 @@
 
 @push('scripts')
     <script>
-        // Format rupiah untuk harga perolehan
+        // Format rupiah untuk harga perolehan & fee verifikasi
         document.addEventListener('DOMContentLoaded', function() {
-            const hargaInput = document.querySelector('input[name="hargaPerolehan"]');
-            if (hargaInput) {
-                hargaInput.addEventListener('input', function(e) {
+            const rupiahInputs = document.querySelectorAll('input[name="hargaPerolehan"], input[name="fee_document_verification"]');
+            rupiahInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
                     let value = this.value.replace(/\D/g, '');
                     if (value) {
                         value = parseInt(value).toLocaleString('id-ID');
                         this.value = value;
                     }
                 });
-            }
+            });
         });
 
         // Auto hide alert

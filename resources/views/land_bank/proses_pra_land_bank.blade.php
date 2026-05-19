@@ -227,6 +227,27 @@
             color: #ffffff !important;
         }
 
+        .btn-outline-purple {
+            background: rgba(154, 85, 255, 0.03) !important;
+            border: 1px solid #9a55ff !important;
+            color: #9a55ff !important;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-purple:hover {
+            background: #9a55ff !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.2) !important;
+            transform: translateY(-2px);
+        }
+
         /* Checkboxes */
         .pratanah-checkbox-group {
             display: flex;
@@ -409,6 +430,141 @@
 
         .d-none {
             display: none !important;
+        }
+
+        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM (FROM TAMBAH PROPERTI) ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 10px !important;
+            padding: 0.45rem 0.8rem !important;
+            min-height: 42px !important;
+            height: 42px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 26px !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        @media (min-width: 768px) {
+            .select2-container--bootstrap-5 .select2-selection {
+                min-height: 38px !important;
+                height: 38px !important;
+                padding: 0.35rem 0.75rem !important;
+                border-radius: 8px !important;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                line-height: 24px !important;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+                height: 36px !important;
+            }
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+            z-index: 1060 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+            color: #a5b3cb !important;
+        }
+
+        /* Paksa hanya 5 item yang tampil di Select2 */
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+        }
+
+        /* Styling scrollbar */
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
+        .select2-container {
+            display: block !important;
+            width: 100% !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--disabled {
+            background-color: #f8f9fa !important;
+            color: #6c757d !important;
+            border-color: #e9ecef !important;
+            cursor: not-allowed !important;
         }
     </style>
 
@@ -641,17 +797,17 @@
                                             <label class="form-label">Status Lahan</label>
                                             <select class="form-select" name="land_status_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih Status Lahan</option>
-                                                <option value="bekas_sawah">Lahan Bekas Sawah</option>
-                                                <option value="perbukitan">Perbukitan</option>
-                                                <option value="pekarangan">Pekarangan</option>
+                                                <option value="bekas_sawah" {{ $land && $land->land_status == 'bekas_sawah' ? 'selected' : '' }}>Lahan Bekas Sawah</option>
+                                                <option value="perbukitan" {{ $land && $land->land_status == 'perbukitan' ? 'selected' : '' }}>Perbukitan</option>
+                                                <option value="pekarangan" {{ $land && $land->land_status == 'pekarangan' ? 'selected' : '' }}>Pekarangan</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Kondisi Air</label>
                                             <select class="form-select" name="water_condition_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih Kondisi Air</option>
-                                                <option value="sumur_bor">Sumur Bor</option>
-                                                <option value="pdam">PDAM</option>
+                                                <option value="sumur_bor" {{ $land && $land->water_condition == 'sumur_bor' ? 'selected' : '' }}>Sumur Bor</option>
+                                                <option value="pdam" {{ $land && $land->water_condition == 'pdam' ? 'selected' : '' }}>PDAM</option>
                                             </select>
                                         </div>
                                     </div>
@@ -666,14 +822,14 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Kejelasan Sengketa</label>
                                             <select class="form-select" name="status_tanah" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="clear" {{ $land && $land->status_tanah == 'clear' ? 'selected' : '' }}>Clear & Clean (Bebas Sengketa)</option>
-                                                <option value="checking" {{ $land && $land->status_tanah == 'checking' ? 'selected' : '' }}>Dalam Pengecekan Notaris/BPN</option>
-                                                <option value="problem" {{ $land && $land->status_tanah == 'problem' ? 'selected' : '' }}>Bermasalah / Dalam Sengketa</option>
+                                                <option value="clear" {{ $land && $land->legal_status == 'clear' ? 'selected' : '' }}>Clear & Clean (Bebas Sengketa)</option>
+                                                <option value="checking" {{ $land && $land->legal_status == 'checking' ? 'selected' : '' }}>Dalam Pengecekan Notaris/BPN</option>
+                                                <option value="problem" {{ $land && $land->legal_status == 'problem' ? 'selected' : '' }}>Bermasalah / Dalam Sengketa</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Detail Permasalahan Hukum (Jika Bermasalah)</label>
-                                            <input type="text" class="form-control" name="keterangan_masalah" value="{{ $land->keterangan_masalah ?? '' }}" placeholder="Catatan masalah legalitas" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="keterangan_masalah" value="{{ $land->legal_issue_note ?? '' }}" placeholder="Catatan masalah legalitas" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                     </div>
                                 </div>
@@ -691,52 +847,52 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Tingkat Kesulitan Pengurusan Izin</label>
                                             <select class="form-select" name="kesulitan_izin" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="mudah" {{ $land && $land->kesulitan_izin == 'mudah' ? 'selected' : '' }}>Mudah</option>
-                                                <option value="sedang" {{ $land && $land->kesulitan_izin == 'sedang' ? 'selected' : '' }}>Sedang</option>
-                                                <option value="sulit" {{ $land && $land->kesulitan_izin == 'sulit' ? 'selected' : '' }}>Sulit</option>
-                                                <option value="very_sulit" {{ $land && $land->kesulitan_izin == 'very_sulit' ? 'selected' : '' }}>Sangat Sulit (Zonasi Hijau)</option>
+                                                <option value="mudah" {{ $land && $land->permit_difficulty == 'mudah' ? 'selected' : '' }}>Mudah</option>
+                                                <option value="sedang" {{ $land && $land->permit_difficulty == 'sedang' ? 'selected' : '' }}>Sedang</option>
+                                                <option value="sulit" {{ $land && $land->permit_difficulty == 'sulit' ? 'selected' : '' }}>Sulit</option>
+                                                <option value="very_sulit" {{ $land && $land->permit_difficulty == 'very_sulit' ? 'selected' : '' }}>Sangat Sulit (Zonasi Hijau)</option>
                                             </select>
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Fasilitas Sekitar</label>
                                             <div class="pratanah-checkbox-group">
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="sekolah" id="fase2_fac_sekolah" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="sekolah" id="fase2_fac_sekolah" {{ $land && $land->facility_school ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_sekolah">
                                                         <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Sekolah</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="rumah_sakit" id="fase2_fac_rs" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="rumah_sakit" id="fase2_fac_rs" {{ $land && $land->facility_hospital ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_rs">
                                                         <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Rumah Sakit</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="pasar" id="fase2_fac_pasar" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="pasar" id="fase2_fac_pasar" {{ $land && $land->facility_market ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_pasar">
                                                         <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Pasar</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="transportasi" id="fase2_fac_trans" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="transportasi" id="fase2_fac_trans" {{ $land && $land->facility_transport ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_trans">
                                                         <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Transportasi</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="mall" id="fase2_fac_mall" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="mall" id="fase2_fac_mall" {{ $land && $land->facility_mall ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_mall">
                                                         <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Mall</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="bank" id="fase2_fac_bank" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="bank" id="fase2_fac_bank" {{ $land && $land->facility_bank ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_bank">
                                                         <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Bank / ATM</span>
@@ -747,67 +903,80 @@
                                     </div>
                                 </div>
 
-                                <!-- FILE UPLOAD DOKUMEN PENDUKUNG -->
+                                @php
+                                    $uploadedDocs = [];
+                                    if ($land) {
+                                        foreach ($land->documents as $d) {
+                                            $uploadedDocs[$d->document_type_id] = $d;
+                                        }
+                                    }
+                                @endphp
+
+                                <!-- DOKUMEN LEGAL (NOMOR) -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-file-document-outline"></i> Unggah Dokumen Kelayakan
+                                        <i class="mdi mdi-file-document-outline"></i> Dokumen Legal
                                     </div>
                                     <div class="row">
-                                        @php
-                                            $uploadedDocs = [];
-                                            if ($land) {
-                                                foreach ($land->documents as $d) {
-                                                    $uploadedDocs[$d->document_type_id] = $d;
-                                                }
-                                            }
-                                        @endphp
                                         @foreach($documentTypes as $doc)
                                             @php
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                             @endphp
-                                            <div class="col-md-6 mb-4">
-                                                <div class="card shadow-none border p-3" style="background:#fafafc;">
-                                                    <label class="form-label d-flex justify-content-between align-items-center mb-2">
-                                                        <span>{{ $doc->name }}</span>
-                                                        @if($existingDoc)
-                                                            <span class="badge bg-success py-1 px-2"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                        @else
-                                                            <span class="badge bg-warning text-dark py-1 px-2"><i class="mdi mdi-clock-outline me-1"></i>Belum Ada</span>
-                                                        @endif
-                                                    </label>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">No {{ $doc->name }}</label>
+                                                <input type="text" class="form-control"
+                                                    name="documents[{{ $doc->id }}][number]"
+                                                    value="{{ $existingDoc->document_number ?? '' }}"
+                                                    placeholder="Nomor {{ $doc->name }}"
+                                                    {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
 
-                                                    <input type="text" class="form-control mb-2"
-                                                        name="documents[{{ $doc->id }}][number]"
-                                                        value="{{ $existingDoc->document_number ?? '' }}"
-                                                        placeholder="Nomor {{ $doc->name }}"
-                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                <!-- UPLOAD DOKUMEN -->
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <i class="mdi mdi-cloud-upload-outline"></i> Upload Dokumen
+                                    </div>
+                                    <div class="row">
+                                        @foreach($documentTypes as $doc)
+                                            @php
+                                                $existingDoc = $uploadedDocs[$doc->id] ?? null;
+                                            @endphp
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Upload {{ $doc->name }}</label>
 
-                                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                        <div class="pratanah-file-upload-modern">
-                                                            <input type="file" name="documents[{{ $doc->id }}][file]"
-                                                                accept=".pdf,.jpg,.jpeg,.png">
+                                                @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                    <div class="pratanah-file-upload-modern">
+                                                        <input type="file" name="documents[{{ $doc->id }}][file]"
+                                                            accept=".pdf,.jpg,.jpeg,.png">
 
-                                                            <div class="pratanah-file-label-modern">
-                                                                <i class="mdi mdi-file"></i>
-                                                                <div class="pratanah-file-info-modern">
-                                                                    <span>{{ $existingDoc ? 'Ganti File Baru' : 'Upload ' . $doc->name }}</span>
-                                                                    <small>PDF / JPG / PNG</small>
-                                                                </div>
+                                                        <div class="pratanah-file-label-modern">
+                                                            <i class="mdi mdi-cloud-upload"></i>
+                                                            <div class="pratanah-file-info-modern">
+                                                                <span>Upload {{ $doc->name }}</span>
+                                                                <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
                                                             </div>
                                                         </div>
-                                                    @endif
+                                                    </div>
+                                                @endif
 
-                                                    @if($existingDoc)
-                                                        @php
-                                                            $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
-                                                        @endphp
-                                                        <div class="mt-2 d-flex align-items-center gap-2">
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas Aktif
-                                                            </a>
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                                @if($existingDoc)
+                                                    @php
+                                                        $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
+                                                    @endphp
+                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas Aktif
+                                                        </a>
+                                                        <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    </div>
+                                                @else
+                                                    <div class="mt-2 text-end">
+                                                        <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-clock-outline me-1"></i>Belum Ada</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
@@ -816,30 +985,29 @@
                                 <!-- SPASIAL MAPS KOORDINAT -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-map-marker-radius"></i> Koordinat Lintang & Bujur (Leaflet Map)
+                                        <i class="mdi mdi-map-marker"></i> Koordinat
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-5 mb-3">
-                                            <label class="form-label">Latitude *</label>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Latitude</label>
                                             <input type="text" class="form-control" id="fase2_lat" name="lat"
-                                                value="{{ $land->lat ?? '-8.1727' }}" placeholder="-8.1727" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                value="{{ $land->lat ?? '-8.1727' }}" placeholder="Contoh: -6.2088" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-5 mb-3">
-                                            <label class="form-label">Longitude *</label>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Longitude</label>
                                             <input type="text" class="form-control" id="fase2_lng" name="lng"
-                                                value="{{ $land->lng ?? '113.7000' }}" placeholder="113.7000" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                value="{{ $land->lng ?? '113.7000' }}" placeholder="Contoh: 106.8456" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-2 mb-3 d-flex align-items-end">
-                                            <button type="button" class="btn btn-gradient-info w-100" style="height: 42px;"
-                                                onclick="getCurrentLocation()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }} title="Dapatkan Lokasi Saya Saat Ini">
-                                                <i class="mdi mdi-crosshairs-gps"></i> GPS
-                                            </button>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <label class="form-label">Geser Marker Peta di Bawah untuk Memilih Lokasi secara Visual</label>
+                                        <div class="col-12 mb-2">
                                             <div class="pratanah-map-container">
                                                 <div id="map-fase2" style="height: 100%; width: 100%;"></div>
                                             </div>
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-outline-purple"
+                                                onclick="getCurrentLocation()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <i class="mdi mdi-map-marker"></i> Gunakan Lokasi Saya
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -909,22 +1077,22 @@
                                     <div class="row">
                                         <div class="col-md-3 mb-3">
                                             <label class="form-label">Biaya IJB (Rp)</label>
-                                            <input type="text" class="form-control" name="biaya_ijb_temp" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="biaya_ijb_temp" value="{{ $land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : '' }}" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <label class="form-label">Estimasi Pajak PPh/BPHTB (Rp)</label>
-                                            <input type="text" class="form-control" name="biaya_pajak_temp" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="biaya_pajak_temp" value="{{ $land && $land->cost_tax ? number_format($land->cost_tax, 0, ',', '.') : '' }}" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <label class="form-label">Fee Makelar (Rp)</label>
-                                            <input type="text" class="form-control" name="fee_makelar_temp" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="fee_makelar_temp" value="{{ $land && $land->cost_broker ? number_format($land->cost_broker, 0, ',', '.') : '' }}" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <label class="form-label">Biaya Lain-lain Admin (Rp)</label>
-                                            <input type="text" class="form-control" name="biaya_lain_temp" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="biaya_lain_temp" value="{{ $land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : '' }}" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Unggah Berkas IJB (Temp)</label>
+                                            <label class="form-label">Unggah Berkas IJB</label>
                                             <div class="pratanah-file-upload-modern">
                                                 <input type="file" name="file_ijb_temp" id="file_ijb_temp" class="d-none" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <label for="file_ijb_temp" class="pratanah-file-label-modern mb-0 w-100">
@@ -934,10 +1102,21 @@
                                                         <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
                                                     </div>
                                                 </label>
+                                                @if($land && $land->file_ijb)
+                                                    @php
+                                                        $cleanIjbPath = str_replace('uploads/', '', $land->file_ijb);
+                                                    @endphp
+                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanIjbPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas Aktif
+                                                        </a>
+                                                        <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Unggah Berkas Bukti Pajak (Temp)</label>
+                                            <label class="form-label">Unggah Berkas Bukti Pajak</label>
                                             <div class="pratanah-file-upload-modern">
                                                 <input type="file" name="file_pajak_temp" id="file_pajak_temp" class="d-none" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <label for="file_pajak_temp" class="pratanah-file-label-modern mb-0 w-100">
@@ -947,6 +1126,17 @@
                                                         <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
                                                     </div>
                                                 </label>
+                                                @if($land && $land->file_tax)
+                                                    @php
+                                                        $cleanTaxPath = str_replace('uploads/', '', $land->file_tax);
+                                                    @endphp
+                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanTaxPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas Aktif
+                                                        </a>
+                                                        <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -957,32 +1147,53 @@
                                     <div class="form-section-title">
                                         <i class="mdi mdi-cash-multiple"></i> Skema Pembayaran & Pembayaran Bertahap
                                     </div>
+
+                                    <!-- HARGA DEAL & DP CALCULATOR -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label text-muted">Harga Target Negosiasi (Fase 1)</label>
+                                            <input type="text" class="form-control" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #e9ecef; color: #495057; font-weight: 600;">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label text-dark font-weight-bold">Harga Deal Akhir Tanah (Rp)</label>
+                                            <input type="text" class="form-control" id="deal_price_input" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #e9ecef; color: #495057; font-weight: 600;">
+                                        </div>
+                                        <div class="col-md-3 mb-3" id="dp_container" style="display: none;">
+                                            <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
+                                            <input type="text" class="form-control border-success" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                        </div>
+                                        <div class="col-md-3 mb-3" id="remaining_container" style="display: none;">
+                                            <label class="form-label text-muted">Sisa Pembayaran (Rp)</label>
+                                            <input type="text" class="form-control font-weight-bold" id="remaining_price_input" value="0" disabled style="background-color: #f8f9fa;">
+                                        </div>
+                                    </div>
+
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Metode Pembayaran Kesepakatan</label>
                                             <select class="form-select" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="cash" selected>Cash Keras (Lunas Sekaligus)</option>
-                                                <option value="termin">Pembayaran Bertahap</option>
+                                                <option value="cash" {{ $land && $land->payment_method == 'cash' ? 'selected' : '' }}>Cash Keras (Lunas Sekaligus)</option>
+                                                <option value="termin" {{ $land && $land->payment_method == 'termin' ? 'selected' : '' }}>Pembayaran Bertahap</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 mb-3" id="temp_duration_container" style="display: none;">
                                             <label class="form-label">Jangka Waktu Bertahap (Maks. 1 Tahun)</label>
-                                            <select class="form-select" id="temp_installment_duration" name="installment_duration_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="3_bulan">3 Bulan</option>
-                                                <option value="6_bulan">6 Bulan</option>
-                                                <option value="9_bulan">9 Bulan</option>
-                                                <option value="1_tahun" selected>1 Tahun</option>
+                                            <select class="form-select" id="temp_installment_duration" name="installment_duration_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="3_bulan" {{ $land && $land->installment_duration == '3_bulan' ? 'selected' : '' }}>3 Bulan</option>
+                                                <option value="6_bulan" {{ $land && $land->installment_duration == '6_bulan' ? 'selected' : '' }}>6 Bulan</option>
+                                                <option value="9_bulan" {{ $land && $land->installment_duration == '9_bulan' ? 'selected' : '' }}>9 Bulan</option>
+                                                <option value="1_tahun" {{ $land && ($land->installment_duration == '1_tahun' || !$land->installment_duration) ? 'selected' : '' }}>1 Tahun</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 mb-3" id="temp_count_container" style="display: none;">
                                             <label class="form-label">Frekuensi Pembayaran</label>
                                             <select class="form-select" id="temp_installment_count" name="installment_count_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="2">2x Bayar</option>
-                                                <option value="3">3x Bayar</option>
-                                                <option value="4" selected>4x Bayar</option>
-                                                <option value="5">5x Bayar</option>
-                                                <option value="6">6x Bayar</option>
-                                                <option value="12">12x Bayar</option>
+                                                <option value="2" {{ $land && $land->installment_count == 2 ? 'selected' : '' }}>2x Bayar</option>
+                                                <option value="3" {{ $land && $land->installment_count == 3 ? 'selected' : '' }}>3x Bayar</option>
+                                                <option value="4" {{ $land && ($land->installment_count == 4 || !$land->installment_count) ? 'selected' : '' }}>4x Bayar</option>
+                                                <option value="5" {{ $land && $land->installment_count == 5 ? 'selected' : '' }}>5x Bayar</option>
+                                                <option value="6" {{ $land && $land->installment_count == 6 ? 'selected' : '' }}>6x Bayar</option>
+                                                <option value="12" {{ $land && $land->installment_count == 12 ? 'selected' : '' }}>12x Bayar</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1007,7 +1218,48 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="installment_tbody">
-                                                    <!-- Dynamic rows generated by Javascript -->
+                                                    @if($land && $land->payments->count() > 0)
+                                                        @foreach($land->payments as $index => $payment)
+                                                            @php $i = $index + 1; @endphp
+                                                            <tr>
+                                                                <td class="font-weight-bold text-primary text-center">
+                                                                    {{ $payment->term_name }}
+                                                                    <input type="hidden" name="installments[{{ $i }}][term_name]" value="{{ $payment->term_name }}">
+                                                                </td>
+                                                                <td>
+                                                                                                                                        <input type="text" name="installments[{{ $i }}][amount_temp]" class="form-control form-control-sm" value="Rp {{ number_format($payment->amount, 0, ',', '.') }}" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
+                                                                        <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                        <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                                                            <i class="mdi mdi-file-upload text-muted fs-5"></i>
+                                                                            <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
+                                                                                {{ $payment->file_path ? basename($payment->file_path) : 'Pilih Bukti' }}
+                                                                            </span>
+                                                                        </label>
+                                                                        @if($payment->file_path)
+                                                                            @php
+                                                                                $cleanPath = str_replace('uploads/', '', $payment->file_path);
+                                                                            @endphp
+                                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-link p-0 ms-1 text-primary" title="Lihat Berkas">
+                                                                                <i class="mdi mdi-eye" style="font-size: 14px;"></i>
+                                                                            </a>
+                                                                        @endif
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <select name="installments[{{ $i }}][status]" class="form-select form-select-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                        <option value="belum" {{ $payment->status == 'belum' ? 'selected' : '' }}>Belum</option>
+                                                                        <option value="lunas" {{ $payment->status == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>
@@ -1065,6 +1317,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Render correct step view upon loading
             switchStep(activeStep);
+
+            // Initial toggle for installment view (do not regenerate rows to preserve Blade pre-render)
+            toggleInstallmentView(true);
+
+
 
             // Handle customized file inputs
             document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
@@ -1159,6 +1416,20 @@
             } else if (step === 3) {
                 document.getElementById('wizardProgressBar').style.width = '100%';
             }
+
+            // Re-initialize or adjust Select2 size for newly visible container
+            setTimeout(() => {
+                $(`#containerFase${step} select.form-select`).each(function() {
+                    if ($(this).closest('#installment_tbody').length === 0) {
+                        $(this).select2({
+                            theme: 'bootstrap-5',
+                            width: '100%',
+                            minimumResultsForSearch: 0,
+                            dropdownCssClass: 'select2-limited-items'
+                        });
+                    }
+                });
+            }, 50);
         }
 
         // ===============================
@@ -1275,7 +1546,7 @@
                 Swal.close();
 
                 if (res.success) {
-                    let textMsg = 'Data keputusan sidang berhasil disimpan!';
+                    let textMsg = res.message || 'Data keputusan sidang berhasil disimpan!';
                     if (res.status === 'approved') {
                         textMsg = 'Tanah berhasil disetujui (Deal) dan telah di-upgrade ke Daftar Proyek Landbank utama!';
                     }
@@ -1329,7 +1600,7 @@
             }
         }
 
-        function toggleInstallmentView() {
+        function toggleInstallmentView(isInitial = false) {
             const method = document.getElementById('temp_payment_method').value;
             const durationContainer = document.getElementById('temp_duration_container');
             const countContainer = document.getElementById('temp_count_container');
@@ -1339,34 +1610,118 @@
                 durationContainer.style.display = 'block';
                 countContainer.style.display = 'block';
                 widgetContainer.style.display = 'block';
-                generateInstallmentRows();
+                if (!isInitial) {
+                    generateInstallmentRows();
+                } else {
+                    calculateInstallments();
+                }
             } else {
                 durationContainer.style.display = 'none';
                 countContainer.style.display = 'none';
                 widgetContainer.style.display = 'none';
+                calculateInstallments();
+            }
+        }
+
+        function calculateInstallments() {
+            const method = document.getElementById('temp_payment_method').value;
+            const dpContainer = document.getElementById('dp_container');
+            const remainingContainer = document.getElementById('remaining_container');
+            
+            if (method !== 'termin') {
+                if (dpContainer) dpContainer.style.display = 'none';
+                if (remainingContainer) remainingContainer.style.display = 'none';
+                return;
+            }
+            
+            if (dpContainer) dpContainer.style.display = 'block';
+            if (remainingContainer) remainingContainer.style.display = 'block';
+            
+            const cleanNum = (str) => parseInt((str || '').replace(/[^0-9]/g, '')) || 0;
+            const formatRp = (num) => 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            
+            const dealPrice = cleanNum(document.getElementById('deal_price_input').value);
+            const dpPriceInput = document.getElementById('dp_price_input');
+            let dpPrice = cleanNum(dpPriceInput.value);
+
+            // Default DP to 20% of deal price if not set yet
+            if (!dpPriceInput.value && dealPrice > 0) {
+                dpPrice = Math.round(dealPrice * 0.20);
+                dpPriceInput.value = formatRp(dpPrice);
+            }
+            
+            let remaining = dealPrice - dpPrice;
+            if (remaining < 0) remaining = 0;
+            
+            const remainingInput = document.getElementById('remaining_price_input');
+            if (remainingInput) remainingInput.value = formatRp(remaining);
+            
+            const count = parseInt(document.getElementById('temp_installment_count').value) || 4;
+            const tbody = document.getElementById('installment_tbody');
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (rows.length === count) {
+                let remainingInstallments = count - 1;
+                let installmentAmount = remainingInstallments > 0 ? Math.round(remaining / remainingInstallments) : 0;
+                
+                rows.forEach((row, index) => {
+                    const amountInput = row.querySelector('input[name$="[amount_temp]"]');
+                    if (amountInput) {
+                        if (index === 0) {
+                            amountInput.value = formatRp(dpPrice);
+                        } else {
+                            if (index === count - 1) {
+                                let totalCalculated = dpPrice + (installmentAmount * (remainingInstallments - 1));
+                                let finalInstallment = dealPrice - totalCalculated;
+                                if (finalInstallment < 0) finalInstallment = 0;
+                                amountInput.value = formatRp(finalInstallment);
+                            } else {
+                                amountInput.value = formatRp(installmentAmount);
+                            }
+                        }
+                    }
+                });
             }
         }
 
         function generateInstallmentRows() {
             const count = parseInt(document.getElementById('temp_installment_count').value) || 4;
+            const duration = document.getElementById('temp_installment_duration').value;
             const tbody = document.getElementById('installment_tbody');
             tbody.innerHTML = '';
+            
+            let durationMonths = 12;
+            if (duration === '3_bulan') durationMonths = 3;
+            else if (duration === '6_bulan') durationMonths = 6;
+            else if (duration === '9_bulan') durationMonths = 9;
+            
+            let baseDate = new Date();
 
             for (let i = 1; i <= count; i++) {
                 let terminName = i === 1 ? 'DP (Tahap 1)' : `Tahap ${i}`;
                 
+                let dateVal = new Date(baseDate);
+                if (i > 1 && count > 1) {
+                    let monthsToAdd = Math.round((durationMonths / (count - 1)) * (i - 1));
+                    dateVal.setMonth(dateVal.getMonth() + monthsToAdd);
+                }
+                let dateStr = dateVal.toISOString().split('T')[0];
+                
                 let row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="font-weight-bold text-primary text-center">${terminName}</td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" placeholder="Rp 0" onkeyup="formatRupiahTemp(this)">
+                    <td class="font-weight-bold text-primary text-center">
+                        ${terminName}
+                        <input type="hidden" name="installments[${i}][term_name]" value="${terminName}">
                     </td>
                     <td>
-                        <input type="date" class="form-control form-control-sm">
+                        <input type="text" name="installments[${i}][amount_temp]" class="form-control form-control-sm" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                    </td>
+                    <td>
+                        <input type="date" name="installments[${i}][due_date]" value="${dateStr}" class="form-control form-control-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                     </td>
                     <td>
                         <div class="pratanah-file-upload-modern py-1 px-2" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                            <input type="file" id="file_tahap_${i}" class="d-none" onchange="handleTerminFileName(this)">
+                            <input type="file" name="installments[${i}][file]" id="file_tahap_${i}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                             <label for="file_tahap_${i}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
                                 <i class="mdi mdi-file-upload text-muted fs-5"></i>
                                 <span class="text-truncate text-muted file-label-text" style="max-width: 150px;">Pilih Bukti</span>
@@ -1374,7 +1729,7 @@
                         </div>
                     </td>
                     <td>
-                        <select class="form-select form-select-sm">
+                        <select name="installments[${i}][status]" class="form-select form-select-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                             <option value="belum">Belum</option>
                             <option value="lunas">Lunas</option>
                         </select>
@@ -1382,6 +1737,9 @@
                 `;
                 tbody.appendChild(row);
             }
+            
+            // Instantly trigger calculations
+            calculateInstallments();
         }
 
         function handleTerminFileName(input) {
