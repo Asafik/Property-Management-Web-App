@@ -174,6 +174,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     // list properti
     Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
     Route::get('/all-pra-landbank', [PraLandBankController::class, 'indexpra'])->name('pralandbank.all');
+    Route::get('/properti/pra-landbank/proses/{id?}', [PraLandBankController::class, 'proses'])->name('pra-landbank.proses');
     // tambah properti
     Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
     Route::get('/create-pralandbank', [PraLandBankController    ::class, 'index'])->name('pra-landbank');

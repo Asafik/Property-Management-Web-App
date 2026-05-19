@@ -234,6 +234,15 @@ if ($request->has('documents')) {
          $documentTypes = DocumentTypes::all();
         return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes'));
     }
+    public function proses(Request $request, $id = null)
+    {
+        $land = null;
+        if ($id) {
+            $land = PraLandbank::with('documents.documentType')->findOrFail($id);
+        }
+        $documentTypes = DocumentTypes::all();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes'));
+    }
     public function destroy($id)
     {
         try {
