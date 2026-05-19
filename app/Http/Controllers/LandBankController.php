@@ -203,9 +203,9 @@ class LandBankController extends Controller
         $doc = LandBankDocument::findOrFail($id);
 
         $doc->update([
-            'status' => 'ditolak',
-            'catatan_admin' => $request->catatan_admin,
-            'revisi_ke' => $doc->revisi_ke + 1
+            'status' => 'rejected',
+            'admin_notes' => $request->catatan_admin,
+            'revision_number' => $doc->revisi_ke + 1
         ]);
 
         return back()->with('success', 'Dokumen ditolak & menunggu revisi.');

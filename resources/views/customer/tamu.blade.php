@@ -849,6 +849,31 @@
                 font-size: 0.7rem;
             }
         }
+
+        .badge-status.hot_prospect {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-status.medium_prospect {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-status.cold_prospect {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-status.converted {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-status.lost {
+            background: #f1f5f9;
+            color: #475569;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -942,7 +967,7 @@
                             </button>
                             <button type="button" class="btn btn-gradient-primary btn-add" data-bs-toggle="modal"
                                 data-bs-target="#modalGuest">
-                                <i class="mdi mdi-plus"></i><span class="d-none d-sm-inline">Tambah Prospek</span>
+                                <i class="mdi mdi-plus"></i><span class="d-none d-sm-inline">Tambah Proyeksi</span>
                             </button>
                         </div>
                     </div>
@@ -1267,15 +1292,15 @@
                                             </td>
                                             <td>
                                                 <span class="badge-status {{ $guest->status }}">
-                                                    @if ($guest->status == 'new')
-                                                        Baru
-                                                    @elseif($guest->status == 'follow_up')
-                                                        Sudah Dihubungi
-                                                    @elseif($guest->status == 'negotiation')
-                                                        Negosiasi
-                                                    @elseif($guest->status == 'converted')
+                                                    @if ($guest->status == 'hot_prospect')
+                                                        Hot Prospect
+                                                    @elseif ($guest->status == 'medium_prospect')
+                                                        Medium Prospect
+                                                    @elseif ($guest->status == 'cold_prospect')
+                                                        Cold Prospect
+                                                    @elseif ($guest->status == 'converted')
                                                         Dikonversi / Deal
-                                                    @elseif($guest->status == 'lost')
+                                                    @elseif ($guest->status == 'lost')
                                                         Gagal / Batal
                                                     @else
                                                         {{ ucfirst(str_replace('_', ' ', $guest->status)) }}
