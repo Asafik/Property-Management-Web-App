@@ -625,7 +625,7 @@
                     <div>
                         <h3 class="text-dark mb-1">
                             <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
-                            Data User
+                            Data User / Customer
                         </h3>
                         <p class="text-muted mb-0">
                             <i class="mdi mdi-information-outline me-1"></i>
@@ -649,7 +649,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ $totalCustomer ?? 0 }}</h3>
-                    <p>Total User</p>
+                    <p>Total User / Customer</p>
                 </div>
             </div>
         </div>
@@ -661,7 +661,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ $customerAktif ?? 0 }}</h3>
-                    <p>User Aktif</p>
+                    <p>User / Customer Aktif</p>
                 </div>
             </div>
         </div>
@@ -708,7 +708,7 @@
                             <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
                         </button>
                         <a href="{{ route('customer.create') }}" class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
-                            <i class="mdi mdi-account-multiple-plus-outline"></i><span class="d-none d-sm-inline"> Tambah User Baru</span>
+                            <i class="mdi mdi-account-multiple-plus-outline"></i><span class="d-none d-sm-inline"> Tambah User / Customer Baru</span>
                         </a>
                     </div>
                 </div>
