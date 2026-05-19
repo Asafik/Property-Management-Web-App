@@ -9,6 +9,9 @@
         $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
         $isSubsidi = strtolower($kpr->booking->unit->jenis ?? '') === 'subsidi';
         $surveyDone = !empty($kpr->rekomendasi) || strtolower($kpr->status_survey ?? '') == 'done' || ($kpr->booking->status_survey ?? 0) == 1;
+
+        $spkDone = !empty($kpr->booking->unit->dokumen_spk);
+
         $totalSteps = 7;
 
         if ($isSubsidi) {
@@ -109,12 +112,12 @@
                                 <small>{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d F Y') : \Carbon\Carbon::parse($kpr->updated_at)->translatedFormat('d F Y') }}</small>
                             </div>
 
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
                                 <div class="transaksi-step-icon">
-                                    <i class="mdi mdi-clipboard-text"></i>
+                                    <i class="mdi {{ $spkDone ? 'mdi-check' : 'mdi-clipboard-text' }}"></i>
                                 </div>
                                 <span class="transaksi-step-title">SPK</span>
-                                <small>Menunggu</small>
+                                <small>{{ $spkDone ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
 
                             @php
