@@ -4,6 +4,109 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('assets/css/marketing/add-customer.css') }}">
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.8rem !important;
+            min-height: 40px !important;
+            font-family: 'Nunito', sans-serif !important;
+            background-color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 38px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+            border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover {
+            border-color: #9a55ff !important;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e9ecef !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+            font-family: 'Nunito', sans-serif !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #9a55ff !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            margin: 0.5rem !important;
+            width: calc(100% - 1rem) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-limited-items .select2-results__options {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
+        .select2-container {
+            display: block !important;
+            width: 100% !important;
+        }
+    </style>
 
     @php
         $isEdit = isset($customer);
@@ -326,6 +429,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            // --- 0. Inisialisasi Select2 ---
+            $('select').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                dropdownCssClass: 'select2-limited-items'
+            });
+
             // --- 1. Logika Tab Sederhana ---
             $('.add-custom-tab-link').on('click', function(e) {
                 e.preventDefault();
@@ -353,12 +463,28 @@
                     const ktp = document.getElementById(f + "KTP");
                     if (this.checked) {
                         ktp.value = dom.value;
-                        if(ktp.tagName === "SELECT") ktp.disabled = true; else ktp.readOnly = true;
+                        if(ktp.tagName === "SELECT") {
+                            ktp.disabled = true;
+                            $(ktp).trigger('change');
+                        } else {
+                            ktp.readOnly = true;
+                        }
                     } else {
                         ktp.value = "";
-                        if(ktp.tagName === "SELECT") ktp.disabled = false; else ktp.readOnly = false;
+                        if(ktp.tagName === "SELECT") {
+                            ktp.disabled = false;
+                            $(ktp).trigger('change');
+                        } else {
+                            ktp.readOnly = false;
+                        }
                     }
                 });
+            });
+
+            $('#provinsiDomisili').on('change', function() {
+                if ($("#alamatSamaKTP").is(':checked')) {
+                    $('#provinsiKTP').val(this.value).trigger('change');
+                }
             });
 
             // --- 4. Logika Input Pekerjaan Lainnya ---

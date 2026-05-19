@@ -857,7 +857,8 @@
         /* Siteplan */
         .siteplan-scroll-container {
             width: 100%;
-            overflow: hidden !important; /* Pure viewport navigation */
+            overflow: hidden !important;
+            /* Pure viewport navigation */
             border: 2px solid #9a55ff;
             border-radius: 12px;
             background: #f8f9fa;
@@ -913,12 +914,14 @@
             justify-content: space-between;
             overflow-y: auto;
         }
+
         .denah-container.fullscreen-mode .siteplan-scroll-container {
             flex-grow: 1;
             max-height: calc(100vh - 120px) !important;
             border-color: #9a55ff;
             background: #12121e;
         }
+
         .denah-container.fullscreen-mode .fw-bold.text-primary {
             color: #da8cff !important;
         }
@@ -1414,8 +1417,12 @@
                                                         class="mdi mdi-office-building me-1"></i>Jenis</label>
                                                 <select name="jenis" class="form-control">
                                                     <option value="">Semua Jenis</option>
-                                                    <option value="subsidi" {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
-                                                    <option value="komersil" {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil</option>
+                                                    <option value="subsidi"
+                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                    </option>
+                                                    <option value="komersil"
+                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                    </option>
                                                 </select>
                                             </div>
                                             <div class="col-md-2 filter-col">
@@ -1423,22 +1430,31 @@
                                                         class="mdi mdi-chart-arc me-1"></i>Status</label>
                                                 <select name="status" class="form-control">
                                                     <option value="">Semua Status</option>
-                                                    <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
-                                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Booking</option>
-                                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    <option value="ready"
+                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                    </option>
+                                                    <option value="booked"
+                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                    </option>
+                                                    <option value="sold"
+                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
                                                         Terjual</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-1 filter-col">
                                                 <label class="form-label"><i class="mdi mdi-counter me-1"></i>Tampil</label>
                                                 <select name="perPage" class="form-control">
-                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    <option value="10"
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
                                                     </option>
-                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    <option value="25"
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
                                                     </option>
-                                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    <option value="50"
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
                                                     </option>
-                                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    <option value="100"
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
                                                     </option>
                                                 </select>
                                             </div>
@@ -1465,8 +1481,9 @@
                                             <div class="col-12">
                                                 <label class="form-label"><i class="mdi mdi-magnify me-1"></i>Cari
                                                     Unit</label>
-                                                <input type="text" name="search_mobile" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari..." id="searchMobile">
+                                                <input type="text" name="search_mobile"
+                                                    value="{{ request('search') }}" class="form-control"
+                                                    placeholder="Cari..." id="searchMobile">
                                             </div>
                                         </div>
                                         <div class="row filter-row g-1">
@@ -1475,8 +1492,12 @@
                                                         class="mdi mdi-office-building me-1"></i>Jenis</label>
                                                 <select name="jenis" class="form-control">
                                                     <option value="">Semua Jenis</option>
-                                                    <option value="subsidi" {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
-                                                    <option value="komersil" {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil</option>
+                                                    <option value="subsidi"
+                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                    </option>
+                                                    <option value="komersil"
+                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1486,22 +1507,32 @@
                                                         class="mdi mdi-chart-arc me-1"></i>Status</label>
                                                 <select name="status" class="form-control">
                                                     <option value="">Semua</option>
-                                                    <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
-                                                    <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Booking</option>
-                                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    <option value="ready"
+                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                    </option>
+                                                    <option value="booked"
+                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                    </option>
+                                                    <option value="sold"
+                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
                                                         Terjual</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label class="form-label"><i class="mdi mdi-counter me-1"></i>Tampil</label>
+                                                <label class="form-label"><i
+                                                        class="mdi mdi-counter me-1"></i>Tampil</label>
                                                 <select name="perPage" class="form-control">
-                                                    <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    <option value="10"
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
                                                     </option>
-                                                    <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    <option value="25"
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
                                                     </option>
-                                                    <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    <option value="50"
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
                                                     </option>
-                                                    <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    <option value="100"
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
                                                     </option>
                                                 </select>
                                             </div>
@@ -1511,7 +1542,8 @@
                                                 <div class="d-flex gap-2">
                                                     <button type="submit"
                                                         class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                        id="filterBtnMobile" title="Filter" onclick="showFilterLoading()">
+                                                        id="filterBtnMobile" title="Filter"
+                                                        onclick="showFilterLoading()">
                                                         <i class="mdi mdi-filter"></i>
                                                     </button>
                                                     <a href="{{ route('marketing.jual-unit') }}"
@@ -1553,18 +1585,22 @@
                                         <tr>
                                             <th class="text-center">No</th>
                                             <th>Proyek</th>
-                                            <th class="sortable" data-field="block" data-direction="{{ request('sort') == 'block' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                            <th class="sortable" data-field="block"
+                                                data-direction="{{ request('sort') == 'block' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                                 Nama - Unit
-                                                @if(request('sort') == 'block')
-                                                    <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @if (request('sort') == 'block')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                                 @else
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
                                             </th>
-                                            <th class="sortable" data-field="jenis" data-direction="{{ request('sort') == 'jenis' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                            <th class="sortable" data-field="jenis"
+                                                data-direction="{{ request('sort') == 'jenis' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                                 Jenis & Tipe
-                                                @if(request('sort') == 'jenis')
-                                                    <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @if (request('sort') == 'jenis')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                                 @else
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
@@ -1576,19 +1612,23 @@
                                             <th>Hadap</th>
                                             <th>Status</th>
                                             <th>Status Pembangunan / Progres</th>
-                                            <th class="sortable" data-field="agent_name" data-direction="{{ request('sort') == 'agent_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                            <th class="sortable" data-field="agent_name"
+                                                data-direction="{{ request('sort') == 'agent_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                                 Agent
-                                                @if(request('sort') == 'agent_name')
-                                                    <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @if (request('sort') == 'agent_name')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                                 @else
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
                                             </th>
                                             <th>Fee Agent</th>
-                                            <th class="sortable" data-field="customer_name" data-direction="{{ request('sort') == 'customer_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                            <th class="sortable" data-field="customer_name"
+                                                data-direction="{{ request('sort') == 'customer_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                                 Customer
-                                                @if(request('sort') == 'customer_name')
-                                                    <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @if (request('sort') == 'customer_name')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                                 @else
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
@@ -1604,12 +1644,10 @@
                                                 $statusBadge = '';
                                                 $statusIcon = '';
                                                 $statusText = ucfirst($unit->status);
+
                                                 if ($unit->status == 'ready' || $unit->status == 'tersedia') {
-                                                    if (strtolower($unit->type) == 'subsidi') {
-                                                        $statusBadge = 'badge-available-subsidi';
-                                                    } else {
-                                                        $statusBadge = 'badge-available-komersil';
-                                                    }
+                                                    // Tersedia = biru
+                                                    $statusBadge = 'badge-available-komersil';
                                                     $statusIcon = 'mdi-check-circle-outline';
                                                     $statusText = 'Tersedia';
                                                 } elseif ($unit->status == 'sold') {
@@ -1620,10 +1658,14 @@
                                                     $statusBadge = 'badge-booking';
                                                     $statusIcon = 'mdi-bookmark-check-outline';
                                                     $statusText = 'Booking';
-                                                } elseif (strtolower($unit->status) == 'draft' || strtolower($unit->status) == 'draff') {
-                                                    $statusBadge = 'badge-draft';
-                                                    $statusIcon = 'mdi-file-document-edit-outline';
-                                                    $statusText = 'Draft';
+                                                } elseif (
+                                                    strtolower($unit->status) == 'draft' ||
+                                                    strtolower($unit->status) == 'draff'
+                                                ) {
+                                                    // Draft dianggap Tersedia dan warna biru
+                                                    $statusBadge = 'badge-available-komersil';
+                                                    $statusIcon = 'mdi-check-circle-outline';
+                                                    $statusText = 'Tersedia';
                                                 } else {
                                                     $statusBadge = 'badge-soft';
                                                     $statusIcon = 'mdi-information-outline';
@@ -1638,8 +1680,10 @@
                                                     'finishing' => 80,
                                                     'selesai' => 100,
                                                 ];
+
                                                 $progress = $progressMap[$unit->construction_progress] ?? 0;
-                                                $progressClass = $progress < 100 ? 'progress-green' : 'progress-dark-green';
+                                                $progressClass =
+                                                    $progress < 100 ? 'progress-green' : 'progress-dark-green';
                                             @endphp
                                             <tr>
                                                 <td class="fw-bold text-center">{{ $units->firstItem() + $index }}</td>
@@ -1655,19 +1699,22 @@
                                                             style="font-size: 1.1rem;"></i>
                                                         <span class="fw-bold">
                                                             {{ $unit->unit_name ?? '-' }} -
-                                                            {{ $unit->unit_code ?? (($unit->block ?? '') . ' ' . ($unit->unit_number ?? '')) }}
+                                                            {{ $unit->unit_code ?? ($unit->block ?? '') . ' ' . ($unit->unit_number ?? '') }}
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     @if (strtolower($unit->jenis ?? '') == 'subsidi')
                                                         <span class="badge badge-gradient-success">
-                                                            <i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }} -
+                                                            <i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }}
+                                                            -
                                                             {{ $unit->type ?? '-' }}
                                                         </span>
                                                     @elseif(strtolower($unit->jenis ?? '') == 'komersil')
                                                         <span class="badge badge-gradient-primary">
-                                                            <i class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }} -
+                                                            <i
+                                                                class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }}
+                                                            -
                                                             {{ $unit->type ?? '-' }}
                                                         </span>
                                                     @else
@@ -1690,10 +1737,12 @@
                                                 </td>
                                                 <td>
                                                     <span class="info-badge-icon building-badge">
-                                                        <i class="mdi mdi-home-floor-1"></i>{{ $unit->building_area ?? '-' }} 
+                                                        <i
+                                                            class="mdi mdi-home-floor-1"></i>{{ $unit->building_area ?? '-' }}
                                                     </span>
                                                 </td>
-                                                <td class="price-text">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
+                                                <td class="price-text">Rp
+                                                    {{ number_format($unit->price ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td class="fw-bold"><i
                                                         class="mdi mdi-compass-outline text-primary me-1"></i>{{ $unit->facing ?? '-' }}
@@ -1739,7 +1788,8 @@
                                                     @endif
                                                 </td>
                                                 <td class="fee-text">
-                                                    Rp {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
+                                                    Rp
+                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td>
                                                     @if ($unit->activeBooking && $unit->activeBooking->customer)
@@ -1765,12 +1815,13 @@
                                                     @endif
                                                 </td>
                                                 <td class="fee-text">
-                                                    Rp {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
+                                                    Rp
+                                                    {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="action-group">
-                                                        <button class="btn-action view" title="Detail" data-bs-toggle="modal"
-                                                            data-bs-target="#detailUnitModal"
+                                                        <button class="btn-action view" title="Detail"
+                                                            data-bs-toggle="modal" data-bs-target="#detailUnitModal"
                                                             data-unit_name="{{ $unit->unit_name ?? '-' }}"
                                                             data-unit="{{ $unit->unit_code }}"
                                                             data-unit_number="{{ $unit->unit_number ?? '-' }}"
@@ -1810,7 +1861,8 @@
                                         @empty
                                             <tr>
                                                 <td colspan="16" class="text-center text-muted py-4">
-                                                    <i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i>
+                                                    <i class="mdi mdi-home-outline"
+                                                        style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>
                                                 </td>
                                             </tr>
@@ -1849,7 +1901,7 @@
                                                 <h6 class="mt-2 fw-bold"><i
                                                         class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_name ?? '-' }}
                                                     -
-                                                    {{ $unit->unit_code ?? (($unit->block ?? '') . ' ' . ($unit->unit_number ?? '')) }}
+                                                    {{ $unit->unit_code ?? ($unit->block ?? '') . ' ' . ($unit->unit_number ?? '') }}
                                                 </h6>
                                                 <p class="text-muted small mb-1"><i
                                                         class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
@@ -1860,7 +1912,7 @@
                                                     {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
 
                                                 <div class="mt-2 border-top pt-2">
-                                                    @if($unit->activeBooking && $unit->activeBooking->customer)
+                                                    @if ($unit->activeBooking && $unit->activeBooking->customer)
                                                         @php
                                                             $customerName = $unit->activeBooking->customer->full_name;
                                                             $initials = '';
@@ -1886,7 +1938,7 @@
                                                 </div>
 
                                                 <div class="d-flex justify-content-between align-items-center mt-1">
-                                                    @if($unit->activeBooking && $unit->activeBooking->sales)
+                                                    @if ($unit->activeBooking && $unit->activeBooking->sales)
                                                         @php
                                                             $salesName = $unit->activeBooking->sales->name;
                                                             $sInitials = '';
@@ -1906,7 +1958,8 @@
                                                                 class="text-muted fw-bold">{{ Str::limit($salesName, 15) }}</small>
                                                         </div>
                                                     @else
-                                                        <small class="text-muted"><i class="mdi mdi-account-tie me-1"></i>-</small>
+                                                        <small class="text-muted"><i
+                                                                class="mdi mdi-account-tie me-1"></i>-</small>
                                                     @endif
                                                     <button class="btn btn-outline-danger btn-sm"
                                                         onclick="openCustomerModal({{ $unit->id }})"><i
@@ -1932,7 +1985,8 @@
                                 <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
                                     @php
                                         $unitsByProject = $units->groupBy(function ($item) {
-                                            return $item->landBank->name ?? 'Tanpa Proyek'; });
+                                            return $item->landBank->name ?? 'Tanpa Proyek';
+                                        });
                                     @endphp
                                     @foreach ($unitsByProject as $projectName => $projectUnits)
                                         @php
@@ -1945,22 +1999,29 @@
                                         @endphp
                                         <div
                                             style="margin-bottom: 25px; width:100%; border-bottom: 1px dashed #9a55ff; padding-bottom: 15px;">
-                                            <h6 class="text-primary mb-3"><i class="mdi mdi-office-building me-2"></i>Proyek:
+                                            <h6 class="text-primary mb-3"><i
+                                                    class="mdi mdi-office-building me-2"></i>Proyek:
                                                 {{ $projectName }}</h6>
                                             @foreach ($allBloks as $blok)
                                                 <div style="margin-bottom:15px; width:100%;">
                                                     @php
-                                                        $typesInBlok = collect($blokKavlings[$blok])->pluck('type')->unique()->values()->toArray();
+                                                        $typesInBlok = collect($blokKavlings[$blok])
+                                                            ->pluck('type')
+                                                            ->unique()
+                                                            ->values()
+                                                            ->toArray();
                                                         $typeLetters = [];
                                                         foreach ($typesInBlok as $type) {
-                                                            if ($type == 'subsidi')
+                                                            if ($type == 'subsidi') {
                                                                 $typeLetters[] = 'S';
-                                                            elseif ($type == 'komersil')
+                                                            } elseif ($type == 'komersil') {
                                                                 $typeLetters[] = 'K';
+                                                            }
                                                         }
                                                         $labelType = implode(' & ', $typeLetters);
                                                     @endphp
-                                                    <strong style="font-size: 14px;">Blok {{ $blok }} - {{ $labelType }} <small
+                                                    <strong style="font-size: 14px;">Blok {{ $blok }} -
+                                                        {{ $labelType }} <small
                                                             class="text-muted ms-2">({{ count($blokKavlings[$blok]) }}
                                                             unit)</small></strong>
                                                     <div
@@ -1974,7 +2035,10 @@
                                                         @endphp
                                                         @for ($i = 1; $i <= $maxNum; $i++)
                                                             @php
-                                                                $unitFound = collect($blokKavlings[$blok])->firstWhere('unit_code', $blok . '.' . $i);
+                                                                $unitFound = collect($blokKavlings[$blok])->firstWhere(
+                                                                    'unit_code',
+                                                                    $blok . '.' . $i,
+                                                                );
                                                                 $bgColor = '#6c757d';
                                                                 $icon = 'close';
                                                                 $borderStyle = 'none';
@@ -2004,7 +2068,8 @@
                                                                     switch ($unitFound->construction_progress) {
                                                                         case 'belum_mulai':
                                                                             $borderStyle = '2px dashed #000';
-                                                                            $extraStyle = 'background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px);';
+                                                                            $extraStyle =
+                                                                                'background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px);';
                                                                             break;
                                                                         case 'pondasi':
                                                                             $borderStyle = '2px solid #000';
@@ -2027,9 +2092,12 @@
                                                             <span class="unit-box"
                                                                 style="background-color: {{ $bgColor }}; border: {{ $borderStyle }}; {{ $extraStyle }}"
                                                                 title="{{ $unitFound ? $unitFound->unit_code . ' - ' . ucfirst($unitFound->status) : 'Unit ' . $blok . '.' . $i . ' belum tersedia' }}">
-                                                                @if ($typeBadge)<span
-                                                                class="type-badge-small">{{ $typeBadge }}</span>@endif
-                                                                <i class="mdi mdi-{{ $icon }} me-1"></i>{{ $blok . '.' . $i }}
+                                                                @if ($typeBadge)
+                                                                    <span
+                                                                        class="type-badge-small">{{ $typeBadge }}</span>
+                                                                @endif
+                                                                <i
+                                                                    class="mdi mdi-{{ $icon }} me-1"></i>{{ $blok . '.' . $i }}
                                                             </span>
                                                         @endfor
                                                     </div>
@@ -2065,8 +2133,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <h6 class="small fw-bold">Tipe Unit:</h6>
-                                            <div class="d-flex gap-2"><span class="badge bg-success">S = Subsidi</span><span
-                                                    class="badge bg-primary">K = Komersil</span></div>
+                                            <div class="d-flex gap-2"><span class="badge bg-success">S =
+                                                    Subsidi</span><span class="badge bg-primary">K = Komersil</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -2078,17 +2146,22 @@
                             <div class="denah-container" style="padding: 1rem;">
                                 <!-- Floating Controls (Vertical Stack matching user's image) -->
                                 <div class="siteplan-floating-controls">
-                                    <button type="button" class="siteplan-control-btn" onclick="zoom(1.2)" title="Zoom In">
+                                    <button type="button" class="siteplan-control-btn" onclick="zoom(1.2)"
+                                        title="Zoom In">
                                         <i class="mdi mdi-plus"></i>
                                     </button>
-                                    <button type="button" class="siteplan-control-btn" onclick="zoom(0.8)" title="Zoom Out">
+                                    <button type="button" class="siteplan-control-btn" onclick="zoom(0.8)"
+                                        title="Zoom Out">
                                         <i class="mdi mdi-minus"></i>
                                     </button>
-                                    <button type="button" class="siteplan-control-btn" onclick="resetZoom()" title="Reset Zoom" style="position: relative;">
+                                    <button type="button" class="siteplan-control-btn" onclick="resetZoom()"
+                                        title="Reset Zoom" style="position: relative;">
                                         <i class="mdi mdi-refresh"></i>
-                                        <span id="zoomPercent" class="badge bg-primary text-white" style="position: absolute; bottom: -5px; right: -5px; font-size: 0.65rem; padding: 2px 4px; border-radius: 4px;">63%</span>
+                                        <span id="zoomPercent" class="badge bg-primary text-white"
+                                            style="position: absolute; bottom: -5px; right: -5px; font-size: 0.65rem; padding: 2px 4px; border-radius: 4px;">63%</span>
                                     </button>
-                                    <button type="button" class="siteplan-control-btn" id="btnFullscreen" onclick="toggleFullscreen()" title="Fullscreen">
+                                    <button type="button" class="siteplan-control-btn" id="btnFullscreen"
+                                        onclick="toggleFullscreen()" title="Fullscreen">
                                         <i class="mdi mdi-fullscreen"></i>
                                     </button>
                                 </div>
@@ -2122,74 +2195,88 @@
                                             <div class="row g-3">
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-home-outline"></i>Nama Unit</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-home-outline"></i>Nama Unit</div>
                                                         <div class="timeline-detail-value" id="m_unit_name">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-alpha-b-box-outline"></i>Blok</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-alpha-b-box-outline"></i>Blok</div>
                                                         <div class="timeline-detail-value" id="m_block">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-numeric"></i>Nomor Unit</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-numeric"></i>Nomor Unit</div>
                                                         <div class="timeline-detail-value" id="m_unit_number">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-format-list-bulleted-type"></i>Jenis Unit</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-format-list-bulleted-type"></i>Jenis Unit
+                                                        </div>
                                                         <div class="timeline-detail-value" id="m_jenis">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-home-group"></i>Tipe Unit</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-home-group"></i>Tipe Unit</div>
                                                         <div class="timeline-detail-value" id="m_type">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-ruler-square"></i>Luas Tanah</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-ruler-square"></i>Luas Tanah</div>
                                                         <div class="timeline-detail-value" id="m_area">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-home-city-outline"></i>Luas Bangunan</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-home-city-outline"></i>Luas Bangunan</div>
                                                         <div class="timeline-detail-value" id="m_building">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-cash-outline"></i>Harga</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-cash-outline"></i>Harga</div>
                                                         <div class="timeline-detail-value price" id="m_price">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-compass-outline"></i>Arah Hadap</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-compass-outline"></i>Arah Hadap</div>
                                                         <div class="timeline-detail-value" id="m_direction">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-toggle-switch-outline"></i>Status Unit</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-toggle-switch-outline"></i>Status Unit</div>
                                                         <div class="timeline-detail-value" id="m_status">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-progress-check"></i>Status Pembangunan</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-progress-check"></i>Status Pembangunan</div>
                                                         <div class="timeline-detail-value">
                                                             <div class="progress-wrapper" id="m_construction_wrapper">
                                                                 <div class="progress-row">
                                                                     <div class="progress">
-                                                                        <div class="progress-bar-custom progress-green" id="m_progress_bar" style="width: 0%"></div>
+                                                                        <div class="progress-bar-custom progress-green"
+                                                                            id="m_progress_bar" style="width: 0%"></div>
                                                                     </div>
-                                                                    <span class="progress-percent" id="m_progress_pct">0%</span>
+                                                                    <span class="progress-percent"
+                                                                        id="m_progress_pct">0%</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -2197,7 +2284,8 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-map-marker-outline"></i>Alamat</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-map-marker-outline"></i>Alamat</div>
                                                         <div class="timeline-detail-value" id="m_address">-</div>
                                                     </div>
                                                 </div>
@@ -2212,47 +2300,64 @@
                                             <div class="row g-3">
                                                 <div class="col-md-6">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-account-outline"></i>Customer</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-account-outline"></i>Customer</div>
                                                         <div class="timeline-detail-value">
                                                             <div class="name-wrap">
-                                                                <div class="name-initial" id="m_customer_initial" style="background: linear-gradient(135deg, #da8cff, #9a55ff);">-</div>
-                                                                <div class="name-info"><div class="name-title" id="m_customer">-</div></div>
+                                                                <div class="name-initial" id="m_customer_initial"
+                                                                    style="background: linear-gradient(135deg, #da8cff, #9a55ff);">
+                                                                    -</div>
+                                                                <div class="name-info">
+                                                                    <div class="name-title" id="m_customer">-</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-account-tie-outline"></i>Sales / Agency</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-account-tie-outline"></i>Sales / Agency
+                                                        </div>
                                                         <div class="timeline-detail-value">
                                                             <div class="name-wrap">
-                                                                <div class="name-initial" id="m_sales_initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">-</div>
-                                                                <div class="name-info"><div class="name-title" id="m_sales">-</div></div>
+                                                                <div class="name-initial" id="m_sales_initial"
+                                                                    style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                                    -</div>
+                                                                <div class="name-info">
+                                                                    <div class="name-title" id="m_sales">-</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-calendar-today"></i>Tanggal Booking</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-calendar-today"></i>Tanggal Booking</div>
                                                         <div class="timeline-detail-value" id="m_booking_date">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-cash-multiple"></i>Booking Fee</div>
-                                                        <div class="timeline-detail-value fee-text" id="m_booking_fee">-</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-cash-multiple"></i>Booking Fee</div>
+                                                        <div class="timeline-detail-value fee-text" id="m_booking_fee">-
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-hand-coin-outline"></i>Agent Fee</div>
-                                                        <div class="timeline-detail-value fee-text" id="m_agent_fee">-</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-hand-coin-outline"></i>Agent Fee</div>
+                                                        <div class="timeline-detail-value fee-text" id="m_agent_fee">-
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i class="mdi mdi-toggle-switch"></i>Status Booking</div>
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-toggle-switch"></i>Status Booking</div>
                                                         <div class="timeline-detail-value" id="m_booking_status">-</div>
                                                     </div>
                                                 </div>
@@ -2293,7 +2398,8 @@
                         @if ($units->count() > 0)
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
                                 <div class="pagination-info mb-2 mb-sm-0"><i
-                                        class="mdi mdi-information-outline me-1"></i>Menampilkan {{ $units->firstItem() }} -
+                                        class="mdi mdi-information-outline me-1"></i>Menampilkan
+                                    {{ $units->firstItem() }} -
                                     {{ $units->lastItem() }} dari {{ $units->total() }} data</div>
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
@@ -2302,17 +2408,22 @@
                                             <li class="page-item disabled"><span class="page-link"><i
                                                         class="mdi mdi-chevron-left"></i></span></li>
                                         @else<li class="page-item"><a class="page-link"
-                                            href="{{ $units->previousPageUrl() }}"><i class="mdi mdi-chevron-left"></i></a>
-                                        </li>@endif
+                                                    href="{{ $units->previousPageUrl() }}"><i
+                                                        class="mdi mdi-chevron-left"></i></a>
+                                            </li>
+                                        @endif
                                         @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
                                             <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}"><a
-                                                    class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                                                    class="page-link"
+                                                    href="{{ $url }}">{{ $page }}</a></li>
                                         @endforeach
                                         @if ($units->hasMorePages())
-                                            <li class="page-item"><a class="page-link" href="{{ $units->nextPageUrl() }}"><i
+                                            <li class="page-item"><a class="page-link"
+                                                    href="{{ $units->nextPageUrl() }}"><i
                                                         class="mdi mdi-chevron-right"></i></a></li>
                                         @else<li class="page-item disabled"><span class="page-link"><i
-                                        class="mdi mdi-chevron-right"></i></span></li>@endif
+                                                        class="mdi mdi-chevron-right"></i></span></li>
+                                        @endif
                                     </ul>
                                 </nav>
                             </div>
@@ -2330,112 +2441,82 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Card Input Booking Fee & Bukti Transfer -->
-                        <div class="timeline-detail-card">
-                            <div class="timeline-detail-title">
-                                <i class="mdi mdi-cash-multiple me-1"></i>Informasi Transaksi & Booking Fee
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="timeline-detail-item">
-                                        <div class="timeline-detail-label">
-                                            <i class="mdi mdi-cash-multiple text-primary me-1"></i>Booking Fee <span class="text-danger">*</span>
-                                        </div>
-                                        <div class="timeline-detail-value mt-2">
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-white" style="border-radius: 8px 0 0 8px; border-right: none; height: 38px;">Rp</span>
-                                                <input type="text" class="form-control" id="booking_fee" name="booking_fee" placeholder="Masukkan booking fee" autocomplete="off" style="border-radius: 0 8px 8px 0; height: 38px; font-size: 0.9rem;">
-                                            </div>
-                                            <small class="text-muted mt-1 d-block" style="font-weight: normal; font-size: 0.75rem;">Nominal booking fee yang dibayar customer</small>
-                                        </div>
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold"><i
+                                                class="mdi mdi-cash-multiple text-primary me-1"></i>Booking Fee <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group"><span class="input-group-text bg-white">Rp</span><input
+                                                type="text" class="form-control" id="booking_fee" name="booking_fee"
+                                                placeholder="Masukkan booking fee" autocomplete="off"></div>
+                                        <small class="text-muted">Nominal booking fee yang dibayar customer</small>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="timeline-detail-item">
-                                        <div class="timeline-detail-label">
-                                            <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer <span class="text-danger">*</span>
-                                        </div>
-                                        <div class="timeline-detail-value mt-2">
-                                            <div class="file-upload-modern">
-                                                <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf">
-                                                <div class="file-label-modern" id="buktiLabel" style="border-radius: 8px; min-height: auto; padding: 0.5rem 1rem; border-color: #efe6ff; background: #fff;">
-                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.2rem; padding: 5px; margin-right: 5px;"></i>
-                                                    <div class="file-info-modern">
-                                                        <span id="buktiFileName" style="font-size: 0.85rem; font-weight: 600; color: #2c2e3f;">Upload Bukti Transfer</span>
-                                                        <small style="font-size: 0.7rem; color: #8b8fa3;">Format: JPG, PNG, PDF (Max 2MB)</small>
-                                                    </div>
-                                                    <span class="file-size" id="buktiFileSize" style="font-size: 0.75rem;"></span>
-                                                </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold"><i
+                                                class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer
+                                            <span class="text-danger">*</span></label>
+                                        <div class="file-upload-modern">
+                                            <input type="file" id="bukti_transfer" name="bukti_transfer"
+                                                accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="file-label-modern" id="buktiLabel">
+                                                <i class="mdi mdi-cloud-upload"></i>
+                                                <div class="file-info-modern"><span id="buktiFileName">Upload Bukti
+                                                        Transfer</span><small>Format: JPG, PNG, PDF (Max 2MB)</small></div>
+                                                <span class="file-size" id="buktiFileSize"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12"><small class="text-muted"><i class="mdi mdi-information-outline me-1"></i>Pilih customer lalu klik metode pembayaran (Cash/KPR)</small></div>
-                            </div>
-                        </div>
-
-                        <!-- Card Pencarian & Filter Customer -->
-                        <div class="timeline-detail-card mt-3">
-                            <div class="timeline-detail-title">
-                                <i class="mdi mdi-account-search-outline me-1"></i>Pilih & Cari Customer
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-8">
-                                    <div class="timeline-detail-item">
-                                        <div class="timeline-detail-label">
-                                            <i class="mdi mdi-magnify text-primary me-1"></i>Cari Customer
-                                        </div>
-                                        <div class="timeline-detail-value mt-2">
-                                            <div class="position-relative">
-                                                <i class="mdi mdi-magnify position-absolute" style="left: 12px; top: 11px; color: #9a55ff; z-index: 10;"></i>
-                                                <input type="text" id="searchCustomer" class="form-control" placeholder="Cari nama, ID, atau no. HP customer..." style="padding-left: 40px; border-radius: 8px; height: 38px; font-size: 0.9rem;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="timeline-detail-item">
-                                        <div class="timeline-detail-label">
-                                            <i class="mdi mdi-briefcase text-primary me-1"></i>Filter Pekerjaan
-                                        </div>
-                                        <div class="timeline-detail-value mt-2">
-                                            <select class="form-control" id="filterPekerjaan" style="border-radius: 8px; height: 38px; font-size: 0.9rem;">
-                                                <option value="">Semua Pekerjaan</option>
-                                                @php $uniqueJobs = collect($customers)->pluck('job_status')->unique()->filter(); @endphp
-                                                @foreach ($uniqueJobs as $job)
-                                                    <option value="{{ $job }}">{{ $job }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
+                                <div class="row mt-2">
+                                    <div class="col-12"><small class="text-muted"><i
+                                                class="mdi mdi-information-outline me-1"></i>Pilih customer lalu klik metode
+                                            pembayaran (Cash/KPR)</small></div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
-                            <span class="text-muted small"><i class="mdi mdi-account-multiple me-1"></i>Total: {{ count($customers) }} customer</span>
-                            <span class="badge bg-soft badge-booking text-dark" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff !important; font-weight: 600; border-radius: 6px; padding: 4px 8px;"><i class="mdi mdi-information-outline me-1"></i>Klik tombol Cash/KPR untuk memilih</span>
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8"><label class="form-label fw-bold"><i
+                                                class="mdi mdi-magnify text-primary me-1"></i>Cari Customer</label><input
+                                            type="text" id="searchCustomer" class="form-control"
+                                            placeholder="Cari nama, ID, atau no. HP customer..."></div>
+                                    <div class="col-md-4"><label class="form-label fw-bold"><i
+                                                class="mdi mdi-briefcase text-primary me-1"></i>Filter
+                                            Pekerjaan</label><select class="form-control" id="filterPekerjaan">
+                                            <option value="">Semua Pekerjaan</option>
+                                            @php $uniqueJobs = collect($customers)->pluck('job_status')->unique()->filter(); @endphp
+                                            @foreach ($uniqueJobs as $job)<option value="{{ $job }}">{{ $job }}</option>
+                                            @endforeach
+                                        </select></div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="table-responsive" style="max-height: 350px; overflow-y: auto; border: 1px solid #efe6ff; border-radius: 12px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2"><span
+                                class="text-muted small"><i class="mdi mdi-account-multiple me-1"></i>Total:
+                                {{ count($customers) }} customer</span><span class="badge badge-gradient-info"><i
+                                    class="mdi mdi-information-outline me-1"></i>Klik tombol Cash/KPR untuk memilih</span>
+                        </div>
+                        <div class="table-responsive"
+                            style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
                             <table class="table table-bordered align-middle mb-0" id="customerTable">
                                 <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                                    <tr style="border-bottom: 2px solid #efe6ff;">
-                                        <th class="text-center" style="width: 50px; background: #faf7ff; color: #9a55ff; font-weight: 700;">No</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">ID Customer</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">Nama</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">No HP</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">Pekerjaan</th>
-                                        <th class="text-center" style="width: 160px; background: #faf7ff; color: #9a55ff; font-weight: 700;">Aksi</th>
+                                    <tr>
+                                        <th class="text-center" style="width: 50px;">No</th>
+                                        <th>ID Customer</th>
+                                        <th>Nama</th>
+                                        <th>No HP</th>
+                                        <th>Pekerjaan</th>
+                                        <th class="text-center" style="width: 160px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($customers as $c)
                                         <tr style="transition: all 0.2s ease;">
                                             <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                            <td><span class="badge bg-light text-dark" style="border-radius: 6px; padding: 4px 8px; border: 1px solid #e2e8f0;">{{ $c->customer_id ?? '-' }}</span></td>
+                                            <td><span class="badge bg-light text-dark">{{ $c->customer_id ?? '-' }}</span></td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
@@ -2445,19 +2526,22 @@
                                                 </div>
                                             </td>
                                             <td><i class="mdi mdi-whatsapp text-success me-1"></i>{{ $c->phone ?? '-' }}</td>
-                                            <td>
-                                                @if($c->job_status)
-                                                    <span class="badge bg-light text-dark" style="border-radius: 6px; padding: 4px 8px; border: 1px solid #e2e8f0;"><i class="mdi mdi-briefcase-outline me-1"></i>{{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : $c->job_status }}</span>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
+                                            <td>@if($c->job_status)<span class="badge bg-light text-dark"><i
+                                            class="mdi mdi-briefcase-outline me-1"></i>{{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : $c->job_status }}</span>@else<span
+                                                        class="text-muted">-</span>@endif</td>
                                             <td class="text-center">
-                                                <div class="d-flex gap-1 justify-content-center">
-                                                    <button type="button" class="btn btn-sm btn-success pilihCustomer" data-id="{{ $c->id }}" data-type="cash" style="padding: 0.35rem 0.85rem; border-radius: 8px; font-weight: 600; font-size: 0.75rem;"><i class="mdi mdi-cash me-1"></i>Cash Keras</button>
-                                                    <button type="button" class="btn btn-sm btn-info pilihCustomer text-white" data-id="{{ $c->id }}" data-type="cash_tempo" style="padding: 0.35rem 0.85rem; border-radius: 8px; font-weight: 600; font-size: 0.75rem;"><i class="mdi mdi-cash-multiple me-1"></i>Cash Tempo</button>
-                                                    <button type="button" class="btn btn-sm btn-primary pilihCustomer" data-id="{{ $c->id }}" data-type="kpr" style="padding: 0.35rem 0.85rem; border-radius: 8px; font-weight: 600; font-size: 0.75rem;"><i class="mdi mdi-bank me-1"></i>KPR</button>
-                                                </div>
+                                                <div class="d-flex gap-1 justify-content-center"><button type="button"
+                                                        class="btn btn-sm btn-success pilihCustomer" data-id="{{ $c->id }}"
+                                                        data-type="cash" style="padding: 0.25rem 0.75rem;"><i
+                                                            class="mdi mdi-cash me-1"></i>Cash Keras</button><button
+                                                        type="button" class="btn btn-sm btn-info pilihCustomer"
+                                                        data-id="{{ $c->id }}" data-type="cash_tempo"
+                                                        style="padding: 0.25rem 0.75rem;"><i
+                                                            class="mdi mdi-cash-multiple me-1"></i>Cash Tempo</button><button
+                                                        type="button" class="btn btn-sm btn-primary pilihCustomer"
+                                                        data-id="{{ $c->id }}" data-type="kpr"
+                                                        style="padding: 0.25rem 0.75rem;"><i
+                                                            class="mdi mdi-bank me-1"></i>KPR</button></div>
                                             </td>
                                         </tr>
                                     @empty
@@ -2484,95 +2568,84 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="formAgency" method="POST">
-                            @csrf
-                            <input type="hidden" name="sales_id" id="sales_id">
-                            <div class="timeline-detail-card">
-                                <div class="timeline-detail-title">
-                                    <i class="mdi mdi-hand-coin-outline me-1"></i>Pengaturan Komisi & Cari Agency
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="timeline-detail-item">
-                                            <div class="timeline-detail-label">
-                                                <i class="mdi mdi-cash text-primary me-1"></i>Agent Fee
-                                            </div>
-                                            <div class="timeline-detail-value mt-2">
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-white" style="border-radius: 8px 0 0 8px; border-right: none; height: 38px;">Rp</span>
-                                                    <input type="text" class="form-control" name="agent_fee" id="agent_fee_modal" placeholder="Masukkan agent fee" autocomplete="off" style="border-radius: 0 8px 8px 0; height: 38px; font-size: 0.9rem;">
-                                                </div>
-                                                <small class="text-muted mt-1 d-block" style="font-weight: normal; font-size: 0.75rem;">Masukkan nominal fee untuk agency yang dipilih</small>
-                                            </div>
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <form id="formAgency" method="POST">@csrf<input type="hidden" name="sales_id" id="sales_id">
+                                    <div class="row">
+                                        <div class="col-md-6"><label class="form-label fw-bold"><i
+                                                    class="mdi mdi-cash text-primary me-1"></i>Agent Fee</label>
+                                            <div class="input-group"><span class="input-group-text bg-white">Rp</span><input
+                                                    type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
+                                                    placeholder="Masukkan agent fee" autocomplete="off"></div><small
+                                                class="text-muted"><i class="mdi mdi-information-outline me-1"></i>Masukkan
+                                                nominal fee untuk agency yang dipilih</small>
+                                        </div>
+                                        <div class="col-md-6"><label class="form-label fw-bold"><i
+                                                    class="mdi mdi-magnify text-primary me-1"></i>Cari Agency</label>
+                                            <div class="position-relative"><i class="mdi mdi-magnify position-absolute"
+                                                    style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i><input
+                                                    type="text" id="searchAgency" class="form-control"
+                                                    placeholder="Cari nama agency..." style="padding-left: 40px;"></div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="timeline-detail-item">
-                                            <div class="timeline-detail-label">
-                                                <i class="mdi mdi-magnify text-primary me-1"></i>Cari Agency
-                                            </div>
-                                            <div class="timeline-detail-value mt-2">
-                                                <div class="position-relative">
-                                                    <i class="mdi mdi-magnify position-absolute" style="left: 12px; top: 11px; color: #9a55ff; z-index: 10;"></i>
-                                                    <input type="text" id="searchAgency" class="form-control" placeholder="Cari nama agency..." style="padding-left: 40px; border-radius: 8px; height: 38px; font-size: 0.9rem;">
-                                                </div>
-                                                <small class="text-muted mt-1 d-block" style="font-weight: normal; font-size: 0.75rem;">Cari agency berdasarkan nama</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
-                        </form>
-
-                        <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
-                            <span class="text-muted small"><i class="mdi mdi-office-building me-1"></i>Total: {{ count($agencies) }} agency</span>
-                            <span class="badge bg-soft badge-booking text-dark" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff !important; font-weight: 600; border-radius: 6px; padding: 4px 8px;"><i class="mdi mdi-information-outline me-1"></i>Klik tombol Pilih untuk memilih agency</span>
                         </div>
-
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #efe6ff; border-radius: 12px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2"><span
+                                class="text-muted small"><i class="mdi mdi-office-building me-1"></i>Total:
+                                {{ count($agencies) }} agency</span><span class="badge badge-gradient-info"><i
+                                    class="mdi mdi-information-outline me-1"></i>Klik tombol Pilih untuk memilih
+                                agency</span></div>
+                        <div class="table-responsive"
+                            style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
                             <table class="table table-bordered align-middle mb-0">
                                 <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                                    <tr style="border-bottom: 2px solid #efe6ff;">
-                                        <th class="text-center" style="width: 50px; background: #faf7ff; color: #9a55ff; font-weight: 700;">No</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">Nama Agency</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">No HP</th>
-                                        <th style="background: #faf7ff; color: #9a55ff; font-weight: 700;">Alamat</th>
-                                        <th class="text-center" style="width: 120px; background: #faf7ff; color: #9a55ff; font-weight: 700;">Aksi</th>
+                                    <tr>
+                                        <th class="text-center" style="width: 50px;">No</th>
+                                        <th>Nama Agency</th>
+                                        <th>No HP</th>
+                                        <th>Alamat</th>
+                                        <th class="text-center" style="width: 120px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($agencies as $a)
-                                        <tr style="transition: all 0.2s ease;">
-                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                        style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important; font-weight: 700;">
-                                                        {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}</div>
-                                                    <span class="fw-medium text-dark">{{ $a->name }}</span>
-                                                </div>
-                                            </td>
-                                            <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}</td>
-                                            <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-gradient-success pilihAgency" data-id="{{ $a->id }}"
-                                                    style="border-radius: 8px; padding: 0.35rem 1rem; font-weight: 600; font-size: 0.75rem;"><i class="mdi mdi-check me-1"></i>Pilih</button>
-                                            </td>
+                                                        <tr>
+                                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                                        style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                                                                        {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}</div><span
+                                                                        class="fw-medium">{{ $a->name }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}
+                                            </div>
+                                        </div>
+                                        </td>
+                                        <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-gradient-success pilihAgency" data-id="{{ $a->id }}"
+                                                style="border-radius: 20px; padding: 0.25rem 1rem;"><i
+                                                    class="mdi mdi-check me-1"></i>Pilih</button>
+                                        </td>
                                         </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center py-4"><i class="mdi mdi-office-building-off" style="font-size: 2rem; opacity: 0.3;"></i>
-                                                <p class="mt-2 text-muted">Tidak ada data agency</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                        <tr>
+                            <td colspan="5" class="text-center py-4"><i class="mdi mdi-office-building-off"
+                                    style="font-size: 2rem; opacity: 0.3;"></i>
+                                <p class="mt-2 text-muted">Tidak ada data agency</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -2589,73 +2662,97 @@
 
     <script>
         // ========== POPULATE DETAIL MODAL DIRECTLY ==========
-        window.populateModalDirectly = function (data) {
+        window.populateModalDirectly = function(data) {
             // ---- Informasi Unit ----
-            document.getElementById('m_unit_name').innerText   = data.unitName || '-';
-            document.getElementById('m_block').innerText       = data.block || '-';
+            document.getElementById('m_unit_name').innerText = data.unitName || '-';
+            document.getElementById('m_block').innerText = data.block || '-';
             document.getElementById('m_unit_number').innerText = data.unitNumber || '-';
-            document.getElementById('m_jenis').innerText       = data.jenis || '-';
-            document.getElementById('m_type').innerText        = data.type || '-';
-            document.getElementById('m_area').innerText        = new Intl.NumberFormat('id-ID').format(data.area || 0) + ' m\u00b2';
-            document.getElementById('m_building').innerText    = new Intl.NumberFormat('id-ID').format(data.building || 0) + ' m\u00b2';
-            document.getElementById('m_price').innerText       = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
-            document.getElementById('m_direction').innerText   = data.direction || '-';
-            document.getElementById('m_address').innerText     = data.address || '-';
+            document.getElementById('m_jenis').innerText = data.jenis || '-';
+            document.getElementById('m_type').innerText = data.type || '-';
+            document.getElementById('m_area').innerText = new Intl.NumberFormat('id-ID').format(data.area || 0) +
+                ' m\u00b2';
+            document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(data.building ||
+                0) + ' m\u00b2';
+            document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price ||
+                0);
+            document.getElementById('m_direction').innerText = data.direction || '-';
+            document.getElementById('m_address').innerText = data.address || '-';
 
             // ---- Badge Status Unit ----
-            const statusRaw  = data.statusRaw || '';
+            const statusRaw = data.statusRaw || '';
             const statusText = data.statusText || statusRaw;
-            const jenisRaw   = (data.jenis || '').toLowerCase();
-            const typeRaw    = (data.type || '').toLowerCase();
+            const jenisRaw = (data.jenis || '').toLowerCase();
+            const typeRaw = (data.type || '').toLowerCase();
             let statusBadgeHtml = '';
             if (statusRaw === 'ready' || statusRaw === 'tersedia') {
-                const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' : 'badge-available-komersil';
-                statusBadgeHtml = `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
+                const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' :
+                    'badge-available-komersil';
+                statusBadgeHtml =
+                    `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
             } else if (statusRaw === 'booked') {
-                statusBadgeHtml = `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
+                statusBadgeHtml =
+                    `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
             } else if (statusRaw === 'sold') {
-                statusBadgeHtml = `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
+                statusBadgeHtml =
+                `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
             } else {
-                statusBadgeHtml = `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
+                statusBadgeHtml =
+                    `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
             }
             document.getElementById('m_status').innerHTML = statusBadgeHtml;
 
             // ---- Progress Pembangunan ----
-            const progressMap = { belum_mulai:0, pondasi:20, dinding:40, atap:60, finishing:80, selesai:100 };
+            const progressMap = {
+                belum_mulai: 0,
+                pondasi: 20,
+                dinding: 40,
+                atap: 60,
+                finishing: 80,
+                selesai: 100
+            };
             const pct = progressMap[data.construction] !== undefined ? progressMap[data.construction] : 0;
             document.getElementById('m_progress_bar').style.width = pct + '%';
-            document.getElementById('m_progress_bar').className   = 'progress-bar-custom ' + (pct < 100 ? 'progress-green' : 'progress-dark-green');
-            document.getElementById('m_progress_pct').innerText   = pct + '%';
+            document.getElementById('m_progress_bar').className = 'progress-bar-custom ' + (pct < 100 ?
+                'progress-green' : 'progress-dark-green');
+            document.getElementById('m_progress_pct').innerText = pct + '%';
 
             // ---- Booking Card Show/Hide ----
             const hasBooking = data.hasBooking === 1 || data.hasBooking === '1' || data.hasBooking === true;
-            document.getElementById('m_booking_card').style.display    = hasBooking ? '' : 'none';
+            document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
             document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
 
             if (hasBooking) {
                 const customerName = data.customer || '-';
-                const salesName    = data.sales || '-';
+                const salesName = data.sales || '-';
 
-                document.getElementById('m_customer').innerText         = customerName;
-                document.getElementById('m_customer_initial').innerText = (customerName !== '-' && customerName) ? customerName.trim().charAt(0).toUpperCase() : '?';
-                document.getElementById('m_sales').innerText            = salesName;
-                document.getElementById('m_sales_initial').innerText    = (salesName !== '-' && salesName) ? salesName.trim().charAt(0).toUpperCase() : '?';
-                document.getElementById('m_booking_date').innerText     = data.bookingDate || '-';
-                document.getElementById('m_booking_fee').innerText      = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
-                document.getElementById('m_agent_fee').innerText        = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
+                document.getElementById('m_customer').innerText = customerName;
+                document.getElementById('m_customer_initial').innerText = (customerName !== '-' && customerName) ?
+                    customerName.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_sales').innerText = salesName;
+                document.getElementById('m_sales_initial').innerText = (salesName !== '-' && salesName) ? salesName
+                    .trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_booking_date').innerText = data.bookingDate || '-';
+                document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data
+                    .bookingFee || 0);
+                document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data
+                    .agentFee || 0);
 
                 // Badge Status Booking
                 const bookingStatus = data.bookingStatus || '-';
                 let bookingBadgeHtml = '';
                 if (bookingStatus === 'active') {
-                    bookingBadgeHtml = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
                 } else if (bookingStatus === 'completed' || bookingStatus === 'lunas') {
-                    bookingBadgeHtml = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
                 } else if (bookingStatus === 'cancelled') {
-                    bookingBadgeHtml = `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
                 } else {
                     const bLabel = bookingStatus.charAt(0).toUpperCase() + bookingStatus.slice(1);
-                    bookingBadgeHtml = `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
                 }
                 document.getElementById('m_booking_status').innerHTML = bookingBadgeHtml;
             }
@@ -2664,77 +2761,102 @@
         // ========== DETAIL MODAL HANDLER ==========
         const detailModal = document.getElementById('detailUnitModal');
         if (detailModal) {
-            detailModal.addEventListener('show.bs.modal', function (event) {
+            detailModal.addEventListener('show.bs.modal', function(event) {
                 let button = event.relatedTarget;
                 if (!button) return; // Triggered programmatically, already populated!
 
                 // ---- Informasi Unit ----
-                document.getElementById('m_unit_name').innerText   = button.getAttribute('data-unit_name') || '-';
-                document.getElementById('m_block').innerText       = button.getAttribute('data-block') || '-';
+                document.getElementById('m_unit_name').innerText = button.getAttribute('data-unit_name') || '-';
+                document.getElementById('m_block').innerText = button.getAttribute('data-block') || '-';
                 document.getElementById('m_unit_number').innerText = button.getAttribute('data-unit_number') || '-';
-                document.getElementById('m_jenis').innerText       = button.getAttribute('data-jenis') || '-';
-                document.getElementById('m_type').innerText        = button.getAttribute('data-type') || '-';
-                document.getElementById('m_area').innerText        = new Intl.NumberFormat('id-ID').format(button.getAttribute('data-area') || 0) + ' m\u00b2';
-                document.getElementById('m_building').innerText    = new Intl.NumberFormat('id-ID').format(button.getAttribute('data-building') || 0) + ' m\u00b2';
-                document.getElementById('m_price').innerText       = 'Rp ' + new Intl.NumberFormat('id-ID').format(button.getAttribute('data-price') || 0);
-                document.getElementById('m_direction').innerText   = button.getAttribute('data-direction') || '-';
-                document.getElementById('m_address').innerText     = button.getAttribute('data-address') || '-';
+                document.getElementById('m_jenis').innerText = button.getAttribute('data-jenis') || '-';
+                document.getElementById('m_type').innerText = button.getAttribute('data-type') || '-';
+                document.getElementById('m_area').innerText = new Intl.NumberFormat('id-ID').format(button
+                    .getAttribute('data-area') || 0) + ' m\u00b2';
+                document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(button
+                    .getAttribute('data-building') || 0) + ' m\u00b2';
+                document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(button
+                    .getAttribute('data-price') || 0);
+                document.getElementById('m_direction').innerText = button.getAttribute('data-direction') || '-';
+                document.getElementById('m_address').innerText = button.getAttribute('data-address') || '-';
 
                 // ---- Badge Status Unit ----
-                const statusRaw  = button.getAttribute('data-status_raw')  || '';
+                const statusRaw = button.getAttribute('data-status_raw') || '';
                 const statusText = button.getAttribute('data-status_text') || statusRaw;
-                const jenisRaw   = (button.getAttribute('data-jenis') || '').toLowerCase();
-                const typeRaw    = (button.getAttribute('data-type')  || '').toLowerCase();
+                const jenisRaw = (button.getAttribute('data-jenis') || '').toLowerCase();
+                const typeRaw = (button.getAttribute('data-type') || '').toLowerCase();
                 let statusBadgeHtml = '';
                 if (statusRaw === 'ready' || statusRaw === 'tersedia') {
-                    const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' : 'badge-available-komersil';
-                    statusBadgeHtml = `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
+                    const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' :
+                        'badge-available-komersil';
+                    statusBadgeHtml =
+                        `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
                 } else if (statusRaw === 'booked') {
-                    statusBadgeHtml = `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
+                    statusBadgeHtml =
+                        `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
                 } else if (statusRaw === 'sold') {
-                    statusBadgeHtml = `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
+                    statusBadgeHtml =
+                        `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
                 } else {
-                    statusBadgeHtml = `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
+                    statusBadgeHtml =
+                        `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
                 }
                 document.getElementById('m_status').innerHTML = statusBadgeHtml;
 
                 // ---- Progress Pembangunan ----
-                const progressMap = { belum_mulai:0, pondasi:20, dinding:40, atap:60, finishing:80, selesai:100 };
+                const progressMap = {
+                    belum_mulai: 0,
+                    pondasi: 20,
+                    dinding: 40,
+                    atap: 60,
+                    finishing: 80,
+                    selesai: 100
+                };
                 const construction = button.getAttribute('data-construction') || 'belum_mulai';
                 const pct = progressMap[construction] !== undefined ? progressMap[construction] : 0;
                 document.getElementById('m_progress_bar').style.width = pct + '%';
-                document.getElementById('m_progress_bar').className   = 'progress-bar-custom ' + (pct < 100 ? 'progress-green' : 'progress-dark-green');
-                document.getElementById('m_progress_pct').innerText   = pct + '%';
+                document.getElementById('m_progress_bar').className = 'progress-bar-custom ' + (pct < 100 ?
+                    'progress-green' : 'progress-dark-green');
+                document.getElementById('m_progress_pct').innerText = pct + '%';
 
                 // ---- Booking Card Show/Hide ----
                 const hasBooking = button.getAttribute('data-has_booking') === '1';
-                document.getElementById('m_booking_card').style.display    = hasBooking ? '' : 'none';
+                document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
                 document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
 
                 if (hasBooking) {
                     const customerName = button.getAttribute('data-customer') || '-';
-                    const salesName    = button.getAttribute('data-sales')    || '-';
+                    const salesName = button.getAttribute('data-sales') || '-';
 
-                    document.getElementById('m_customer').innerText         = customerName;
-                    document.getElementById('m_customer_initial').innerText = (customerName !== '-' && customerName) ? customerName.trim().charAt(0).toUpperCase() : '?';
-                    document.getElementById('m_sales').innerText            = salesName;
-                    document.getElementById('m_sales_initial').innerText    = (salesName !== '-' && salesName) ? salesName.trim().charAt(0).toUpperCase() : '?';
-                    document.getElementById('m_booking_date').innerText     = button.getAttribute('data-booking_date') || '-';
-                    document.getElementById('m_booking_fee').innerText      = 'Rp ' + new Intl.NumberFormat('id-ID').format(button.getAttribute('data-booking_fee') || 0);
-                    document.getElementById('m_agent_fee').innerText        = 'Rp ' + new Intl.NumberFormat('id-ID').format(button.getAttribute('data-agent_fee') || 0);
+                    document.getElementById('m_customer').innerText = customerName;
+                    document.getElementById('m_customer_initial').innerText = (customerName !== '-' &&
+                        customerName) ? customerName.trim().charAt(0).toUpperCase() : '?';
+                    document.getElementById('m_sales').innerText = salesName;
+                    document.getElementById('m_sales_initial').innerText = (salesName !== '-' && salesName) ?
+                        salesName.trim().charAt(0).toUpperCase() : '?';
+                    document.getElementById('m_booking_date').innerText = button.getAttribute(
+                        'data-booking_date') || '-';
+                    document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(button.getAttribute('data-booking_fee') || 0);
+                    document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(button.getAttribute('data-agent_fee') || 0);
 
                     // Badge Status Booking
                     const bookingStatus = button.getAttribute('data-booking_status') || '-';
                     let bookingBadgeHtml = '';
                     if (bookingStatus === 'active') {
-                        bookingBadgeHtml = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
                     } else if (bookingStatus === 'completed' || bookingStatus === 'lunas') {
-                        bookingBadgeHtml = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
                     } else if (bookingStatus === 'cancelled') {
-                        bookingBadgeHtml = `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
                     } else {
                         const bLabel = bookingStatus.charAt(0).toUpperCase() + bookingStatus.slice(1);
-                        bookingBadgeHtml = `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
                     }
                     document.getElementById('m_booking_status').innerHTML = bookingBadgeHtml;
                 }
@@ -2742,59 +2864,43 @@
         }
 
         
-        // Move detail modal inside the fullscreen element when shown in fullscreen
-        $(document).ready(function () {
-            $('#detailUnitModal').on('show.bs.modal', function () {
-                if (document.fullscreenElement) {
-                    const container = document.querySelector('#sitePlandView .denah-container');
-                    if (container) {
-                        container.appendChild(this);
-                    }
-                }
-            });
-            $('#detailUnitModal').on('hidden.bs.modal', function () {
-                // Always move it back to body when hidden to prevent styling or visibility issues on other tabs
-                document.body.appendChild(this);
-            });
-        });
-        
         // ========== SITEPLAN CANVAS ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
         const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
         let originalWidth = 0;
         let originalHeight = 0;
         let zoomLevel = 1.0;
-        
+
         // Canvas Focus to avoid Page Scroll Hijacking
         let isCanvasFocused = false;
 
-        fabric.Image.fromURL(siteplanImage, function (img) {
+        fabric.Image.fromURL(siteplanImage, function(img) {
             originalWidth = img.width;
             originalHeight = img.height;
-            
+
             // Set canvas size dynamically to match the container card width
             let initialWidth = 1100;
             const cardBody = document.querySelector('.card-body');
             if (cardBody && cardBody.clientWidth > 0) {
                 initialWidth = cardBody.clientWidth - 40;
             }
-            
+
             zoomLevel = 0.63; // default zoom at 63%
-            
+
             canvas.setWidth(initialWidth);
             canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
-            
+
             // Calculate pan offset to center the 63% zoomed siteplan perfectly
             const panX = (initialWidth - originalWidth * zoomLevel) / 2;
             const panY = 0; // Vertically fits exactly
-            
+
             canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
             updateZoomText();
-            
+
             // Premium grab cursors
             canvas.defaultCursor = 'grab';
-            
-            canvas.setBackgroundImage(img, function () {
+
+            canvas.setBackgroundImage(img, function() {
                 @foreach ($unitsForSvg as $unit)
                     const circle{{ $unit->id }} = new fabric.Circle({
                         left: {{ $unit->pos_x ?? 100 }},
@@ -2811,50 +2917,66 @@
                     });
                     circle{{ $unit->id }}.unitId = "{{ $unit->id }}";
                     circle{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    circle{{ $unit->id }}.unitName = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}";
-                    circle{{ $unit->id }}.unitNumber = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}";
-                    circle{{ $unit->id }}.block = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}";
-                    circle{{ $unit->id }}.jenis = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}";
-                    circle{{ $unit->id }}.type = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}";
-                    circle{{ $unit->id }}.address = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}";
+                    circle{{ $unit->id }}.unitName =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}";
+                    circle{{ $unit->id }}.unitNumber =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}";
+                    circle{{ $unit->id }}.block =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}";
+                    circle{{ $unit->id }}.jenis =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}";
+                    circle{{ $unit->id }}.type =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}";
+                    circle{{ $unit->id }}.address =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}";
                     circle{{ $unit->id }}.area = {{ $unit->area ?? 0 }};
                     circle{{ $unit->id }}.building = {{ $unit->building_area ?? 0 }};
                     circle{{ $unit->id }}.price = {{ $unit->price ?? 0 }};
-                    circle{{ $unit->id }}.direction = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}";
+                    circle{{ $unit->id }}.direction =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}";
                     circle{{ $unit->id }}.statusRaw = "{{ $unit->status }}";
-                    circle{{ $unit->id }}.statusText = "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}";
-                    circle{{ $unit->id }}.construction = "{{ $unit->construction_progress ?? 'belum_mulai' }}";
+                    circle{{ $unit->id }}.statusText =
+                        "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}";
+                    circle{{ $unit->id }}.construction =
+                        "{{ $unit->construction_progress ?? 'belum_mulai' }}";
                     circle{{ $unit->id }}.hasBooking = {{ $unit->activeBooking ? 1 : 0 }};
-                    circle{{ $unit->id }}.customer = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}";
-                    circle{{ $unit->id }}.sales = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}";
-                    circle{{ $unit->id }}.bookingDate = "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}";
+                    circle{{ $unit->id }}.customer =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}";
+                    circle{{ $unit->id }}.sales =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}";
+                    circle{{ $unit->id }}.bookingDate =
+                        "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}";
                     circle{{ $unit->id }}.bookingFee = {{ $unit->activeBooking->booking_fee ?? 0 }};
                     circle{{ $unit->id }}.agentFee = {{ $unit->activeBooking->agent_fee ?? 0 }};
-                    circle{{ $unit->id }}.bookingStatus = "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
+                    circle{{ $unit->id }}.bookingStatus =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
                     canvas.add(circle{{ $unit->id }});
                 @endforeach
                 canvas.renderAll();
-            }, { originX: 'left', originY: 'top' });
+            }, {
+                originX: 'left',
+                originY: 'top'
+            });
         });
 
         // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)
-        canvas.on('mouse:wheel', function (opt) {
+        canvas.on('mouse:wheel', function(opt) {
             if (!isCanvasFocused) return; // Allow page scroll if not clicked/activated first!
-            
+
             if (typeof originalWidth === 'undefined' || originalWidth === 0) return;
             const delta = opt.e.deltaY;
             let zoomVal = canvas.getZoom();
-            
+
             zoomVal *= (delta < 0 ? 1.1 : 0.9);
-            
+
             if (zoomVal > 3.0) zoomVal = 3.0;
             if (zoomVal < 0.2) zoomVal = 0.2;
-            
+
             zoomLevel = zoomVal;
-            
+
             const pointer = canvas.getPointer(opt.e);
             canvas.zoomToPoint(new fabric.Point(pointer.x, pointer.y), zoomLevel);
-            
+
             opt.e.preventDefault();
             opt.e.stopPropagation();
             canvas.renderAll();
@@ -2865,7 +2987,7 @@
         let isDragging = false;
         let lastPosX, lastPosY;
 
-        canvas.on('mouse:down', function (opt) {
+        canvas.on('mouse:down', function(opt) {
             const evt = opt.e;
             if (!canvas.getActiveObject()) {
                 isDragging = true;
@@ -2877,7 +2999,7 @@
             }
         });
 
-        canvas.on('mouse:move', function (opt) {
+        canvas.on('mouse:move', function(opt) {
             if (isDragging) {
                 const e = opt.e;
                 const vpt = canvas.viewportTransform;
@@ -2889,7 +3011,7 @@
             }
         });
 
-        canvas.on('mouse:up', function (opt) {
+        canvas.on('mouse:up', function(opt) {
             canvas.setViewportTransform(canvas.viewportTransform);
             isDragging = false;
             canvas.selection = true;
@@ -2901,7 +3023,7 @@
         const siteplanScrollContainer = document.querySelector('.siteplan-scroll-container');
 
         if (siteplanScrollContainer) {
-            siteplanScrollContainer.addEventListener('click', function (e) {
+            siteplanScrollContainer.addEventListener('click', function(e) {
                 isCanvasFocused = true;
                 siteplanScrollContainer.style.borderColor = '#28a745'; // Glowing green active border
                 siteplanScrollContainer.style.boxShadow = '0 0 15px rgba(40, 167, 69, 0.3)';
@@ -2909,7 +3031,7 @@
             });
         }
 
-        document.addEventListener('click', function (e) {
+        document.addEventListener('click', function(e) {
             if (siteplanScrollContainer && !siteplanScrollContainer.contains(e.target)) {
                 isCanvasFocused = false;
                 siteplanScrollContainer.style.borderColor = '#9a55ff'; // Restore default purple
@@ -2928,11 +3050,10 @@
         function resetZoom() {
             zoomLevel = 0.63;
             const containerWidth = canvas.getWidth();
-            const containerHeight = canvas.getHeight();
+            canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
             
-            // Pan to center the image both horizontally and vertically inside the canvas viewport!
             const panX = (containerWidth - originalWidth * zoomLevel) / 2;
-            const panY = (containerHeight - originalHeight * zoomLevel) / 2;
+            const panY = 0;
             
             canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
             canvas.renderAll();
@@ -3015,7 +3136,7 @@
         }
 
         // Keyboard navigation for micro-adjustments (Arrow Keys)
-        document.addEventListener('keydown', function (e) {
+        document.addEventListener('keydown', function(e) {
             if (typeof canvas === 'undefined' || !canvas) return;
             const activeObject = canvas.getActiveObject();
             if (!activeObject) return;
@@ -3049,7 +3170,7 @@
             return "gray";
         }
 
-        canvas.on('mouse:dblclick', function (e) {
+        canvas.on('mouse:dblclick', function(e) {
             if (e.target && e.target.unitId) {
                 const target = e.target;
                 const data = {
@@ -3075,7 +3196,7 @@
                     agentFee: target.agentFee,
                     bookingStatus: target.bookingStatus
                 };
-                
+
                 window.populateModalDirectly(data);
                 const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
                 modal.show();
@@ -3084,7 +3205,7 @@
 
         function savePosition() {
             let units = [];
-            canvas.getObjects().forEach(function (obj) {
+            canvas.getObjects().forEach(function(obj) {
                 if (obj.unitId) {
                     units.push({
                         id: obj.unitId,
@@ -3097,18 +3218,33 @@
                 }
             });
             fetch("{{ route('unit.save.position') }}", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ units: units })
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        units: units
+                    })
+                })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Posisi unit berhasil disimpan', showConfirmButton: false, timer: 1500 });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Posisi unit berhasil disimpan',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }
                 })
                 .catch(error => {
-                    Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan saat menyimpan posisi' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Terjadi kesalahan saat menyimpan posisi'
+                    });
                 });
         }
 
@@ -3142,10 +3278,10 @@
                     if (typeof originalHeight !== 'undefined' && originalHeight > 0) {
                         canvas.setHeight(originalHeight * 0.63);
                     }
-                    
+
                     // Re-center on tab active!
                     resetZoom();
-                    
+
                     canvas.calcOffset();
                     canvas.renderAll();
                 }
@@ -3153,9 +3289,13 @@
         }
 
         // ========== OPEN CUSTOMER MODAL ==========
-        window.openCustomerModal = function (unitId) {
+        window.openCustomerModal = function(unitId) {
             if (!unitId) {
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Unit tidak valid!' });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unit tidak valid!'
+                });
                 return;
             }
             $('#modalCustomer').attr('data-unit-id', unitId);
@@ -3168,9 +3308,13 @@
         };
 
         // ========== OPEN AGENCY MODAL ==========
-        window.openAgentModal = function (unitId) {
+        window.openAgentModal = function(unitId) {
             if (!unitId) {
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Unit tidak valid!' });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unit tidak valid!'
+                });
                 return;
             }
             $('#modalAgency').data('unit', unitId);
@@ -3181,28 +3325,17 @@
         };
 
         $(document).ready(function () {
-            // Check for success message in sessionStorage on page reload
-            if (sessionStorage.getItem('success_message')) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: sessionStorage.getItem('success_message'),
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                sessionStorage.removeItem('success_message');
-            }
 
 
             // Format Rupiah
-            $('#booking_fee, #agent_fee_modal').on('input', function () {
+            $('#booking_fee, #agent_fee_modal').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
                 if (value) $(this).val(new Intl.NumberFormat('id-ID').format(value));
                 else $(this).val('');
             });
 
             // File upload handler
-            $('#bukti_transfer').on('change', function () {
+            $('#bukti_transfer').on('change', function() {
                 const file = this.files[0];
                 const $label = $('#buktiLabel');
                 const $fileName = $('#buktiFileName');
@@ -3220,7 +3353,7 @@
             });
 
             // Pilih Customer
-            $(document).on('click', '.pilihCustomer', function () {
+            $(document).on('click', '.pilihCustomer', function() {
                 let customerId = $(this).data('id');
                 let purchaseType = $(this).data('type');
                 let unitId = $('#modalCustomer').attr('data-unit-id');
@@ -3228,24 +3361,44 @@
                 let buktiTransfer = $('#bukti_transfer')[0].files[0];
 
                 if (!unitId) {
-                    Swal.fire({ icon: 'error', title: 'Oops...', text: 'Unit belum dipilih!' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Unit belum dipilih!'
+                    });
                     return;
                 }
                 if (!bookingFee || parseInt(bookingFee) <= 0) {
-                    Swal.fire({ icon: 'warning', title: 'Booking Fee Kosong', text: 'Booking fee harus diisi dan lebih dari 0!' });
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Booking Fee Kosong',
+                        text: 'Booking fee harus diisi dan lebih dari 0!'
+                    });
                     return;
                 }
                 if (!buktiTransfer) {
-                    Swal.fire({ icon: 'warning', title: 'Bukti Transfer Kosong', text: 'Bukti transfer wajib diupload!' });
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bukti Transfer Kosong',
+                        text: 'Bukti transfer wajib diupload!'
+                    });
                     return;
                 }
                 if (buktiTransfer.size > 2 * 1024 * 1024) {
-                    Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran file maksimal 2MB!' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Terlalu Besar',
+                        text: 'Ukuran file maksimal 2MB!'
+                    });
                     return;
                 }
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
                 if (!allowedTypes.includes(buktiTransfer.type)) {
-                    Swal.fire({ icon: 'error', title: 'Tipe File Tidak Didukung', text: 'Format file harus JPG, PNG, atau PDF!' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tipe File Tidak Didukung',
+                        text: 'Format file harus JPG, PNG, atau PDF!'
+                    });
                     return;
                 }
 
@@ -3266,9 +3419,17 @@
                         formData.append('purchase_type', purchaseType);
                         formData.append('booking_fee', bookingFee);
                         formData.append('bukti_transfer', buktiTransfer);
-                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
+                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(
+                            ':unitId', unitId);
 
-                        Swal.fire({ title: 'Memproses...', text: 'Harap tunggu', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+                        Swal.fire({
+                            title: 'Memproses...',
+                            text: 'Harap tunggu',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
 
                         $.ajax({
                             url: actionUrl,
@@ -3276,16 +3437,22 @@
                             data: formData,
                             processData: false,
                             contentType: false,
-                            success: function (response) {
+                            success: function(response) {
                                 $('#modalCustomer').modal('hide');
-                                sessionStorage.setItem('success_message', response.message || 'Customer berhasil dipilih');
-                                location.reload();
+                                Swal.fire({ icon: 'success', title: 'Berhasil!', text: response.message || 'Customer berhasil dipilih', timer: 1500, showConfirmButton: false }).then(() => location.reload());
                             },
-                            error: function (xhr) {
+                            error: function(xhr) {
                                 let errorMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message) errorMsg = xhr.responseJSON.message;
-                                else if (xhr.responseJSON && xhr.responseJSON.errors) errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
-                                Swal.fire({ icon: 'error', title: 'Gagal', text: errorMsg });
+                                if (xhr.responseJSON && xhr.responseJSON.message)
+                                    errorMsg = xhr.responseJSON.message;
+                                else if (xhr.responseJSON && xhr.responseJSON.errors)
+                                    errorMsg = Object.values(xhr.responseJSON.errors)
+                                    .join('\n');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: errorMsg
+                                });
                             }
                         });
                     }
@@ -3293,16 +3460,24 @@
             });
 
             // Pilih Agency
-            $(document).on('click', '.pilihAgency', function () {
+            $(document).on('click', '.pilihAgency', function() {
                 let salesId = $(this).data('id');
                 let agentFeeRaw = $('#agent_fee_modal').val().replace(/\./g, '').replace(/,/g, '').trim();
                 if (!agentFeeRaw || parseInt(agentFeeRaw) <= 0) {
-                    Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Agent fee wajib diisi dan lebih dari 0!' });
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Agent fee wajib diisi dan lebih dari 0!'
+                    });
                     return;
                 }
                 let unitId = $('#modalAgency').data('unit');
                 if (!unitId) {
-                    Swal.fire({ icon: 'error', title: 'Error', text: 'Unit tidak valid! Silakan coba lagi.' });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Unit tidak valid! Silakan coba lagi.'
+                    });
                     return;
                 }
 
@@ -3317,7 +3492,14 @@
                     cancelButtonColor: '#d33'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Swal.fire({ title: 'Memproses...', text: 'Harap tunggu', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+                        Swal.fire({
+                            title: 'Memproses...',
+                            text: 'Harap tunggu',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
 
                         let formData = new FormData();
                         formData.append('_token', '{{ csrf_token() }}');
@@ -3331,15 +3513,19 @@
                             data: formData,
                             processData: false,
                             contentType: false,
-                            success: function (response) {
+                            success: function(response) {
                                 $('#modalAgency').modal('hide');
-                                sessionStorage.setItem('success_message', response.message || 'Agency berhasil dipilih');
-                                location.reload();
+                                Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message || 'Agency berhasil dipilih', showConfirmButton: false, timer: 1500 }).then(() => location.reload());
                             },
-                            error: function (xhr) {
+                            error: function(xhr) {
                                 let errMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
-                                Swal.fire({ icon: 'error', title: 'Gagal', text: errMsg });
+                                if (xhr.responseJSON && xhr.responseJSON.message)
+                                    errMsg = xhr.responseJSON.message;
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: errMsg
+                                });
                             }
                         });
                     }
@@ -3347,33 +3533,33 @@
             });
 
             // Search dan Filter
-            $('#searchCustomer').on('keyup', function () {
+            $('#searchCustomer').on('keyup', function() {
                 const searchTerm = $(this).val().toLowerCase();
-                $('#customerTable tbody tr').each(function () {
+                $('#customerTable tbody tr').each(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
                 });
             });
 
-            $('#filterPekerjaan').on('change', function () {
+            $('#filterPekerjaan').on('change', function() {
                 const job = $(this).val();
                 if (!job) $('#customerTable tbody tr').show();
                 else {
-                    $('#customerTable tbody tr').each(function () {
+                    $('#customerTable tbody tr').each(function() {
                         const jobText = $(this).find('td:eq(4)').text().trim();
                         $(this).toggle(jobText === job);
                     });
                 }
             });
 
-            $('#searchAgency').on('keyup', function () {
+            $('#searchAgency').on('keyup', function() {
                 const searchTerm = $(this).val().toLowerCase();
-                $('#modalAgency .table tbody tr').each(function () {
+                $('#modalAgency .table tbody tr').each(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
                 });
             });
 
             // Reset form saat modal ditutup
-            $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function () {
+            $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {
                 $('#booking_fee, #agent_fee_modal').val('');
                 $('#bukti_transfer').val('');
                 $('#buktiFileName').text('Upload Bukti Transfer');
@@ -3384,13 +3570,28 @@
 
         // ========== SESSION FLASH MESSAGES ==========
         @if (session('success'))
-            Swal.fire({ icon: 'success', title: 'Berhasil', text: "{{ session('success') }}", showConfirmButton: false, timer: 2000 });
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000
+            });
         @endif
         @if (session('error'))
-            Swal.fire({ icon: 'error', title: 'Oops...', text: "{{ session('error') }}", confirmButtonColor: '#d33' });
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#d33'
+            });
         @endif
         @if ($errors->any())
-            Swal.fire({ icon: 'warning', title: 'Validasi Gagal', html: `{!! implode('<br>', $errors->all()) !!}` });
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validasi Gagal',
+                html: `{!! implode('<br>', $errors->all()) !!}`
+            });
         @endif
 
         // ========== SEARCH SYNC ==========
@@ -3461,18 +3662,18 @@
             });
         });
 
-            // Fungsi loading untuk filter
-            function showFilterLoading() {
-                Swal.fire({
-                    title: 'Memuat...',
-                    html: 'Sedang memfilter data',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                return true;
-            }
+        // Fungsi loading untuk filter
+        function showFilterLoading() {
+            Swal.fire({
+                title: 'Memuat...',
+                html: 'Sedang memfilter data',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            return true;
+        }
 
         // Fungsi loading untuk reset
         function showResetLoading(event) {

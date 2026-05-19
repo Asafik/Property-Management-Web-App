@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Data Tamu / Prospek')
+@section('title', 'Data Tamu / Proyeksi')
 
 @section('content')
 
@@ -860,7 +860,7 @@
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-account-group me-2" style="color: #9a55ff;"></i>Data Tamu / Prospek
+                                <i class="mdi mdi-account-group me-2" style="color: #9a55ff;"></i>Data Tamu / Proyeksi
                             </h3>
                             <p class="text-muted mb-0">
                                 Kelola data pengunjung dan calon pembeli unit properti
@@ -882,7 +882,7 @@
                     </div>
                     <div class="stat-content">
                         <h3>{{ $totalGuests ?? 0 }}</h3>
-                        <p>Total Tamu / Prospek</p>
+                        <p>Total Tamu / Proyeksi</p>
                     </div>
                 </div>
             </div>
@@ -894,7 +894,7 @@
                     </div>
                     <div class="stat-content">
                         <h3>{{ $totalProspek ?? 0 }}</h3>
-                        <p>Total Prospek Aktif</p>
+                        <p>Total Proyeksi Aktif</p>
                     </div>
                 </div>
             </div>

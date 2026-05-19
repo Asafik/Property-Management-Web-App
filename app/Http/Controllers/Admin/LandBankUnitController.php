@@ -95,14 +95,18 @@ class LandBankUnitController extends Controller
     $unit_code = $request->block . '.' . $request->unit_number;
 
     if (LandBankUnit::where('unit_code', $unit_code)
+        ->where('unit_name', $request->unit_name)
         ->where('land_bank_id', $land->id)
         ->exists()
     ) {
-        return back()->with('error', 'Unit ' . $unit_code . ' sudah ada di proyek ini.');
+        return back()->with(
+            'error',
+            'Unit ' . $unit_code . ' dengan nama ' . ($request->unit_name ?? '-') . ' sudah ada di proyek ini.'
+        );
     }
 
-   
     $dokumenSpkPath = null;
+
     if ($request->hasFile('dokumen_spk')) {
         $file = $request->file('dokumen_spk');
         $filename = time() . '_' . $file->getClientOriginalName();
@@ -127,8 +131,6 @@ class LandBankUnitController extends Controller
         'position'      => $request->position,
         'description'   => $request->description,
         'status'        => 'draft',
-
-       
         'no_spk'        => $request->no_spk,
         'kontraktor'    => $request->kontraktor,
         'dokumen_spk'   => $dokumenSpkPath,

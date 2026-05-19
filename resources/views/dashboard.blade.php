@@ -1415,7 +1415,8 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($landBank as $item)
-                                        <tr>
+                                        <tr class="land-row" data-target="unit-row-{{ $item->id }}"
+                                            style="cursor:pointer;">
                                             <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -1424,27 +1425,13 @@
                                                     <span class="fw-bold">{{ $item->name ?? '-' }}</span>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-domain text-primary me-2"
-                                                        style="font-size: 1.2rem;"></i>
-                                                    <span>{{ $item->companyProfile->name ?? '-' }}</span>
-                                                </div>
-                                            </td>
+                                            <td>{{ $item->companyProfile->name ?? '-' }}</td>
                                             <td>
                                                 <span class="type-badge">
                                                     <i class="mdi mdi-home"></i> {{ $item->zoning ?? '-' }}
                                                 </span>
                                             </td>
-                                            <td>
-                                                <div class="d-flex align-items-center location-wrapper">
-                                                    <i class="mdi mdi-map-marker text-primary me-2"
-                                                        style="font-size: 1.2rem; flex-shrink: 0;"></i>
-                                                    <span class="location-text" title="{{ $item->address ?? '-' }}">
-                                                        {{ $item->address ?? '-' }}
-                                                    </span>
-                                                </div>
-                                            </td>
+                                            <td>{{ $item->address ?? '-' }}</td>
                                             <td>
                                                 @if ($item->legal_status == 'verified')
                                                     <span class="status-badge-gradient success">
@@ -1454,6 +1441,8 @@
                                                     <span class="status-badge-gradient warning">
                                                         <i class="mdi mdi-clock"></i> Pending
                                                     </span>
+                                                @else
+                                                    -
                                                 @endif
                                             </td>
                                             <td class="text-price">
@@ -1463,10 +1452,92 @@
                                                 <span class="unit-badge">{{ $item->units->count() }} Unit</span>
                                             </td>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-outline-purple btn-sm"
-                                                    onclick="lihatDetail({{ $item->id }})">
-                                                    <i class="mdi mdi-eye"></i> Lihat
+                                                <button type="button" class="btn btn-outline-purple btn-sm toggle-unit">
+                                                    <i class="mdi mdi-chevron-down"></i> Unit
                                                 </button>
+                                            </td>
+                                        </tr>
+
+                                        <tr id="unit-row-{{ $item->id }}" class="unit-detail-row"
+                                            style="display:none;">
+                                            <td colspan="9">
+                                                <div class="p-4 rounded"
+                                                    style="background:#ffffff; border:1px solid #efe6ff; box-shadow: 0 4px 20px rgba(154,85,255,0.04);">
+                                                    <h6 class="fw-bold mb-4 text-center" style="color: #2c2e3f; font-size: 0.95rem;">
+                                                        <i class="mdi mdi-home-city text-primary me-1" style="color: #9a55ff !important;"></i>
+                                                        Landbank Unit - {{ $item->name ?? '-' }}
+                                                    </h6>
+
+                                                    @if ($item->units && $item->units->count() > 0)
+                                                        <div class="table-responsive" style="border-radius: 8px; border: 1px solid #efe6ff;">
+                                                            <table class="table table-bordered align-middle mb-0 text-center" style="border-color: #efe6ff;">
+                                                                <thead style="background: #faf7ff;">
+                                                                    <tr>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">NO</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">NAMA UNIT</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">BLOK</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">NO UNIT</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">LUAS TANAH</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">LUAS BANGUNAN</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">HARGA</th>
+                                                                        <th class="text-center" style="color: #9a55ff; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; border-color: #efe6ff; padding: 12px 8px;">STATUS</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($item->units as $unit)
+                                                                        <tr>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057;">{{ $loop->iteration }}</td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057; font-weight: 500;">{{ $unit->name ?? ($unit->unit_name ?? '-') }}</td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057;">{{ $unit->block ?? ($unit->blok ?? '-') }}</td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057;">{{ $unit->unit_number ?? ($unit->unit_code ?? '-') }}</td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057;">
+                                                                                {{ $unit->area ?? ($unit->luas_tanah ?? '-') }}
+                                                                                @if ($unit->area ?? ($unit->luas_tanah ?? null))
+                                                                                    m²
+                                                                                @endif
+                                                                            </td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057;">
+                                                                                {{ $unit->building_area ?? ($unit->luas_bangunan ?? '-') }}
+                                                                                @if ($unit->building_area ?? ($unit->luas_bangunan ?? null))
+                                                                                    m²
+                                                                                @endif
+                                                                            </td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px; color: #495057; font-weight: 600;">
+                                                                                Rp {{ number_format($unit->price ?? ($unit->harga ?? 0), 0, ',', '.') }}
+                                                                            </td>
+                                                                            <td class="text-center" style="border-color: #efe6ff; padding: 10px 8px;">
+                                                                                @php
+                                                                                    $status = strtolower($unit->status ?? '');
+                                                                                @endphp
+                                                                                @if ($status == 'booked')
+                                                                                    <span class="badge" style="background-color: #ffd857; color: #5d4300; font-weight: 700; border-radius: 30px; padding: 6px 16px; font-size: 0.75rem; box-shadow: 0 2px 4px rgba(255,216,87,0.2);">
+                                                                                        Booking
+                                                                                    </span>
+                                                                                @elseif ($status == 'sold')
+                                                                                    <span class="badge bg-danger text-white" style="font-weight: 700; border-radius: 30px; padding: 6px 16px; font-size: 0.75rem;">
+                                                                                        Terjual
+                                                                                    </span>
+                                                                                @elseif ($status == 'draft' || $status == 'ready' || $status == 'tersedia')
+                                                                                    <span class="badge bg-success text-white" style="font-weight: 700; border-radius: 30px; padding: 6px 16px; font-size: 0.75rem;">
+                                                                                        Tersedia
+                                                                                    </span>
+                                                                                @else
+                                                                                    <span class="badge bg-secondary text-white" style="font-weight: 700; border-radius: 30px; padding: 6px 16px; font-size: 0.75rem;">
+                                                                                        {{ ucfirst($unit->status ?? '-') }}
+                                                                                    </span>
+                                                                                @endif
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    @else
+                                                        <div class="text-muted text-center py-3">
+                                                            Belum ada unit untuk tanah induk ini.
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -1548,376 +1619,186 @@
 
     </div>
 
-    <!-- MODAL DETAIL UNTUK SETIAP ITEM -->
-    <div class="modal fade modal-detail-unit" id="modalDetailLandbank" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-city me-2"></i>
-                        Detail Proyek Lengkap
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Informasi Proyek -->
-                    <div class="timeline-detail-card">
-                        <div class="timeline-detail-title">
-                            <i class="mdi mdi-city-outline me-1"></i>Informasi Proyek
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-city"></i>Nama Proyek</div>
-                                    <div class="timeline-detail-value" id="detail-name">-</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-domain"></i>Perusahaan</div>
-                                    <div class="timeline-detail-value" id="detail-company">-</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-format-list-bulleted-type"></i>Kategori</div>
-                                    <div class="timeline-detail-value" id="detail-zoning">-</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-shield-check"></i>Status Legal</div>
-                                    <div class="timeline-detail-value" id="detail-status">-</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-home-group"></i>Total Unit</div>
-                                    <div class="timeline-detail-value" id="detail-total-units">-</div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-map-marker"></i>Lokasi</div>
-                                    <div class="timeline-detail-value" id="detail-address">-</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="timeline-detail-item">
-                                    <div class="timeline-detail-label"><i class="mdi mdi-currency-usd"></i>Harga Perolehan</div>
-                                    <div class="timeline-detail-value price" id="detail-price">-</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Detail Unit -->
-                    <div class="timeline-detail-card">
-                        <div class="timeline-detail-title">
-                            <i class="mdi mdi-home-outline me-1"></i>Detail Unit
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">No</th>
-                                        <th>Nama Unit</th>
-                                        <th>Jenis</th>
-                                        <th>Harga</th>
-                                        <th>Status</th>
-                                        <th>Nama User</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="unit-table-body">
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i>
-                                            <p class="mt-2">Data unit belum tersedia</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
-                        <i class="mdi mdi-close me-1"></i>Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+@endsection
 
-    @endsection
+@push('scripts')
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Select2 Bootstrap5 Theme -->
+    <script src="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.js">
+    </script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    @push('scripts')
-
-
-        <script>
-            $(document).ready(function() {
-                // Init Select2
-                $('#perusahaanSelect, #perusahaanSelectMobile').select2({
-                    theme: 'bootstrap-5',
-                    placeholder: '-- Pilih Perusahaan --',
-                    allowClear: true,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items',
-                    language: {
-                        noResults: function() {
-                            return "Perusahaan tidak ditemukan";
-                        },
-                        searching: function() {
-                            return "Mencari...";
-                        }
-                    }
-                });
-
-                // Sorting functionality
-                $('.sortable').click(function() {
-                    let field = $(this).data('field');
-                    let direction = $(this).data('direction');
-
-                    let url = new URL(window.location.href);
-                    url.searchParams.set('sortField', field);
-                    url.searchParams.set('sortDirection', direction);
-                    url.searchParams.set('page', 1); // Reset ke halaman 1
-
-                    window.location.href = url.toString();
-                });
-
-                // Fungsi filter - redirect dengan parameter
-                function applyFilter() {
-                    let search = $('#searchInput').val() || $('#searchInputMobile').val();
-                    let perusahaan = $('#perusahaanSelect').val() || $('#perusahaanSelectMobile').val();
-                    let type = $('#typeSelect').val() || $('#typeSelectMobile').val();
-                    let status = $('#statusSelect').val() || $('#statusSelectMobile').val();
-                    let perPage = $('#perPageSelect').val() || $('#perPageSelectMobile').val();
-
-                    let url = new URL(window.location.href);
-
-                    if (search) url.searchParams.set('search', search);
-                    else url.searchParams.delete('search');
-
-                    if (perusahaan) url.searchParams.set('perusahaan', perusahaan);
-                    else url.searchParams.delete('perusahaan');
-
-                    if (type) url.searchParams.set('type', type);
-                    else url.searchParams.delete('type');
-
-                    if (status) url.searchParams.set('status', status);
-                    else url.searchParams.delete('status');
-
-                    url.searchParams.set('perPage', perPage);
-                    url.searchParams.set('page', 1); // Reset ke halaman 1
-
-                    window.location.href = url.toString();
-                }
-
-                // Fungsi reset filter
-                function resetFilter() {
-                    let url = new URL(window.location.href);
-                    url.searchParams.delete('search');
-                    url.searchParams.delete('perusahaan');
-                    url.searchParams.delete('type');
-                    url.searchParams.delete('status');
-                    url.searchParams.set('perPage', '10');
-                    url.searchParams.set('page', 1);
-                    window.location.href = url.toString();
-                }
-
-                // Event listeners
-                $('#filterBtn, #filterBtnMobile').click(applyFilter);
-                $('#resetBtn, #resetBtnMobile').click(resetFilter);
-
-                // Enter key pada search input
-                $('#searchInput, #searchInputMobile').keypress(function(e) {
-                    if (e.which == 13) applyFilter();
-                });
-
-                @if (session('success'))
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Berhasil!',
-                        html: 'Selamat datang, <strong>{{ auth()->user()->name }}</strong>',
-                        timer: 3000,
-                        showConfirmButton: true,
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#9a55ff',
-                        timerProgressBar: true,
-                        didOpen: () => {
-                            const timer = Swal.getPopup().querySelector("b");
-                            if (timer) {
-                                timer.style.width = "100%";
-                            }
-                        }
-                    });
-                @endif
-            });
-
-            function lihatDetail(id) {
-                $.ajax({
-                    url: '/dashboard/detail/' + id,
-                    type: 'GET',
-                    success: function(item) {
-                        // Fill main information
-                        $('#detail-name').text(item.name || '-');
-                        $('#detail-company').text(item.company_profile ? item.company_profile.name : '-');
-                        $('#detail-zoning').text(item.zoning || '-');
-                        $('#detail-address').text(item.address || '-');
-                        $('#detail-price').text('Rp ' + Number(item.acquisition_price || 0).toLocaleString('id-ID'));
-                        $('#detail-total-units').text((item.units ? item.units.length : 0) + ' Unit');
-
-                        // Status badge
-                        let statusHtml = '';
-                        if (item.legal_status === 'verified') {
-                            statusHtml = '<span class="badge-soft" style="background: linear-gradient(135deg, #28a745, #5cb85c); color: white;"><i class="mdi mdi-check-circle"></i> Terverifikasi</span>';
-                        } else if (item.legal_status === 'Pending') {
-                            statusHtml = '<span class="badge-soft" style="background: linear-gradient(135deg, #ffc107, #ffdb6d); color: #2c2e3f;"><i class="mdi mdi-clock"></i> Pending</span>';
-                        } else {
-                            statusHtml = '<span class="badge-soft" style="background: linear-gradient(135deg, #6c757d, #9aa0a6); color: white;"><i class="mdi mdi-information-outline"></i> ' + (item.legal_status ? item.legal_status.charAt(0).toUpperCase() + item.legal_status.slice(1) : '-') + '</span>';
-                        }
-                        $('#detail-status').html(statusHtml);
-
-                        // Fill units with table layout
-                        let unitRows = '';
-                        if (item.units && item.units.length > 0) {
-                            item.units.forEach((unit, index) => {
-                                // Format nama unit seperti jual_unit: unit_name - unit_code
-                                const unitName = unit.unit_name || '';
-                                const unitCode = unit.unit_code || '';
-                                const displayUnit = unitName && unitCode ? `${unitName} - ${unitCode}` : (unitName || unitCode || '-');
-                                const price = Number(unit.price || 0);
-                                const hargaJuta = price >= 1000000 ? (price / 1000000).toFixed(0) + ' juta' :
-                                                 price >= 1000 ? (price / 1000).toFixed(0) + ' ribu' : '0';
-
-                                // Customer info with initials
-                                let customerInfo = '<span class="text-muted">-</span>';
-                                if (unit.active_booking && unit.active_booking.customer) {
-                                    const customerName = unit.active_booking.customer.full_name;
-                                    const initials = customerName.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
-                                    customerInfo = '<div class="customer-info"><div class="customer-initial">' + initials + '</div><span>' + customerName + '</span></div>';
-                                }
-
-                                // Status badges like jual_unit
-                                let statusBadge = '';
-                                if (unit.status === 'ready' || unit.status === 'tersedia') {
-                                    if (unit.type === 'subsidi') {
-                                        statusBadge = '<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>';
-                                    } else {
-                                        statusBadge = '<span class="badge-soft badge-available-komersil"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>';
-                                    }
-                                } else if (unit.status === 'sold') {
-                                    statusBadge = '<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>';
-                                } else if (unit.status === 'booked') {
-                                    statusBadge = '<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>';
-                                } else if (unit.status === 'draft' || unit.status === 'draff') {
-                                    statusBadge = '<span class="badge-soft badge-draft"><i class="mdi mdi-file-document-edit-outline"></i>Draft</span>';
-                                } else {
-                                    statusBadge = '<span class="badge-soft"><i class="mdi mdi-information-outline"></i>' + (unit.status ? unit.status.charAt(0).toUpperCase() + unit.status.slice(1) : '-') + '</span>';
-                                }
-
-                                unitRows += `
-                                    <tr>
-                                        <td class="text-center fw-bold">${index + 1}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home-outline text-primary me-2" style="font-size: 1.1rem;"></i>
-                                                <span class="fw-bold">${displayUnit}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            ${(() => {
-                                                const jenis = (unit.jenis || '').toLowerCase();
-                                                const type = unit.type || '-';
-                                                if (jenis === 'subsidi') {
-                                                    return `<span class="badge badge-gradient-success">
-                                                        <i class="mdi mdi-home-assistant me-1"></i>${unit.jenis} - ${type}
-                                                    </span>`;
-                                                } else if (jenis === 'komersil') {
-                                                    return `<span class="badge badge-gradient-primary">
-                                                        <i class="mdi mdi-office-building me-1"></i>${unit.jenis} - ${type}
-                                                    </span>`;
-                                                } else {
-                                                    return `<span class="badge badge-gradient-secondary">
-                                                        <i class="mdi mdi-help-circle-outline me-1"></i>${unit.jenis || '-'} - ${type}
-                                                    </span>`;
-                                                }
-                                            })()}
-                                        </td>
-                                        <td class="text-success fw-bold">${hargaJuta}</td>
-                                        <td>${statusBadge}</td>
-                                        <td>${customerInfo}</td>
-                                    </tr>
-                                `;
-                            });
-                        } else {
-                            unitRows = '<tr><td colspan="6" class="text-center text-muted py-4"><i class="mdi mdi-home-outline" style="font-size: 2rem; opacity: 0.3;"></i><p class="mt-2">Data unit belum tersedia</p></td></tr>';
-                        }
-                        $('#unit-table-body').html(unitRows);
-
-                        // Show modal
-                        $('#modalDetailLandbank').modal('show');
+    <script>
+        $(document).ready(function() {
+            // Init Select2
+            $('#perusahaanSelect, #perusahaanSelectMobile').select2({
+                theme: 'bootstrap-5',
+                placeholder: '-- Pilih Perusahaan --',
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'select2-limited-items',
+                language: {
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
                     },
-                    error: function(err) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: 'Gagal memuat detail data'
-                        });
-                        console.error('Error fetching detail:', err);
+                    searching: function() {
+                        return "Mencari...";
                     }
-                });
-            }
-        </script>
-        <script>
-            $(document).ready(function() {
-                // Remove old query-based modal opener
+                }
             });
-        </script>
-        <script>
-            $('#refreshBTN').click(function() {
 
-                // 🔥 TAMPILKAN LOADING
+            // Sorting
+            $('.sortable').click(function() {
+                let field = $(this).data('field');
+                let direction = $(this).data('direction');
+
+                let url = new URL(window.location.href);
+                url.searchParams.set('sortField', field);
+                url.searchParams.set('sortDirection', direction);
+                url.searchParams.set('page', 1);
+
+                window.location.href = url.toString();
+            });
+
+            function applyFilter() {
+                let search = $('#searchInput').val() || $('#searchInputMobile').val();
+                let perusahaan = $('#perusahaanSelect').val() || $('#perusahaanSelectMobile').val();
+                let type = $('#typeSelect').val() || $('#typeSelectMobile').val();
+                let status = $('#statusSelect').val() || $('#statusSelectMobile').val();
+                let perPage = $('#perPageSelect').val() || $('#perPageSelectMobile').val();
+
+                let url = new URL(window.location.href);
+
+                if (search) url.searchParams.set('search', search);
+                else url.searchParams.delete('search');
+
+                if (perusahaan) url.searchParams.set('perusahaan', perusahaan);
+                else url.searchParams.delete('perusahaan');
+
+                if (type) url.searchParams.set('type', type);
+                else url.searchParams.delete('type');
+
+                if (status) url.searchParams.set('status', status);
+                else url.searchParams.delete('status');
+
+                url.searchParams.set('perPage', perPage || 10);
+                url.searchParams.set('page', 1);
+
+                window.location.href = url.toString();
+            }
+
+            function resetFilter() {
+                let url = new URL(window.location.href);
+                url.searchParams.delete('search');
+                url.searchParams.delete('perusahaan');
+                url.searchParams.delete('type');
+                url.searchParams.delete('status');
+                url.searchParams.set('perPage', '10');
+                url.searchParams.set('page', 1);
+
+                window.location.href = url.toString();
+            }
+
+            $('#filterBtn, #filterBtnMobile').click(applyFilter);
+            $('#resetBtn, #resetBtnMobile, #refreshBTN').click(resetFilter);
+
+            $('#searchInput, #searchInputMobile').keypress(function(e) {
+                if (e.which == 13) applyFilter();
+            });
+
+            // Toggle dropdown unit di table
+            $('.toggle-unit').on('click', function(e) {
+                e.stopPropagation();
+
+                let button = $(this);
+                let row = button.closest('tr');
+                let targetId = row.data('target');
+                let target = $('#' + targetId);
+                let icon = button.find('i');
+
+                if (target.length === 0) return;
+
+                target.toggle();
+
+                if (target.is(':visible')) {
+                    icon.removeClass('mdi-chevron-down').addClass('mdi-chevron-up');
+                } else {
+                    icon.removeClass('mdi-chevron-up').addClass('mdi-chevron-down');
+                }
+            });
+
+            // Klik baris juga bisa buka unit
+            $('.land-row').on('click', function(e) {
+                if ($(e.target).closest('button, a, select, input').length) return;
+
+                $(this).find('.toggle-unit').trigger('click');
+            });
+
+            @if (session('success'))
                 Swal.fire({
-                    title: 'Memuat data...',
-                    html: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                    icon: 'success',
+                    title: 'Login Berhasil!',
+                    html: 'Selamat datang, <strong>{{ auth()->user()->name }}</strong>',
+                    timer: 3000,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#9a55ff',
+                    timerProgressBar: true
                 });
+            @endif
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Remove old query-based modal opener
+        });
+    </script>
+    <script>
+        $('#refreshBTN').click(function() {
 
-                $.ajax({
-                    url: '/proyek/refresh',
-                    type: 'GET',
-                    success: function(res) {
-                        let tbody = '';
+            // 🔥 TAMPILKAN LOADING
+            Swal.fire({
+                title: 'Memuat data...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-                        res.forEach((item, index) => {
+            $.ajax({
+                url: '/proyek/refresh',
+                type: 'GET',
+                success: function(res) {
+                    let tbody = '';
 
-                            let company = item.company_profile?.name ?? '-';
-                            let units = item.units ? item.units.length : 0;
+                    res.forEach((item, index) => {
 
-                            let statusBadge = '';
-                            if (item.status === 'ready') {
-                                statusBadge = `
+                        let company = item.company_profile?.name ?? '-';
+                        let units = item.units ? item.units.length : 0;
+
+                        let statusBadge = '';
+                        if (item.status === 'ready') {
+                            statusBadge = `
                         <span class="status-badge-gradient success">
                             <i class="mdi mdi-check-circle"></i> Tersedia
                         </span>`;
-                            } else if (item.status === 'sold') {
-                                statusBadge = `
+                        } else if (item.status === 'sold') {
+                            statusBadge = `
                         <span class="status-badge-gradient danger">
                             <i class="mdi mdi-close-circle"></i> Terjual
                         </span>`;
-                            } else {
-                                statusBadge = `
+                        } else {
+                            statusBadge = `
                         <span class="status-badge-gradient warning">
                             <i class="mdi mdi-clock"></i> ${item.status ?? '-'}
                         </span>`;
-                            }
+                        }
 
-                            tbody += `
+                        tbody += `
                     <tr>
                         <td class="text-center fw-bold">${index + 1}</td>
 
@@ -1959,32 +1840,31 @@
                         </td>
 
                         <td class="text-center">
-                            <button class="btn btn-outline-purple btn-sm"
-                                onclick="lihatDetail(${item.id})">
-                                <i class="mdi mdi-eye"></i> Lihat
+                            <button type="button" class="btn btn-outline-purple btn-sm toggle-unit">
+                                <i class="mdi mdi-chevron-down"></i> Unit
                             </button>
                         </td>
                     </tr>
                 `;
-                        });
+                    });
 
-                        $('#proyekTable tbody').html(tbody);
+                    $('#proyekTable tbody').html(tbody);
 
-                        // ✅ TUTUP LOADING
-                        Swal.close();
-                    },
-                    error: function(err) {
-                        Swal.close();
+                    // ✅ TUTUP LOADING
+                    Swal.close();
+                },
+                error: function(err) {
+                    Swal.close();
 
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: 'Tidak dapat memuat data'
-                        });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Tidak dapat memuat data'
+                    });
 
-                        console.error('Gagal refresh:', err);
-                    }
-                });
+                    console.error('Gagal refresh:', err);
+                }
             });
-        </script>
-    @endpush
+        });
+    </script>
+@endpush

@@ -94,8 +94,9 @@
         .select2-container--bootstrap-5 .select2-selection {
             border: 1px solid #e9ecef !important;
             border-radius: 10px !important;
-            padding: 0.5rem 0.8rem !important;
+            padding: 0.45rem 0.8rem !important;
             min-height: 42px !important;
+            height: 42px !important;
             font-family: 'Nunito', sans-serif !important;
             background-color: #ffffff !important;
         }
@@ -103,7 +104,7 @@
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
             color: #2c2e3f !important;
             font-size: 0.9rem !important;
-            line-height: 1.5 !important;
+            line-height: 26px !important;
             padding-left: 0 !important;
         }
 
@@ -114,6 +115,23 @@
 
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
             border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        @media (min-width: 768px) {
+            .select2-container--bootstrap-5 .select2-selection {
+                min-height: 38px !important;
+                height: 38px !important;
+                padding: 0.35rem 0.75rem !important;
+                border-radius: 8px !important;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                line-height: 24px !important;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+                height: 36px !important;
+            }
         }
 
         .select2-container--bootstrap-5 .select2-selection:hover {
@@ -193,6 +211,11 @@
 
         .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
             background: #7a3fcc;
+        }
+
+        .select2-container {
+            display: block !important;
+            width: 100% !important;
         }
 
         /* Input Group */
@@ -420,6 +443,7 @@
         .properti-col-6,
         .properti-col-12,
         .properti-col-sm-6,
+        .properti-col-md-2,
         .properti-col-md-3,
         .properti-col-md-4,
         .properti-col-md-6 {
@@ -438,6 +462,11 @@
         }
 
         @media (min-width: 768px) {
+            .properti-col-md-2 {
+                flex: 0 0 16.666667%;
+                max-width: 16.666667%;
+            }
+
             .properti-col-md-3 {
                 flex: 0 0 25%;
                 max-width: 25%;
@@ -701,23 +730,42 @@
         }
 
         /* Custom responsive adjustments */
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 0.5rem !important;
+            }
+
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+
+            .properti-card {
+                border-radius: 8px !important;
+                margin-bottom: 0.5rem !important;
+            }
+
             .properti-card .properti-card-body {
-                padding: 1rem !important;
+                padding: 0.85rem !important;
+            }
+
+            .properti-row {
+                flex-direction: column;
+                margin-right: -0.2rem !important;
+                margin-left: -0.2rem !important;
+            }
+
+            .properti-row>[class*="properti-col-"] {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-right: 0.2rem !important;
+                padding-left: 0.2rem !important;
+                margin-bottom: 0.75rem !important;
             }
 
             .properti-btn {
                 width: 100%;
                 margin-bottom: 0.5rem;
-            }
-
-            .properti-row {
-                flex-direction: column;
-            }
-
-            .properti-row>[class*="properti-col-"] {
-                width: 100%;
-                max-width: 100%;
             }
 
             .properti-checkbox-group {
@@ -1401,23 +1449,32 @@
             });
         });
 
-        // SELECT2 INITIALIZATION - HANYA UNTUK SELECT PERUSAHAAN
+        // SELECT2 INITIALIZATION - UNTUK SEMUA DROPDOWN SELECT
         // PAKSA HANYA 5 ITEM YANG TAMPIL
         $(document).ready(function() {
-            $('#companySelect').select2({
-                theme: 'bootstrap-5',
-                placeholder: '-- Pilih Perusahaan --',
-                allowClear: true,
-                width: '100%',
-                dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
-                language: {
-                    noResults: function() {
-                        return "Perusahaan tidak ditemukan";
-                    },
-                    searching: function() {
-                        return "Mencari...";
-                    }
+            $('select').each(function() {
+                let id = $(this).attr('id');
+                let noResultsText = "Data tidak ditemukan";
+                if (id === 'companySelect') {
+                    noResultsText = "Perusahaan tidak ditemukan";
                 }
+                
+                let hasEmptyOption = $(this).find('option[value=""]').length > 0 || $(this).find('option:not([value])').length > 0;
+
+                $(this).select2({
+                    theme: 'bootstrap-5',
+                    allowClear: hasEmptyOption,
+                    width: '100%',
+                    dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
+                    language: {
+                        noResults: function() {
+                            return noResultsText;
+                        },
+                        searching: function() {
+                            return "Mencari...";
+                        }
+                    }
+                });
             });
         });
 

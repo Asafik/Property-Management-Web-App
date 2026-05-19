@@ -38,134 +38,115 @@
 
 
 
-           <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
 
-    <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
-        data-bs-toggle="dropdown">
+                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
+                    data-bs-toggle="dropdown">
 
-        <i class="mdi mdi-bell-outline"></i>
+                    <i class="mdi mdi-bell-outline"></i>
 
-        @if ($countNotif > 0)
-            <span class="count-symbol bg-danger"></span>
-        @endif
+                    @if ($countNotif > 0)
+                        <span class="count-symbol bg-danger"></span>
+                    @endif
 
-    </a>
+                </a>
 
-    <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list">
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list">
 
-        <h6 class="p-3 mb-0">
-            Notifications
-            @if ($countNotif > 0)
-                <span class="badge bg-danger ms-1">{{ $countNotif }}</span>
-            @endif
-        </h6>
-        <div class="dropdown-divider"></div>
-
-        @forelse($notifications as $notif)
-            <a class="dropdown-item preview-item {{ $notif->read_at == null ? 'bg-warning-subtle' : 'opacity-75' }}"
-                href="{{ route('notifications.read', $notif->id) }}">
-
-                <div class="preview-thumbnail">
-                    <div class="preview-icon {{ $notif->read_at == null ? 'bg-warning' : 'bg-info' }}">
-                        <i class="mdi {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'mdi-clipboard-text' : 'mdi-bell' }}"></i>
-                    </div>
-                </div>
-
-                <div class="preview-item-content">
-
-                    <h6 class="preview-subject mb-1">
-                        {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'Tugas Baru' : ($notif->data['title'] ?? 'Notification') }}
-
-                        @if ($notif->read_at == null)
-                            <span class="badge bg-danger ms-1">NEW</span>
-                        @else
-                            <span class="badge bg-success ms-1">DONE</span>
+                    <h6 class="p-3 mb-0">
+                        Notifications
+                        @if ($countNotif > 0)
+                            <span class="badge bg-danger ms-1">{{ $countNotif }}</span>
                         @endif
                     </h6>
+                    <div class="dropdown-divider"></div>
 
-                    <p class="text-gray mb-0">
-                        {{ $notif->data['message'] ?? '-' }}<br>
-                        
-                        {{-- PENGECEKAN JENIS NOTIFIKASI DIMULAI DI SINI --}}
-                        @if ($notif->type === 'App\Notifications\NewTaskNotification')
-                            
-                            <strong>Deadline:</strong> {{ isset($notif->data['deadline']) ? \Carbon\Carbon::parse($notif->data['deadline'])->format('d M Y') : '-' }}
-                            
-                        @else
-                            
-                            <strong>Booking:</strong> {{ $notif->data['booking_code'] ?? '-' }}<br>
-                            <strong>Unit:</strong> {{ $notif->data['unit_name'] ?? '-' }}<br>
-                            <strong>Customer:</strong> {{ $notif->data['customer_name'] ?? '-' }}
-                            
-                        @endif
-                    </p>
+                    @forelse($notifications as $notif)
+                        <a class="dropdown-item preview-item {{ $notif->read_at == null ? 'bg-warning-subtle' : 'opacity-75' }}"
+                            href="{{ route('notifications.read', $notif->id) }}">
+
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon {{ $notif->read_at == null ? 'bg-warning' : 'bg-info' }}">
+                                    <i
+                                        class="mdi {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'mdi-clipboard-text' : 'mdi-bell' }}"></i>
+                                </div>
+                            </div>
+
+                            <div class="preview-item-content">
+
+                                <h6 class="preview-subject mb-1">
+                                    {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'Tugas Baru' : $notif->data['title'] ?? 'Notification' }}
+
+                                    @if ($notif->read_at == null)
+                                        <span class="badge bg-danger ms-1">NEW</span>
+                                    @else
+                                        <span class="badge bg-success ms-1">DONE</span>
+                                    @endif
+                                </h6>
+
+                                <p class="text-gray mb-0">
+                                    {{ $notif->data['message'] ?? '-' }}<br>
+
+                                    {{-- PENGECEKAN JENIS NOTIFIKASI DIMULAI DI SINI --}}
+                                    @if ($notif->type === 'App\Notifications\NewTaskNotification')
+                                        <strong>Deadline:</strong>
+                                        {{ isset($notif->data['deadline']) ? \Carbon\Carbon::parse($notif->data['deadline'])->format('d M Y') : '-' }}
+                                    @else
+                                        <strong>Booking:</strong> {{ $notif->data['booking_code'] ?? '-' }}<br>
+                                        <strong>Unit:</strong> {{ $notif->data['unit_name'] ?? '-' }}<br>
+                                        <strong>Customer:</strong> {{ $notif->data['customer_name'] ?? '-' }}
+                                    @endif
+                                </p>
+
+                            </div>
+
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                    @empty
+                        <p class="p-3 text-center">No Notification</p>
+                    @endforelse
 
                 </div>
 
-            </a>
-
-            <div class="dropdown-divider"></div>
-
-        @empty
-            <p class="p-3 text-center">No Notification</p>
-        @endforelse
-
-    </div>
-
-</li>
+            </li>
 
 
             {{-- AUDIO NOTIFICATION --}}
             <audio id="notifSound">
                 <source src="{{ asset('sound/notif.wav') }}" type="audio/mpeg">
             </audio>
-            <script>
-                document.addEventListener("click", function() {
 
-                    let audio = document.getElementById("notifSound");
-
-                    if (audio) {
-                        audio.play().then(() => {
-                            console.log("Audio diaktifkan");
-                        }).catch(err => {
-                            console.log(err);
-                        });
-                    }
-
-                }, {
-                    once: true
-                });
-            </script>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    let audio = document.getElementById("notifSound");
-
-                    if (audio) {
-                        audio.play().catch(function(error) {
-                            console.log("Autoplay diblokir browser");
-                        });
-                    }
-                });
-            </script>
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
 
                     let notifCount = {{ $countNotif ?? 0 }};
+                    let lastNotifCount = localStorage.getItem("last_notif_count");
+                    let sound = document.getElementById("notifSound");
 
-                    if (notifCount > 0) {
+                    // pertama kali buka halaman
+                    if (lastNotifCount === null) {
+                        localStorage.setItem("last_notif_count", notifCount);
+                        return;
+                    }
 
-                        let sound = document.getElementById("notifSound");
+                    // bunyi hanya jika notif bertambah
+                    if (notifCount > parseInt(lastNotifCount)) {
 
-                        // play sound
-                        sound.play().catch(function() {
-                            console.log("Autoplay diblokir browser");
-                        });
+                        if (sound) {
+                            sound.play().catch(function() {
+                                console.log("Autoplay diblokir browser");
+                            });
+                        }
 
                     }
 
+                    // update notif terakhir
+                    localStorage.setItem("last_notif_count", notifCount);
+
                 });
             </script>
-
             <!-- Profile Dropdown -->
             <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown"

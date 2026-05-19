@@ -100,7 +100,7 @@ class MenuSeeder extends Seeder
     ]);
 
     Menu::create([
-        'name' => 'Data User Prospek',
+        'name' => 'Data User Proyeksi',
         'route' => 'customer.tamu',
         'parent_id' => $userMenu->id
     ]);

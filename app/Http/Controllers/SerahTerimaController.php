@@ -121,7 +121,7 @@ class SerahTerimaController extends Controller
             ]);
 
             return redirect()->route('unit.selesai', ['bookingId' => $booking->id])
-    ->with('success', 'Serah terima berhasil diproses.');
+                ->with('success', 'Serah terima berhasil diproses.');
         } catch (\Exception $e) {
             DB::rollBack();
 
