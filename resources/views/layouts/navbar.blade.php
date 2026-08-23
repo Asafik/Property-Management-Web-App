@@ -1,180 +1,155 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-        <a class="navbar-brand brand-logo" href="index.html">
-            <span style="font-weight: 600; font-size: 18px;">Property Management</span>
+@php
+    $navUserName = auth()->user()->name ?? 'User';
+    $navWords = explode(' ', trim($navUserName));
+    $navInitials = count($navWords) >= 2 
+        ? strtoupper(substr($navWords[0], 0, 1) . substr($navWords[1], 0, 1))
+        : strtoupper(substr($navUserName, 0, 2));
+
+    // Ambil Judul Halaman Otomatis dari @section('title')
+    $rawTitle = trim(View::yieldContent('title'));
+    $pageTitle = 'Dashboard';
+    if (!empty($rawTitle)) {
+        $parts = explode(' - ', $rawTitle);
+        $pageTitle = trim($parts[0]);
+    }
+@endphp
+
+<!-- CUSTOM TOP NAVBAR -->
+<nav class="custom-navbar">
+    <!-- Brand Logo & Page Title Section -->
+    <div class="d-flex align-items-center overflow-hidden">
+        <a class="navbar-brand-box" href="{{ route('dashboard') }}">
+            <span class="brand-text-full">Property <span>Management</span></span>
+            <span class="brand-text-mini">PM</span>
         </a>
 
-        <a class="navbar-brand brand-logo-mini mobile-sidebar-trigger d-lg-none" href="javascript:void(0)"
-            data-toggle="offcanvas">
-            <img src="{{ asset('admin/assets/images/logo-mini.svg') }}" alt="logo-mini"
-                style="height: 30px; width: auto;">
-        </a>
-    </div>
-
-    <div class="navbar-menu-wrapper d-flex align-items-stretch">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-            <span class="mdi mdi-menu"></span>
+        <!-- Toggle Button (Desktop: Minimize, Mobile/Tablet: Offcanvas) -->
+        <button class="btn-nav-toggle ms-2" type="button" id="sidebarToggleBtn" title="Toggle Sidebar">
+            <i class="mdi mdi-menu"></i>
         </button>
 
-        <!-- SEARCH BAR -->
-        <div class="search-field d-none d-md-block">
-            <form class="d-flex align-items-center h-100" action="#">
-                <div class="input-group">
-                    <div class="input-group-prepend bg-transparent">
-                        <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                    </div>
-                    <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
-                </div>
-            </form>
+        <!-- Dynamic Page Title Text (Clean & Bold) -->
+        <div class="navbar-page-title ms-2 ms-sm-3">
+            <span class="page-title-text">{{ $pageTitle }}</span>
         </div>
-
-        <ul class="navbar-nav navbar-nav-right ml-auto">
-            <li class="nav-item d-none d-lg-block full-screen-link">
-                <a class="nav-link">
-                    <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
-                </a>
-            </li>
-
-
-
-            <li class="nav-item dropdown">
-
-                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
-                    data-bs-toggle="dropdown">
-
-                    <i class="mdi mdi-bell-outline"></i>
-
-                    @if ($countNotif > 0)
-                        <span class="count-symbol bg-danger"></span>
-                    @endif
-
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list">
-
-                    <h6 class="p-3 mb-0">
-                        Notifications
-                        @if ($countNotif > 0)
-                            <span class="badge bg-danger ms-1">{{ $countNotif }}</span>
-                        @endif
-                    </h6>
-                    <div class="dropdown-divider"></div>
-
-                    @forelse($notifications as $notif)
-                        <a class="dropdown-item preview-item {{ $notif->read_at == null ? 'bg-warning-subtle' : 'opacity-75' }}"
-                            href="{{ route('notifications.read', $notif->id) }}">
-
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon {{ $notif->read_at == null ? 'bg-warning' : 'bg-info' }}">
-                                    <i
-                                        class="mdi {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'mdi-clipboard-text' : 'mdi-bell' }}"></i>
-                                </div>
-                            </div>
-
-                            <div class="preview-item-content">
-
-                                <h6 class="preview-subject mb-1">
-                                    {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'Tugas Baru' : $notif->data['title'] ?? 'Notification' }}
-
-                                    @if ($notif->read_at == null)
-                                        <span class="badge bg-danger ms-1">NEW</span>
-                                    @else
-                                        <span class="badge bg-success ms-1">DONE</span>
-                                    @endif
-                                </h6>
-
-                                <p class="text-gray mb-0">
-                                    {{ $notif->data['message'] ?? '-' }}<br>
-
-                                    {{-- PENGECEKAN JENIS NOTIFIKASI DIMULAI DI SINI --}}
-                                    @if ($notif->type === 'App\Notifications\NewTaskNotification')
-                                        <strong>Deadline:</strong>
-                                        {{ isset($notif->data['deadline']) ? \Carbon\Carbon::parse($notif->data['deadline'])->format('d M Y') : '-' }}
-                                    @else
-                                        <strong>Booking:</strong> {{ $notif->data['booking_code'] ?? '-' }}<br>
-                                        <strong>Unit:</strong> {{ $notif->data['unit_name'] ?? '-' }}<br>
-                                        <strong>Customer:</strong> {{ $notif->data['customer_name'] ?? '-' }}
-                                    @endif
-                                </p>
-
-                            </div>
-
-                        </a>
-
-                        <div class="dropdown-divider"></div>
-
-                    @empty
-                        <p class="p-3 text-center">No Notification</p>
-                    @endforelse
-
-                </div>
-
-            </li>
-
-
-            {{-- AUDIO NOTIFICATION --}}
-            <audio id="notifSound">
-                <source src="{{ asset('sound/notif.wav') }}" type="audio/mpeg">
-            </audio>
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-
-                    let notifCount = {{ $countNotif ?? 0 }};
-                    let lastNotifCount = localStorage.getItem("last_notif_count");
-                    let sound = document.getElementById("notifSound");
-
-                    // pertama kali buka halaman
-                    if (lastNotifCount === null) {
-                        localStorage.setItem("last_notif_count", notifCount);
-                        return;
-                    }
-
-                    // bunyi hanya jika notif bertambah
-                    if (notifCount > parseInt(lastNotifCount)) {
-
-                        if (sound) {
-                            sound.play().catch(function() {
-                                console.log("Autoplay diblokir browser");
-                            });
-                        }
-
-                    }
-
-                    // update notif terakhir
-                    localStorage.setItem("last_notif_count", notifCount);
-
-                });
-            </script>
-            <!-- Profile Dropdown -->
-            <li class="nav-item nav-profile dropdown">
-                <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <div class="nav-profile-img">
-                        <img src="{{ asset('admin/assets/images/faces/face1.jpg') }}" alt="image">
-                        <span class="availability-status online"></span>
-                    </div>
-                    <div class="nav-profile-text">
-                        <p class="mb-1 text-black">{{ auth()->user()->name }}</p>
-                    </div>
-                </a>
-                <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                    <div class="dropdown-divider"></div>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="dropdown-item">
-                            <i class="mdi mdi-logout me-2 text-primary"></i> Signout
-                        </button>
-                    </form>
-                </div>
-            </li>
-        </ul>
-        <button class="navbar-toggler navbar-toggler-right mobile-menu-btn d-lg-none align-self-center" type="button"
-            data-toggle="offcanvas">
-            <span class="mdi mdi-menu"></span>
-        </button>
-
     </div>
+
+    <!-- Right Action Items -->
+    <ul class="navbar-nav-right">
+        <!-- Fullscreen Button (Desktop only) -->
+        <li class="nav-action-item d-none d-lg-block">
+            <button class="nav-action-btn" id="customFullscreenBtn" type="button" title="Layar Penuh">
+                <i class="mdi mdi-fullscreen"></i>
+            </button>
+        </li>
+
+        <!-- Notification Bell Dropdown -->
+        <li class="nav-action-item">
+            <button class="nav-action-btn" type="button" data-custom-toggle="dropdown" data-custom-target="dropdownNotification" title="Notifikasi">
+                <i class="mdi mdi-bell-outline"></i>
+                @if ($countNotif > 0)
+                    <span class="badge-pulse-danger"></span>
+                @endif
+            </button>
+
+            <!-- Custom Notification Dropdown Menu -->
+            <div class="custom-dropdown-menu" id="dropdownNotification" style="width: 320px;">
+                <div class="custom-dropdown-header">
+                    <span>Notifikasi</span>
+                    @if ($countNotif > 0)
+                        <span class="badge bg-danger rounded-pill" style="font-size: 0.75rem;">{{ $countNotif }} Baru</span>
+                    @endif
+                </div>
+
+                <div style="max-height: 300px; overflow-y: auto;">
+                    @forelse($notifications as $notif)
+                        <a class="custom-dropdown-item d-flex align-items-start {{ $notif->read_at == null ? 'bg-light' : 'opacity-75' }}"
+                           href="{{ route('notifications.read', $notif->id) }}">
+                            <div class="me-2 mt-1">
+                                <i class="mdi {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'mdi-clipboard-text text-warning' : 'mdi-bell text-info' }}" style="font-size: 1.3rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong style="font-size: 0.85rem; color: #2c2e3f;">
+                                        {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'Tugas Baru' : $notif->data['title'] ?? 'Notifikasi' }}
+                                    </strong>
+                                    @if ($notif->read_at == null)
+                                        <span class="badge bg-danger" style="font-size: 0.65rem;">NEW</span>
+                                    @endif
+                                </div>
+                                <p class="mb-0 text-muted" style="font-size: 0.78rem; line-height: 1.3;">
+                                    {{ $notif->data['message'] ?? '-' }}
+                                </p>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="p-3 text-center text-muted" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-bell-off-outline me-1"></i> Tidak ada notifikasi
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </li>
+
+        <!-- User Profile Dropdown (Initial Avatar & Email) -->
+        <li class="nav-action-item">
+            <button class="user-profile-btn" type="button" data-custom-toggle="dropdown" data-custom-target="dropdownUserProfile">
+                <div class="user-avatar-initial">
+                    {{ $navInitials }}
+                </div>
+                <div class="user-meta-name">
+                    {{ auth()->user()->name }}
+                </div>
+                <i class="mdi mdi-chevron-down text-muted" style="font-size: 0.85rem;"></i>
+            </button>
+
+            <!-- Custom Profile Dropdown Menu -->
+            <div class="custom-dropdown-menu" id="dropdownUserProfile" style="min-width: 220px;">
+                <div class="px-3 py-2 border-bottom d-flex align-items-center gap-2">
+                    <div class="user-avatar-initial" style="width: 32px; height: 32px; font-size: 0.75rem;">
+                        {{ $navInitials }}
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="fw-bold text-truncate" style="font-size: 0.86rem; color: #2c2e3f;">{{ auth()->user()->name }}</div>
+                        <div class="text-muted text-truncate" style="font-size: 0.72rem;">{{ auth()->user()->email }}</div>
+                    </div>
+                </div>
+
+                <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
+                    @csrf
+                    <button type="submit" class="custom-dropdown-item text-danger">
+                        <i class="mdi mdi-logout text-danger"></i> Keluar (Sign Out)
+                    </button>
+                </form>
+            </div>
+        </li>
+    </ul>
 </nav>
-<!-- partial -->
+
+<!-- Audio Notifikasi -->
+<audio id="notifSound">
+    <source src="{{ asset('sound/notif.wav') }}" type="audio/mpeg">
+</audio>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let notifCount = {{ $countNotif ?? 0 }};
+        let lastNotifCount = localStorage.getItem("last_notif_count");
+        let sound = document.getElementById("notifSound");
+
+        if (lastNotifCount === null) {
+            localStorage.setItem("last_notif_count", notifCount);
+            return;
+        }
+
+        if (notifCount > parseInt(lastNotifCount)) {
+            if (sound) {
+                sound.play().catch(function() {
+                    console.log("Autoplay audio diblokir browser");
+                });
+            }
+        }
+
+        localStorage.setItem("last_notif_count", notifCount);
+    });
+</script>

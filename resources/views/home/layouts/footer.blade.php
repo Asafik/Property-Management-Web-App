@@ -50,10 +50,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; {{ date('Y') }} Sweet Home — Developer Rumah</span>
-            <a href="https://aleena.co.id" target="_blank" style="text-decoration: none; color: inherit;">
-                <i class="fa-solid fa-shield-halved"></i> PT. Aleena Mandiri Group
-            </a>
+            <span>&copy; {{ date('Y') }} Sweet Home — Developer Rumah. All rights reserved.</span>
         </div>
     </div>
 </footer>

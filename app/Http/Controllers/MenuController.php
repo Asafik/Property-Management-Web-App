@@ -8,10 +8,22 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $positions = Position::all();
-        $menus = Menu::with(['positions', 'parent'])->paginate(10);
+        $query = Menu::with(['positions', 'parent']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('route', 'like', "%{$search}%");
+            });
+        }
+
+        $perPage = $request->input('per_page', 10);
+        $menus = $query->paginate($perPage)->withQueryString();
+
         return view('menu.index', compact('menus', 'positions'));
     }
 

@@ -4,274 +4,7 @@
 
 @section('content')
     <style>
-        /* ===== CSS DARI UI KEDUA (TETAP) ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== STATISTICS CARDS ===== */
-        .stat-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 16px;
-            padding: 1.2rem;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-card .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .stat-card .stat-icon.total-unit {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .stat-card .stat-icon.tersedia {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-        }
-
-        .stat-card .stat-icon.booking {
-            background: linear-gradient(135deg, #f6d365, #fda085);
-        }
-
-        .stat-card .stat-icon.terjual {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
-        .stat-card .stat-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .stat-card .stat-content h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-            color: #2c2e3f;
-            line-height: 1.2;
-        }
-
-        .stat-card .stat-content p {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 0;
-        }
-
-        @media (max-width: 768px) {
-            .stat-card {
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-
-            .stat-card .stat-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.4rem;
-            }
-
-            .stat-card .stat-content h3 {
-                font-size: 1.3rem;
-            }
-
-            .stat-card .stat-content p {
-                font-size: 0.75rem;
-            }
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: 40px;
-            border: 1px solid #e0e4e9;
-            width: 100%;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: 40px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            height: 32px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
+        /* ===== JUAL UNIT SPECIFIC STYLES ===== */
         .btn-outline-primary {
             background: transparent;
             border: 1px solid #9a55ff;
@@ -717,36 +450,6 @@
         .grid-card:hover {
             border-color: #9a55ff !important;
             box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15) !important;
-        }
-
-        /* Pagination */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
         }
 
         /* Denah Styling */
@@ -1302,32 +1005,72 @@
             .name-title {
                 font-size: 0.85rem;
             }
+        }
 
-            .timeline-detail-item:hover {
-                transform: none;
+        /* ===== OPTIMASI LEBAR & PADDING (DESKTOP, TABLET & MOBILE) ===== */
+        .content-wrapper {
+            padding: 1.25rem 1rem !important;
+        }
+
+        .card-body {
+            padding: 0.85rem 1rem !important;
+        }
+
+        .filter-card {
+            background: transparent !important;
+            padding: 0 !important;
+            margin-bottom: 1.25rem !important;
+            border: none !important;
+        }
+
+        .table-responsive {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        .table {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Mode Tablet (iPad / 768px - 1024px) */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 1.15rem 0.85rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+        }
+
+        /* Mode HP / Mobile */
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 0.85rem 0.65rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+            .card-body {
+                padding: 0.75rem 0.75rem !important;
             }
         }
     </style>
 
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header Dashboard -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+        <!-- Header Page -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-home-group me-2" style="color: #9a55ff;"></i>
-                                Marketing Jual Unit
-                            </h3>
-                            <p class="text-muted mb-0 small">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Kelola unit-unit yang siap dipasarkan ke customer
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-home-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">
+                            <i class="mdi mdi-home-group me-2" style="color: #9a55ff;"></i>Marketing Jual Unit
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Kelola unit-unit yang siap dipasarkan ke customer
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1336,38 +1079,54 @@
         <!-- Statistics Cards -->
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon total-unit"><i class="mdi mdi-home-group"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalUnits }}</h3>
-                        <p>Total Unit</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalUnits }}</h3>
+                            <p class="text-muted mb-0">Total Unit</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-home-city" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon tersedia"><i class="mdi mdi-check-circle-outline"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalTersedia }}</h3>
-                        <p>Tersedia</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalTersedia }}</h3>
+                            <p class="text-muted mb-0">Tersedia</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-check-circle-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon booking"><i class="mdi mdi-bookmark-check-outline"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalBooking }}</h3>
-                        <p>Booking</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalBooking }}</h3>
+                            <p class="text-muted mb-0">Booking</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-bookmark-check-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon terjual"><i class="mdi mdi-cash-check"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalSold }}</h3>
-                        <p>Terjual</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalSold }}</h3>
+                            <p class="text-muted mb-0">Terjual</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-cash-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1376,14 +1135,30 @@
         <!-- Tabel Data -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card">
+                <div class="card shadow-sm border-0">
                     <div
-                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                        <h5 class="card-title mb-2 mb-md-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
+                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3 gap-2">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>
                             Daftar Unit
                         </h5>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <!-- Toggle View -->
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary active" id="btnTableView"
+                                    onclick="switchView('table')"><i class="mdi mdi-view-list me-1"></i><span
+                                        class="d-none d-sm-inline">Table</span></button>
+                                <button type="button" class="btn btn-outline-primary" id="btnGridView"
+                                    onclick="switchView('grid')"><i class="mdi mdi-view-grid me-1"></i><span
+                                        class="d-none d-sm-inline">Grid</span></button>
+                                <button type="button" class="btn btn-outline-primary" id="btnDenahView"
+                                    onclick="switchView('denah')"><i class="mdi mdi-floor-plan me-1"></i><span
+                                        class="d-none d-sm-inline">Denah Unit</span></button>
+                                <button type="button" class="btn btn-outline-primary" id="btnSitePlandView"
+                                    onclick="switchView('sitepland')"><i class="mdi mdi-map me-1"></i><span
+                                        class="d-none d-sm-inline">Siteplan</span></button>
+                            </div>
+                            <!-- Export Buttons -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
                                 class="btn btn-sm btn-gradient-success">
                                 <i class="mdi mdi-export me-1"></i>
@@ -1397,184 +1172,155 @@
                     </div>
                     <div class="card-body">
                         <!-- Filter Section -->
-                        <div class="filter-card mb-4">
-                            <div class="card-body">
-                                <div class="filter-text">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data</span>
-                                </div>
-                                <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
-                                    <!-- FILTER DESKTOP -->
-                                    <div class="d-none d-md-block">
-                                        <div class="row g-2 align-items-end w-100">
-                                            <div class="col-md-5 filter-col">
-                                                <label class="form-label"><i class="mdi mdi-magnify me-1"></i>Cari</label>
+                        <div class="filter-card mb-3">
+                            <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
+                                <!-- FILTER DESKTOP -->
+                                <div class="d-none d-md-block">
+                                    <div class="row g-2 align-items-center w-100">
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="input-group">
                                                 <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari block/unit, customer, agent...">
+                                                    class="form-control" placeholder="Cari blok, unit, customer..."
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
                                             </div>
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label"><i
-                                                        class="mdi mdi-office-building me-1"></i>Jenis</label>
-                                                <select name="jenis" class="form-control">
-                                                    <option value="">Semua Jenis</option>
-                                                    <option value="subsidi"
-                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
-                                                    </option>
-                                                    <option value="komersil"
-                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label"><i
-                                                        class="mdi mdi-chart-arc me-1"></i>Status</label>
-                                                <select name="status" class="form-control">
-                                                    <option value="">Semua Status</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
-                                                    </option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                        Terjual</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-1 filter-col">
-                                                <label class="form-label"><i class="mdi mdi-counter me-1"></i>Tampil</label>
-                                                <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                                <div class="d-flex gap-2">
-                                                    <button type="submit"
-                                                        class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                        id="filterBtn" title="Filter" onclick="showFilterLoading()">
-                                                        <i class="mdi mdi-filter"></i>
-                                                    </button>
-                                                    <a href="{{ route('marketing.jual-unit') }}"
-                                                        class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                        title="Reset" onclick="showResetLoading(event)">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </a>
-                                                </div>
+                                        </div>
+                                        <div class="col-md-3 col-lg-3">
+                                            <select name="jenis" class="form-control">
+                                                <option value="">Semua Jenis</option>
+                                                <option value="subsidi"
+                                                    {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                </option>
+                                                <option value="komersil"
+                                                    {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 col-lg-3">
+                                            <select name="status" class="form-control">
+                                                <option value="">Semua Status</option>
+                                                <option value="ready"
+                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                </option>
+                                                <option value="booked"
+                                                    {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                </option>
+                                                <option value="sold"
+                                                    {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    Terjual</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1">
+                                            <select name="perPage" class="form-control">
+                                                <option value="10"
+                                                    {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                </option>
+                                                <option value="25"
+                                                    {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                </option>
+                                                <option value="50"
+                                                    {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                </option>
+                                                <option value="100"
+                                                    {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit"
+                                                    class="btn btn-gradient-primary btn-icon-only flex-fill"
+                                                    id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('marketing.jual-unit') }}"
+                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill"
+                                                    title="Reset" onclick="showResetLoading(event)">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- FILTER MOBILE -->
-                                    <div class="d-block d-md-none">
-                                        <div class="row filter-row g-1">
-                                            <div class="col-12">
-                                                <label class="form-label"><i class="mdi mdi-magnify me-1"></i>Cari
-                                                    Unit</label>
+                                </div>
+                                <!-- FILTER MOBILE -->
+                                <div class="d-block d-md-none">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group">
                                                 <input type="text" name="search_mobile"
                                                     value="{{ request('search') }}" class="form-control"
-                                                    placeholder="Cari..." id="searchMobile">
+                                                    placeholder="Cari blok, unit..." id="searchMobile"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="row filter-row g-1">
-                                            <div class="col-12">
-                                                <label class="form-label"><i
-                                                        class="mdi mdi-office-building me-1"></i>Jenis</label>
-                                                <select name="jenis" class="form-control">
-                                                    <option value="">Semua Jenis</option>
-                                                    <option value="subsidi"
-                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
-                                                    </option>
-                                                    <option value="komersil"
-                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
-                                                    </option>
-                                                </select>
-                                            </div>
+                                        <div class="col-12 mb-2">
+                                            <select name="jenis" class="form-control">
+                                                <option value="">Semua Jenis</option>
+                                                <option value="subsidi"
+                                                    {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                </option>
+                                                <option value="komersil"
+                                                    {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                </option>
+                                            </select>
                                         </div>
-                                        <div class="row filter-row g-1">
-                                            <div class="col-6">
-                                                <label class="form-label"><i
-                                                        class="mdi mdi-chart-arc me-1"></i>Status</label>
-                                                <select name="status" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
-                                                    </option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                        Terjual</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label"><i
-                                                        class="mdi mdi-counter me-1"></i>Tampil</label>
-                                                <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="status" class="form-control">
+                                                <option value="">Semua Status</option>
+                                                <option value="ready"
+                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                </option>
+                                                <option value="booked"
+                                                    {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                </option>
+                                                <option value="sold"
+                                                    {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    Terjual</option>
+                                            </select>
                                         </div>
-                                        <div class="row filter-row g-1">
-                                            <div class="col-12 mt-2">
-                                                <div class="d-flex gap-2">
-                                                    <button type="submit"
-                                                        class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                        id="filterBtnMobile" title="Filter"
-                                                        onclick="showFilterLoading()">
-                                                        <i class="mdi mdi-filter"></i>
-                                                    </button>
-                                                    <a href="{{ route('marketing.jual-unit') }}"
-                                                        class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                        title="Reset" onclick="showResetLoading(event)">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="perPage" class="form-control">
+                                                <option value="10"
+                                                    {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                </option>
+                                                <option value="25"
+                                                    {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                </option>
+                                                <option value="50"
+                                                    {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                </option>
+                                                <option value="100"
+                                                    {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit"
+                                                class="btn btn-gradient-primary btn-icon-only-mobile w-100"
+                                                id="filterBtnMobile" title="Filter"
+                                                onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('marketing.jual-unit') }}"
+                                                class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
+                                                title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Toggle View -->
-                        <div class="d-flex justify-content-end mb-3">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary active" id="btnTableView"
-                                    onclick="switchView('table')"><i class="mdi mdi-view-list me-1"></i><span
-                                        class="d-none d-sm-inline">Table</span></button>
-                                <button type="button" class="btn btn-outline-primary" id="btnGridView"
-                                    onclick="switchView('grid')"><i class="mdi mdi-view-grid me-1"></i><span
-                                        class="d-none d-sm-inline">Grid</span></button>
-                                <button type="button" class="btn btn-outline-primary" id="btnDenahView"
-                                    onclick="switchView('denah')"><i class="mdi mdi-floor-plan me-1"></i><span
-                                        class="d-none d-sm-inline">Denah Unit</span></button>
-                                <button type="button" class="btn btn-outline-primary" id="btnSitePlandView"
-                                    onclick="switchView('sitepland')"><i class="mdi mdi-floor-plan me-1"></i><span
-                                        class="d-none d-sm-inline">Siteplan</span></button>
-                            </div>
+                                </div>
+                            </form>
                         </div>
 
                         <!-- ========== TABLE VIEW DENGAN STYLE UI PERTAMA ========== -->
@@ -1870,6 +1616,66 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!-- PAGINATION - COMPACT -->
+                            @if ($units instanceof \Illuminate\Pagination\LengthAwarePaginator && $units->total() > 0)
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 pt-2">
+                                    <div class="pagination-info mb-2 mb-sm-0">
+                                        Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} unit
+                                    </div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                            {{-- Previous Page Link --}}
+                                            @if ($units->onFirstPage())
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->previousPageUrl() }}"
+                                                        rel="prev" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+
+                                            {{-- Pagination Elements --}}
+                                            @foreach ($units->getUrlRange(max(1, $units->currentPage() - 2), min($units->lastPage(), $units->currentPage() + 2)) as $page => $url)
+                                                @if ($page == $units->currentPage())
+                                                    <li class="page-item active" aria-current="page">
+                                                        <span class="page-link">{{ $page }}</span>
+                                                    </li>
+                                                @else
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                            href="{{ $units->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+
+                                            {{-- Next Page Link --}}
+                                            @if ($units->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->nextPageUrl() }}"
+                                                        rel="next" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- GRID VIEW -->
@@ -2620,32 +2426,29 @@
                                                                         class="fw-medium">{{ $a->name }}</span>
                                                                 </div>
                                                             </td>
-                                                            <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}
-                                            </div>
+                                                            <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}</td>
+                                                            <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-sm btn-gradient-success pilihAgency" data-id="{{ $a->id }}"
+                                                                    style="border-radius: 20px; padding: 0.25rem 1rem;"><i
+                                                                        class="mdi mdi-check me-1"></i>Pilih</button>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="5" class="text-center py-4"><i class="mdi mdi-office-building-off"
+                                                                    style="font-size: 2rem; opacity: 0.3;"></i>
+                                                                <p class="mt-2 text-muted">Tidak ada data agency</p>
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        </td>
-                                        <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-gradient-success pilihAgency" data-id="{{ $a->id }}"
-                                                style="border-radius: 20px; padding: 0.25rem 1rem;"><i
-                                                    class="mdi mdi-check me-1"></i>Pilih</button>
-                                        </td>
-                                        </tr>
-                                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-4"><i class="mdi mdi-office-building-off"
-                                    style="font-size: 2rem; opacity: 0.3;"></i>
-                                <p class="mt-2 text-muted">Tidak ada data agency</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">

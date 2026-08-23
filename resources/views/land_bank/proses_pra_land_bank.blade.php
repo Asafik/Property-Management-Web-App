@@ -102,31 +102,36 @@
 
         /* ===== GENERAL CARD & FORM STYLING ===== */
         .card {
-            border: none !important;
-            border-radius: 16px !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            margin-bottom: 2rem;
             transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .card:hover {
-            box-shadow: 0 8px 30px rgba(154, 85, 255, 0.08) !important;
+            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
         }
 
         .card-header {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
             border-bottom: 1px solid #e9ecef;
-            padding: 1.25rem 1.5rem;
-            border-radius: 16px 16px 0 0 !important;
+            padding: 0.85rem 1.25rem;
+        }
+
+        @media (min-width: 576px) {
+            .card-header {
+                padding: 1rem 1.25rem;
+            }
         }
 
         .card-title {
+            font-size: 1.05rem;
             font-weight: 700;
-            color: #9a55ff;
+            color: #2c2e3f;
             margin-bottom: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .form-label {
@@ -566,44 +571,86 @@
             border-color: #e9ecef !important;
             cursor: not-allowed !important;
         }
+
+        /* ===== OPTIMASI LEBAR & PADDING (DESKTOP, TABLET & MOBILE) ===== */
+        .content-wrapper {
+            padding: 1.25rem 1rem !important;
+        }
+
+        .card-body {
+            padding: 1.25rem 1.5rem;
+        }
+
+        /* Mode Tablet (iPad / 768px - 1024px) */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 1.15rem 0.85rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+        }
+
+        /* Mode HP / Mobile */
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 0.85rem 0.65rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+            .card-body {
+                padding: 0.85rem 0.85rem !important;
+            }
+            .step-wizard {
+                padding: 0;
+            }
+            .step-circle {
+                width: 38px;
+                height: 38px;
+                font-size: 0.95rem;
+            }
+            .step-title {
+                font-size: 0.725rem;
+            }
+        }
     </style>
 
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-        <!-- HEADER SECTION -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
+        <!-- HEADER SECTION (Tanpa Card Box) -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div>
-                                <h3 class="text-dark mb-1">
-                                    @if ($land)
-                                        @if($land->status == 'approved' || $land->status == 'rejected')
-                                            Detail Pra Tanah
-                                        @else
-                                            Proses Pra Tanah
-                                        @endif
-                                    @else
-                                        Tambah Pra Tanah Baru
-                                    @endif
-                                </h3>
-                                <p class="text-muted mb-0">
-                                    @if ($land)
-                                        Mengelola dan mengulas alur pelepasan tanah untuk <strong>{{ $land->land_name }}</strong>
-                                    @else
-                                        Inisialisasi data penawaran awal makelar (Fase 1)
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 px-1">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">
+                            <i class="mdi mdi-hand-holding-usd me-2" style="color: #9a55ff;"></i>
+                            @if ($land)
+                                @if($land->status == 'approved' || $land->status == 'rejected')
+                                    Detail Pra Tanah
+                                @else
+                                    Proses Pra Tanah
+                                @endif
+                            @else
+                                Tambah Pra Tanah Baru
+                            @endif
+                        </h3>
+                        <p class="text-muted mb-0">
+                            @if ($land)
+                                Mengelola dan mengulas alur pelepasan tanah untuk <strong>{{ $land->land_name }}</strong>
+                            @else
+                                Inisialisasi data penawaran awal makelar (Fase 1)
+                            @endif
+                        </p>
+                    </div>
 
-                        <!-- BUTTON KEMBALI -->
-                        <div>
-                            <a href="{{ route('pralandbank.all') }}" class="btn btn-outline-secondary" style="border-radius: 8px; font-weight: 500; height: 42px; display: inline-flex; align-items: center; gap: 6px; padding: 0 16px;">
-                                <i class="mdi mdi-arrow-left fs-5"></i> Kembali
-                            </a>
-                        </div>
+                    <!-- BUTTON KEMBALI -->
+                    <div>
+                        <a href="{{ route('pralandbank.all') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" style="border-radius: 8px; font-weight: 500; height: 40px; padding: 0 16px;">
+                            <i class="mdi mdi-arrow-left fs-5"></i> Kembali
+                        </a>
                     </div>
                 </div>
             </div>
@@ -646,10 +693,10 @@
 
                 <!-- ================= FASE 1 CONTAINER ================= -->
                 <div id="containerFase1" class="d-none">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">
-                                <i class="mdi mdi-account-tie"></i> FASE 1: Informasi Makelar & Penawaran Awal
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                                <i class="mdi mdi-account-tie me-2" style="color: #9a55ff;"></i>FASE 1: Informasi Makelar & Penawaran Awal
                             </h5>
                         </div>
                         <div class="card-body">
@@ -754,10 +801,10 @@
 
                 <!-- ================= FASE 2 CONTAINER ================= -->
                 <div id="containerFase2" class="d-none">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">
-                                <i class="mdi mdi-magnify"></i> FASE 2: Verifikasi Kelayakan, Dokumen & Spasial Map
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                                <i class="mdi mdi-magnify me-2" style="color: #9a55ff;"></i>FASE 2: Verifikasi Kelayakan, Dokumen & Spasial Map
                             </h5>
                         </div>
                         <div class="card-body">
@@ -777,23 +824,6 @@
                                             <input type="date" class="form-control" name="tgl_survey" value="{{ $land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label class="form-label">Petugas Survey</label>
-                                            <input type="text" class="form-control" name="petugas" value="{{ $land->survey_by ?? '' }}" placeholder="Nama petugas survey" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Kesimpulan Survey</label>
-                                            <select class="form-select" name="hasil_survey" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="belum" {{ $land && $land->survey_result == 'belum' ? 'selected' : '' }}>Belum Survey</option>
-                                                <option value="sesuai" {{ $land && $land->survey_result == 'sesuai' ? 'selected' : '' }}>Sesuai</option>
-                                                <option value="tidak_sesuai" {{ $land && $land->survey_result == 'tidak_sesuai' ? 'selected' : '' }}>Tidak Sesuai</option>
-                                                <option value="survey_ulang" {{ $land && $land->survey_result == 'survey_ulang' ? 'selected' : '' }}>Perlu Survey Ulang</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <label class="form-label">Catatan Hasil Survey Lapangan</label>
-                                            <textarea class="form-control" name="catatan_survey" rows="3" placeholder="Catatan mendalam kelayakan fisik jalan, tiang listrik, kontur tanah..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $land->survey_notes ?? '' }}</textarea>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Lahan</label>
                                             <select class="form-select" name="land_status_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih Status Lahan</option>
@@ -802,7 +832,7 @@
                                                 <option value="pekarangan" {{ $land && $land->land_status == 'pekarangan' ? 'selected' : '' }}>Pekarangan</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-4 mb-3">
                                             <label class="form-label">Kondisi Air</label>
                                             <select class="form-select" name="water_condition_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih Kondisi Air</option>
@@ -1027,10 +1057,10 @@
 
                 <!-- ================= FASE 3 CONTAINER ================= -->
                 <div id="containerFase3" class="d-none">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">
-                                <i class="mdi mdi-check-decagram"></i> FASE 3: Sidang & Keputusan Akhir
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                                <i class="mdi mdi-check-decagram me-2" style="color: #9a55ff;"></i>FASE 3: Sidang & Keputusan Akhir
                             </h5>
                         </div>
                         <div class="card-body">

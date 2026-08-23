@@ -1,1586 +1,844 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Tambah Properti - Properti Management')
+@section('title', 'Tambah Pasca Land Bank - Property Management App')
+
+@push('styles')
+<style>
+/* ===== 1. STYLING CHECKBOX FASILITAS MODERN ===== */
+.custom-checkbox-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.custom-checkbox-card {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    flex: 1 1 calc(25% - 0.75rem);
+    min-width: 140px;
+    margin: 0;
+}
+
+.custom-checkbox-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.custom-checkbox-card .checkbox-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.custom-checkbox-card:hover .checkbox-card-inner {
+    border-color: #da8cff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.12);
+}
+
+.custom-checkbox-card .check-icon {
+    font-size: 1.35rem;
+    color: #6c757d;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-checkbox-card .check-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2c2e3f;
+    transition: all 0.25s ease;
+}
+
+.custom-checkbox-card input[type="checkbox"]:checked + .checkbox-card-inner {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f9f5ff, #f2e9ff);
+    box-shadow: 0 4px 15px rgba(154, 85, 255, 0.2);
+}
+
+.custom-checkbox-card input[type="checkbox"]:checked + .checkbox-card-inner .check-icon {
+    color: #9a55ff;
+    transform: scale(1.15);
+}
+
+.custom-checkbox-card input[type="checkbox"]:checked + .checkbox-card-inner .check-text {
+    color: #7a30e8;
+    font-weight: 700;
+}
+
+/* ===== 2. STYLING UPLOAD DOKUMEN MODERN ===== */
+.upload-card-box {
+    position: relative;
+    border: 2px dashed #d9dce2;
+    border-radius: 12px;
+    padding: 1rem 0.85rem;
+    background: #fafbfc;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 110px;
+}
+
+.upload-card-box:hover {
+    border-color: #9a55ff;
+    background: #fbf9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.1);
+}
+
+.upload-card-box input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.upload-card-box .upload-icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(154, 85, 255, 0.1);
+    color: #9a55ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.upload-card-box:hover .upload-icon-circle {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.upload-card-box .upload-title-text {
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    word-break: break-word;
+    margin-bottom: 2px;
+}
+
+.upload-card-box .upload-format-hint {
+    font-size: 0.72rem;
+    color: #8c93a0;
+}
+
+.upload-card-box .upload-size-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.12);
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+    display: none;
+}
+
+/* ===== 3. STYLING PETA GOOGLE MAP ===== */
+.map-outer-card {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    position: relative;
+}
+
+#map {
+    height: 380px;
+    width: 100%;
+    z-index: 1;
+}
+
+.leaflet-control-layers {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+    border: none !important;
+    font-family: 'Nunito', sans-serif !important;
+    font-weight: 600 !important;
+    padding: 6px 10px !important;
+}
+</style>
+@endpush
 
 @section('content')
-    <style>
-        /* ===== STYLE CSS KHUSUS UNTUK HALAMAN TAMBAH PROPERTI ===== */
-        /* Form Styling */
-        .properti-form-group {
-            margin-bottom: 1rem;
-        }
 
-        @media (min-width: 768px) {
-            .properti-form-group {
-                margin-bottom: 1.2rem;
-            }
-        }
-
-        .properti-form-group label,
-        .properti-form-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-            display: block;
-        }
-
-        @media (min-width: 768px) {
-
-            .properti-form-group label,
-            .properti-form-label {
-                font-size: 0.85rem;
-                margin-bottom: 0.4rem;
-            }
-        }
-
-        .properti-form-control,
-        input[type="text"].properti-form-control,
-        input[type="number"].properti-form-control,
-        input[type="date"].properti-form-control,
-        select.properti-form-control,
-        textarea.properti-form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 0.7rem 0.8rem;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            width: 100%;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        @media (min-width: 768px) {
-
-            .properti-form-control,
-            input[type="text"].properti-form-control,
-            input[type="number"].properti-form-control,
-            input[type="date"].properti-form-control,
-            select.properti-form-control,
-            textarea.properti-form-control {
-                padding: 0.6rem 0.75rem;
-                font-size: 0.9rem;
-                border-radius: 8px;
-            }
-        }
-
-        .properti-form-control:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        .properti-form-control.is-invalid {
-            border-color: #dc3545;
-        }
-
-        .properti-form-control.is-invalid:focus {
-            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-        }
-
-        select.properti-form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 12px;
-            padding-right: 2rem;
-        }
-
-        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM ===== */
-        .select2-container--bootstrap-5 .select2-selection {
-            border: 1px solid #e9ecef !important;
-            border-radius: 10px !important;
-            padding: 0.45rem 0.8rem !important;
-            min-height: 42px !important;
-            height: 42px !important;
-            font-family: 'Nunito', sans-serif !important;
-            background-color: #ffffff !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            color: #2c2e3f !important;
-            font-size: 0.9rem !important;
-            line-height: 26px !important;
-            padding-left: 0 !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-            height: 40px !important;
-            right: 10px !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
-            border-color: #9a55ff transparent transparent transparent !important;
-        }
-
-        @media (min-width: 768px) {
-            .select2-container--bootstrap-5 .select2-selection {
-                min-height: 38px !important;
-                height: 38px !important;
-                padding: 0.35rem 0.75rem !important;
-                border-radius: 8px !important;
-            }
-
-            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-                line-height: 24px !important;
-            }
-
-            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-                height: 36px !important;
-            }
-        }
-
-        .select2-container--bootstrap-5 .select2-selection:hover {
-            border-color: #9a55ff !important;
-        }
-
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-        .select2-container--bootstrap-5.select2-container--open .select2-selection {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #e9ecef !important;
-            border-radius: 10px !important;
-            overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option {
-            padding: 0.6rem 0.8rem !important;
-            font-size: 0.9rem !important;
-            font-family: 'Nunito', sans-serif !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem !important;
-            font-family: 'Nunito', sans-serif !important;
-            margin: 0.5rem !important;
-            width: calc(100% - 1rem) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
-            color: #a5b3cb !important;
-        }
-
-        /* Paksa hanya 5 item yang tampil di Select2 */
-        .select2-limited-items .select2-results__options {
-            max-height: 200px !important;
-            /* Kurang lebih 5 item */
-            overflow-y: auto !important;
-        }
-
-        /* Styling scrollbar */
-        .select2-limited-items .select2-results__options::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .select2-container {
-            display: block !important;
-            width: 100% !important;
-        }
-
-        /* Input Group */
-        .properti-input-group {
-            display: flex;
-            align-items: stretch;
-            width: 100%;
-        }
-
-        .properti-input-group-prepend {
-            display: flex;
-        }
-
-        .properti-input-group-text {
-            display: flex;
-            align-items: center;
-            padding: 0.7rem 0.8rem;
-            font-size: 0.85rem;
-            font-weight: 400;
-            line-height: 1;
-            color: #6c7383;
-            text-align: center;
-            white-space: nowrap;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 1px solid #e9ecef;
-            border-radius: 10px 0 0 10px;
-            border-right: none;
-        }
-
-        @media (min-width: 768px) {
-            .properti-input-group-text {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        .properti-input-group .properti-form-control {
-            border-radius: 0 10px 10px 0;
-        }
-
-        /* Button Styling */
-        .properti-btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            display: inline-block;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            width: 100%;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .properti-btn {
-                width: auto;
-                padding: 0.5rem 1.2rem;
-            }
-        }
-
-        .properti-btn-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .properti-btn-primary:hover {
-            background: linear-gradient(to right, #c77cff, #8a45e6);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
-        }
-
-        .properti-btn-secondary {
-            background: linear-gradient(135deg, #f0f2f5, #e4e6ea);
-            border: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        .properti-btn-secondary:hover {
-            background: linear-gradient(135deg, #e4e6ea, #d8dce2);
-            transform: translateY(-2px);
-            color: #2c2e3f;
-        }
-
-        .properti-btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
-            color: #9a55ff;
-        }
-
-        .properti-btn-outline-primary:hover {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .properti-btn-sm {
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-        }
-
-        /* Text colors */
-        .properti-text-muted {
-            color: #a5b3cb !important;
-            font-size: 0.7rem;
-            display: block;
-            margin-top: 0.2rem;
-        }
-
-        .properti-text-primary {
-            color: #9a55ff !important;
-        }
-
-        .properti-text-danger {
-            color: #dc3545 !important;
-        }
-
-        /* Divider */
-        .properti-hr {
-            border-top: 1px solid #e9ecef;
-            margin: 0.8rem 0;
-        }
-
-        /* Alert Styling */
-        .properti-alert {
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-            font-size: 0.8rem;
-            border-left: 4px solid;
-            margin-bottom: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .properti-alert {
-                padding: 0.9rem 1rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        .properti-alert-info {
-            background: linear-gradient(135deg, #f6f9ff, #f0f4ff);
-            color: #2c2e3f;
-            border-left-color: #9a55ff;
-        }
-
-        .properti-alert-info i {
-            color: #9a55ff;
-        }
-
-        .properti-alert-success {
-            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
-            color: #2c2e3f;
-            border-left-color: #28a745;
-        }
-
-        .properti-alert-danger {
-            background: linear-gradient(135deg, #fff0f0, #ffe6e6);
-            color: #2c2e3f;
-            border-left-color: #dc3545;
-        }
-
-        /* Section Title */
-        .properti-section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #9a55ff !important;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e9ecef;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .properti-section-title i {
-            color: #9a55ff;
-            font-size: 1.1rem;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 6px;
-            border-radius: 8px;
-        }
-
-        /* Card Styling */
-        .properti-card {
-            border: 1px solid #e9ecef;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-            background: #ffffff;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .properti-card .properti-card-body {
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .properti-card .properti-card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Map Container */
-        .properti-map-container {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e9ecef;
-        }
-
-        /* Grid System */
-        .properti-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -0.3rem;
-            margin-left: -0.3rem;
-        }
-
-        .properti-col-6,
-        .properti-col-12,
-        .properti-col-sm-6,
-        .properti-col-md-2,
-        .properti-col-md-3,
-        .properti-col-md-4,
-        .properti-col-md-6 {
-            position: relative;
-            width: 100%;
-            padding-right: 0.3rem;
-            padding-left: 0.3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 576px) {
-            .properti-col-sm-6 {
-                flex: 0 0 50%;
-                max-width: 50%;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .properti-col-md-2 {
-                flex: 0 0 16.666667%;
-                max-width: 16.666667%;
-            }
-
-            .properti-col-md-3 {
-                flex: 0 0 25%;
-                max-width: 25%;
-            }
-
-            .properti-col-md-4 {
-                flex: 0 0 33.333333%;
-                max-width: 33.333333%;
-            }
-
-            .properti-col-md-6 {
-                flex: 0 0 50%;
-                max-width: 50%;
-            }
-        }
-
-        /* ===== MODERN CHECKBOX STYLING ===== */
-        .properti-checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-
-        .properti-checkbox-wrapper {
-            position: relative;
-            min-width: 140px;
-            flex: 1 1 auto;
-        }
-
-        .properti-checkbox-input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .properti-checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0.75rem 1.2rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .properti-checkbox-label::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(154, 85, 255, 0.1), rgba(218, 140, 255, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .properti-checkbox-wrapper:hover .properti-checkbox-label {
-            border-color: #9a55ff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
-        }
-
-        .properti-checkbox-wrapper:hover .properti-checkbox-label::before {
-            opacity: 1;
-        }
-
-        .properti-check-icon {
-            font-size: 1.4rem;
-            color: #d0d4db;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
-            border-radius: 50%;
-            padding: 2px;
-        }
-
-        .properti-checkbox-input:checked+.properti-checkbox-label {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
-        }
-
-        .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-icon {
-            color: #9a55ff;
-            transform: scale(1.1);
-            filter: drop-shadow(0 4px 8px rgba(154, 85, 255, 0.4));
-            animation: propertiCheckPulse 0.3s ease;
-        }
-
-        .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-text {
-            color: #9a55ff;
-            font-weight: 600;
-        }
-
-        .properti-check-text {
-            transition: all 0.3s ease;
-            position: relative;
-            font-size: 0.9rem;
-            color: #2c2e3f;
-        }
-
-        .properti-check-text::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            transition: width 0.3s ease;
-        }
-
-        .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-text::before {
-            width: 100%;
-        }
-
-        @keyframes propertiCheckPulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1.1);
-            }
-        }
-
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
-        .properti-file-upload-modern {
-            position: relative;
-            width: 100%;
-        }
-
-        .properti-file-upload-modern input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
-
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
-
-        .properti-file-upload-modern:hover .properti-file-label-modern {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern i {
-            font-size: 1.6rem;
-            color: #9a55ff;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
-            flex: 1;
-            width: 100%;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
-            display: block;
-            font-weight: 600;
-            color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-            font-size: 0.7rem;
-            color: #9a55ff;
-            font-weight: 600;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-            margin-top: 5px;
-        }
-
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-                margin-top: 0;
-            }
-        }
-
-        /* Button Group */
-        .properti-btn-group {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .properti-btn-group .btn-right {
-            display: flex;
-            gap: 0.5rem;
-            margin-left: auto;
-        }
-
-        @media (max-width: 576px) {
-            .properti-btn-group {
-                flex-direction: column;
-            }
-
-            .properti-btn-group .properti-btn {
-                width: 100%;
-            }
-
-            .properti-btn-group .btn-right {
-                margin-left: 0;
-                width: 100%;
-                flex-direction: column;
-            }
-        }
-
-        /* Custom responsive adjustments */
-        @media (max-width: 768px) {
-            .content-wrapper {
-                padding: 0.5rem !important;
-            }
-
-            .container-fluid {
-                padding-left: 0.25rem !important;
-                padding-right: 0.25rem !important;
-            }
-
-            .properti-card {
-                border-radius: 8px !important;
-                margin-bottom: 0.5rem !important;
-            }
-
-            .properti-card .properti-card-body {
-                padding: 0.85rem !important;
-            }
-
-            .properti-row {
-                flex-direction: column;
-                margin-right: -0.2rem !important;
-                margin-left: -0.2rem !important;
-            }
-
-            .properti-row>[class*="properti-col-"] {
-                width: 100% !important;
-                max-width: 100% !important;
-                padding-right: 0.2rem !important;
-                padding-left: 0.2rem !important;
-                margin-bottom: 0.75rem !important;
-            }
-
-            .properti-btn {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-
-            .properti-checkbox-group {
-                gap: 0.5rem;
-            }
-
-            .properti-checkbox-wrapper {
-                min-width: calc(50% - 0.5rem);
-                flex: 0 0 calc(50% - 0.5rem);
-            }
-
-            .properti-checkbox-label {
-                padding: 0.6rem 0.8rem;
-            }
-
-            .properti-check-text {
-                font-size: 0.85rem;
-            }
-
-            .properti-check-icon {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (min-width: 577px) and (max-width: 768px) {
-            .properti-btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.9rem;
-            }
-
-            .properti-checkbox-wrapper {
-                min-width: 120px;
-            }
-        }
-
-        /* Better touch targets for mobile */
-        input,
-        select,
-        textarea,
-        button {
-            font-size: 16px !important;
-        }
-
-        /* Alert transition */
-        .properti-alert-transition {
-            transition: opacity 0.5s ease;
-        }
-    </style>
-
-
-    <div class="container-fluid px-2 px-md-3 px-lg-4">
-        <div class="row">
-            <div class="col-12 grid-margin">
-                <div class="properti-card shadow-sm">
-                    <div class="properti-card-body p-3 p-md-4 p-lg-5">
-
-                        <h4 class="properti-section-title">
-                            <i class="fas fa-plus-circle me-2"></i>
-                            Tambah Data Tanah / Properti
-                        </h4>
-
-                        {{-- ERROR VALIDATION --}}
-                        @if (session('success'))
-                            <div id="successAlert" class="properti-alert properti-alert-success">
-                                <i class="fas fa-check-circle me-2"></i>
-                                {{ session('success') }}
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+
+    <!-- Header Halaman (Tanpa Card Box) -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 px-1">
+                <div>
+                    <h3 class="text-dark mb-1 fw-bold">
+                        <i class="mdi mdi-home-plus me-2" style="color: #9a55ff;"></i>Tambah Pasca Land Bank
+                    </h3>
+                    <p class="text-muted mb-0">Inisialisasi dan lengkapi data tanah pasca akuisisi untuk pengembangan proyek baru</p>
+                </div>
+                <!-- Tombol Kembali mentok kanan -->
+                <a href="{{ route('properti-all') }}" class="btn btn-sm btn-gradient-secondary d-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
+                    <i class="mdi mdi-arrow-left" style="font-size: 1rem;"></i>
+                    <span>Kembali</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Tambah Properti -->
+    <div class="row mt-2 mt-sm-2 mt-md-3">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-file-document-edit-outline me-2"></i>Formulir Data Properti Pasca Land Bank
+                    </h5>
+                    <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.75rem;">
+                        <span class="text-danger">*</span> Wajib Diisi
+                    </span>
+                </div>
+
+                <div class="card-body p-3 p-md-4">
+                    {{-- Alert Session --}}
+                    @if (session('success'))
+                        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center gap-2 mb-4 py-2 px-3" style="border-radius: 8px;">
+                            <i class="mdi mdi-check-circle" style="font-size: 1.25rem;"></i>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-0 shadow-sm mb-4 py-2 px-3" style="border-radius: 8px;">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="mdi mdi-alert-circle" style="font-size: 1.25rem;"></i>
+                                <span class="fw-bold">Terdapat kesalahan pengisian data:</span>
                             </div>
-                        @endif
+                            <ul class="mb-0 ps-3 small">
+                                @foreach ($errors->all() as $e)
+                                    <li>{{ $e }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                        @if ($errors->any())
-                            <div class="properti-alert properti-alert-danger" role="alert">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                <ul class="mb-0 ps-3">
-                                    @foreach ($errors->all() as $e)
-                                        <li>{{ $e }}</li>
-                                    @endforeach
-                                </ul>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-                        @endif
+                    <form action="{{ route('properti.store') }}" method="POST" enctype="multipart/form-data" class="main-form">
+                        @csrf
 
-                        <form action="{{ route('properti.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
+                        <!-- Alert info -->
+                        <div class="alert alert-info border-0 shadow-sm d-flex align-items-center gap-2 mb-4 py-2 px-3" style="background: rgba(154, 85, 255, 0.08); border-left: 4px solid #9a55ff !important; border-radius: 8px;">
+                            <i class="mdi mdi-information-outline text-primary" style="font-size: 1.25rem;"></i>
+                            <span class="text-dark" style="font-size: 0.85rem;">
+                                Setelah menyimpan data properti ini, Anda dapat melanjutkan ke tahapan verifikasi legalitas dokumen serta pembagian blok/kavling unit.
+                            </span>
+                        </div>
 
-                            {{-- ALERT --}}
-                            <div class="properti-alert properti-alert-info d-flex align-items-center flex-wrap"
-                                role="alert">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <span>Setelah simpan data tanah, Anda bisa lanjut verifikasi legal & kavling</span>
-                            </div>
+                        {{-- ================= 1. INFORMASI DASAR TANAH ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-home-city" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">1. Informasi Dasar Tanah</h6>
+                        </div>
 
-                            {{-- ================= INFORMASI DASAR ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-home me-2"></i>
-                                Informasi Dasar Tanah
-                            </h5>
-
-                            <div class="properti-row">
-                                <div class="properti-col-md-6">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Nama Tanah/Proyek <span
-                                                class="properti-text-danger">*</span></label>
-                                        <input type="text" name="namaTanah"
-                                            class="properti-form-control @error('namaTanah') is-invalid @enderror"
-                                            value="{{ old('namaTanah') }}" required>
-                                        @error('namaTanah')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="properti-col-md-6">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">
-                                            Nama Perusahaan <span class="properti-text-danger">*</span>
-                                        </label>
-
-                                        {{-- SELECT DENGAN SEARCH (SELECT2) - PAKSA 5 ITEM --}}
-                                        <select name="company_profile_id" id="companySelect"
-                                            class="properti-form-control @error('company_profile_id') is-invalid @enderror"
-                                            required>
-                                            <option value="">-- Pilih Perusahaan --</option>
-                                            @foreach ($companies as $company)
-                                                <option value="{{ $company->id }}"
-                                                    {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
-                                                    {{ $company->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <small class="properti-text-muted">Ketik untuk mencari perusahaan</small>
-
-                                        @error('company_profile_id')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-6">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Kepemilikan <span
-                                                class="properti-text-danger">*</span></label>
-                                        <select name="statusKepemilikan"
-                                            class="properti-form-control @error('statusKepemilikan') is-invalid @enderror"
-                                            required>
-                                            <option value="">-- Pilih Status --</option>
-                                            <option value="SHM"
-                                                {{ old('statusKepemilikan') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat
-                                                Hak Milik)</option>
-                                            <option value="HGB"
-                                                {{ old('statusKepemilikan') == 'HGB' ? 'selected' : '' }}>HGB (Hak Guna
-                                                Bangunan)</option>
-                                            <option value="HGU"
-                                                {{ old('statusKepemilikan') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna
-                                                Usaha)</option>
-                                            <option value="HP"
-                                                {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>
-                                                HP (Hak Pakai)</option>
-                                        </select>
-                                        @error('statusKepemilikan')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="properti-form-group">
-                                <label class="properti-form-label">Alamat Lengkap <span
-                                        class="properti-text-danger">*</span></label>
-                                <input type="text" name="lokasi"
-                                    class="properti-form-control @error('lokasi') is-invalid @enderror"
-                                    value="{{ old('lokasi') }}" placeholder="Jl. Contoh No. 123" required>
-                                @error('lokasi')
-                                    <div class="properti-text-danger">{{ $message }}</div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Nama Tanah / Proyek <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="namaTanah" class="form-control @error('namaTanah') is-invalid @enderror"
+                                    placeholder="Contoh: Green Harmony Residence Tahap 2"
+                                    value="{{ old('namaTanah') }}" required>
+                                @error('namaTanah')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <div class="properti-row">
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Kelurahan/Desa</label>
-                                        <input type="text" name="kelurahan" class="properti-form-control"
-                                            value="{{ old('kelurahan') }}" placeholder="Kelurahan">
-                                    </div>
-                                </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Kecamatan</label>
-                                        <input type="text" name="kecamatan" class="properti-form-control"
-                                            value="{{ old('kecamatan') }}" placeholder="Kecamatan">
-                                    </div>
-                                </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Kota/Kabupaten</label>
-                                        <input type="text" name="kota" class="properti-form-control"
-                                            value="{{ old('kota') }}" placeholder="Kota">
-                                    </div>
-                                </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Provinsi</label>
-                                        <input type="text" name="provinsi" class="properti-form-control"
-                                            value="{{ old('provinsi') }}" placeholder="Provinsi">
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Nama Perusahaan (PT) <span class="text-danger">*</span>
+                                </label>
+                                <select name="company_profile_id" id="companySelect" class="form-control @error('company_profile_id') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Perusahaan (PT) --</option>
+                                    @foreach ($companies as $company)
+                                        <option value="{{ $company->id }}" {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                            {{ $company->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('company_profile_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Status Kepemilikan <span class="text-danger">*</span>
+                                </label>
+                                <select name="statusKepemilikan" class="form-control @error('statusKepemilikan') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Status Kepemilikan --</option>
+                                    <option value="SHM" {{ old('statusKepemilikan') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
+                                    <option value="HGB" {{ old('statusKepemilikan') == 'HGB' ? 'selected' : '' }}>HGB (Hak Guna Bangunan)</option>
+                                    <option value="HGU" {{ old('statusKepemilikan') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna Usaha)</option>
+                                    <option value="HP" {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>HP (Hak Pakai)</option>
+                                </select>
+                                @error('statusKepemilikan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <div class="properti-row">
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Luas Tanah (m²) <span
-                                                class="properti-text-danger">*</span></label>
-                                        <input type="number" name="luasTanah"
-                                            class="properti-form-control @error('luasTanah') is-invalid @enderror"
-                                            value="{{ old('luasTanah') }}" min="0" step="0.01" required>
-                                        @error('luasTanah')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Alamat Lengkap <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="lokasi" class="form-control @error('lokasi') is-invalid @enderror"
+                                    value="{{ old('lokasi') }}" placeholder="Contoh: Jl. Raya Kaliurang Km 9.5" required>
+                                @error('lokasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Kelurahan / Desa</label>
+                                <input type="text" name="kelurahan" class="form-control" value="{{ old('kelurahan') }}" placeholder="Nama Kelurahan">
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Kecamatan</label>
+                                <input type="text" name="kecamatan" class="form-control" value="{{ old('kecamatan') }}" placeholder="Nama Kecamatan">
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Kota / Kabupaten</label>
+                                <input type="text" name="kota" class="form-control" value="{{ old('kota') }}" placeholder="Nama Kota/Kabupaten">
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Provinsi</label>
+                                <input type="text" name="provinsi" class="form-control" value="{{ old('provinsi') }}" placeholder="Nama Provinsi">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Luas Tanah (m²) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="luasTanah" class="form-control @error('luasTanah') is-invalid @enderror"
+                                    value="{{ old('luasTanah') }}" min="0" step="0.01" placeholder="Contoh: 15000" required>
+                                @error('luasTanah')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Harga Perolehan <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted fw-semibold">Rp</span>
+                                    <input type="text" name="hargaPerolehan" class="form-control @error('hargaPerolehan') is-invalid @enderror"
+                                        value="{{ old('hargaPerolehan') }}" placeholder="1.500.000.000" required>
                                 </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Harga Perolehan <span
-                                                class="properti-text-danger">*</span></label>
-                                        <div class="properti-input-group">
-                                            <div class="properti-input-group-prepend">
-                                                <span class="properti-input-group-text">Rp</span>
-                                            </div>
-                                            <input type="text" name="hargaPerolehan"
-                                                class="properti-form-control @error('hargaPerolehan') is-invalid @enderror"
-                                                value="{{ old('hargaPerolehan') }}" placeholder="1.000.000" required>
+                                @error('hargaPerolehan')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Tanggal Perolehan <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" name="tanggalPerolehan" class="form-control @error('tanggalPerolehan') is-invalid @enderror"
+                                    value="{{ old('tanggalPerolehan') }}" required>
+                                @error('tanggalPerolehan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Kode Pos</label>
+                                <input type="text" name="kodePos" class="form-control" value="{{ old('kodePos') }}" placeholder="55581">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Zonasi</label>
+                                <input type="text" name="zonasi" class="form-control" value="{{ old('zonasi') }}" placeholder="Contoh: Perumahan / Komersial">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Lebar Jalan Utama (m)</label>
+                                <input type="number" name="lebarJalan" class="form-control" value="{{ old('lebarJalan') }}" step="0.1" min="0" placeholder="Contoh: 8.5">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Jenis Permukaan Jalan</label>
+                                <select name="jenisJalan" class="form-control">
+                                    <option value="">-- Pilih Jenis Jalan --</option>
+                                    <option value="Aspal" {{ old('jenisJalan') == 'Aspal' ? 'selected' : '' }}>Aspal Hotmix</option>
+                                    <option value="Paving Blok" {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok</option>
+                                    <option value="Cor Beton" {{ old('jenisJalan') == 'Cor Beton' ? 'selected' : '' }}>Cor Beton (Rabat)</option>
+                                    <option value="Tanah" {{ old('jenisJalan') == 'Tanah' ? 'selected' : '' }}>Tanah / Pengerasan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 1. STYLING CHECKBOX FASILITAS SEKITAR -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark d-block mb-2" style="font-size: 0.85rem;">Fasilitas di Sekitar Lokasi</label>
+                            <div class="custom-checkbox-wrapper">
+                                <label class="custom-checkbox-card" for="fasSekolah">
+                                    <input type="checkbox" name="fasSekolah" id="fasSekolah" value="1" {{ old('fasSekolah') ? 'checked' : '' }}>
+                                    <div class="checkbox-card-inner">
+                                        <i class="mdi mdi-school check-icon"></i>
+                                        <span class="check-text">Dekat Sekolah</span>
+                                    </div>
+                                </label>
+
+                                <label class="custom-checkbox-card" for="fasRumahSakit">
+                                    <input type="checkbox" name="fasRumahSakit" id="fasRumahSakit" value="1" {{ old('fasRumahSakit') ? 'checked' : '' }}>
+                                    <div class="checkbox-card-inner">
+                                        <i class="mdi mdi-hospital-building check-icon"></i>
+                                        <span class="check-text">Rumah Sakit</span>
+                                    </div>
+                                </label>
+
+                                <label class="custom-checkbox-card" for="fasMall">
+                                    <input type="checkbox" name="fasMall" id="fasMall" value="1" {{ old('fasMall') ? 'checked' : '' }}>
+                                    <div class="checkbox-card-inner">
+                                        <i class="mdi mdi-shopping check-icon"></i>
+                                        <span class="check-text">Mall / Swalayan</span>
+                                    </div>
+                                </label>
+
+                                <label class="custom-checkbox-card" for="fasTransportasi">
+                                    <input type="checkbox" name="fasTransportasi" id="fasTransportasi" value="1" {{ old('fasTransportasi') ? 'checked' : '' }}>
+                                    <div class="checkbox-card-inner">
+                                        <i class="mdi mdi-bus check-icon"></i>
+                                        <span class="check-text">Transportasi Umum</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Deskripsi & Catatan Properti</label>
+                            <textarea name="deskripsi" class="form-control" rows="3" placeholder="Tambahkan catatan khusus, potensi pengembangan, atau deskripsi lingkungan...">{{ old('deskripsi') }}</textarea>
+                        </div>
+
+                        {{-- ================= 2. DOKUMEN LEGALITAS ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-file-certificate" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">2. Nomor Dokumen Legalitas</h6>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            @foreach ($documentTypes as $type)
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                        Nomor {{ $type->name }}
+                                    </label>
+                                    <input type="text" name="documents[{{ $type->id }}][number]" class="form-control" placeholder="Contoh: No. {{ $type->name }}">
+                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- ================= 3. UPLOAD BERKAS DOKUMEN (MODERN DRAG/DROP STYLE) ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-cloud-upload" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">3. Upload Berkas Dokumen Legalitas</h6>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            @foreach ($documentTypes as $type)
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.85rem;">
+                                        Upload {{ $type->name }}
+                                    </label>
+                                    <div class="upload-card-box">
+                                        <input type="file" name="documents[{{ $type->id }}][file]"
+                                            id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png,.webp" class="file-upload-input" data-label="{{ $type->name }}">
+                                        
+                                        <div class="upload-icon-circle">
+                                            <i class="mdi mdi-cloud-upload-outline"></i>
                                         </div>
-                                        @error('hargaPerolehan')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
+                                        <span class="upload-title-text">Pilih Berkas {{ $type->name }}</span>
+                                        <small class="upload-format-hint">Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                        <span class="upload-size-badge"></span>
                                     </div>
                                 </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Tanggal Perolehan <span
-                                                class="properti-text-danger">*</span></label>
-                                        <input type="date" name="tanggalPerolehan"
-                                            class="properti-form-control @error('tanggalPerolehan') is-invalid @enderror"
-                                            value="{{ old('tanggalPerolehan') }}" required>
-                                        @error('tanggalPerolehan')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Kode Pos</label>
-                                        <input type="text" name="kodePos" class="properti-form-control"
-                                            value="{{ old('kodePos') }}" placeholder="12345">
-                                    </div>
-                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- ================= 4. STATUS & PRIORITAS ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-tag-check" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">4. Status Operasional & Verifikasi</h6>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Status Legalitas <span class="text-danger">*</span>
+                                </label>
+                                <select name="statusLegal" class="form-control @error('statusLegal') is-invalid @enderror" required>
+                                    <option value="Pending" {{ old('statusLegal') == 'Pending' ? 'selected' : '' }}>Pending (Dalam Pemeriksaan)</option>
+                                    <option value="Lengkap" {{ old('statusLegal') == 'Lengkap' ? 'selected' : '' }}>Lengkap (Terverifikasi)</option>
+                                </select>
+                                @error('statusLegal')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <div class="properti-row">
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Zonasi</label>
-                                        <input type="text" name="zonasi"
-                                            class="properti-form-control @error('zonasi') is-invalid @enderror"
-                                            value="{{ old('zonasi') }}" placeholder="Contoh: Perumahan">
-                                        @error('zonasi')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Lebar Jalan (m)</label>
-                                        <input type="number" name="lebarJalan"
-                                            class="properti-form-control @error('lebarJalan') is-invalid @enderror"
-                                            value="{{ old('lebarJalan') }}" step="0.1" min="0">
-                                        @error('lebarJalan')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Jenis Jalan</label>
-                                        <select name="jenisJalan"
-                                            class="properti-form-control @error('jenisJalan') is-invalid @enderror">
-                                            <option value="">-- Pilih Jenis Jalan --</option>
-                                            <option value="Aspal" {{ old('jenisJalan') == 'Aspal' ? 'selected' : '' }}>
-                                                Aspal</option>
-                                            <option value="Paving Blok"
-                                                {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok
-                                            </option>
-                                            <option value="Tanah" {{ old('jenisJalan') == 'Tanah' ? 'selected' : '' }}>
-                                                Tanah</option>
-                                        </select>
-                                        @error('jenisJalan')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Status Kavling <span class="text-danger">*</span>
+                                </label>
+                                <select name="statusKavling" class="form-control @error('statusKavling') is-invalid @enderror" required>
+                                    <option value="Belum" {{ old('statusKavling') == 'Belum' ? 'selected' : '' }}>Belum Dipecah</option>
+                                    <option value="Proses" {{ old('statusKavling') == 'Proses' ? 'selected' : '' }}>Dalam Proses Pecah</option>
+                                    <option value="Selesai" {{ old('statusKavling') == 'Selesai' ? 'selected' : '' }}>Selesai Dipecah</option>
+                                </select>
+                                @error('statusKavling')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            {{-- ================= MODERN CHECKBOX FASILITAS ================= --}}
-                            <div class="mt-3">
-                                <label class="properti-form-label d-block text-start">Fasilitas Sekitar</label>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Tingkat Prioritas</label>
+                                <select name="prioritas" class="form-control">
+                                    <option value="Normal" {{ old('prioritas') == 'Normal' ? 'selected' : '' }}>Normal</option>
+                                    <option value="Tinggi" {{ old('prioritas') == 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
+                                    <option value="Urgent" {{ old('prioritas') == 'Urgent' ? 'selected' : '' }}>Urgent</option>
+                                </select>
+                            </div>
+                        </div>
 
-                                <div class="properti-checkbox-group">
-                                    <div class="properti-checkbox-wrapper">
-                                        <input type="checkbox" class="properti-checkbox-input" name="fasSekolah"
-                                            id="fasSekolah" value="1" {{ old('fasSekolah') ? 'checked' : '' }}>
-                                        <label class="properti-checkbox-label" for="fasSekolah">
-                                            <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Sekolah</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="properti-checkbox-wrapper">
-                                        <input type="checkbox" class="properti-checkbox-input" name="fasRumahSakit"
-                                            id="fasRumahSakit" value="1"
-                                            {{ old('fasRumahSakit') ? 'checked' : '' }}>
-                                        <label class="properti-checkbox-label" for="fasRumahSakit">
-                                            <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Rumah Sakit</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="properti-checkbox-wrapper">
-                                        <input type="checkbox" class="properti-checkbox-input" name="fasMall"
-                                            id="fasMall" value="1" {{ old('fasMall') ? 'checked' : '' }}>
-                                        <label class="properti-checkbox-label" for="fasMall">
-                                            <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Mall</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="properti-checkbox-wrapper">
-                                        <input type="checkbox" class="properti-checkbox-input" name="fasTransportasi"
-                                            id="fasTransportasi" value="1"
-                                            {{ old('fasTransportasi') ? 'checked' : '' }}>
-                                        <label class="properti-checkbox-label" for="fasTransportasi">
-                                            <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Transportasi Umum</span>
-                                        </label>
-                                    </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Fee Dokumen Verifikasi Pasca</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted fw-semibold">Rp</span>
+                                    <input type="text" name="fee_document_verification" class="form-control"
+                                        value="{{ old('fee_document_verification') }}" placeholder="Contoh: 5.000.000">
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="properti-form-group mt-3">
-                                <label class="properti-form-label">Deskripsi</label>
-                                <textarea name="deskripsi" class="properti-form-control" rows="3" placeholder="Deskripsi properti...">{{ old('deskripsi') }}</textarea>
+                        {{-- ================= 5. DATA CUT AND FILL ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-excavator" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">5. Rencana Pekerjaan Cut and Fill</h6>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Elevasi Awal (m)</label>
+                                <input type="number" step="0.01" name="elevasi_awal" value="{{ old('elevasi_awal') }}" class="form-control" placeholder="0.00">
                             </div>
-
-                            <hr class="properti-hr">
-
-                            {{-- ================= LEGAL ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-file-contract me-2"></i>
-                                Dokumen Legal
-                            </h5>
-
-                            <div class="properti-row">
-                                @foreach ($documentTypes as $type)
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label">
-                                                No {{ $type->name }}
-                                            </label>
-
-                                            <input type="text" name="documents[{{ $type->id }}][number]"
-                                                class="properti-form-control" placeholder="Nomor {{ $type->name }}">
-                                        </div>
-                                    </div>
-                                @endforeach
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Elevasi Rencana (m)</label>
+                                <input type="number" step="0.01" name="elevasi_rencana" value="{{ old('elevasi_rencana') }}" class="form-control" placeholder="0.00">
                             </div>
-
-                            <hr class="properti-hr">
-
-                            <hr class="properti-hr">
-
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-upload me-2"></i>
-                                Upload Dokumen
-                            </h5>
-
-                            <div class="properti-row">
-                                @foreach ($documentTypes as $type)
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label">
-                                                Upload {{ $type->name }}
-                                            </label>
-
-                                            <div class="properti-file-upload-modern">
-                                                <input type="file" name="documents[{{ $type->id }}][file]"
-                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png">
-
-                                                <div class="properti-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <div class="properti-file-info-modern">
-                                                        <span>Upload {{ $type->name }}</span>
-                                                        <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                                    </div>
-                                                    <span class="properti-file-size"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Volume Cut (m³)</label>
+                                <input type="number" step="0.01" name="volume_cut" value="{{ old('volume_cut') }}" class="form-control" placeholder="0.00">
                             </div>
-
-                            <hr class="properti-hr">
-
-                            {{-- ================= STATUS ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-tags me-2"></i>
-                                Status
-                            </h5>
-
-                            <div class="properti-row">
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Legal <span
-                                                class="properti-text-danger">*</span></label>
-                                        <select name="statusLegal"
-                                            class="properti-form-control @error('statusLegal') is-invalid @enderror"
-                                            required>
-                                            <option value="Pending"
-                                                {{ old('statusLegal') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="Lengkap"
-                                                {{ old('statusLegal') == 'Lengkap' ? 'selected' : '' }}>Lengkap</option>
-                                        </select>
-                                        @error('statusLegal')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Kavling <span
-                                                class="properti-text-danger">*</span></label>
-                                        <select name="statusKavling"
-                                            class="properti-form-control @error('statusKavling') is-invalid @enderror"
-                                            required>
-                                            <option value="Belum"
-                                                {{ old('statusKavling') == 'Belum' ? 'selected' : '' }}>Belum</option>
-                                            <option value="Proses"
-                                                {{ old('statusKavling') == 'Proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="Selesai"
-                                                {{ old('statusKavling') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                        </select>
-                                        @error('statusKavling')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Prioritas</label>
-                                        <select name="prioritas" class="properti-form-control">
-                                            <option value="Normal" {{ old('prioritas') == 'Normal' ? 'selected' : '' }}>
-                                                Normal</option>
-                                            <option value="Tinggi" {{ old('prioritas') == 'Tinggi' ? 'selected' : '' }}>
-                                                Tinggi</option>
-                                            <option value="Urgent" {{ old('prioritas') == 'Urgent' ? 'selected' : '' }}>
-                                                Urgent</option>
-                                        </select>
-                                    </div>
-                                </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Volume Fill (m³)</label>
+                                <input type="number" step="0.01" name="volume_fill" value="{{ old('volume_fill') }}" class="form-control" placeholder="0.00">
                             </div>
-
-                            <div class="properti-row mt-3">
-                                <div class="properti-col-md-4">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Fee Dokumen Verifikasi Pasca</label>
-                                        <div class="properti-input-group" style="display: flex;">
-                                            <div class="properti-input-group-prepend">
-                                                <span class="properti-input-group-text" style="border-radius: 10px 0 0 10px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-right: none; display: flex; align-items: center; padding: 0.45rem 0.75rem; color: #6c757d; font-size: 0.9rem; height: 100%;">Rp</span>
-                                            </div>
-                                            <input type="text" name="fee_document_verification"
-                                                class="properti-form-control @error('fee_document_verification') is-invalid @enderror"
-                                                value="{{ old('fee_document_verification') }}"
-                                                placeholder="Contoh: 5.000.000"
-                                                style="border-radius: 0 10px 10px 0; flex: 1;">
-                                        </div>
-                                        @error('fee_document_verification')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Status Cut & Fill</label>
+                                <select name="status_cut_fill" class="form-control">
+                                    <option value="planned" {{ old('status_cut_fill') == 'planned' ? 'selected' : '' }}>Planned</option>
+                                    <option value="proses" {{ old('status_cut_fill') == 'proses' ? 'selected' : '' }}>Proses</option>
+                                    <option value="selesai" {{ old('status_cut_fill') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                </select>
                             </div>
+                        </div>
 
-                            <hr class="properti-hr">
-                            {{-- ================= STATUS ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-truck-monster me-2"></i>
-                                Data Cut and Fill
-                            </h5>
-                            <div class="properti-row">
+                        {{-- ================= 6. TITIK KOORDINAT & GOOGLE MAP ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-google-maps" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">6. Titik Koordinat & Google Maps</h6>
+                        </div>
 
-                                <div class="properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Elevasi Awal (m)</label>
-                                        <input type="number" step="0.01" name="elevasi_awal"
-                                            value="{{ old('elevasi_awal') }}"
-                                            class="properti-form-control @error('elevasi_awal') is-invalid @enderror">
-
-                                        @error('elevasi_awal')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Elevasi Rencana (m)</label>
-                                        <input type="number" step="0.01" name="elevasi_rencana"
-                                            value="{{ old('elevasi_rencana') }}"
-                                            class="properti-form-control @error('elevasi_rencana') is-invalid @enderror">
-
-                                        @error('elevasi_rencana')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Volume Cut (m³)</label>
-                                        <input type="number" step="0.01" name="volume_cut"
-                                            value="{{ old('volume_cut') }}"
-                                            class="properti-form-control @error('volume_cut') is-invalid @enderror">
-
-                                        @error('volume_cut')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Volume Fill (m³)</label>
-                                        <input type="number" step="0.01" name="volume_fill"
-                                            value="{{ old('volume_fill') }}"
-                                            class="properti-form-control @error('volume_fill') is-invalid @enderror">
-
-                                        @error('volume_fill')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Cut & Fill</label>
-                                        <select name="status_cut_fill"
-                                            class="properti-form-control @error('status_cut_fill') is-invalid @enderror">
-                                            <option value="planned"
-                                                {{ old('status_cut_fill') == 'planned' ? 'selected' : '' }}>Planned
-                                            </option>
-                                            <option value="proses"
-                                                {{ old('status_cut_fill') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="selesai"
-                                                {{ old('status_cut_fill') == 'selesai' ? 'selected' : '' }}>Selesai
-                                            </option>
-                                        </select>
-
-                                        @error('status_cut_fill')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Latitude</label>
+                                <input type="text" name="latitude" id="latitudeInput" class="form-control" value="{{ old('latitude') }}" placeholder="Contoh: -8.1727">
                             </div>
-
-                            <hr class="properti-hr">
-                            {{-- ================= MAP ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-map-marker-alt me-2"></i>
-                                Koordinat
-                            </h5>
-
-                            <div class="properti-row">
-                                <div class="properti-col-md-6">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Latitude</label>
-                                        <input type="text" name="latitude" class="properti-form-control"
-                                            value="{{ old('latitude') }}" placeholder="Contoh: -6.2088">
-                                    </div>
-                                </div>
-                                <div class="properti-col-md-6">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Longitude</label>
-                                        <input type="text" name="longitude" class="properti-form-control"
-                                            value="{{ old('longitude') }}" placeholder="Contoh: 106.8456">
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Longitude</label>
+                                <input type="text" name="longitude" id="longitudeInput" class="form-control" value="{{ old('longitude') }}" placeholder="Contoh: 113.7000">
                             </div>
+                        </div>
 
-                            <div class="mt-3">
-                                <div class="properti-map-container">
-                                    <div id="map" style="height: 400px;"></div>
-                                </div>
-                                <div class="mt-2 text-end">
-                                    <button type="button" id="btnLokasiSaya"
-                                        class="properti-btn properti-btn-outline-primary properti-btn-sm">
-                                        <i class="fas fa-location-dot me-1"></i>
-                                        Gunakan Lokasi Saya
-                                    </button>
-                                </div>
+                        <div class="mb-4">
+                            <div class="map-outer-card">
+                                <div id="map"></div>
                             </div>
-
-                            <hr class="properti-hr">
-
-                            {{-- ================= BUTTON ================= --}}
-                            <div class="properti-btn-group mt-4">
-                                <a href="" class="properti-btn properti-btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Kembali
-                                </a>
-
-                                <div class="btn-right">
-                                    <button type="submit" class="properti-btn properti-btn-primary">
-                                        <i class="fas fa-save me-2"></i>Simpan Properti
-                                    </button>
-                                </div>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+                                <small class="text-muted">
+                                    <i class="mdi mdi-information-outline text-primary me-1"></i>
+                                    Peta Google Map interaktif (dapat beralih ke mode <strong>Roadmap</strong> atau <strong>Satelit</strong>). Geser pin marker untuk menentukan koordinat lokasi.
+                                </small>
+                                <button type="button" id="btnLokasiSaya" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm px-3">
+                                    <i class="mdi mdi-crosshairs-gps"></i>
+                                    <span>Gunakan Lokasi Saya (GPS)</span>
+                                </button>
                             </div>
+                        </div>
 
-                        </form>
+                        <hr class="my-4" style="border-top: 1px solid #e9ecef;">
 
-                    </div>
+                        <!-- Tombol Aksi Form Mentok Kanan -->
+                        <div class="d-flex justify-content-end align-items-center gap-2 pt-1">
+                            <button type="reset" class="btn btn-sm btn-outline-secondary px-3 btn-reset" style="width: auto;">
+                                <i class="mdi mdi-refresh me-1"></i>Reset Form
+                            </button>
+
+                            <button type="submit" class="btn btn-sm btn-gradient-primary px-4 d-flex align-items-center gap-1 shadow-sm" style="width: auto;">
+                                <i class="mdi mdi-content-save me-1"></i>
+                                <span>Simpan Data Properti</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+
 @endsection
 
 @push('scripts')
-    <script>
-        // Format rupiah untuk harga perolehan & fee verifikasi
-        document.addEventListener('DOMContentLoaded', function() {
-            const rupiahInputs = document.querySelectorAll('input[name="hargaPerolehan"], input[name="fee_document_verification"]');
-            rupiahInputs.forEach(input => {
-                input.addEventListener('input', function(e) {
-                    let value = this.value.replace(/\D/g, '');
-                    if (value) {
-                        value = parseInt(value).toLocaleString('id-ID');
-                        this.value = value;
-                    }
-                });
-            });
-        });
-
-        // Auto hide alert
-        document.addEventListener("DOMContentLoaded", function() {
-            const alert = document.getElementById("successAlert");
-            if (alert) {
-                setTimeout(() => {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = "0";
-                    setTimeout(() => alert.remove(), 500);
-                }, 10000);
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format rupiah input
+    const rupiahInputs = document.querySelectorAll('input[name="hargaPerolehan"], input[name="fee_document_verification"]');
+    rupiahInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value) {
+                value = parseInt(value).toLocaleString('id-ID');
+                this.value = value;
             }
         });
+    });
 
-        // File upload modern preview
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
-                input.addEventListener('change', function(e) {
-                    const fileName = e.target.files[0]?.name;
-                    const fileSize = e.target.files[0]?.size;
-                    const label = this.closest('.properti-file-upload-modern').querySelector(
-                        '.properti-file-info-modern span');
-                    const sizeSpan = this.closest('.properti-file-upload-modern').querySelector(
-                        '.properti-file-size');
-
-                    if (fileName) {
-                        label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                            '...' : fileName;
-                        if (fileSize) {
-                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                            sizeSpan.textContent = sizeInMB + ' MB';
-                        }
-                    } else {
-                        // Reset ke teks awal berdasarkan input name
-                        const inputName = this.name;
-                        if (inputName === 'uploadSertifikat') {
-                            label.textContent = 'Upload Sertifikat';
-                        } else if (inputName === 'uploadIMB') {
-                            label.textContent = 'Upload IMB';
-                        } else if (inputName === 'uploadPBB') {
-                            label.textContent = 'Upload PBB';
-                        } else if (inputName === 'uploadAKTATanah') {
-                            label.textContent = 'Upload AKTA Tanah';
-                        }
-                        sizeSpan.textContent = '';
-                    }
-                });
-            });
+    // Select2
+    if ($('#companySelect').length) {
+        $('#companySelect').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: '-- Pilih Perusahaan (PT) --'
         });
+    }
 
-        // SELECT2 INITIALIZATION - UNTUK SEMUA DROPDOWN SELECT
-        // PAKSA HANYA 5 ITEM YANG TAMPIL
-        $(document).ready(function() {
-            $('select').each(function() {
-                let id = $(this).attr('id');
-                let noResultsText = "Data tidak ditemukan";
-                if (id === 'companySelect') {
-                    noResultsText = "Perusahaan tidak ditemukan";
-                }
-                
-                let hasEmptyOption = $(this).find('option[value=""]').length > 0 || $(this).find('option:not([value])').length > 0;
+    // Modern File Upload Preview Handler
+    document.querySelectorAll('.file-upload-input').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const card = this.closest('.upload-card-box');
+            const titleSpan = card.querySelector('.upload-title-text');
+            const sizeBadge = card.querySelector('.upload-size-badge');
+            const iconCircle = card.querySelector('.upload-icon-circle i');
+            const defaultLabel = this.getAttribute('data-label') || 'Berkas';
 
-                $(this).select2({
-                    theme: 'bootstrap-5',
-                    allowClear: hasEmptyOption,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
-                    language: {
-                        noResults: function() {
-                            return noResultsText;
-                        },
-                        searching: function() {
-                            return "Mencari...";
-                        }
-                    }
-                });
-            });
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const fileName = file.name;
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+
+                titleSpan.textContent = fileName.length > 25 ? fileName.substring(0, 25) + '...' : fileName;
+                titleSpan.style.color = '#7a30e8';
+
+                sizeBadge.textContent = sizeInMB + ' MB';
+                sizeBadge.style.display = 'inline-block';
+
+                iconCircle.className = 'mdi mdi-file-check text-success';
+                card.style.borderColor = '#9a55ff';
+                card.style.background = '#f7f2ff';
+            } else {
+                titleSpan.textContent = 'Pilih Berkas ' + defaultLabel;
+                titleSpan.style.color = '#2c2e3f';
+                sizeBadge.style.display = 'none';
+                iconCircle.className = 'mdi mdi-cloud-upload-outline';
+                card.style.borderColor = '#d9dce2';
+                card.style.background = '#fafbfc';
+            }
         });
+    });
 
-        // Leaflet Map
-        document.addEventListener("DOMContentLoaded", function() {
-            let defaultLat = -8.1727;
-            let defaultLng = 113.7000;
+    // ===== 3. GOOGLE MAPS LEAFLET INTEGRATION =====
+    let defaultLat = -8.1727;
+    let defaultLng = 113.7000;
 
-            let latInput = document.querySelector('input[name="latitude"]');
-            let lngInput = document.querySelector('input[name="longitude"]');
-            let btnLokasi = document.getElementById("btnLokasiSaya");
+    let latInput = document.getElementById('latitudeInput');
+    let lngInput = document.getElementById('longitudeInput');
+    let btnLokasi = document.getElementById("btnLokasiSaya");
 
-            let lat = latInput.value ? parseFloat(latInput.value) : defaultLat;
-            let lng = lngInput.value ? parseFloat(lngInput.value) : defaultLng;
+    let lat = latInput && latInput.value ? parseFloat(latInput.value) : defaultLat;
+    let lng = lngInput && lngInput.value ? parseFloat(lngInput.value) : defaultLng;
 
-            let map = L.map('map').setView([lat, lng], 13);
+    // Google Maps Tile Layers
+    let googleRoadmap = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '&copy; Google Maps'
+    });
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+    let googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '&copy; Google Maps'
+    });
 
-            let marker = L.marker([lat, lng], {
-                draggable: true
-            }).addTo(map);
+    let map = L.map('map', {
+        center: [lat, lng],
+        zoom: 15,
+        layers: [googleRoadmap]
+    });
 
-            // Drag marker
-            marker.on('dragend', function() {
-                let position = marker.getLatLng();
-                latInput.value = position.lat.toFixed(6);
-                lngInput.value = position.lng.toFixed(6);
-            });
+    // Layer Switcher (Roadmap & Satelit)
+    let baseMaps = {
+        "Google Roadmap": googleRoadmap,
+        "Google Satellite": googleHybrid
+    };
+    L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
 
-            // Klik map
-            map.on('click', function(e) {
-                marker.setLatLng(e.latlng);
-                latInput.value = e.latlng.lat.toFixed(6);
-                lngInput.value = e.latlng.lng.toFixed(6);
-            });
+    // Custom Marker
+    let marker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
-            // Input manual
-            function updateMarkerFromInput() {
-                let newLat = parseFloat(latInput.value);
-                let newLng = parseFloat(lngInput.value);
+    marker.on('dragend', function() {
+        let pos = marker.getLatLng();
+        if (latInput) latInput.value = pos.lat.toFixed(6);
+        if (lngInput) lngInput.value = pos.lng.toFixed(6);
+    });
 
-                if (!isNaN(newLat) && !isNaN(newLng)) {
-                    marker.setLatLng([newLat, newLng]);
-                    map.setView([newLat, newLng], 15);
-                }
+    map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        if (latInput) latInput.value = e.latlng.lat.toFixed(6);
+        if (lngInput) lngInput.value = e.latlng.lng.toFixed(6);
+    });
+
+    function updateMarkerFromInput() {
+        let newLat = parseFloat(latInput.value);
+        let newLng = parseFloat(lngInput.value);
+        if (!isNaN(newLat) && !isNaN(newLng)) {
+            marker.setLatLng([newLat, newLng]);
+            map.setView([newLat, newLng], 16);
+        }
+    }
+
+    if (latInput) latInput.addEventListener('change', updateMarkerFromInput);
+    if (lngInput) lngInput.addEventListener('change', updateMarkerFromInput);
+
+    // GPS Lokasi Saya
+    if (btnLokasi) {
+        btnLokasi.addEventListener("click", function() {
+            if (!navigator.geolocation) {
+                Swal.fire('Error', 'Browser Anda tidak mendukung geolokasi GPS.', 'error');
+                return;
             }
 
-            latInput.addEventListener('change', updateMarkerFromInput);
-            lngInput.addEventListener('change', updateMarkerFromInput);
+            btnLokasi.innerHTML = '<i class="mdi mdi-loading mdi-spin"></i> Mendeteksi Lokasi...';
+            btnLokasi.disabled = true;
 
-            // Tombol Lokasi Saya
-            btnLokasi.addEventListener("click", function() {
-                if (!navigator.geolocation) {
-                    alert("Browser tidak mendukung geolocation.");
-                    return;
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    let userLat = pos.coords.latitude;
+                    let userLng = pos.coords.longitude;
+
+                    marker.setLatLng([userLat, userLng]);
+                    if (latInput) latInput.value = userLat.toFixed(6);
+                    if (lngInput) lngInput.value = userLng.toFixed(6);
+                    map.setView([userLat, userLng], 17);
+
+                    btnLokasi.innerHTML = '<i class="mdi mdi-crosshairs-gps"></i> Gunakan Lokasi Saya (GPS)';
+                    btnLokasi.disabled = false;
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Lokasi Ditemukan',
+                        text: `Koordinat GPS: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                function() {
+                    Swal.fire('Gagal', 'Tidak dapat mendeteksi lokasi saat ini. Pastikan izin akses lokasi aktif.', 'warning');
+                    btnLokasi.innerHTML = '<i class="mdi mdi-crosshairs-gps"></i> Gunakan Lokasi Saya (GPS)';
+                    btnLokasi.disabled = false;
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        });
+    }
+
+    // Submit confirmation
+    const form = document.querySelector('.main-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Simpan Data Properti?',
+                text: 'Pastikan seluruh informasi data tanah dan berkas legalitas sudah sesuai.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Simpan Data!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memuat...',
+                        text: 'Sedang menyimpan data properti ke sistem',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                    form.submit();
                 }
-
-                btnLokasi.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mendeteksi...';
-                btnLokasi.disabled = true;
-
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        let userLat = position.coords.latitude;
-                        let userLng = position.coords.longitude;
-
-                        marker.setLatLng([userLat, userLng]);
-                        latInput.value = userLat.toFixed(6);
-                        lngInput.value = userLng.toFixed(6);
-                        map.setView([userLat, userLng], 17);
-
-                        btnLokasi.innerHTML =
-                            '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
-                        btnLokasi.disabled = false;
-                    },
-                    function() {
-                        alert("Gagal mendapatkan lokasi.");
-                        btnLokasi.innerHTML =
-                            '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
-                        btnLokasi.disabled = false;
-                    }
-                );
             });
         });
-    </script>
+    }
+});
+</script>
 @endpush

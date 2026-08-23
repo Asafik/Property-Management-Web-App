@@ -1,0 +1,333 @@
+/* ==========================================================================
+   MODAL COMPONENT CSS
+   Design System - Property Management Web App
+   ========================================================================== */
+
+/* ===== 1. MODAL DIALOG & CONTENT ===== */
+.modal-content {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 3.5rem);
+}
+
+/* Modal Backdrop */
+.modal-backdrop.show {
+    opacity: 0.45;
+    backdrop-filter: blur(4px);
+}
+
+/* ===== 2. MODAL HEADER ===== */
+.modal-header {
+    background: #ffffff;
+    border-bottom: 1px solid #eef0f4 !important;
+    padding: 1.15rem 1.4rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Gradient Header Variant */
+.modal-header.bg-gradient-primary,
+.modal-header-gradient {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+}
+
+.modal-header.bg-gradient-primary .modal-title,
+.modal-header-gradient .modal-title {
+    color: #ffffff !important;
+}
+
+.modal-header.bg-gradient-primary .btn-close,
+.modal-header-gradient .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+}
+
+.modal-header.bg-gradient-primary .btn-close:hover,
+.modal-header-gradient .btn-close:hover {
+    opacity: 1;
+}
+
+/* Modal Title */
+.modal-title {
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    color: #2c2e3f;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: -0.2px;
+}
+
+.modal-title i {
+    font-size: 1.25rem;
+    color: #9a55ff;
+}
+
+.modal-header.bg-gradient-primary .modal-title i,
+.modal-header-gradient .modal-title i {
+    color: #ffffff !important;
+}
+
+/* Modal Close Button */
+.modal-header .btn-close {
+    padding: 0.5rem !important;
+    margin: -0.5rem -0.5rem -0.5rem auto !important;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+.modal-header .btn-close:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* ===== 3. MODAL BODY ===== */
+.modal-body {
+    padding: 1.35rem 1.4rem !important;
+    background-color: #ffffff;
+    color: #2c2e3f;
+}
+
+/* Modal Form Groups */
+.modal-form-group {
+    margin-bottom: 1.15rem;
+}
+
+.modal-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.modal-form-group label,
+.modal-body .form-label {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #2c2e3f !important;
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.modal-form-group label.text-primary,
+.modal-body .form-label.text-primary {
+    color: #9a55ff !important;
+}
+
+.modal-form-group label i,
+.modal-body .form-label i {
+    color: #9a55ff;
+    font-size: 0.95rem;
+}
+
+/* Modal Form Controls */
+.modal-form-control,
+.modal-body .form-control,
+.modal-body .form-select {
+    border: 1px solid #e0e4e9 !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 0.85rem !important;
+    font-size: 0.9rem !important;
+    background-color: #ffffff;
+    color: #2c2e3f;
+    transition: all 0.2s ease;
+    height: auto;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus,
+.modal-form-control:focus {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+    outline: none !important;
+}
+
+.modal-body .form-control[readonly],
+.modal-body .form-control:disabled {
+    background-color: #f8f9fa !important;
+    color: #6c7383 !important;
+    border-color: #e9ecef !important;
+}
+
+/* ===== 4. MODAL FOOTER ===== */
+.modal-footer {
+    background: #f8f9fa !important;
+    border-top: 1px solid #eef0f4 !important;
+    padding: 0.9rem 1.4rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    border-radius: 0 0 16px 16px;
+}
+
+/* ===== 5. MODAL MULTI-SELECT & ACCORDION (HAK AKSES / PERMISSIONS) ===== */
+.modal-select-multiple,
+.modal-body select[multiple],
+#access_position {
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 280px !important;
+    border: 1px solid #e0e4e9 !important;
+    border-radius: 10px !important;
+    padding: 0.5rem !important;
+    font-size: 0.9rem !important;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+
+.modal-select-multiple::-webkit-scrollbar,
+.modal-body select[multiple]::-webkit-scrollbar,
+#access_position::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-select-multiple::-webkit-scrollbar-track,
+.modal-body select[multiple]::-webkit-scrollbar-track,
+#access_position::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
+.modal-select-multiple::-webkit-scrollbar-thumb,
+.modal-body select[multiple]::-webkit-scrollbar-thumb,
+#access_position::-webkit-scrollbar-thumb {
+    background: #da8cff;
+    border-radius: 8px;
+}
+
+.modal-select-multiple::-webkit-scrollbar-thumb:hover,
+.modal-body select[multiple]::-webkit-scrollbar-thumb:hover,
+#access_position::-webkit-scrollbar-thumb:hover {
+    background: #9a55ff;
+}
+
+.modal-select-multiple option,
+.modal-body select[multiple] option,
+#access_position option {
+    padding: 0.6rem 0.85rem !important;
+    margin-bottom: 4px !important;
+    border-radius: 6px !important;
+    font-size: 0.88rem !important;
+    color: #2c2e3f !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-select-multiple option:hover,
+.modal-body select[multiple] option:hover,
+#access_position option:hover {
+    background-color: #f3e8ff !important;
+    color: #9a55ff !important;
+}
+
+.modal-select-multiple option:checked,
+.modal-body select[multiple] option:checked,
+#access_position option:checked {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* ===== 6. SWITCH & TOGGLE BOX IN MODAL ===== */
+.modal-switch-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    background: #f8f9fa;
+    border: 1px solid #eef0f4;
+    border-radius: 10px;
+    margin-top: 0.85rem;
+}
+
+.modal-switch-box .switch-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #2c2e3f;
+    display: block;
+}
+
+.modal-switch-box .switch-subtitle {
+    font-size: 0.75rem;
+    color: #6c7383;
+    display: block;
+    margin-top: 2px;
+}
+
+.modal-switch-box .form-check-input {
+    width: 40px !important;
+    height: 20px !important;
+    cursor: pointer;
+}
+
+.modal-switch-box .form-check-input:checked {
+    background-color: #9a55ff !important;
+    border-color: #9a55ff !important;
+}
+
+/* ===== 7. MODAL DETAIL BOX & SUMMARY ===== */
+.modal-detail-box {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 0.9rem;
+    height: 100%;
+}
+
+.modal-detail-box .detail-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #6c7383;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+}
+
+.modal-detail-box .detail-value {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== 8. RESPONSIVE MODAL ===== */
+@media (max-width: 576px) {
+    .modal-content {
+        border-radius: 12px !important;
+    }
+
+    .modal-header {
+        padding: 0.9rem 1rem !important;
+    }
+
+    .modal-body {
+        padding: 1rem !important;
+    }
+
+    .modal-footer {
+        padding: 0.75rem 1rem !important;
+    }
+
+    .modal-title {
+        font-size: 0.95rem !important;
+    }
+}

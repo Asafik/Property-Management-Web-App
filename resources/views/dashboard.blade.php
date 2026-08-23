@@ -6,866 +6,6 @@
 
 
     <style>
-        /* ====== CSS ====== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 16px;
-            padding: 1.2rem;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: none;
-        }
-
-        .stat-card .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .stat-card .stat-icon.proyek {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .stat-card .stat-icon.unit {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
-        .stat-card .stat-icon.transaksi {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-        }
-
-        .stat-card .stat-icon.pendapatan {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-        }
-
-        .stat-card .stat-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .stat-card .stat-content h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-            color: #2c2e3f;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .stat-card .stat-content p {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        @media (max-width: 768px) {
-            .stat-card {
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-
-            .stat-card .stat-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.4rem;
-            }
-
-            .stat-card .stat-content h3 {
-                font-size: 1.3rem;
-            }
-
-            .stat-card .stat-content p {
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .stat-card {
-                padding: 0.75rem;
-                gap: 0.5rem;
-            }
-
-            .stat-card .stat-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .stat-card .stat-content h3 {
-                font-size: 1.1rem;
-            }
-
-            .stat-card .stat-content p {
-                font-size: 0.7rem;
-            }
-        }
-
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-            border: none;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        /* ===== SELECT2 CUSTOM STYLING ===== */
-        .select2-container--bootstrap-5 .select2-selection {
-            border: 1px solid #e9ecef !important;
-            border-radius: 10px !important;
-            padding: 0.5rem 0.8rem !important;
-            min-height: 42px !important;
-            font-family: 'Nunito', sans-serif !important;
-            background-color: #ffffff !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            color: #2c2e3f !important;
-            font-size: 0.9rem !important;
-            line-height: 1.5 !important;
-            padding-left: 0 !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-            height: 40px !important;
-            right: 10px !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
-            border-color: #9a55ff transparent transparent transparent !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection:hover {
-            border-color: #9a55ff !important;
-        }
-
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-        .select2-container--bootstrap-5.select2-container--open .select2-selection {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #e9ecef !important;
-            border-radius: 10px !important;
-            overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option {
-            padding: 0.6rem 0.8rem !important;
-            font-size: 0.9rem !important;
-            font-family: 'Nunito', sans-serif !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem !important;
-            font-family: 'Nunito', sans-serif !important;
-            margin: 0.5rem !important;
-            width: calc(100% - 1rem) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
-            color: #a5b3cb !important;
-        }
-
-        /* Paksa hanya 5 item yang tampil di Select2 */
-        .select2-limited-items .select2-results__options {
-            max-height: 200px !important;
-            overflow-y: auto !important;
-        }
-
-        /* Styling scrollbar */
-        .select2-limited-items .select2-results__options::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        /* Tombol eye dengan warna purple */
-        .btn-outline-purple {
-            background: transparent;
-            border: 2px solid #9a55ff !important;
-            color: #9a55ff;
-            padding: 0.35rem 0.9rem;
-            font-size: 0.8rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .btn-outline-purple:hover {
-            background: #9a55ff;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.3);
-        }
-
-        .btn-outline-purple i {
-            font-size: 1rem;
-        }
-
-        .btn-icon-only {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
-
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .btn-icon-only-mobile {
-            width: 100%;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
-
-        .btn-icon-only-mobile i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Status badge gradient */
-        .status-badge-gradient {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
-
-        .status-badge-gradient.success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #fff;
-        }
-
-        .status-badge-gradient.danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #fff;
-        }
-
-        .status-badge-gradient.warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .status-badge-gradient i {
-            margin-right: 4px;
-            font-size: 0.9rem;
-        }
-
-        /* Type badge - 1 warna saja untuk semua */
-        .type-badge {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
-
-        .type-badge i {
-            margin-right: 4px;
-            font-size: 0.9rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #9a55ff #f0f0f0;
-        }
-
-        .table-responsive::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .table-responsive::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: #7b3fcc;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .table thead th:hover {
-            color: #7a3fcc;
-        }
-
-        .table thead th i {
-            font-size: 0.8rem;
-            margin-left: 4px;
-            opacity: 0.5;
-        }
-
-        .table thead th.active-sort {
-            color: #7a3fcc;
-        }
-
-        .table thead th.active-sort i {
-            opacity: 1;
-            color: #7a3fcc;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table thead th:first-child {
-            padding-left: 0.5rem;
-            width: 40px;
-            text-align: center;
-            cursor: default;
-        }
-
-        .table thead th:first-child:hover {
-            color: #9a55ff;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.5rem;
-            font-weight: 500;
-            width: 40px;
-            text-align: center;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .text-price {
-            color: #28a745 !important;
-            font-weight: 600;
-        }
-
-        /* CSS Truncation untuk Lokasi */
-        .location-wrapper {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .location-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* Responsive truncation */
-        @media (max-width: 1200px) {
-            .location-wrapper {
-                max-width: 180px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .location-wrapper {
-                max-width: 150px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .location-wrapper {
-                max-width: 120px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .location-wrapper {
-                max-width: 100px;
-            }
-        }
-
-        /* Unit badge */
-        .unit-badge {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            color: #1976d2;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
-
-        .table tbody td i {
-            font-size: 1rem;
-        }
-
-        .text-primary {
-            color: #9a55ff !important;
-        }
-
-        .text-info {
-            color: #17a2b8 !important;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .text-success {
-            color: #28a745 !important;
-        }
-
-        .text-warning {
-            color: #ffc107 !important;
-        }
-
-        .fw-bold {
-            font-weight: 600 !important;
-        }
-
-        .text-muted {
-            color: #a5b3cb !important;
-        }
-
-        h3.text-dark {
-            font-size: 1.3rem !important;
-            font-weight: 700;
-            color: #2c2e3f !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-            h3.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            h3.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-
-        /* PAGINATION - UKURAN NORMAL */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #f8f9fa;
-            color: #a5b3cb;
-            pointer-events: none;
-            cursor: not-allowed;
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
-        }
-
-        .filter-row-desktop {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            gap: 0.5rem;
-        }
-
-        .filter-row-mobile {
-            display: none;
-        }
-
-        @media (max-width: 767px) {
-            .filter-row-desktop {
-                display: none;
-            }
-
-            .filter-row-mobile {
-                display: block;
-                margin-top: 1rem;
-            }
-        }
-
-        /* Sort icons */
-        .sort-icon {
-            font-size: 0.8rem;
-            margin-left: 4px;
-            opacity: 0.3;
-            transition: all 0.2s ease;
-        }
-
-        th:hover .sort-icon {
-            opacity: 0.6;
-        }
-
-        th.active-sort .sort-icon {
-            opacity: 1;
-            color: #7a3fcc;
-        }
-
         /* ===== MODAL DETAIL UNIT LENGKAP STYLES (MIRRORING TIMELINE PEMBAYARAN) ===== */
         .modal-detail-unit .modal-header {
             background: linear-gradient(135deg, #da8cff, #9a55ff);
@@ -1117,27 +257,70 @@
         .progress-dark-green {
             background: linear-gradient(to right, #198754, #31b87a);
         }
+
+        /* ===== OPTIMASI LEBAR & PADDING (DESKTOP, TABLET & MOBILE) ===== */
+        .content-wrapper {
+            padding: 1.25rem 1rem !important;
+        }
+
+        .card-body {
+            padding: 0.85rem 1rem !important;
+        }
+
+        .filter-card {
+            padding: 0.85rem 1rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .table-responsive {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        .table {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Mode Tablet (iPad / 768px - 1024px) */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 1.15rem 0.85rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+        }
+
+        /* Mode HP / Mobile */
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 0.85rem 0.65rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+            .card-body {
+                padding: 0.75rem 0.75rem !important;
+            }
+        }
     </style>
 
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
         <!-- Header Dashboard -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-view-dashboard me-2" style="color: #9a55ff;"></i>Dashboard
-                            </h3>
-                            <p class="text-muted mb-0">
-                                Selamat datang di Dashboard Property Management
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-view-dashboard" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-
-                        </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">
+                            <i class="mdi mdi-view-dashboard me-2" style="color: #9a55ff;"></i>Dashboard
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Selamat datang di Dashboard Property Management
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1146,38 +329,54 @@
         <!-- Statistic Cards - Data dari controller -->
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon proyek"><i class="mdi mdi-city"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalProperty }}</h3>
-                        <p>Total Proyek</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalProperty }}</h3>
+                            <p class="text-muted mb-0">Total Proyek</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-city" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon unit"><i class="mdi mdi-home-city"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalUnit }}</h3>
-                        <p>Total Unit</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalUnit }}</h3>
+                            <p class="text-muted mb-0">Total Unit</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-home-city" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon transaksi"><i class="mdi mdi-swap-horizontal"></i></div>
-                    <div class="stat-content">
-                        <h3>{{ $totalPayments }}</h3>
-                        <p>Total Transaksi</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalPayments }}</h3>
+                            <p class="text-muted mb-0">Total Transaksi</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-swap-horizontal" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon pendapatan"><i class="mdi mdi-cash-multiple"></i></div>
-                    <div class="stat-content">
-                        <h3>Rp 0</h3>
-                        <p>Pendapatan</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">Rp 0</h3>
+                            <p class="text-muted mb-0">Pendapatan</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-cash-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1196,169 +395,150 @@
 
                     <div class="card-body">
                         <!-- FILTER SECTION -->
-                        <div class="filter-card mb-4">
-                            <div class="card-body">
+                        <div class="filter-card mb-3">
 
-                                <!-- DESKTOP VERSION -->
-                                <div class="filter-row-desktop">
-                                    <div class="row g-2 align-items-end w-100">
+                            <!-- DESKTOP & TABLET VERSION -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <div class="row g-2 align-items-center w-100">
 
-                                        <!-- Search -->
-                                        <div class="col-md-3">
-                                            <label class="form-label">Cari</label>
+                                    <!-- Search -->
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <div class="input-group">
                                             <input type="text" class="form-control" id="searchInput"
-                                                placeholder="Nama proyek..." value="{{ request('search') }}">
-                                        </div>
-
-                                        <!-- Perusahaan - SELECT2 -->
-                                        <div class="col-md-3">
-                                            <label class="form-label">Perusahaan</label>
-                                            <select class="form-control select2" id="perusahaanSelect" style="width: 100%;">
-                                                <option value="">Semua Perusahaan</option>
-                                                @foreach ($filterOptions['perusahaan'] ?? [] as $company)
-                                                    <option value="{{ $company }}"
-                                                        {{ request('perusahaan') == $company ? 'selected' : '' }}>
-                                                        {{ $company }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <!-- Kategori -->
-                                        <div class="col-md-2">
-                                            <label class="form-label">Kategori</label>
-                                            <select class="form-control" id="typeSelect">
-                                                <option value="">Semua Kategory</option>
-                                                @foreach ($filterOptions['types'] ?? [] as $type)
-                                                    <option value="{{ $type }}"
-                                                        {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <!-- Status -->
-                                        <div class="col-md-1">
-                                            <label class="form-label">Status</label>
-                                            <select class="form-control" id="statusSelect">
-                                                <option value="">Semua</option>
-                                                <option value="ready"
-                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
-                                                <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                    Terjual</option>
-                                                <option value="pending"
-                                                    {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Tampil -->
-                                        <div class="col-md-1">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" id="perPageSelect">
-                                                <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                </option>
-                                                <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                </option>
-                                                <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                </option>
-                                                <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>
-                                                    100</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Tombol Filter + Reset dalam 1 kolom -->
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                            <div class="d-flex gap-2">
-                                                <button type="button"
-                                                    class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn"
-                                                    title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <button type="button"
-                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                    id="refreshBTN" title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <!-- MOBILE VERSION -->
-                                <div class="filter-row-mobile">
-                                    <div class="row g-2">
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Cari</label>
-                                            <input type="text" class="form-control" id="searchInputMobile"
-                                                placeholder="Nama proyek..." value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Perusahaan</label>
-                                            <select class="form-control select2-mobile" id="perusahaanSelectMobile"
-                                                style="width: 100%;">
-                                                <option value="">Semua Perusahaan</option>
-                                                @foreach ($filterOptions['perusahaan'] ?? [] as $company)
-                                                    <option value="{{ $company }}"
-                                                        {{ request('perusahaan') == $company ? 'selected' : '' }}>
-                                                        {{ $company }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Type</label>
-                                            <select class="form-control" id="typeSelectMobile">
-                                                <option value="">Semua Type</option>
-                                                @foreach ($filterOptions['types'] ?? [] as $type)
-                                                    <option value="{{ $type }}"
-                                                        {{ request('type') == $type ? 'selected' : '' }}>
-                                                        {{ $type }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Status</label>
-                                            <select class="form-control" id="statusSelectMobile">
-                                                <option value="">Semua</option>
-                                                <option value="ready"
-                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
-                                                <option value="sold"
-                                                    {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
-                                                <option value="pending"
-                                                    {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" id="perPageSelectMobile">
-                                                <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                </option>
-                                                <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                </option>
-                                                <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                </option>
-                                                <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>
-                                                    100</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button"
-                                                class="btn btn-gradient-primary btn-icon-only-mobile w-100"
-                                                id="filterBtnMobile" title="Filter">
-                                                <i class="mdi mdi-filter"></i>
+                                                placeholder="Nama proyek..." value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="button" id="searchSubmitBtn" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
-                                        <div class="col-6">
+                                    </div>
+
+                                    <!-- Perusahaan - SELECT2 -->
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <select class="form-control select2" id="perusahaanSelect" style="width: 100%;">
+                                            <option value="">Semua Perusahaan</option>
+                                            @foreach ($filterOptions['perusahaan'] ?? [] as $company)
+                                                <option value="{{ $company }}"
+                                                    {{ request('perusahaan') == $company ? 'selected' : '' }}>
+                                                    {{ $company }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Status -->
+                                    <div class="col-6 col-md-2 col-lg-2">
+                                        <select class="form-control" id="statusSelect">
+                                            <option value="">Status</option>
+                                            <option value="ready"
+                                                {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
+                                            <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                Terjual</option>
+                                            <option value="pending"
+                                                {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Tampil -->
+                                    <div class="col-6 col-md-2 col-lg-1">
+                                        <select class="form-control" id="perPageSelect">
+                                            <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                            </option>
+                                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                            </option>
+                                            <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                            </option>
+                                            <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>
+                                                100</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Tombol Filter + Reset dalam 1 kolom -->
+                                    <div class="col-12 col-md-12 col-lg-1">
+                                        <div class="d-flex gap-2">
                                             <button type="button"
-                                                class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
-                                                id="resetBtnMobile" title="Reset">
+                                                class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn"
+                                                title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-gradient-secondary btn-icon-only flex-fill"
+                                                id="refreshBTN" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </button>
                                         </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
+
+                            <!-- MOBILE VERSION -->
+                            <div class="filter-row-mobile d-block d-md-none">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="searchInputMobile"
+                                                placeholder="Nama proyek..." value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="button" id="searchSubmitBtnMobile" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control select2-mobile" id="perusahaanSelectMobile"
+                                            style="width: 100%;">
+                                            <option value="">Semua Perusahaan</option>
+                                            @foreach ($filterOptions['perusahaan'] ?? [] as $company)
+                                                <option value="{{ $company }}"
+                                                    {{ request('perusahaan') == $company ? 'selected' : '' }}>
+                                                    {{ $company }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" id="statusSelectMobile">
+                                            <option value="">Status</option>
+                                            <option value="ready"
+                                                {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
+                                            <option value="sold"
+                                                {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
+                                            <option value="pending"
+                                                {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" id="perPageSelectMobile">
+                                            <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                            </option>
+                                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                            </option>
+                                            <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                              </option>
+                                            <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>
+                                                100</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button"
+                                            class="btn btn-gradient-primary btn-icon-only-mobile w-100"
+                                            id="filterBtnMobile" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button"
+                                            class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
+                                            id="resetBtnMobile" title="Reset">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <!-- TABEL DATA DENGAN DATA DARI DATABASE -->
@@ -1702,7 +882,7 @@
                 window.location.href = url.toString();
             }
 
-            $('#filterBtn, #filterBtnMobile').click(applyFilter);
+            $('#searchSubmitBtn, #searchSubmitBtnMobile, #filterBtn, #filterBtnMobile').click(applyFilter);
             $('#resetBtn, #resetBtnMobile, #refreshBTN').click(resetFilter);
 
             $('#searchInput, #searchInputMobile').keypress(function(e) {

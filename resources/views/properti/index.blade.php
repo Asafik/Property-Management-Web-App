@@ -16,865 +16,18 @@
         }
     @endphp
 
-    <style>
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
 
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
 
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-            border: none;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        /* Tombol eye dengan warna purple */
-        .btn-outline-purple {
-            background: transparent;
-            border: 2px solid #9a55ff !important;
-            color: #9a55ff;
-            padding: 0.35rem 0.9rem;
-            font-size: 0.8rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            text-decoration: none;
-        }
-
-        .btn-outline-purple:hover {
-            background: #9a55ff;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.3);
-        }
-
-        .btn-outline-purple i {
-            font-size: 1rem;
-        }
-
-        /* Tombol download dengan warna green */
-        .btn-outline-green {
-            background: transparent;
-            border: 2px solid #28a745 !important;
-            color: #28a745;
-            padding: 0.35rem 0.9rem;
-            font-size: 0.8rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            text-decoration: none;
-        }
-
-        .btn-outline-green:hover {
-            background: #28a745;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn-outline-green i {
-            font-size: 1rem;
-        }
-
-        /* Tombol revisi dengan warna red */
-        .btn-outline-red {
-            background: transparent;
-            border: 2px solid #dc3545 !important;
-            color: #dc3545;
-            padding: 0.35rem 0.9rem;
-            font-size: 0.8rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn-outline-red:hover {
-            background: #dc3545;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-        }
-
-        .btn-outline-red i {
-            font-size: 1rem;
-        }
-
-        .bg-soft-danger {
-            background-color: #fdf2f2 !important;
-        }
-
-        /* Modern File Upload */
-        .properti-file-upload-modern {
-            position: relative;
-            margin-bottom: 0.5rem;
-        }
-
-        .properti-file-input-modern {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        .properti-file-label-modern {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #9a55ff;
-            border-radius: 12px;
-            padding: 1.25rem 1rem;
-            background-color: #fafdff;
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .properti-file-label-modern:hover {
-            background-color: #f6f0ff;
-            border-color: #7a3fcc;
-            transform: translateY(-1px);
-        }
-
-        .properti-file-icon-modern {
-            font-size: 1.8rem;
-            margin-bottom: 0.4rem;
-            color: #9a55ff;
-            transition: all 0.3s ease;
-            display: block;
-        }
-
-        .properti-file-label-modern:hover .properti-file-icon-modern {
-            transform: translateY(-3px);
-            color: #7a3fcc;
-        }
-
-        .properti-file-info-modern span {
-            display: block;
-            line-height: 1.2;
-        }
-
-        .properti-file-size {
-            font-weight: 500;
-            font-size: 0.75rem;
-        }
-
-        .btn-purple {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-            border: none !important;
-        }
-
-        .btn-purple:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.3);
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            overflow-y: visible;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #9a55ff #f0f0f0;
-        }
-
-        .table-responsive::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .table-responsive::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table thead th:first-child {
-            padding-left: 0.5rem;
-            width: 40px;
-            text-align: center;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.5rem;
-            font-weight: 500;
-            width: 40px;
-            text-align: center;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .company-info,
-        .property-info,
-        .location-info {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            min-width: 0;
-        }
-
-        .company-info i,
-        .property-info i,
-        .location-info i {
-            flex-shrink: 0;
-        }
-
-        .location-text {
-            display: inline-block;
-            max-width: 145px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            vertical-align: bottom;
-        }
-
-        @media (min-width: 768px) {
-            .location-text {
-                max-width: 170px;
-            }
-        }
-
-        .badge-category {
-            padding: 0.42rem 0.85rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: #fff;
-        }
-
-        .badge-legalitas-verified {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #fff;
-        }
-
-        .badge-legalitas-pending {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-legalitas-rejected {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #fff;
-        }
-
-        .badge-development-selesai {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            background: linear-gradient(135deg, #28a745, #5dd879);
-            color: #fff;
-        }
-
-        .badge-development-progress {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-development-belum {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #fff;
-        }
-
-        .document-trigger {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-weight: 700;
-            color: #6f42c1;
-            background: rgba(111, 66, 193, 0.08);
-            padding: 0.45rem 0.85rem;
-            border-radius: 20px;
-            white-space: nowrap;
-            cursor: pointer;
-            border: none;
-            transition: all 0.25s ease;
-        }
-
-        .document-trigger:hover {
-            background: rgba(111, 66, 193, 0.14);
-            transform: translateY(-1px);
-        }
-
-        .document-trigger i {
-            font-size: 1.1rem;
-        }
-
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        .text-primary {
-            color: #9a55ff !important;
-        }
-
-        .text-info {
-            color: #17a2b8 !important;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .text-muted {
-            color: #a5b3cb !important;
-        }
-
-        .text-success-custom {
-            color: #198754 !important;
-        }
-
-        .fw-bold {
-            font-weight: 600 !important;
-        }
-
-        h3.text-dark {
-            font-size: 1.3rem !important;
-            font-weight: 700;
-            color: #2c2e3f !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-            h3.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            h3.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-
-        .filter-row-desktop {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .filter-row-desktop .filter-text {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .filter-row-mobile {
-            display: none;
-        }
-
-        .modal-content {
-            border: none;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: #fff;
-            border-bottom: none;
-            padding: 1rem 1.25rem;
-        }
-
-        .modal-title {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .modal-header .btn-close {
-            filter: brightness(0) invert(1);
-        }
-
-        .modal-body {
-            padding: 1.25rem;
-        }
-
-
-        @media (max-width: 767px) {
-            .filter-row-desktop {
-                display: none;
-            }
-
-            .filter-row-mobile {
-                display: block;
-                margin-top: 1rem;
-            }
-
-            .location-text {
-                max-width: 120px;
-            }
-        }
-
-        .select2-container--bootstrap-5 .select2-selection {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 0.8rem !important;
-            min-height: 40px !important;
-            font-family: 'Nunito', sans-serif !important;
-            background-color: #ffffff !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            color: #2c2e3f !important;
-            font-size: 0.9rem !important;
-            line-height: 1.5 !important;
-            padding-left: 0 !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-            height: 38px !important;
-            right: 10px !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
-            border-color: #9a55ff transparent transparent transparent !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection:hover {
-            border-color: #9a55ff !important;
-        }
-
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-        .select2-container--bootstrap-5.select2-container--open .select2-selection {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #e9ecef !important;
-            border-radius: 8px !important;
-            overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option {
-            padding: 0.6rem 0.8rem !important;
-            font-size: 0.9rem !important;
-            font-family: 'Nunito', sans-serif !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem !important;
-            font-family: 'Nunito', sans-serif !important;
-            margin: 0.5rem !important;
-            width: calc(100% - 1rem) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-limited-items .select2-results__options {
-            max-height: 200px !important;
-            overflow-y: auto !important;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .action-text {
-            display: inline-block;
-            padding: 0.45rem 0.85rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 20px;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            border: none;
-        }
-
-        .action-text-verify {
-            background: linear-gradient(135deg, #198754, #4dd48a) !important;
-            color: white !important;
-        }
-
-        .action-text-verify:hover {
-            box-shadow: 0 5px 15px rgba(25, 135, 84, 0.35);
-            color: white !important;
-            transform: translateY(-1px);
-        }
-
-        .action-text-verified {
-            background: rgba(25, 135, 84, 0.1);
-            color: #198754;
-        }
-
-        .action-text-rejected {
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-        }
-
-        .action-text-none {
-            background: rgba(165, 179, 203, 0.1);
-            color: #a5b3cb;
-        }
-
-        .sort-th {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .sort-th:hover {
-            background-color: #f8f5ff;
-        }
-    </style>
-
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <div class="row mb-3 mb-sm-3 mb-md-4">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+        <!-- Header Halaman (Tanpa Card Box) -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-home-city-outline me-2" style="color: #9a55ff;"></i>Semua Properti Proyek
-                            </h3>
-                            <p class="text-muted mb-0">Daftar seluruh properti yang terdaftar dalam sistem</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-home-city-outline"
-                                style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center px-1">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">
+                            <i class="mdi mdi-home-city-outline me-2" style="color: #9a55ff;"></i>Semua Tanah Pasca Land Bank
+                        </h3>
+                        <p class="text-muted mb-0">Daftar seluruh properti proyek yang terdaftar dalam sistem</p>
                     </div>
                 </div>
             </div>
@@ -882,215 +35,194 @@
 
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card">
+                <div class="card shadow-sm border-0">
                     <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                        <h5 class="card-title mb-0"><i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Properti</h5>
-                        <a href="{{ route('properti') }}" class="btn btn-primary btn-sm">
+                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Properti
+                        </h5>
+                        <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;">
                             <i class="mdi mdi-plus me-1"></i> Tambah Pasca Landbank
                         </a>
                     </div>
 
                     <div class="card-body">
-                        <div class="filter-card mb-4">
-                            <div class="card-body">
-                                <form id="filterForm" method="GET" action="{{ route('properti-all') }}">
-                                    <input type="hidden" name="sort_by" id="sort_by" value="{{ request('sort_by') }}">
-                                    <input type="hidden" name="sort_order" id="sort_order"
-                                        value="{{ request('sort_order', 'asc') }}">
+                        <!-- Filter Section -->
+                        <div class="filter-card mb-3">
+                            <form id="filterForm" method="GET" action="{{ route('properti-all') }}">
+                                <input type="hidden" name="sort_by" id="sort_by" value="{{ request('sort_by') }}">
+                                <input type="hidden" name="sort_order" id="sort_order"
+                                    value="{{ request('sort_order', 'asc') }}">
 
-                                    <div class="filter-row-desktop">
-                                        <div class="filter-text">
-                                            <i class="mdi mdi-filter-outline"></i><span>Filter data properti</span>
-                                        </div>
-
-                                        <div class="row g-2 align-items-end w-100">
-                                            <div class="col-md-2">
-                                                <label class="form-label">Cari</label>
+                                <!-- DESKTOP VERSION -->
+                                <div class="filter-row-desktop d-none d-md-block">
+                                    <div class="row g-2 align-items-center w-100">
+                                        <div class="col-12 col-md-3 col-lg-3">
+                                            <div class="input-group">
                                                 <input type="text" class="form-control" name="search" id="searchInput"
-                                                    placeholder="Nama Properti..." value="{{ request('search') }}">
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">Perusahaan</label>
-                                                <select name="company_profile_id" id="filterCompany"
-                                                    class="form-control select2-desktop">
-                                                    <option value="">Semua Perusahaan</option>
-                                                    @foreach ($companies as $company)
-                                                        <option value="{{ $company->id }}"
-                                                            {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
-                                                            {{ $company->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">Kategori</label>
-                                                <select name="kategori" class="form-control">
-                                                    <option value="">Semua Kategori</option>
-                                                    @foreach ($categories as $cat)
-                                                        <option value="{{ $cat }}"
-                                                            {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                            {{ $cat }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">Legalitas</label>
-                                                <select name="legalitas" class="form-control">
-                                                    <option value="">Semua Legalitas</option>
-                                                    <option value="verified"
-                                                        {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
-                                                        Terverifikasi</option>
-                                                    <option value="pending"
-                                                        {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending
-                                                    </option>
-                                                    <option value="rejected"
-                                                        {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">Pembangunan</label>
-                                                <select name="pembangunan" class="form-control">
-                                                    <option value="">Semua Status</option>
-                                                    <option value="Selesai"
-                                                        {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai
-                                                    </option>
-                                                    <option value="progress"
-                                                        {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
-                                                        Progress</option>
-                                                    <option value="Belum"
-                                                        {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-1">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control" name="show" id="showSelect">
-                                                    <option value="10" {{ request('show') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25" {{ request('show') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50" {{ request('show') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100" {{ request('show') == 100 ? 'selected' : '' }}>
-                                                        100</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-1">
-                                                <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                                <div class="d-flex gap-2">
-                                                    <button type="submit" class="btn btn-gradient-primary flex-fill"
-                                                        title="Filter">
-                                                        <i class="mdi mdi-filter"></i>
-                                                    </button>
-                                                    <a href="{{ route('properti-all') }}"
-                                                        class="btn btn-gradient-secondary flex-fill btn-reset"
-                                                        title="Reset">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="filter-row-mobile">
-                                        <div class="row g-2">
-                                            <div class="col-12">
-                                                <label class="form-label">Cari</label>
-                                                <input type="text" class="form-control" id="searchInputMobile"
-                                                    placeholder="Nama Properti..." value="{{ request('search') }}">
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label">Perusahaan</label>
-                                                <select name="company_profile_id" id="filterCompanyMobile"
-                                                    class="form-control select2-mobile">
-                                                    <option value="">Semua Perusahaan</option>
-                                                    @foreach ($companies as $company)
-                                                        <option value="{{ $company->id }}"
-                                                            {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
-                                                            {{ $company->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Kategori</label>
-                                                <select name="kategori" class="form-control">
-                                                    <option value="">Semua Kategori</option>
-                                                    @foreach ($categories as $cat)
-                                                        <option value="{{ $cat }}"
-                                                            {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                            {{ $cat }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Legalitas</label>
-                                                <select name="legalitas" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="verified"
-                                                        {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
-                                                        Terverifikasi</option>
-                                                    <option value="pending"
-                                                        {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending
-                                                    </option>
-                                                    <option value="rejected"
-                                                        {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Pembangunan</label>
-                                                <select name="pembangunan" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="Selesai"
-                                                        {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai
-                                                    </option>
-                                                    <option value="progress"
-                                                        {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
-                                                        Progress</option>
-                                                    <option value="Belum"
-                                                        {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control" name="show" id="showSelectMobile">
-                                                    <option value="10" {{ request('show') == 10 ? 'selected' : '' }}>
-                                                        10</option>
-                                                    <option value="25" {{ request('show') == 25 ? 'selected' : '' }}>
-                                                        25</option>
-                                                    <option value="50" {{ request('show') == 50 ? 'selected' : '' }}>
-                                                        50</option>
-                                                    <option value="100" {{ request('show') == 100 ? 'selected' : '' }}>
-                                                        100</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6 mt-3">
-                                                <button type="submit" class="btn btn-gradient-primary w-100">
-                                                    <i class="mdi mdi-filter me-1"></i>
+                                                    placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                                 </button>
                                             </div>
-                                            <div class="col-6 mt-3">
+                                        </div>
+
+                                        <div class="col-12 col-md-2 col-lg-2">
+                                            <select name="company_profile_id" id="filterCompany"
+                                                class="form-control select2">
+                                                <option value="">Semua Perusahaan</option>
+                                                @foreach ($companies as $company)
+                                                    <option value="{{ $company->id }}"
+                                                        {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                        {{ $company->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-6 col-md-2 col-lg-2">
+                                            <select name="kategori" class="form-control">
+                                                <option value="">Semua Kategori</option>
+                                                @foreach ($categories as $cat)
+                                                    <option value="{{ $cat }}"
+                                                        {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                        {{ $cat }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-6 col-md-2 col-lg-2">
+                                            <select name="legalitas" class="form-control">
+                                                <option value="">Semua Legalitas</option>
+                                                <option value="verified"
+                                                    {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
+                                                    Terverifikasi</option>
+                                                <option value="pending"
+                                                    {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending
+                                                </option>
+                                                <option value="rejected"
+                                                    {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-6 col-md-2 col-lg-2">
+                                            <select name="pembangunan" class="form-control">
+                                                <option value="">Semua Status</option>
+                                                <option value="Selesai"
+                                                    {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai
+                                                </option>
+                                                <option value="progress"
+                                                    {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
+                                                    Progress</option>
+                                                <option value="Belum"
+                                                    {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-6 col-md-1 col-lg-1">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill"
+                                                    title="Filter">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
                                                 <a href="{{ route('properti-all') }}"
-                                                    class="btn btn-gradient-secondary w-100 text-center text-decoration-none btn-reset">
-                                                    <i class="mdi mdi-refresh me-1"></i>
+                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill btn-reset"
+                                                    title="Reset">
+                                                    <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+
+                                <!-- MOBILE VERSION -->
+                                <div class="filter-row-mobile d-block d-md-none">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="searchInputMobile" name="search"
+                                                    placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select name="company_profile_id" id="filterCompanyMobile"
+                                                class="form-control select2">
+                                                <option value="">Semua Perusahaan</option>
+                                                @foreach ($companies as $company)
+                                                    <option value="{{ $company->id }}"
+                                                        {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                        {{ $company->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="kategori" class="form-control">
+                                                <option value="">Semua Kategori</option>
+                                                @foreach ($categories as $cat)
+                                                    <option value="{{ $cat }}"
+                                                        {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                        {{ $cat }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="legalitas" class="form-control">
+                                                <option value="">Semua Legalitas</option>
+                                                <option value="verified"
+                                                    {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
+                                                    Terverifikasi</option>
+                                                <option value="pending"
+                                                    {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending
+                                                </option>
+                                                <option value="rejected"
+                                                    {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="pembangunan" class="form-control">
+                                                <option value="">Semua Status</option>
+                                                <option value="Selesai"
+                                                    {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai
+                                                </option>
+                                                <option value="progress"
+                                                    {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
+                                                    Progress</option>
+                                                <option value="Belum"
+                                                    {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill"
+                                                    title="Filter">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <a href="{{ route('properti-all') }}"
+                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill btn-reset"
+                                                    title="Reset">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
 
                         <div class="table-responsive">
@@ -1201,12 +333,8 @@
                                                         <i class="mdi mdi-check-decagram me-1"></i>Verifikasi
                                                     </a>
                                                 @endif
-                                                <a href="{{ route('properti.edit', $item->id) }}" class="btn-action edit ms-2 d-inline-flex align-items-center justify-content-center text-decoration-none" 
-                                                        style="padding: 4px 12px; height: 30px; border-radius: 8px; background: #ffc107; color: #1f2937; border: none; display: inline-flex; transition: all 0.2s; box-shadow: 0 2px 4px rgba(255, 193, 7, 0.2); font-size: 11px; font-weight: bold;" 
-                                                        title="Edit Properti"
-                                                        onmouseover="this.style.background='#ffb300'; this.style.transform='scale(1.05)';"
-                                                        onmouseout="this.style.background='#ffc107'; this.style.transform='scale(1)';">
-                                                    Edit
+                                                <a href="{{ route('properti.edit', $item->id) }}" class="btn-action edit ms-1" title="Edit Properti">
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </a>
                                             </td>
                                         </tr>

@@ -64,7 +64,7 @@ Route::get('/beranda', function () {
 
 Route::get('/detail', function () {
     return view('home.detail');
-});
+})->name('home.detail');
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -306,9 +306,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     })->name('servis');
 
 
-    // Route::get('/dashboard-dokument', function () {
-    //     return view('dokument.dokument');
-    // });
+    Route::resource('dokument', LandBankDocumentController::class);
+    Route::get('/dokument-persiapan-pecah-unit', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
 
 
 
