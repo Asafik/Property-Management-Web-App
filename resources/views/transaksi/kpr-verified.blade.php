@@ -1,9 +1,8 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Daftar Customer KPR Terverifikasi')
+@section('title', 'Daftar Customer KPR Terverifikasi - Property Management App')
 
 @section('content')
-
 <style>
 .card {
     transition: all 0.3s ease;
@@ -11,28 +10,19 @@
     border: none !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-.card:hover {
-    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-}
+.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
+
 .card-header {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border-bottom: 1px solid #e9ecef;
     padding: 0.75rem;
 }
-@media (min-width: 576px) {
-    .card-header { padding: 1rem; }
-}
-@media (min-width: 768px) {
-    .card-header { padding: 1.2rem; }
-}
+@media (min-width: 576px) { .card-header { padding: 1rem; } }
+@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
 
 .card-body { padding: 0.75rem; }
-@media (min-width: 576px) {
-    .card-body { padding: 1rem; }
-}
-@media (min-width: 768px) {
-    .card-body { padding: 1.2rem; }
-}
+@media (min-width: 576px) { .card-body { padding: 1rem; } }
+@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
 
 .card-title {
     font-size: 0.9rem;
@@ -40,35 +30,116 @@
     color: #9a55ff;
     margin-bottom: 0;
 }
-@media (min-width: 576px) {
-    .card-title { font-size: 1rem; }
-}
-@media (min-width: 768px) {
-    .card-title { font-size: 1.1rem; }
-}
+@media (min-width: 576px) { .card-title { font-size: 1rem; } }
+@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
 
 .filter-card {
-    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    background: #ffffff;
     border-radius: 12px;
-    padding: 1rem;
+    padding: 0;
     margin-bottom: 1.25rem;
     border: none;
 }
-.filter-card .form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.3px;
+
+/* Search Input Group in Filter (Input on Left, Purple Button on Right) */
+.search-input-group {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: 38px !important;
 }
-.filter-card .form-control,
-.filter-card .form-select {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    height: auto;
-    min-height: 40px;
-    border: 1px solid #e0e4e9;
+
+.search-input-group .form-control {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-right: none !important;
+    font-size: 0.88rem !important;
+    padding: 0.45rem 0.85rem !important;
+    margin: 0 !important;
+    flex: 1 1 auto;
+}
+
+.search-input-group .btn-search-submit {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    padding: 0 0.95rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-size: 1.15rem !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+.search-input-group:focus-within .form-control {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+}
+
+/* SELECT2 ENHANCEMENTS */
+.select2-container--bootstrap-5 .select2-selection {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0.35rem 0.75rem !important;
+    font-family: inherit !important;
+    background-color: #ffffff !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+    color: #2c2e3f !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+    padding-left: 0 !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+    right: 8px !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection:hover,
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    border-color: #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option {
+    padding: 0.55rem 0.8rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--selected {
+    background-color: #f3e8ff !important;
+    color: #7e22ce !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--highlighted {
+    background: #9a55ff !important;
+    color: #ffffff !important;
 }
 
 .form-control, .form-select {
@@ -79,27 +150,11 @@
     transition: all 0.2s ease;
     background-color: #ffffff;
     color: #2c2e3f;
-    height: auto;
-}
-@media (min-width: 576px) {
-    .form-control, .form-select {
-        padding: 0.7rem 1rem;
-        font-size: 0.95rem;
-        border-radius: 10px;
-    }
 }
 .form-control:focus, .form-select:focus {
     border-color: #9a55ff;
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
     outline: none;
-}
-.form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
 }
 
 .btn {
@@ -111,17 +166,10 @@
     font-family: 'Nunito', sans-serif;
     border: none;
 }
-@media (min-width: 576px) {
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
-    }
-}
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
+
 .btn-gradient-primary {
     background: linear-gradient(to right, #da8cff, #9a55ff) !important;
     color: #ffffff !important;
@@ -130,8 +178,20 @@
     background: #6c757d !important;
     color: #ffffff !important;
 }
-.btn-gradient-secondary:hover {
-    background: #5a6268 !important;
+.btn-gradient-success {
+    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(40, 199, 111, 0.18);
+}
+.btn-gradient-info {
+    background: linear-gradient(135deg, #00cfe8, #1e9ff2) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(0, 207, 232, 0.2);
+}
+.btn-gradient-warning {
+    background: linear-gradient(135deg, #ffb822, #ff9f43) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(255, 184, 34, 0.2);
 }
 
 .btn-icon-only {
@@ -142,58 +202,56 @@
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-}
-.btn-icon-only i {
-    font-size: 1.2rem;
-    margin: 0;
+    flex-shrink: 0;
 }
 
 .btn-action {
-    padding: 0.45rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: none;
-    color: #fff;
-    transition: all 0.25s ease;
-    margin: 2px;
-    text-decoration: none;
+    height: 34px;
+    padding: 0 14px;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 700;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+    border: none !important;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(154, 85, 255, 0.25);
+    white-space: nowrap;
+    width: auto !important;
+    min-width: fit-content !important;
 }
+.btn-action i { font-size: 1rem; color: #ffffff !important; }
 .btn-action:hover {
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.35);
     transform: translateY(-2px);
-    color: #fff;
+    color: #ffffff !important;
 }
-.btn-survey {
-    background: linear-gradient(135deg, #17a2b8, #43c6db);
+
+.btn-action.survey {
+    background: linear-gradient(135deg, #00cfe8, #1e9ff2) !important;
+    box-shadow: 0 3px 8px rgba(0, 207, 232, 0.25);
 }
-.btn-akad {
-    background: linear-gradient(135deg, #28a745, #5dd067);
-}
-.btn-followup {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-.btn-followup:hover {
-    color: #2c2e3f;
-}
-.btn-detail {
-    background: linear-gradient(135deg, #9a55ff, #b07cff);
+.btn-action.akad {
+    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    box-shadow: 0 3px 8px rgba(40, 199, 111, 0.25);
 }
 
 .table-responsive {
     overflow-x: auto;
-    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     border-radius: 8px;
     margin-bottom: 0.5rem;
-    max-height: none;
     scrollbar-width: thin;
     scrollbar-color: #9a55ff #f0f0f0;
 }
 .table-responsive::-webkit-scrollbar {
+    width: 8px;
     height: 8px;
 }
 .table-responsive::-webkit-scrollbar-track {
@@ -207,11 +265,8 @@
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #7a3fcc;
 }
-.table-responsive::-webkit-scrollbar:vertical {
-    width: 0;
-}
-.table-responsive::-webkit-scrollbar-thumb:vertical {
-    background: transparent;
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f0f0f0;
 }
 
 .table {
@@ -222,368 +277,279 @@
 .table thead th {
     background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
     color: #9a55ff;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid #e9ecef;
-    padding: 0.8rem 0.5rem;
+    border-bottom: 2px solid #edf2f9;
+    padding: 0.9rem 0.75rem;
     white-space: nowrap;
-}
-@media (min-width: 576px) {
-    .table thead th {
-        font-size: 0.85rem;
-        padding: 0.9rem 0.6rem;
-    }
-}
-@media (min-width: 768px) {
-    .table thead th {
-        font-size: 0.9rem;
-        padding: 1rem 0.75rem;
-    }
-}
-
-.table thead th:first-child,
-.table tbody td:first-child {
-    width: 40px;
-    text-align: center;
 }
 .table tbody td {
+    padding: 0.85rem 0.75rem;
     vertical-align: middle;
-    font-size: 0.85rem;
-    padding: 0.8rem 0.5rem;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid #f2f4f8;
     color: #2c2e3f;
-    white-space: nowrap;
+    font-size: 0.88rem;
 }
-@media (min-width: 576px) {
-    .table tbody td {
-        font-size: 0.9rem;
-        padding: 0.9rem 0.6rem;
-    }
-}
-@media (min-width: 768px) {
-    .table tbody td {
-        font-size: 0.95rem;
-        padding: 1rem 0.75rem;
-    }
-}
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-}
+.table tbody tr { transition: all 0.2s ease; }
+.table tbody tr:hover { background-color: #faf8ff; }
 
-.customer-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-.customer-initial {
+/* AVATAR INISIAL */
+.customer-avatar {
     width: 38px;
     height: 38px;
-    border-radius: 50%;
+    border-radius: 10px;
     background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.18);
+    flex-shrink: 0;
+}
+
+/* BADGES */
+.badge-gradient-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
     color: #fff;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+}
+.badge-gradient-success {
+    background: linear-gradient(to right, #84d9d2, #07cdae) !important;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+}
+.badge-gradient-secondary {
+    background: linear-gradient(to right, #e0e0e0, #bdbdbd) !important;
+    color: #424242;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge-status {
+    padding: 0.45rem 0.85rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.76rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.18);
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.badge-verified {
+    background: linear-gradient(135deg, #28c76f, #1fa75a) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(40, 199, 111, 0.3) !important;
+}
+.badge-survey {
+    background: linear-gradient(135deg, #00cfe8, #1e9ff2) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(0, 207, 232, 0.3) !important;
+}
+.badge-akad {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.3) !important;
+}
+.badge-default {
+    background: linear-gradient(135deg, #82868b, #6c757d) !important;
+    color: #ffffff !important;
 }
 
-
-.info-with-icon {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-}
-.info-with-icon i {
-    font-size: 1.1rem;
-    color: #9a55ff;
-}
-
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
-.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
-.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
-
-.badge-status-doc {
-    padding: 0.38rem 0.85rem;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.78rem;
-    display: inline-block;
-    color: #fff;
-}
-.badge-status-doc.verified {
-    background: linear-gradient(135deg, #28a745, #5dd067);
-}
-.badge-status-doc.survey {
-    background: linear-gradient(135deg, #17a2b8, #56c6d8);
-}
-.badge-status-doc.akad {
-    background: linear-gradient(135deg, #9a55ff, #b07cff);
-}
-.badge-status-doc.followup {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-
-.bank-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-weight: 700;
-    color: #2c2e3f;
-}
-.bank-badge i {
-    font-size: 1.1rem;
-    color: #28a745;
-}
-
-.pagination { margin: 0; gap: 3px; }
+.pagination { margin-bottom: 0; gap: 5px; }
 .page-item .page-link {
+    border-radius: 8px !important;
     border: 1px solid #e9ecef;
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-    color: #6c7383;
-    background-color: #ffffff;
-    border-radius: 6px !important;
+    color: #2c2e3f;
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem;
     transition: all 0.2s ease;
-    min-width: 32px;
-    text-align: center;
-    text-decoration: none;
 }
 .page-item.active .page-link {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    border-color: transparent;
+    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+    border-color: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);
 }
-.pagination-info {
-    font-size: 0.8rem;
-    color: #6c7383;
-}
-
-.text-primary  { color: #9a55ff !important; }
-.text-success  { color: #28a745 !important; }
-.text-muted    { color: #a5b3cb !important; }
-.fw-bold       { font-weight: 600 !important; }
-
-h3.text-dark {
-    font-size: 1.3rem !important;
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
-}
-@media (min-width: 576px) {
-    h3.text-dark { font-size: 1.5rem !important; }
-}
-@media (min-width: 768px) {
-    h3.text-dark { font-size: 1.7rem !important; }
-}
-
-.mdi { vertical-align: middle; }
-
-.filter-row-desktop {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.filter-row-desktop .filter-text {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.page-item .page-link:hover {
+    background-color: #f3e8ff;
     color: #9a55ff;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-.filter-row-mobile { display: none; }
-
-@media (max-width: 767px) {
-    .filter-row-desktop { display: none; }
-    .filter-row-mobile  { display: block; margin-top: 1rem; }
+    border-color: #da8cff;
 }
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
 
+    <!-- PAGE HEADER -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-home-account me-2" style="color: #9a55ff;"></i>Daftar User KPR Terverifikasi
-                        </h3>
+                        <h4 class="text-dark mb-1">
+                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Daftar User KPR Terverifikasi
+                        </h4>
                         <p class="text-muted mb-0">
                             Kelola User KPR yang telah terverifikasi dokumennya
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
-                        <i class="mdi mdi-file-check-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        <i class="mdi mdi-home-account" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- MAIN TABLE CARD -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar User KPR Terverifikasi
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Data Customer KPR Terverifikasi
                     </h5>
                 </div>
 
                 <div class="card-body">
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <div class="filter-row-desktop">
-                                <div class="filter-text">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter Data KPR Terverifikasi</span>
-                                </div>
 
-                                <form method="GET" action="{{ route('kpr.customer-verified') }}">
-                                    <div class="row g-2 align-items-end w-100">
-                                        <div class="col-md-3">
-                                            <label class="form-label">Search</label>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                name="search"
-                                                id="searchInput"
-                                                placeholder="Cari nama customer..."
-                                                value="{{ request('search') }}"
-                                            >
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <label class="form-label">Bank</label>
-                                            <select class="form-control" name="bank_id" id="bankSelect">
-                                                <option value="">Semua Bank</option>
-                                                @foreach($banks ?? [] as $bank)
-                                                    <option value="{{ $bank->id }}" {{ request('bank_id') == $bank->id ? 'selected' : '' }}>
-                                                        {{ $bank->bank_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label class="form-label">Status</label>
-                                            <select class="form-control" name="status" id="statusSelect">
-                                                <option value="">Semua Status</option>
-                                                <option value="dokumen" {{ request('status') == 'dokumen' ? 'selected' : '' }}>Terverifikasi</option>
-                                                <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Lanjut Survey</option>
-                                                <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Lanjut Akad</option>
-                                                <option value="followup" {{ request('status') == 'followup' ? 'selected' : '' }}>Perlu Follow Up</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" name="per_page" id="perPageSelect">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                            <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
+                    <!-- Filter Section -->
+                    <div class="filter-card mb-3">
+                        <form method="GET" action="{{ route('kpr.customer-verified') }}" id="filterForm">
+                            <!-- FILTER DESKTOP -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <!-- Search Input -->
+                                        <div style="min-width: 220px; max-width: 260px; flex: 1;">
+                                            <div class="input-group search-input-group">
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari nama user...">
+                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                    type="submit" title="Cari">
+                                                    <i class="mdi mdi-magnify"></i>
                                                 </button>
-                                                <a href="{{ route('kpr.customer-verified') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
 
-                            <div class="filter-row-mobile">
-                                <div class="filter-text mb-2">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter Data KPR Terverifikasi</span>
-                                </div>
-
-                                <form method="GET" action="{{ route('kpr.customer-verified') }}">
-                                    <div class="row g-2">
-                                        <div class="col-12">
-                                            <label class="form-label">Search</label>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                name="search"
-                                                id="searchInputMobile"
-                                                placeholder="Cari nama customer..."
-                                                value="{{ request('search') }}"
-                                            >
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label class="form-label">Bank</label>
-                                            <select class="form-control" name="bank_id" id="bankSelectMobile">
+                                        <!-- Filter Bank Dropdown -->
+                                        <div style="width: 170px;">
+                                            <select name="bank_name" class="form-control select2" id="bankSelect" style="width: 100%;">
                                                 <option value="">Semua Bank</option>
                                                 @foreach($banks ?? [] as $bank)
-                                                    <option value="{{ $bank->id }}" {{ request('bank_id') == $bank->id ? 'selected' : '' }}>
+                                                    <option value="{{ $bank->bank_name }}" {{ request('bank_name') == $bank->bank_name ? 'selected' : '' }}>
                                                         {{ $bank->bank_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
 
-                                        <div class="col-12">
-                                            <label class="form-label">Status</label>
-                                            <select class="form-control" name="status" id="statusSelectMobile">
+                                        <!-- Filter Status Dropdown -->
+                                        <div style="width: 170px;">
+                                            <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
                                                 <option value="">Semua Status</option>
-                                                <option value="dokumen" {{ request('status') == 'dokumen' ? 'selected' : '' }}>Terverifikasi</option>
+                                                <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Terverifikasi</option>
                                                 <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Lanjut Survey</option>
-                                                <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Lanjut Akad</option>
-                                                <option value="followup" {{ request('status') == 'followup' ? 'selected' : '' }}>Perlu Follow Up</option>
+                                                <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Siap Akad</option>
                                             </select>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" name="per_page" id="perPageSelectMobile">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only w-100" title="Filter">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('kpr.customer-verified') }}" class="btn btn-gradient-secondary btn-icon-only w-100" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </a>
                                         </div>
                                     </div>
-                                </form>
+
+                                    <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 90px;">
+                                            <select name="per_page" class="form-control select2" id="perPageSelect" style="width: 100%;">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit"
+                                            class="btn btn-gradient-primary btn-icon-only"
+                                            id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('kpr.customer-verified') }}"
+                                            class="btn btn-gradient-secondary btn-icon-only"
+                                            title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+
+                            <!-- FILTER MOBILE -->
+                            <div class="d-block d-md-none">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group search-input-group">
+                                            <input type="text" name="search_mobile"
+                                                value="{{ request('search') }}" class="form-control"
+                                                placeholder="Cari nama user..." id="searchMobile">
+                                            <button class="btn btn-gradient-primary btn-search-submit" 
+                                                type="submit" title="Cari">
+                                                <i class="mdi mdi-magnify"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select name="bank_name_mobile" class="form-control select2-mobile" id="bankSelectMobile" style="width: 100%;">
+                                            <option value="">Semua Bank</option>
+                                            @foreach($banks ?? [] as $bank)
+                                                <option value="{{ $bank->bank_name }}" {{ request('bank_name') == $bank->bank_name ? 'selected' : '' }}>
+                                                    {{ $bank->bank_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select name="per_page_mobile" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                            <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit"
+                                            class="btn btn-gradient-primary w-100 d-inline-flex align-items-center justify-content-center"
+                                            id="filterBtnMobile" title="Filter"
+                                            onclick="showFilterLoading()" style="height: 38px;">
+                                            <i class="mdi mdi-filter me-1"></i>Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('kpr.customer-verified') }}"
+                                            class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center"
+                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; text-decoration: none;">
+                                            <i class="mdi mdi-refresh me-1"></i>Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
+                    <!-- TABLE CONTENT -->
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
@@ -593,170 +559,146 @@ h3.text-dark {
                                     <th>Nama - Unit</th>
                                     <th>Jenis & Tipe</th>
                                     <th>Bank</th>
-                                    <th>Status Dokumen</th>
-                                    <th>Tgl Verifikasi</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Tanggal Verifikasi</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($kprApplications as $index => $application)
                                     @php
-                                        $customerName = $application->customer->full_name ?? '-';
-                                        $words = explode(' ', trim($customerName));
-                                        $initial = '';
-
-                                        foreach ($words as $word) {
-                                            if ($word !== '') {
-                                                $initial .= strtoupper(substr($word, 0, 1));
-                                            }
-                                        }
-
-                                        $initial = substr($initial, 0, 2) ?: '-';
+                                        $fullName = trim($application->customer->full_name ?? '-');
+                                        $nameParts = array_values(array_filter(explode(' ', $fullName)));
+                                        $initials = (count($nameParts) > 0) ? strtoupper(substr($nameParts[0], 0, 1)) . (isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : '') : '--';
                                         $unitType = strtolower($application->unit->type ?? '');
                                         $status = strtolower($application->status ?? '');
-
-                                        $statusLabel = 'Terverifikasi';
-                                        $statusClass = 'verified';
-
-                                        if ($status === 'survey') {
-                                            $statusLabel = 'Lanjut Survey';
-                                            $statusClass = 'survey';
-                                        } elseif ($status === 'akad') {
-                                            $statusLabel = 'Siap Akad';
-                                            $statusClass = 'akad';
-                                        } elseif ($status === 'followup' || $status === 'follow up') {
-                                            $statusLabel = 'Perlu Follow Up';
-                                            $statusClass = 'followup';
-                                        } elseif ($status === 'dokumen') {
-                                            $statusLabel = 'Terverifikasi';
-                                            $statusClass = 'verified';
-                                        }
                                     @endphp
-
                                     <tr>
-                                        <td class="text-center fw-bold">
-                                            {{ method_exists($kprApplications, 'firstItem') ? ($kprApplications->firstItem() + $index) : ($index + 1) }}
-                                        </td>
-
+                                        <td class="text-center fw-bold">{{ $kprApplications->firstItem() + $index }}</td>
                                         <td>
-                                            <div class="customer-cell">
-                                                <span class="customer-initial">{{ $initial }}</span>
-                                                <span class="fw-bold">{{ $customerName }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <div class="customer-avatar me-2">{{ $initials }}</div>
+                                                <span class="fw-bold">{{ $application->customer->full_name ?? '-' }}</span>
                                             </div>
                                         </td>
-
                                         <td>
-                                            <div class="info-with-icon">
-                                                <i class="mdi mdi-home"></i>
-                                                <span class="fw-bold">{{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}</span>
+                                            <div class="unit-info">
+                                                <span class="unit-name fw-bold">
+                                                    <i class="mdi mdi-home-outline text-primary me-1"></i>
+                                                    {{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}
+                                                </span>
                                             </div>
                                         </td>
-
                                         <td>
                                             @php
-                                                $jenisUnit = $application->unit->jenis ?? '';
-                                                $tipeUnit = $application->unit->type ?? '-';
+                                                $jenis = strtolower($application->unit->jenis ?? '');
+                                                $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : 'badge-gradient-primary';
+                                                $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : 'mdi-office-building';
                                             @endphp
-                                            @if (strtolower($jenisUnit) == 'subsidi')
-                                                <span class="badge badge-gradient-success">
-                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
-                                                </span>
-                                            @elseif(strtolower($jenisUnit) == 'komersil')
-                                                <span class="badge badge-gradient-primary">
-                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenisUnit }} - {{ $tipeUnit }}
-                                                </span>
-                                            @else
-                                                <span class="badge badge-gradient-secondary">
-                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenisUnit ?: '-') . ' - ' . $tipeUnit }}
-                                                </span>
-                                            @endif
-                                        </td>
-
-                                        <td>
-                                            <span class="bank-badge">
-                                                <i class="mdi mdi-bank"></i>
-                                                {{ $application->bank->bank_name ?? '-' }}
+                                            <span class="badge {{ $badgeClass }}">
+                                                <i class="mdi {{ $icon }} me-1"></i>
+                                                {{ ucfirst($jenis) }} - {{ $application->unit->type ?? '-' }}
                                             </span>
                                         </td>
-
                                         <td>
-                                            <span class="badge-status-doc {{ $statusClass }}">
-                                                {{ $statusLabel }}
-                                            </span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-bank-outline text-primary me-2" style="font-size: 1.1rem;"></i>
+                                                <span class="fw-bold">{{ $application->bank->bank_name ?? '-' }}</span>
+                                            </div>
                                         </td>
-
-                                        <td>
-                                            {{ optional($application->updated_at)->format('d M Y') ?? '-' }}
-                                        </td>
-
                                         <td class="text-center">
-                                            @if($unitType === 'komersil')
-                                                @if($status === 'survey')
-                                                    <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action btn-survey">
-                                                        Lanjut Survey
-                                                    </a>
-                                                @else
-                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action btn-akad">
-                                                        Lanjut ke Akad
-                                                    </a>
-                                                @endif
+                                            @if ($status === 'approved' || $status === 'dokumen')
+                                                <span class="badge-status badge-verified">
+                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Terverifikasi
+                                                </span>
+                                            @elseif ($status === 'survey')
+                                                <span class="badge-status badge-survey">
+                                                    <i class="mdi mdi-map-marker-check-outline me-1"></i>Survey
+                                                </span>
+                                            @elseif ($status === 'akad')
+                                                <span class="badge-status badge-akad">
+                                                    <i class="mdi mdi-handshake-outline me-1"></i>Akad
+                                                </span>
                                             @else
-                                                @if($status === 'followup' || $status === 'follow up')
-                                                    <a href="{{ route('kpr.show', $application->id) }}" class="btn-action btn-followup">
-                                                        Follow Up
-                                                    </a>
-                                                @elseif($status === 'akad')
-                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action btn-akad">
-                                                        Lanjut ke Akad
-                                                    </a>
-                                                @else
-                                                    <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action btn-survey">
-                                                        Lanjut Survey
-                                                    </a>
-                                                @endif
+                                                <span class="badge-status badge-default">
+                                                    <i class="mdi mdi-progress-question me-1"></i>{{ ucfirst($status ?? '-') }}
+                                                </span>
                                             @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex align-items-center">
+                                                <i class="mdi mdi-calendar-month-outline text-muted me-1" style="font-size: 1rem;"></i>
+                                                <span>{{ optional($application->updated_at)->format('d M Y') ?? '-' }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                @if(strtolower($application->unit->jenis ?? '') === 'komersil')
+                                                    @if($status === 'survey')
+                                                        <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action survey" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-home-search-outline"></i> Lanjut Survey
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action akad" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad
+                                                        </a>
+                                                    @endif
+                                                @else
+                                                    @if($status === 'akad')
+                                                        <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action akad" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action survey" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-home-search-outline"></i> Lanjut Survey
+                                                        </a>
+                                                    @endif
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
-                                            Tidak ada data customer KPR terverifikasi
-                                        </td>
+                                        <td colspan="8" class="text-center text-muted py-4">Tidak ada data customer KPR terverifikasi</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    @if(method_exists($kprApplications, 'total'))
+                    <!-- PAGINATION -->
+                    @if(($kprApplications->total() ?? 0) > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                Menampilkan {{ $kprApplications->firstItem() ?? 0 }} - {{ $kprApplications->lastItem() ?? 0 }} dari {{ $kprApplications->total() }} data
-                            </div>
-                            <div>
-                                {{ $kprApplications->withQueryString()->links() }}
-                            </div>
-                        </div>
-                    @else
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                Menampilkan 1 - {{ count($kprApplications) }} dari {{ count($kprApplications) }} data
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.85rem;">
+                                Menampilkan {{ $kprApplications->firstItem() ?? 1 }} - {{ $kprApplications->lastItem() ?? 1 }} dari {{ $kprApplications->total() }} data
                             </div>
                             <nav aria-label="Page navigation">
                                 <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                    <li class="page-item disabled">
-                                        <span class="page-link">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                    <li class="page-item active">
-                                        <span class="page-link">1</span>
-                                    </li>
-                                    <li class="page-item disabled">
-                                        <span class="page-link">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
+                                    @if ($kprApplications->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="mdi mdi-chevron-left"></i></span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $kprApplications->previousPageUrl() }}" onclick="showPaginationLoading(event)"><i class="mdi mdi-chevron-left"></i></a>
+                                        </li>
+                                    @endif
+
+                                    @foreach ($kprApplications->getUrlRange(1, $kprApplications->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $kprApplications->currentPage() == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+
+                                    @if ($kprApplications->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $kprApplications->nextPageUrl() }}" onclick="showPaginationLoading(event)"><i class="mdi mdi-chevron-right"></i></a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="mdi mdi-chevron-right"></i></span>
+                                        </li>
+                                    @endif
                                 </ul>
                             </nav>
                         </div>
@@ -768,5 +710,63 @@ h3.text-dark {
     </div>
 
 </div>
-
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    $('#bankSelect').select2({ theme: 'bootstrap-5', placeholder: 'Semua Bank', allowClear: true, width: '100%', minimumResultsForSearch: Infinity });
+    $('#statusSelect').select2({ theme: 'bootstrap-5', placeholder: 'Semua Status', allowClear: true, width: '100%', minimumResultsForSearch: Infinity });
+    $('#perPageSelect').select2({ theme: 'bootstrap-5', placeholder: '10', allowClear: false, width: '100%', minimumResultsForSearch: Infinity });
+    $('#bankSelectMobile').select2({ theme: 'bootstrap-5', placeholder: 'Semua Bank', allowClear: true, width: '100%', minimumResultsForSearch: Infinity });
+    $('#perPageSelectMobile').select2({ theme: 'bootstrap-5', placeholder: '10', allowClear: false, width: '100%', minimumResultsForSearch: Infinity });
+
+    // Sync search input
+    $('input[name="search"]').on('input', function() { $('#searchMobile').val($(this).val()); });
+    $('#searchMobile').on('input', function() { $('input[name="search"]').val($(this).val()); });
+});
+
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showFilterLoading() {
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+}
+
+function showResetLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showProcessLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memproses...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+    window.location.href = event.currentTarget.href;
+}
+</script>
+@endpush

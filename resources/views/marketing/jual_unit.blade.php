@@ -557,31 +557,130 @@
             background: linear-gradient(135deg, #f0fff4, #e6f7e6);
         }
 
+        /* Seamless Rupiah Input Group (Prefix Rp on Left) */
+        .rupiah-input-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+        }
+
+        .rupiah-input-group .input-group-text {
+            background-color: #f8fafc !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-right: none !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            color: #9a55ff !important;
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            padding: 0 0.85rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+        }
+
+        .rupiah-input-group .form-control {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-left: 1.5px solid #e2e8f0 !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+            flex: 1 1 auto;
+        }
+
+        .rupiah-input-group:focus-within .input-group-text {
+            border-color: #9a55ff !important;
+            background-color: #fdfaff !important;
+        }
+
+        .rupiah-input-group:focus-within .form-control {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+
+        /* Search Input Group in Filter (Input on Left, Purple Button on Right) */
+        .search-input-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            height: 38px !important;
+        }
+
+        .search-input-group .form-control {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-right: none !important;
+            font-size: 0.88rem !important;
+            padding: 0.45rem 0.85rem !important;
+            margin: 0 !important;
+            flex: 1 1 auto;
+        }
+
+        .search-input-group .btn-search-submit {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            padding: 0 0.95rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: none !important;
+            border: none !important;
+            font-size: 1.15rem !important;
+            color: #ffffff !important;
+            margin: 0 !important;
+            flex-shrink: 0;
+        }
+
+        .search-input-group:focus-within .form-control {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+
         /* Siteplan */
         .siteplan-scroll-container {
             width: 100%;
             overflow: hidden !important;
-            /* Pure viewport navigation */
             border: 2px solid #9a55ff;
             border-radius: 12px;
-            background: #f8f9fa;
-            max-height: 700px;
+            background: #ffffff;
+            height: 620px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
+            align-items: center;
+            padding: 0;
             user-select: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
 
         .siteplan-scroll-container .canvas-container {
-            margin: auto !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
         }
 
         #siteplanCanvas {
             display: block;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 10px;
+            cursor: grab;
         }
 
         .btn-save-position {
@@ -1057,6 +1156,62 @@
                 padding: 0.75rem 0.75rem !important;
             }
         }
+
+        /* Select2 Theme Alignment */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border-color: #ebedf2 !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #3b3f5c !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #bfa5fa !important;
+            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+        }
+
+        /* Select2 Dropdown Options Soft Hover & Active */
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden !important;
+            z-index: 1050 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.45rem 0.85rem !important;
+            font-size: 0.85rem !important;
+            color: #3b3f5c !important;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        /* Hover / Highlighted (Soft Pastel Tint) */
+        .select2-container--bootstrap-5 .select2-results__option--highlighted,
+        .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #f6f1ff !important;
+            color: #792fe0 !important;
+        }
+        /* Active / Selected (Soft Purple Tint) */
+        .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #eee4ff !important;
+            color: #6b21a8 !important;
+            font-weight: 600 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+            background-color: #e4d3fe !important;
+            color: #581c87 !important;
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -1144,19 +1299,23 @@
                         </h5>
                         <div class="d-flex flex-wrap align-items-center gap-2">
                             <!-- Toggle View -->
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary active" id="btnTableView"
-                                    onclick="switchView('table')"><i class="mdi mdi-view-list me-1"></i><span
-                                        class="d-none d-sm-inline">Table</span></button>
-                                <button type="button" class="btn btn-outline-primary" id="btnGridView"
-                                    onclick="switchView('grid')"><i class="mdi mdi-view-grid me-1"></i><span
-                                        class="d-none d-sm-inline">Grid</span></button>
-                                <button type="button" class="btn btn-outline-primary" id="btnDenahView"
-                                    onclick="switchView('denah')"><i class="mdi mdi-floor-plan me-1"></i><span
-                                        class="d-none d-sm-inline">Denah Unit</span></button>
-                                <button type="button" class="btn btn-outline-primary" id="btnSitePlandView"
-                                    onclick="switchView('sitepland')"><i class="mdi mdi-map me-1"></i><span
-                                        class="d-none d-sm-inline">Siteplan</span></button>
+                            <div class="d-flex align-items-center gap-1" id="viewToggleGroup" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-primary active" id="btnTableView"
+                                    onclick="switchView('table')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-view-list me-1"></i><span class="d-none d-sm-inline">Table</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnGridView"
+                                    onclick="switchView('grid')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-view-grid me-1"></i><span class="d-none d-sm-inline">Grid</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnDenahView"
+                                    onclick="switchView('denah')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-floor-plan me-1"></i><span class="d-none d-sm-inline">Denah Unit</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnSitePlandView"
+                                    onclick="switchView('sitepland')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-map me-1"></i><span class="d-none d-sm-inline">Siteplan</span>
+                                </button>
                             </div>
                             <!-- Export Buttons -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
@@ -1175,74 +1334,79 @@
                         <div class="filter-card mb-3">
                             <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
                                 <!-- FILTER DESKTOP -->
-                                <div class="d-none d-md-block">
-                                    <div class="row g-2 align-items-center w-100">
-                                        <div class="col-md-4 col-lg-4">
-                                            <div class="input-group">
-                                                <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari blok, unit, customer..."
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                    type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                                </button>
+                                <div class="filter-row-desktop d-none d-md-block">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search Input -->
+                                            <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                                <div class="input-group search-input-group">
+                                                    <input type="text" name="search" value="{{ request('search') }}"
+                                                        class="form-control" placeholder="Cari blok, unit, customer...">
+                                                    <button class="btn btn-gradient-primary btn-search-submit" 
+                                                        type="submit" title="Cari">
+                                                        <i class="mdi mdi-magnify"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Jenis Dropdown -->
+                                            <div style="width: 160px;">
+                                                <select name="jenis" class="form-control select2" id="jenisSelect" style="width: 100%;">
+                                                    <option value="">Semua Jenis</option>
+                                                    <option value="subsidi"
+                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                    </option>
+                                                    <option value="komersil"
+                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Status Dropdown -->
+                                            <div style="width: 160px;">
+                                                <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="ready"
+                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                    </option>
+                                                    <option value="booked"
+                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                    </option>
+                                                    <option value="sold"
+                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                        Terjual</option>
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-lg-3">
-                                            <select name="jenis" class="form-control">
-                                                <option value="">Semua Jenis</option>
-                                                <option value="subsidi"
-                                                    {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
-                                                </option>
-                                                <option value="komersil"
-                                                    {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 col-lg-3">
-                                            <select name="status" class="form-control">
-                                                <option value="">Semua Status</option>
-                                                <option value="ready"
-                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
-                                                </option>
-                                                <option value="booked"
-                                                    {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
-                                                </option>
-                                                <option value="sold"
-                                                    {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                    Terjual</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1 col-lg-1">
-                                            <select name="perPage" class="form-control">
-                                                <option value="10"
-                                                    {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                </option>
-                                                <option value="25"
-                                                    {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                </option>
-                                                <option value="50"
-                                                    {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                </option>
-                                                <option value="100"
-                                                    {{ request('perPage') == 100 ? 'selected' : '' }}>100
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1 col-lg-1">
-                                            <div class="d-flex gap-2">
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                    id="filterBtn" title="Filter" onclick="showFilterLoading()">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                    title="Reset" onclick="showResetLoading(event)">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
+
+                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 90px;">
+                                                <select name="perPage" class="form-control select2" id="perPageSelect" style="width: 100%;">
+                                                    <option value="10"
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    </option>
+                                                    <option value="25"
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    </option>
+                                                    <option value="50"
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    </option>
+                                                    <option value="100"
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    </option>
+                                                </select>
                                             </div>
+                                            <button type="submit"
+                                                class="btn btn-gradient-primary btn-icon-only"
+                                                id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <a href="{{ route('marketing.jual-unit') }}"
+                                                class="btn btn-gradient-secondary btn-icon-only"
+                                                title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -1250,20 +1414,18 @@
                                 <div class="d-block d-md-none">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
-                                            <div class="input-group">
+                                            <div class="input-group search-input-group">
                                                 <input type="text" name="search_mobile"
                                                     value="{{ request('search') }}" class="form-control"
-                                                    placeholder="Cari blok, unit..." id="searchMobile"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                    type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                    placeholder="Cari blok, unit..." id="searchMobile">
+                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                    type="submit" title="Cari">
+                                                    <i class="mdi mdi-magnify"></i>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="col-12 mb-2">
-                                            <select name="jenis" class="form-control">
+                                            <select name="jenis_mobile" class="form-control select2-mobile" id="jenisSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Jenis</option>
                                                 <option value="subsidi"
                                                     {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
@@ -1274,7 +1436,7 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="status" class="form-control">
+                                            <select name="status_mobile" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Status</option>
                                                 <option value="ready"
                                                     {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
@@ -1288,19 +1450,19 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="perPage" class="form-control">
+                                            <select name="perPage_mobile" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
                                                 <option value="10"
                                                     {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                                </option>
+                                                    </option>
                                                 <option value="25"
                                                     {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                                </option>
+                                                    </option>
                                                 <option value="50"
                                                     {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                                </option>
+                                                    </option>
                                                 <option value="100"
                                                     {{ request('perPage') == 100 ? 'selected' : '' }}>100
-                                                </option>
+                                                    </option>
                                             </select>
                                         </div>
                                         <div class="col-6">
@@ -1783,6 +1945,63 @@
                                     </div>
                                 @endforelse
                             </div>
+
+                            <!-- PAGINATION - GRID VIEW -->
+                            @if ($units instanceof \Illuminate\Pagination\LengthAwarePaginator && $units->total() > 0)
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 pt-2">
+                                    <div class="pagination-info mb-2 mb-sm-0">
+                                        Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} unit
+                                    </div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                            @if ($units->onFirstPage())
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->previousPageUrl() }}"
+                                                        rel="prev" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+
+                                            @foreach ($units->getUrlRange(max(1, $units->currentPage() - 2), min($units->lastPage(), $units->currentPage() + 2)) as $page => $url)
+                                                @if ($page == $units->currentPage())
+                                                    <li class="page-item active" aria-current="page">
+                                                        <span class="page-link">{{ $page }}</span>
+                                                    </li>
+                                                @else
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                            href="{{ $units->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+
+                                            @if ($units->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->nextPageUrl() }}"
+                                                        rel="next" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- DENAH VIEW -->
@@ -2199,256 +2418,162 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Pagination -->
-                        @if ($units->count() > 0)
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                                <div class="pagination-info mb-2 mb-sm-0"><i
-                                        class="mdi mdi-information-outline me-1"></i>Menampilkan
-                                    {{ $units->firstItem() }} -
-                                    {{ $units->lastItem() }} dari {{ $units->total() }} data</div>
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                        style="gap: 2px;">
-                                        @if ($units->onFirstPage())
-                                            <li class="page-item disabled"><span class="page-link"><i
-                                                        class="mdi mdi-chevron-left"></i></span></li>
-                                        @else<li class="page-item"><a class="page-link"
-                                                    href="{{ $units->previousPageUrl() }}"><i
-                                                        class="mdi mdi-chevron-left"></i></a>
-                                            </li>
-                                        @endif
-                                        @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
-                                            <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}"><a
-                                                    class="page-link"
-                                                    href="{{ $url }}">{{ $page }}</a></li>
-                                        @endforeach
-                                        @if ($units->hasMorePages())
-                                            <li class="page-item"><a class="page-link"
-                                                    href="{{ $units->nextPageUrl() }}"><i
-                                                        class="mdi mdi-chevron-right"></i></a></li>
-                                        @else<li class="page-item disabled"><span class="page-link"><i
-                                                        class="mdi mdi-chevron-right"></i></span></li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- MODAL CUSTOMER -->
-        <div class="modal fade modal-detail-unit" id="modalCustomer" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="mdi mdi-account-multiple me-2"></i>Data Customer</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                    <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
+                        <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
+                            <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
+                            Pilih Customer & Booking Unit
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold"><i
-                                                class="mdi mdi-cash-multiple text-primary me-1"></i>Booking Fee <span
-                                                class="text-danger">*</span></label>
-                                        <div class="input-group"><span class="input-group-text bg-white">Rp</span><input
-                                                type="text" class="form-control" id="booking_fee" name="booking_fee"
-                                                placeholder="Masukkan booking fee" autocomplete="off"></div>
-                                        <small class="text-muted">Nominal booking fee yang dibayar customer</small>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold"><i
-                                                class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer
-                                            <span class="text-danger">*</span></label>
-                                        <div class="file-upload-modern">
-                                            <input type="file" id="bukti_transfer" name="bukti_transfer"
-                                                accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="file-label-modern" id="buktiLabel">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="file-info-modern"><span id="buktiFileName">Upload Bukti
-                                                        Transfer</span><small>Format: JPG, PNG, PDF (Max 2MB)</small></div>
-                                                <span class="file-size" id="buktiFileSize"></span>
-                                            </div>
+                    <div class="modal-body p-4">
+                        <form id="formCustomerBooking" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" id="customer_unit_id" name="unit_id">
+
+                            <!-- Field Pilih Customer (Select2 Search) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
+                                    <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
+                                    @foreach ($customers as $c)
+                                        <option value="{{ $c->id }}" data-id="{{ $c->customer_id ?? '' }}">
+                                            @if(!empty($c->customer_id)) [{{ $c->customer_id }}] @endif {{ $c->full_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Cari berdasarkan ID Customer atau nama lengkap
+                                </small>
+                            </div>
+
+                            <!-- Field Metode Pembayaran -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-credit-card-outline text-primary me-1"></i>Metode Pembayaran <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control" id="select_purchase_type" name="purchase_type" required style="border: 1.5px solid #e2e8f0; border-radius: 8px; min-height: 42px; font-weight: 600;">
+                                    <option value="cash">Cash Keras</option>
+                                    <option value="cash_tempo">Cash Tempo</option>
+                                    <option value="kpr" selected>KPR</option>
+                                </select>
+                            </div>
+
+                            <!-- Field Nominal Booking Fee -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Booking Fee <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group rupiah-input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
+                                </div>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Nominal booking fee yang dibayar oleh customer
+                                </small>
+                            </div>
+
+                            <!-- Field Upload Bukti Transfer -->
+                            <div class="mb-2">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer <span class="text-danger">*</span>
+                                </label>
+                                <div class="file-upload-modern">
+                                    <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf" required>
+                                    <div class="file-label-modern" id="buktiLabel">
+                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.75rem; color: #9a55ff;"></i>
+                                        <div class="file-info-modern">
+                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer</span>
+                                            <small class="text-muted d-block">Format: JPG, PNG, PDF (Max 2MB)</small>
                                         </div>
+                                        <span class="file-size text-muted small" id="buktiFileSize"></span>
                                     </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-12"><small class="text-muted"><i
-                                                class="mdi mdi-information-outline me-1"></i>Pilih customer lalu klik metode
-                                            pembayaran (Cash/KPR)</small></div>
-                                </div>
                             </div>
-                        </div>
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-8"><label class="form-label fw-bold"><i
-                                                class="mdi mdi-magnify text-primary me-1"></i>Cari Customer</label><input
-                                            type="text" id="searchCustomer" class="form-control"
-                                            placeholder="Cari nama, ID, atau no. HP customer..."></div>
-                                    <div class="col-md-4"><label class="form-label fw-bold"><i
-                                                class="mdi mdi-briefcase text-primary me-1"></i>Filter
-                                            Pekerjaan</label><select class="form-control" id="filterPekerjaan">
-                                            <option value="">Semua Pekerjaan</option>
-                                            @php $uniqueJobs = collect($customers)->pluck('job_status')->unique()->filter(); @endphp
-                                            @foreach ($uniqueJobs as $job)<option value="{{ $job }}">{{ $job }}</option>
-                                            @endforeach
-                                        </select></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2"><span
-                                class="text-muted small"><i class="mdi mdi-account-multiple me-1"></i>Total:
-                                {{ count($customers) }} customer</span><span class="badge badge-gradient-info"><i
-                                    class="mdi mdi-information-outline me-1"></i>Klik tombol Cash/KPR untuk memilih</span>
-                        </div>
-                        <div class="table-responsive"
-                            style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                            <table class="table table-bordered align-middle mb-0" id="customerTable">
-                                <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                                    <tr>
-                                        <th class="text-center" style="width: 50px;">No</th>
-                                        <th>ID Customer</th>
-                                        <th>Nama</th>
-                                        <th>No HP</th>
-                                        <th>Pekerjaan</th>
-                                        <th class="text-center" style="width: 160px;">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($customers as $c)
-                                        <tr style="transition: all 0.2s ease;">
-                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                            <td><span class="badge bg-light text-dark">{{ $c->customer_id ?? '-' }}</span></td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                        style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important; font-weight: 700;">
-                                                        {{ strtoupper(substr($c->full_name ?? 'C', 0, 1)) }}</div>
-                                                    <span class="fw-medium text-dark">{{ $c->full_name ?? '-' }}</span>
-                                                </div>
-                                            </td>
-                                            <td><i class="mdi mdi-whatsapp text-success me-1"></i>{{ $c->phone ?? '-' }}</td>
-                                            <td>@if($c->job_status)<span class="badge bg-light text-dark"><i
-                                            class="mdi mdi-briefcase-outline me-1"></i>{{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : $c->job_status }}</span>@else<span
-                                                        class="text-muted">-</span>@endif</td>
-                                            <td class="text-center">
-                                                <div class="d-flex gap-1 justify-content-center"><button type="button"
-                                                        class="btn btn-sm btn-success pilihCustomer" data-id="{{ $c->id }}"
-                                                        data-type="cash" style="padding: 0.25rem 0.75rem;"><i
-                                                            class="mdi mdi-cash me-1"></i>Cash Keras</button><button
-                                                        type="button" class="btn btn-sm btn-info pilihCustomer"
-                                                        data-id="{{ $c->id }}" data-type="cash_tempo"
-                                                        style="padding: 0.25rem 0.75rem;"><i
-                                                            class="mdi mdi-cash-multiple me-1"></i>Cash Tempo</button><button
-                                                        type="button" class="btn btn-sm btn-primary pilihCustomer"
-                                                        data-id="{{ $c->id }}" data-type="kpr"
-                                                        style="padding: 0.25rem 0.75rem;"><i
-                                                            class="mdi mdi-bank me-1"></i>KPR</button></div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center py-4"><i class="mdi mdi-account-off" style="font-size: 2rem; opacity: 0.3;"></i>
-                                                <p class="mt-2 text-muted">Tidak ada data customer</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
+                            Batal
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary px-4" id="btnSimpanCustomer" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-content-save me-1"></i>Simpan Customer
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- MODAL AGENCY -->
-        <div class="modal fade modal-detail-unit" id="modalAgency" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="mdi mdi-office-building me-2"></i>Pilih Agency</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                    <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
+                        <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
+                            <i class="mdi mdi-office-building text-primary me-2" style="font-size: 1.35rem;"></i>
+                            Pilih Agency / Agent
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <form id="formAgency" method="POST">@csrf<input type="hidden" name="sales_id" id="sales_id">
-                                    <div class="row">
-                                        <div class="col-md-6"><label class="form-label fw-bold"><i
-                                                    class="mdi mdi-cash text-primary me-1"></i>Agent Fee</label>
-                                            <div class="input-group"><span class="input-group-text bg-white">Rp</span><input
-                                                    type="text" class="form-control" name="agent_fee" id="agent_fee_modal"
-                                                    placeholder="Masukkan agent fee" autocomplete="off"></div><small
-                                                class="text-muted"><i class="mdi mdi-information-outline me-1"></i>Masukkan
-                                                nominal fee untuk agency yang dipilih</small>
-                                        </div>
-                                        <div class="col-md-6"><label class="form-label fw-bold"><i
-                                                    class="mdi mdi-magnify text-primary me-1"></i>Cari Agency</label>
-                                            <div class="position-relative"><i class="mdi mdi-magnify position-absolute"
-                                                    style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i><input
-                                                    type="text" id="searchAgency" class="form-control"
-                                                    placeholder="Cari nama agency..." style="padding-left: 40px;"></div>
-                                        </div>
-                                    </div>
-                                </form>
+                    <div class="modal-body p-4">
+                        <form id="formAgency" method="POST">
+                            @csrf
+                            <input type="hidden" name="unit_id" id="agency_unit_id">
+
+                            <!-- Field Pilih Agency (Select2 Search) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-account-tie text-primary me-1"></i>Nama Agency / Agent <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control select2-agency-modal" id="select_sales_id" name="sales_id" style="width: 100%;" required>
+                                    <option value="">-- Cari & Pilih Agency / Agent --</option>
+                                    @foreach ($agencies as $a)
+                                        <option value="{{ $a->id }}" data-phone="{{ $a->phone ?? '' }}" data-address="{{ $a->address ?? '' }}">
+                                            {{ $a->name }} @if(!empty($a->phone)) ({{ $a->phone }}) @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Ketik untuk mencari nama atau nomor HP agency
+                                </small>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2"><span
-                                class="text-muted small"><i class="mdi mdi-office-building me-1"></i>Total:
-                                {{ count($agencies) }} agency</span><span class="badge badge-gradient-info"><i
-                                    class="mdi mdi-information-outline me-1"></i>Klik tombol Pilih untuk memilih
-                                agency</span></div>
-                        <div class="table-responsive"
-                            style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                            <table class="table table-bordered align-middle mb-0">
-                                <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                                    <tr>
-                                        <th class="text-center" style="width: 50px;">No</th>
-                                        <th>Nama Agency</th>
-                                        <th>No HP</th>
-                                        <th>Alamat</th>
-                                        <th class="text-center" style="width: 120px;">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($agencies as $a)
-                                                        <tr>
-                                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                                            <td>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                                        style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
-                                                                        {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}</div><span
-                                                                        class="fw-medium">{{ $a->name }}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td><i class="mdi mdi-phone text-success me-1"></i>{{ $a->phone }}</td>
-                                                            <td><i class="mdi mdi-map-marker text-danger me-1"></i>{{ $a->address }}</td>
-                                                            <td class="text-center">
-                                                                <button type="button" class="btn btn-sm btn-gradient-success pilihAgency" data-id="{{ $a->id }}"
-                                                                    style="border-radius: 20px; padding: 0.25rem 1rem;"><i
-                                                                        class="mdi mdi-check me-1"></i>Pilih</button>
-                                                            </td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr>
-                                                            <td colspan="5" class="text-center py-4"><i class="mdi mdi-office-building-off"
-                                                                    style="font-size: 2rem; opacity: 0.3;"></i>
-                                                                <p class="mt-2 text-muted">Tidak ada data agency</p>
-                                                            </td>
-                                                        </tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+
+                            <!-- Field Nominal Agent Fee -->
+                            <div class="mb-2">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Agent Fee <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group rupiah-input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-format" name="agent_fee" id="agent_fee_modal" placeholder="Contoh: 5.000.000" autocomplete="off" required>
                                 </div>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Masukkan nominal komisi/fee untuk agency yang dipilih
+                                </small>
                             </div>
-                        </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
+                            Batal
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary px-4" id="btnSimpanAgency" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-content-save me-1"></i>Simpan Agency
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -2458,6 +2583,7 @@
         <input type="hidden" name="booking_fee" id="booking_fee_hidden">
         <input type="file" name="bukti_transfer" id="bukti_transfer_hidden">
     </form>
+</div>
 @endsection
 
 @push('scripts')
@@ -2681,25 +2807,6 @@
             originalWidth = img.width;
             originalHeight = img.height;
 
-            // Set canvas size dynamically to match the container card width
-            let initialWidth = 1100;
-            const cardBody = document.querySelector('.card-body');
-            if (cardBody && cardBody.clientWidth > 0) {
-                initialWidth = cardBody.clientWidth - 40;
-            }
-
-            zoomLevel = 0.63; // default zoom at 63%
-
-            canvas.setWidth(initialWidth);
-            canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
-
-            // Calculate pan offset to center the 63% zoomed siteplan perfectly
-            const panX = (initialWidth - originalWidth * zoomLevel) / 2;
-            const panY = 0; // Vertically fits exactly
-
-            canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
-            updateZoomText();
-
             // Premium grab cursors
             canvas.defaultCursor = 'grab';
 
@@ -2755,7 +2862,7 @@
                         "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
                     canvas.add(circle{{ $unit->id }});
                 @endforeach
-                canvas.renderAll();
+                resetZoom();
             }, {
                 originX: 'left',
                 originY: 'top'
@@ -2851,14 +2958,27 @@
         }
 
         function resetZoom() {
-            zoomLevel = 0.63;
-            const containerWidth = canvas.getWidth();
-            canvas.setHeight(originalHeight * zoomLevel); // Fit image height perfectly!
-            
-            const panX = (containerWidth - originalWidth * zoomLevel) / 2;
-            const panY = 0;
-            
-            canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, panX, panY]);
+            if (!canvas || !originalWidth || !originalHeight) return;
+
+            const scrollContainer = document.querySelector('.siteplan-scroll-container');
+            const containerWidth = (scrollContainer && scrollContainer.clientWidth > 0) ? scrollContainer.clientWidth : (canvas.getWidth() || 1100);
+            const containerHeight = (scrollContainer && scrollContainer.clientHeight > 0) ? scrollContainer.clientHeight : 620;
+
+            canvas.setWidth(containerWidth);
+            canvas.setHeight(containerHeight);
+
+            // Calculate fit scale so 100% of the siteplan is visible without clipping
+            const scaleX = (containerWidth - 20) / originalWidth;
+            const scaleY = (containerHeight - 20) / originalHeight;
+            const fitScale = Math.min(scaleX, scaleY);
+
+            zoomLevel = fitScale;
+
+            const panX = (containerWidth - originalWidth * fitScale) / 2;
+            const panY = (containerHeight - originalHeight * fitScale) / 2;
+
+            canvas.setViewportTransform([fitScale, 0, 0, fitScale, panX, panY]);
+            canvas.calcOffset();
             canvas.renderAll();
             updateZoomText();
         }
@@ -2965,6 +3085,13 @@
             canvas.renderAll();
         });
 
+        // Window resize listener
+        window.addEventListener('resize', function() {
+            if (typeof canvas !== 'undefined' && canvas && document.getElementById('sitePlandView').style.display !== 'none') {
+                resetZoom();
+            }
+        });
+
         function getColor(status, type) {
             if (type === "komersil" && status === "ready") return "#2675BB";
             if (status === "ready") return "#CE2A2E";
@@ -3057,7 +3184,7 @@
             document.getElementById('gridView').style.display = 'none';
             document.getElementById('denahView').style.display = 'none';
             document.getElementById('sitePlandView').style.display = 'none';
-            document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#viewToggleGroup .btn, .btn-group .btn').forEach(btn => btn.classList.remove('active'));
             if (view === 'table') {
                 document.getElementById('tableView').style.display = 'block';
                 document.getElementById('btnTableView').classList.add('active');
@@ -3071,22 +3198,9 @@
                 document.getElementById('sitePlandView').style.display = 'block';
                 document.getElementById('btnSitePlandView').classList.add('active');
                 if (typeof canvas !== 'undefined' && canvas) {
-                    // Update canvas width dynamically in case screen size is different or resized
-                    let newWidth = 1100;
-                    const cardBody = document.querySelector('.card-body');
-                    if (cardBody && cardBody.clientWidth > 0) {
-                        newWidth = cardBody.clientWidth - 40;
-                    }
-                    canvas.setWidth(newWidth);
-                    if (typeof originalHeight !== 'undefined' && originalHeight > 0) {
-                        canvas.setHeight(originalHeight * 0.63);
-                    }
-
-                    // Re-center on tab active!
-                    resetZoom();
-
-                    canvas.calcOffset();
-                    canvas.renderAll();
+                    setTimeout(function() {
+                        resetZoom();
+                    }, 50);
                 }
             }
         }
@@ -3102,6 +3216,9 @@
                 return;
             }
             $('#modalCustomer').attr('data-unit-id', unitId);
+            $('#customer_unit_id').val(unitId);
+            $('#select_customer_id').val('').trigger('change');
+            $('#select_purchase_type').val('kpr');
             $('#booking_fee').val('');
             $('#bukti_transfer').val('');
             $('#buktiFileName').text('Upload Bukti Transfer');
@@ -3121,13 +3238,30 @@
                 return;
             }
             $('#modalAgency').data('unit', unitId);
-            $('#formAgency').attr('action', "{{ url('marketing/set-agency') }}/" + unitId);
-            $('#sales_id').val('');
+            $('#agency_unit_id').val(unitId);
+            $('#select_sales_id').val('').trigger('change');
             $('#agent_fee_modal').val('');
             $('#modalAgency').modal('show');
         };
 
         $(document).ready(function () {
+            // Inisialisasi Select2 untuk Pilih Customer di dalam Modal
+            $('#select_customer_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalCustomer'),
+                placeholder: '-- Cari & Pilih Customer (ID / Nama) --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Inisialisasi Select2 untuk Pilih Agency di dalam Modal
+            $('#select_sales_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalAgency'),
+                placeholder: '-- Cari & Pilih Agency / Agent --',
+                allowClear: true,
+                width: '100%'
+            });
 
 
             // Format Rupiah
@@ -3155,12 +3289,13 @@
                 }
             });
 
-            // Pilih Customer
-            $(document).on('click', '.pilihCustomer', function() {
-                let customerId = $(this).data('id');
-                let purchaseType = $(this).data('type');
-                let unitId = $('#modalCustomer').attr('data-unit-id');
-                let bookingFee = $('#booking_fee').val().replace(/\./g, '');
+            // Simpan Customer & Booking Unit
+            $('#btnSimpanCustomer').on('click', function(e) {
+                e.preventDefault();
+                let customerId = $('#select_customer_id').val();
+                let purchaseType = $('#select_purchase_type').val();
+                let unitId = $('#modalCustomer').attr('data-unit-id') || $('#customer_unit_id').val();
+                let bookingFee = $('#booking_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
                 let buktiTransfer = $('#bukti_transfer')[0].files[0];
 
                 if (!unitId) {
@@ -3171,11 +3306,27 @@
                     });
                     return;
                 }
+                if (!customerId) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Customer Belum Dipilih',
+                        text: 'Silakan cari dan pilih Customer terlebih dahulu!'
+                    });
+                    return;
+                }
+                if (!purchaseType) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Metode Pembayaran Kosong',
+                        text: 'Silakan pilih metode pembayaran (Cash / KPR)!'
+                    });
+                    return;
+                }
                 if (!bookingFee || parseInt(bookingFee) <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Booking Fee Kosong',
-                        text: 'Booking fee harus diisi dan lebih dari 0!'
+                        text: 'Nominal booking fee harus diisi dan lebih dari 0!'
                     });
                     return;
                 }
@@ -3205,76 +3356,62 @@
                     return;
                 }
 
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('customer_id', customerId);
+                formData.append('purchase_type', purchaseType);
+                formData.append('booking_fee', bookingFee);
+                formData.append('bukti_transfer', buktiTransfer);
+                let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
+
                 Swal.fire({
-                    title: 'Yakin pilih customer ini?',
-                    html: `<p class="mb-1">Jenis: <b>${purchaseType.toUpperCase()}</b></p><p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p><p class="small text-muted mt-2">File: ${buktiTransfer.name}</p>`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Simpan!',
-                    cancelButtonText: 'Batal',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        formData.append('customer_id', customerId);
-                        formData.append('purchase_type', purchaseType);
-                        formData.append('booking_fee', bookingFee);
-                        formData.append('bukti_transfer', buktiTransfer);
-                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(
-                            ':unitId', unitId);
+                    title: 'Memproses...',
+                    text: 'Harap tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
+                $.ajax({
+                    url: actionUrl,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#modalCustomer').modal('hide');
                         Swal.fire({
-                            title: 'Memproses...',
-                            text: 'Harap tunggu',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        $.ajax({
-                            url: actionUrl,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                $('#modalCustomer').modal('hide');
-                                Swal.fire({ icon: 'success', title: 'Berhasil!', text: response.message || 'Customer berhasil dipilih', timer: 1500, showConfirmButton: false }).then(() => location.reload());
-                            },
-                            error: function(xhr) {
-                                let errorMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message)
-                                    errorMsg = xhr.responseJSON.message;
-                                else if (xhr.responseJSON && xhr.responseJSON.errors)
-                                    errorMsg = Object.values(xhr.responseJSON.errors)
-                                    .join('\n');
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: errorMsg
-                                });
-                            }
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'Customer berhasil dipilih & unit terbooking',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'Terjadi kesalahan';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: errorMsg
                         });
                     }
                 });
             });
 
-            // Pilih Agency
-            $(document).on('click', '.pilihAgency', function() {
-                let salesId = $(this).data('id');
+            // Simpan Agency / Agent
+            $('#btnSimpanAgency').on('click', function(e) {
+                e.preventDefault();
+                let salesId = $('#select_sales_id').val();
                 let agentFeeRaw = $('#agent_fee_modal').val().replace(/\./g, '').replace(/,/g, '').trim();
-                if (!agentFeeRaw || parseInt(agentFeeRaw) <= 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: 'Agent fee wajib diisi dan lebih dari 0!'
-                    });
-                    return;
-                }
-                let unitId = $('#modalAgency').data('unit');
+                let unitId = $('#modalAgency').data('unit') || $('#agency_unit_id').val();
+
                 if (!unitId) {
                     Swal.fire({
                         icon: 'error',
@@ -3284,58 +3421,69 @@
                     return;
                 }
 
+                if (!salesId) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Agency Belum Dipilih',
+                        text: 'Silakan cari dan pilih Agency / Agent terlebih dahulu!'
+                    });
+                    return;
+                }
+
+                if (!agentFeeRaw || parseInt(agentFeeRaw) <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Agent Fee Kosong',
+                        text: 'Nominal Agent Fee wajib diisi dan lebih dari 0!'
+                    });
+                    return;
+                }
+
+                // Langsung simpan tanpa konfirmasi popup
                 Swal.fire({
-                    title: 'Yakin pilih agency ini?',
-                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFeeRaw)}</b>`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Pilih!',
-                    cancelButtonText: 'Batal',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33'
-                }).then((result) => {
-                    if (result.isConfirmed) {
+                    title: 'Memproses...',
+                    text: 'Harap tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: "{{ url('marketing/set-agency') }}/" + unitId,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        sales_id: salesId,
+                        agent_fee: agentFeeRaw
+                    },
+                    success: function(response) {
+                        $('#modalAgency').modal('hide');
                         Swal.fire({
-                            title: 'Memproses...',
-                            text: 'Harap tunggu',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        let formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        formData.append('sales_id', salesId);
-                        formData.append('agent_fee', agentFeeRaw);
-                        let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
-
-                        $.ajax({
-                            url: actionUrl,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                $('#modalAgency').modal('hide');
-                                Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message || 'Agency berhasil dipilih', showConfirmButton: false, timer: 1500 }).then(() => location.reload());
-                            },
-                            error: function(xhr) {
-                                let errMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message)
-                                    errMsg = xhr.responseJSON.message;
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: errMsg
-                                });
-                            }
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'Agency berhasil dipasang ke unit',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        let errMsg = 'Terjadi kesalahan saat menyimpan';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            errMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: errMsg
                         });
                     }
                 });
             });
 
-            // Search dan Filter
+            // Search dan Filter Customer Table
             $('#searchCustomer').on('keyup', function() {
                 const searchTerm = $(this).val().toLowerCase();
                 $('#customerTable tbody tr').each(function() {
@@ -3354,16 +3502,11 @@
                 }
             });
 
-            $('#searchAgency').on('keyup', function() {
-                const searchTerm = $(this).val().toLowerCase();
-                $('#modalAgency .table tbody tr').each(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
-                });
-            });
-
             // Reset form saat modal ditutup
             $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {
                 $('#booking_fee, #agent_fee_modal').val('');
+                $('#select_customer_id').val('').trigger('change');
+                $('#select_sales_id').val('').trigger('change');
                 $('#bukti_transfer').val('');
                 $('#buktiFileName').text('Upload Bukti Transfer');
                 $('#buktiFileSize').text('');
@@ -3445,21 +3588,29 @@
                 }, 500);
             });
 
-            // Saat submit form, pastikan hanya desktop search yang digunakan
+            // ========== SELECT2 FILTERS (NO SEARCH INPUT) ==========
+            $('#jenisSelect, #statusSelect, #perPageSelect, #jenisSelectMobile, #statusSelectMobile, #perPageSelectMobile').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity,
+                width: '100%'
+            });
+
+            // Saat submit form, pastikan nilai yang dipilih sinkron antara desktop dan mobile
             $('#filterForm').on('submit', function() {
-                // Copy mobile search ke desktop search jika mobile terlihat
                 if ($(window).width() < 768) {
                     var mobileSearch = $('#searchMobile').val();
                     $('input[name="search"]').val(mobileSearch);
+
+                    if ($('#jenisSelectMobile').length) $('#jenisSelect').val($('#jenisSelectMobile').val());
+                    if ($('#statusSelectMobile').length) $('#statusSelect').val($('#statusSelectMobile').val());
+                    if ($('#perPageSelectMobile').length) $('#perPageSelect').val($('#perPageSelectMobile').val());
                 }
 
-                // Hapus field duplikat untuk mencegah duplikasi parameter
+                // Hapus field duplikat mobile agar tidak mengirim parameter ganda
                 $('input[name="search_mobile"]').remove();
-
-                // Hapus select duplikat (mobile version) untuk mencegah duplikasi parameter
-                $('select[name="jenis"]').not(':first').remove();
-                $('select[name="status"]').not(':first').remove();
-                $('select[name="perPage"]').not(':first').remove();
+                $('select[name="jenis_mobile"]').remove();
+                $('select[name="status_mobile"]').remove();
+                $('select[name="perPage_mobile"]').remove();
 
                 return true;
             });

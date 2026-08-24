@@ -69,6 +69,37 @@
             // Pengaturan
             'setting.index' => 'mdi-cog-outline',
         ];
+
+        // 5. Mapping Pola Route Aktif (agar saat buka sub-halaman/action, menu terkait tetap AKTIF / HIGHLIGHT)
+        $routeActivePatterns = [
+            'dashboard' => ['dashboard', 'dashboard.*'],
+            'pralandbank.all' => ['pralandbank.all', 'pra-landbank*', 'properti.pra-landbank*'],
+            'properti-all' => ['properti-all', 'properti', 'properti.tambah', 'properti.store', 'properti.edit', 'properti.update', 'properti.verifikasi', 'properti.revisi', 'properti.updateCompany'],
+            'kavling.index' => ['kavling.index', 'properti.buatKavling*', 'properti.storeKavling', 'kavling.*', 'properti.kavling.*'],
+            'lokasi.index' => ['lokasi.index', 'lokasi.*'],
+            'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
+            'marketing.list_pengajuan' => ['marketing.list_pengajuan*', 'marketing.cash*', 'pengajuan.*', 'bookings.*', 'cetak.*', 'dashboard.cetak.*'],
+            'customer.kpr' => ['customer.kpr'],
+            'kpr.customer-verified' => ['kpr.customer-verified*', 'kpr.approve*', 'kpr.survey*'],
+            'customer.kpr.survey' => ['customer.kpr.survey*', 'kpr.pecahlegal*'],
+            'customer.kpr.rijected' => ['customer.kpr.rijected*'],
+            'cash-tempo.timeline' => ['cash-tempo.timeline*', 'cash-tempo.*'],
+            'analisa.kpr.komersil' => ['analisa.kpr.komersil*'],
+            'dokument.index' => ['dokument.index*', 'dokument.*'],
+            'dokument.persiapan' => ['dokument.persiapan*'],
+            'document.user.persiapan-legal' => ['document.user.persiapan-legal*'],
+            'agency.create' => ['agency.create*'],
+            'agency.index' => ['agency.index*', 'agency.edit*'],
+            'master.data.menu' => ['master.data.menu*'],
+            'promo.index' => ['promo.index*', 'promo.*'],
+            'company-profile.index' => ['company-profile.index*', 'company-profile.*'],
+            'servis' => ['servis*'],
+            'bank.index' => ['bank.index*', 'bank.*'],
+            'rab.deadline.index' => ['rab.deadline.index*', 'rab.*'],
+            'master.data.division.index' => ['master.data.division.*'],
+            'master.data.posisi' => ['master.data.posisi*'],
+            'setting.index' => ['setting.index*', 'setting.*'],
+        ];
     @endphp
 
     <!-- Menu List -->
@@ -82,12 +113,24 @@
                     })
                     ->orderBy('order', 'asc')
                     ->get();
+
+                // Cek status aktif untuk Single Menu
+                $isMainActive = false;
+                if ($main->route) {
+                    $patterns = $routeActivePatterns[$main->route] ?? [$main->route];
+                    foreach ($patterns as $pattern) {
+                        if (request()->routeIs($pattern)) {
+                            $isMainActive = true;
+                            break;
+                        }
+                    }
+                }
             @endphp
 
             @if ($subMenus->isEmpty())
                 {{-- Single Top-Level Menu (e.g. Dashboard) --}}
                 <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link {{ $main->route && request()->routeIs($main->route) ? 'active' : '' }}"
+                    <a class="sidebar-menu-link {{ $isMainActive ? 'active' : '' }}"
                        href="{{ $main->route ? route($main->route) : '#' }}"
                        title="{{ $main->name }}">
                         @if($main->icon)
@@ -111,9 +154,19 @@
                 @foreach ($subMenus as $sub)
                     @php
                         $subIcon = $sub->icon ?: ($iconMap[$sub->route] ?? 'mdi-checkbox-blank-circle-outline');
+                        $isSubActive = false;
+                        if ($sub->route) {
+                            $patterns = $routeActivePatterns[$sub->route] ?? [$sub->route];
+                            foreach ($patterns as $p) {
+                                if (request()->routeIs($p)) {
+                                    $isSubActive = true;
+                                    break;
+                                }
+                            }
+                        }
                     @endphp
                     <li class="sidebar-menu-item">
-                        <a class="sidebar-menu-link sidebar-child-link {{ $sub->route && request()->routeIs($sub->route) ? 'active' : '' }}"
+                        <a class="sidebar-menu-link sidebar-child-link {{ $isSubActive ? 'active' : '' }}"
                            href="{{ $sub->route ? route($sub->route) : '#' }}"
                            title="{{ $sub->name }}">
                             <span class="menu-icon-wrap">

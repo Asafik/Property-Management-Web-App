@@ -9,14 +9,41 @@ use App\Notifications\NewTaskNotification;
 
 class JobStaffMarketingController extends Controller
 {
-    //
     public function index(Request $request)
     {
-       $tugas = MarketingTask::paginate($request->input('limit', 15));
-       $marketingStaff = Employee::whereHas('position', function ($query) {
-        $query->where('name', 'Staff Marketing');
-       })->get();
-       return view('marketing.jobstaffmarketing', compact('tugas', 'marketingStaff'));
+        $query = MarketingTask::with('employee');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama_tugas', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%")
+                  ->orWhereHas('employee', function($eq) use ($search) {
+                      $eq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('employee_id')) {
+            $query->where('employee_id', $request->employee_id);
+        }
+
+        $totalTugas = MarketingTask::count();
+        $pendingTugas = MarketingTask::where('status', 'Pending')->count();
+        $prosesTugas = MarketingTask::where('status', 'Proses')->count();
+        $selesaiTugas = MarketingTask::where('status', 'Selesai')->count();
+
+        $tugas = $query->orderBy('created_at', 'desc')->paginate($request->input('limit', 15))->withQueryString();
+
+        $marketingStaff = Employee::whereHas('position', function ($query) {
+            $query->where('name', 'Staff Marketing');
+        })->get();
+
+        return view('marketing.jobstaffmarketing', compact('tugas', 'marketingStaff', 'totalTugas', 'pendingTugas', 'prosesTugas', 'selesaiTugas'));
     }
 
 

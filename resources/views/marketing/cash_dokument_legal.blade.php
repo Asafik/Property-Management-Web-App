@@ -3,555 +3,676 @@
 @section('title', 'Cash Upload Dokumen - Property Management App')
 
 @section('content')
-    <style>
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
+<style>
+    .card {
+        transition: all 0.3s ease;
+        margin-bottom: 1.25rem;
+        border: none !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+        border-radius: 14px !important;
+    }
 
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
+    .card:hover {
+        box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+    }
 
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
+    .card-header {
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-bottom: 1px solid #e9ecef;
+        padding: 1rem 1.25rem;
+        border-top-left-radius: 14px !important;
+        border-top-right-radius: 14px !important;
+    }
 
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
+    .card-body {
+        padding: 1.25rem;
+    }
 
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
+    .card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #9a55ff;
+        margin-bottom: 0;
+    }
 
-        .card-body {
-            padding: 0.75rem;
-        }
+    /* Customer Header Info */
+    .customer-avatar-badge {
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #da8cff, #9a55ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+        color: #ffffff;
+        font-size: 1.8rem;
+        flex-shrink: 0;
+    }
 
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
+    .customer-info-box {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.25rem;
+        background: #fbf9ff;
+        border: 1px solid #ede4ff;
+        padding: 0.65rem 1.15rem;
+        border-radius: 12px;
+    }
 
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
+    .customer-info-box .info-col {
+        display: flex;
+        flex-direction: column;
+    }
 
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
+    .customer-info-box .info-col small {
+        font-size: 0.72rem;
+        color: #8b8fa3;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
 
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
+    .customer-info-box .info-col span {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #2c2e3f;
+    }
 
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
+    /* Dokumen Card Styling */
+    .dokumen-card {
+        border: 1.5px solid #ede8f5;
+        border-radius: 14px;
+        padding: 1.15rem;
+        margin-bottom: 1.25rem;
+        background: #ffffff;
+        transition: all 0.25s ease;
+        height: calc(100% - 1.25rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
-        .upload-file-modern {
-            position: relative;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
+    .dokumen-card:hover {
+        border-color: #9a55ff;
+        box-shadow: 0 6px 18px rgba(154, 85, 255, 0.08);
+        transform: translateY(-2px);
+    }
 
-        .upload-file-modern input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
+    .dokumen-card.has-file {
+        border-color: #c4b0ea;
+        background: #faf8ff;
+    }
 
-        .upload-file-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
+    .dokumen-card.from-customer {
+        border-color: #bbf7d0;
+        background: #fcfdfd;
+    }
 
-        @media (min-width: 576px) {
-            .upload-file-label {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
+    .dokumen-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        margin-bottom: 0.95rem;
+    }
 
-        .upload-file-modern:hover .upload-file-label {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-        }
+    .dokumen-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #f4ecff, #ede1ff);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #9a55ff;
+        font-size: 1.35rem;
+    }
 
-        .upload-file-label i {
-            font-size: 1.6rem;
-            color: #9a55ff;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
-            border-radius: 50%;
-        }
+    .dokumen-card.from-customer .dokumen-icon {
+        background: linear-gradient(135deg, #eefcf3, #dcfce7);
+        color: #15803d;
+    }
 
-        .upload-file-info {
-            flex: 1;
-            width: 100%;
-        }
+    .dokumen-title {
+        flex: 1;
+    }
 
-        .upload-file-info span {
-            display: block;
-            font-weight: 600;
-            color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
+    .dokumen-title h6 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #2c2e3f;
+        margin-bottom: 0.2rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
 
-        .upload-file-info small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
+    .dokumen-title p {
+        font-size: 0.78rem;
+        color: #64748b;
+        margin-bottom: 0;
+        line-height: 1.3;
+    }
 
-        .upload-file-size {
-            font-size: 0.7rem;
-            color: #9a55ff;
-            font-weight: 600;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-            margin-top: 5px;
-        }
+    .dokumen-title .required {
+        color: #ef4444;
+        font-weight: 700;
+    }
 
-        @media (min-width: 576px) {
-            .upload-file-size {
-                margin-top: 0;
-            }
-        }
+    /* Auto-taken Badge */
+    .badge-auto-customer {
+        font-size: 0.72rem;
+        padding: 0.25rem 0.55rem;
+        background: #eefcf3;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+        border-radius: 6px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
 
-        /* Dokumen Card */
-        .dokumen-card {
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            background: white;
-        }
+    .badge-uploaded {
+        font-size: 0.72rem;
+        padding: 0.25rem 0.55rem;
+        background: #f3e8ff;
+        color: #7e22ce;
+        border: 1px solid #d8b4fe;
+        border-radius: 6px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
 
-        .dokumen-card:hover {
-            border-color: #9a55ff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.1);
-        }
+    /* Existing Preview Box */
+    .existing-preview-box {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 0.85rem;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        margin-bottom: 0.75rem;
+    }
 
-        .dokumen-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
+    .existing-preview-thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #cbd5e1;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-        .dokumen-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+    .existing-preview-thumb:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
 
-        .dokumen-icon i {
-            font-size: 24px;
-            color: #9a55ff;
-        }
+    .existing-preview-info {
+        flex: 1;
+        overflow: hidden;
+    }
 
-        .dokumen-title {
-            flex: 1;
-        }
+    .existing-preview-info .file-name {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #1e293b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+    }
 
-        .dokumen-title h6 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2c2e3f;
-            margin-bottom: 0.25rem;
-        }
+    .existing-preview-info .file-status {
+        font-size: 0.72rem;
+        color: #64748b;
+        display: block;
+    }
 
-        .dokumen-title p {
-            font-size: 0.8rem;
-            color: #6c7383;
-            margin-bottom: 0;
-        }
+    /* Modern Upload Input */
+    .upload-file-modern {
+        position: relative;
+        width: 100%;
+    }
 
-        .dokumen-title .required {
-            color: #dc3545;
-            margin-left: 4px;
-        }
+    .upload-file-modern input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        z-index: 2;
+    }
 
-        /* Alert styling */
-        .alert {
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-            font-size: 0.8rem;
-            border-left: 4px solid;
-            margin-bottom: 1rem;
-        }
+    .upload-file-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 0.85rem;
+        background: #f8fafc;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
 
-        .alert-info {
-            background: linear-gradient(135deg, #e6f3ff, #d9ecff);
-            color: #2c2e3f;
-            border-left-color: #17a2b8;
-        }
+    .upload-file-modern:hover .upload-file-label {
+        border-color: #9a55ff;
+        background: #fbf9ff;
+    }
 
-        .alert-success {
-            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
-            color: #2c2e3f;
-            border-left-color: #28a745;
-        }
+    .upload-file-label i {
+        font-size: 1.35rem;
+        color: #9a55ff;
+        flex-shrink: 0;
+    }
 
-        .alert-warning {
-            background: linear-gradient(135deg, #fff9e6, #fff2d9);
-            color: #2c2e3f;
-            border-left-color: #ffc107;
-        }
+    .upload-file-info {
+        flex: 1;
+        overflow: hidden;
+    }
 
-        /* Button styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
+    .upload-file-info span {
+        display: block;
+        font-weight: 700;
+        color: #2c2e3f;
+        font-size: 0.82rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
+    .upload-file-info small {
+        color: #64748b;
+        font-size: 0.7rem;
+        display: block;
+    }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
+    .upload-file-size {
+        font-size: 0.72rem;
+        color: #9a55ff;
+        font-weight: 700;
+        background: rgba(154, 85, 255, 0.1);
+        padding: 2px 7px;
+        border-radius: 5px;
+        flex-shrink: 0;
+    }
 
-        .btn-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
+    /* Buttons */
+    .btn {
+        font-size: 0.88rem;
+        padding: 0.65rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: all 0.25s ease;
+        font-family: 'Nunito', sans-serif;
+    }
 
-        .btn-primary:hover {
-            background: linear-gradient(to right, #c77cff, #8a45e6);
-            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
-        }
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+        border: none;
+    }
 
-        .btn-outline-secondary {
-            background: transparent;
-            border: 1px solid #6c757d;
-            color: #6c757d;
-        }
+    .btn-gradient-primary:hover {
+        box-shadow: 0 6px 18px rgba(154, 85, 255, 0.35);
+        transform: translateY(-2px);
+        color: #ffffff;
+    }
 
-        .btn-outline-secondary:hover {
-            background: #6c757d;
-            color: #ffffff;
-        }
+    .btn-outline-secondary {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #64748b;
+    }
 
-        /* Badge */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
+    .btn-outline-secondary:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+        transform: translateY(-2px);
+    }
+</style>
 
-        .badge-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-        }
-
-        /* Responsive */
-        @media (max-width: 576px) {
-            .upload-file-label {
-                padding: 0.8rem 0.5rem;
-            }
-
-            .upload-file-label i {
-                font-size: 1.4rem;
-            }
-
-            .upload-file-info span {
-                font-size: 0.75rem;
-            }
-
-            .upload-file-info small {
-                font-size: 0.6rem;
-            }
-        }
-    </style>
-
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-cloud-upload me-2" style="color: #9a55ff;"></i>
-                                Upload Dokumen
-                            </h3>
-                            <p class="text-muted mb-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Upload dokumen-dokumen yang diperlukan
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-file-document" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+<div class="container-fluid p-2 p-sm-3 p-md-4">
+    <!-- Header Card -->
+    <div class="row mb-3 mb-sm-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="text-dark mb-1">
+                            <i class="mdi mdi-cloud-upload me-2" style="color: #9a55ff;"></i>
+                            Cash Upload Dokumen
+                        </h4>
+                        <p class="text-muted mb-0">
+                            Upload & kelola dokumen legalitas persiapan transaksi cash
+                        </p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Info Status -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 bg-light">
-                    <div class="card-body py-3">
-                        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-                            <div>
-                                <span class="badge badge-primary">Upload Dokumen</span>
-                            </div>
-                            <div class="text-muted small d-flex align-items-center">
-                                <i class="mdi mdi-calendar me-1 text-primary"></i>
-                                <span>Tanggal: {{ now()->translatedFormat('d F Y') }}</span>
-                            </div>
-                            <div class="ms-sm-auto mt-2 mt-sm-0">
-                                <span class="badge badge-warning">Status: Menunggu Upload</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Info Customer -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap align-items-center gap-3">
-                            <div class="flex-shrink-0">
-                                <div class="bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="mb-1 text-dark">{{ $booking->customer->full_name ?? '-' }}</h5>
-                                <p class="text-muted mb-0">{{ $booking->unit->landBank->name ?? '-' }} -
-                                    {{ $booking->unit->type ?? '-' }} / {{ $booking->unit->unit_code ?? '-' }}
-                                    {{ $booking->unit->jenis ?? '-' }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Form Upload Dokumen -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-file-document-multiple me-2 text-primary"></i>
-                            Upload Dokumen Pendukung
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Alert Info -->
-                        <div class="alert alert-info d-flex align-items-start gap-2 mb-4">
-                            <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
-                            <span>Upload dokumen-dokumen berikut. <span class="text-danger">*</span> Wajib diupload.</span>
-                        </div>
-
-                        <form action="{{ route('document_legal.store', $booking->id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                            <div class="row">
-                                @foreach ($documents as $doc)
-                                    <div class="col-12 col-md-6 mb-3">
-                                        <div class="dokumen-card">
-                                            <div class="dokumen-header">
-                                                <div class="dokumen-icon">
-                                                    <i class="{{ $doc->icon ?? 'mdi mdi-file-document' }}"></i>
-                                                </div>
-                                                <div class="dokumen-title">
-                                                    <h6>{{ $doc->name }} @if ($doc->required)
-                                                            <span class="required">*</span>
-                                                        @endif
-                                                    </h6>
-                                                    <p>{{ $doc->description }}</p>
-                                                </div>
-                                            </div>
-                                            @php
-                                                $uploaded = $uploads[$doc->id] ?? null;
-                                            @endphp
-
-                                            <div class="upload-file-modern">
-
-                                                {{-- INPUT FILE --}}
-                                                <input type="file" id="document-{{ $doc->id }}"
-                                                    name="document_{{ $doc->id }}"
-                                                    accept="{{ $doc->accept ?? '.jpg,.jpeg,.png,.pdf' }}"
-                                                    @if ($doc->required && !$uploaded) required @endif>
-
-                                                <div class="upload-file-label">
-                                                    <i class="mdi mdi-cloud-upload"></i>
-
-                                                    <div class="upload-file-info">
-                                                        <span>
-                                                            {{ $uploaded ? 'Ganti ' . $doc->name : 'Upload ' . $doc->name }}
-                                                        </span>
-
-                                                        <small>
-                                                            Format: {{ $doc->accept ?? 'JPG, PNG, PDF' }} (Max: 5MB)
-                                                        </small>
-                                                    </div>
-
-                                                    <span class="upload-file-size"></span>
-                                                </div>
-                                                @if ($uploaded && Str::contains($uploaded->file_name, ['jpg', 'jpeg', 'png']))
-                                                    <img src="{{ asset('storage/' . $uploaded->file_path) }}"
-                                                        style="max-width:100%; margin-top:10px; border-radius:8px;">
-                                                @endif
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <!-- Tombol Aksi -->
-                            <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-                                <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">
-                                    <i class="mdi mdi-arrow-left me-1"></i>Kembali Dashboard
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="mdi mdi-upload me-1"></i>Upload Dokumen
-                                </button>
-                            </div>
-                        </form>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-file-document-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @push('scripts')
-        @if (session('success'))
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: '{{ session('success') }}',
-                    confirmButtonColor: '#3085d6'
-                });
-            </script>
-        @endif
+    <!-- Info Status Banner -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="card-body py-3">
+                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge" style="background: linear-gradient(135deg, #da8cff, #9a55ff); color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700;">
+                                <i class="mdi mdi-folder-upload me-1"></i>Upload Dokumen Legalitas
+                            </span>
+                            <div class="text-muted small d-flex align-items-center ms-2">
+                                <i class="mdi mdi-calendar me-1 text-primary"></i>
+                                <span>Tanggal: {{ now()->translatedFormat('d F Y') }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            @php
+                                $totalDocs = $documents->count();
+                                $uploadedCount = $uploads->count();
+                                $isDone = ($booking->status_legal ?? '') === 'done' || $uploadedCount >= $totalDocs;
+                            @endphp
+                            @if($isDone)
+                                <span class="badge" style="background: #eefcf3; color: #15803d; border: 1px solid #bbf7d0; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700;">
+                                    <i class="mdi mdi-check-circle me-1"></i>Status: Dokumen Lengkap
+                                </span>
+                            @else
+                                <span class="badge" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700;">
+                                    <i class="mdi mdi-clock-outline me-1"></i>Status: Menunggu Upload
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        @if (session('error'))
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: '{{ session('error') }}',
-                    confirmButtonColor: '#d33'
-                });
-            </script>
-        @endif
+    <!-- Info Customer & Unit Card -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="customer-avatar-badge">
+                                <i class="mdi mdi-account"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1 text-dark fw-bold d-flex align-items-center gap-2">
+                                    {{ $booking->customer->full_name ?? '-' }}
+                                    @php
+                                        $jenis = strtolower($booking->unit->jenis ?? '');
+                                        $badgeClass = $jenis == 'subsidi' ? 'background: linear-gradient(135deg, #28c76f, #48da89); color: #fff;' : 'background: linear-gradient(135deg, #da8cff, #9a55ff); color: #fff;';
+                                        $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : 'mdi-office-building';
+                                    @endphp
+                                    <span class="badge" style="{{ $badgeClass }} padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">
+                                        <i class="mdi {{ $icon }} me-1"></i>{{ strtoupper($booking->unit->jenis ?? 'CASH') }}
+                                    </span>
+                                </h5>
+                                <p class="text-muted mb-0 small fw-semibold">
+                                    Booking Code: <span class="text-primary">{{ $booking->booking_code ?? '-' }}</span> | NIK: {{ $booking->customer->nik ?? '-' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="customer-info-box">
+                            <div class="info-col">
+                                <small>Project Induk</small>
+                                <span>{{ $booking->unit->landBank->name ?? '-' }}</span>
+                            </div>
+                            <div class="info-col">
+                                <small>Unit & Tipe</small>
+                                <span>{{ $booking->unit->unit_name ?? '-' }} ({{ $booking->unit->type ?? '-' }})</span>
+                            </div>
+                            <div class="info-col">
+                                <small>Blok / No</small>
+                                <span>{{ $booking->unit->unit_code ?? '-' }}</span>
+                            </div>
+                            <div class="info-col">
+                                <small>Harga Unit</small>
+                                <span class="text-primary">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Upload Dokumen -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-file-document-multiple me-2"></i>
+                        Upload Dokumen Pendukung
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info d-flex align-items-center gap-2 mb-4" style="background: #f0f7ff; border: 1px solid #cfe2ff; color: #084298; border-radius: 10px; padding: 0.75rem 1rem;">
+                        <i class="mdi mdi-information-outline fs-5 flex-shrink-0"></i>
+                        <div class="small">
+                            Upload dokumen legalitas berikut. Dokumen bertanda <span class="text-danger fw-bold">*</span> wajib dilengkapi.
+                            Dokumen KTP/KK/NPWP yang sudah ada pada data registrasi customer otomatis terdeteksi.
+                        </div>
+                    </div>
+
+                    <form action="{{ route('document_legal.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+
+                        <div class="row">
+                            @php
+                                // Icon mapping helper
+                                $iconMap = [
+                                    'ktp' => 'mdi-card-account-details-outline',
+                                    'kartu keluarga' => 'mdi-book-account-outline',
+                                    'npwp' => 'mdi-file-document-outline',
+                                    'buku nikah' => 'mdi-ring',
+                                    'akta cerai' => 'mdi-file-cancel-outline',
+                                    'ijazah terakhir' => 'mdi-school-outline',
+                                    'skck' => 'mdi-shield-check-outline',
+                                    'surat keterangan kerja' => 'mdi-briefcase-outline',
+                                    'slip gaji' => 'mdi-cash-multiple',
+                                    'rekening koran' => 'mdi-bank-outline',
+                                    'pas foto' => 'mdi-account-box-outline',
+                                    'tanda tangan' => 'mdi-draw',
+                                ];
+                            @endphp
+
+                            @foreach ($documents as $doc)
+                                @php
+                                    $docNameLower = strtolower(trim($doc->name));
+                                    $docIcon = $iconMap[$docNameLower] ?? ($doc->icon ?? 'mdi-file-document-outline');
+
+                                    // Check if uploaded specifically for this booking
+                                    $uploaded = $uploads[$doc->id] ?? null;
+
+                                    // Check if uploaded in customer profile registration
+                                    $customerDoc = null;
+                                    if (!$uploaded && isset($customerDocs)) {
+                                        $customerDoc = $customerDocs[$docNameLower] ?? ($customerDocs[str_replace(' ', '', $docNameLower)] ?? null);
+                                    }
+
+                                    $hasFile = $uploaded || $customerDoc;
+                                    $cardClass = $uploaded ? 'has-file' : ($customerDoc ? 'from-customer' : '');
+                                @endphp
+
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="dokumen-card {{ $cardClass }}">
+                                        <div>
+                                            <div class="dokumen-header">
+                                                <div class="dokumen-icon">
+                                                    <i class="mdi {{ $docIcon }}"></i>
+                                                </div>
+                                                <div class="dokumen-title">
+                                                    <h6>
+                                                        {{ $doc->name }}
+                                                        @if ($doc->required)
+                                                            <span class="required">*</span>
+                                                        @endif
+
+                                                        @if ($uploaded)
+                                                            <span class="badge-uploaded ms-auto">
+                                                                <i class="mdi mdi-check"></i> Sudah Diupload
+                                                            </span>
+                                                        @elseif ($customerDoc)
+                                                            <span class="badge-auto-customer ms-auto">
+                                                                <i class="mdi mdi-account-check"></i> Dari Data Customer
+                                                            </span>
+                                                        @endif
+                                                    </h6>
+                                                    <p>{{ $doc->description ?? 'Dokumen pendukung kelayakan legalitas unit' }}</p>
+                                                </div>
+                                            </div>
+
+                                            {{-- PREVIEW JIKA SUDAH ADA FILE (DARI UPLOAD BOOKING ATAU DARI DATA CUSTOMER) --}}
+                                            @if ($uploaded)
+                                                @php
+                                                    $isImg = Str::contains(strtolower($uploaded->file_name), ['jpg', 'jpeg', 'png', 'webp']);
+                                                    $filePath = asset('storage/' . $uploaded->file_path);
+                                                @endphp
+                                                <div class="existing-preview-box">
+                                                    @if ($isImg)
+                                                        <a href="{{ $filePath }}" target="_blank">
+                                                            <img src="{{ $filePath }}" class="existing-preview-thumb" alt="{{ $doc->name }}">
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ $filePath }}" target="_blank" class="existing-preview-thumb d-flex align-items-center justify-content-center bg-light text-danger fs-3 text-decoration-none">
+                                                            <i class="mdi mdi-file-pdf-box"></i>
+                                                        </a>
+                                                    @endif
+                                                    <div class="existing-preview-info">
+                                                        <span class="file-name" title="{{ $uploaded->file_name }}">{{ $uploaded->file_name }}</span>
+                                                        <span class="file-status text-success"><i class="mdi mdi-check-circle-outline"></i> Tersimpan di sistem</span>
+                                                    </div>
+                                                    <a href="{{ $filePath }}" target="_blank" class="btn btn-sm btn-outline-primary px-2 py-1" style="font-size: 0.75rem;">
+                                                        <i class="mdi mdi-eye"></i> Lihat
+                                                    </a>
+                                                </div>
+                                            @elseif ($customerDoc)
+                                                @php
+                                                    $isImg = Str::contains(strtolower($customerDoc->file), ['jpg', 'jpeg', 'png', 'webp']);
+                                                    $filePath = asset('uploads/' . $customerDoc->file);
+                                                @endphp
+                                                <div class="existing-preview-box" style="border-color: #bbf7d0; background: #f6fcf8;">
+                                                    @if ($isImg)
+                                                        <a href="{{ $filePath }}" target="_blank">
+                                                            <img src="{{ $filePath }}" class="existing-preview-thumb" alt="{{ $doc->name }}">
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ $filePath }}" target="_blank" class="existing-preview-thumb d-flex align-items-center justify-content-center bg-light text-danger fs-3 text-decoration-none">
+                                                            <i class="mdi mdi-file-pdf-box"></i>
+                                                        </a>
+                                                    @endif
+                                                    <div class="existing-preview-info">
+                                                        <span class="file-name" title="{{ basename($customerDoc->file) }}">{{ basename($customerDoc->file) }}</span>
+                                                        <span class="file-status text-success"><i class="mdi mdi-account-check-outline"></i> Otomatis dari registrasi customer</span>
+                                                    </div>
+                                                    <a href="{{ $filePath }}" target="_blank" class="btn btn-sm btn-outline-success px-2 py-1" style="font-size: 0.75rem;">
+                                                        <i class="mdi mdi-eye"></i> Lihat
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        {{-- INPUT FILE UPLOAD ZONE --}}
+                                        <div class="upload-file-modern mt-2">
+                                            <input type="file" id="document-{{ $doc->id }}"
+                                                name="document_{{ $doc->id }}"
+                                                accept="{{ $doc->accept ?? '.jpg,.jpeg,.png,.pdf' }}"
+                                                @if ($doc->required && !$hasFile) required @endif>
+
+                                            <div class="upload-file-label">
+                                                <i class="mdi mdi-cloud-upload"></i>
+                                                <div class="upload-file-info">
+                                                    <span>
+                                                        {{ $hasFile ? 'Ganti / Upload Versi Baru' : 'Pilih file ' . $doc->name }}
+                                                    </span>
+                                                    <small>Format: JPG, PNG, PDF (Maks. 5MB)</small>
+                                                </div>
+                                                <span class="upload-file-size"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Tombol Aksi -->
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4 pt-3 border-top">
+                            <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+                                <i class="mdi mdi-arrow-left me-1"></i>Kembali
+                            </a>
+                            <button type="submit" class="btn btn-gradient-primary">
+                                <i class="mdi mdi-cloud-upload me-1"></i>Upload & Simpan Dokumen
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session('success'))
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // File upload preview untuk semua input file
-                document.querySelectorAll('.upload-file-modern input[type="file"]').forEach(input => {
-                    input.addEventListener('change', function(e) {
-                        const fileName = e.target.files[0]?.name;
-                        const fileSize = e.target.files[0]?.size;
-                        const label = this.closest('.upload-file-modern').querySelector(
-                            '.upload-file-info span');
-                        const sizeSpan = this.closest('.upload-file-modern').querySelector(
-                            '.upload-file-size');
-
-                        if (fileName) {
-                            // Tampilkan nama file (potong jika terlalu panjang)
-                            label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                                '...' : fileName;
-
-                            // Hitung dan tampilkan ukuran file dalam MB
-                            if (fileSize) {
-                                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                                sizeSpan.textContent = sizeInMB + ' MB';
-                            }
-                        } else {
-                            // Reset ke teks awal
-                            const inputId = this.id;
-                            const labelText = inputId.split('_').map(word =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' ');
-                            label.textContent = 'Upload ' + labelText;
-                            sizeSpan.textContent = '';
-                        }
-                    });
-                });
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#9a55ff'
             });
         </script>
-    @endpush
+    @endif
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#ef4444'
+            });
+        </script>
+    @endif
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // File upload live indicator
+            document.querySelectorAll('.upload-file-modern input[type="file"]').forEach(input => {
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    const label = this.closest('.upload-file-modern').querySelector('.upload-file-info span');
+                    const sizeSpan = this.closest('.upload-file-modern').querySelector('.upload-file-size');
+
+                    if (file) {
+                        label.textContent = file.name.length > 28 ? file.name.substring(0, 28) + '...' : file.name;
+                        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                        sizeSpan.textContent = sizeInMB + ' MB';
+                        this.closest('.dokumen-card').style.borderColor = '#9a55ff';
+                    } else {
+                        sizeSpan.textContent = '';
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
 @endsection

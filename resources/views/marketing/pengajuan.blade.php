@@ -3,11 +3,204 @@
 @section('title', 'Pengajuan KPR - Property Management App')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('assets/css/marketing/pengajuan.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    {{-- Styling Upload dari Halaman Properti --}}
     <style>
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
+        /* ===== FORM PENGAJUAN KPR CUSTOM STYLES ===== */
+        .card-form-kpr {
+            border: none;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-form-kpr .card-header {
+            background: #ffffff;
+            border-bottom: 1px solid #f0f2f5;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .card-form-kpr .card-body {
+            padding: 1.5rem;
+        }
+
+        .section-header-kpr {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1.5px solid #f3f4f8;
+        }
+
+        .section-header-kpr i {
+            font-size: 1.35rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+        }
+
+        .section-header-kpr h5 {
+            margin: 0;
+            font-weight: 800;
+            color: #2c2e3f;
+            font-size: 1.05rem;
+            letter-spacing: -0.2px;
+        }
+
+        .form-label-kpr {
+            font-weight: 700;
+            font-size: 0.86rem;
+            color: #3b3f5c;
+            margin-bottom: 0.45rem;
+            display: block;
+        }
+
+        .form-label-kpr .req {
+            color: #fe5b5b;
+        }
+
+        .form-control-kpr {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.55rem 0.95rem;
+            font-size: 0.9rem;
+            color: #2c2e3f;
+            min-height: 42px;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-control-kpr:focus {
+            border-color: #9a55ff;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        .form-control-kpr[readonly],
+        .form-control-kpr:disabled {
+            background-color: #f8fafc;
+            color: #4b5563;
+            font-weight: 600;
+            cursor: not-allowed;
+            border-color: #e5e7eb;
+        }
+
+        /* Seamless Rupiah Input Group */
+        .kpr-input-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+        }
+
+        .kpr-input-group .input-group-text {
+            background-color: #f8fafc !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-right: none !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            color: #9a55ff !important;
+            font-size: 0.92rem !important;
+            font-weight: 700 !important;
+            padding: 0 0.85rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+        }
+
+        .kpr-input-group .form-control-kpr {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            border-left: 1.5px solid #e2e8f0 !important;
+            flex: 1 1 auto;
+        }
+
+        .kpr-input-group:focus-within .input-group-text {
+            border-color: #9a55ff !important;
+            background-color: #fdfaff !important;
+        }
+
+        .kpr-input-group:focus-within .form-control-kpr {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+        }
+
+        /* Percent Input Group for Suku Bunga */
+        .kpr-percent-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+        }
+
+        .kpr-percent-group .form-control-kpr {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-right: none !important;
+            flex: 1 1 auto !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+        }
+
+        .kpr-percent-group .input-group-text {
+            background-color: #f8fafc !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-left: none !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            color: #4b5563 !important;
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            padding: 0 0.85rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+            flex-shrink: 0;
+        }
+
+        .kpr-percent-group:focus-within .form-control-kpr {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+        }
+
+        .kpr-percent-group:focus-within .input-group-text {
+            border-color: #9a55ff !important;
+            background-color: #fdfaff !important;
+        }
+
+        /* Highlight Result Box for Estimasi Angsuran */
+        .highlight-calc-box {
+            background: linear-gradient(135deg, rgba(154, 85, 255, 0.06), rgba(218, 140, 255, 0.08));
+            border: 1.5px dashed rgba(154, 85, 255, 0.35);
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+        }
+
+        /* Modern File Upload Cards */
         .properti-file-upload-modern {
             position: relative;
             width: 100%;
@@ -24,271 +217,155 @@
 
         .properti-file-upload-modern .properti-file-label-modern {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
+            gap: 12px;
+            padding: 0.85rem 1rem;
+            background: #ffffff;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
-
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
+            transition: all 0.25s ease;
+            min-height: 72px;
         }
 
         .properti-file-upload-modern:hover .properti-file-label-modern {
             border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+            background: #faf7ff;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.08);
         }
 
-        /* Deactivate hover effect when document already exists */
+        .properti-file-upload-modern.has-existing-doc .properti-file-label-modern {
+            border-style: solid;
+            border-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4, #ffffff);
+        }
+
         .properti-file-upload-modern.has-existing-doc:hover .properti-file-label-modern {
             transform: none !important;
-            box-shadow: none !important;
-            border-color: #28a745 !important;
-            background: linear-gradient(135deg, #f0fff4, #f8f9fa) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1) !important;
+            border-color: #10b981 !important;
         }
 
-        /* Elevate Lihat & Download buttons above the file input and give them their own premium hover */
         .properti-file-upload-modern .btn {
             position: relative;
             z-index: 3;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .properti-file-upload-modern .btn:hover {
-            transform: translateY(-1px) scale(1.03) !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
-            opacity: 0.95;
         }
 
         .properti-file-upload-modern .properti-file-label-modern i {
-            font-size: 1.6rem;
+            font-size: 1.45rem;
             color: #9a55ff;
             background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
+            padding: 10px;
             border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
+        .properti-file-upload-modern.has-existing-doc .properti-file-label-modern i {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.12);
+        }
+
+        .properti-file-upload-modern .properti-file-info-modern {
             flex: 1;
-            width: 100%;
+            min-width: 0;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
+        .properti-file-upload-modern .properti-file-info-modern span {
             display: block;
-            font-weight: 600;
+            font-weight: 700;
             color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
-            color: #6c7383;
-            font-size: 0.65rem;
+        .properti-file-upload-modern .properti-file-info-modern small {
+            color: #64748b;
+            font-size: 0.72rem;
             display: block;
             margin-top: 2px;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-            font-size: 0.7rem;
+        .properti-file-upload-modern .properti-file-size {
+            font-size: 0.72rem;
             color: #9a55ff;
-            font-weight: 600;
+            font-weight: 700;
             background: rgba(154, 85, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 3px 8px;
+            border-radius: 12px;
             white-space: nowrap;
-            margin-top: 5px;
         }
 
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-                margin-top: 0;
-            }
-        }
-
-        /* Alert styling */
-        .alert {
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-            font-size: 0.8rem;
-            border-left: 4px solid;
-            margin-bottom: 1rem;
-        }
-
-        .alert-success {
-            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
-            color: #2c2e3f;
-            border-left-color: #28a745;
-        }
-
-        .alert-danger {
-            background: linear-gradient(135deg, #fff0f0, #ffe6e6);
-            color: #2c2e3f;
-            border-left-color: #dc3545;
-        }
-
-        /* Custom responsive adjustments untuk file upload */
-        @media (max-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern {
-                padding: 0.8rem 0.5rem;
-            }
-
-            .properti-file-upload-modern .properti-file-label-modern i {
-                font-size: 1.4rem;
-            }
-
-            .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
-                font-size: 0.75rem;
-            }
-
-            .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
-                font-size: 0.6rem;
-            }
-        }
-
-        /* Better touch targets for mobile */
-        input,
-        select,
-        textarea,
-        button {
-            font-size: 16px !important;
-        }
-
-        /* Error styling for missing uploads */
         .properti-file-upload-modern.error .properti-file-label-modern {
-            border-color: #dc3545;
-            background: linear-gradient(135deg, #fff0f0, #ffe6e6);
+            border-color: #ef4444 !important;
+            background: #fff5f5 !important;
         }
 
-        .properti-file-upload-modern.error .properti-file-label-modern i {
-            color: #dc3545;
-        }
-
-        /* ===== SELECT2 CUSTOM STYLING FROM PROPERTI/INDEX ===== */
+        /* SELECT2 ENHANCEMENTS */
         .select2-container--bootstrap-5 .select2-selection {
-            border: 1px solid #e9ecef !important;
+            border: 1.5px solid #e2e8f0 !important;
             border-radius: 8px !important;
-            padding: 0.5rem 0.8rem !important;
-            min-height: 40px !important;
-            font-family: 'Nunito', sans-serif !important;
+            min-height: 42px !important;
+            padding: 0.45rem 0.85rem !important;
+            font-family: inherit !important;
             background-color: #ffffff !important;
         }
 
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
             color: #2c2e3f !important;
             font-size: 0.9rem !important;
-            line-height: 1.5 !important;
+            font-weight: 600 !important;
             padding-left: 0 !important;
         }
 
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-            height: 38px !important;
+            height: 40px !important;
             right: 10px !important;
         }
 
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
-            border-color: #9a55ff transparent transparent transparent !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection:hover {
-            border-color: #9a55ff !important;
-        }
-
+        .select2-container--bootstrap-5 .select2-selection:hover,
         .select2-container--bootstrap-5.select2-container--focus .select2-selection,
         .select2-container--bootstrap-5.select2-container--open .select2-selection {
             border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
         }
 
         .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #e9ecef !important;
-            border-radius: 8px !important;
+            border-color: #e2e8f0 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
             overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
         }
 
         .select2-container--bootstrap-5 .select2-results__option {
-            padding: 0.6rem 0.8rem !important;
-            font-size: 0.9rem !important;
-            font-family: 'Nunito', sans-serif !important;
+            padding: 0.6rem 0.9rem !important;
+            font-size: 0.88rem !important;
+            font-weight: 600 !important;
         }
 
         .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
+            background-color: #f3e8ff !important;
+            color: #7e22ce !important;
         }
 
         .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem !important;
-            font-family: 'Nunito', sans-serif !important;
-            margin: 0.5rem !important;
-            width: calc(100% - 1rem) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-limited-items .select2-results__options {
-            max-height: 200px !important;
-            overflow-y: auto !important;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #d5bfff;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #9a55ff;
+            background: #9a55ff !important;
+            color: #ffffff !important;
         }
     </style>
 
-    <div class="container-fluid p-3 p-md-4">
-        <!-- Header -->
-        <div class="row mb-4">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+        <!-- Header Page -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3 p-md-4">
                         <div>
                             <h3 class="text-dark mb-1 fw-bold">
-                                <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>
-                                Form Pengajuan KPR
+                                <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Form Pengajuan KPR
                             </h3>
                             <p class="text-muted mb-0 small">
                                 <i class="mdi mdi-information-outline me-1 text-primary"></i>
@@ -302,21 +379,26 @@
                 </div>
             </div>
         </div>
-        <!-- Info Status -->
-        <div class="pengajuan-row mb-3">
-            <div class="pengajuan-col-12">
-                <div class="pengajuan-card pengajuan-bg-light border-0">
-                    <div class="pengajuan-card-body py-3">
-                        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+
+        <!-- Info Status Ribbon -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm" style="border-radius: 10px; background: #ffffff;">
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-primary text-white px-3 py-2" style="border-radius: 6px; font-weight: 700; font-size: 0.8rem; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                                    <i class="mdi mdi-plus-circle-outline me-1"></i>Pengajuan Baru
+                                </span>
+                                <span class="text-muted small d-flex align-items-center">
+                                    <i class="mdi mdi-calendar-clock me-1 text-primary"></i>
+                                    Tanggal: <strong>{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</strong>
+                                </span>
+                            </div>
                             <div>
-                                <span class="pengajuan-badge pengajuan-badge-primary">Pengajuan Baru</span>
-                            </div>
-                            <div class="pengajuan-text-muted small d-flex align-items-center">
-                                <i class="mdi mdi-calendar me-1 pengajuan-text-primary"></i>
-                                <span>Tanggal: 14 Februari 2026</span>
-                            </div>
-                            <div class="ms-sm-auto mt-2 mt-sm-0">
-                                <span class="pengajuan-badge pengajuan-badge-warning">Status: Draft</span>
+                                <span class="badge bg-warning text-dark px-3 py-2" style="border-radius: 6px; font-weight: 700; font-size: 0.8rem;">
+                                    <i class="mdi mdi-file-document-edit-outline me-1"></i>Status: Draft
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -325,397 +407,368 @@
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                <i class="fas fa-check-circle me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 10px; border-left: 4px solid #28a745;">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 10px; border-left: 4px solid #dc3545;">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                {{ $errors->first() }}
+            <div class="alert alert-danger" style="border-radius: 10px; border-left: 4px solid #dc3545;">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ $errors->first() }}
             </div>
         @endif
 
         <!-- Form Pengajuan KPR -->
-        <div class="pengajuan-row">
-            <div class="pengajuan-col-12">
-                <div class="pengajuan-card">
-                    <div
-                        class="pengajuan-card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
-                        <h4 class="mb-0 d-flex align-items-center">
-                            <i class="mdi mdi-bank me-2 pengajuan-text-primary"></i>
-                            Data Pengajuan KPR
-                        </h4>
+        <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data" class="pengajuan-form-sample">
+            @csrf
+
+            <!-- Hidden Data dari Booking -->
+            <input type="hidden" name="customer_id" value="{{ $booking->customer->id ?? '' }}">
+            <input type="hidden" name="unit_id" value="{{ $booking->unit->id ?? '' }}">
+            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+
+            <!-- CARD 1: INFORMASI CUSTOMER & DETAIL UNIT -->
+            <div class="card card-form-kpr">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark d-flex align-items-center">
+                        <i class="mdi mdi-account-box-outline text-primary me-2" style="font-size: 1.3rem;"></i>
+                        Data Customer & Detail Unit
+                    </h5>
+                    <span class="badge bg-light text-primary border px-2 py-1" style="font-size: 0.78rem;">
+                        Kode Booking: <strong>{{ $booking->booking_code ?? 'BOOK-'.$booking->id }}</strong>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <!-- Info Alert -->
+                    <div class="alert alert-info d-flex align-items-center gap-2 mb-4 p-3" style="border-radius: 8px; background: rgba(154, 85, 255, 0.06); border: 1px solid rgba(154, 85, 255, 0.2);">
+                        <i class="mdi mdi-information-outline text-primary flex-shrink-0" style="font-size: 1.35rem;"></i>
+                        <span class="small text-dark">
+                            Pastikan data customer sudah lengkap di menu <strong>Master Customer</strong> sebelum mengajukan berkas KPR ke bank.
+                        </span>
                     </div>
-                    <div class="pengajuan-card-body">
-                        <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data"
-                            class="pengajuan-form-sample">
-                            @csrf
 
-                            <!-- Hidden dari Booking -->
-                            <input type="hidden" name="customer_id" value="{{ $booking->customer->id ?? '' }}">
-                            <input type="hidden" name="unit_id" value="{{ $booking->unit->id ?? '' }}">
-                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                    <!-- Customer Field -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label-kpr"><i class="mdi mdi-account text-primary me-1"></i>Nama Customer <span class="req">*</span></label>
+                            <input type="text" class="form-control-kpr" value="{{ $booking->customer->full_name ?? '-' }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-kpr"><i class="mdi mdi-card-account-details-outline text-primary me-1"></i>NIK / ID Customer</label>
+                            <input type="text" class="form-control-kpr" value="{{ $booking->customer->nik ?? $booking->customer->customer_id ?? '-' }}" readonly>
+                        </div>
+                    </div>
 
-                            <!-- Alert Info -->
-                            <div class="pengajuan-alert pengajuan-alert-info d-flex align-items-center gap-2 mb-4" style="padding-left: 1.25rem !important;">
-                                <i class="mdi mdi-information-outline flex-shrink-0" style="font-size: 1.15rem; color: #9a55ff; line-height: 1; display: inline-flex; align-items: center; justify-content: center;"></i>
-                                <span style="line-height: 1.5; font-size: 0.82rem;">Pastikan data customer sudah lengkap di menu <strong>Tambah Customer</strong> sebelum
-                                    mengajukan KPR.</span>
-                            </div>
+                    <div class="section-header-kpr">
+                        <i class="mdi mdi-home-city-outline"></i>
+                        <h5>Detail Unit yang Dibooking</h5>
+                    </div>
 
-                            <!-- Customer & Unit -->
-                            <div class="pengajuan-form-group">
-                                <label>Customer *</label>
-                                <input type="text" class="pengajuan-form-control"
-                                    value="{{ $booking->customer->full_name ?? '-' }}" readonly>
-                            </div>
-
-                            <hr class="pengajuan-hr">
-
-                            <div class="pengajuan-section-title">
-                                <i class="mdi mdi-home-city"></i>Detail Unit yang Dibooking
-                            </div>
-
-                            <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
-                                    <div class="pengajuan-form-group">
-                                        <label>Nama Unit</label>
-                                        <input type="text" class="pengajuan-form-control"
-                                            value="{{ $booking->unit->unit_name ?? '-' }}" readonly>
-                                    </div>
-                                </div>
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-3">
-                                    <div class="pengajuan-form-group">
-                                        <label>Type Unit</label>
-                                        <input type="text" class="pengajuan-form-control"
-                                            value="{{ $booking->unit->type ?? '-' }}" readonly>
-                                    </div>
-                                </div>
-                                <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-2">
-                                    <div class="pengajuan-form-group">
-                                        <label>Blok/No</label>
-                                        <input type="text" class="pengajuan-form-control"
-                                            value="{{ $booking->unit->block ?? '-' }} / {{ $booking->unit->unit_code ?? '-' }}"
-                                            readonly>
-                                    </div>
-                                </div>
-                                <div class="pengajuan-col-6 pengajuan-col-sm-6 pengajuan-col-md-2">
-                                    <div class="pengajuan-form-group">
-                                        <label>Jenis Unit</label>
-                                        <input type="text" class="pengajuan-form-control"
-                                            value="{{ Str::upper($booking->unit->jenis ?? '-') }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="pengajuan-hr">
-
-                            <div class="pengajuan-section-title">
-                                <i class="mdi mdi-bank"></i>Data Pengajuan KPR
-                            </div>
-
-                            <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label>Bank Tujuan *</label>
-                                        <select class="pengajuan-form-control" name="banks_id" id="bankSelect" required>
-                                            <option value="">-- Pilih Bank --</option>
-                                            @foreach ($banks as $bank)
-                                                <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-md-6">
-                                    <div class="pengajuan-form-group">
-                                        <label>Produk KPR</label>
-                                        <select class="pengajuan-form-control" name="produk_kpr" id="produkSelect">
-                                            <option value="subsidi">KPR Subsidi</option>
-                                            <option value="non_subsidi">KPR Non Subsidi</option>
-                                            <option value="syariah">KPR Syariah</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="pengajuan-row">
-                                <!-- Harga Unit -->
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Harga Unit</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="text" class="pengajuan-form-control" id="hargaUnit"
-                                                value="{{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- DP -->
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>DP *</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="number" class="pengajuan-form-control" name="dp"
-                                                id="dp" required value="{{ $booking->booking_fee ?? 0 }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Promo / Diskon</label>
-                                        <select class="pengajuan-form-control" name="promo_id" id="promoSelect">
-                                            <option value="">-- Pilih Promo --</option>
-                                            @foreach ($promos as $promo)
-                                                <option value="{{ $promo->id }}" data-nominal="{{ $promo->nominal }}">{{ $promo->name }} (Rp {{ number_format($promo->value, 0, ',', '.') }})</option>
-                                            @endforeach
-                                        </select>
-                                        <small class="text-muted">Pilih promo dari developer</small>
-                                    </div>
-                                </div>
-
-                                <!-- Tenor -->
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
-                                    <div class="pengajuan-form-group">
-                                        <label>Tenor *</label>
-                                        <select class="pengajuan-form-control" name="tenor" id="tenor" required>
-                                            <option value="">-- Pilih --</option>
-                                            <option value="5">5 Tahun</option>
-                                            <option value="10">10 Tahun</option>
-                                            <option value="15">15 Tahun</option>
-                                            <option value="20">20 Tahun</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Bunga -->
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
-                                    <div class="pengajuan-form-group">
-                                        <label>Bunga (%) *</label>
-                                        <input type="number" class="pengajuan-form-control" name="bunga"
-                                            id="bunga" step="0.1" required>
-                                    </div>
-                                </div>
-
-
-                                @php
-                                    $hargaUnit = $booking->unit->price ?? 0;
-                                    $dp = $booking->booking_fee ?? 0;
-                                    $jumlahPinjaman = $hargaUnit - $dp;
-                                @endphp
-
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4 mt-3">
-                                    <div class="pengajuan-form-group">
-                                        <label>Jumlah Pinjaman</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="text" class="pengajuan-form-control" name="jumlah_pinjaman"
-                                                id="jumlahPinjaman" value="{{ number_format($jumlahPinjaman, 0, ',', '.') }}" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="pengajuan-row">
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Estimasi Angsuran</label>
-                                        <div class="pengajuan-input-group">
-                                            <span class="pengajuan-input-group-text">Rp</span>
-                                            <input type="text" class="pengajuan-form-control" name="estimasi_angsuran"
-                                                id="angsuran" readonly placeholder="0">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pengajuan-col-12 pengajuan-col-sm-6 pengajuan-col-md-4">
-                                    <div class="pengajuan-form-group">
-                                        <label>Status Pekerjaan</label>
-                                        <input type="text" class="pengajuan-form-control" name="status_pekerjaan"
-                                            value="{{ ($booking->customer->job_status ?? '') === 'Lainnya'
-                                                ? $booking->customer->job_status_lainnya ?? ''
-                                                : $booking->customer->job_status ?? '' }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="pengajuan-hr">
-
-                            <div class="pengajuan-section-title">
-                                <i class="mdi mdi-file-document"></i>Upload Dokumen Pendukung
-                            </div>
-                            <p class="pengajuan-text-muted small mb-3">Dokumen tambahan untuk pengajuan KPR</p>
-                            <div class="mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-info" id="uploadCounter">0 / 8 Dokumen</span>
-                                    <small class="text-muted">Lengkapi dokumen yang belum diunggah</small>
-                                </div>
-                            </div>
-
-                            <div class="pengajuan-row">
-                                @php
-                                    $uploadFields = [
-                                        'ktp' => 'KTP',
-                                        'kk' => 'KK',
-                                        'slip_gaji' => 'Slip Gaji',
-                                        'rekening_koran' => 'Rekening Koran',
-                                        'npwp' => 'NPWP',
-                                        'sku' => 'SKU',
-                                        'surat_nikah' => 'Surat Nikah',
-                                        'ktp_pasangan' => 'KTP Pasangan',
-                                    ];
-                                    $docMap = [
-                                        'ktp' => 'KTP',
-                                        'kk' => 'Kartu Keluarga',
-                                        'npwp' => 'NPWP',
-                                        'ktp_pasangan' => 'KTP Pasangan'
-                                    ];
-                                @endphp
-
-                                @foreach ($uploadFields as $field => $label)
-                                    @php
-                                        $mappedName = $docMap[$field] ?? null;
-                                        $hasDoc = $mappedName && isset($existingCustomerDocs[$mappedName]) && $existingCustomerDocs[$mappedName];
-                                        $fileUrl = '';
-                                        $previewUrl = '';
-                                        if ($hasDoc) {
-                                            $docPath = $existingCustomerDocs[$mappedName];
-                                            $fileUrl = \Illuminate\Support\Str::startsWith($docPath, 'uploads/') ? asset($docPath) : asset('uploads/' . $docPath);
-                                            
-                                            $relativePath = \Illuminate\Support\Str::startsWith($docPath, 'uploads/') ? $docPath : 'uploads/' . $docPath;
-                                            $previewUrl = route('document.preview', ['path' => $relativePath]);
-                                        }
-                                    @endphp
-                                    <div class="pengajuan-col-12 pengajuan-col-md-6 mb-3">
-                                        <div class="pengajuan-form-group">
-                                            <label for="{{ $field }}">{{ $label }} *</label>
-                                            <div class="properti-file-upload-modern {{ $hasDoc ? 'has-existing-doc' : '' }}">
-                                                <input type="file" id="{{ $field }}"
-                                                    name="{{ $field }}" accept=".jpg,.jpeg,.png,.pdf" {{ $hasDoc ? '' : 'required' }}>
-                                                
-                                                @if ($hasDoc)
-                                                    <div class="properti-file-label-modern" style="border-color: #28a745; background: linear-gradient(135deg, #f0fff4, #f8f9fa);">
-                                                        <i class="fas fa-check-circle" style="color: #28a745; background: rgba(40, 167, 69, 0.1); padding: 8px; border-radius: 50%;"></i>
-                                                        <div class="properti-file-info-modern">
-                                                            <span style="color: #28a745; font-weight: 600;">{{ $label }} Sudah Terunggah (Customer)</span>
-                                                            <small class="text-muted">Gunakan dokumen customer yang ada atau upload baru untuk mengganti</small>
-                                                        </div>
-                                                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
-                                                            <a href="{{ $previewUrl }}" target="_blank" class="btn btn-sm btn-outline-success border-0 px-2 py-1 text-success d-flex align-items-center gap-1" style="font-size: 0.75rem; border-radius: 6px; background: rgba(40, 167, 69, 0.05);">
-                                                                <i class="fas fa-eye" style="font-size: 0.75rem; color: inherit; background: none; padding: 0;"></i> Lihat
-                                                            </a>
-                                                            <a href="{{ $fileUrl }}" download class="btn btn-sm btn-outline-primary border-0 px-2 py-1 text-primary d-flex align-items-center gap-1" style="font-size: 0.75rem; border-radius: 6px; background: rgba(0, 123, 255, 0.05);">
-                                                                <i class="fas fa-download" style="font-size: 0.75rem; color: inherit; background: none; padding: 0;"></i> Download
-                                                            </a>
-                                                            <span class="properti-file-size"></span>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="properti-file-label-modern">
-                                                        <i class="fas fa-cloud-upload-alt"></i>
-                                                        <div class="properti-file-info-modern">
-                                                            <span>Upload {{ $label }}</span>
-                                                            <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
-                                                        </div>
-                                                        <span class="properti-file-size"></span>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-                                <a href="{{ url('/marketing/kpr') }}"
-                                    class="pengajuan-btn pengajuan-btn-outline-secondary">Kembali</a>
-                                <button type="submit" class="pengajuan-btn pengajuan-btn-primary">Ajukan KPR</button>
-                            </div>
-                        </form>
-
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label-kpr"><i class="mdi mdi-home-outline text-primary me-1"></i>Nama Unit</label>
+                            <input type="text" class="form-control-kpr" value="{{ $booking->unit->unit_name ?? '-' }}" readonly>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label-kpr"><i class="mdi mdi-home-group text-primary me-1"></i>Type Unit</label>
+                            <input type="text" class="form-control-kpr" value="{{ $booking->unit->type ?? '-' }}" readonly>
+                        </div>
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <label class="form-label-kpr"><i class="mdi mdi-numeric text-primary me-1"></i>Blok / No</label>
+                            <input type="text" class="form-control-kpr" value="{{ $booking->unit->block ?? '-' }} / {{ $booking->unit->unit_code ?? '-' }}" readonly>
+                        </div>
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <label class="form-label-kpr"><i class="mdi mdi-tag-outline text-primary me-1"></i>Jenis Unit</label>
+                            <input type="text" class="form-control-kpr" value="{{ Str::upper($booking->unit->jenis ?? '-') }}" readonly>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- CARD 2: DATA PENGAJUAN KPR & SIMULASI -->
+            <div class="card card-form-kpr">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold text-dark d-flex align-items-center">
+                        <i class="mdi mdi-calculator-variant text-primary me-2" style="font-size: 1.3rem;"></i>
+                        Data Pengajuan KPR & Simulasi Angsuran
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Bank & Produk -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label-kpr" for="bankSelect"><i class="mdi mdi-bank text-primary me-1"></i>Bank Tujuan <span class="req">*</span></label>
+                            <select class="form-control-kpr select2-bank" name="banks_id" id="bankSelect" required style="width: 100%;">
+                                <option value="">-- Pilih Bank Tujuan --</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label-kpr" for="produkSelect"><i class="mdi mdi-shield-home-outline text-primary me-1"></i>Produk KPR <span class="req">*</span></label>
+                            <select class="form-control-kpr select2-produk" name="produk_kpr" id="produkSelect" style="width: 100%;">
+                                <option value="subsidi">KPR Subsidi</option>
+                                <option value="non_subsidi">KPR Non Subsidi</option>
+                                <option value="syariah">KPR Syariah</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Harga Unit, DP, Promo -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label-kpr"><i class="mdi mdi-cash text-primary me-1"></i>Harga Unit</label>
+                            <div class="kpr-input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control-kpr" id="hargaUnit" value="{{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label-kpr"><i class="mdi mdi-cash-multiple text-primary me-1"></i>Uang Muka (DP) <span class="req">*</span></label>
+                            <div class="kpr-input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control-kpr" name="dp_display" id="dp" required value="{{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}" autocomplete="off">
+                                <input type="hidden" name="dp" id="dp_hidden" value="{{ $booking->booking_fee ?? 0 }}">
+                            </div>
+                            <small class="text-muted" style="font-size: 0.75rem;">Masukkan nominal DP yang dibayarkan</small>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label-kpr" for="promoSelect"><i class="mdi mdi-tag-percent-outline text-primary me-1"></i>Promo / Diskon</label>
+                            <select class="form-control-kpr select2-promo" name="promo_id" id="promoSelect" style="width: 100%;">
+                                <option value="">-- Pilih Promo --</option>
+                                @foreach ($promos as $promo)
+                                    <option value="{{ $promo->id }}" data-nominal="{{ $promo->nominal ?? 0 }}">
+                                        {{ $promo->name }} (Rp {{ number_format($promo->value ?? $promo->nominal ?? 0, 0, ',', '.') }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tenor, Bunga, Jumlah Pinjaman -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label-kpr" for="tenor"><i class="mdi mdi-calendar-range text-primary me-1"></i>Tenor Angsuran <span class="req">*</span></label>
+                            <select class="form-control-kpr select2-tenor" name="tenor" id="tenor" required style="width: 100%;">
+                                <option value="">-- Pilih Tenor --</option>
+                                <option value="5">5 Tahun (60 Bulan)</option>
+                                <option value="10">10 Tahun (120 Bulan)</option>
+                                <option value="15" selected>15 Tahun (180 Bulan)</option>
+                                <option value="20">20 Tahun (240 Bulan)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label-kpr"><i class="mdi mdi-percent-outline text-primary me-1"></i>Suku Bunga (%) <span class="req">*</span></label>
+                            <div class="kpr-percent-group">
+                                <input type="number" class="form-control-kpr" name="bunga" id="bunga" step="0.1" value="5.0" required>
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        @php
+                            $hargaUnit = $booking->unit->price ?? 0;
+                            $dp = $booking->booking_fee ?? 0;
+                            $jumlahPinjaman = max($hargaUnit - $dp, 0);
+                        @endphp
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label-kpr"><i class="mdi mdi-cash-register text-primary me-1"></i>Jumlah Pinjaman KPR</label>
+                            <div class="kpr-input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control-kpr" name="jumlah_pinjaman" id="jumlahPinjaman" value="{{ number_format($jumlahPinjaman, 0, ',', '.') }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estimasi Angsuran & Status Pekerjaan -->
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="highlight-calc-box">
+                                <label class="form-label-kpr text-primary mb-1"><i class="mdi mdi-currency-usd text-primary me-1"></i>Estimasi Angsuran / Bulan</label>
+                                <div class="kpr-input-group">
+                                    <span class="input-group-text fw-bold text-success">Rp</span>
+                                    <input type="text" class="form-control-kpr fw-bold text-success" style="font-size: 1.15rem;" name="estimasi_angsuran" id="angsuran" readonly placeholder="0">
+                                </div>
+                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">*Estimasi perhitungan flat sesuai tenor dan bunga</small>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label-kpr"><i class="mdi mdi-briefcase-outline text-primary me-1"></i>Status Pekerjaan Customer</label>
+                            <input type="text" class="form-control-kpr" name="status_pekerjaan" value="{{ ($booking->customer->job_status ?? '') === 'Lainnya' ? ($booking->customer->job_status_lainnya ?? '') : ($booking->customer->job_status ?? '') }}" placeholder="Contoh: Karyawan Swasta / PNS">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: DOKUMEN PERSYARATAN KPR -->
+            <div class="card card-form-kpr">
+                <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-dark d-flex align-items-center">
+                            <i class="mdi mdi-file-document-multiple-outline text-primary me-2" style="font-size: 1.3rem;"></i>
+                            Upload Dokumen Persyaratan KPR
+                        </h5>
+                        <small class="text-muted">Lengkapi dokumen wajib untuk pengajuan berkas ke pihak bank</small>
+                    </div>
+                    <div>
+                        <span class="badge bg-primary px-3 py-2" id="uploadCounter" style="border-radius: 20px; font-weight: 700; font-size: 0.8rem; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
+                            0 / 8 Dokumen
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @php
+                            $uploadFields = [
+                                'ktp'            => 'KTP Pemohon',
+                                'kk'             => 'Kartu Keluarga (KK)',
+                                'slip_gaji'      => 'Slip Gaji 3 Bulan',
+                                'rekening_koran' => 'Rekening Koran',
+                                'npwp'           => 'NPWP Pemohon',
+                                'sku'            => 'SKU / Surat Keterangan Kerja',
+                                'surat_nikah'    => 'Buku / Surat Nikah',
+                                'ktp_pasangan'   => 'KTP Pasangan',
+                            ];
+                            $docMap = [
+                                'ktp'          => 'KTP',
+                                'kk'           => 'Kartu Keluarga',
+                                'npwp'         => 'NPWP',
+                                'ktp_pasangan' => 'KTP Pasangan'
+                            ];
+                        @endphp
+
+                        @foreach ($uploadFields as $field => $label)
+                            @php
+                                $mappedName = $docMap[$field] ?? null;
+                                $hasDoc = $mappedName && isset($existingCustomerDocs[$mappedName]) && $existingCustomerDocs[$mappedName];
+                                $fileUrl = '';
+                                $previewUrl = '';
+                                if ($hasDoc) {
+                                    $docPath = $existingCustomerDocs[$mappedName];
+                                    $fileUrl = \Illuminate\Support\Str::startsWith($docPath, 'uploads/') ? asset($docPath) : asset('uploads/' . $docPath);
+                                    $relativePath = \Illuminate\Support\Str::startsWith($docPath, 'uploads/') ? $docPath : 'uploads/' . $docPath;
+                                    $previewUrl = route('document.preview', ['path' => $relativePath]);
+                                }
+                            @endphp
+                            <div class="col-12 col-md-6 mb-2">
+                                <label class="form-label-kpr" for="{{ $field }}">{{ $label }} <span class="req">*</span></label>
+                                <div class="properti-file-upload-modern {{ $hasDoc ? 'has-existing-doc' : '' }}">
+                                    <input type="file" id="{{ $field }}" name="{{ $field }}" accept=".jpg,.jpeg,.png,.pdf" {{ $hasDoc ? '' : 'required' }}>
+
+                                    @if ($hasDoc)
+                                        <div class="properti-file-label-modern">
+                                            <i class="fas fa-check-circle"></i>
+                                            <div class="properti-file-info-modern">
+                                                <span style="color: #10b981;">{{ $label }} Tersedia (Data Customer)</span>
+                                                <small>File sudah ada. Klik untuk mengganti jika perlu.</small>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <a href="{{ $previewUrl }}" target="_blank" class="btn btn-sm btn-outline-success px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.75rem; border-radius: 6px;">
+                                                    <i class="fas fa-eye" style="font-size: 0.75rem; background: none; padding: 0; color: inherit;"></i> Lihat
+                                                </a>
+                                                <a href="{{ $fileUrl }}" download class="btn btn-sm btn-outline-primary px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.75rem; border-radius: 6px;">
+                                                    <i class="fas fa-download" style="font-size: 0.75rem; background: none; padding: 0; color: inherit;"></i> Unduh
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="properti-file-label-modern">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <div class="properti-file-info-modern">
+                                                <span>Upload {{ $label }}</span>
+                                                <small>Format: PDF, JPG, PNG (Max 2MB)</small>
+                                            </div>
+                                            <span class="properti-file-size"></span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Tombol Action -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top">
+                        <a href="{{ url('/marketing/jual-unit') }}" class="btn btn-light px-4 py-2 fw-bold text-muted border" style="border-radius: 8px;">
+                            <i class="mdi mdi-arrow-left me-1"></i>Kembali
+                        </a>
+                        <button type="submit" class="btn btn-gradient-primary px-5 py-2 fw-bold text-white shadow-sm" style="border-radius: 8px; font-size: 0.95rem;">
+                            <i class="mdi mdi-send-check me-1"></i>Ajukan Berkas KPR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-    {{-- Script untuk File Upload --}}
     @push('scripts')
         <script>
             $(document).ready(function() {
-                // Select2 Bank Tujuan (Searchable)
+                // Select2 Bank Tujuan
                 $('#bankSelect').select2({
                     theme: 'bootstrap-5',
-                    placeholder: '-- Pilih Bank --',
+                    placeholder: '-- Pilih Bank Tujuan --',
                     allowClear: true,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items'
+                    width: '100%'
                 });
 
-                // Select2 Produk KPR (Searchable)
+                // Select2 Produk KPR
                 $('#produkSelect').select2({
                     theme: 'bootstrap-5',
                     placeholder: '-- Pilih Produk --',
                     allowClear: false,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items'
+                    width: '100%'
                 });
 
-                // Select2 Promo / Diskon (Searchable)
+                // Select2 Promo
                 $('#promoSelect').select2({
                     theme: 'bootstrap-5',
                     placeholder: '-- Pilih Promo --',
                     allowClear: true,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items'
+                    width: '100%'
                 });
 
-                // Select2 Tenor (Searchable)
+                // Select2 Tenor
                 $('#tenor').select2({
                     theme: 'bootstrap-5',
-                    placeholder: '-- Pilih --',
-                    allowClear: true,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items'
+                    placeholder: '-- Pilih Tenor --',
+                    allowClear: false,
+                    width: '100%'
                 });
             });
-        </script>
-        <script>
-            // File upload modern preview
+
+            // File Upload Preview & Counter
             document.addEventListener('DOMContentLoaded', function() {
-                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah',
-                    'ktp_pasangan'
-                ];
+                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'];
                 const counterElement = document.getElementById('uploadCounter');
 
                 function updateCounter() {
                     let uploadedCount = 0;
                     uploadFields.forEach(field => {
                         const input = document.getElementById(field);
+                        if (!input) return;
                         const container = input.closest('.properti-file-upload-modern');
-                        if ((input.files && input.files.length > 0) || container.classList.contains('has-existing-doc')) {
+                        if ((input.files && input.files.length > 0) || (container && container.classList.contains('has-existing-doc'))) {
                             uploadedCount++;
                         }
                     });
-                    counterElement.textContent = uploadedCount + ' / 8 Dokumen';
-                    if (uploadedCount === 8) {
-                        counterElement.className = 'badge bg-success';
-                    } else {
-                        counterElement.className = 'badge bg-info';
+                    if (counterElement) {
+                        counterElement.textContent = uploadedCount + ' / 8 Dokumen';
+                        if (uploadedCount === 8) {
+                            counterElement.style.background = '#10b981';
+                        }
                     }
                 }
 
@@ -724,71 +777,37 @@
                         const fileName = e.target.files[0]?.name;
                         const fileSize = e.target.files[0]?.size;
                         const container = this.closest('.properti-file-upload-modern');
-                        const label = container.querySelector(
-                            '.properti-file-info-modern span');
-                        const sizeSpan = container.querySelector(
-                            '.properti-file-size');
+                        if (!container) return;
+                        const label = container.querySelector('.properti-file-info-modern span');
+                        const sizeSpan = container.querySelector('.properti-file-size');
 
                         if (fileName) {
-                            label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                                '...' : fileName;
-                            if (fileSize) {
+                            if (label) label.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
+                            if (fileSize && sizeSpan) {
                                 const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
                                 sizeSpan.textContent = sizeInMB + ' MB';
                             }
-                            
-                            // Adjust display if there was a pre-existing document
                             if (container.classList.contains('has-existing-doc')) {
                                 const smallText = container.querySelector('.properti-file-info-modern small');
                                 if (smallText) {
                                     smallText.textContent = 'File baru dipilih (menggantikan file customer)';
                                     smallText.style.color = '#9a55ff';
                                 }
-                                const viewLink = container.querySelector('a');
-                                if (viewLink) {
-                                    viewLink.style.display = 'none';
-                                }
                             }
-                        } else {
-                            // Reset ke teks awal
-                            const inputId = this.id;
-                            const labelText = inputId.split('_').map(word =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' ');
-                            label.textContent = 'Upload ' + labelText;
-                            sizeSpan.textContent = '';
+                            container.classList.remove('error');
                         }
-
-                        // Update counter
                         updateCounter();
-
-                        // Remove error class if file is uploaded
-                        if (fileName) {
-                            this.closest('.properti-file-upload-modern').classList.remove('error');
-                        }
                     });
                 });
 
-                // Initial counter update
                 updateCounter();
             });
 
-            // Auto hide alert
-            document.addEventListener("DOMContentLoaded", function() {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    setTimeout(() => {
-                        alert.style.transition = "opacity 0.5s ease";
-                        alert.style.opacity = "0";
-                        setTimeout(() => alert.remove(), 500);
-                    }, 3000);
-                });
-            });
-
-            // Hitung angsuran
+            // Perhitungan KPR Otomatis
             document.addEventListener('DOMContentLoaded', function() {
                 const hargaUnitInput = {{ $booking->unit->price ?? 0 }};
                 const dpInput = document.querySelector('#dp');
+                const dpHidden = document.querySelector('#dp_hidden');
                 const bungaInput = document.querySelector('#bunga');
                 const tenorSelect = document.querySelector('#tenor');
                 const angsuranInput = document.querySelector('#angsuran');
@@ -799,8 +818,12 @@
                 }
 
                 function hitungPinjaman() {
-                    const dp = parseFloat(dpInput.value) || 0;
-                    const jumlahPinjaman = Math.max(hargaUnitInput - dp, 0);
+                    const rawDp = dpInput ? dpInput.value.replace(/[^0-9]/g, '') : '0';
+                    const dp = parseFloat(rawDp) || 0;
+                    if (dpHidden) dpHidden.value = dp;
+
+                    const promoNominal = parseFloat($('#promoSelect option:selected').data('nominal')) || 0;
+                    const jumlahPinjaman = Math.max(hargaUnitInput - dp - promoNominal, 0);
                     if (jumlahPinjamanInput) {
                         jumlahPinjamanInput.value = formatRupiah(jumlahPinjaman);
                     }
@@ -809,72 +832,77 @@
 
                 function hitungAngsuran() {
                     const jumlahPinjaman = hitungPinjaman();
-                    const bunga = parseFloat(bungaInput.value) || 0;
-                    const tenor = parseInt(tenorSelect.value) || 0;
+                    const bunga = parseFloat(bungaInput ? bungaInput.value : 0) || 0;
+                    const tenor = parseInt(tenorSelect ? tenorSelect.value : 0) || 0;
 
-                    if (jumlahPinjaman > 0 && bunga >= 0 && tenor > 0) {
+                    if (jumlahPinjaman > 0 && bunga >= 0 && tenor > 0 && angsuranInput) {
                         const bungaTotal = jumlahPinjaman * (bunga / 100);
                         const totalPinjaman = jumlahPinjaman + bungaTotal;
                         const angsuran = totalPinjaman / (tenor * 12);
                         angsuranInput.value = formatRupiah(Math.round(angsuran));
-                    } else {
-                        angsuranInput.value = '';
+                    } else if (angsuranInput) {
+                        angsuranInput.value = '0';
                     }
                 }
 
-                if (dpInput) dpInput.addEventListener('input', hitungAngsuran);
-                if (bungaInput) bungaInput.addEventListener('input', hitungAngsuran);
-                
-                // Gunakan jQuery on change untuk Select2 Tenor agar sinkron sempurna
-                if (tenorSelect) {
-                    $('#tenor').on('change', function() {
+                if (dpInput) {
+                    dpInput.addEventListener('input', function() {
+                        let val = this.value.replace(/[^0-9]/g, '');
+                        if (val) {
+                            this.value = formatRupiah(val);
+                        } else {
+                            this.value = '';
+                        }
                         hitungAngsuran();
                     });
                 }
+                if (bungaInput) bungaInput.addEventListener('input', hitungAngsuran);
 
-                hitungPinjaman();
+                $('#tenor, #promoSelect').on('change', function() {
+                    hitungAngsuran();
+                });
+
+                hitungAngsuran();
             });
 
-            // Validasi form submit untuk upload dokumen
+            // Validasi Form
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.querySelector('.pengajuan-form-sample');
-                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah',
-                    'ktp_pasangan'
-                ];
+                const uploadFields = ['ktp', 'kk', 'slip_gaji', 'rekening_koran', 'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'];
 
-                form.addEventListener('submit', function(e) {
-                    let isValid = true;
-                    let missingFields = [];
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        let isValid = true;
+                        let missingFields = [];
 
-                    // Reset previous error styling
-                    document.querySelectorAll('.properti-file-upload-modern').forEach(el => {
-                        el.classList.remove('error');
-                    });
+                        document.querySelectorAll('.properti-file-upload-modern').forEach(el => {
+                            el.classList.remove('error');
+                        });
 
-                    uploadFields.forEach(field => {
-                        const input = document.getElementById(field);
-                        const isRequired = input.hasAttribute('required');
-                        if (isRequired && (!input.files || input.files.length === 0)) {
-                            isValid = false;
-                            missingFields.push(field.replace('_', ' ').toUpperCase());
-                            input.closest('.properti-file-upload-modern').classList.add('error');
+                        uploadFields.forEach(field => {
+                            const input = document.getElementById(field);
+                            if (input) {
+                                const isRequired = input.hasAttribute('required');
+                                if (isRequired && (!input.files || input.files.length === 0)) {
+                                    isValid = false;
+                                    missingFields.push(field.replace('_', ' ').toUpperCase());
+                                    input.closest('.properti-file-upload-modern')?.classList.add('error');
+                                }
+                            }
+                        });
+
+                        if (!isValid) {
+                            e.preventDefault();
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Dokumen Belum Lengkap',
+                                html: '<p class="mb-2">Harap upload dokumen persyaratan berikut:</p><strong>' + missingFields.join(', ') + '</strong>'
+                            });
+                            return false;
                         }
                     });
-
-                    if (!isValid) {
-                        e.preventDefault();
-                        alert('Dokumen berikut belum diupload:\n' + missingFields.join('\n') +
-                            '\n\nSilakan lengkapi semua dokumen sebelum mengajukan KPR.');
-                        return false;
-                    }
-                });
+                }
             });
         </script>
     @endpush
-
-    {{-- Font Awesome untuk icon --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-
-
 @endsection

@@ -25,7 +25,7 @@ class EmployeeSeeder extends Seeder
                 'username' => 'Kepala Legal',
                 'password' => Hash::make('password'),
                 'division_id' => 2,
-                'position_id' => 2,
+                'position_id' => 3,
                 'phone' => '08123456788',
                 'address' => 'Bondowoso'
             ],
@@ -42,7 +42,7 @@ class EmployeeSeeder extends Seeder
                 'name' => 'Staff Marketing',
                 'username' => 'marketing',
                 'password' => Hash::make('password'),
-                'division_id' => 2,
+                'division_id' => 1,
                 'position_id' => 2,
                 'phone' => '08123456789',
                 'address' => 'Jember'

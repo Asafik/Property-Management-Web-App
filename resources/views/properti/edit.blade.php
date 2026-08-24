@@ -159,13 +159,14 @@
         }
 
         .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
+            background-color: #ede9fe !important;
+            color: #6d28d9 !important;
+            font-weight: 700 !important;
         }
 
         .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
+            background: #f5f3ff !important;
+            color: #7c3aed !important;
         }
 
         .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
@@ -220,40 +221,65 @@
 
         /* Input Group */
         .properti-input-group {
-            display: flex;
-            align-items: stretch;
-            width: 100%;
+            display: flex !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            position: relative;
         }
 
         .properti-input-group-prepend {
-            display: flex;
+            display: flex !important;
+            align-items: stretch !important;
+            margin-right: -1px;
+            z-index: 2;
         }
 
         .properti-input-group-text {
-            display: flex;
-            align-items: center;
-            padding: 0.7rem 0.8rem;
-            font-size: 0.85rem;
-            font-weight: 400;
-            line-height: 1;
-            color: #6c7383;
-            text-align: center;
-            white-space: nowrap;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 1px solid #e9ecef;
-            border-radius: 10px 0 0 10px;
-            border-right: none;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0.6rem 0.85rem !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            line-height: 1.5 !important;
+            color: #6c757d !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            background-color: #f8f9fa !important;
+            border: 1px solid #e9ecef !important;
+            border-right: none !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            height: 100% !important;
         }
 
         @media (min-width: 768px) {
             .properti-input-group-text {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.9rem;
+                padding: 0.6rem 0.85rem !important;
+                font-size: 0.9rem !important;
             }
         }
 
-        .properti-input-group .properti-form-control {
-            border-radius: 0 10px 10px 0;
+        .properti-input-group .properti-form-control,
+        .properti-input-group input[type="text"].properti-form-control,
+        .properti-input-group input[type="number"].properti-form-control {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            position: relative;
+            z-index: 1;
+            flex: 1 1 auto;
+            width: 1%;
+        }
+
+        .properti-input-group .properti-form-control:focus,
+        .properti-input-group input[type="text"].properti-form-control:focus {
+            z-index: 3;
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
         }
 
         /* Button Styling */
@@ -487,8 +513,8 @@
         .properti-checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
+            gap: 0.75rem;
+            justify-content: flex-start;
             margin-top: 0.5rem;
         }
 
@@ -508,8 +534,8 @@
         .properti-checkbox-label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 0.75rem 1.2rem;
+            gap: 8px;
+            padding: 0.65rem 1.2rem;
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             border: 2px solid #e9ecef;
             border-radius: 12px;
@@ -517,92 +543,41 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-        }
-
-        .properti-checkbox-label::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(154, 85, 255, 0.1), rgba(218, 140, 255, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
+            width: 100%;
         }
 
         .properti-checkbox-wrapper:hover .properti-checkbox-label {
             border-color: #9a55ff;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
-        }
-
-        .properti-checkbox-wrapper:hover .properti-checkbox-label::before {
-            opacity: 1;
-        }
-
-        .properti-check-icon {
-            font-size: 1.4rem;
-            color: #d0d4db;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
-            border-radius: 50%;
-            padding: 2px;
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
         }
 
         .properti-checkbox-input:checked+.properti-checkbox-label {
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .properti-check-icon {
+            font-size: 1.2rem;
+            color: #d0d4db;
+            transition: all 0.3s ease;
         }
 
         .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-icon {
             color: #9a55ff;
-            transform: scale(1.1);
-            filter: drop-shadow(0 4px 8px rgba(154, 85, 255, 0.4));
-            animation: propertiCheckPulse 0.3s ease;
+        }
+
+        .properti-check-text {
+            font-size: 0.85rem;
+            color: #2c2e3f;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-text {
             color: #9a55ff;
             font-weight: 600;
-        }
-
-        .properti-check-text {
-            transition: all 0.3s ease;
-            position: relative;
-            font-size: 0.9rem;
-            color: #2c2e3f;
-        }
-
-        .properti-check-text::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            transition: width 0.3s ease;
-        }
-
-        .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-text::before {
-            width: 100%;
-        }
-
-        @keyframes propertiCheckPulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1.1);
-            }
         }
 
         /* ===== MODERN FILE UPLOAD STYLING ===== */
@@ -651,6 +626,18 @@
             background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+        }
+
+        .properti-file-upload-modern.is-uploaded .properti-file-label-modern {
+            border: 2px dashed #28a745;
+            background: linear-gradient(135deg, #f2faf4, #f9fdfa);
+        }
+
+        .properti-file-upload-modern.is-uploaded:hover .properti-file-label-modern {
+            border-color: #1e7e34;
+            background: linear-gradient(135deg, #e7f7ec, #f2faf4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.15);
         }
 
         .properti-file-upload-modern .properti-file-label-modern i {
@@ -1054,12 +1041,13 @@
                                         <select name="jenisJalan"
                                             class="properti-form-control @error('jenisJalan') is-invalid @enderror">
                                             <option value="">-- Pilih Jenis Jalan --</option>
-                                            <option value="Aspal" {{ old('jenisJalan', $land->road_type) == 'Aspal' ? 'selected' : '' }}>
+                                            <option value="Aspal" {{ in_array(strtolower(old('jenisJalan', $land->road_type ?? '')), ['aspal', 'aspal hotmix']) ? 'selected' : '' }}>
                                                 Aspal</option>
-                                            <option value="Paving Blok"
-                                                {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok
-                                            </option>
-                                            <option value="Tanah" {{ old('jenisJalan', $land->road_type) == 'Tanah' ? 'selected' : '' }}>
+                                            <option value="Cor Beton" {{ in_array(strtolower(old('jenisJalan', $land->road_type ?? '')), ['cor beton', 'beton', 'cor beton (rabat)']) ? 'selected' : '' }}>
+                                                Cor Beton</option>
+                                            <option value="Paving Blok" {{ in_array(strtolower(old('jenisJalan', $land->road_type ?? '')), ['paving', 'paving blok']) ? 'selected' : '' }}>
+                                                Paving Blok</option>
+                                            <option value="Tanah" {{ in_array(strtolower(old('jenisJalan', $land->road_type ?? '')), ['tanah', 'tanah / pengerasan']) ? 'selected' : '' }}>
                                                 Tanah</option>
                                         </select>
                                         @error('jenisJalan')
@@ -1086,7 +1074,7 @@
                                     <div class="properti-checkbox-wrapper">
                                         <input type="checkbox" class="properti-checkbox-input" name="fasRumahSakit"
                                             id="fasRumahSakit" value="1"
-                                            {{ old('fasRumahSakit') ? 'checked' : '' }}>
+                                            {{ old('fasRumahSakit', $land->facility_hospital) ? 'checked' : '' }}>
                                         <label class="properti-checkbox-label" for="fasRumahSakit">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
                                             <span class="properti-check-text">Rumah Sakit</span>
@@ -1105,7 +1093,7 @@
                                     <div class="properti-checkbox-wrapper">
                                         <input type="checkbox" class="properti-checkbox-input" name="fasTransportasi"
                                             id="fasTransportasi" value="1"
-                                            {{ old('fasTransportasi') ? 'checked' : '' }}>
+                                            {{ old('fasTransportasi', $land->facility_transport) ? 'checked' : '' }}>
                                         <label class="properti-checkbox-label" for="fasTransportasi">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
                                             <span class="properti-check-text">Transportasi Umum</span>
@@ -1159,37 +1147,48 @@
                                 @foreach ($documentTypes as $type)
                                     @php
                                         $existingDoc = $land->documents->where('document_type_id', $type->id)->first();
+                                        $hasDoc = $existingDoc && $existingDoc->file_path;
                                     @endphp
                                     <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label d-flex justify-content-between align-items-center">
+                                        <div class="properti-form-group mb-3">
+                                            <label class="properti-form-label d-flex justify-content-between align-items-center mb-1">
                                                 <span>Upload {{ $type->name }}</span>
-                                                @if($existingDoc && $existingDoc->file_path)
-                                                    <span class="badge bg-success text-white fw-bold px-2 py-1" style="font-size: 0.65rem; border-radius: 4px; background-color: #28a745 !important;">
+                                                @if($hasDoc)
+                                                    <span class="badge bg-success text-white fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px; background-color: #28a745 !important;">
                                                         <i class="fas fa-check-circle me-1"></i>Terunggah
                                                     </span>
                                                 @endif
                                             </label>
 
-                                            <div class="properti-file-upload-modern">
+                                            <div class="properti-file-upload-modern {{ $hasDoc ? 'is-uploaded' : '' }}">
                                                 <input type="file" name="documents[{{ $type->id }}][file]"
-                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png">
+                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png"
+                                                    data-type-name="{{ $type->name }}"
+                                                    data-has-existing="{{ $hasDoc ? '1' : '0' }}">
 
                                                 <div class="properti-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <i class="{{ $hasDoc ? 'fas fa-file-circle-check text-success' : 'fas fa-cloud-upload-alt' }}"
+                                                       style="{{ $hasDoc ? 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;' : '' }}"></i>
                                                     <div class="properti-file-info-modern">
-                                                        <span>Upload {{ $type->name }} Baru</span>
-                                                        <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                                        <span class="file-title-text {{ $hasDoc ? 'text-success fw-bold' : '' }}">
+                                                            {{ $hasDoc ? 'Dokumen Sudah Terunggah' : 'Upload ' . $type->name . ' Baru' }}
+                                                        </span>
+                                                        <small class="file-sub-text text-muted">
+                                                            {{ $hasDoc ? 'Klik di sini jika ingin ganti / upload file baru' : 'Format: PDF, JPG, PNG (Max: 2MB)' }}
+                                                        </small>
                                                     </div>
                                                     <span class="properti-file-size"></span>
                                                 </div>
                                             </div>
                                             
-                                            @if($existingDoc && $existingDoc->file_path)
-                                                <div class="mt-2 d-flex align-items-center gap-1">
+                                            @if($hasDoc)
+                                                <div class="mt-2 d-flex align-items-center justify-content-between">
                                                     <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(154, 85, 255, 0.2); color: #9a55ff; background: rgba(154, 85, 255, 0.05);">
                                                         <i class="fas fa-eye"></i> Lihat Dokumen Saat Ini
                                                     </a>
+                                                    @if($existingDoc->document_number)
+                                                        <small class="text-muted" style="font-size: 0.72rem;">No: {{ $existingDoc->document_number }}</small>
+                                                    @endif
                                                 </div>
                                             @endif
                                         </div>
@@ -1261,15 +1260,14 @@
                                 <div class="properti-col-md-4">
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Fee Dokumen Verifikasi Pasca</label>
-                                        <div class="properti-input-group" style="display: flex;">
+                                        <div class="properti-input-group">
                                             <div class="properti-input-group-prepend">
-                                                <span class="properti-input-group-text" style="border-radius: 10px 0 0 10px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-right: none; display: flex; align-items: center; padding: 0.45rem 0.75rem; color: #6c757d; font-size: 0.9rem; height: 100%;">Rp</span>
+                                                <span class="properti-input-group-text">Rp</span>
                                             </div>
                                             <input type="text" name="fee_document_verification"
                                                 class="properti-form-control @error('fee_document_verification') is-invalid @enderror"
                                                 value="{{ old('fee_document_verification', $land->fee_document_verification ? number_format($land->fee_document_verification, 0, ',', '.') : '') }}"
-                                                placeholder="Contoh: 5.000.000"
-                                                style="border-radius: 0 10px 10px 0; flex: 1;">
+                                                placeholder="Contoh: 5.000.000">
                                         </div>
                                         @error('fee_document_verification')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -1454,31 +1452,49 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
                 input.addEventListener('change', function(e) {
-                    const fileName = e.target.files[0]?.name;
-                    const fileSize = e.target.files[0]?.size;
-                    const label = this.closest('.properti-file-upload-modern').querySelector(
-                        '.properti-file-info-modern span');
-                    const sizeSpan = this.closest('.properti-file-upload-modern').querySelector(
-                        '.properti-file-size');
+                    const file = e.target.files[0];
+                    const container = this.closest('.properti-file-upload-modern');
+                    const label = container.querySelector('.file-title-text');
+                    const subText = container.querySelector('.file-sub-text');
+                    const sizeSpan = container.querySelector('.properti-file-size');
+                    const icon = container.querySelector('.properti-file-label-modern i');
+                    const typeName = this.getAttribute('data-type-name') || 'Dokumen';
+                    const hasExisting = this.getAttribute('data-has-existing') === '1';
 
-                    if (fileName) {
-                        label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                            '...' : fileName;
+                    if (file) {
+                        const fileName = file.name;
+                        const fileSize = file.size;
+                        label.textContent = fileName.length > 26 ? fileName.substring(0, 26) + '...' : fileName;
+                        label.className = 'file-title-text text-primary fw-bold';
+                        subText.textContent = 'File baru siap diupload';
+                        
                         if (fileSize) {
                             const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
                             sizeSpan.textContent = sizeInMB + ' MB';
                         }
+                        
+                        if (icon) {
+                            icon.className = 'fas fa-file-arrow-up text-primary';
+                            icon.style.cssText = 'color: #9a55ff !important; background: rgba(154, 85, 255, 0.1) !important;';
+                        }
                     } else {
-                        // Reset ke teks awal berdasarkan input name
-                        const inputName = this.name;
-                        if (inputName === 'uploadSertifikat') {
-                            label.textContent = 'Upload Sertifikat';
-                        } else if (inputName === 'uploadIMB') {
-                            label.textContent = 'Upload IMB';
-                        } else if (inputName === 'uploadPBB') {
-                            label.textContent = 'Upload PBB';
-                        } else if (inputName === 'uploadAKTATanah') {
-                            label.textContent = 'Upload AKTA Tanah';
+                        // Reset
+                        if (hasExisting) {
+                            label.textContent = 'Dokumen Sudah Terunggah';
+                            label.className = 'file-title-text text-success fw-bold';
+                            subText.textContent = 'Klik di sini jika ingin ganti / upload file baru';
+                            if (icon) {
+                                icon.className = 'fas fa-file-circle-check text-success';
+                                icon.style.cssText = 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;';
+                            }
+                        } else {
+                            label.textContent = 'Upload ' + typeName + ' Baru';
+                            label.className = 'file-title-text';
+                            subText.textContent = 'Format: PDF, JPG, PNG (Max: 2MB)';
+                            if (icon) {
+                                icon.className = 'fas fa-cloud-upload-alt';
+                                icon.style.cssText = '';
+                            }
                         }
                         sizeSpan.textContent = '';
                     }
@@ -1487,35 +1503,25 @@
         });
 
         // SELECT2 INITIALIZATION - UNTUK SEMUA DROPDOWN SELECT
-        // PAKSA HANYA 5 ITEM YANG TAMPIL
+        // Inisialisasi Select2 hanya untuk Perusahaan (Dropdown lainnya menggunakan select bawaan)
         $(document).ready(function() {
-            $('select').each(function() {
-                let id = $(this).attr('id');
-                let noResultsText = "Data tidak ditemukan";
-                if (id === 'companySelect') {
-                    noResultsText = "Perusahaan tidak ditemukan";
-                }
-                
-                let hasEmptyOption = $(this).find('option[value=""]').length > 0 || $(this).find('option:not([value])').length > 0;
-
-                $(this).select2({
-                    theme: 'bootstrap-5',
-                    allowClear: hasEmptyOption,
-                    width: '100%',
-                    dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
-                    language: {
-                        noResults: function() {
-                            return noResultsText;
-                        },
-                        searching: function() {
-                            return "Mencari...";
-                        }
+            $('#companySelect').select2({
+                theme: 'bootstrap-5',
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'select2-limited-items',
+                language: {
+                    noResults: function() {
+                        return "Perusahaan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
                     }
-                });
+                }
             });
         });
 
-        // Leaflet Map
+        // Leaflet Map with Google Maps Tile Layers
         document.addEventListener("DOMContentLoaded", function() {
             let defaultLat = -8.1727;
             let defaultLng = 113.7000;
@@ -1524,18 +1530,51 @@
             let lngInput = document.querySelector('input[name="longitude"]');
             let btnLokasi = document.getElementById("btnLokasiSaya");
 
-            let lat = latInput.value ? parseFloat(latInput.value) : defaultLat;
-            let lng = lngInput.value ? parseFloat(lngInput.value) : defaultLng;
+            let lat = (latInput && latInput.value) ? parseFloat(latInput.value) : defaultLat;
+            let lng = (lngInput && lngInput.value) ? parseFloat(lngInput.value) : defaultLng;
 
-            let map = L.map('map').setView([lat, lng], 13);
+            // Google Maps Tile Layers
+            let googleRoadmap = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps'
+            });
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+            let googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps Satellite'
+            });
+
+            let googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps Terrain'
+            });
+
+            let map = L.map('map', {
+                center: [lat, lng],
+                zoom: 15,
+                layers: [googleRoadmap]
+            });
+
+            // Layer Switcher (Roadmap, Satellite, Terrain)
+            let baseMaps = {
+                "Google Roadmap": googleRoadmap,
+                "Google Satellite": googleHybrid,
+                "Google Terrain": googleTerrain
+            };
+            L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
 
             let marker = L.marker([lat, lng], {
                 draggable: true
             }).addTo(map);
+
+            setTimeout(() => {
+                map.invalidateSize();
+                map.setView([lat, lng], 15);
+                marker.setLatLng([lat, lng]);
+            }, 300);
 
             // Drag marker
             marker.on('dragend', function() {
@@ -1562,41 +1601,43 @@
                 }
             }
 
-            latInput.addEventListener('change', updateMarkerFromInput);
-            lngInput.addEventListener('change', updateMarkerFromInput);
+            if (latInput) latInput.addEventListener('change', updateMarkerFromInput);
+            if (lngInput) lngInput.addEventListener('change', updateMarkerFromInput);
 
             // Tombol Lokasi Saya
-            btnLokasi.addEventListener("click", function() {
-                if (!navigator.geolocation) {
-                    alert("Browser tidak mendukung geolocation.");
-                    return;
-                }
-
-                btnLokasi.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mendeteksi...';
-                btnLokasi.disabled = true;
-
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        let userLat = position.coords.latitude;
-                        let userLng = position.coords.longitude;
-
-                        marker.setLatLng([userLat, userLng]);
-                        latInput.value = userLat.toFixed(6);
-                        lngInput.value = userLng.toFixed(6);
-                        map.setView([userLat, userLng], 17);
-
-                        btnLokasi.innerHTML =
-                            '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
-                        btnLokasi.disabled = false;
-                    },
-                    function() {
-                        alert("Gagal mendapatkan lokasi.");
-                        btnLokasi.innerHTML =
-                            '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
-                        btnLokasi.disabled = false;
+            if (btnLokasi) {
+                btnLokasi.addEventListener("click", function() {
+                    if (!navigator.geolocation) {
+                        alert("Browser tidak mendukung geolocation.");
+                        return;
                     }
-                );
-            });
+
+                    btnLokasi.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mendeteksi...';
+                    btnLokasi.disabled = true;
+
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            let userLat = position.coords.latitude;
+                            let userLng = position.coords.longitude;
+
+                            marker.setLatLng([userLat, userLng]);
+                            latInput.value = userLat.toFixed(6);
+                            lngInput.value = userLng.toFixed(6);
+                            map.setView([userLat, userLng], 17);
+
+                            btnLokasi.innerHTML =
+                                '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
+                            btnLokasi.disabled = false;
+                        },
+                        function() {
+                            alert("Gagal mendapatkan lokasi.");
+                            btnLokasi.innerHTML =
+                                '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
+                            btnLokasi.disabled = false;
+                        }
+                    );
+                });
+            }
         });
     </script>
 @endpush

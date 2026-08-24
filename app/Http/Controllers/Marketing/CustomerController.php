@@ -82,8 +82,8 @@ class CustomerController extends Controller
                 'job_status' => $request->job_status,
                 'job_status_lainnya' => $request->job_status_lainnya,
                 'company_name' => $request->company_name,
-                'main_income' => $request->main_income,
-                'side_income' => $request->side_income,
+                'main_income' => $request->main_income ? (int) preg_replace('/[^\d]/', '', $request->main_income) : null,
+                'side_income' => $request->side_income ? (int) preg_replace('/[^\d]/', '', $request->side_income) : null,
                 'npwp' => $request->npwp,
                 'domicile_province' => $request->domicile_province,
                 'domicile_city' => $request->domicile_city,
@@ -105,27 +105,20 @@ class CustomerController extends Controller
             ];
 
             foreach ($documents as $inputName => $docName) {
-
                 if ($request->hasFile($inputName)) {
-
                     $file = $request->file($inputName);
-
                     $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-
                     $cleanName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
-
                     $extension = $file->getClientOriginalExtension();
-
                     $filename = time() . '_' . $cleanName . '.' . $extension;
 
-                    $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/customer_documents';
+                    $destination = public_path('uploads/customer_documents');
 
                     if (!file_exists($destination)) {
                         mkdir($destination, 0755, true);
                     }
 
                     $file->move($destination, $filename);
-
                     $path = 'customer_documents/' . $filename;
 
                     CustomerDocument::create([
@@ -148,7 +141,7 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error simpan customer: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
         }
     }
 
@@ -168,31 +161,26 @@ class CustomerController extends Controller
             $query->where('job_status', $request->pekerjaan);
         }
 
-        // Sorting
-        $allowedSortFields = ['full_name', 'customer_id', 'job_status', 'created_at'];
-        $sortField     = in_array($request->input('sortField'), $allowedSortFields)
-            ? $request->input('sortField')
-            : 'created_at';
-        $sortDirection = $request->input('sortDirection') === 'asc' ? 'asc' : 'desc';
+        $sortField = $request->get('sortField', 'created_at');
+        $sortDirection = $request->get('sortDirection', 'desc');
+        $allowedSorts = ['customer_id', 'full_name', 'phone', 'job_status', 'created_at'];
 
-        $perPage   = $request->input('per_page', 10);
-        $customers = $query->withCount(['units', 'documents'])
-            ->orderBy($sortField, $sortDirection)
-            ->paginate($perPage)
-            ->withQueryString();
+        if (!in_array($sortField, $allowedSorts)) {
+            $sortField = 'created_at';
+        }
 
-        $totalCustomer  = Customer::count();
-        $customerAktif  = Customer::whereHas('units')->count();
-        $customerCash   = Customer::where('job_status', '!=', null)->count(); // placeholder; ganti sesuai field pembayaran
-        $customerKpr    = Customer::whereNull('job_status')->count();         // placeholder
+        $query->orderBy($sortField, $sortDirection);
 
-        return view('customer.customer', compact(
-            'customers',
-            'totalCustomer',
-            'customerAktif',
-            'customerCash',
-            'customerKpr'
-        ));
+        $perPage = $request->get('per_page', 10);
+        $customers = $query->paginate($perPage)->withQueryString();
+
+        return view('customer.customer', compact('customers'));
+    }
+
+    public function detailCustomer($id)
+    {
+        $customer = Customer::with(['units', 'documents'])->findOrFail($id);
+        return view('customer.detail_customer', compact('customer'));
     }
 
     public function search(Request $request)
@@ -214,11 +202,9 @@ class CustomerController extends Controller
 
    public function edit($id)
     {
-        // Mengambil data customer beserta dokumennya
         $customer = Customer::with('documents')->findOrFail($id);
-
-        // GANTI: dari 'customer.edit_customer' menjadi 'customer.tambah_customer'
-        return view('customer.tambah_customer', compact('customer'));
+        $guest = null;
+        return view('customer.tambah_customer', compact('customer', 'guest'));
     }
     public function update(Request $request, $id)
     {
@@ -228,10 +214,10 @@ class CustomerController extends Controller
             'full_name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email',
-            'uploadKtp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'uploadKk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'uploadNpwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'uploadPasangan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'uploadKtp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'uploadKk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'uploadNpwp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'uploadPasangan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
 
         DB::beginTransaction();
@@ -270,8 +256,8 @@ class CustomerController extends Controller
                 'job_status' => $request->job_status,
                 'job_status_lainnya' => $request->job_status_lainnya,
                 'company_name' => $request->company_name,
-                'main_income' => $request->main_income,
-                'side_income' => $request->side_income,
+                'main_income' => $request->main_income ? (int) preg_replace('/[^\d]/', '', $request->main_income) : null,
+                'side_income' => $request->side_income ? (int) preg_replace('/[^\d]/', '', $request->side_income) : null,
                 'npwp' => $request->npwp,
                 'domicile_province' => $request->domicile_province,
                 'domicile_city' => $request->domicile_city,
@@ -300,7 +286,7 @@ class CustomerController extends Controller
                     $extension = $file->getClientOriginalExtension();
                     $filename = time() . '_' . $cleanName . '.' . $extension;
 
-                    $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/customer_documents';
+                    $destination = public_path('uploads/customer_documents');
 
                     if (!file_exists($destination)) {
                         mkdir($destination, 0755, true);
@@ -309,13 +295,29 @@ class CustomerController extends Controller
                     $file->move($destination, $filename);
                     $path = 'customer_documents/' . $filename;
 
-                    CustomerDocument::create([
-                        'customer_id' => $customer->id,
-                        'document_name' => $docName,
-                        'file' => $path,
-                        'upload_date' => now(),
-                        'status' => 'Pending',
-                    ]);
+                    $existingDoc = CustomerDocument::where('customer_id', $customer->id)
+                        ->where('document_name', $docName)
+                        ->first();
+
+                    if ($existingDoc) {
+                        $oldFile = public_path('uploads/' . $existingDoc->file);
+                        if (file_exists($oldFile)) {
+                            @unlink($oldFile);
+                        }
+                        $existingDoc->update([
+                            'file' => $path,
+                            'upload_date' => now(),
+                            'status' => 'Pending',
+                        ]);
+                    } else {
+                        CustomerDocument::create([
+                            'customer_id' => $customer->id,
+                            'document_name' => $docName,
+                            'file' => $path,
+                            'upload_date' => now(),
+                            'status' => 'Pending',
+                        ]);
+                    }
                 }
             }
 
@@ -325,7 +327,7 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error update customer: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data.');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
         }
     }
 
@@ -333,7 +335,6 @@ class CustomerController extends Controller
     {
         $customer = Customer::withCount(['units', 'documents'])->findOrFail($id);
 
-        // Cek relasi agar data tidak rusak
         if ($customer->units_count > 0) {
             return response()->json(['error' => 'Customer tidak dapat dihapus karena masih memiliki unit properti.'], 422);
         }
@@ -344,9 +345,8 @@ class CustomerController extends Controller
 
         DB::beginTransaction();
         try {
-            // Hapus file fisik di public/uploads maupun storage
             foreach($customer->documents as $doc) {
-                $publicPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $doc->file;
+                $publicPath = public_path('uploads/' . $doc->file);
                 if (file_exists($publicPath)) {
                     @unlink($publicPath);
                 }

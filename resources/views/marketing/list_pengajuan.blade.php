@@ -200,6 +200,62 @@
             transform: translateY(-1px);
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
         }
+
+        /* Select2 Theme Alignment */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border-color: #ebedf2 !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #3b3f5c !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #bfa5fa !important;
+            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+        }
+
+        /* Select2 Dropdown Options Soft Hover & Active */
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden !important;
+            z-index: 1050 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.45rem 0.85rem !important;
+            font-size: 0.85rem !important;
+            color: #3b3f5c !important;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        /* Hover / Highlighted (Soft Pastel Tint) */
+        .select2-container--bootstrap-5 .select2-results__option--highlighted,
+        .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #f6f1ff !important;
+            color: #792fe0 !important;
+        }
+        /* Active / Selected (Soft Purple Tint) */
+        .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #eee4ff !important;
+            color: #6b21a8 !important;
+            font-weight: 600 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+            background-color: #e4d3fe !important;
+            color: #581c87 !important;
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -304,60 +360,68 @@
                             <!-- DESKTOP VERSION -->
                             <div class="filter-row-desktop d-none d-md-block">
                                 <form id="filterForm" method="GET" action="{{ url('marketing/list-pengajuan') }}">
-                                    <div class="row g-2 align-items-center w-100">
-                                        <div class="col-md-4 col-lg-4">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="search" id="searchInput"
-                                                    placeholder="Cari ID, nama, unit..." value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                    type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                                </button>
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search Input -->
+                                            <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                        placeholder="Cari ID, nama, unit..." value="{{ request('search') }}"
+                                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                    <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                        type="submit" title="Cari"
+                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                        <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Status Dropdown -->
+                                            <!-- Status Dropdown -->
+                                            <div style="width: 160px;">
+                                                <select class="form-control select2" name="status" id="statusSelect" style="width: 100%;">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="pengajuan" {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
+                                                    <option value="verifikasi" {{ request('status') == 'verifikasi' ? 'selected' : '' }}>Verifikasi</option>
+                                                    <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Survey</option>
+                                                    <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
+                                                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
+                                                    <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Akad</option>
+                                                    <option value="cash_process" {{ request('status') == 'cash_process' ? 'selected' : '' }}>Cash Process</option>
+                                                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Complete</option>
+                                                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Ditolak</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Metode Dropdown -->
+                                            <div style="width: 160px;">
+                                                <select class="form-control select2" name="metode" id="metodeSelect" style="width: 100%;">
+                                                    <option value="">Semua Metode</option>
+                                                    <option value="kpr" {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
+                                                    <option value="cash" {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
+                                                    <option value="cash_tempo" {{ request('metode') == 'cash_tempo' ? 'selected' : '' }}>Cash Tempo</option>
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-lg-3">
-                                            <select class="form-control" name="status">
-                                                <option value="">Semua Status</option>
-                                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                                <option value="pengajuan" {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
-                                                <option value="verifikasi" {{ request('status') == 'verifikasi' ? 'selected' : '' }}>Verifikasi</option>
-                                                <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Survey</option>
-                                                <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
-                                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
-                                                <option value="akad" {{ request('status') == 'akad' ? 'selected' : '' }}>Akad</option>
-                                                <option value="cash_process" {{ request('status') == 'cash_process' ? 'selected' : '' }}>Cash Process</option>
-                                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Complete</option>
-                                                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Ditolak</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 col-lg-3">
-                                            <select class="form-control" name="metode">
-                                                <option value="">Semua Metode</option>
-                                                <option value="kpr" {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
-                                                <option value="cash" {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
-                                                <option value="cash_tempo" {{ request('metode') == 'cash_tempo' ? 'selected' : '' }}>Cash Tempo</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1 col-lg-1">
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1 col-lg-1">
-                                            <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                    title="Filter" onclick="showFilterLoading()">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <a href="{{ url('marketing/list-pengajuan') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                    title="Reset" onclick="showResetLoading(event)">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
+
+                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 90px;">
+                                                <select class="form-control select2" name="per_page" id="perPageSelect" style="width: 100%;">
+                                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
+                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                </select>
                                             </div>
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only"
+                                                title="Filter" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <a href="{{ url('marketing/list-pengajuan') }}" class="btn btn-gradient-secondary btn-icon-only"
+                                                title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
@@ -365,7 +429,7 @@
 
                             <!-- MOBILE VERSION -->
                             <div class="filter-row-mobile d-block d-md-none">
-                                <form method="GET" action="{{ url('marketing/list-pengajuan') }}">
+                                <form method="GET" action="{{ url('marketing/list-pengajuan') }}" id="filterFormMobile">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <div class="input-group">
@@ -380,7 +444,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 mb-2">
-                                            <select class="form-control" name="status">
+                                            <select class="form-control select2-mobile" name="status" id="statusSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Status</option>
                                                 <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                                                 <option value="pengajuan" {{ request('status') == 'pengajuan' ? 'selected' : '' }}>Pengajuan</option>
@@ -395,7 +459,7 @@
                                             </select>
                                         </div>
                                         <div class="col-12 mb-2">
-                                            <select class="form-control" name="metode">
+                                            <select class="form-control select2-mobile" name="metode" id="metodeSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Metode</option>
                                                 <option value="kpr" {{ request('metode') == 'kpr' ? 'selected' : '' }}>KPR</option>
                                                 <option value="cash" {{ request('metode') == 'cash' ? 'selected' : '' }}>Cash</option>
@@ -403,7 +467,7 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select class="form-control" name="per_page">
+                                            <select class="form-control select2-mobile" name="per_page" id="perPageSelectMobile" style="width: 100%;">
                                                 <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
                                                 <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
                                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
@@ -804,6 +868,13 @@
 
     <script>
         $(document).ready(function() {
+            // Init Select2 Filter (Without Search Box)
+            $('#statusSelect, #metodeSelect, #perPageSelect, #statusSelectMobile, #metodeSelectMobile, #perPageSelectMobile').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity,
+                width: '100%'
+            });
+
             $('.sortable').click(function() {
                 let field = $(this).data('field');
                 let direction = $(this).data('direction');

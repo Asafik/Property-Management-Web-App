@@ -5,446 +5,550 @@
 @section('content')
 
 <style>
-.card {
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-    border: none !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
-.card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 0.75rem;
-}
-@media (min-width: 576px) { .card-header { padding: 1rem; } }
-@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
-
-.card-body { padding: 0.75rem; }
-@media (min-width: 576px) { .card-body { padding: 1rem; } }
-@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
-
-.card-title { font-size: 0.9rem; font-weight: 600; color: #9a55ff; margin-bottom: 0; }
-@media (min-width: 576px) { .card-title { font-size: 1rem; } }
-@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
-
-.filter-card {
-    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1.25rem;
-    border: none;
-}
-.filter-card .form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.3px;
-}
-.filter-card .form-control,
-.filter-card .form-select {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    height: auto;
-    min-height: 40px;
-    border: 1px solid #e0e4e9;
-}
-
-.form-control, .form-select {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    height: auto;
-}
-@media (min-width: 576px) {
-    .form-control, .form-select {
-        padding: 0.7rem 1rem;
-        font-size: 0.95rem;
-        border-radius: 10px;
+    .card {
+        border-radius: 12px !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
     }
-}
-.form-control:focus, .form-select:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-.form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-}
 
-.btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
-    border: none;
-}
-@media (min-width: 576px) {
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
+    .stat-card-custom {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
     }
-}
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-.btn-gradient-primary   { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
-.btn-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
-.btn-gradient-secondary:hover { background: #5a6268 !important; }
-.btn-gradient-info { background: linear-gradient(135deg, #17a2b8, #56c6d8) !important; color: #ffffff !important; }
-.btn-gradient-warning { background: linear-gradient(135deg, #ffc107, #ffdb6d) !important; color: #2c2e3f !important; }
-.btn-gradient-danger { background: linear-gradient(135deg, #dc3545, #e4606d) !important; color: #ffffff !important; }
-.btn-gradient-success { background: linear-gradient(135deg, #28a745, #6fdf8c) !important; color: #ffffff !important; }
 
-.btn-action {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    margin: 0 3px;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-}
-.btn-action i { font-size: 1.1rem; }
-.btn-action.progress {
-    background: linear-gradient(135deg, #17a2b8, #56c6d8);
-    color: white;
-}
-.btn-action.progress:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
-}
-.btn-action.edit {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-.btn-action.edit:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-}
-.btn-action.delete {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
-    color: white;
-}
-.btn-action.delete:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
-}
-
-.btn-icon-only {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
-.btn-icon-only i { font-size: 1.2rem; margin: 0; }
-
-.table-wrapper {
-    position: relative;
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-}
-.table-wrapper::-webkit-scrollbar {
-    height: 8px;
-}
-.table-wrapper::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 10px;
-}
-.table-wrapper::-webkit-scrollbar-thumb {
-    background: #9a55ff;
-    border-radius: 10px;
-}
-.table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #7a3fcc;
-}
-
-.table {
-    width: 100%;
-    min-width: 800px;
-    border-collapse: collapse;
-    margin-bottom: 0;
-}
-.table thead th {
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    color: #9a55ff;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid #e9ecef;
-    padding: 0.8rem 0.5rem;
-    white-space: nowrap;
-}
-@media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
-@media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
-
-.table thead th:first-child { padding-left: 0.5rem; width: 50px; text-align: center; }
-.table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; width: 50px; text-align: center; }
-.table tbody td {
-    vertical-align: middle;
-    font-size: 0.85rem;
-    padding: 0.8rem 0.5rem;
-    border-bottom: 1px solid #e9ecef;
-    color: #2c2e3f;
-    white-space: nowrap;
-}
-@media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
-@media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
-.table tbody tr:hover { background-color: #f8f9fa; }
-
-.badge-status {
-    padding: 0.35rem 0.8rem;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.75rem;
-    display: inline-block;
-}
-.badge-status.pending {
-    background: linear-gradient(135deg, #6c757d, #8f9baf);
-    color: #fff;
-}
-.badge-status.proses {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-.badge-status.selesai {
-    background: linear-gradient(135deg, #28a745, #6fdf8c);
-    color: #fff;
-}
-
-.pagination { margin: 0; gap: 3px; }
-.page-item .page-link {
-    border: 1px solid #e9ecef;
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-    color: #6c7383;
-    background-color: #ffffff;
-    border-radius: 6px !important;
-    transition: all 0.2s ease;
-    min-width: 32px;
-    text-align: center;
-    text-decoration: none;
-}
-.page-item.active .page-link {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    border-color: transparent;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-}
-.pagination-info {
-    font-size: 0.8rem;
-    color: #6c7383;
-}
-
-.modal-content {
-    border: none;
-    border-radius: 16px;
-}
-.modal-header {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
-    color: white;
-    border-radius: 16px 16px 0 0;
-    padding: 1rem 1.5rem;
-}
-.modal-header .btn-close {
-    filter: brightness(0) invert(1);
-}
-.modal-title {
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-.modal-body {
-    padding: 1.5rem;
-}
-.modal-footer {
-    border-top: 1px solid #e9ecef;
-    padding: 1rem 1.5rem;
-}
-
-.text-primary  { color: #9a55ff !important; }
-.text-muted    { color: #a5b3cb !important; }
-.fw-bold       { font-weight: 600 !important; }
-
-h3.text-dark {
-    font-size: 1.3rem !important;
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
-}
-@media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
-@media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
-
-.mdi { vertical-align: middle; }
-
-.filter-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 1rem;
-}
-.filter-controls .filter-search {
-    flex: 1;
-    min-width: 200px;
-}
-.filter-controls .filter-limit {
-    width: 100px;
-}
-.filter-controls .filter-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.alert {
-    border-radius: 12px;
-    border: none;
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
+    .stat-card-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(154, 85, 255, 0.12);
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .filter-card {
+        padding: 0.85rem 1rem !important;
+        margin-bottom: 1rem !important;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-}
+
+    .form-control, .form-select, select.form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 8px !important;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.88rem;
+        color: #2c2e3f;
+        background-color: #ffffff;
+        height: auto;
+        min-height: 38px;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus, select.form-control:focus {
+        border-color: #9a55ff !important;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        outline: none;
+    }
+
+    .btn-gradient-primary {
+        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        color: #ffffff !important;
+        border: none;
+    }
+
+    .btn-gradient-secondary {
+        background: #6c757d !important;
+        color: #ffffff !important;
+        border: none;
+    }
+
+    .btn-icon-only {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .btn-icon-only i {
+        font-size: 1.15rem;
+    }
+
+    .btn-icon-only-mobile {
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .btn-icon-only-mobile i {
+        font-size: 1.15rem;
+    }
+
+    .table-wrapper {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background: #f8f9fc !important;
+        color: #4b49ac !important;
+        font-weight: 700;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.85rem;
+        border-bottom: 2px solid #edf2f9;
+        white-space: nowrap;
+    }
+
+    .table tbody td {
+        padding: 0.9rem 0.85rem;
+        font-size: 0.88rem;
+        color: #2c2e3f;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fcfaff;
+    }
+
+    .badge-status {
+        padding: 0.35rem 0.75rem;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .badge-status.pending {
+        background: #fef3c7;
+        color: #b45309;
+        border: 1px solid #fde68a;
+    }
+
+    .badge-status.proses {
+        background: #e0f2fe;
+        color: #0284c7;
+        border: 1px solid #bae6fd;
+    }
+
+    .badge-status.selesai {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        margin: 0 2px;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        color: #ffffff !important;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action.progress-btn {
+        background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+    }
+
+    .btn-action.edit-btn {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+    }
+
+    .btn-action.delete-btn {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .staff-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #da8cff, #9a55ff);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.78rem;
+        margin-right: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        color: white !important;
+        padding: 1.1rem 1.5rem;
+        border-bottom: none;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #ffffff !important;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+        background: #ffffff;
+    }
+
+    .modal-body .form-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #3b3f5c !important;
+        margin-bottom: 0.35rem;
+        letter-spacing: 0.3px;
+    }
+
+    .modal-footer {
+        background: #fafbfe;
+        border-top: 1px solid #edf2f9;
+        padding: 1rem 1.5rem;
+    }
+
+    /* Select2 Theme Alignment */
+    .select2-container--bootstrap-5 .select2-selection {
+        min-height: 38px !important;
+        height: 38px !important;
+        padding: 0.375rem 0.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        border-color: #ebedf2 !important;
+        border-radius: 6px !important;
+        font-size: 0.875rem !important;
+        background-color: #ffffff !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5 !important;
+        padding-left: 0 !important;
+        color: #3b3f5c !important;
+    }
+    .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+    .select2-container--bootstrap-5.select2-container--open .select2-selection {
+        border-color: #bfa5fa !important;
+        box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+    }
+
+    /* Select2 Dropdown Options Soft Hover & Active */
+    .select2-container--bootstrap-5 .select2-dropdown {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+        overflow: hidden !important;
+        z-index: 1050 !important;
+    }
+    .select2-container--bootstrap-5 .select2-results__option {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 0.85rem !important;
+        color: #3b3f5c !important;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    /* Hover / Highlighted (Soft Pastel Tint) */
+    .select2-container--bootstrap-5 .select2-results__option--highlighted,
+    .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #f6f1ff !important;
+        color: #792fe0 !important;
+    }
+    /* Active / Selected (Soft Purple Tint) */
+    .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
+    .select2-container--bootstrap-5 .select2-results__option--selected {
+        background-color: #eee4ff !important;
+        color: #6b21a8 !important;
+        font-weight: 600 !important;
+    }
+    .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+        background-color: #e4d3fe !important;
+        color: #581c87 !important;
+    }
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
 
+    <!-- Header Judul (Tanpa Card Box) -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center px-1">
+                <div>
+                    <h3 class="text-dark mb-1 fw-bold">
+                        <i class="mdi mdi-clipboard-text-outline me-2" style="color: #9a55ff;"></i>Tugas Staff Marketing
+                    </h3>
+                    <p class="text-muted mb-0">Kelola daftar penugasan dan progres pekerjaan tim marketing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistic Cards - Style Dashboard -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-format-list-checkbox me-2" style="color: #9a55ff;"></i>Daftar Tugas Staff Marketing
-                        </h3>
-                        <p class="text-muted mb-0">
-                            Kelola tugas dan progres pekerjaan staff marketing
-                        </p>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $totalTugas ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Total Tugas</p>
                     </div>
                     <div class="d-none d-sm-block">
-                        <i class="mdi mdi-format-list-checkbox" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        <i class="mdi mdi-clipboard-list" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $pendingTugas ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Pending</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-clock-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $prosesTugas ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Sedang Proses</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-progress-wrench" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $selesaiTugas ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Selesai</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-check-decagram" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="mdi mdi-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="mdi mdi-alert-circle me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <div class="row mt-2 mt-sm-2 mt-md-3">
+    <!-- Tabel Data & Filter Card -->
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Tugas
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-3 p-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar Tugas Marketing
                     </h5>
-                    <button class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" data-bs-toggle="modal" data-bs-target="#createTaskModal">
-                        <i class="mdi mdi-plus me-1"></i>Tambah Tugas
+                    <button class="btn btn-gradient-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                        <i class="mdi mdi-plus-circle"></i> Tambah Tugas
                     </button>
                 </div>
 
-                <div class="card-body">
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <div class="filter-controls">
-                                <div class="filter-search">
-                                    <label class="form-label">Cari Nama Tugas</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama tugas..." value="{{ request('search') }}">
+                <div class="card-body p-3">
+                    <!-- FILTER SECTION (PERSIS DASHBOARD) -->
+                    <div class="filter-card mb-3">
+
+                        <!-- DESKTOP & TABLET VERSION -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+
+                                    <!-- Search -->
+                                    <div style="min-width: 200px; max-width: 280px; flex: 1;">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="searchInput"
+                                                placeholder="Cari tugas / deskripsi / staff..." value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="button" id="searchSubmitBtn" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Staff Marketing -->
+                                    <div style="min-width: 200px; max-width: 280px;">
+                                        <select class="form-control select2" id="employeeSelect" style="width: 100%;">
+                                            <option value="">Semua Staff Marketing</option>
+                                            @foreach ($marketingStaff as $staff)
+                                                <option value="{{ $staff->id }}" {{ request('employee_id') == $staff->id ? 'selected' : '' }}>
+                                                    {{ $staff->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Status -->
+                                    <div style="width: 150px;">
+                                        <select class="form-control select2" id="statusSelect" style="width: 100%;">
+                                            <option value="">Semua Status</option>
+                                            <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="Proses" {{ request('status') == 'Proses' ? 'selected' : '' }}>Proses</option>
+                                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                        </select>
+                                    </div>
+
                                 </div>
-                                <div class="filter-limit">
-                                    <label class="form-label">Tampilkan</label>
-                                    <select class="form-select" id="limitSelect">
-                                        <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
-                                        <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15</option>
-                                        <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
-                                    </select>
-                                </div>
-                                <div class="filter-buttons">
-                                    <button type="button" class="btn btn-gradient-primary btn-icon-only" title="Filter" onclick="applyFilter()">
+
+                                <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                <div class="d-flex align-items-center gap-2 ms-auto">
+                                    <div style="width: 90px;">
+                                        <select class="form-control select2" id="limitSelect" style="width: 100%;">
+                                            <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="15" {{ request('limit', 15) == 15 ? 'selected' : '' }}>15</option>
+                                            <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
+                                            <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-gradient-primary btn-icon-only" id="filterBtn" title="Filter">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <button type="button" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="resetFilter()">
+                                    <button type="button" class="btn btn-gradient-secondary btn-icon-only" id="refreshBTN" title="Reset">
+                                        <i class="mdi mdi-refresh"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- MOBILE VERSION -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <div class="row g-2">
+                                <div class="col-12 mb-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="searchInputMobile"
+                                            placeholder="Cari tugas / deskripsi / staff..." value="{{ request('search') }}"
+                                            style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                        <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                            type="button" id="searchSubmitBtnMobile" title="Cari"
+                                            style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                            <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <select class="form-control select2-mobile" id="employeeSelectMobile" style="width: 100%;">
+                                        <option value="">Semua Staff Marketing</option>
+                                        @foreach ($marketingStaff as $staff)
+                                            <option value="{{ $staff->id }}" {{ request('employee_id') == $staff->id ? 'selected' : '' }}>
+                                                {{ $staff->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <select class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
+                                        <option value="">Semua Status</option>
+                                        <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="Proses" {{ request('status') == 'Proses' ? 'selected' : '' }}>Proses</option>
+                                        <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <select class="form-control select2-mobile" id="limitSelectMobile" style="width: 100%;">
+                                        <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
+                                        <option value="15" {{ request('limit', 15) == 15 ? 'selected' : '' }}>15</option>
+                                        <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
+                                        <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-gradient-primary btn-icon-only-mobile w-100" id="filterBtnMobile" title="Filter">
+                                        <i class="mdi mdi-filter"></i>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" id="refreshBTNMobile" title="Reset">
                                         <i class="mdi mdi-refresh"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
-                    <div class="table-wrapper">
+                    <!-- Table Responsive -->
+                    <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Nama Staff</th>
-                                    <th>Nama Tugas</th>
+                                    <th class="text-center" width="5%">No</th>
+                                    <th width="20%">Nama Staff</th>
+                                    <th width="25%">Nama Tugas</th>
                                     <th>Deskripsi</th>
-                                    <th>Deadline</th>
-                                    <th>Status</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th width="15%">Deadline</th>
+                                    <th width="12%">Status</th>
+                                    <th class="text-center" width="12%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($tugas as $index => $item)
+                                    @php
+                                        $staffName = $item->employee->name ?? 'Staff';
+                                        $initials = collect(explode(' ', trim($staffName)))
+                                            ->filter()
+                                            ->take(2)
+                                            ->map(fn($w) => strtoupper(substr($w, 0, 1)))
+                                            ->implode('');
+                                    @endphp
                                     <tr>
                                         <td class="text-center fw-bold">{{ $tugas->firstItem() + $index }}</td>
                                         <td>
-                                            <i class="mdi mdi-account text-primary me-2"></i>
-                                            {{ $item->employee->name ?? 'Tidak ada staff' }}
+                                            <div class="d-flex align-items-center">
+                                                <div class="staff-avatar">{{ $initials ?: 'ST' }}</div>
+                                                <div class="fw-bold">{{ $item->employee->name ?? 'Tidak ada staff' }}</div>
+                                            </div>
                                         </td>
                                         <td>
-                                            <i class="mdi mdi-clipboard-list text-primary me-2"></i>
-                                            <span class="fw-bold">{{ $item->nama_tugas }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-clipboard-text-outline text-primary me-2" style="font-size: 1.1rem;"></i>
+                                                <span class="fw-bold">{{ $item->nama_tugas }}</span>
+                                            </div>
                                         </td>
-                                        <td style="white-space: normal; min-width: 200px;">
-                                            {{ Str::limit($item->deskripsi, 100) ?: '-' }}
+                                        <td style="white-space: normal; min-width: 180px;">
+                                            {{ Str::limit($item->deskripsi, 80) ?: '-' }}
                                         </td>
                                         <td>
-                                            <i class="mdi mdi-calendar-clock me-1"></i>
+                                            <i class="mdi mdi-calendar-clock text-primary me-1"></i>
                                             {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}
                                         </td>
                                         <td>
@@ -452,20 +556,27 @@ h3.text-dark {
                                                 $statusClass = strtolower($item->status);
                                             @endphp
                                             <span class="badge-status {{ $statusClass }}">
+                                                @if($item->status == 'Pending')
+                                                    <i class="mdi mdi-clock-outline"></i>
+                                                @elseif($item->status == 'Proses')
+                                                    <i class="mdi mdi-progress-wrench"></i>
+                                                @elseif($item->status == 'Selesai')
+                                                    <i class="mdi mdi-check-circle-outline"></i>
+                                                @endif
                                                 {{ $item->status }}
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ route('marketing.tugas.progress', $item->id) }}" class="btn-action progress" title="Update Progress">
+                                            <a href="{{ route('marketing.tugas.progress', $item->id) }}" class="btn-action progress-btn" title="Progress Tugas">
                                                 <i class="mdi mdi-chart-timeline-variant"></i>
                                             </a>
-                                            <button class="btn-action edit" title="Edit" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $item->id }}">
+                                            <button class="btn-action edit-btn" title="Edit Tugas" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $item->id }}">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
-                                            <form action="{{ route('marketing.tugas.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirmDelete(event)">
+                                            <form action="{{ route('marketing.tugas.destroy', $item->id) }}" method="POST" class="d-inline" id="deleteForm{{ $item->id }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn-action delete" title="Hapus">
+                                                <button type="button" class="btn-action delete-btn" title="Hapus Tugas" onclick="confirmDeleteTask('{{ $item->id }}', '{{ addslashes($item->nama_tugas) }}')">
                                                     <i class="mdi mdi-delete"></i>
                                                 </button>
                                             </form>
@@ -473,9 +584,9 @@ h3.text-dark {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-inbox-outline" style="font-size: 3rem;"></i>
-                                            <p class="mt-2 mb-0">Belum ada data tugas untuk staff marketing.</p>
+                                        <td colspan="7" class="text-center text-muted py-5">
+                                            <i class="mdi mdi-clipboard-text-off-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.3;"></i>
+                                            <p class="mt-2 mb-0 fw-bold">Belum ada data tugas untuk staff marketing.</p>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -483,12 +594,13 @@ h3.text-dark {
                         </table>
                     </div>
 
+                    <!-- Pagination -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            Menampilkan {{ $tugas->firstItem() ?? 0 }} - {{ $tugas->lastItem() ?? 0 }} dari {{ $tugas->total() }} data
+                        <div class="pagination-info mb-2 mb-sm-0 text-muted small">
+                            Menampilkan {{ $tugas->firstItem() ?? 0 }} - {{ $tugas->lastItem() ?? 0 }} dari {{ $tugas->total() }} tugas
                         </div>
                         <nav aria-label="Page navigation">
-                            {{ $tugas->appends(request()->query())->links('pagination::bootstrap-4') }}
+                            {{ $tugas->links('pagination::bootstrap-4') }}
                         </nav>
                     </div>
 
@@ -515,7 +627,7 @@ h3.text-dark {
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="employee_id" class="form-label">Ditugaskan Kepada <span class="text-danger">*</span></label>
-                        <select class="form-select" id="employee_id" name="employee_id" required>
+                        <select class="form-control" id="employee_id" name="employee_id" required>
                             <option value="" disabled selected>-- Pilih Staff Marketing --</option>
                             @foreach ($marketingStaff as $staff)
                                 <option value="{{ $staff->id }}">{{ $staff->name }}</option>
@@ -525,26 +637,28 @@ h3.text-dark {
 
                     <div class="mb-3">
                         <label for="nama_tugas" class="form-label">Nama Tugas <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="nama_tugas" name="nama_tugas" required placeholder="Masukkan nama tugas...">
+                        <input type="text" class="form-control" id="nama_tugas" name="nama_tugas" required placeholder="Contoh: Pameran Properti Mall A">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="deadline" class="form-label">Deadline <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="deadline" name="deadline" required>
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="Pending" selected>Pending</option>
+                                <option value="Proses">Proses</option>
+                                <option value="Selesai">Selesai</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="deskripsi" class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" placeholder="Opsional..."></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="deadline" class="form-label">Tenggat Waktu (Deadline) <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="deadline" name="deadline" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="status" name="status" required>
-                            <option value="Pending" selected>Pending</option>
-                            <option value="Proses">Proses</option>
-                            <option value="Selesai">Selesai</option>
-                        </select>
+                        <label for="deskripsi" class="form-label">Deskripsi / Detail Penugasan</label>
+                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" placeholder="Masukkan instruksi atau detail tugas..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -567,7 +681,7 @@ h3.text-dark {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editTaskModalLabel{{ $item->id }}">
-                    <i class="mdi mdi-pencil-circle me-2"></i>Edit Tugas
+                    <i class="mdi mdi-pencil-circle me-2"></i>Edit Tugas Marketing
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -578,7 +692,7 @@ h3.text-dark {
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="employee_id_{{ $item->id }}" class="form-label">Ditugaskan Kepada <span class="text-danger">*</span></label>
-                        <select class="form-select" id="employee_id_{{ $item->id }}" name="employee_id" required>
+                        <select class="form-control" id="employee_id_{{ $item->id }}" name="employee_id" required>
                             <option value="" disabled>-- Pilih Staff Marketing --</option>
                             @foreach ($marketingStaff as $staff)
                                 <option value="{{ $staff->id }}" {{ $item->employee_id == $staff->id ? 'selected' : '' }}>
@@ -593,31 +707,33 @@ h3.text-dark {
                         <input type="text" class="form-control" id="nama_tugas_{{ $item->id }}" name="nama_tugas" value="{{ $item->nama_tugas }}" required>
                     </div>
 
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="deadline_{{ $item->id }}" class="form-label">Deadline <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="deadline_{{ $item->id }}" name="deadline" value="{{ \Carbon\Carbon::parse($item->deadline)->format('Y-m-d') }}" required>
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label for="status_{{ $item->id }}" class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="status_{{ $item->id }}" name="status" required>
+                                <option value="Pending" {{ $item->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Proses" {{ $item->status == 'Proses' ? 'selected' : '' }}>Proses</option>
+                                <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
-                        <label for="deskripsi_{{ $item->id }}" class="form-label">Deskripsi</label>
+                        <label for="deskripsi_{{ $item->id }}" class="form-label">Deskripsi / Detail Penugasan</label>
                         <textarea class="form-control" id="deskripsi_{{ $item->id }}" name="deskripsi" rows="3">{{ $item->deskripsi }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="deadline_{{ $item->id }}" class="form-label">Tenggat Waktu (Deadline) <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="deadline_{{ $item->id }}" name="deadline" value="{{ \Carbon\Carbon::parse($item->deadline)->format('Y-m-d') }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="status_{{ $item->id }}" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="status_{{ $item->id }}" name="status" required>
-                            <option value="Pending" {{ $item->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="Proses" {{ $item->status == 'Proses' ? 'selected' : '' }}>Proses</option>
-                            <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-gradient-secondary" data-bs-dismiss="modal">
                         <i class="mdi mdi-close me-1"></i>Batal
                     </button>
-                    <button type="submit" class="btn btn-gradient-warning">
-                        <i class="mdi mdi-pencil me-1"></i>Update Tugas
+                    <button type="submit" class="btn btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Update Tugas
                     </button>
                 </div>
             </form>
@@ -630,42 +746,83 @@ h3.text-dark {
 
 @push('scripts')
 <script>
-// Filter function
-function applyFilter() {
-    const search = document.getElementById('searchInput').value;
-    const limit = document.getElementById('limitSelect').value;
+// Filter Function - Mirroring Dashboard
+function executeFilter(isMobile = false) {
+    const search = isMobile 
+        ? document.getElementById('searchInputMobile').value 
+        : document.getElementById('searchInput').value;
+    
+    const employeeId = isMobile 
+        ? document.getElementById('employeeSelectMobile').value 
+        : document.getElementById('employeeSelect').value;
+    
+    const status = isMobile 
+        ? document.getElementById('statusSelectMobile').value 
+        : document.getElementById('statusSelect').value;
+    
+    const limit = isMobile 
+        ? document.getElementById('limitSelectMobile').value 
+        : document.getElementById('limitSelect').value;
 
-    let url = new URL(window.location.href);
-    if (search) url.searchParams.set('search', search);
-    else url.searchParams.delete('search');
-
+    let url = new URL(window.location.origin + window.location.pathname);
+    
+    if (search.trim()) url.searchParams.set('search', search.trim());
+    if (employeeId) url.searchParams.set('employee_id', employeeId);
+    if (status) url.searchParams.set('status', status);
     if (limit) url.searchParams.set('limit', limit);
-    else url.searchParams.delete('limit');
 
-    url.searchParams.set('page', '1');
     window.location.href = url.toString();
 }
 
-// Reset filter
-function resetFilter() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('limitSelect').value = '15';
-
-    let url = new URL(window.location.href);
-    url.searchParams.delete('search');
-    url.searchParams.delete('limit');
-    url.searchParams.set('page', '1');
-    window.location.href = url.toString();
+function resetAllFilters() {
+    window.location.href = "{{ route('master.data.tugas-staff-marketing') }}";
 }
 
-// Confirm delete with SweetAlert
-function confirmDelete(event) {
-    event.preventDefault();
-    const form = event.target;
+$(document).ready(function() {
+    // Init Select2 Filters (All Without Search Input)
+    $('#employeeSelect, #employeeSelectMobile, #statusSelect, #limitSelect, #statusSelectMobile, #limitSelectMobile').select2({
+        theme: 'bootstrap-5',
+        minimumResultsForSearch: Infinity,
+        width: '100%'
+    });
+});
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Desktop Buttons
+    const filterBtn = document.getElementById('filterBtn');
+    const refreshBTN = document.getElementById('refreshBTN');
+    const searchSubmitBtn = document.getElementById('searchSubmitBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    if (filterBtn) filterBtn.addEventListener('click', () => executeFilter(false));
+    if (searchSubmitBtn) searchSubmitBtn.addEventListener('click', () => executeFilter(false));
+    if (refreshBTN) refreshBTN.addEventListener('click', resetAllFilters);
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') executeFilter(false);
+        });
+    }
+
+    // Mobile Buttons
+    const filterBtnMobile = document.getElementById('filterBtnMobile');
+    const refreshBTNMobile = document.getElementById('refreshBTNMobile');
+    const searchSubmitBtnMobile = document.getElementById('searchSubmitBtnMobile');
+    const searchInputMobile = document.getElementById('searchInputMobile');
+
+    if (filterBtnMobile) filterBtnMobile.addEventListener('click', () => executeFilter(true));
+    if (searchSubmitBtnMobile) searchSubmitBtnMobile.addEventListener('click', () => executeFilter(true));
+    if (refreshBTNMobile) refreshBTNMobile.addEventListener('click', resetAllFilters);
+    if (searchInputMobile) {
+        searchInputMobile.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') executeFilter(true);
+        });
+    }
+});
+
+function confirmDeleteTask(id, taskName) {
     Swal.fire({
         title: 'Yakin ingin menghapus?',
-        text: 'Data tugas akan dihapus secara permanen!',
+        html: `Tugas <b>${taskName}</b> akan dihapus secara permanen!`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
@@ -674,29 +831,39 @@ function confirmDelete(event) {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            form.submit();
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            document.getElementById('deleteForm' + id).submit();
         }
     });
-
-    return false;
 }
 
-// Auto close alert after 3 seconds
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        });
-    }, 3000);
-
-    // Enter key filter
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            applyFilter();
-        }
+@if (session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 3000,
+        timerProgressBar: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#9a55ff'
     });
-});
+@endif
+
+@if (session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#9a55ff',
+        confirmButtonText: 'OK'
+    });
+@endif
 </script>
 @endpush

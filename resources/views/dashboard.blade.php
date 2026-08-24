@@ -302,9 +302,60 @@
                 padding-left: 0.25rem !important;
                 padding-right: 0.25rem !important;
             }
-            .card-body {
-                padding: 0.75rem 0.75rem !important;
-            }
+        /* Select2 Theme Alignment */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border-color: #ebedf2 !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #3b3f5c !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #bfa5fa !important;
+            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+        }
+
+        /* Select2 Dropdown Options Soft Hover & Active */
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden !important;
+            z-index: 1050 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.45rem 0.85rem !important;
+            font-size: 0.85rem !important;
+            color: #3b3f5c !important;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        /* Hover / Highlighted (Soft Pastel Tint) */
+        .select2-container--bootstrap-5 .select2-results__option--highlighted,
+        .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #f6f1ff !important;
+            color: #792fe0 !important;
+        }
+        /* Active / Selected (Soft Purple Tint) */
+        .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #eee4ff !important;
+            color: #6b21a8 !important;
+            font-weight: 600 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+            background-color: #e4d3fe !important;
+            color: #581c87 !important;
         }
     </style>
 
@@ -399,75 +450,66 @@
 
                             <!-- DESKTOP & TABLET VERSION -->
                             <div class="filter-row-desktop d-none d-md-block">
-                                <div class="row g-2 align-items-center w-100">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
 
-                                    <!-- Search -->
-                                    <div class="col-12 col-md-4 col-lg-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="searchInput"
-                                                placeholder="Nama proyek..." value="{{ request('search') }}"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                type="button" id="searchSubmitBtn" title="Cari"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                            </button>
+                                        <!-- Search -->
+                                        <div style="min-width: 200px; max-width: 260px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="searchInput"
+                                                    placeholder="Nama proyek..." value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="button" id="searchSubmitBtn" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Perusahaan - SELECT2 -->
-                                    <div class="col-12 col-md-4 col-lg-4">
-                                        <select class="form-control select2" id="perusahaanSelect" style="width: 100%;">
-                                            <option value="">Semua Perusahaan</option>
-                                            @foreach ($filterOptions['perusahaan'] ?? [] as $company)
-                                                <option value="{{ $company }}"
-                                                    {{ request('perusahaan') == $company ? 'selected' : '' }}>
-                                                    {{ $company }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <!-- Status -->
-                                    <div class="col-6 col-md-2 col-lg-2">
-                                        <select class="form-control" id="statusSelect">
-                                            <option value="">Status</option>
-                                            <option value="ready"
-                                                {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
-                                            <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                Terjual</option>
-                                            <option value="pending"
-                                                {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Tampil -->
-                                    <div class="col-6 col-md-2 col-lg-1">
-                                        <select class="form-control" id="perPageSelect">
-                                            <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                            </option>
-                                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                            </option>
-                                            <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                            </option>
-                                            <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>
-                                                100</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Tombol Filter + Reset dalam 1 kolom -->
-                                    <div class="col-12 col-md-12 col-lg-1">
-                                        <div class="d-flex gap-2">
-                                            <button type="button"
-                                                class="btn btn-gradient-primary btn-icon-only flex-fill" id="filterBtn"
-                                                title="Filter">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                            <button type="button"
-                                                class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                id="refreshBTN" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </button>
+                                        <!-- Perusahaan - SELECT2 -->
+                                        <div style="min-width: 250px; max-width: 340px;">
+                                            <select class="form-control select2" id="perusahaanSelect" style="width: 100%;">
+                                                <option value="">Semua Perusahaan</option>
+                                                @foreach ($filterOptions['perusahaan'] ?? [] as $company)
+                                                    <option value="{{ $company }}"
+                                                        {{ request('perusahaan') == $company ? 'selected' : '' }}>
+                                                        {{ $company }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
+
+                                        <!-- Status - SELECT2 NO SEARCH -->
+                                        <div style="width: 150px;">
+                                            <select class="form-control select2" id="statusSelect" style="width: 100%;">
+                                                <option value="">Semua Status</option>
+                                                <option value="ready"
+                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
+                                                <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    Terjual</option>
+                                                <option value="pending"
+                                                    {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 90px;">
+                                            <select class="form-control select2" id="perPageSelect" style="width: 100%;">
+                                                <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-gradient-primary btn-icon-only" id="filterBtn" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-gradient-secondary btn-icon-only" id="refreshBTN" title="Reset">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </button>
                                     </div>
 
                                 </div>
@@ -500,8 +542,8 @@
                                         </select>
                                     </div>
                                     <div class="col-12 mb-2">
-                                        <select class="form-control" id="statusSelectMobile">
-                                            <option value="">Status</option>
+                                        <select class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
+                                            <option value="">Semua Status</option>
                                             <option value="ready"
                                                 {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia</option>
                                             <option value="sold"
@@ -511,15 +553,11 @@
                                         </select>
                                     </div>
                                     <div class="col-12 mb-2">
-                                        <select class="form-control" id="perPageSelectMobile">
-                                            <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10
-                                            </option>
-                                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25
-                                            </option>
-                                            <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50
-                                              </option>
-                                            <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>
-                                                100</option>
+                                        <select class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                            <option value="10" {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                            <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
                                         </select>
                                     </div>
                                     <div class="col-6">
@@ -611,7 +649,12 @@
                                                     <i class="mdi mdi-home"></i> {{ $item->zoning ?? '-' }}
                                                 </span>
                                             </td>
-                                            <td>{{ $item->address ?? '-' }}</td>
+                                            <td>
+                                                <span class="d-inline-flex align-items-center gap-1" title="{{ $item->address ?? '-' }}">
+                                                    <i class="mdi mdi-map-marker text-danger"></i>
+                                                    <span>{{ Str::limit($item->address ?? '-', 28) }}</span>
+                                                </span>
+                                            </td>
                                             <td>
                                                 @if ($item->legal_status == 'verified')
                                                     <span class="status-badge-gradient success">
@@ -813,7 +856,7 @@
 
     <script>
         $(document).ready(function() {
-            // Init Select2
+            // Init Select2 Perusahaan (With Search)
             $('#perusahaanSelect, #perusahaanSelectMobile').select2({
                 theme: 'bootstrap-5',
                 placeholder: '-- Pilih Perusahaan --',
@@ -828,6 +871,20 @@
                         return "Mencari...";
                     }
                 }
+            });
+
+            // Init Select2 Status (Tanpa Search Input)
+            $('#statusSelect, #statusSelectMobile').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity,
+                width: '100%'
+            });
+
+            // Init Select2 Limit Data (Tanpa Search Input)
+            $('#perPageSelect, #perPageSelectMobile').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity,
+                width: '100%'
             });
 
             // Sorting

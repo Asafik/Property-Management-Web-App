@@ -1,636 +1,296 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Data Customer - Property Management App')
+@section('title', 'Data User / Customer - Property Management App')
 
 @section('content')
 <style>
     .card {
-        transition: all 0.3s ease;
-        margin-bottom: 1rem;
+        border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-
-    .card:hover {
-        box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, #ffffff, #f8f9fa);
-        border-bottom: 1px solid #e9ecef;
-        padding: 0.75rem;
-    }
-
-    @media (min-width: 576px) {
-        .card-header {
-            padding: 1rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .card-header {
-            padding: 1.2rem;
-        }
-    }
-
-    .card-body {
-        padding: 0.75rem;
-    }
-
-    @media (min-width: 576px) {
-        .card-body {
-            padding: 1rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .card-body {
-            padding: 1.2rem;
-        }
-    }
-
-    .card-title {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #9a55ff;
-        margin-bottom: 0;
-    }
-
-    @media (min-width: 576px) {
-        .card-title {
-            font-size: 1rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .card-title {
-            font-size: 1.1rem;
-        }
-    }
-
-    /* ===== STAT CARD BARU ===== */
-    .stat-card {
-        background: linear-gradient(135deg, #ffffff, #f8f9fa);
-        border-radius: 16px;
-        padding: 1.2rem;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
     }
 
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(154, 85, 255, 0.12);
+    .stat-card-custom {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
     }
 
-    .stat-card .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        color: white;
-        flex-shrink: 0;
-    }
-
-    .stat-card .stat-icon.total {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-    }
-
-    .stat-card .stat-icon.aktif {
-        background: linear-gradient(135deg, #43e97b, #38f9d7);
-    }
-
-    .stat-card .stat-icon.cash {
-        background: linear-gradient(135deg, #f093fb, #f5576c);
-    }
-
-    .stat-card .stat-icon.kpr {
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-    }
-
-    .stat-card .stat-content {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .stat-card .stat-content h3 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 0.2rem;
-        color: #2c2e3f;
-        line-height: 1.2;
-    }
-
-    .stat-card .stat-content p {
-        font-size: 0.9rem;
-        color: #6c757d;
-        margin-bottom: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    @media (max-width: 768px) {
-        .stat-card {
-            padding: 1rem;
-            gap: 0.75rem;
-        }
-
-        .stat-card .stat-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 1.4rem;
-        }
-
-        .stat-card .stat-content h3 {
-            font-size: 1.3rem;
-        }
-
-        .stat-card .stat-content p {
-            font-size: 0.75rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .stat-card {
-            padding: 0.75rem;
-            gap: 0.5rem;
-        }
-
-        .stat-card .stat-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
-        }
-
-        .stat-card .stat-content h3 {
-            font-size: 1.1rem;
-        }
-
-        .stat-card .stat-content p {
-            font-size: 0.7rem;
-        }
+    .stat-card-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(154, 85, 255, 0.12);
     }
 
     .filter-card {
-        background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+        padding: 0.85rem 1rem !important;
+        margin-bottom: 1rem !important;
+        background: #ffffff;
         border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
 
-    .filter-card .card-body {
-        padding: 1rem !important;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #9a55ff !important;
-        margin-bottom: 0.4rem;
-        letter-spacing: 0.3px;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-        border-radius: 8px;
-        height: auto;
-        min-height: 40px;
-        border: 1px solid #e0e4e9;
-    }
-
-    .filter-card .btn {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-        min-height: 40px;
-        border-radius: 8px;
-        font-weight: 600;
-    }
-
-    .form-control,
-    .form-select {
+    .form-control, .form-select, select.form-control {
         border: 1px solid #e9ecef;
-        border-radius: 8px;
+        border-radius: 8px !important;
         padding: 0.6rem 0.8rem;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        background-color: #ffffff;
+        font-size: 0.88rem;
         color: #2c2e3f;
+        background-color: #ffffff;
         height: auto;
+        min-height: 38px;
+        transition: all 0.2s ease;
     }
 
-    @media (min-width: 576px) {
-        .form-control,
-        .form-select {
-            padding: 0.7rem 1rem;
-            font-size: 0.95rem;
-            border-radius: 10px;
-        }
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #9a55ff;
-        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    .form-control:focus, .form-select:focus, select.form-control:focus {
+        border-color: #9a55ff !important;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
         outline: none;
-    }
-
-    .form-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #9a55ff !important;
-        margin-bottom: 0.3rem;
-        letter-spacing: 0.3px;
-        font-family: 'Nunito', sans-serif;
-    }
-
-    .btn {
-        font-size: 0.85rem;
-        padding: 0.6rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        font-family: 'Nunito', sans-serif;
-        border: none;
-    }
-
-    @media (min-width: 576px) {
-        .btn {
-            font-size: 0.9rem;
-            padding: 0.7rem 1.2rem;
-            border-radius: 10px;
-        }
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-sm {
-        padding: 0.35rem 0.7rem;
-        font-size: 0.8rem;
-        border-radius: 6px;
     }
 
     .btn-gradient-primary {
         background: linear-gradient(to right, #da8cff, #9a55ff) !important;
         color: #ffffff !important;
+        border: none;
     }
 
     .btn-gradient-secondary {
         background: #6c757d !important;
         color: #ffffff !important;
-    }
-
-    .btn-gradient-secondary:hover {
-        background: #5a6268 !important;
+        border: none;
     }
 
     .btn-gradient-success {
         background: linear-gradient(135deg, #28a745, #5cb85c) !important;
         color: #ffffff !important;
+        border: none;
     }
 
     .btn-gradient-danger {
         background: linear-gradient(135deg, #dc3545, #e4606d) !important;
         color: #ffffff !important;
+        border: none;
     }
 
-    .btn-gradient-warning {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-        color: #2c2e3f !important;
-    }
-
-    .btn-gradient-info {
-        background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-        color: #ffffff !important;
-    }
-
-    .btn-outline-primary {
-        background: transparent;
-        border: 1px solid #9a55ff;
-        color: #9a55ff;
-        padding: 0.4rem 0.75rem;
-    }
-
-    .btn-outline-primary:hover {
-        background: linear-gradient(to right, #da8cff, #9a55ff);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    .btn-outline-warning {
-        background: transparent;
-        border: 1px solid #ffc107;
-        color: #ffc107;
-        padding: 0.4rem 0.75rem;
-        position: relative;
-        z-index: 15;
-        pointer-events: auto !important;
-        cursor: pointer !important;
-    }
-
-    .btn-outline-warning:hover {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d);
-        color: #2c2e3f;
-        border-color: transparent;
-    }
-
-    .btn-outline-danger {
-        background: transparent;
-        border: 1px solid #dc3545;
-        color: #dc3545;
-        padding: 0.4rem 0.75rem;
-        position: relative;
-        z-index: 15;
-        pointer-events: auto !important;
-        cursor: pointer !important;
-    }
-
-    .btn-outline-danger:hover {
-        background: linear-gradient(135deg, #dc3545, #e4606d);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    .btn-outline-info {
-        background: transparent;
-        border: 1px solid #17a2b8;
-        color: #17a2b8;
-        padding: 0.4rem 0.75rem;
-    }
-
-    .btn-outline-info:hover {
-        background: linear-gradient(135deg, #17a2b8, #5bc0de);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    .badge {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 30px;
-        display: inline-block;
-        white-space: nowrap;
-    }
-
-    @media (min-width: 576px) {
-        .badge {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.8rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .badge {
-            padding: 0.45rem 0.8rem;
-            font-size: 0.85rem;
-        }
-    }
-
-    .avatar-circle {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 16px;
-        color: white;
-        background: linear-gradient(135deg, #da8cff, #9a55ff);
-        flex-shrink: 0;
-    }
-
-    @media (min-width: 576px) {
-        .avatar-circle {
-            width: 45px;
-            height: 45px;
-            font-size: 18px;
-        }
-    }
-
-    .avatar-sm {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-        overflow-y: visible;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-        scrollbar-width: thin;
-        scrollbar-color: #9a55ff #f0f0f0;
-    }
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
-    }
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f0f0f0;
-        border-radius: 10px;
-    }
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #9a55ff;
-        border-radius: 10px;
-    }
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: #7a3fcc;
-    }
-
-    .table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
-    .table thead th {
-        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-        color: #9a55ff; font-weight: 600; font-size: 0.8rem;
-        text-transform: uppercase; letter-spacing: 0.5px;
-        border-bottom: 2px solid #e9ecef;
-        padding: 0.8rem 0.5rem;
-        white-space: nowrap;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .table thead th:hover {
-        color: #7a3fcc;
-    }
-    .table thead th i {
-        font-size: 0.8rem;
-        margin-left: 4px;
-        opacity: 0.5;
-    }
-    @media (min-width: 576px) { .table thead th { font-size: 0.85rem; padding: 0.9rem 0.6rem; } }
-    @media (min-width: 768px) { .table thead th { font-size: 0.9rem; padding: 1rem 0.75rem; } }
-    .table thead th:first-child { padding-left: 0.5rem; text-align: center; }
-    .table tbody td:first-child { padding-left: 0.5rem; font-weight: 500; text-align: center; }
-    .table tbody td {
-        vertical-align: middle; font-size: 0.85rem; padding: 0.8rem 0.5rem;
-        border-bottom: 1px solid #e9ecef; color: #2c2e3f;
-        white-space: nowrap;
-    }
-    @media (min-width: 576px) { .table tbody td { font-size: 0.9rem; padding: 0.9rem 0.6rem; } }
-    @media (min-width: 768px) { .table tbody td { font-size: 0.95rem; padding: 1rem 0.75rem; } }
-
-    .table tbody tr:hover { background-color: #f8f9fa; }
-
-    .pagination { margin: 0; gap: 3px; }
-    .page-item .page-link {
-        border: 1px solid #e9ecef;
-        padding: 0.35rem 0.7rem;
-        font-size: 0.75rem;
-        color: #6c7383;
-        background-color: #ffffff;
-        border-radius: 6px !important;
-        transition: all 0.2s ease;
-        min-width: 32px;
-        text-align: center;
-        cursor: pointer;
-        text-decoration: none;
-    }
-    @media (min-width: 576px) {
-        .page-item .page-link {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-            min-width: 36px;
-        }
-    }
-    @media (min-width: 768px) {
-        .page-item .page-link {
-            padding: 0.45rem 0.9rem;
-            font-size: 0.85rem;
-            min-width: 40px;
-        }
-    }
-    .page-item.active .page-link {
-        background: linear-gradient(to right, #da8cff, #9a55ff);
-        border-color: transparent;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-    }
-    .page-item .page-link:hover {
-        background-color: #f8f9fa;
-        border-color: #9a55ff;
-        color: #9a55ff;
-        transform: translateY(-1px);
-    }
-    .pagination-info { font-size: 0.8rem; color: #6c7383; }
-
-    @media (max-width: 576px) {
-        .table thead th { font-size: 0.75rem; padding: 0.6rem 0.3rem; }
-        .table tbody td { font-size: 0.8rem; padding: 0.6rem 0.3rem; }
-        .filter-card { padding: 0.75rem; }
-        .filter-card .form-label { font-size: 0.8rem; }
-        .filter-card .form-control, .filter-card .form-select, .filter-card .btn {
-            font-size: 0.8rem; min-height: 38px;
-        }
-    }
-
-    .dataTables_filter, .dataTables_length, .dataTables_paginate, .dataTables_info {
-        display: none !important;
-    }
-    .sorting, .sorting_asc, .sorting_desc { cursor: pointer; }
-    .mdi { vertical-align: middle; }
-
-    h3.text-dark { font-size: 1.3rem !important; font-weight: 700; color: #2c2e3f !important; margin-bottom: 0.5rem !important; }
-    @media (min-width: 576px) { h3.text-dark { font-size: 1.5rem !important; } }
-    @media (min-width: 768px) { h3.text-dark { font-size: 1.7rem !important; } }
-
-    /* ====== CSS ACTION BUTTONS DARI DATA BANK ====== */
-    .btn-action {
-        width: 36px;
-        height: 36px;
+    .btn-icon-only {
+        width: 38px;
+        height: 38px;
         padding: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 10px;
-        margin: 0 3px;
-        transition: all 0.3s ease;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .btn-icon-only i {
+        font-size: 1.15rem;
+    }
+
+    .btn-icon-only-mobile {
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .btn-icon-only-mobile i {
+        font-size: 1.15rem;
+    }
+
+    .table thead th {
+        background: #f8f9fc !important;
+        color: #4b49ac !important;
+        font-weight: 700;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.85rem;
+        border-bottom: 2px solid #edf2f9;
+        white-space: nowrap;
+    }
+
+    .table tbody td {
+        padding: 0.9rem 0.85rem;
+        font-size: 0.88rem;
+        color: #2c2e3f;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fcfaff;
+    }
+
+    .avatar-circle {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: white;
+        background: linear-gradient(135deg, #da8cff, #9a55ff);
+        flex-shrink: 0;
+        margin-right: 0.5rem;
+    }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        margin: 0 2px;
+        transition: all 0.2s ease;
         border: none;
         cursor: pointer;
+        color: #ffffff !important;
     }
-    .btn-action i {
-        font-size: 1.1rem;
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
+
     .btn-action.edit {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d);
-        color: #2c2e3f;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
     }
-    .btn-action.edit:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-    }
+
     .btn-action.delete {
-        background: linear-gradient(135deg, #dc3545, #e4606d);
-        color: white;
-    }
-    .btn-action.delete:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        background: linear-gradient(135deg, #ef4444, #dc2626);
     }
 
-    .btn-icon-only {
-        width: 40px; height: 40px; padding: 0;
-        display: flex; align-items: center; justify-content: center; border-radius: 8px;
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
-    .btn-icon-only i { font-size: 1.2rem; margin: 0; }
-    .btn-icon-only-mobile {
-        width: 100%; height: 40px; padding: 0;
-        display: flex; align-items: center; justify-content: center; border-radius: 8px;
-    }
-    .btn-icon-only-mobile i { font-size: 1.2rem; margin: 0; }
 
-    /* ====== CSS FILTER ====== */
-    .filter-card { border: none; }
-    .filter-row-desktop {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+    .modal-header {
+        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        color: white !important;
+        padding: 1.1rem 1.5rem;
+        border-bottom: none;
     }
-    .filter-row-desktop .filter-text {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #9a55ff;
-        font-weight: 600;
-        font-size: 0.95rem;
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
     }
-    .filter-row-mobile  { display: none; }
-    @media (max-width: 767px) {
-        .filter-row-desktop { display: none; }
-        .filter-row-mobile  { display: block; margin-top: 1rem; }
+
+    .modal-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #ffffff !important;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+        background: #ffffff;
+    }
+
+    .modal-footer {
+        background: #fafbfe;
+        border-top: 1px solid #edf2f9;
+        padding: 1rem 1.5rem;
+    }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+    .sortable:hover {
+        color: #9a55ff !important;
+    }
+
+    /* Select2 Theme Alignment */
+    .select2-container--bootstrap-5 .select2-selection {
+        min-height: 38px !important;
+        height: 38px !important;
+        padding: 0.375rem 0.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        border-color: #ebedf2 !important;
+        border-radius: 6px !important;
+        font-size: 0.875rem !important;
+        background-color: #ffffff !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5 !important;
+        padding-left: 0 !important;
+        color: #3b3f5c !important;
+    }
+    .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+    .select2-container--bootstrap-5.select2-container--open .select2-selection {
+        border-color: #bfa5fa !important;
+        box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+    }
+
+    /* Select2 Dropdown Options Soft Hover & Active */
+    .select2-container--bootstrap-5 .select2-dropdown {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+        overflow: hidden !important;
+        z-index: 1050 !important;
+    }
+    .select2-container--bootstrap-5 .select2-results__option {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 0.85rem !important;
+        color: #3b3f5c !important;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    /* Hover / Highlighted (Soft Pastel Tint) */
+    .select2-container--bootstrap-5 .select2-results__option--highlighted,
+    .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #f6f1ff !important;
+        color: #792fe0 !important;
+    }
+    /* Active / Selected (Soft Purple Tint) */
+    .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
+    .select2-container--bootstrap-5 .select2-results__option--selected {
+        background-color: #eee4ff !important;
+        color: #6b21a8 !important;
+        font-weight: 600 !important;
+    }
+    .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+        background-color: #e4d3fe !important;
+        color: #581c87 !important;
     }
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
+
+    <!-- Header Judul (Tanpa Card Box) -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center px-1">
+                <div>
+                    <h3 class="text-dark mb-1 fw-bold">
+                        <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>Data User / Customer
+                    </h3>
+                    <p class="text-muted mb-0">Kelola data pembeli dan pemilik unit properti</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistic Cards - Style Dashboard -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
-                            Data User / Customer
-                        </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data User / pembeli unit properti
-                        </p>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $totalCustomer ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Total User / Customer</p>
                     </div>
                     <div class="d-none d-sm-block">
                         <i class="mdi mdi-account-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
@@ -638,187 +298,194 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Statistics Cards -->
-    <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon total">
-                    <i class="mdi mdi-account-group"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ $totalCustomer ?? 0 }}</h3>
-                    <p>Total User / Customer</p>
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $customerAktif ?? 0 }}</h3>
+                        <p class="text-muted mb-0">User / Customer Aktif</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-account-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon aktif">
-                    <i class="mdi mdi-account-check"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ $customerAktif ?? 0 }}</h3>
-                    <p>User / Customer Aktif</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon cash">
-                    <i class="mdi mdi-cash-multiple"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ $customerCash ?? 0 }}</h3>
-                    <p>Pembeli Cash</p>
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $customerCash ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Pembeli Cash</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-cash-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon kpr">
-                    <i class="mdi mdi-bank"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ $customerKpr ?? 0 }}</h3>
-                    <p>Pembeli KPR</p>
+            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">{{ $customerKpr ?? 0 }}</h3>
+                        <p class="text-muted mb-0">Pembeli KPR</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-bank" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabel Data Customer -->
-    <div class="row mt-4 mt-sm-4 mt-md-4">
+    <!-- Tabel Data Customer & Filter -->
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar User
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-3 p-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar User
                     </h5>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-gradient-success" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="$('#modalImportCustomer').modal('show')">
-                            <i class="mdi mdi-import me-1"></i><span class="d-none d-sm-inline">Import</span>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-gradient-success d-inline-flex align-items-center gap-1" onclick="$('#modalImportCustomer').modal('show')">
+                            <i class="mdi mdi-import"></i> <span class="d-none d-sm-inline">Import</span>
                         </button>
-                        <button class="btn btn-gradient-danger" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" onclick="$('#modalExportCustomer').modal('show')">
-                            <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
+                        <button class="btn btn-gradient-danger d-inline-flex align-items-center gap-1" onclick="$('#modalExportCustomer').modal('show')">
+                            <i class="mdi mdi-export"></i> <span class="d-none d-sm-inline">Export</span>
                         </button>
-                        <a href="{{ route('customer.create') }}" class="btn btn-gradient-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
-                            <i class="mdi mdi-account-multiple-plus-outline"></i><span class="d-none d-sm-inline"> Tambah User / Customer Baru</span>
+                        <a href="{{ route('customer.create') }}" class="btn btn-gradient-primary d-inline-flex align-items-center gap-1">
+                            <i class="mdi mdi-account-multiple-plus-outline"></i> <span>Tambah User Baru</span>
                         </a>
                     </div>
                 </div>
-                <div class="card-body">
-                    <!-- Filter Section -->
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <!-- DESKTOP VERSION -->
-                            <div class="filter-row-desktop">
-                                <div class="filter-text">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data customer</span>
-                                </div>
-                                <form method="GET" action="{{ route('customer.data') }}">
-                                    <div class="row g-2 align-items-end w-100">
-                                        <div class="col-md-3">
-                                            <label class="form-label">Cari User</label>
-                                            <input type="text" class="form-control" name="search" placeholder="Nama, ID..." value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label">Pekerjaan</label>
-                                            <select class="form-control" name="pekerjaan">
-                                                <option value="">Semua</option>
-                                                <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
-                                                <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
-                                                <option value="Wiraswasta" {{ request('pekerjaan') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
-                                                <option value="Ibu Rumah Tangga" {{ request('pekerjaan') == 'Ibu Rumah Tangga' ? 'selected' : '' }}>Ibu Rumah Tangga</option>
-                                                <option value="Pensiunan" {{ request('pekerjaan') == 'Pensiunan' ? 'selected' : '' }}>Pensiunan</option>
-                                                <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                            <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill" title="Filter" onclick="showFilterLoading()">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill" title="Reset" onclick="showResetLoading(event)">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
 
-                            <!-- MOBILE VERSION -->
-                            <div class="filter-row-mobile">
-                                <div class="filter-text mb-2">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data customer</span>
-                                </div>
-                                <form method="GET" action="{{ route('customer.data') }}">
-                                    <div class="row g-2">
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Cari User</label>
-                                            <input type="text" class="form-control" name="search" placeholder="Nama, ID..." value="{{ request('search') }}">
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Pekerjaan</label>
-                                            <select class="form-control" name="pekerjaan">
-                                                <option value="">Semua</option>
-                                                <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
-                                                <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
-                                                <option value="Wiraswasta" {{ request('pekerjaan') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
-                                                <option value="Ibu Rumah Tangga" {{ request('pekerjaan') == 'Ibu Rumah Tangga' ? 'selected' : '' }}>Ibu Rumah Tangga</option>
-                                                <option value="Pensiunan" {{ request('pekerjaan') == 'Pensiunan' ? 'selected' : '' }}>Pensiunan</option>
-                                                <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" title="Filter" onclick="showFilterLoading()">
-                                                <i class="mdi mdi-filter"></i> Filter
+                <div class="card-body p-3">
+                    <!-- FILTER SECTION (PERSIS DASHBOARD) -->
+                    <div class="filter-card mb-3">
+
+                        <!-- DESKTOP & TABLET VERSION -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+
+                                    <!-- Search -->
+                                    <div style="min-width: 200px; max-width: 280px; flex: 1;">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="searchInput"
+                                                placeholder="Nama user / customer ID..." value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="button" id="searchSubmitBtn" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset" onclick="showResetLoading(event)">
-                                                <i class="mdi mdi-refresh"></i> Reset
-                                            </a>
-                                        </div>
                                     </div>
-                                </form>
+
+                                    <!-- Pekerjaan -->
+                                    <div style="min-width: 200px; max-width: 260px;">
+                                        <select class="form-control select2" id="pekerjaanSelect" style="width: 100%;">
+                                            <option value="">Semua Pekerjaan</option>
+                                            <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
+                                            <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
+                                            <option value="Wiraswasta" {{ request('pekerjaan') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
+                                            <option value="Ibu Rumah Tangga" {{ request('pekerjaan') == 'Ibu Rumah Tangga' ? 'selected' : '' }}>Ibu Rumah Tangga</option>
+                                            <option value="Pensiunan" {{ request('pekerjaan') == 'Pensiunan' ? 'selected' : '' }}>Pensiunan</option>
+                                            <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                <div class="d-flex align-items-center gap-2 ms-auto">
+                                    <div style="width: 90px;">
+                                        <select class="form-control select2" id="perPageSelect" style="width: 100%;">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-gradient-primary btn-icon-only" id="filterBtn" title="Filter">
+                                        <i class="mdi mdi-filter"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-gradient-secondary btn-icon-only" id="refreshBTN" title="Reset">
+                                        <i class="mdi mdi-refresh"></i>
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
+
+                        <!-- MOBILE VERSION -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <div class="row g-2">
+                                <div class="col-12 mb-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="searchInputMobile"
+                                            placeholder="Nama user / customer ID..." value="{{ request('search') }}"
+                                            style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                        <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                            type="button" id="searchSubmitBtnMobile" title="Cari"
+                                            style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                            <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <select class="form-control select2-mobile" id="pekerjaanSelectMobile" style="width: 100%;">
+                                        <option value="">Semua Pekerjaan</option>
+                                        <option value="PNS" {{ request('pekerjaan') == 'PNS' ? 'selected' : '' }}>PNS</option>
+                                        <option value="Karyawan Swasta" {{ request('pekerjaan') == 'Karyawan Swasta' ? 'selected' : '' }}>Karyawan Swasta</option>
+                                        <option value="Wiraswasta" {{ request('pekerjaan') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
+                                        <option value="Ibu Rumah Tangga" {{ request('pekerjaan') == 'Ibu Rumah Tangga' ? 'selected' : '' }}>Ibu Rumah Tangga</option>
+                                        <option value="Pensiunan" {{ request('pekerjaan') == 'Pensiunan' ? 'selected' : '' }}>Pensiunan</option>
+                                        <option value="Lainnya" {{ request('pekerjaan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <select class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-gradient-primary btn-icon-only-mobile w-100" id="filterBtnMobile" title="Filter">
+                                        <i class="mdi mdi-filter"></i>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" id="refreshBTNMobile" title="Reset">
+                                        <i class="mdi mdi-refresh"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
+                    <!-- Table Responsive -->
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th class="sortable" width="25%" data-field="full_name" data-direction="{{ request('sortField') == 'full_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                    <th class="text-center" style="width: 50px; min-width: 50px; max-width: 60px;">No</th>
+                                    <th class="sortable" style="min-width: 160px;" data-field="customer_id" data-direction="{{ request('sortField') == 'customer_id' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        ID Customer
+                                        @if(request('sortField') == 'customer_id')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" style="min-width: 200px;" data-field="full_name" data-direction="{{ request('sortField') == 'full_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Nama User
                                         @if(request('sortField') == 'full_name')
                                             <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -826,7 +493,7 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th class="sortable" width="20%" data-field="email" data-direction="{{ request('sortField') == 'email' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                    <th class="sortable" style="min-width: 180px;" data-field="email" data-direction="{{ request('sortField') == 'email' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Email
                                         @if(request('sortField') == 'email')
                                             <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -834,7 +501,7 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th class="sortable" width="15%" data-field="job_status" data-direction="{{ request('sortField') == 'job_status' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                    <th class="sortable" style="min-width: 140px;" data-field="job_status" data-direction="{{ request('sortField') == 'job_status' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Pekerjaan
                                         @if(request('sortField') == 'job_status')
                                             <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -842,74 +509,82 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th class="sortable" width="15%" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        Nomor Hp
+                                    <th class="sortable" style="min-width: 150px;" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nomor HP
                                         @if(request('sortField') == 'phone')
                                             <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                         @else
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th class="text-center" width="15%">Aksi</th>
+                                    <th class="text-center" style="width: 100px; min-width: 100px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($customers as $customer)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle avatar-sm me-2">
-                                                {{ strtoupper(substr(trim($customer->full_name), 0, 2)) }}
+                                @forelse($customers as $index => $customer)
+                                    @php
+                                        $initials = collect(explode(' ', trim($customer->full_name)))
+                                            ->filter()
+                                            ->take(2)
+                                            ->map(fn($w) => strtoupper(substr($w, 0, 1)))
+                                            ->implode('');
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center fw-bold" style="width: 50px;">{{ $customers->firstItem() + $index }}</td>
+                                        <td class="fw-bold text-dark">
+                                            {{ $customer->customer_id ?? '-' }}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle">{{ $initials ?: 'US' }}</div>
+                                                <div class="fw-bold text-dark">{{ $customer->full_name }}</div>
                                             </div>
-                                            <span class="fw-bold">{{ $customer->full_name }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if($customer->email)
-                                        <div class="d-flex align-items-center gap-2">
-                                            <i class="mdi mdi-email-outline text-primary" style="font-size: 1.2rem;"></i>
-                                            <span>{{ $customer->email }}</span>
-                                        </div>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($customer->job_status)
-                                        <span class="badge bg-light text-dark">{{ $customer->job_status }}</span>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($customer->phone)
-                                        <div class="d-flex align-items-center gap-2">
-                                            <i class="mdi mdi-whatsapp text-success" style="font-size: 1.2rem;"></i>
-                                            <span>{{ $customer->phone }}</span>
-                                        </div>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{ route('customer.edit', $customer->id) }}" class="btn-action edit me-1" title="Edit">
-                                            <i class="mdi mdi-pencil"></i>
-                                        </a>
-                                        <button class="btn-action delete" title="Hapus"
-                                            onclick="deleteCustomer({{ $customer->id }}, '{{ $customer->full_name }}')">
-                                            <i class="mdi mdi-delete"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>
+                                            @if($customer->email)
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <i class="mdi mdi-email-outline text-primary" style="font-size: 1.1rem;"></i>
+                                                    <span>{{ $customer->email }}</span>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($customer->job_status)
+                                                <span class="badge" style="background: #f4efff; color: #7e22ce; border: 1px solid #e9d5ff;">
+                                                    {{ $customer->job_status }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($customer->phone)
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <i class="mdi mdi-whatsapp text-success" style="font-size: 1.1rem;"></i>
+                                                    <span>{{ $customer->phone }}</span>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('customer.edit', $customer->id) }}" class="btn-action edit" title="Edit Data User">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn-action delete" title="Hapus User" onclick="deleteCustomer({{ $customer->id }}, '{{ addslashes($customer->full_name) }}')">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-account-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data customer yang tersedia.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data customer baru.</p>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-5">
+                                            <i class="mdi mdi-account-off-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.3;"></i>
+                                            <p class="mt-2 mb-0 fw-bold">Tidak ada data customer yang tersedia.</p>
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -917,57 +592,14 @@
 
                     <!-- PAGINATION -->
                     @if ($customers instanceof \Illuminate\Pagination\LengthAwarePaginator && $customers->total() > 0)
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            Menampilkan {{ $customers->firstItem() }} - {{ $customers->lastItem() }} dari {{ $customers->total() }} data
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted small">
+                                Menampilkan {{ $customers->firstItem() }} - {{ $customers->lastItem() }} dari {{ $customers->total() }} data user
+                            </div>
+                            <nav aria-label="Page navigation">
+                                {{ $customers->appends(request()->query())->links('pagination::bootstrap-4') }}
+                            </nav>
                         </div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                {{-- Previous Page Link --}}
-                                @if ($customers->onFirstPage())
-                                    <li class="page-item disabled" aria-disabled="true">
-                                        <span class="page-link" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $customers->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous" onclick="showPaginationLoading(event)">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                @endif
-
-                                {{-- Pagination Elements --}}
-                                @foreach ($customers->getUrlRange(max(1, $customers->currentPage() - 2), min($customers->lastPage(), $customers->currentPage() + 2)) as $page => $url)
-                                    @if ($page == $customers->currentPage())
-                                        <li class="page-item active" aria-current="page">
-                                            <span class="page-link">{{ $page }}</span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $customers->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
-                                        </li>
-                                    @endif
-                                @endforeach
-
-                                {{-- Next Page Link --}}
-                                @if ($customers->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $customers->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next" onclick="showPaginationLoading(event)">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled" aria-disabled="true">
-                                        <span class="page-link" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
-                    </div>
                     @endif
                 </div>
             </div>
@@ -981,15 +613,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="mdi mdi-import me-2" style="color: #9a55ff;"></i>
-                    Import Data User
+                    <i class="mdi mdi-import me-2"></i>Import Data User
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-4">
-                    <i class="mdi mdi-file-excel" style="font-size: 64px; color: #28a745;"></i>
-                    <h6 class="mt-3">Import dari file Excel</h6>
+                    <i class="mdi mdi-file-excel" style="font-size: 54px; color: #28a745;"></i>
+                    <h6 class="mt-3 fw-bold">Import dari file Excel</h6>
                     <p class="text-muted small">Download template terlebih dahulu untuk memudahkan import data</p>
                 </div>
 
@@ -1002,9 +633,9 @@
                     </a>
                 </div>
 
-                <div class="modal-form-group">
-                    <label><i class="mdi mdi-file-upload me-1 text-primary"></i>Upload File Excel</label>
-                    <input type="file" class="modal-form-control" accept=".xlsx,.xls,.csv">
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="mdi mdi-file-upload me-1 text-primary"></i>Upload File Excel</label>
+                    <input type="file" class="form-control" accept=".xlsx,.xls,.csv">
                     <small class="text-muted">Format: .xlsx, .xls, .csv (Max 5MB)</small>
                 </div>
             </div>
@@ -1026,37 +657,36 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="mdi mdi-export me-2" style="color: #9a55ff;"></i>
-                    Export Data User
+                    <i class="mdi mdi-export me-2"></i>Export Data User
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-4">
-                    <i class="mdi mdi-file-download" style="font-size: 64px; color: #9a55ff;"></i>
-                    <h6 class="mt-3">Pilih format export</h6>
+                    <i class="mdi mdi-file-download" style="font-size: 54px; color: #9a55ff;"></i>
+                    <h6 class="mt-3 fw-bold">Pilih format export</h6>
                 </div>
 
                 <div class="d-flex gap-3 justify-content-center">
-                    <button class="btn btn-outline-success p-3" style="width: 100px;">
-                        <i class="mdi mdi-file-excel" style="font-size: 32px;"></i>
-                        <span class="d-block small mt-2">Excel</span>
+                    <button class="btn btn-outline-success p-3" style="width: 90px; border-radius: 12px;">
+                        <i class="mdi mdi-file-excel" style="font-size: 28px;"></i>
+                        <span class="d-block small mt-1">Excel</span>
                     </button>
-                    <button class="btn btn-outline-danger p-3" style="width: 100px;">
-                        <i class="mdi mdi-file-pdf" style="font-size: 32px;"></i>
-                        <span class="d-block small mt-2">PDF</span>
+                    <button class="btn btn-outline-danger p-3" style="width: 90px; border-radius: 12px;">
+                        <i class="mdi mdi-file-pdf" style="font-size: 28px;"></i>
+                        <span class="d-block small mt-1">PDF</span>
                     </button>
-                    <button class="btn btn-outline-primary p-3" style="width: 100px;">
-                        <i class="mdi mdi-file-delimited" style="font-size: 32px;"></i>
-                        <span class="d-block small mt-2">CSV</span>
+                    <button class="btn btn-outline-primary p-3" style="width: 90px; border-radius: 12px;">
+                        <i class="mdi mdi-file-delimited" style="font-size: 28px;"></i>
+                        <span class="d-block small mt-1">CSV</span>
                     </button>
                 </div>
 
                 <hr class="my-4">
 
-                <div class="modal-form-group">
-                    <label><i class="mdi mdi-filter-outline me-1 text-primary"></i>Filter Data yang Diexport</label>
-                    <select class="modal-form-control">
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="mdi mdi-filter-outline me-1 text-primary"></i>Filter Data yang Diexport</label>
+                    <select class="form-control">
                         <option value="semua">Semua User</option>
                         <option value="aktif">User Aktif</option>
                         <option value="pending">User Pending</option>
@@ -1080,55 +710,98 @@
 
 @push('scripts')
 <script>
+// Filter Function - Mirroring Dashboard
+function executeFilter(isMobile = false) {
+    const search = isMobile 
+        ? document.getElementById('searchInputMobile').value 
+        : document.getElementById('searchInput').value;
+    
+    const pekerjaan = isMobile 
+        ? document.getElementById('pekerjaanSelectMobile').value 
+        : document.getElementById('pekerjaanSelect').value;
+    
+    const perPage = isMobile 
+        ? document.getElementById('perPageSelectMobile').value 
+        : document.getElementById('perPageSelect').value;
+
+    let url = new URL(window.location.origin + window.location.pathname);
+    
+    if (search.trim()) url.searchParams.set('search', search.trim());
+    if (pekerjaan) url.searchParams.set('pekerjaan', pekerjaan);
+    if (perPage) url.searchParams.set('per_page', perPage);
+
+    // Maintain sorting if present
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.get('sortField')) {
+        url.searchParams.set('sortField', currentUrl.searchParams.get('sortField'));
+    }
+    if (currentUrl.searchParams.get('sortDirection')) {
+        url.searchParams.set('sortDirection', currentUrl.searchParams.get('sortDirection'));
+    }
+
+    window.location.href = url.toString();
+}
+
+function resetAllFilters() {
+    window.location.href = "{{ route('customer.data') }}";
+}
+
 $(document).ready(function() {
-    // 1. Fungsi Sorting (Mengurutkan Data)
-    $('.sortable').click(function() {
-        let field = $(this).data('field');
-        let direction = $(this).data('direction');
+    // Init Select2 Filters (Without Search Input)
+    $('#pekerjaanSelect, #pekerjaanSelectMobile, #perPageSelect, #perPageSelectMobile').select2({
+        theme: 'bootstrap-5',
+        minimumResultsForSearch: Infinity,
+        width: '100%'
+    });
+});
 
-        Swal.fire({
-            title: 'Memuat...',
-            html: 'Sedang mengurutkan data',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Sorting
+    document.querySelectorAll('.sortable').forEach(function(th) {
+        th.addEventListener('click', function() {
+            let field = this.dataset.field;
+            let direction = this.dataset.direction;
+
+            let url = new URL(window.location.href);
+            url.searchParams.set('sortField', field);
+            url.searchParams.set('sortDirection', direction);
+            url.searchParams.set('page', 1);
+
+            window.location.href = url.toString();
         });
-
-        let url = new URL(window.location.href);
-        url.searchParams.set('sortField', field);
-        url.searchParams.set('sortDirection', direction);
-        url.searchParams.set('page', 1);
-
-        window.location.href = url.toString();
     });
 
-    // 2. Handle Submit Filter Form (Desktop & Mobile)
-    $('#filterFormMobile, #filterFormDesktop, form').on('submit', function() {
-        // Cek jika ini form pencarian/filter, tampilkan loading
-        if($(this).attr('method')?.toUpperCase() === 'GET') {
-            showFilterLoading();
-        }
-    });
+    // 2. Desktop Filter Buttons
+    const filterBtn = document.getElementById('filterBtn');
+    const refreshBTN = document.getElementById('refreshBTN');
+    const searchSubmitBtn = document.getElementById('searchSubmitBtn');
+    const searchInput = document.getElementById('searchInput');
 
-    // 3. Handle klik link navigasi/breadcumb ke data customer
-    $('a[href="{{ route('customer.data') }}"]').on('click', function(e) {
-        if (!$(this).hasClass('page-link')) { // Supaya tidak tabrakan dengan pagination
-            e.preventDefault();
-            let href = $(this).attr('href');
-            Swal.fire({
-                title: 'Memuat...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-            window.location.href = href;
-        }
-    });
+    if (filterBtn) filterBtn.addEventListener('click', () => executeFilter(false));
+    if (searchSubmitBtn) searchSubmitBtn.addEventListener('click', () => executeFilter(false));
+    if (refreshBTN) refreshBTN.addEventListener('click', resetAllFilters);
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') executeFilter(false);
+        });
+    }
 
-    // 4. Inisialisasi Session Flash Messages (SweetAlert)
+    // 3. Mobile Filter Buttons
+    const filterBtnMobile = document.getElementById('filterBtnMobile');
+    const refreshBTNMobile = document.getElementById('refreshBTNMobile');
+    const searchSubmitBtnMobile = document.getElementById('searchSubmitBtnMobile');
+    const searchInputMobile = document.getElementById('searchInputMobile');
+
+    if (filterBtnMobile) filterBtnMobile.addEventListener('click', () => executeFilter(true));
+    if (searchSubmitBtnMobile) searchSubmitBtnMobile.addEventListener('click', () => executeFilter(true));
+    if (refreshBTNMobile) refreshBTNMobile.addEventListener('click', resetAllFilters);
+    if (searchInputMobile) {
+        searchInputMobile.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') executeFilter(true);
+        });
+    }
+
+    // 4. Session Flash Alerts
     @if(session('success'))
         Swal.fire({
             icon: 'success',
@@ -1155,10 +828,10 @@ $(document).ready(function() {
 function deleteCustomer(id, name) {
     Swal.fire({
         title: 'Hapus User?',
-        html: `Apakah Anda yakin ingin menghapus user <strong>${name}</strong>?`,
+        html: `Apakah Anda yakin ingin menghapus user <b>${name}</b>?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
+        confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Ya, Hapus',
         cancelButtonText: 'Batal'
@@ -1171,7 +844,6 @@ function deleteCustomer(id, name) {
             });
 
             $.ajax({
-                // PERBAIKAN URL DI SINI
                 url: "/customer/" + id + "/destroy",
                 type: 'DELETE',
                 data: {
@@ -1190,12 +862,10 @@ function deleteCustomer(id, name) {
                     });
                 },
                 error: function(xhr) {
-                    // Jika controller mengirim error (misal: relasi masih ada)
                     let errorMsg = 'Terjadi kesalahan saat menghapus data.';
                     if (xhr.responseJSON && xhr.responseJSON.error) {
                         errorMsg = xhr.responseJSON.error;
                     }
-
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
@@ -1206,46 +876,6 @@ function deleteCustomer(id, name) {
             });
         }
     });
-}
-
-// 6. Fungsi loading untuk pagination (Klik nomor halaman)
-function showPaginationLoading(event) {
-    event.preventDefault();
-    Swal.fire({
-        title: 'Memuat...',
-        html: 'Sedang memuat halaman',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-    window.location.href = event.currentTarget.href;
-}
-
-// 7. Fungsi loading untuk filter
-function showFilterLoading() {
-    Swal.fire({
-        title: 'Memuat...',
-        html: 'Sedang memfilter data',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-}
-
-// 8. Fungsi loading untuk reset filter
-function showResetLoading(event) {
-    event.preventDefault();
-    Swal.fire({
-        title: 'Memuat...',
-        html: 'Sedang mereset filter',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-    window.location.href = event.currentTarget.href;
 }
 </script>
 @endpush

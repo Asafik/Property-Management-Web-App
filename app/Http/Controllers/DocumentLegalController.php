@@ -11,12 +11,16 @@ class DocumentLegalController extends Controller
 {
     public function index($id)
     {
-        $booking = Booking::with(['customer', 'unit'])->findOrFail($id);
+        $booking = Booking::with(['customer.documents', 'unit.landBank'])->findOrFail($id);
 
         // Ambil master dokumen
         $documents = Document::orderBy('id')->get();
         $uploads = DocumentUpload::where('booking_id', $id)->get()->keyBy('document_id');
-        return view('marketing.cash_dokument_legal', compact('booking', 'documents','uploads'));
+        $customerDocs = $booking->customer ? $booking->customer->documents->keyBy(function($doc) {
+            return strtolower(trim($doc->document_name));
+        }) : collect();
+
+        return view('marketing.cash_dokument_legal', compact('booking', 'documents', 'uploads', 'customerDocs'));
     }
 
         public function store(Request $request, $bookingId)

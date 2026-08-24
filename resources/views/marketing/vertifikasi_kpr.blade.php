@@ -2,6 +2,887 @@
 
 @section('title', 'Verifikasi KPR - Properti Management')
 @section('content')
+<style>
+/* =========================================================
+   TRANSAKSI VERIFIKASI KPR STYLES
+   ========================================================= */
+
+.transaksi-page {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    color: #2c2e3f;
+}
+
+.card {
+    border-radius: 14px !important;
+    border: none !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.card-body {
+    padding: 1.5rem !important;
+}
+
+/* CUSTOMER HEADER */
+.customer-header {
+    width: 100%;
+}
+
+.customer-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    flex-shrink: 0;
+}
+
+.customer-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.customer-booking {
+    font-size: 0.88rem;
+    color: #8b8fa3;
+    font-weight: 600;
+}
+
+.customer-unit-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    background: #fbf9ff;
+    border: 1px solid #ede4ff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+}
+
+.customer-unit-info .info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-unit-info .info-item small {
+    font-size: 0.75rem;
+    color: #8b8fa3;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.customer-unit-info .info-item span {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+/* BADGES */
+.badge-gradient-success {
+    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    color: #fff !important;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.badge-gradient-primary {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #fff !important;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.badge-gradient-secondary {
+    background: #6c757d !important;
+    color: #fff !important;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+/* SECTION TITLES */
+.transaksi-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f3f7;
+}
+
+.transaksi-section-title i {
+    font-size: 1.35rem;
+    color: #9a55ff;
+}
+
+/* STEPPER PROGRESS */
+.transaksi-progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
+}
+
+.transaksi-progress-top .transaksi-muted {
+    color: #64748b !important;
+    font-weight: 500;
+}
+
+.transaksi-progress-top .step-counter-purple {
+    color: #9a55ff !important;
+    font-weight: 700;
+}
+
+.transaksi-progress {
+    height: 8px;
+    background: #eef1f6;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.transaksi-progress-bar {
+    height: 100%;
+    background: #9a55ff;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.transaksi-steps {
+    display: grid;
+    position: relative;
+}
+
+/* Connecting Line on parent container (Always 100% behind icons) */
+.transaksi-steps::before {
+    content: '';
+    position: absolute;
+    top: 26px;
+    left: calc(100% / 14);
+    right: calc(100% / 14);
+    height: 2.5px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+
+@media (max-width: 767px) {
+    .transaksi-steps {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem 0.5rem;
+    }
+    .transaksi-steps::before {
+        display: none !important;
+    }
+}
+
+.transaksi-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.25rem 0.15rem;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 2;
+}
+
+.transaksi-step.completed,
+.transaksi-step.active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.transaksi-step-icon {
+    position: relative;
+    z-index: 3;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.65rem;
+    font-size: 1.25rem;
+    background: #f1f3f7 !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 0 0 1px #edf2f7;
+    color: #94a3b8;
+    transition: all 0.25s ease;
+}
+
+.transaksi-step.completed .transaksi-step-icon,
+.transaksi-step.active .transaksi-step-icon {
+    background: #28c76f !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 0 0 1px #28c76f;
+    color: #ffffff !important;
+}
+
+.transaksi-step-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+    white-space: nowrap;
+}
+
+.transaksi-step small {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    line-height: 1.3;
+    display: block;
+}
+
+/* DETAIL KPR LIST */
+.transaksi-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.transaksi-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px dashed #f0f2f7;
+}
+
+.transaksi-detail-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.transaksi-detail-item > span:first-child {
+    color: #8b8fa3;
+    font-weight: 600;
+}
+
+.transaksi-detail-item > span:last-child {
+    color: #2c2e3f;
+    font-weight: 700;
+    text-align: right;
+}
+
+.transaksi-detail-item .highlight {
+    color: #28c76f !important;
+    font-size: 0.98rem;
+}
+
+.transaksi-handler {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    background: #f8fafc;
+    border: 1px solid #edf0f5;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+}
+
+.transaksi-handler-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+/* INLINE ALERTS */
+.transaksi-inline-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    margin-bottom: 1.25rem;
+}
+
+.transaksi-inline-alert i {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.transaksi-inline-alert.success {
+    background: #eefcf3;
+    border: 1px solid #cbf4d8;
+    color: #1b7a42;
+}
+
+.transaksi-inline-alert.warning {
+    background: #fff9ed;
+    border: 1px solid #ffe6be;
+    color: #b26b00;
+}
+
+.transaksi-inline-alert.info {
+    background: #f3f8ff;
+    border: 1px solid #dbeafe;
+    color: #1d4ed8;
+}
+
+.transaksi-inline-alert.danger {
+    background: #fef2f2;
+    border: 1px solid #fed7d7;
+    color: #b91c1c;
+}
+
+/* DOCUMENT TABLE */
+.transaksi-doc-table {
+    width: 100%;
+}
+
+.transaksi-doc-table thead th {
+    background: #f8fafc;
+    color: #8b8fa3;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1.5px solid #edf0f5;
+}
+
+.transaksi-doc-table tbody td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #f1f3f7;
+    font-size: 0.88rem;
+    vertical-align: middle;
+}
+
+.transaksi-doc-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.transaksi-doc-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(154, 85, 255, 0.1);
+    color: #9a55ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.transaksi-doc-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #9a55ff;
+    color: #9a55ff;
+    background: #ffffff;
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+    font-size: 1.1rem;
+}
+
+.transaksi-doc-action:hover {
+    background: #9a55ff;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.transaksi-doc-action.disabled {
+    border-color: #e2e8f0;
+    color: #cbd5e1;
+    background: #f8fafc;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* SIDEBAR & SUMMARY */
+.transaksi-sticky {
+    position: sticky;
+    top: 20px;
+}
+
+.transaksi-status-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.transaksi-status-banner.success {
+    background: linear-gradient(135deg, #eefcf3, #dcfce7);
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.transaksi-status-banner.warning {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.transaksi-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.transaksi-summary-box {
+    padding: 0.85rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.transaksi-summary-box.success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.transaksi-summary-box.success .label {
+    font-size: 0.75rem;
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.transaksi-summary-box.success .value {
+    font-size: 1.4rem;
+    color: #15803d;
+    font-weight: 800;
+}
+
+.transaksi-summary-box.danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.transaksi-summary-box.danger .label {
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.transaksi-summary-box.danger .value {
+    font-size: 1.4rem;
+    color: #b91c1c;
+    font-weight: 800;
+}
+
+.transaksi-sidebar-section {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #f1f3f7;
+}
+
+.transaksi-sidebar-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 0.65rem;
+}
+
+.transaksi-mini-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.transaksi-mini-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.transaksi-mini-list li i {
+    font-size: 1rem;
+    color: #9a55ff;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.summary-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.transaksi-decision-summary.approve .summary-state {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.transaksi-decision-summary.reject .summary-state {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* DECISION RADIO CARDS */
+.transaksi-decision-card {
+    position: relative;
+    height: 100%;
+}
+
+.transaksi-decision-card input[type="radio"] {
+    display: none;
+}
+
+.transaksi-decision-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1.15rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    height: 100%;
+    margin-bottom: 0;
+}
+
+.transaksi-decision-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.transaksi-decision-card.approve .transaksi-decision-icon {
+    background: #eefcf3;
+    color: #28c76f;
+}
+
+.transaksi-decision-card.reject .transaksi-decision-icon {
+    background: #fef2f2;
+    color: #ea5455;
+}
+
+.transaksi-decision-content {
+    flex: 1;
+}
+
+.transaksi-decision-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 0.25rem;
+}
+
+.transaksi-decision-desc {
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.35;
+}
+
+.transaksi-decision-check {
+    font-size: 1.25rem;
+    color: #cbd5e1;
+    transition: all 0.25s ease;
+}
+
+.transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label {
+    border-color: #28c76f;
+    background: #f6fcf8;
+    box-shadow: 0 6px 18px rgba(40, 199, 111, 0.15);
+}
+
+.transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-check {
+    color: #28c76f;
+}
+
+.transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label {
+    border-color: #ea5455;
+    background: #fff8f8;
+    box-shadow: 0 6px 18px rgba(234, 84, 85, 0.15);
+}
+
+.transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-check {
+    color: #ea5455;
+}
+
+/* FORM SHELL */
+.transaksi-form-shell {
+    display: none;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+.transaksi-form-shell.approve {
+    background: #f6fcf8;
+    border: 1.5px solid #d1f2dc;
+}
+
+.transaksi-form-shell.reject {
+    background: #fff8f8;
+    border: 1.5px solid #fed7d7;
+}
+
+.transaksi-form-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.transaksi-form-title.approve {
+    color: #15803d;
+}
+
+.transaksi-form-title.reject {
+    color: #b91c1c;
+}
+
+.transaksi-form-group {
+    margin-bottom: 1rem;
+}
+
+.transaksi-form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 0.4rem;
+}
+
+.transaksi-form-control {
+    width: 100%;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.88rem;
+    color: #2c2e3f;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.transaksi-form-control:focus {
+    outline: none;
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
+}
+
+/* FILE UPLOAD STYLING */
+.transaksi-file-upload {
+    position: relative;
+}
+
+.transaksi-file-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.transaksi-file-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.transaksi-file-upload:hover .transaksi-file-label {
+    border-color: #9a55ff;
+    background: #fbf9ff;
+}
+
+.transaksi-file-label i {
+    font-size: 1.5rem;
+    color: #9a55ff;
+}
+
+.transaksi-file-info span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.transaksi-file-info small {
+    display: block;
+    font-size: 0.75rem;
+    color: #8b8fa3;
+}
+
+/* NEXT STEP RADIO GRID */
+.transaksi-next-step-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+}
+
+.transaksi-next-card input[type="radio"] {
+    display: none;
+}
+
+.transaksi-next-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+}
+
+.transaksi-next-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.transaksi-next-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.transaksi-next-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.transaksi-next-desc {
+    font-size: 0.75rem;
+    color: #8b8fa3;
+    line-height: 1.3;
+}
+
+.transaksi-next-check {
+    font-size: 1.15rem;
+    color: #cbd5e1;
+}
+
+.transaksi-next-card input[type="radio"]:checked + .transaksi-next-label {
+    border-color: #9a55ff;
+    background: #faf7ff;
+}
+
+.transaksi-next-card input[type="radio"]:checked + .transaksi-next-label .transaksi-next-icon {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff;
+}
+
+.transaksi-next-card input[type="radio"]:checked + .transaksi-next-label .transaksi-next-check {
+    color: #9a55ff;
+}
+
+/* ACTION BAR */
+.transaksi-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f3f7;
+}
+
+.transaksi-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.35rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+}
+
+.transaksi-btn-primary {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+}
+
+.transaksi-btn-primary:hover {
+    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+.transaksi-btn-secondary {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.transaksi-btn-secondary:hover {
+    background: #e2e8f0;
+    color: #334155;
+    transform: translateY(-2px);
+}
+
+.transaksi-error-box {
+    display: none;
+}
+</style>
     <div class="transaksi-page">
         <div class="row">
             <div class="col-12">
@@ -150,7 +1031,7 @@
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            <span>Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
+                            <span class="step-counter-purple">Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -226,8 +1107,7 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                 @else
-                                    <div
-                                        class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
+                                    <div class="transaksi-step-icon">
                                         <i class="mdi {{ $config['icon'] }}"></i>
                                     </div>
                                 @endif

@@ -30,7 +30,7 @@ class TamuController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $query = Guest::with(['project', 'unit', 'employee']);
+        $query = Guest::with(['project', 'unit', 'employee', 'marketingTask']);
 
         if ($request->filled('search')) {
             $search = $request->search;

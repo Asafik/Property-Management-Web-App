@@ -6,435 +6,303 @@
 
     <style>
         .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
             border: none !important;
+            border-radius: 12px !important;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.25rem;
+            background: #ffffff;
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.08) !important;
         }
 
         .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
+            background: #ffffff !important;
+            border-bottom: 1px solid #f0f2f5 !important;
+            padding: 1rem 1.25rem;
+            border-top-left-radius: 12px !important;
+            border-top-right-radius: 12px !important;
         }
 
         .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2c2e3f;
             margin-bottom: 0;
         }
 
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.2rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f2f8;
+            transition: all 0.3s ease;
         }
 
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.12);
+        }
+
+        .stat-card .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stat-card .stat-icon.total {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+        }
+
+        .stat-card .stat-icon.prospek {
+            background: linear-gradient(135deg, #ff9a9e, #f6416c);
+            box-shadow: 0 4px 12px rgba(246, 65, 108, 0.3);
+        }
+
+        .stat-card .stat-icon.followup {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
+        }
+
+        .stat-card .stat-icon.converted {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
+        }
+
+        .stat-card .stat-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-content h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+            color: #2c2e3f;
+            line-height: 1.2;
+        }
+
+        .stat-card .stat-content p {
+            font-size: 0.82rem;
+            color: #8a94a6;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
         }
 
         .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+            background: #fbfaff;
+            border: 1px solid #efe6ff;
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1.25rem;
-            border: none;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
         }
 
         .filter-card .form-control,
         .filter-card .form-select {
             padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             border-radius: 8px;
-            height: auto;
-            min-height: 40px;
+            height: 38px;
             border: 1px solid #e0e4e9;
-        }
-
-        .form-control,
-        .form-select,
-        textarea.form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
             background-color: #ffffff;
             color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select,
-            textarea.form-control {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
         }
 
         .form-control:focus,
-        .form-select:focus,
-        textarea.form-control:focus {
+        .form-select:focus {
             border-color: #9a55ff;
             box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
             outline: none;
         }
 
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
         .btn-gradient-primary {
             background: linear-gradient(to right, #da8cff, #9a55ff) !important;
             color: #ffffff !important;
+            border: none;
         }
 
         .btn-gradient-success {
-            background: linear-gradient(135deg, #43e97b, #38f9d7) !important;
+            background: linear-gradient(135deg, #11998e, #38ef7d) !important;
             color: #ffffff !important;
+            border: none;
         }
 
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+        .btn-gradient-danger {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b) !important;
             color: #ffffff !important;
+            border: none;
         }
 
         .btn-gradient-secondary {
             background: #6c757d !important;
             color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
+            border: none;
         }
 
         .btn-icon-only {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             padding: 0;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-        }
-
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .btn-icon-only-mobile {
-            width: 100%;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
-
-        .btn-icon-only-mobile i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .header-action-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        @media (max-width: 576px) {
-            .header-action-group {
-                width: 100%;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-
-            .header-action-group .btn-add {
-                grid-column: span 2;
-            }
-
-            .header-action-group .btn {
-                width: 100%;
-                justify-content: center;
-                display: flex;
-                align-items: center;
-            }
-
-            .header-action-group .d-none.d-sm-inline {
-                display: inline !important;
-                /* Force text to show on mobile since we have grid space */
-                margin-left: 4px;
-            }
         }
 
         .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
             border-radius: 8px;
-            margin-bottom: 0.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #9a55ff #f0f0f0;
-        }
-
-        .table-responsive::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .table-responsive::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .table-responsive::-webkit-scrollbar-corner {
-            background: #f0f0f0;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
         }
 
         .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
+            background: #f8f9fc !important;
+            color: #6e707e !important;
+            font-weight: 700;
+            font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 12px 10px;
             white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            vertical-align: middle;
         }
 
         .table thead th.sortable {
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .table thead th.sortable:hover {
-            color: #7a3fcc;
-        }
-
-        .table thead th i {
-            font-size: 0.8rem;
-            margin-left: 4px;
-            opacity: 0.5;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table thead th:first-child {
-            padding-left: 0.5rem;
-            width: 40px;
-            text-align: center;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.5rem;
-            font-weight: 500;
-            width: 40px;
-            text-align: center;
+            color: #9a55ff !important;
         }
 
         .table tbody td {
             vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
+            font-size: 0.88rem;
+            padding: 12px 10px;
+            border-bottom: 1px solid #f2f4f8;
             color: #2c2e3f;
             white-space: nowrap;
         }
 
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
         .table tbody tr:hover {
-            background-color: #f8f9fa;
+            background-color: #faf9ff;
+        }
+
+        .name-avatar {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(154, 85, 255, 0.25);
+        }
+
+        .name-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .customer-initial {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .info-icon {
+            color: #9a55ff;
+            font-size: 0.95rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
         }
 
         .badge-status {
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
             font-weight: 600;
-            font-size: 0.82rem;
-            display: inline-block;
-            color: #fff;
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .badge-status.new {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
         }
 
         .badge-status.follow_up {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
 
         .badge-status.negotiation {
-            background: linear-gradient(135deg, #ffc107, #ff9800);
+            background: #f3e8ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
         }
 
         .badge-status.converted {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
         .badge-status.lost {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
         }
 
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
+        .badge-status.hot_prospect {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
         }
 
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
+        .badge-status.medium_prospect {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
 
-        .badge-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .badge-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
+        .badge-status.cold_prospect {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
         }
 
         .btn-action {
@@ -446,185 +314,59 @@
             justify-content: center;
             border-radius: 8px;
             margin: 0 2px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             border: none;
             cursor: pointer;
+            color: #ffffff !important;
         }
 
-        .btn-action i {
-            font-size: 1rem;
-        }
-
-        .btn-action.edit {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .btn-action.edit:hover {
+        .btn-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
-        }
-
-        .btn-action.delete {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: white;
-        }
-
-        .btn-action.delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         .btn-action.info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: white;
-        }
-
-        .btn-action.info:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
+            background: linear-gradient(135deg, #06b6d4, #0ea5e9);
         }
 
         .btn-action.success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: white;
+            background: linear-gradient(135deg, #10b981, #059669);
         }
 
-        .btn-action.success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        .btn-action.edit {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
         }
 
-        .customer-info {
+        .btn-action.delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .header-action-group {
             display: flex;
-            align-items: center;
-            gap: 0.65rem;
-        }
-
-        .customer-initial {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: 700;
-            flex-shrink: 0;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
-        }
-
-        .name-avatar {
-            width: 38px !important;
-            height: 38px !important;
-            border-radius: 50% !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.95rem !important;
-            color: #9a55ff;
-            flex-shrink: 0;
-            background: rgba(154, 85, 255, 0.1);
-            border: 1px solid rgba(154, 85, 255, 0.2);
-        }
-
-        .info-icon {
-            color: #9a55ff;
-            font-size: 1rem;
-            margin-right: 0.35rem;
-            vertical-align: middle;
-        }
-
-        .name-avatar {
-            width: 38px;
-            height: 38px;
-            min-width: 38px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: #fff;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
-        }
-
-        .name-wrap {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .form-badge-rp {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 58px;
-            padding: 0.6rem 0.9rem;
-            border-radius: 8px 0 0 8px;
-            background: linear-gradient(135deg, #f2ecff, #e7dbff);
-            color: #7a3fcc;
-            font-weight: 700;
-            border: 1px solid #e9ecef;
-            border-right: none;
-        }
-
-        .input-group-rp .form-control {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .rp-example {
-            font-size: 0.75rem;
-            color: #8a94a6;
-            margin-top: 0.35rem;
-        }
-
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .modal-content {
             border: none;
             border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        @media (min-width: 576px) {
+            .modal-dialog-medium {
+                max-width: 680px !important;
+                margin-left: auto;
+                margin-right: auto;
+            }
         }
 
         .modal-header {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: white;
-            border-radius: 16px 16px 0 0;
-            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: white !important;
+            padding: 1.1rem 1.5rem;
+            border-bottom: none;
         }
 
         .modal-header .btn-close {
@@ -632,264 +374,77 @@
         }
 
         .modal-title {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.1rem;
+            color: #ffffff !important;
         }
 
         .modal-body {
             padding: 1.5rem;
+            background: #ffffff;
+        }
+
+        .modal-body .form-label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #3b3f5c !important;
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.3px;
+        }
+
+        .modal-body .form-control,
+        .modal-body .form-select,
+        .modal-body select.form-control {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px !important;
+            padding: 0.6rem 0.85rem;
+            font-size: 0.88rem;
+            color: #2c2e3f;
+            background-color: #ffffff;
+            height: auto;
+            min-height: 40px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-body .form-control:focus,
+        .modal-body .form-select:focus,
+        .modal-body select.form-control:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+            outline: none;
         }
 
         .modal-footer {
-            border-top: 1px solid #e9ecef;
+            background: #fafbfe;
+            border-top: 1px solid #edf2f9;
             padding: 1rem 1.5rem;
-        }
-
-        .modal-scroll-body {
-            max-height: 70vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: thin;
-            scrollbar-color: #9a55ff #f1f1f1;
-        }
-
-        .modal-scroll-body::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .modal-scroll-body::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .modal-scroll-body::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #da8cff, #9a55ff);
-            border-radius: 10px;
-        }
-
-        .modal-scroll-body::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #c678ff, #7f3dff);
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 16px;
-            padding: 1.2rem;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.12);
-        }
-
-        .stat-card .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .stat-card .stat-icon.total {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .stat-card .stat-icon.prospek {
-            background: linear-gradient(135deg, #ff9a9e, #f6416c);
-        }
-
-        .stat-card .stat-icon.followup {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-        }
-
-        .stat-card .stat-icon.converted {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-        }
-
-        .stat-card .stat-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .stat-card .stat-content h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-            color: #2c2e3f;
-            line-height: 1.2;
-        }
-
-        .stat-card .stat-content p {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .text-primary {
-            color: #9a55ff !important;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .text-muted {
-            color: #a5b3cb !important;
-        }
-
-        .fw-bold {
-            font-weight: 600 !important;
-        }
-
-        h3.text-dark {
-            font-size: 1.3rem !important;
-            font-weight: 700;
-            color: #2c2e3f !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-            h3.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-            h3.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        .mdi {
-            vertical-align: middle;
-        }
-
-        .filter-row-desktop {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .filter-row-desktop .filter-text {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .filter-row-mobile {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .stat-card {
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-
-            .stat-card .stat-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.4rem;
-            }
-
-            .stat-card .stat-content h3 {
-                font-size: 1.3rem;
-            }
-
-            .stat-card .stat-content p {
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .filter-row-desktop {
-                display: none;
-            }
-
-            .filter-row-mobile {
-                display: block;
-                margin-top: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .stat-card {
-                padding: 0.75rem;
-                gap: 0.5rem;
-            }
-
-            .stat-card .stat-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .stat-card .stat-content h3 {
-                font-size: 1.1rem;
-            }
-
-            .stat-card .stat-content p {
-                font-size: 0.7rem;
-            }
-        }
-
-        .badge-status.hot_prospect {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-status.medium_prospect {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-status.cold_prospect {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .badge-status.converted {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .badge-status.lost {
-            background: #f1f5f9;
-            color: #475569;
         }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
 
-
-        <div class="row mb-3 mb-sm-3 mb-md-4">
+        <!-- Header Halaman -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center px-1">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">
+                            <i class="mdi mdi-account-group me-2" style="color: #9a55ff;"></i>Data Tamu / Proyeksi
+                        </h3>
+                        <p class="text-muted mb-0">Kelola data pengunjung dan calon pembeli unit properti</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistic Cards - Style Dashboard -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-account-group me-2" style="color: #9a55ff;"></i>Data Tamu / Proyeksi
-                            </h3>
-                            <p class="text-muted mb-0">
-                                Kelola data pengunjung dan calon pembeli unit properti
-                            </p>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalGuests ?? 0 }}</h3>
+                            <p class="text-muted mb-0">Total Tamu / Proyeksi</p>
                         </div>
                         <div class="d-none d-sm-block">
                             <i class="mdi mdi-account-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
@@ -897,239 +452,197 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon total">
-                        <i class="mdi mdi-account-group"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>{{ $totalGuests ?? 0 }}</h3>
-                        <p>Total Tamu / Proyeksi</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalProspek ?? 0 }}</h3>
+                            <p class="text-muted mb-0">Total Proyeksi Aktif</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-fire" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon prospek">
-                        <i class="mdi mdi-fire"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>{{ $totalProspek ?? 0 }}</h3>
-                        <p>Total Proyeksi Aktif</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon followup">
-                        <i class="mdi mdi-phone-check"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>{{ $totalFollowUp ?? 0 }}</h3>
-                        <p>Follow Up Hari Ini</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalFollowUp ?? 0 }}</h3>
+                            <p class="text-muted mb-0">Follow Up Hari Ini</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-phone-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon converted">
-                        <i class="mdi mdi-handshake"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>{{ $guests->where('status', 'converted')->count() ?? 0 }}</h3>
-                        <p>Converted / Deal</p>
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $guests->where('status', 'converted')->count() ?? 0 }}</h3>
+                            <p class="text-muted mb-0">Converted / Deal</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-handshake" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row mt-2 mt-sm-2 mt-md-3">
+        <!-- Card Tabel & Filter -->
+        <div class="row">
             <div class="col-12">
-                <div class="card">
-                    <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-3">
                         <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Tamu / Prospek
+                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar Tamu / Prospek
                         </h5>
 
                         <div class="header-action-group">
                             <button class="btn btn-gradient-success" onclick="$('#modalImportTamu').modal('show')">
-                                <i class="mdi mdi-import"></i><span class="d-none d-sm-inline">Import</span>
+                                <i class="mdi mdi-import me-1"></i><span class="d-none d-sm-inline">Import</span>
                             </button>
                             <button class="btn btn-gradient-danger" onclick="$('#modalExportTamu').modal('show')">
-                                <i class="mdi mdi-export"></i><span class="d-none d-sm-inline">Export</span>
+                                <i class="mdi mdi-export me-1"></i><span class="d-none d-sm-inline">Export</span>
                             </button>
                             <button type="button" class="btn btn-gradient-primary btn-add" data-bs-toggle="modal"
                                 data-bs-target="#modalGuest">
-                                <i class="mdi mdi-plus"></i><span class="d-none d-sm-inline">Tambah Proyeksi</span>
+                                <i class="mdi mdi-plus me-1"></i><span class="d-none d-sm-inline">Tambah Proyeksi</span>
                             </button>
                         </div>
                     </div>
 
                     <div class="card-body">
-                        <div class="filter-card mb-4">
-                            <div class="card-body">
-                                <div class="filter-row-desktop">
-                                    <div class="filter-text">
-                                        <i class="mdi mdi-filter-outline"></i>
-                                        <span>Filter data tamu / prospek</span>
-                                    </div>
-
-                                    <form method="GET" action="{{ route('customer.tamu') }}" id="filterFormDesktop">
-                                        <div class="row g-2 align-items-end w-100">
-                                            <div class="col-md-3">
-                                                <label class="form-label">Cari</label>
-                                                <input type="text" class="form-control" name="search" id="searchInput"
-                                                    placeholder="Nama tamu / prospek..." value="{{ request('search') }}">
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="form-label">Agent</label>
-                                                <select class="form-control" name="agent" id="agentSelect">
-                                                    <option value="">Semua Agent</option>
-                                                    @foreach ($agents as $agent)
-                                                        <option value="{{ $agent->id }}"
-                                                            {{ request('agent') == $agent->id ? 'selected' : '' }}>
-                                                            {{ $agent->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">Status</label>
-                                                <select class="form-control" name="status" id="statusSelect">
-                                                    <option value="">Semua Status</option>
-                                                    <option value="new"
-                                                        {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
-                                                    <option value="follow_up"
-                                                        {{ request('status') == 'follow_up' ? 'selected' : '' }}>Sudah
-                                                        Dihubungi</option>
-                                                    <option value="negotiation"
-                                                        {{ request('status') == 'negotiation' ? 'selected' : '' }}>
-                                                        Negosiasi</option>
-                                                    <option value="converted"
-                                                        {{ request('status') == 'converted' ? 'selected' : '' }}>Dikonversi
-                                                        / Deal</option>
-                                                    <option value="lost"
-                                                        {{ request('status') == 'lost' ? 'selected' : '' }}>Gagal / Batal
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control" name="per_page">
-                                                    <option value="10"
-                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25"
-                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50"
-                                                        {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100"
-                                                        {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label invisible d-none d-md-block">Aksi</label>
-                                                <div class="d-flex gap-2">
-                                                    <button type="submit"
-                                                        class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                        title="Filter" onclick="showFilterLoading()">
-                                                        <i class="mdi mdi-filter"></i>
+                        <!-- FILTER SECTION -->
+                        <div class="filter-card mb-3">
+                            <!-- DESKTOP & TABLET -->
+                            <div class="d-none d-md-block">
+                                <form method="GET" action="{{ route('customer.tamu') }}" id="filterFormDesktop">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search -->
+                                            <div style="min-width: 200px; max-width: 260px; flex: 1;">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                        placeholder="Nama tamu / prospek..." value="{{ request('search') }}"
+                                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                    <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3"
+                                                        type="submit" title="Cari"
+                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; height: 38px; box-shadow: none;">
+                                                        <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                                     </button>
-                                                    <a href="{{ route('customer.tamu') }}"
-                                                        class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                        title="Reset" onclick="showResetLoading(event)">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </a>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                </div>
 
-                                <div class="filter-row-mobile">
-                                    <div class="filter-text mb-2">
-                                        <i class="mdi mdi-filter-outline"></i>
-                                        <span>Filter data tamu / prospek</span>
-                                    </div>
-                                    <form method="GET" action="{{ route('customer.tamu') }}" id="filterFormMobile">
-                                        <div class="row g-2">
-                                            <div class="col-12 mb-2">
-                                                <label class="form-label">Cari</label>
-                                                <input type="text" class="form-control" name="search"
-                                                    placeholder="Nama tamu / prospek..." value="{{ request('search') }}">
-                                            </div>
-                                            <div class="col-12 mb-2">
-                                                <label class="form-label">Agent</label>
-                                                <select class="form-control" name="agent">
+                                            <!-- Agent -->
+                                            <div style="min-width: 170px;">
+                                                <select class="form-control" name="agent" id="agentSelect" onchange="this.form.submit()">
                                                     <option value="">Semua Agent</option>
                                                     @foreach ($agents as $agent)
-                                                        <option value="{{ $agent->id }}"
-                                                            {{ request('agent') == $agent->id ? 'selected' : '' }}>
+                                                        <option value="{{ $agent->id }}" {{ request('agent') == $agent->id ? 'selected' : '' }}>
                                                             {{ $agent->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-12 mb-2">
-                                                <label class="form-label">Status</label>
-                                                <select class="form-control" name="status">
+
+                                            <!-- Status -->
+                                            <div style="min-width: 160px;">
+                                                <select class="form-control" name="status" id="statusSelect" onchange="this.form.submit()">
                                                     <option value="">Semua Status</option>
-                                                    <option value="new"
-                                                        {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
-                                                    <option value="follow_up"
-                                                        {{ request('status') == 'follow_up' ? 'selected' : '' }}>Sudah
-                                                        Dihubungi</option>
-                                                    <option value="negotiation"
-                                                        {{ request('status') == 'negotiation' ? 'selected' : '' }}>
-                                                        Negosiasi</option>
-                                                    <option value="converted"
-                                                        {{ request('status') == 'converted' ? 'selected' : '' }}>Dikonversi
-                                                        / Deal</option>
-                                                    <option value="lost"
-                                                        {{ request('status') == 'lost' ? 'selected' : '' }}>Gagal / Batal
-                                                    </option>
+                                                    <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
+                                                    <option value="follow_up" {{ request('status') == 'follow_up' ? 'selected' : '' }}>Sudah Dihubungi</option>
+                                                    <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>Negosiasi</option>
+                                                    <option value="converted" {{ request('status') == 'converted' ? 'selected' : '' }}>Dikonversi / Deal</option>
+                                                    <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>Gagal / Batal</option>
                                                 </select>
-                                            </div>
-                                            <div class="col-12 mb-2">
-                                                <label class="form-label">Tampil</label>
-                                                <select class="form-control" name="per_page">
-                                                    <option value="10"
-                                                        {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25"
-                                                        {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50"
-                                                        {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100"
-                                                        {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary btn-icon-only-mobile w-100"
-                                                    onclick="showFilterLoading()">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-6">
-                                                <a href="{{ route('customer.tamu') }}"
-                                                    class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
-                                                    onclick="showResetLoading(event)">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
+
+                                        <!-- Right side: Limit + Reset -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 85px;">
+                                                <select class="form-control" name="per_page" onchange="this.form.submit()">
+                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <a href="{{ route('customer.tamu') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- MOBILE VERSION -->
+                            <div class="d-block d-md-none">
+                                <form method="GET" action="{{ route('customer.tamu') }}" id="filterFormMobile">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search"
+                                                    placeholder="Nama tamu / prospek..." value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3"
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select class="form-control" name="agent">
+                                                <option value="">Semua Agent</option>
+                                                @foreach ($agents as $agent)
+                                                    <option value="{{ $agent->id }}" {{ request('agent') == $agent->id ? 'selected' : '' }}>
+                                                        {{ $agent->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select class="form-control" name="status">
+                                                <option value="">Semua Status</option>
+                                                <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
+                                                <option value="follow_up" {{ request('status') == 'follow_up' ? 'selected' : '' }}>Sudah Dihubungi</option>
+                                                <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>Negosiasi</option>
+                                                <option value="converted" {{ request('status') == 'converted' ? 'selected' : '' }}>Dikonversi / Deal</option>
+                                                <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>Gagal / Batal</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select class="form-control" name="per_page">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary w-100">
+                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('customer.tamu') }}" class="btn btn-gradient-secondary w-100 text-center">
+                                                <i class="mdi mdi-refresh me-1"></i> Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
@@ -1160,6 +673,7 @@
                                         </th>
                                         <th>Email</th>
                                         <th>Sumber Info</th>
+                                        <th>Tugas</th>
                                         <th>Proyek</th>
                                         <th>Nama - Unit</th>
                                         <th>Jenis & Tipe</th>
@@ -1231,6 +745,13 @@
                                             </td>
                                             <td>
                                                 <i class="mdi mdi-bullhorn-outline info-icon"></i>{{ $guest->source }}
+                                            </td>
+                                            <td>
+                                                @if($guest->marketingTask)
+                                                    <i class="mdi mdi-clipboard-text-outline info-icon"></i>{{ $guest->marketingTask->nama_tugas }}
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 <span class="icon-text">
@@ -1431,7 +952,7 @@
     </div>
 
     <div class="modal fade" id="modalGuest" tabindex="-1" aria-labelledby="modalGuestLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-medium">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalGuestLabel">
@@ -1446,26 +967,16 @@
 
                     <div class="modal-body modal-scroll-body">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 mb-3">
                                 <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="name"
                                     placeholder="Masukkan nama lengkap" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Marketing Task</label>
-                                <select class="form-control" name="marketing_task_id">
-                                    <option value="">Pilih Task</option>
-                                    @foreach ($marketingTasks as $task)
-                                        <option value="{{ $task->id }}">{{ $task->nama_tugas }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">No HP <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="phone"
                                     placeholder="Masukkan nomor HP" required>
                             </div>
-
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" placeholder="Masukkan email">
@@ -1483,6 +994,15 @@
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Marketing Task</label>
+                                <select class="form-control" name="marketing_task_id">
+                                    <option value="">Pilih Task</option>
+                                    @foreach ($marketingTasks as $task)
+                                        <option value="{{ $task->id }}">{{ $task->nama_tugas }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Proyek Minat <span class="text-danger">*</span></label>
@@ -1497,10 +1017,20 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tipe Unit</label>
                                 <select class="form-control" name="unit_id" id="unitSelect">
-                                    <option value="">Pilih Unit</option>
+                                    <option value="">-- Pilih Unit --</option>
                                     @foreach ($units as $unit)
+                                        @php
+                                            $uName = $unit->unit_name ?: ($unit->unit_code ?: 'Unit #' . $unit->id);
+                                            if ($unit->block) {
+                                                $uName .= ' (Blok ' . $unit->block . ($unit->unit_number ? ' No. ' . $unit->unit_number : '') . ')';
+                                            }
+                                            if ($unit->type) {
+                                                $uName .= ' - Tipe ' . $unit->type;
+                                            }
+                                        @endphp
                                         <option value="{{ $unit->id }}" data-project="{{ $unit->land_bank_id }}">
-                                            {{ $unit->name }}</option>
+                                            {{ $uName }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -1528,13 +1058,14 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Budget</label>
-                                <div class="d-flex input-group-rp">
-                                    <span class="form-badge-rp">RP</span>
+                                <label class="form-label">Budget (Anggaran)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text fw-bold text-primary" style="background: #f8f6fc; border: 1.5px solid #e2e8f0; border-right: none; font-size: 0.88rem; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Rp</span>
                                     <input type="text" class="form-control" name="budget" id="budgetInput"
-                                        placeholder="1000.0000.000.00">
+                                        placeholder="Contoh: 350.000.000"
+                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
                                 </div>
-                                <small class="rp-example">Contoh: 1000.0000.000.00</small>
+                                <small class="text-muted" style="font-size: 0.75rem;">Format angka otomatis ribuan</small>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -1544,7 +1075,7 @@
 
                             <div class="col-12 mb-3">
                                 <label class="form-label">Catatan</label>
-                                <textarea class="form-control" name="notes" rows="4" placeholder="Masukkan catatan tambahan"></textarea>
+                                <textarea class="form-control" name="notes" rows="3" placeholder="Masukkan catatan tambahan"></textarea>
                             </div>
                         </div>
                     </div>
@@ -1563,7 +1094,7 @@
     </div>
 
     <div class="modal fade" id="modalEditTamu" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-medium">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
@@ -1641,7 +1172,16 @@
                                 <select name="unit_id" id="edit_unit_id" class="form-control">
                                     <option value="">-- Pilih Unit --</option>
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                        @php
+                                            $uName = $unit->unit_name ?: ($unit->unit_code ?: 'Unit #' . $unit->id);
+                                            if ($unit->block) {
+                                                $uName .= ' (Blok ' . $unit->block . ($unit->unit_number ? ' No. ' . $unit->unit_number : '') . ')';
+                                            }
+                                            if ($unit->type) {
+                                                $uName .= ' - Tipe ' . $unit->type;
+                                            }
+                                        @endphp
+                                        <option value="{{ $unit->id }}" data-project="{{ $unit->land_bank_id }}">{{ $uName }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -1838,6 +1378,38 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        const projectsData = @json($projects);
+        const allUnitsData = @json($units);
+
+        function getUnitDisplayName(unit) {
+            let name = unit.unit_name || unit.unit_code || ('Unit #' + unit.id);
+            if (unit.block) {
+                name += ' (Blok ' + unit.block + (unit.unit_number ? ' No. ' + unit.unit_number : '') + ')';
+            }
+            if (unit.type) {
+                name += ' - Tipe ' + unit.type;
+            }
+            return name;
+        }
+
+        function filterUnitsForSelect(selectEl, projectId, selectedUnitId = null) {
+            if (!selectEl) return;
+            selectEl.innerHTML = '<option value="">-- Pilih Unit --</option>';
+
+            let unitsToRender = [];
+            if (!projectId) {
+                unitsToRender = allUnitsData;
+            } else {
+                const selectedProject = projectsData.find(p => p.id == projectId);
+                unitsToRender = (selectedProject && selectedProject.units) ? selectedProject.units : [];
+            }
+
+            unitsToRender.forEach(unit => {
+                const isSelected = selectedUnitId && selectedUnitId == unit.id ? 'selected' : '';
+                selectEl.innerHTML += `<option value="${unit.id}" data-project="${unit.land_bank_id}" ${isSelected}>${getUnitDisplayName(unit)}</option>`;
+            });
+        }
+
         $(document).on('click', '.btnEditTamu', function() {
             let id = $(this).data('id');
 
@@ -1855,7 +1427,9 @@
                     $('#edit_assigned_to').val(data.assigned_to ?? '');
                     $('#edit_status').val(data.status ?? '');
                     $('#edit_land_bank_id').val(data.land_bank_id ?? '');
-                    $('#edit_unit_id').val(data.unit_id ?? '');
+
+                    filterUnitsForSelect(document.getElementById('edit_unit_id'), data.land_bank_id, data.unit_id);
+
                     $('#edit_notes').val(data.notes ?? '');
 
                     if (data.last_follow_up) {
@@ -1943,37 +1517,25 @@
         function formatBudgetCustom(value) {
             let onlyNumbers = value.replace(/\D/g, '');
             if (!onlyNumbers) return '';
-
-            let groups = [];
-            while (onlyNumbers.length > 4) {
-                groups.unshift(onlyNumbers.slice(-2));
-                onlyNumbers = onlyNumbers.slice(0, -2);
-            }
-            if (onlyNumbers.length > 0) {
-                groups.unshift(onlyNumbers);
-            }
-
-            return groups.join('.');
+            return new Intl.NumberFormat('id-ID').format(onlyNumbers);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const projects = @json($projects);
             const projectSelect = document.getElementById('projectSelect');
             const unitSelect = document.getElementById('unitSelect');
+            const editProjectSelect = document.getElementById('edit_land_bank_id');
+            const editUnitSelect = document.getElementById('edit_unit_id');
             const budgetInput = document.getElementById('budgetInput');
 
-            if (projectSelect) {
+            if (projectSelect && unitSelect) {
                 projectSelect.addEventListener('change', function() {
-                    const projectId = this.value;
-                    unitSelect.innerHTML = '<option value="">-- Pilih Unit --</option>';
-                    const selected = projects.find(p => p.id == projectId);
+                    filterUnitsForSelect(unitSelect, this.value);
+                });
+            }
 
-                    if (selected && selected.units?.length > 0) {
-                        selected.units.forEach(unit => {
-                            unitSelect.innerHTML +=
-                                `<option value="${unit.id}">${unit.unit_code ?? ''} - ${unit.name ?? unit.unit_name ?? ''}</option>`;
-                        });
-                    }
+            if (editProjectSelect && editUnitSelect) {
+                editProjectSelect.addEventListener('change', function() {
+                    filterUnitsForSelect(editUnitSelect, this.value);
                 });
             }
 

@@ -3,86 +3,671 @@
 @section('title', 'Survey KPR - Properti Management')
 
 @section('content')
-    <style>
-        /* Style spesifik halaman survey yang tidak ada di global */
-        .survey-checklist-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
+<style>
+/* =========================================================
+   TRANSAKSI VERIFIKASI KPR & SURVEY STYLES
+   ========================================================= */
 
-        .survey-checkbox-wrapper {
-            position: relative;
-        }
+.transaksi-page {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    color: #2c2e3f;
+}
 
-        .survey-checkbox-input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+.card {
+    border-radius: 14px !important;
+    border: none !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
 
-        .survey-checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.9rem 1rem;
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border: 2px solid rgba(154, 85, 255, 0.2);
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08);
-            min-height: 64px;
-        }
+.card-body {
+    padding: 1.5rem !important;
+}
 
-        .survey-checkbox-input:checked+.survey-checkbox-label {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
-        }
+/* CUSTOMER HEADER */
+.customer-header {
+    width: 100%;
+}
 
-        .survey-check-icon {
-            font-size: 1.45rem;
-            color: #d0d4db;
-            background: white;
-            border-radius: 50%;
-            padding: 4px;
-        }
+.customer-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    flex-shrink: 0;
+}
 
-        .survey-checkbox-input:checked+.survey-checkbox-label .survey-check-icon {
-            color: var(--primary);
-        }
+.customer-avatar i {
+    font-size: 2.2rem;
+    color: #ffffff;
+}
 
-        .survey-input-group {
-            display: flex;
-            width: 100%;
-        }
+.customer-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
 
-        .survey-input-group-text {
-            display: flex;
-            align-items: center;
-            padding: 0.78rem 0.85rem;
-            font-size: 0.85rem;
-            color: var(--gray-600);
-            background: #f8f9fa;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-md) 0 0 var(--radius-md);
-            border-right: none;
-        }
+.customer-booking {
+    font-size: 0.88rem;
+    color: #8b8fa3;
+    font-weight: 600;
+}
 
-        .survey-input-group .transaksi-form-control {
-            border-radius: 0 var(--radius-md) var(--radius-md) 0;
-        }
+.customer-unit-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    background: #fbf9ff;
+    border: 1px solid #ede4ff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+}
 
-        @media (max-width: 767.98px) {
-            .survey-checklist-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+.customer-unit-info .info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-unit-info .info-item small {
+    font-size: 0.75rem;
+    color: #8b8fa3;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.customer-unit-info .info-item span {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.customer-unit-info .info-item span.highlight {
+    color: #9a55ff;
+}
+
+/* BADGES */
+.badge-gradient-success {
+    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    color: #fff !important;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.badge-gradient-primary {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #fff !important;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.badge-gradient-secondary {
+    background: #6c757d !important;
+    color: #fff !important;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+/* SECTION TITLES */
+.transaksi-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f3f7;
+}
+
+.transaksi-section-title i {
+    font-size: 1.35rem;
+    color: #9a55ff;
+}
+
+/* STEPPER PROGRESS */
+.transaksi-progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
+}
+
+.transaksi-progress-top .transaksi-muted {
+    color: #64748b !important;
+    font-weight: 500;
+}
+
+.transaksi-progress {
+    height: 8px;
+    background: #eef1f6;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.transaksi-progress-bar {
+    height: 100%;
+    background: #9a55ff;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.transaksi-steps {
+    display: grid;
+    position: relative;
+}
+
+/* Connecting Line on parent container (Always 100% behind icons) */
+.transaksi-steps::before {
+    content: '';
+    position: absolute;
+    top: 26px;
+    left: calc(100% / 14);
+    right: calc(100% / 14);
+    height: 2.5px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+
+@media (max-width: 767px) {
+    .transaksi-steps {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem 0.5rem;
+    }
+    .transaksi-steps::before {
+        display: none !important;
+    }
+}
+
+.transaksi-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.25rem 0.15rem;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 2;
+}
+
+.transaksi-step.completed,
+.transaksi-step.active {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.transaksi-step-icon {
+    position: relative;
+    z-index: 3;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.65rem;
+    font-size: 1.25rem;
+    background: #f1f3f7 !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 0 0 1px #edf2f7;
+    color: #94a3b8;
+    transition: all 0.25s ease;
+}
+
+.transaksi-step.completed .transaksi-step-icon,
+.transaksi-step.active .transaksi-step-icon {
+    background: #28c76f !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 0 0 1px #28c76f;
+    color: #ffffff !important;
+}
+
+.transaksi-step-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+    white-space: nowrap;
+}
+
+.transaksi-step small {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    line-height: 1.3;
+    display: block;
+}
+
+/* DETAIL KPR LIST */
+.transaksi-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.transaksi-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px dashed #f0f2f7;
+}
+
+.transaksi-detail-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.transaksi-detail-item > span:first-child {
+    color: #8b8fa3;
+    font-weight: 600;
+}
+
+.transaksi-detail-item > span:last-child {
+    color: #2c2e3f;
+    font-weight: 700;
+    text-align: right;
+}
+
+.transaksi-detail-item .highlight {
+    color: #28c76f !important;
+    font-size: 0.98rem;
+}
+
+.transaksi-handler {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    background: #f8fafc;
+    border: 1px solid #edf0f5;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+}
+
+.transaksi-handler-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+/* INLINE ALERTS */
+.transaksi-inline-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    margin-bottom: 1.25rem;
+}
+
+.transaksi-inline-alert i {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.transaksi-inline-alert.success {
+    background: #eefcf3;
+    border: 1px solid #cbf4d8;
+    color: #1b7a42;
+}
+
+.transaksi-inline-alert.warning {
+    background: #fff9ed;
+    border: 1px solid #ffe6be;
+    color: #b26b00;
+}
+
+.transaksi-inline-alert.info {
+    background: #f3f8ff;
+    border: 1px solid #dbeafe;
+    color: #1d4ed8;
+}
+
+.transaksi-inline-alert.danger {
+    background: #fef2f2;
+    border: 1px solid #fed7d7;
+    color: #b91c1c;
+}
+
+/* FORM CONTROLS */
+.transaksi-form-group {
+    margin-bottom: 1.15rem;
+}
+
+.transaksi-form-label {
+    display: block;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 0.4rem;
+}
+
+.transaksi-form-control {
+    width: 100%;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.88rem;
+    color: #2c2e3f;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.transaksi-form-control:focus {
+    outline: none;
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
+}
+
+/* CHECKLIST GRID */
+.survey-checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.survey-checkbox-wrapper {
+    position: relative;
+}
+
+.survey-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.survey-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.9rem 1rem;
+    background: #fbf9ff;
+    border: 2px solid #ede4ff;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-bottom: 0;
+}
+
+.survey-check-icon {
+    font-size: 1.35rem;
+    color: #cbd5e1;
+    transition: all 0.25s ease;
+}
+
+.survey-check-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.survey-checkbox-input:checked + .survey-checkbox-label {
+    border-color: #9a55ff;
+    background: #f5eeff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15);
+}
+
+.survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
+    color: #9a55ff;
+}
+
+.survey-input-group {
+    display: flex;
+    width: 100%;
+}
+
+.survey-input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+}
+
+.survey-input-group .transaksi-form-control {
+    border-radius: 0 8px 8px 0;
+}
+
+/* FILE UPLOADS */
+.transaksi-file-upload {
+    position: relative;
+}
+
+.transaksi-file-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.transaksi-file-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.transaksi-file-upload:hover .transaksi-file-label {
+    border-color: #9a55ff;
+    background: #fbf9ff;
+}
+
+.transaksi-file-label i {
+    font-size: 1.5rem;
+    color: #9a55ff;
+}
+
+.transaksi-file-info span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.transaksi-file-info small {
+    display: block;
+    font-size: 0.75rem;
+    color: #8b8fa3;
+}
+
+/* BUTTONS */
+.transaksi-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+}
+
+.transaksi-btn-primary {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+}
+
+.transaksi-btn-primary:hover {
+    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+/* SIDEBAR & SUMMARY */
+.transaksi-sticky {
+    position: sticky;
+    top: 20px;
+}
+
+.transaksi-status-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.transaksi-status-banner.success {
+    background: linear-gradient(135deg, #eefcf3, #dcfce7);
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.transaksi-status-banner.warning {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.transaksi-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.transaksi-summary-box {
+    padding: 0.85rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.transaksi-summary-box.success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.transaksi-summary-box.success .label {
+    font-size: 0.75rem;
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.transaksi-summary-box.success .value {
+    font-size: 1.1rem;
+    color: #15803d;
+    font-weight: 800;
+}
+
+.transaksi-summary-box.danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.transaksi-summary-box.danger .label {
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.transaksi-summary-box.danger .value {
+    font-size: 1.1rem;
+    color: #b91c1c;
+    font-weight: 800;
+}
+
+.transaksi-summary-box .label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.transaksi-summary-box .value {
+    font-size: 1.1rem;
+    color: #1e293b;
+    font-weight: 800;
+}
+
+.transaksi-sidebar-section {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #f1f3f7;
+}
+
+.transaksi-sidebar-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #2c2e3f;
+    margin-bottom: 0.65rem;
+}
+
+.transaksi-mini-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.transaksi-mini-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.transaksi-mini-list li i {
+    font-size: 1rem;
+    color: #9a55ff;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+@media (max-width: 767.98px) {
+    .survey-checklist-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
     <div class="transaksi-page">
         {{-- HEADER CUSTOMER --}}
@@ -94,7 +679,7 @@
                             class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    <i class="mdi mdi-account text-white"></i>
+                                    <i class="mdi mdi-account"></i>
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
@@ -179,12 +764,8 @@
                             $spkDone = !empty($application->unit->dokumen_spk);
 
                             $totalSteps = 7;
-                            // Jika subsidi, Survey adalah tahap 5. Jika komersil, Survey tahap 5.
                             $currentStep = 5;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
-                            $stepsStyle = $totalSteps
-                                ? 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"'
-                                : '';
                         @endphp
 
                         <div class="transaksi-progress-top">
@@ -196,7 +777,7 @@
                             <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
                         </div>
 
-                        <div class="transaksi-steps" {!! $stepsStyle !!}>
+                        <div class="transaksi-steps" style="grid-template-columns: repeat(7, 1fr);">
                             <div class="transaksi-step completed">
                                 <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
                                 <span class="transaksi-step-title">Pengajuan</span>
@@ -228,17 +809,6 @@
                                     'finishing' => 'Tahap finishing',
                                     'selesai' => 'Pembangunan selesai',
                                 ];
-
-                                $statusConfig = [
-                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
-                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
-                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
-                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
-                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
-                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
-                                ];
-
-                                $config = $statusConfig[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
                             @endphp
 
                             <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
@@ -247,14 +817,13 @@
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                 @else
-                                    <div
-                                        class="transaksi-step-icon border border-{{ $config['color'] }} text-{{ $config['color'] }}">
-                                        <i class="mdi {{ $config['icon'] }}"></i>
+                                    <div class="transaksi-step-icon">
+                                        <i class="mdi mdi-home-city"></i>
                                     </div>
                                 @endif
 
                                 <span class="transaksi-step-title">Pembangunan</span>
-                                <small>{{ $statusText[$status] ?? '-' }}</small>
+                                <small>{{ $statusText[$status] ?? 'Belum mulai pembangunan' }}</small>
                             </div>
 
                             @if ($isSubsidi)
@@ -292,7 +861,7 @@
                             @endif
 
                             <div class="transaksi-step">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
+                                <div class="transaksi-step-icon"><i class="mdi mdi-home-outline"></i></div>
                                 <span class="transaksi-step-title">Serah Terima</span>
                                 <small>Menunggu</small>
                             </div>

@@ -290,10 +290,17 @@ if ($request->has('documents')) {
                 'zoning'            => $record->zoning,
                 'road_width'        => $record->road_width,
                 'road_type'         => $record->road_type,
+                'ownership_status'  => 'SHM',
+                'certificate_owner' => $record->land_owner,
+                'facility_school'   => (bool)($record->facility_school ?? false),
+                'facility_hospital' => (bool)($record->facility_hospital ?? false),
+                'facility_mall'     => (bool)($record->facility_mall ?? false),
+                'facility_transport'=> (bool)($record->facility_transport ?? false),
                 'lat'               => $record->lat,
                 'lng'               => $record->lng,
                 'file_certificate'  => $record->file_certificate,
                 'photo'             => $record->photo,
+                'priority'          => $record->priority ?? 'Normal',
                 'status'            => 'draft',
                 'legal_status'      => 'verified'
             ]);

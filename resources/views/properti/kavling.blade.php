@@ -4,7 +4,76 @@
 
 @section('content')
 
-<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+    <style>
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .badge-status.available {
+            background: rgba(40, 167, 69, 0.12);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.25);
+        }
+
+        .badge-status.booking {
+            background: rgba(255, 193, 7, 0.12);
+            color: #e67e22;
+            border: 1px solid rgba(255, 193, 7, 0.25);
+        }
+
+        .badge-status.sold {
+            background: rgba(220, 53, 69, 0.12);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.25);
+        }
+
+        .badge-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(154, 85, 255, 0.12), rgba(218, 140, 255, 0.12));
+            color: #9a55ff;
+            border: 1px solid rgba(154, 85, 255, 0.25);
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-action.fase1 {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #ffffff !important;
+            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.2);
+        }
+
+        .btn-action.fase1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.35);
+            color: #ffffff !important;
+        }
+    </style>
+
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
     <!-- Header Halaman (Tanpa Card Box) -->
     <div class="row mb-3 mb-md-4">

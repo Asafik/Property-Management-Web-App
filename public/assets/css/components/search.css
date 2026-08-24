@@ -218,16 +218,25 @@
     padding: 0.5rem 0.75rem !important;
     font-size: 0.88rem !important;
     font-family: 'Nunito', sans-serif !important;
+    color: #3b3f5c !important;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .select2-container--bootstrap-5 .select2-results__option--selected {
-    background-color: #9a55ff !important;
-    color: white !important;
+    background-color: #ede9fe !important;
+    color: #6d28d9 !important;
+    font-weight: 700 !important;
 }
 
-.select2-container--bootstrap-5 .select2-results__option--highlighted {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-    color: white !important;
+.select2-container--bootstrap-5 .select2-results__option--highlighted,
+.select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+    background: #e4dcfc !important;
+    color: #5b21b6 !important;
 }
 
 .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {

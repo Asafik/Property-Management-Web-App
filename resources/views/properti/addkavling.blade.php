@@ -4,6 +4,100 @@
 
 @push('styles')
 <style>
+/* Status Badges & Action Buttons */
+.badge-kavling-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.32rem 0.75rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.badge-kavling-status.status-draft {
+    background: #343a40;
+    color: #ffffff;
+    border: 1px solid #23272b;
+    box-shadow: 0 2px 4px rgba(52, 58, 64, 0.2);
+}
+
+.badge-kavling-status.status-sold {
+    background: rgba(255, 87, 87, 0.15);
+    color: #ff5757;
+    border: 1px solid rgba(255, 87, 87, 0.3);
+}
+
+.badge-kavling-status.status-booked {
+    background: rgba(255, 184, 0, 0.15);
+    color: #d97706;
+    border: 1px solid rgba(255, 184, 0, 0.3);
+}
+
+.badge-kavling-status.status-ready-subsidi {
+    background: rgba(0, 201, 167, 0.15);
+    color: #00897b;
+    border: 1px solid rgba(0, 201, 167, 0.3);
+}
+
+.badge-kavling-status.status-ready-komersil {
+    background: rgba(132, 94, 194, 0.15);
+    color: #845ec2;
+    border: 1px solid rgba(132, 94, 194, 0.3);
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-action-edit {
+    background: linear-gradient(135deg, #36d1dc, #5b86e5);
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(54, 209, 220, 0.25);
+}
+
+.btn-action-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(54, 209, 220, 0.4);
+    color: #ffffff !important;
+}
+
+.btn-action-view {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(154, 85, 255, 0.25);
+}
+
+.btn-action-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(154, 85, 255, 0.4);
+    color: #ffffff !important;
+}
+
+.btn-action-delete {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(255, 65, 108, 0.25);
+}
+
+.btn-action-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 65, 108, 0.4);
+    color: #ffffff !important;
+}
+
 /* Custom styling untuk Denah Kavling & Modal Tabs */
 .denah-container {
     background-color: #f8f9fa;
@@ -424,6 +518,7 @@
                                     <th>Harga AJB</th>
                                     <th>Hadap</th>
                                     <th>Posisi</th>
+                                    <th class="text-center" style="width: 110px;">Status</th>
                                     <th class="text-center" style="width: 130px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -499,6 +594,36 @@
                                             <span class="badge bg-light text-muted border">
                                                 <i class="mdi mdi-map-marker-outline text-primary me-1"></i>{{ $unit->position ?? '-' }}
                                             </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            @php
+                                                $st = strtolower($unit->status ?? 'ready');
+                                                $isSubsidi = ($unit->jenis ?? $unit->type) == 'subsidi';
+                                            @endphp
+                                            @if ($st == 'sold' || $st == 'terjual')
+                                                <span class="badge-kavling-status status-sold">
+                                                    <i class="mdi mdi-close-circle-outline"></i>Sold
+                                                </span>
+                                            @elseif($st == 'booked' || $st == 'booking')
+                                                <span class="badge-kavling-status status-booked">
+                                                    <i class="mdi mdi-calendar-clock"></i>Booked
+                                                </span>
+                                            @elseif($st == 'draft')
+                                                <span class="badge-kavling-status status-draft">
+                                                    <i class="mdi mdi-pencil-outline"></i>Draft
+                                                </span>
+                                            @else
+                                                @if($isSubsidi)
+                                                    <span class="badge-kavling-status status-ready-subsidi">
+                                                        <i class="mdi mdi-check-circle-outline"></i>Ready (Subsidi)
+                                                    </span>
+                                                @else
+                                                    <span class="badge-kavling-status status-ready-komersil">
+                                                        <i class="mdi mdi-check-circle-outline"></i>Ready (Komersil)
+                                                    </span>
+                                                @endif
+                                            @endif
                                         </td>
 
                                         <td class="text-center">
@@ -654,7 +779,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="11" class="text-center text-muted py-4">
+                                        <td colspan="12" class="text-center text-muted py-4">
                                             <i class="mdi mdi-alert-circle-outline d-block mb-1" style="font-size: 2rem; color: #da8cff;"></i>
                                             Belum ada data unit kavling untuk tanah induk ini.
                                         </td>

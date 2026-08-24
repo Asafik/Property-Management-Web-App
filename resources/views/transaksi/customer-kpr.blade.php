@@ -34,26 +34,112 @@
 @media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
 
 .filter-card {
-    background: linear-gradient(135deg, #f9f7ff, #f2ecff);
+    background: #ffffff;
     border-radius: 12px;
-    padding: 1rem;
+    padding: 0;
     margin-bottom: 1.25rem;
     border: none;
 }
-.filter-card .form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.3px;
+
+/* Search Input Group in Filter (Input on Left, Purple Button on Right) */
+.search-input-group {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: 38px !important;
 }
-.filter-card .form-control,
-.filter-card .form-select {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    min-height: 40px;
-    border: 1px solid #e0e4e9;
+
+.search-input-group .form-control {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-right: none !important;
+    font-size: 0.88rem !important;
+    padding: 0.45rem 0.85rem !important;
+    margin: 0 !important;
+    flex: 1 1 auto;
+}
+
+.search-input-group .btn-search-submit {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    padding: 0 0.95rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-size: 1.15rem !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+.search-input-group:focus-within .form-control {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+}
+
+/* SELECT2 ENHANCEMENTS */
+.select2-container--bootstrap-5 .select2-selection {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0.35rem 0.75rem !important;
+    font-family: inherit !important;
+    background-color: #ffffff !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+    color: #2c2e3f !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+    padding-left: 0 !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+    right: 8px !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection:hover,
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    border-color: #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option {
+    padding: 0.55rem 0.8rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--selected {
+    background-color: #f3e8ff !important;
+    color: #7e22ce !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--highlighted {
+    background: #9a55ff !important;
+    color: #ffffff !important;
 }
 
 .form-control, .form-select {
@@ -650,24 +736,28 @@ h3.text-dark, h4.text-dark {
                 </div>
 
                 <div class="card-body">
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <div class="filter-row-desktop">
-                                <div class="filter-text">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data user KPR</span>
-                                </div>
-
-                                <form method="GET" action="{{ route('customer.kpr') }}">
-                                    <div class="row g-2 align-items-end w-100">
-                                        <div class="col-md-5">
-                                            <label class="form-label">Search</label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari nama user...">
+                    <!-- Filter Section -->
+                    <div class="filter-card mb-3">
+                        <form method="GET" action="{{ route('customer.kpr') }}" id="filterForm">
+                            <!-- FILTER DESKTOP -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <!-- Search Input -->
+                                        <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                            <div class="input-group search-input-group">
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari nama user...">
+                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                    type="submit" title="Cari">
+                                                    <i class="mdi mdi-magnify"></i>
+                                                </button>
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <label class="form-label">Filter Status</label>
-                                            <select class="form-control" name="status">
+                                        <!-- Filter Status Dropdown -->
+                                        <div style="width: 170px;">
+                                            <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
                                                 <option value="">Semua Status</option>
                                                 <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
                                                 <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
@@ -675,79 +765,79 @@ h3.text-dark, h4.text-dark {
                                                 <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
                                             </select>
                                         </div>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" name="per_page">
+                                    <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 90px;">
+                                            <select name="per_page" class="form-control select2" id="perPageSelect" style="width: 100%;">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
                                             </select>
                                         </div>
-
-                                        <div class="col-md-1">
-                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only w-100" title="Filter" onclick="showFilterLoading()">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                        </div>
-
-                                        <div class="col-md-1">
-                                            <a href="{{ route('customer.kpr') }}" class="btn btn-gradient-secondary btn-icon-only w-100" title="Reset" style="text-decoration:none;" onclick="showResetLoading(event)">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </a>
-                                        </div>
+                                        <button type="submit"
+                                            class="btn btn-gradient-primary btn-icon-only"
+                                            id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('customer.kpr') }}"
+                                            class="btn btn-gradient-secondary btn-icon-only"
+                                            title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
                                     </div>
-                                </form>
-                            </div>
-
-                            <div class="filter-row-mobile">
-                                <div class="filter-text mb-2">
-                                    <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data user KPR</span>
                                 </div>
-
-                                <form method="GET" action="{{ route('customer.kpr') }}">
-                                    <div class="row g-2">
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Search</label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari nama user...">
-                                        </div>
-
-                                        <div class="col-6 mb-2">
-                                            <label class="form-label">Status</label>
-                                            <select class="form-control" name="status">
-                                                <option value="">Semua</option>
-                                                <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                                <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                                <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                                <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-12 mb-2">
-                                            <label class="form-label">Tampil</label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100" onclick="showFilterLoading()">
-                                                <i class="mdi mdi-filter me-1"></i>Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('customer.kpr') }}" class="btn btn-gradient-secondary w-100" style="text-decoration:none;" onclick="showResetLoading(event)">
-                                                <i class="mdi mdi-refresh me-1"></i>Reset
-                                            </a>
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
 
-                        </div>
+                            <!-- FILTER MOBILE -->
+                            <div class="d-block d-md-none">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group search-input-group">
+                                            <input type="text" name="search_mobile"
+                                                value="{{ request('search') }}" class="form-control"
+                                                placeholder="Cari nama user..." id="searchMobile">
+                                            <button class="btn btn-gradient-primary btn-search-submit" 
+                                                type="submit" title="Cari">
+                                                <i class="mdi mdi-magnify"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select name="status_mobile" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
+                                            <option value="">Semua Status</option>
+                                            <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                            <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
+                                            <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select name="per_page_mobile" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                            <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit"
+                                            class="btn btn-gradient-primary w-100 d-inline-flex align-items-center justify-content-center"
+                                            id="filterBtnMobile" title="Filter"
+                                            onclick="showFilterLoading()" style="height: 38px;">
+                                            <i class="mdi mdi-filter me-1"></i>Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('customer.kpr') }}"
+                                            class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center"
+                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; text-decoration: none;">
+                                            <i class="mdi mdi-refresh me-1"></i>Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="table-responsive">
@@ -766,10 +856,10 @@ h3.text-dark, h4.text-dark {
                                     <th>Jenis & Tipe</th>
                                     <th>Harga</th>
                                     <th>Sales/Agent</th>
-                                    <th>Status</th>
-                                    <th>Tanggal Booking</th>
-                                    <th>Dokumen</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Tanggal Booking</th>
+                                    <th class="text-center" style="width: 110px;">Dokumen</th>
+                                    <th class="text-center" style="width: 140px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -872,48 +962,54 @@ h3.text-dark, h4.text-dark {
                                                 -
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <span class="badge-status {{ $statusClass }}">
                                                 {{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}
                                             </span>
                                         </td>
-                                        <td>
-                                            <i class="mdi mdi-calendar-month-outline text-primary me-2"></i>
+                                        <td class="text-center">
+                                            <i class="mdi mdi-calendar-month-outline text-primary me-1"></i>
                                             {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
                                         </td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="badge-doc btnOpenDocumentModal"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#documentModal"
-                                                data-customer="{{ $customerName }}"
-                                                data-unit="{{ $booking->unit->unit_code ?? '-' }}"
-                                                data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
-                                                data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
-                                                data-sales="{{ $booking->sales->name ?? '-' }}"
-                                                data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
-                                                data-documents='@json($documents)'>
-                                                <i class="mdi mdi-file-document-multiple-outline"></i>
-                                                {{ $uploadedCount }}/8
-                                            </button>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <button
+                                                    type="button"
+                                                    class="badge-doc btnOpenDocumentModal"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#documentModal"
+                                                    data-customer="{{ $customerName }}"
+                                                    data-unit="{{ $booking->unit->unit_code ?? '-' }}"
+                                                    data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
+                                                    data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
+                                                    data-sales="{{ $booking->sales->name ?? '-' }}"
+                                                    data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
+                                                    data-documents='@json($documents)'>
+                                                    <i class="mdi mdi-file-document-multiple-outline"></i>
+                                                    {{ $uploadedCount }}/8
+                                                </button>
+                                            </div>
                                         </td>
                                         <td class="text-center">
-                                            @if($isComplete)
-                                                <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                   class="btn btn-gradient-success btn-sm btnApproveKpr">
-                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Approved
-                                                </a>
-                                            @else
-                                                <button class="btn btn-secondary btn-sm" disabled title="Dokumen belum lengkap">
-                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Approved
-                                                </button>
-                                            @endif
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                @if($isComplete)
+                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
+                                                       class="btn btn-gradient-success btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
+                                                       style="border-radius: 8px; min-height: 34px; font-weight: 700;">
+                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Dokumen belum lengkap"
+                                                            style="border-radius: 8px; min-height: 34px; font-weight: 700;">
+                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
+                                        <td colspan="10" class="text-center text-muted py-4">
                                             Tidak ada data user KPR
                                         </td>
                                     </tr>
@@ -1045,6 +1141,47 @@ h3.text-dark, h4.text-dark {
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // Inisialisasi Select2
+    $('#statusSelect').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Semua Status',
+        allowClear: true,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
+
+    $('#perPageSelect').select2({
+        theme: 'bootstrap-5',
+        placeholder: '10',
+        allowClear: false,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
+
+    $('#statusSelectMobile').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Semua Status',
+        allowClear: true,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
+
+    $('#perPageSelectMobile').select2({
+        theme: 'bootstrap-5',
+        placeholder: '10',
+        allowClear: false,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
+
+    // Search input sync between desktop and mobile
+    $('input[name="search"]').on('input', function() {
+        $('#searchMobile').val($(this).val());
+    });
+    $('#searchMobile').on('input', function() {
+        $('input[name="search"]').val($(this).val());
+    });
+
     $('.sortable').click(function() {
         let field = $(this).data('field');
         let direction = $(this).data('direction');

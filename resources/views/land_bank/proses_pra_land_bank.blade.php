@@ -437,140 +437,7 @@
             display: none !important;
         }
 
-        /* ===== SELECT2 CUSTOM STYLING AGAR SESUAI DENGAN FORM (FROM TAMBAH PROPERTI) ===== */
-        .select2-container--bootstrap-5 .select2-selection {
-            border: 1px solid #e9ecef !important;
-            border-radius: 10px !important;
-            padding: 0.45rem 0.8rem !important;
-            min-height: 42px !important;
-            height: 42px !important;
-            font-family: 'Nunito', sans-serif !important;
-            background-color: #ffffff !important;
-        }
 
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            color: #2c2e3f !important;
-            font-size: 0.9rem !important;
-            line-height: 26px !important;
-            padding-left: 0 !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-            height: 40px !important;
-            right: 10px !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
-            border-color: #9a55ff transparent transparent transparent !important;
-        }
-
-        @media (min-width: 768px) {
-            .select2-container--bootstrap-5 .select2-selection {
-                min-height: 38px !important;
-                height: 38px !important;
-                padding: 0.35rem 0.75rem !important;
-                border-radius: 8px !important;
-            }
-
-            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-                line-height: 24px !important;
-            }
-
-            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
-                height: 36px !important;
-            }
-        }
-
-        .select2-container--bootstrap-5 .select2-selection:hover {
-            border-color: #9a55ff !important;
-        }
-
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-        .select2-container--bootstrap-5.select2-container--open .select2-selection {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-color: #e9ecef !important;
-            border-radius: 10px !important;
-            overflow: hidden !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
-            z-index: 1060 !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option {
-            padding: 0.6rem 0.8rem !important;
-            font-size: 0.9rem !important;
-            font-family: 'Nunito', sans-serif !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #e9ecef !important;
-            border-radius: 8px !important;
-            padding: 0.5rem !important;
-            font-family: 'Nunito', sans-serif !important;
-            margin: 0.5rem !important;
-            width: calc(100% - 1rem) !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #9a55ff !important;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
-            outline: none !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
-            color: #a5b3cb !important;
-        }
-
-        /* Paksa hanya 5 item yang tampil di Select2 */
-        .select2-limited-items .select2-results__options {
-            max-height: 200px !important;
-            overflow-y: auto !important;
-        }
-
-        /* Styling scrollbar */
-        .select2-limited-items .select2-results__options::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #9a55ff;
-            border-radius: 10px;
-        }
-
-        .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
-        }
-
-        .select2-container {
-            display: block !important;
-            width: 100% !important;
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--disabled {
-            background-color: #f8f9fa !important;
-            color: #6c757d !important;
-            border-color: #e9ecef !important;
-            cursor: not-allowed !important;
-        }
 
         /* ===== OPTIMASI LEBAR & PADDING (DESKTOP, TABLET & MOBILE) ===== */
         .content-wrapper {
@@ -1446,20 +1313,6 @@
             } else if (step === 3) {
                 document.getElementById('wizardProgressBar').style.width = '100%';
             }
-
-            // Re-initialize or adjust Select2 size for newly visible container
-            setTimeout(() => {
-                $(`#containerFase${step} select.form-select`).each(function() {
-                    if ($(this).closest('#installment_tbody').length === 0) {
-                        $(this).select2({
-                            theme: 'bootstrap-5',
-                            width: '100%',
-                            minimumResultsForSearch: 0,
-                            dropdownCssClass: 'select2-limited-items'
-                        });
-                    }
-                });
-            }, 50);
         }
 
         // ===============================
@@ -1603,8 +1456,38 @@
             const isReadOnly = {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'true' : 'false' }};
 
             if (!mapFase2) {
-                mapFase2 = L.map('map-fase2').setView([lat, lng], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapFase2);
+                // Google Maps Tile Layers
+                const googleRoadmap = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                    attribution: '&copy; Google Maps'
+                });
+
+                const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                    attribution: '&copy; Google Maps Satellite'
+                });
+
+                const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                    attribution: '&copy; Google Maps Terrain'
+                });
+
+                mapFase2 = L.map('map-fase2', {
+                    center: [lat, lng],
+                    zoom: 15,
+                    layers: [googleRoadmap]
+                });
+
+                // Layer Switcher (Roadmap, Satellite, Terrain)
+                const baseMaps = {
+                    "Google Roadmap": googleRoadmap,
+                    "Google Satellite": googleHybrid,
+                    "Google Terrain": googleTerrain
+                };
+                L.control.layers(baseMaps, null, { position: 'topright' }).addTo(mapFase2);
 
                 markerFase2 = L.marker([lat, lng], {
                     draggable: !isReadOnly

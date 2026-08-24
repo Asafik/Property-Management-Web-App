@@ -4,21 +4,508 @@
 
 @section('content')
     <style>
-        /* ============================================
-           CSS LOKAL (Spesifik Halaman Akad Cash)
-           ============================================ */
+        /* =========================================================
+           TRANSAKSI AKAD CASH STYLES & LAYOUT
+           ========================================================= */
 
-        /* Override jumlah step menjadi 7 kolom (Global default 4) */
-        .transaksi-steps {
-            grid-template-columns: repeat(7, 1fr);
+        .transaksi-page {
+            font-family: 'Nunito', 'Segoe UI', sans-serif;
+            color: #2c2e3f;
         }
-        @media (max-width: 767.98px) {
+
+        .card {
+            border-radius: 14px !important;
+            border: none !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .card-body {
+            padding: 1.5rem !important;
+        }
+
+        /* CUSTOMER HEADER */
+        .customer-header {
+            width: 100%;
+        }
+
+        .customer-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+            flex-shrink: 0;
+        }
+
+        .customer-avatar i {
+            font-size: 2.2rem;
+            color: #ffffff;
+        }
+
+        .customer-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+
+        .customer-booking {
+            font-size: 0.88rem;
+            color: #8b8fa3;
+            font-weight: 600;
+        }
+
+        .customer-unit-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.25rem;
+            background: #fbf9ff;
+            border: 1px solid #ede4ff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+        }
+
+        .customer-unit-info .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .customer-unit-info .info-item small {
+            font-size: 0.75rem;
+            color: #8b8fa3;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .customer-unit-info .info-item span {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+
+        /* BADGES */
+        .badge-gradient-success {
+            background: linear-gradient(135deg, #28c76f, #48da89) !important;
+            color: #fff !important;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .badge-gradient-primary {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: #fff !important;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .badge-gradient-secondary {
+            background: #6c757d !important;
+            color: #fff !important;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* SECTION TITLES */
+        .transaksi-section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f1f3f7;
+        }
+
+        .transaksi-section-title i {
+            font-size: 1.35rem;
+            color: #9a55ff;
+        }
+
+        /* STEPPER PROGRESS */
+        .transaksi-progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.92rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .transaksi-progress-top .transaksi-muted {
+            color: #64748b !important;
+            font-weight: 500;
+        }
+
+        .transaksi-progress {
+            height: 8px;
+            background: #eef1f6;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .transaksi-progress-bar {
+            height: 100%;
+            background: #9a55ff;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .transaksi-steps {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            position: relative;
+        }
+
+        /* Connecting Line on parent container */
+        .transaksi-steps::before {
+            content: '';
+            position: absolute;
+            top: 22px;
+            left: calc(100% / 14);
+            right: calc(100% / 14);
+            height: 2.5px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        @media (max-width: 767px) {
             .transaksi-steps {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1.25rem 0.5rem;
+            }
+            .transaksi-steps::before {
+                display: none !important;
             }
         }
 
-        /* Custom Icon Arrow pada Select */
+        .transaksi-step {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0.25rem 0.15rem;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            z-index: 2;
+        }
+
+        .transaksi-step.completed,
+        .transaksi-step.active {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .transaksi-step-icon {
+            position: relative;
+            z-index: 3;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.65rem;
+            font-size: 1.25rem;
+            background: #f1f3f7 !important;
+            border: 3px solid #ffffff !important;
+            box-shadow: 0 0 0 1px #edf2f7;
+            color: #94a3b8;
+            transition: all 0.25s ease;
+        }
+
+        .transaksi-step.completed .transaksi-step-icon,
+        .transaksi-step.active .transaksi-step-icon {
+            background: #28c76f !important;
+            border: 3px solid #ffffff !important;
+            box-shadow: 0 0 0 1px #28c76f;
+            color: #ffffff !important;
+        }
+
+        .transaksi-step-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2px;
+            white-space: nowrap;
+        }
+
+        .transaksi-step small {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            line-height: 1.3;
+            display: block;
+        }
+
+        /* DETAIL LIST */
+        .transaksi-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .transaksi-detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.88rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px dashed #f0f2f7;
+        }
+
+        .transaksi-detail-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .transaksi-detail-item > span:first-child {
+            color: #8b8fa3;
+            font-weight: 600;
+        }
+
+        .transaksi-detail-item > span:last-child {
+            color: #2c2e3f;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .transaksi-detail-item .highlight {
+            color: #28c76f !important;
+            font-size: 0.98rem;
+        }
+
+        .transaksi-handler {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: #f8fafc;
+            border: 1px solid #edf0f5;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+        }
+
+        .transaksi-handler-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.3rem;
+        }
+
+        /* INLINE ALERTS */
+        .transaksi-inline-alert {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .transaksi-inline-alert i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .transaksi-inline-alert.success {
+            background: #eefcf3;
+            border: 1px solid #cbf4d8;
+            color: #1b7a42;
+        }
+
+        .transaksi-inline-alert.warning {
+            background: #fff9ed;
+            border: 1px solid #ffe6be;
+            color: #b26b00;
+        }
+
+        .transaksi-inline-alert.info {
+            background: #f3f8ff;
+            border: 1px solid #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .transaksi-inline-alert.danger {
+            background: #fef2f2;
+            border: 1px solid #fed7d7;
+            color: #b91c1c;
+        }
+
+        /* DECISION CARDS */
+        .transaksi-decision-card {
+            position: relative;
+        }
+
+        .transaksi-decision-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .transaksi-decision-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.25rem;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 0;
+        }
+
+        .transaksi-decision-label:hover {
+            border-color: #9a55ff;
+            background: #faf8ff;
+            transform: translateY(-2px);
+        }
+
+        .transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label {
+            border-color: #28c76f;
+            background: #f0fdf4;
+            box-shadow: 0 4px 12px rgba(40, 199, 111, 0.15);
+        }
+
+        .transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label {
+            border-color: #ef4444;
+            background: #fef2f2;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
+        .transaksi-decision-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .transaksi-decision-card.approve .transaksi-decision-icon {
+            background: #eefcf3;
+            color: #28c76f;
+        }
+
+        .transaksi-decision-card.reject .transaksi-decision-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .transaksi-decision-content {
+            flex: 1;
+        }
+
+        .transaksi-decision-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .transaksi-decision-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .transaksi-decision-check {
+            font-size: 1.35rem;
+            color: #cbd5e1;
+            transition: all 0.25s ease;
+        }
+
+        .transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-check {
+            color: #28c76f;
+        }
+
+        .transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-check {
+            color: #ef4444;
+        }
+
+        /* FORMS */
+        .transaksi-form-shell {
+            display: none;
+            padding: 1.25rem;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            margin-bottom: 1.25rem;
+        }
+
+        .transaksi-form-shell.approve {
+            border-color: #bbf7d0;
+            background: #fcfdfd;
+        }
+
+        .transaksi-form-shell.reject {
+            border-color: #fecaca;
+            background: #fffdfd;
+        }
+
+        .transaksi-form-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .transaksi-form-title.approve { color: #15803d; }
+        .transaksi-form-title.reject { color: #b91c1c; }
+
+        .transaksi-form-group {
+            margin-bottom: 1.15rem;
+        }
+
+        .transaksi-form-label {
+            display: block;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin-bottom: 0.4rem;
+        }
+
+        .transaksi-form-control {
+            width: 100%;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.65rem 0.85rem;
+            font-size: 0.88rem;
+            color: #2c2e3f;
+            background: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .transaksi-form-control:focus {
+            outline: none;
+            border-color: #9a55ff;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
+        }
+
         select.transaksi-form-control {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -27,105 +514,198 @@
             background-size: 14px;
         }
 
-        /* Custom Input Group (untuk Prefix Rp) */
         .transaksi-input-group {
             display: flex;
             align-items: stretch;
         }
         .transaksi-input-group-prepend {
             display: flex;
-            margin-right: -1px;
         }
         .transaksi-input-group-text {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-            padding: 0.85rem 0.95rem;
-            font-size: 0.9rem;
-            color: var(--primary);
-            font-weight: 600;
+            padding: 0.65rem 0.85rem;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px 0 0 8px;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 0.88rem;
         }
         .transaksi-input-group .transaksi-form-control {
-            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-            z-index: 0;
+            border-radius: 0 8px 8px 0;
+            border-left: none;
         }
 
-        /* State Interaktif untuk File Upload ketika sudah ada file */
-        .transaksi-file-upload.has-file .transaksi-file-label {
-            border-color: var(--success);
-            background: linear-gradient(135deg, #f0fff4, #ffffff);
-            transition: all 0.3s ease;
+        .transaksi-file-upload {
+            position: relative;
+            width: 100%;
         }
-        .transaksi-file-upload.has-file:hover .transaksi-file-label {
-            border-color: #218838;
-            background: var(--success) !important;
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.25);
+
+        .transaksi-file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .transaksi-file-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: #ffffff;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .transaksi-file-upload:hover .transaksi-file-label {
+            border-color: #9a55ff;
+            background: #fbf9ff;
+        }
+
+        .transaksi-file-label i {
+            font-size: 1.5rem;
+            color: #9a55ff;
+        }
+
+        .transaksi-file-info {
+            flex: 1;
+        }
+
+        .transaksi-file-info span {
+            display: block;
+            font-weight: 700;
+            color: #2c2e3f;
+            font-size: 0.85rem;
+        }
+
+        .transaksi-file-info small {
+            color: #8b8fa3;
+            font-size: 0.75rem;
+            display: block;
+        }
+
+        /* BUTTONS & ACTIONS */
+        .transaksi-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .transaksi-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none !important;
+        }
+
+        .transaksi-btn-primary {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+        }
+
+        .transaksi-btn-primary:hover {
+            box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .transaksi-btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .transaksi-btn-secondary:hover {
+            background: #e2e8f0;
+            color: #334155;
             transform: translateY(-2px);
         }
-        .transaksi-file-upload.has-file:hover .transaksi-file-label i,
-        .transaksi-file-upload.has-file:hover .transaksi-file-label .transaksi-file-info span,
-        .transaksi-file-upload.has-file:hover .transaksi-file-label .transaksi-file-info small {
-            color: #ffffff !important;
-        }
-        .transaksi-file-upload.has-file:hover .transaksi-file-label i {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .transaksi-file-upload.has-file .transaksi-file-label i {
-            color: var(--success);
-            background: rgba(40, 167, 69, 0.1);
+
+        /* SIDEBAR & STICKY */
+        .transaksi-sticky {
+            position: sticky;
+            top: 20px;
         }
 
-        /* Custom style untuk step yang off/default */
-        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) .transaksi-step-icon {
-            background: #e5e7eb !important;
-            color: #6b7280 !important;
-            border: 2px solid #d1d5db !important;
-            box-shadow: none !important;
-        }
-        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) .transaksi-step-icon i {
-            color: #6b7280 !important;
-        }
-        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) .transaksi-step-title {
-            color: #6b7280 !important;
-        }
-        .transaksi-page .transaksi-steps .transaksi-step:not(.completed):not(.active) small {
-            color: #9ca3af !important;
+        .transaksi-status-banner {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
         }
 
-        /* Override global CSS untuk default step */
-        .transaksi-page .transaksi-steps .transaksi-step .transaksi-step-icon {
-            background: #e5e7eb !important;
-            color: #6b7280 !important;
-            border: 2px solid #d1d5db !important;
-        }
-        .transaksi-page .transaksi-steps .transaksi-step .transaksi-step-icon i {
-            color: #6b7280 !important;
+        .transaksi-status-banner.success {
+            background: linear-gradient(135deg, #eefcf3, #dcfce7);
+            color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
-        /* Override untuk active dan completed */
-        .transaksi-page .transaksi-steps .transaksi-step.active .transaksi-step-icon {
-            background: var(--warning) !important;
-            color: var(--white) !important;
-            border: none !important;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2) !important;
+        .transaksi-status-banner.warning {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
-        .transaksi-page .transaksi-steps .transaksi-step.active .transaksi-step-icon i {
-            color: var(--white) !important;
+
+        .transaksi-sidebar-section {
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid #f1f3f7;
         }
-        .transaksi-page .transaksi-steps .transaksi-step.completed .transaksi-step-icon {
-            background: var(--success) !important;
-            color: var(--white) !important;
-            border: none !important;
+
+        .transaksi-sidebar-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin-bottom: 0.65rem;
         }
-        .transaksi-page .transaksi-steps .transaksi-step.completed .transaksi-step-icon i {
-            color: var(--white) !important;
+
+        .transaksi-mini-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .transaksi-mini-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .transaksi-mini-list li i {
+            font-size: 1rem;
+            color: #9a55ff;
+            flex-shrink: 0;
+            margin-top: 1px;
         }
     </style>
 
     <div class="transaksi-page">
+        <!-- Customer Info Card -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -133,7 +713,7 @@
                         <div class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    {{ strtoupper(substr($booking->customer->full_name ?? 'C', 0, 1)) }}
+                                    <i class="mdi mdi-account"></i>
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
@@ -172,6 +752,7 @@
             </div>
         </div>
 
+        <!-- Stepper & Payment Summary -->
         <div class="row mt-4">
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card h-100">
@@ -206,14 +787,13 @@
                             if ($isLegalDone) $completedCount++;
                             if ($isSpkDone) $completedCount++;
                             if ($isBuildDone) $completedCount++;
-                            // Akad sedang aktif, jadi tidak dihitung sebagai completed
 
                             $progressPercent = ($completedCount / 7) * 100;
                         @endphp
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Akad</span>
-                            <span>4 dari 7 tahap selesai</span>
+                            <span>{{ $completedCount }} dari 7 tahap selesai</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -252,7 +832,7 @@
                                         if ($isAkadDone) {
                                             $isStepCompleted = true;
                                         } else {
-                                            $isStepActive = true; // Akad sedang aktif
+                                            $isStepActive = true;
                                         }
                                     }
                                     if ($key == 'completed') {
@@ -299,6 +879,7 @@
                 </div>
             </div>
 
+            <!-- Detail Pembayaran Sidebar -->
             <div class="col-12 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
@@ -365,7 +946,6 @@
                                 </div>
                                 <div>
                                     <div class="fw-bold">{{ $booking->sales->name ?? 'Marketing' }}</div>
-                                    <!-- <small class="transaksi-muted">{{ $booking->sales->role ?? 'Marketing Staff' }}</small> -->
                                 </div>
                             </div>
                         </div>
@@ -374,6 +954,7 @@
             </div>
         </div>
 
+        <!-- Form Konfirmasi Akad & Panduan -->
         <div class="row mt-4">
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <div class="card">
@@ -388,7 +969,7 @@
                             <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai status akad.</div>
                         </div>
 
-                        <div class="transaksi-inline-alert danger transaksi-error-box" id="akadErrorBox">
+                        <div class="transaksi-inline-alert danger transaksi-error-box" id="akadErrorBox" style="display: none;">
                             <i class="mdi mdi-alert-circle-outline"></i>
                             <div>Silakan pilih status akad terlebih dahulu sebelum submit.</div>
                         </div>
@@ -538,34 +1119,34 @@
                                 <hr class="my-4">
 
                                 <label class="transaksi-form-label">Tindakan Selanjutnya</label>
-                                <div class="transaksi-next-step-grid">
-                                    <div class="transaksi-next-card">
+                                <div class="transaksi-next-step-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                    <div class="transaksi-decision-card">
                                         <input type="radio" name="tindakan" id="tindakanRefund" value="refund" checked>
-                                        <label class="transaksi-next-label" for="tindakanRefund">
-                                            <div class="transaksi-next-icon">
+                                        <label class="transaksi-decision-label" for="tindakanRefund">
+                                            <div class="transaksi-decision-icon" style="background: #eefcf3; color: #28c76f;">
                                                 <i class="mdi mdi-cash-refund"></i>
                                             </div>
-                                            <div class="transaksi-next-content">
-                                                <span class="transaksi-next-title">Refund DP</span>
-                                                <span class="transaksi-next-desc">Kembalikan uang muka sesuai ketentuan</span>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">Refund DP</div>
+                                                <p class="transaksi-decision-desc mb-0">Kembalikan uang muka sesuai ketentuan</p>
                                             </div>
-                                            <div class="transaksi-next-check">
+                                            <div class="transaksi-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
                                     </div>
 
-                                    <div class="transaksi-next-card">
+                                    <div class="transaksi-decision-card">
                                         <input type="radio" name="tindakan" id="tindakanHangus" value="hangus">
-                                        <label class="transaksi-next-label" for="tindakanHangus">
-                                            <div class="transaksi-next-icon">
+                                        <label class="transaksi-decision-label" for="tindakanHangus">
+                                            <div class="transaksi-decision-icon" style="background: #fee2e2; color: #ef4444;">
                                                 <i class="mdi mdi-cancel"></i>
                                             </div>
-                                            <div class="transaksi-next-content">
-                                                <span class="transaksi-next-title">DP Hangus</span>
-                                                <span class="transaksi-next-desc">Sesuai perjanjian yang telah disepakati</span>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">DP Hangus</div>
+                                                <p class="transaksi-decision-desc mb-0">Sesuai perjanjian yang telah disepakati</p>
                                             </div>
-                                            <div class="transaksi-next-check">
+                                            <div class="transaksi-decision-check">
                                                 <i class="mdi mdi-check-circle"></i>
                                             </div>
                                         </label>
@@ -574,7 +1155,7 @@
                             </div>
 
                             <div class="transaksi-action-bar">
-                                <a href="{{ url('/marketing/booking') }}" class="transaksi-btn transaksi-btn-secondary">
+                                <a href="{{ url()->previous() }}" class="transaksi-btn transaksi-btn-secondary">
                                     <i class="mdi mdi-arrow-left"></i>
                                     Kembali
                                 </a>
@@ -589,6 +1170,7 @@
                 </div>
             </div>
 
+            <!-- Sticky Sidebar Information -->
             <div class="col-12 col-lg-4">
                 <div class="transaksi-sticky">
                     <div class="card">
@@ -598,7 +1180,7 @@
                                 <span>Informasi & Panduan</span>
                             </div>
 
-                            <div class="transaksi-sidebar-section">
+                            <div class="transaksi-sidebar-section" style="border-top: none; padding-top: 0; margin-top: 0;">
                                 <div class="transaksi-sidebar-title">Status Akad Saat Ini</div>
                                 @if($booking->status_akad == 'done')
                                     <div class="transaksi-status-banner success">
@@ -607,7 +1189,7 @@
                                     </div>
                                     @if($booking->status != 'completed')
                                         <div class="mt-3">
-                                            <a href="{{ route('booking.serah-terima', $booking->id) }}" class="transaksi-btn transaksi-btn-primary w-100">
+                                            <a href="{{ route('booking.serah-terima', $booking->id) }}" class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
                                                 <i class="mdi mdi-key me-1"></i> Lanjut Serah Terima Unit
                                             </a>
                                         </div>
@@ -679,6 +1261,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             const $decisionSelesai = $('#decisionSelesai');

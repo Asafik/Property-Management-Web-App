@@ -4,6 +4,253 @@
 
 @section('content')
 
+<style>
+/* =========================================================
+   DATA DOKUMEN CASH / LEGAL PECAH MODAL STYLES
+   ========================================================= */
+
+/* Modal Content & Header */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+}
+
+.modal-header {
+    background: #ffffff;
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-header .modal-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Modal Summary Cards */
+.modal-summary-box {
+    background: linear-gradient(135deg, #faf7ff, #f4efff);
+    border: 1.5px solid #eadcff;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.modal-summary-box .summary-label {
+    font-size: 0.72rem;
+    color: #8b8fa3;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.modal-summary-box .summary-value {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #2c2e3f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Modal Table Styling */
+.modal-doc-table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5) !important;
+    color: #475569 !important;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 0.75rem 0.85rem;
+    white-space: nowrap;
+}
+
+.modal-doc-table tbody td {
+    vertical-align: middle;
+    padding: 0.75rem 0.85rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-doc-table tbody tr:hover {
+    background-color: #fbf9ff;
+}
+
+/* Doc Item & Icon */
+.doc-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f4ecff, #ede1ff);
+    color: #9a55ff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.badge-doc-req {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.badge-doc-req.wajib {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.badge-doc-req.opsional {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Status Badges */
+.badge-doc-status {
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.badge-doc-status.uploaded {
+    background: #eefcf3;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-doc-status.missing {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.badge-doc-status.optional {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Upload Inline Widget */
+.upload-inline-form {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin: 0;
+    width: 100%;
+}
+
+.upload-file-btn-wrapper {
+    position: relative;
+    max-width: 220px;
+    flex: 1;
+}
+
+.upload-file-btn-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.doc-file-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.38rem 0.75rem;
+    background: #ffffff;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upload-file-btn-wrapper:hover .doc-file-label {
+    border-color: #9a55ff;
+    background: #fbf9ff;
+    color: #9a55ff;
+}
+
+.doc-file-label i {
+    font-size: 1rem;
+    color: #9a55ff;
+}
+
+.btn-upload-submit {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff;
+    border: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.btn-upload-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.35);
+    color: #ffffff;
+}
+
+.btn-doc-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.38rem 0.85rem;
+    background: #f4ecff;
+    color: #9a55ff;
+    border: 1px solid #e9d5ff;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+.btn-doc-view:hover {
+    background: #9a55ff;
+    color: #ffffff;
+    border-color: #9a55ff;
+    transform: translateY(-1px);
+}
+</style>
+
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
     <!-- Header Halaman (Tanpa Card Box) -->
@@ -444,56 +691,62 @@
         <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom">
-                    <h5 class="modal-title fw-bold" style="color: #2c2e3f;">
+                    <h5 class="modal-title fw-bold" style="color: #1e293b;">
                         <i class="mdi mdi-file-document-outline me-2" style="color: #9a55ff;"></i>Detail Dokumen Booking
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body p-4">
+                <div class="modal-body p-3 p-md-4">
                     <!-- Detail Summary Box -->
-                    <div class="row g-3 mb-4">
+                    <div class="row g-2 mb-3">
                         <div class="col-6 col-md-3">
-                            <div class="detail-box">
-                                <div class="detail-label">ID Booking</div>
-                                <div class="detail-value text-primary">{{ $booking->booking_code }}</div>
+                            <div class="modal-summary-box">
+                                <span class="summary-label">ID Booking</span>
+                                <span class="summary-value text-primary">{{ $booking->booking_code }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
-                            <div class="detail-box">
-                                <div class="detail-label">Nama Customer</div>
-                                <div class="detail-value">{{ $customerName }}</div>
+                            <div class="modal-summary-box">
+                                <span class="summary-label">Nama Customer</span>
+                                <span class="summary-value">{{ $customerName }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
-                            <div class="detail-box">
-                                <div class="detail-label">Unit Properti</div>
-                                <div class="detail-value">{{ $unitName }}</div>
+                            <div class="modal-summary-box">
+                                <span class="summary-label">Unit Properti</span>
+                                <span class="summary-value">{{ $unitName }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
-                            <div class="detail-box">
-                                <div class="detail-label">Status Legal</div>
-                                <div class="detail-value {{ $isLengkap ? 'text-success' : 'text-warning' }}">{{ $statusText }}</div>
+                            <div class="modal-summary-box">
+                                <span class="summary-label">Status Legal</span>
+                                <span class="summary-value {{ $isLengkap ? 'text-success' : 'text-warning' }}">
+                                    <i class="mdi {{ $isLengkap ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>{{ $statusText }}
+                                </span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Document Table -->
                     <div class="card shadow-sm border-0 mb-0">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 fw-bold" style="color: #9a55ff;">
+                        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-2 px-3">
+                            <h6 class="mb-0 fw-bold" style="color: #9a55ff; font-size: 0.9rem;">
                                 <i class="mdi mdi-clipboard-text-outline me-2"></i>Daftar Dokumen Persyaratan
                             </h6>
+                            <span class="badge bg-light text-dark fw-bold border">
+                                {{ $uploadedDocs }} / {{ $requiredDocs }} Wajib Terunggah
+                            </span>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
+                                <table class="table table-hover align-middle mb-0 modal-doc-table">
                                     <thead>
                                         <tr>
                                             <th class="text-center" style="width: 50px;">No</th>
                                             <th>Nama Dokumen</th>
-                                            <th class="text-end">Aksi Upload / File</th>
+                                            <th class="text-center" style="width: 120px;">Status</th>
+                                            <th class="text-end" style="width: 320px;">Aksi Upload / File</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -504,64 +757,75 @@
                                         @forelse ($documents as $doc)
                                             @php
                                                 $uploadedFile = $bookingUploads->get($doc->id);
+                                                $hasFile = $uploadedFile && !empty($uploadedFile->file_path);
                                             @endphp
                                             <tr>
                                                 <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <span class="doc-file-icon">
+                                                        <span class="doc-icon-box">
                                                             <i class="mdi mdi-file-document-outline"></i>
                                                         </span>
                                                         <div>
-                                                            <span class="fw-bold d-block">{{ $doc->name }}</span>
+                                                            <span class="fw-bold d-block text-dark" style="font-size: 0.88rem;">{{ $doc->name }}</span>
                                                             @if($doc->required)
-                                                                <small class="text-danger"><i class="mdi mdi-asterisk" style="font-size: 0.65rem;"></i> Wajib</small>
+                                                                <span class="badge-doc-req wajib"><i class="mdi mdi-asterisk" style="font-size: 0.6rem;"></i> Wajib</span>
                                                             @else
-                                                                <small class="text-muted">Opsional</small>
+                                                                <span class="badge-doc-req opsional">Opsional</span>
                                                             @endif
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="text-end">
-                                                    @if ($uploadedFile && !empty($uploadedFile->file_path))
-                                                        <a href="{{ asset('storage/' . $uploadedFile->file_path) }}"
-                                                            target="_blank" class="btn-action-outline-purple">
-                                                            <i class="mdi mdi-eye-outline me-1"></i>Lihat File
-                                                        </a>
+                                                <td class="text-center">
+                                                    @if ($hasFile)
+                                                        <span class="badge-doc-status uploaded">
+                                                            <i class="mdi mdi-check-circle me-1"></i>Tersedia
+                                                        </span>
+                                                    @elseif ($doc->required)
+                                                        <span class="badge-doc-status missing">
+                                                            <i class="mdi mdi-alert-circle-outline me-1"></i>Belum Ada
+                                                        </span>
                                                     @else
-                                                        <div class="d-flex flex-column gap-1 text-end">
-                                                            <form action="{{ route('document.upload') }}" 
-                                                                method="POST" 
-                                                                enctype="multipart/form-data">
-                                                                @csrf
-                                                                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                                                <input type="hidden" name="document_id" value="{{ $doc->id }}">
-
-                                                                <div class="d-flex align-items-center justify-content-end gap-2">
-                                                                    <div class="pratanah-file-upload-modern text-start" style="width: 220px;">
-                                                                        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
-                                                                        <div class="pratanah-file-label-modern">
-                                                                            <i class="mdi mdi-cloud-upload-outline"></i>
-                                                                            <div class="pratanah-file-info-modern">
-                                                                                <span>Pilih File</span>
-                                                                                <small>PDF / JPG / PNG</small>
-                                                                            </div>
-                                                                            <span class="pratanah-file-size" style="display: none;"></span>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <button type="submit" class="btn btn-sm btn-gradient-primary d-flex align-items-center">
-                                                                        <i class="mdi mdi-upload me-1"></i> Upload
-                                                                    </button>
-                                                                </div>
-                                                            </form>
+                                                        <span class="badge-doc-status optional">
+                                                            <i class="mdi mdi-minus-circle-outline me-1"></i>Opsional
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-end">
+                                                    @if ($hasFile)
+                                                        <div class="d-inline-flex align-items-center justify-content-end gap-2">
+                                                            <a href="{{ asset('storage/' . $uploadedFile->file_path) }}"
+                                                                target="_blank" class="btn-doc-view">
+                                                                <i class="mdi mdi-eye-outline"></i>Lihat Dokumen
+                                                            </a>
                                                         </div>
+                                                    @else
+                                                        <form action="{{ route('document.upload') }}" 
+                                                            method="POST" 
+                                                            enctype="multipart/form-data"
+                                                            class="upload-inline-form">
+                                                            @csrf
+                                                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                                            <input type="hidden" name="document_id" value="{{ $doc->id }}">
+
+                                                            <div class="upload-file-btn-wrapper">
+                                                                <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required class="doc-file-input" id="file_{{ $booking->id }}_{{ $doc->id }}">
+                                                                <label for="file_{{ $booking->id }}_{{ $doc->id }}" class="doc-file-label">
+                                                                    <i class="mdi mdi-paperclip"></i>
+                                                                    <span class="file-chosen-text">Pilih File...</span>
+                                                                </label>
+                                                            </div>
+
+                                                            <button type="submit" class="btn-upload-submit">
+                                                                <i class="mdi mdi-upload"></i>Upload
+                                                            </button>
+                                                        </form>
                                                     @endif
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="3" class="text-center text-muted py-4">
+                                                <td colspan="4" class="text-center text-muted py-4">
                                                     Belum ada dokumen yang bisa ditampilkan
                                                 </td>
                                             </tr>
@@ -573,7 +837,7 @@
                     </div>
                 </div>
 
-                <div class="modal-footer bg-light border-top">
+                <div class="modal-footer bg-light border-top py-2 px-3">
                     <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
                         Tutup
                     </button>
@@ -590,24 +854,14 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Modern file upload preview
-    document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
+    document.querySelectorAll('.doc-file-input').forEach(input => {
         input.addEventListener('change', function(e) {
             const fileName = e.target.files[0]?.name;
-            const fileSize = e.target.files[0]?.size;
-            const label = this.closest('.pratanah-file-upload-modern').querySelector('.pratanah-file-info-modern span');
-            const sizeSpan = this.closest('.pratanah-file-upload-modern').querySelector('.pratanah-file-size');
-
-            if (fileName) {
-                label.textContent = fileName.length > 25 ? fileName.substring(0, 25) + '...' : fileName;
-                if (fileSize) {
-                    const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                    sizeSpan.textContent = sizeInMB + ' MB';
-                    sizeSpan.style.display = 'inline-block';
-                }
-            } else {
-                label.textContent = 'Pilih File';
-                sizeSpan.textContent = '';
-                sizeSpan.style.display = 'none';
+            const labelSpan = this.closest('.upload-file-btn-wrapper').querySelector('.file-chosen-text');
+            if (fileName && labelSpan) {
+                labelSpan.textContent = fileName.length > 18 ? fileName.substring(0, 18) + '...' : fileName;
+                labelSpan.style.color = '#9a55ff';
+                labelSpan.style.fontWeight = '700';
             }
         });
     });

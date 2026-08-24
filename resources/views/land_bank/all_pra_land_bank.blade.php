@@ -4,7 +4,52 @@
 
 @section('content')
 
+    <style>
+        .btn-fase-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0.32rem 0.65rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            color: #ffffff !important;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            line-height: 1.2;
+            cursor: pointer;
+        }
 
+        .btn-fase-action i {
+            font-size: 0.95rem;
+        }
+
+        .btn-fase-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            color: #ffffff !important;
+        }
+
+        .btn-fase-1 {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+        }
+
+        .btn-fase-2 {
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+        }
+
+        .btn-fase-3 {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .btn-fase-delete {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            padding: 0.32rem 0.55rem;
+        }
+    </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
@@ -270,34 +315,39 @@
                                             </td>
 
                                             <td class="text-center text-nowrap">
-                                                <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
-                                                   class="btn-action fase1" 
-                                                   title="FASE 1: Negosiasi">
-                                                    <i class="mdi mdi-account-tie"></i>
-                                                </a>
-
-                                                <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
-                                                   class="btn-action fase2" 
-                                                   title="FASE 2: Survey">
-                                                    <i class="mdi mdi-map-search"></i>
-                                                </a>
-
-                                                @if($land->status !== 'fase1' && ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
-                                                       class="btn-action fase3" 
-                                                       title="FASE 3: Persetujuan">
-                                                        <i class="mdi mdi-check-decagram"></i>
+                                                <div class="d-inline-flex align-items-center gap-1">
+                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
+                                                       class="btn-fase-action btn-fase-1" 
+                                                       title="FASE 1: Negosiasi">
+                                                        <i class="mdi mdi-account-tie"></i>
+                                                        <span>Fase 1</span>
                                                     </a>
-                                                @endif
 
-                                                <form action="{{ route('pra-landbanks.destroy', $land->id) }}"
-                                                    method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn-action delete delete-btn" title="Hapus">
-                                                        <i class="mdi mdi-trash-can-outline"></i>
-                                                    </button>
-                                                </form>
+                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
+                                                       class="btn-fase-action btn-fase-2" 
+                                                       title="FASE 2: Survey">
+                                                        <i class="mdi mdi-map-search"></i>
+                                                        <span>Fase 2</span>
+                                                    </a>
+
+                                                    @if($land->status !== 'fase1' && ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
+                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
+                                                           class="btn-fase-action btn-fase-3" 
+                                                           title="FASE 3: Persetujuan">
+                                                            <i class="mdi mdi-check-decagram"></i>
+                                                            <span>Fase 3</span>
+                                                        </a>
+                                                    @endif
+
+                                                    <form action="{{ route('pra-landbanks.destroy', $land->id) }}"
+                                                        method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="btn-fase-action btn-fase-delete delete-btn" title="Hapus Data">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty

@@ -146,4 +146,40 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+
+  // =========================================================================
+  // 5. GLOBAL SELECT2 INITIALIZATION (NO SEARCH BOX BY DEFAULT, SEARCH ON .select2-search)
+  // =========================================================================
+  function initGlobalSelect2() {
+    if (typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined') {
+      jQuery('select').not('.no-select2, .select2-hidden-accessible, [multiple]').each(function () {
+        const $this = jQuery(this);
+        const modalParent = $this.closest('.modal');
+        const enableSearch = $this.hasClass('select2-search') || $this.data('search') === true || $this.data('search') === 'true';
+
+        const config = {
+          theme: 'bootstrap-5',
+          width: $this.data('width') || '100%',
+          dropdownParent: modalParent.length ? modalParent : jQuery(document.body)
+        };
+
+        if (!enableSearch) {
+          config.minimumResultsForSearch = Infinity;
+        }
+
+        $this.select2(config);
+      });
+    }
+  }
+
+  // Initialize on page load
+  initGlobalSelect2();
+
+  // Re-initialize when Bootstrap modals open
+  if (typeof jQuery !== 'undefined') {
+    jQuery(document).on('shown.bs.modal', function () {
+      initGlobalSelect2();
+    });
+  }
 });
+
