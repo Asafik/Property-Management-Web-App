@@ -186,21 +186,29 @@
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <!-- Header Halaman (Tanpa Card Box) -->
+    <!-- Header Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 px-1">
-                <div>
-                    <h3 class="text-dark mb-1 fw-bold">
-                        <i class="mdi mdi-home-plus me-2" style="color: #9a55ff;"></i>Tambah Pasca Land Bank
-                    </h3>
-                    <p class="text-muted mb-0">Inisialisasi dan lengkapi data tanah pasca akuisisi untuk pengembangan proyek baru</p>
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Tambah Pasca Land Bank
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Inisialisasi dan lengkapi data tanah pasca akuisisi untuk pengembangan proyek baru
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{{ route('properti-all') }}" class="btn btn-sm btn-gradient-secondary d-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
+                            <i class="mdi mdi-arrow-left" style="font-size: 1rem;"></i>
+                            <span>Kembali</span>
+                        </a>
+                        <div class="d-none d-md-block pe-2">
+                            <i class="mdi mdi-home-plus" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
                 </div>
-                <!-- Tombol Kembali mentok kanan -->
-                <a href="{{ route('properti-all') }}" class="btn btn-sm btn-gradient-secondary d-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
-                    <i class="mdi mdi-arrow-left" style="font-size: 1rem;"></i>
-                    <span>Kembali</span>
-                </a>
             </div>
         </div>
     </div>

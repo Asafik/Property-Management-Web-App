@@ -6,21 +6,28 @@
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <!-- Header Halaman (Tanpa Card Box) -->
+    <!-- Header Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center px-1">
-                <div>
-                    <h3 class="text-dark mb-1 fw-bold">
-                        <i class="mdi mdi-file-document-multiple-outline me-2" style="color: #9a55ff;"></i>Dokumen Tanah Induk (LandBank)
-                    </h3>
-                    <p class="text-muted mb-0">Kelola master jenis dokumen legalitas tanah induk landbank</p>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" onclick="openModal('tambah')">
-                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
-                        <span>Tambah Dokumen</span>
-                    </button>
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Dokumen Tanah Induk (LandBank)
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Kelola master jenis dokumen legalitas tanah induk landbank
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm px-3 py-2" onclick="openModal('tambah')">
+                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                            <span>Tambah Dokumen</span>
+                        </button>
+                        <div class="d-none d-md-block pe-2">
+                            <i class="mdi mdi-file-document-multiple-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

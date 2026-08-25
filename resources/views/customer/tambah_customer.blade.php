@@ -346,21 +346,27 @@
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
 
-    <!-- Header Judul & Tombol Kembali (Tanpa Card Box) -->
+    <!-- Header Card Banner -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 px-1">
-                <div>
-                    <h3 class="text-dark mb-1 fw-bold">
-                        <i class="mdi {{ $isEdit ? 'mdi-account-edit' : 'mdi-account-plus' }} me-2" style="color: #9a55ff;"></i>
-                        {{ $isEdit ? 'Edit Customer' : 'Tambah Customer Baru' }}
-                    </h3>
-                    <p class="text-muted mb-0">Input data lengkap customer untuk booking unit, pengajuan KPR, dan transaksi</p>
-                </div>
-                <div>
-                    <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center gap-1" style="height: 38px; padding: 0.5rem 1rem;">
-                        <i class="mdi mdi-arrow-left"></i> Kembali ke Data User
-                    </a>
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            {{ $isEdit ? 'Edit Customer' : 'Tambah Customer Baru' }}
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Input data lengkap customer untuk booking unit, pengajuan KPR, dan transaksi
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center gap-1" style="height: 38px; padding: 0.5rem 1rem;">
+                            <i class="mdi mdi-arrow-left"></i> Kembali ke Data User
+                        </a>
+                        <div class="d-none d-md-block pe-2">
+                            <i class="mdi {{ $isEdit ? 'mdi-account-edit' : 'mdi-account-plus' }}" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

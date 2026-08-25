@@ -10,15 +10,22 @@
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <!-- Header Halaman (Tanpa Card Box) -->
+    <!-- Header Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center px-1">
-                <div>
-                    <h3 class="text-dark mb-1 fw-bold">
-                        <i class="mdi mdi-map-marker-radius me-2" style="color: #9a55ff;"></i>Peta Lokasi Properti
-                    </h3>
-                    <p class="text-muted mb-0">Pemetaan geografis dan status seluruh properti dan landbank</p>
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Peta Lokasi Properti
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Pemetaan geografis dan status seluruh properti dan landbank
+                        </p>
+                    </div>
+                    <div class="d-none d-sm-block pe-2">
+                        <i class="mdi mdi-map-marker-radius" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                    </div>
                 </div>
             </div>
         </div>

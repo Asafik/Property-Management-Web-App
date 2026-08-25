@@ -6,21 +6,28 @@
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <!-- Header Halaman (Tanpa Card Box) -->
+    <!-- Header Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center px-1">
-                <div>
-                    <h3 class="text-dark mb-1 fw-bold">
-                        <i class="mdi mdi-account-group me-2" style="color: #9a55ff;"></i>Data Pengguna
-                    </h3>
-                    <p class="text-muted mb-0">Kelola data seluruh pengguna sistem, staf, dan sales agent</p>
-                </div>
-                <div>
-                    <a href="{{ route('agency.create') }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm">
-                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
-                        <span>Tambah Pengguna</span>
-                    </a>
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Data Pengguna
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Kelola data seluruh pengguna sistem, staf, dan sales agent
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{{ route('agency.create') }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                            <span>Tambah Pengguna</span>
+                        </a>
+                        <div class="d-none d-md-block pe-2">
+                            <i class="mdi mdi-account-group" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

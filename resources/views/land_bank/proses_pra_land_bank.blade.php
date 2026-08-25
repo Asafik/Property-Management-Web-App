@@ -487,37 +487,41 @@
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-        <!-- HEADER SECTION (Tanpa Card Box) -->
+        <!-- Header Card Banner -->
         <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 px-1">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">
-                            <i class="mdi mdi-hand-holding-usd me-2" style="color: #9a55ff;"></i>
-                            @if ($land)
-                                @if($land->status == 'approved' || $land->status == 'rejected')
-                                    Detail Pra Tanah
+                <div class="card shadow-sm border-0 header-card">
+                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                                @if ($land)
+                                    @if($land->status == 'approved' || $land->status == 'rejected')
+                                        Detail Pra Tanah
+                                    @else
+                                        Proses Pra Tanah
+                                    @endif
                                 @else
-                                    Proses Pra Tanah
+                                    Tambah Pra Tanah Baru
                                 @endif
-                            @else
-                                Tambah Pra Tanah Baru
-                            @endif
-                        </h3>
-                        <p class="text-muted mb-0">
-                            @if ($land)
-                                Mengelola dan mengulas alur pelepasan tanah untuk <strong>{{ $land->land_name }}</strong>
-                            @else
-                                Inisialisasi data penawaran awal makelar (Fase 1)
-                            @endif
-                        </p>
-                    </div>
+                            </h3>
+                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                                @if ($land)
+                                    Mengelola dan mengulas alur pelepasan tanah untuk <strong>{{ $land->land_name }}</strong>
+                                @else
+                                    Inisialisasi data penawaran awal makelar (Fase 1)
+                                @endif
+                            </p>
+                        </div>
 
-                    <!-- BUTTON KEMBALI -->
-                    <div>
-                        <a href="{{ route('pralandbank.all') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" style="border-radius: 8px; font-weight: 500; height: 40px; padding: 0 16px;">
-                            <i class="mdi mdi-arrow-left fs-5"></i> Kembali
-                        </a>
+                        <!-- BUTTON KEMBALI & ICON -->
+                        <div class="d-flex align-items-center gap-3">
+                            <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
+                                <i class="mdi mdi-arrow-left"></i> Kembali
+                            </a>
+                            <div class="d-none d-md-block pe-2">
+                                <i class="mdi mdi-hand-holding-usd" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
