@@ -306,7 +306,7 @@
         <div class="btn-container d-print-none">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <a href="{{ route('properti.progress', $unit->id) }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id, 'unit_id' => $unit->id]) }}" class="btn btn-outline-secondary">
                         <i class="mdi mdi-arrow-left me-2"></i> Kembali
                     </a>
                 </div>
