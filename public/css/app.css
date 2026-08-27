@@ -740,3 +740,18 @@ body.sidebar-icon-only .sidebar-child-link .menu-icon-minimized {
     padding: 0.85rem 0.65rem !important;
   }
 }
+
+/* ===== LEAFLET MAP GLOBAL FIXES ===== */
+.leaflet-container {
+  font-family: inherit !important;
+}
+
+.leaflet-pane img,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+

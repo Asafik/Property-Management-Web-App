@@ -254,7 +254,7 @@
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
     <!-- Header Card Banner -->
-    <div class="row mb-3 mb-md-4">
+    <div class="ro  w mb-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0 header-card">
                 <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
@@ -358,7 +358,7 @@
                                                     placeholder="Cari Customer / ID..."
                                                     value="{{ request('search') }}"
                                                     style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3"
                                                     type="submit" title="Cari"
                                                     style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
                                                     <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
@@ -426,7 +426,7 @@
                                                 placeholder="Cari Customer / ID..."
                                                 value="{{ request('search') }}"
                                                 style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3"
                                                 type="submit" title="Cari"
                                                 style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
                                                 <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
@@ -807,8 +807,8 @@
                                                             </a>
                                                         </div>
                                                     @else
-                                                        <form action="{{ route('document.upload') }}" 
-                                                            method="POST" 
+                                                        <form action="{{ route('document.upload') }}"
+                                                            method="POST"
                                                             enctype="multipart/form-data"
                                                             class="upload-inline-form">
                                                             @csrf

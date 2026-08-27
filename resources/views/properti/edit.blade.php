@@ -1566,8 +1566,34 @@
             };
             L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
 
+            let redIcon = L.divIcon({
+                className: 'custom-red-marker-pin',
+                html: `
+                    <div style="
+                        position: relative;
+                        width: 34px;
+                        height: 44px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+                        cursor: grab;
+                    ">
+                        <svg width="34" height="44" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0C5.373 0 0 5.373 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.373 18.627 0 12 0Z" fill="#e53935"/>
+                            <circle cx="12" cy="11" r="5" fill="#ffffff"/>
+                            <circle cx="12" cy="11" r="2.5" fill="#b71c1c"/>
+                        </svg>
+                    </div>
+                `,
+                iconSize: [34, 44],
+                iconAnchor: [17, 44],
+                popupAnchor: [0, -40]
+            });
+
             let marker = L.marker([lat, lng], {
-                draggable: true
+                draggable: true,
+                icon: redIcon
             }).addTo(map);
 
             setTimeout(() => {

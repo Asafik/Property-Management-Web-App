@@ -49,6 +49,45 @@
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             padding: 0.32rem 0.55rem;
         }
+
+        /* Select2 Theme Alignment */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border-color: #e0e4e9 !important;
+            border-radius: 4px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #3b3f5c !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #bfa5fa !important;
+            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden !important;
+            z-index: 1050 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background-color: #f6f1ff !important;
+            color: #792fe0 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #eee4ff !important;
+            color: #581c87 !important;
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -93,7 +132,7 @@
                         <div class="filter-card mb-3">
                             <!-- Desktop Filter -->
                             <div class="filter-row-desktop d-none d-md-block">
-                                <form id="filterForm" method="GET" onsubmit="return showFilterLoading()">
+                                <form id="filterForm" method="GET" action="{{ route('pralandbank.all') }}">
                                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 w-100">
                                         <div style="width: 280px;">
                                             <div class="input-group">
@@ -110,27 +149,25 @@
                                         </div>
 
                                         <div class="d-flex align-items-center gap-2 ms-auto">
-                                            <select class="form-control" name="limit" id="limitSelect" style="width: 115px;">
-                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 data
-                                                </option>
-                                                <option value="10"
-                                                    {{ request('limit', 10) == 10 ? 'selected' : '' }}>10 data</option>
-                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15 data
-                                                </option>
-                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 data
-                                                </option>
-                                            </select>
+                                            <div style="width: 110px;">
+                                                <select class="form-control select2" name="limit" id="limitSelect" style="width: 100%;">
+                                                    <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 Data</option>
+                                                    <option value="10" {{ request('limit', 10) == 10 ? 'selected' : '' }}>10 Data</option>
+                                                    <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15 Data</option>
+                                                    <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 Data</option>
+                                                </select>
+                                            </div>
 
                                             <button type="submit"
                                                 class="btn btn-gradient-primary btn-icon-only"
                                                 title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
-                                            <button type="button"
+                                            <a href="{{ route('pralandbank.all') }}"
                                                 class="btn btn-gradient-secondary btn-icon-only"
-                                                title="Reset" onclick="showResetLoading(event)">
+                                                title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
@@ -138,7 +175,7 @@
 
                             <!-- Mobile Filter -->
                             <div class="filter-row-mobile d-block d-md-none">
-                                <form method="GET" onsubmit="return showFilterLoading()">
+                                <form method="GET" action="{{ route('pralandbank.all') }}">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <div class="input-group">
@@ -154,30 +191,28 @@
                                             </div>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select class="form-control" name="limit" id="limitSelectMobile">
-                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 data
-                                                </option>
-                                                <option value="10"
-                                                    {{ request('limit', 10) == 10 ? 'selected' : '' }}>10 data</option>
-                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15 data
-                                                </option>
-                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 data
-                                                </option>
+                                            <select class="form-control select2" name="limit" id="limitSelectMobile" style="width: 100%;">
+                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 Data</option>
+                                                <option value="10" {{ request('limit', 10) == 10 ? 'selected' : '' }}>10 Data</option>
+                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15 Data</option>
+                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 Data</option>
                                             </select>
                                         </div>
-                                        <div class="col-6 mb-2">
-                                            <div class="d-flex gap-2">
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                    title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <button type="button"
-                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                    onclick="showResetLoading(event)" title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </button>
-                                            </div>
+                                        <div class="col-3 mb-2">
+                                            <button type="submit"
+                                                class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center"
+                                                style="height: 38px;"
+                                                title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-3 mb-2">
+                                            <a href="{{ route('pralandbank.all') }}"
+                                                class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center"
+                                                style="height: 38px;"
+                                                title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
@@ -394,6 +429,28 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(document).ready(function() {
+            if ($('#limitSelect').length) {
+                $('#limitSelect').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    minimumResultsForSearch: Infinity
+                }).on('change', function() {
+                    $('#filterForm').submit();
+                });
+            }
+
+            if ($('#limitSelectMobile').length) {
+                $('#limitSelectMobile').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    minimumResultsForSearch: Infinity
+                }).on('change', function() {
+                    $(this).closest('form').submit();
+                });
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             // Cek pesan sukses dari sessionStorage (setelah reload)
             const pendingMsg = sessionStorage.getItem('success_message');

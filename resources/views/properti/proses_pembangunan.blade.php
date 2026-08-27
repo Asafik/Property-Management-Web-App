@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'RAB Pembangunan - Property Management App')
+@section('title', 'RAP Pembangunan - Property Management App')
 
 @section('content')
 
@@ -240,15 +240,22 @@
     </style>
 
     <div class="container-fluid p-4">
-        <!-- Header Halaman -->
+        <!-- Header Card Banner -->
         <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center px-1">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">
-                            <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>Rencana Anggaran Biaya (RAB) Pembangunan
-                        </h3>
-                        <p class="text-muted mb-0">Rincian biaya pembangunan unit dari awal hingga selesai</p>
+                <div class="card shadow-sm border-0 header-card">
+                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                                Rencana Anggaran Pekerjaan (RAP) Pembangunan
+                            </h3>
+                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                                Rincian anggaran pekerjaan pembangunan unit dari awal hingga selesai
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block pe-2">
+                            <i class="mdi mdi-calculator" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -472,7 +479,7 @@
                 </div>
             @endforeach
 
-            {{-- Rincian RAB --}}
+            {{-- Rincian RAP --}}
             @php
                 $subtotal = $items->sum(fn($item) => $item->total);
                 $ppn = $subtotal * 0.1;
@@ -481,14 +488,14 @@
                 $finalPrice = $totalRAB + $unitPrice;
             @endphp
 
-            <!-- Bagian Rincian RAB - Yang Diperbaiki -->
+            <!-- Bagian Rincian RAP - Yang Diperbaiki -->
             <div class="row">
-                <!-- Ringkasan RAB -->
+                <!-- Ringkasan RAP -->
                 <div class="col-12 col-md-6">
                     <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
                             <h6 class="card-title fw-bold text-dark mb-3">
-                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAB
+                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP
                             </h6>
 
                             <div class="ringkasan-row">
@@ -510,7 +517,7 @@
                             <div class="ringkasan-divider"></div>
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label fw-bold">Total RAB</span>
+                                <span class="ringkasan-label fw-bold">Total RAP</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-total-rab" class="rab-form-control text-end fw-bold text-primary"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
@@ -531,7 +538,7 @@
                             <input type="hidden" name="price" value="{{ $finalPrice }}">
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label">Total RAB</span>
+                                <span class="ringkasan-label">Total RAP</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-total-rab-final" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
@@ -564,12 +571,12 @@
 
                                 <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
                                     class="aksi-btn rab-btn-primary">
-                                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                                    <i class="mdi mdi-printer me-1"></i>Cetak RAP
                                 </a>
 
                                 <button type="button" class="aksi-btn rab-btn-warning acc-btn"
                                     data-id="{{ $selectedUnit->id }}">
-                                    <i class="mdi mdi-check me-1"></i>ACC RAB
+                                    <i class="mdi mdi-check me-1"></i>ACC RAP
                                 </button>
                             </div>
                         </div>
@@ -867,7 +874,7 @@
                 grandTotal += subtotal;
             });
 
-            // Live Update Ringkasan RAB & Harga Jual Final
+            // Live Update Ringkasan RAP & Harga Jual Final
             let ppn = Math.round(grandTotal * 0.1);
             let totalRAB = grandTotal + ppn;
 
@@ -916,8 +923,8 @@
                 let unitId = this.dataset.id;
 
                 Swal.fire({
-                    title: 'ACC RAB',
-                    text: 'Apakah yakin ACC RAB untuk unit ini?',
+                    title: 'ACC RAP',
+                    text: 'Apakah yakin ACC RAP untuk unit ini?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#9a55ff',

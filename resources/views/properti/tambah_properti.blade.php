@@ -171,6 +171,21 @@
     z-index: 1;
 }
 
+.leaflet-container {
+    height: 380px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.leaflet-pane img,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container img {
+    max-width: none !important;
+    max-height: none !important;
+}
+
 .leaflet-control-layers {
     border-radius: 10px !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
@@ -744,6 +759,17 @@ document.addEventListener('DOMContentLoaded', function() {
         layers: [googleRoadmap]
     });
 
+    // Invalidate size to ensure full tiles rendering without blank spaces
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 200);
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 600);
+    window.addEventListener('resize', function() {
+        map.invalidateSize();
+    });
+
     // Layer Switcher (Roadmap & Satelit)
     let baseMaps = {
         "Google Roadmap": googleRoadmap,
@@ -751,8 +777,33 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
 
-    // Custom Marker
-    let marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+    // Custom Red Pin Marker
+    let redIcon = L.divIcon({
+        className: 'custom-red-marker-pin',
+        html: `
+            <div style="
+                position: relative;
+                width: 34px;
+                height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+                cursor: grab;
+            ">
+                <svg width="34" height="44" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 0C5.373 0 0 5.373 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.373 18.627 0 12 0Z" fill="#e53935"/>
+                    <circle cx="12" cy="11" r="5" fill="#ffffff"/>
+                    <circle cx="12" cy="11" r="2.5" fill="#b71c1c"/>
+                </svg>
+            </div>
+        `,
+        iconSize: [34, 44],
+        iconAnchor: [17, 44],
+        popupAnchor: [0, -40]
+    });
+
+    let marker = L.marker([lat, lng], { draggable: true, icon: redIcon }).addTo(map);
 
     marker.on('dragend', function() {
         let pos = marker.getLatLng();
