@@ -1334,12 +1334,17 @@
                             </a>
                         </div>
                     </div>
-                    <div class="card-body">
                         <!-- Filter Section -->
                         <div class="filter-card mb-3">
-                            <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
-                                <!-- FILTER DESKTOP -->
-                                <div class="filter-row-desktop d-none d-md-block">
+                            <!-- FILTER DESKTOP -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
+                                    @if(request('sort'))
+                                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                                    @endif
+                                    @if(request('direction'))
+                                        <input type="hidden" name="direction" value="{{ request('direction') }}">
+                                    @endif
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                         <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                             <!-- Search Input -->
@@ -1404,7 +1409,7 @@
                                             </div>
                                             <button type="submit"
                                                 class="btn btn-gradient-primary btn-icon-only"
-                                                id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                id="filterBtn" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
                                             <a href="{{ route('marketing.jual-unit') }}"
@@ -1414,15 +1419,23 @@
                                             </a>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- FILTER MOBILE -->
-                                <div class="d-block d-md-none">
+                                </form>
+                            </div>
+                            <!-- FILTER MOBILE -->
+                            <div class="d-block d-md-none">
+                                <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterFormMobile">
+                                    @if(request('sort'))
+                                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                                    @endif
+                                    @if(request('direction'))
+                                        <input type="hidden" name="direction" value="{{ request('direction') }}">
+                                    @endif
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <div class="input-group search-input-group">
-                                                <input type="text" name="search_mobile"
+                                                <input type="text" name="search"
                                                     value="{{ request('search') }}" class="form-control"
-                                                    placeholder="Cari blok, unit..." id="searchMobile">
+                                                    placeholder="Cari blok, unit, customer..." id="searchMobile">
                                                 <button class="btn btn-gradient-primary btn-search-submit" 
                                                     type="submit" title="Cari">
                                                     <i class="mdi mdi-magnify"></i>
@@ -1430,7 +1443,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 mb-2">
-                                            <select name="jenis_mobile" class="form-control select2-mobile" id="jenisSelectMobile" style="width: 100%;">
+                                            <select name="jenis" class="form-control select2-mobile" id="jenisSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Jenis</option>
                                                 <option value="subsidi"
                                                     {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
@@ -1441,7 +1454,7 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="status_mobile" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
+                                            <select name="status" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Status</option>
                                                 <option value="ready"
                                                     {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
@@ -1455,7 +1468,7 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="perPage_mobile" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                            <select name="perPage" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
                                                 <option value="10"
                                                     {{ request('perPage') == 10 ? 'selected' : '' }}>10
                                                     </option>
@@ -1473,8 +1486,7 @@
                                         <div class="col-6">
                                             <button type="submit"
                                                 class="btn btn-gradient-primary btn-icon-only-mobile w-100"
-                                                id="filterBtnMobile" title="Filter"
-                                                onclick="showFilterLoading()">
+                                                id="filterBtnMobile" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
@@ -1486,8 +1498,8 @@
                                             </a>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
 
                         <!-- ========== TABLE VIEW DENGAN STYLE UI PERTAMA ========== -->
@@ -3600,23 +3612,21 @@
                 width: '100%'
             });
 
-            // Saat submit form, pastikan nilai yang dipilih sinkron antara desktop dan mobile
-            $('#filterForm').on('submit', function() {
-                if ($(window).width() < 768) {
-                    var mobileSearch = $('#searchMobile').val();
-                    $('input[name="search"]').val(mobileSearch);
+            // Auto submit filter desktop saat nilai dropdown berubah
+            $('#jenisSelect, #statusSelect, #perPageSelect').on('change', function() {
+                showFilterLoading();
+                $('#filterForm').submit();
+            });
 
-                    if ($('#jenisSelectMobile').length) $('#jenisSelect').val($('#jenisSelectMobile').val());
-                    if ($('#statusSelectMobile').length) $('#statusSelect').val($('#statusSelectMobile').val());
-                    if ($('#perPageSelectMobile').length) $('#perPageSelect').val($('#perPageSelectMobile').val());
-                }
+            // Auto submit filter mobile saat nilai dropdown berubah
+            $('#jenisSelectMobile, #statusSelectMobile, #perPageSelectMobile').on('change', function() {
+                showFilterLoading();
+                $('#filterFormMobile').submit();
+            });
 
-                // Hapus field duplikat mobile agar tidak mengirim parameter ganda
-                $('input[name="search_mobile"]').remove();
-                $('select[name="jenis_mobile"]').remove();
-                $('select[name="status_mobile"]').remove();
-                $('select[name="perPage_mobile"]').remove();
-
+            // Loading saat form filter disubmit manual (pencarian teks / tombol cari)
+            $('#filterForm, #filterFormMobile').on('submit', function() {
+                showFilterLoading();
                 return true;
             });
         });

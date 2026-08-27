@@ -419,6 +419,86 @@
             border-top: 1px solid #edf2f9;
             padding: 1rem 1.5rem;
         }
+
+        /* SELECT2 CUSTOM STYLING (BOOTSTRAP 5) */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 0.4rem 0.85rem !important;
+            min-height: 40px !important;
+            height: 40px !important;
+            font-family: inherit !important;
+            background-color: #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            transition: all 0.2s ease;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #2c2e3f !important;
+            font-size: 0.88rem !important;
+            line-height: 24px !important;
+            padding-left: 0 !important;
+            font-weight: 500;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+            color: #6c757d !important;
+            font-size: 0.88rem !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 38px !important;
+            right: 8px !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection:hover,
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #e2e8f0 !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+            z-index: 1060 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown {
+            padding: 0.5rem !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            padding: 0.45rem 0.75rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.15) !important;
+            outline: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.55rem 0.85rem !important;
+            font-size: 0.86rem !important;
+            font-weight: 500 !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #f3e8ff !important;
+            color: #7e22ce !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+        }
     </style>
 
     <div class="container-fluid p-2 p-sm-3 p-md-4">
@@ -1006,7 +1086,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Proyek Minat <span class="text-danger">*</span></label>
-                                <select class="form-control" name="land_bank_id" id="projectSelect" required>
+                                <select class="form-control" name="land_bank_id" id="projectSelect" required style="width: 100%;">
                                     <option value="">Pilih Proyek</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}">{{ $project->name }}</option>
@@ -1016,22 +1096,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tipe Unit</label>
-                                <select class="form-control" name="unit_id" id="unitSelect">
-                                    <option value="">-- Pilih Unit --</option>
-                                    @foreach ($units as $unit)
-                                        @php
-                                            $uName = $unit->unit_name ?: ($unit->unit_code ?: 'Unit #' . $unit->id);
-                                            if ($unit->block) {
-                                                $uName .= ' (Blok ' . $unit->block . ($unit->unit_number ? ' No. ' . $unit->unit_number : '') . ')';
-                                            }
-                                            if ($unit->type) {
-                                                $uName .= ' - Tipe ' . $unit->type;
-                                            }
-                                        @endphp
-                                        <option value="{{ $unit->id }}" data-project="{{ $unit->land_bank_id }}">
-                                            {{ $uName }}
-                                        </option>
-                                    @endforeach
+                                <select class="form-control" name="unit_id" id="unitSelect" style="width: 100%;">
+                                    <option value="">-- Pilih Proyek Terlebih Dahulu --</option>
                                 </select>
                             </div>
 
@@ -1160,7 +1226,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Proyek Minat <span class="text-danger">*</span></label>
-                                <select name="land_bank_id" id="edit_land_bank_id" class="form-control" required>
+                                <select name="land_bank_id" id="edit_land_bank_id" class="form-control" required style="width: 100%;">
                                     <option value="">-- Pilih Proyek --</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}">{{ $project->name }}</option>
@@ -1169,20 +1235,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tipe Unit</label>
-                                <select name="unit_id" id="edit_unit_id" class="form-control">
+                                <select name="unit_id" id="edit_unit_id" class="form-control" style="width: 100%;">
                                     <option value="">-- Pilih Unit --</option>
-                                    @foreach ($units as $unit)
-                                        @php
-                                            $uName = $unit->unit_name ?: ($unit->unit_code ?: 'Unit #' . $unit->id);
-                                            if ($unit->block) {
-                                                $uName .= ' (Blok ' . $unit->block . ($unit->unit_number ? ' No. ' . $unit->unit_number : '') . ')';
-                                            }
-                                            if ($unit->type) {
-                                                $uName .= ' - Tipe ' . $unit->type;
-                                            }
-                                        @endphp
-                                        <option value="{{ $unit->id }}" data-project="{{ $unit->land_bank_id }}">{{ $uName }}</option>
-                                    @endforeach
                                 </select>
                             </div>
 
@@ -1393,21 +1447,45 @@
         }
 
         function filterUnitsForSelect(selectEl, projectId, selectedUnitId = null) {
-            if (!selectEl) return;
-            selectEl.innerHTML = '<option value="">-- Pilih Unit --</option>';
+            const $select = $(selectEl);
+            if (!$select.length) return;
 
-            let unitsToRender = [];
+            $select.empty();
+
             if (!projectId) {
-                unitsToRender = allUnitsData;
+                $select.append('<option value="">-- Pilih Proyek Terlebih Dahulu --</option>');
             } else {
-                const selectedProject = projectsData.find(p => p.id == projectId);
-                unitsToRender = (selectedProject && selectedProject.units) ? selectedProject.units : [];
+                $select.append('<option value="">-- Pilih Unit --</option>');
+
+                let unitsToRender = [];
+                const selectedProject = projectsData.find(p => String(p.id) === String(projectId));
+                if (selectedProject && selectedProject.units && selectedProject.units.length > 0) {
+                    unitsToRender = selectedProject.units;
+                } else {
+                    unitsToRender = allUnitsData.filter(u => String(u.land_bank_id) === String(projectId));
+                }
+
+                if (unitsToRender.length === 0) {
+                    $select.append('<option value="" disabled>Tidak ada unit tersedia untuk proyek ini</option>');
+                } else {
+                    unitsToRender.forEach(unit => {
+                        const isSelected = selectedUnitId && String(selectedUnitId) === String(unit.id);
+                        const opt = new Option(getUnitDisplayName(unit), unit.id, false, isSelected);
+                        $(opt).attr('data-project', unit.land_bank_id);
+                        $select.append(opt);
+                    });
+                }
             }
 
-            unitsToRender.forEach(unit => {
-                const isSelected = selectedUnitId && selectedUnitId == unit.id ? 'selected' : '';
-                selectEl.innerHTML += `<option value="${unit.id}" data-project="${unit.land_bank_id}" ${isSelected}>${getUnitDisplayName(unit)}</option>`;
-            });
+            if (selectedUnitId) {
+                $select.val(selectedUnitId);
+            } else {
+                $select.val('');
+            }
+
+            if ($select.hasClass('select2-hidden-accessible')) {
+                $select.trigger('change.select2');
+            }
         }
 
         $(document).on('click', '.btnEditTamu', function() {
@@ -1426,9 +1504,16 @@
                     $('#edit_source').val(data.source ?? '');
                     $('#edit_assigned_to').val(data.assigned_to ?? '');
                     $('#edit_status').val(data.status ?? '');
-                    $('#edit_land_bank_id').val(data.land_bank_id ?? '');
 
-                    filterUnitsForSelect(document.getElementById('edit_unit_id'), data.land_bank_id, data.unit_id);
+                    // Set proyek minat dan otomatis filter unit
+                    if (data.land_bank_id) {
+                        $('#edit_land_bank_id').val(data.land_bank_id).trigger('change', [true]);
+                        $('#edit_land_bank_id').trigger('change.select2');
+                    } else {
+                        $('#edit_land_bank_id').val('').trigger('change.select2');
+                    }
+
+                    filterUnitsForSelect($('#edit_unit_id'), data.land_bank_id, data.unit_id);
 
                     $('#edit_notes').val(data.notes ?? '');
 
@@ -1520,25 +1605,69 @@
             return new Intl.NumberFormat('id-ID').format(onlyNumbers);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const projectSelect = document.getElementById('projectSelect');
-            const unitSelect = document.getElementById('unitSelect');
-            const editProjectSelect = document.getElementById('edit_land_bank_id');
-            const editUnitSelect = document.getElementById('edit_unit_id');
+        // Setup Select2 & Event Listeners
+        $(document).ready(function() {
+            // Inisialisasi Select2 untuk Modal Tambah Tamu
+            $('#projectSelect').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalGuest'),
+                placeholder: 'Pilih Proyek',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#unitSelect').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalGuest'),
+                placeholder: '-- Pilih Proyek Terlebih Dahulu --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Inisialisasi Select2 untuk Modal Edit Tamu
+            $('#edit_land_bank_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalEditTamu'),
+                placeholder: 'Pilih Proyek',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#edit_unit_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalEditTamu'),
+                placeholder: '-- Pilih Unit --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Event saat Proyek Minat di Modal Tambah dipilih / diubah
+            $('#projectSelect').on('change select2:select select2:clear', function() {
+                const projectId = $(this).val();
+                filterUnitsForSelect($('#unitSelect'), projectId, null);
+            });
+
+            // Event saat Proyek Minat di Modal Edit diubah oleh pengguna
+            $('#edit_land_bank_id').on('change select2:select select2:clear', function(e, isInit) {
+                if (!isInit) {
+                    const projectId = $(this).val();
+                    filterUnitsForSelect($('#edit_unit_id'), projectId, null);
+                }
+            });
+
+            // Reset saat modal tambah dibuka
+            $('#modalGuest').on('show.bs.modal', function() {
+                $('#projectSelect').val('').trigger('change.select2');
+                filterUnitsForSelect($('#unitSelect'), null, null);
+            });
+
+            // Tutup dropdown Select2 saat modal ditutup
+            $('#modalGuest, #modalEditTamu').on('hidden.bs.modal', function() {
+                $('.select2-container--open').removeClass('select2-container--open');
+            });
+
+            // Format Budget Input
             const budgetInput = document.getElementById('budgetInput');
-
-            if (projectSelect && unitSelect) {
-                projectSelect.addEventListener('change', function() {
-                    filterUnitsForSelect(unitSelect, this.value);
-                });
-            }
-
-            if (editProjectSelect && editUnitSelect) {
-                editProjectSelect.addEventListener('change', function() {
-                    filterUnitsForSelect(editUnitSelect, this.value);
-                });
-            }
-
             if (budgetInput) {
                 budgetInput.addEventListener('input', function() {
                     this.value = formatBudgetCustom(this.value);

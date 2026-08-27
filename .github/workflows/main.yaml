@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - Production  # branch yang akan otomatis deploy
+      - production
 
 jobs:
   ftp-deploy:

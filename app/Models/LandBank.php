@@ -42,6 +42,7 @@ class LandBank extends Model
         'file_imb',
         'file_pbb',
         'photo',
+        'denah',
         'description',
         'status',
         'elevasi_awal',

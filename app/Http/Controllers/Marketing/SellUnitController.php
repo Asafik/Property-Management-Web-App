@@ -50,20 +50,37 @@ class SellUnitController extends Controller
         Log::info('Status param: ' . $request->status);
 
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
+            $searchTerm = trim($request->search);
+            $query->where(function ($q) use ($searchTerm) {
                 // Search in unit fields
-                $q->where('block', 'like', '%' . $request->search . '%')
-                    ->orWhere('unit_number', 'like', '%' . $request->search . '%')
-                    ->orWhere('unit_code', 'like', '%' . $request->search . '%')
-                    // Search in agent/sales name
-                    ->orWhereHas('activeBooking.sales', function ($subQ) use ($request) {
-                        $subQ->where('name', 'like', '%' . $request->search . '%');
+                $q->where('block', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('unit_number', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('unit_code', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('unit_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type', 'like', '%' . $searchTerm . '%')
+                    ->orWhereRaw("CONCAT(COALESCE(block, ''), ' ', COALESCE(unit_number, '')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("CONCAT(COALESCE(block, ''), '-', COALESCE(unit_number, '')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("CONCAT(COALESCE(block, ''), ' - ', COALESCE(unit_number, '')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("CONCAT(COALESCE(block, ''), '.', COALESCE(unit_number, '')) LIKE ?", ['%' . $searchTerm . '%'])
+                    // Search in project / land bank
+                    ->orWhereHas('landBank', function ($lq) use ($searchTerm) {
+                        $lq->where('name', 'like', '%' . $searchTerm . '%')
+                           ->orWhere('address', 'like', '%' . $searchTerm . '%');
                     })
-                    // Search in customer name - gunakan full_name
-                    ->orWhereHas('activeBooking', function ($subQ) use ($request) {
-                        $subQ->whereHas('customer', function ($customerQ) use ($request) {
-                            $customerQ->where('full_name', 'like', '%' . $request->search . '%');
-                        });
+                    // Search in agent/sales name
+                    ->orWhereHas('activeBooking.sales', function ($subQ) use ($searchTerm) {
+                        $subQ->where('name', 'like', '%' . $searchTerm . '%');
+                    })
+                    // Search in customer name & nik
+                    ->orWhereHas('activeBooking.customer', function ($subQ) use ($searchTerm) {
+                        $subQ->where('full_name', 'like', '%' . $searchTerm . '%')
+                             ->orWhere('nickname', 'like', '%' . $searchTerm . '%')
+                             ->orWhere('nik', 'like', '%' . $searchTerm . '%');
+                    })
+                    ->orWhereHas('customer', function ($subQ) use ($searchTerm) {
+                        $subQ->where('full_name', 'like', '%' . $searchTerm . '%')
+                             ->orWhere('nickname', 'like', '%' . $searchTerm . '%')
+                             ->orWhere('nik', 'like', '%' . $searchTerm . '%');
                     });
             });
         }
@@ -74,7 +91,12 @@ class SellUnitController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $status = strtolower($request->status);
+            if ($status === 'ready' || $status === 'tersedia') {
+                $query->whereIn('status', ['ready', 'draft', 'tersedia']);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         // =========================
@@ -91,7 +113,8 @@ class SellUnitController extends Controller
         // =========================
         if ($request->filled('customer')) {
             $query->whereHas('activeBooking.customer', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->customer . '%');
+                $q->where('full_name', 'like', '%' . $request->customer . '%')
+                  ->orWhere('nickname', 'like', '%' . $request->customer . '%');
             });
         }
 
@@ -102,27 +125,8 @@ class SellUnitController extends Controller
             $query->where(function ($q) use ($request) {
                 $q->where('block', 'like', '%' . $request->unit_name . '%')
                   ->orWhere('unit_number', 'like', '%' . $request->unit_name . '%')
+                  ->orWhere('unit_name', 'like', '%' . $request->unit_name . '%')
                   ->orWhereRaw("CONCAT(block, ' - ', unit_number) LIKE ?", ['%' . $request->unit_name . '%']);
-            });
-        }
-
-        // =========================
-        // SEARCH BY AGENT/SALES
-        // =========================
-        if ($request->filled('agent')) {
-            $query->whereHas('activeBooking.sales', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->agent . '%');
-            });
-        }
-
-        // =========================
-        // SEARCH BY CUSTOMER
-        // =========================
-        if ($request->filled('customer')) {
-            $query->whereHas('activeBooking', function ($q) use ($request) {
-                $q->whereHas('customer', function ($customerQ) use ($request) {
-                    $customerQ->where('full_name', 'like', '%' . $request->customer . '%');
-                });
             });
         }
 
@@ -193,8 +197,8 @@ class SellUnitController extends Controller
         // =========================
         // PAGINATION
         // =========================
-        $perPage = $request->get('perPage', 10);
-        if (!in_array($perPage, [10, 15, 25])) {
+        $perPage = (int) $request->get('perPage', 10);
+        if (!in_array($perPage, [10, 15, 25, 50, 100])) {
             $perPage = 10;
         }
         $units = $query->paginate($perPage)->withQueryString();
@@ -207,7 +211,7 @@ class SellUnitController extends Controller
         // STATISTIK (AKURAT SESUAI FILTER)
         // =========================
         $totalUnits     = $statsQuery->count();
-        $totalTersedia  = (clone $statsQuery)->where('status', 'ready')->count();
+        $totalTersedia  = (clone $statsQuery)->whereIn('status', ['ready', 'draft', 'tersedia'])->count();
         $totalBooking   = (clone $statsQuery)->where('status', 'booked')->count();
         $totalSold      = (clone $statsQuery)->where('status', 'sold')->count();
         $totalArea      = $statsQuery->sum('area');
