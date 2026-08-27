@@ -11,42 +11,45 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('guests', function (Blueprint $table) {
-    $table->id();
+        Schema::create('guests', function (Blueprint $table) {
+            $table->id();
 
-    $table->string('name');
-    $table->string('phone')->nullable();
-    $table->string('email')->nullable();
+            $table->string('name');
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
 
-    $table->string('source')->nullable();
-    $table->foreignId('land_bank_id')
-      ->nullable()
-      ->constrained('land_banks')
-      ->nullOnDelete();
-       $table->foreignId('unit_id')
-      ->nullable()
-      ->constrained('land_bank_units')
-      ->nullOnDelete();
-    $table->text('notes')->nullable();
+            $table->string('source')->nullable();
+            $table->foreignId('land_bank_id')
+                ->nullable()
+                ->constrained('land_banks')
+                ->nullOnDelete();
+            $table->foreignId('unit_id')
+                ->nullable()
+                ->constrained('land_bank_units')
+                ->nullOnDelete();
+            $table->text('notes')->nullable();
 
-    $table->enum('status', [
-        'new',
-        'follow_up',
-        'negotiation',
-        'lost',
-        'converted'
-    ])->default('new');
+            $table->enum('status', [
+                'hot_prospect',
+                'medium_prospect',
+                'cold_prospect',
+                'converted',
+                'lost'
+            ])->default('hot_prospect');
 
-    $table->foreignId('assigned_to')
-          ->nullable()
-          ->constrained('employees')
-          ->nullOnDelete();
+            $table->foreignId('assigned_to')
+                ->nullable()
+                ->constrained('employees')
+                ->nullOnDelete();
 
-    $table->timestamp('last_follow_up')->nullable();
-    $table->timestamp('next_follow_up')->nullable();
-
-    $table->timestamps();
-});
+            $table->timestamp('last_follow_up')->nullable();
+            $table->timestamp('next_follow_up')->nullable();
+            $table->foreignId('marketing_task_id')
+                ->nullable()
+                ->constrained('marketing_tasks')
+                ->nullOnDelete();
+            $table->timestamps();
+        });
     }
 
     /**

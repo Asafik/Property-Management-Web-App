@@ -30,8 +30,9 @@ class SellUnitController extends Controller
         $user = Auth::user();
         $query = LandBankUnit::with([
             'landBank',
+            'activeBooking',
             'activeBooking.sales',
-            'activeBooking.customer'
+            'activeBooking.customer',
         ]);
         // jika posisi marketing → hanya unit miliknya
         if (($user->position->name ?? '') === 'Marketing') {
@@ -43,36 +44,145 @@ class SellUnitController extends Controller
         // FILTER SECTION
         // =========================
 
+        // Debug semua parameter
+        Log::info('All request params: ' . json_encode($request->all()));
+        Log::info('Jenis param: ' . $request->jenis);
+        Log::info('Status param: ' . $request->status);
+
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
+                // Search in unit fields
                 $q->where('block', 'like', '%' . $request->search . '%')
                     ->orWhere('unit_number', 'like', '%' . $request->search . '%')
-                    ->orWhere('unit_code', 'like', '%' . $request->search . '%');
+                    ->orWhere('unit_code', 'like', '%' . $request->search . '%')
+                    // Search in agent/sales name
+                    ->orWhereHas('activeBooking.sales', function ($subQ) use ($request) {
+                        $subQ->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    // Search in customer name - gunakan full_name
+                    ->orWhereHas('activeBooking', function ($subQ) use ($request) {
+                        $subQ->whereHas('customer', function ($customerQ) use ($request) {
+                            $customerQ->where('full_name', 'like', '%' . $request->search . '%');
+                        });
+                    });
             });
         }
 
-        if ($request->filled('project')) {
-            $query->whereHas('landBank', function ($q) use ($request) {
-                $q->where('name', $request->project);
-            });
+        if ($request->filled('jenis')) {
+            Log::info('Filter jenis: ' . $request->jenis);
+            $query->where('jenis', $request->jenis);
         }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+        // =========================
+        // SEARCH BY AGENT/SALES
+        // =========================
+        if ($request->filled('agent')) {
+            $query->whereHas('activeBooking.sales', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->agent . '%');
+            });
         }
 
-        if ($request->filled('price')) {
-            if ($request->price == '<500') {
-                $query->where('price', '<', 500000000);
-            } elseif ($request->price == '500-1000') {
-                $query->whereBetween('price', [500000000, 1000000000]);
-            } elseif ($request->price == '>1000') {
-                $query->where('price', '>', 1000000000);
-            }
+        // =========================
+        // SEARCH BY CUSTOMER
+        // =========================
+        if ($request->filled('customer')) {
+            $query->whereHas('activeBooking.customer', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->customer . '%');
+            });
+        }
+
+        // =========================
+        // SEARCH BY UNIT NAME (BLOCK - UNIT)
+        // =========================
+        if ($request->filled('unit_name')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('block', 'like', '%' . $request->unit_name . '%')
+                  ->orWhere('unit_number', 'like', '%' . $request->unit_name . '%')
+                  ->orWhereRaw("CONCAT(block, ' - ', unit_number) LIKE ?", ['%' . $request->unit_name . '%']);
+            });
+        }
+
+        // =========================
+        // SEARCH BY AGENT/SALES
+        // =========================
+        if ($request->filled('agent')) {
+            $query->whereHas('activeBooking.sales', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->agent . '%');
+            });
+        }
+
+        // =========================
+        // SEARCH BY CUSTOMER
+        // =========================
+        if ($request->filled('customer')) {
+            $query->whereHas('activeBooking', function ($q) use ($request) {
+                $q->whereHas('customer', function ($customerQ) use ($request) {
+                    $customerQ->where('full_name', 'like', '%' . $request->customer . '%');
+                });
+            });
+        }
+
+        // =========================
+        // SORTING SECTION
+        // =========================
+
+        // Default sorting
+        $sortField = $request->get('sort', 'block');
+        $sortDirection = $request->get('direction', 'asc');
+
+        // Validate sort field
+        $allowedSortFields = ['block', 'unit_number', 'jenis', 'agent_name', 'customer_name'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'block';
+        }
+
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Apply sorting
+        switch ($sortField) {
+            case 'block':
+                $query->orderBy('block', $sortDirection)
+                      ->orderBy('unit_number', $sortDirection);
+                break;
+
+            case 'unit_number':
+                $query->orderBy('unit_number', $sortDirection)
+                      ->orderBy('block', $sortDirection);
+                break;
+
+            case 'jenis':
+                $query->orderBy('jenis', $sortDirection)
+                      ->orderBy('block', $sortDirection);
+                break;
+
+            case 'agent_name':
+                $query->leftJoin('bookings as b', function($join) {
+                    $join->on('b.unit_id', '=', 'land_bank_units.id')
+                         ->where('b.status', '!=', 'cancelled');
+                })
+                ->leftJoin('employees as e', 'e.id', '=', 'b.sales_id')
+                ->select('land_bank_units.*', 'e.name as agent_name')
+                ->orderBy('agent_name', $sortDirection)
+                ->orderBy('block', $sortDirection);
+                break;
+
+            case 'customer_name':
+                $query->leftJoin('bookings as b', function($join) {
+                    $join->on('b.unit_id', '=', 'land_bank_units.id')
+                         ->where('b.status', '!=', 'cancelled');
+                })
+                ->leftJoin('customers as c', 'c.id', '=', 'b.customer_id')
+                ->select('land_bank_units.*', 'c.full_name as customer_name')
+                ->orderBy('customer_name', $sortDirection)
+                ->orderBy('block', $sortDirection);
+                break;
         }
 
         // =========================
@@ -83,7 +193,15 @@ class SellUnitController extends Controller
         // =========================
         // PAGINATION
         // =========================
-        $units = $query->paginate(10)->withQueryString();
+        $perPage = $request->get('perPage', 10);
+        if (!in_array($perPage, [10, 15, 25])) {
+            $perPage = 10;
+        }
+        $units = $query->paginate($perPage)->withQueryString();
+
+        // Debug SQL
+        Log::info('SQL Query: ' . $query->toSql());
+        Log::info('Bindings: ' . json_encode($query->getBindings()));
 
         // =========================
         // STATISTIK (AKURAT SESUAI FILTER)
@@ -114,7 +232,7 @@ class SellUnitController extends Controller
         // =========================
         $projects = LandBank::select('id', 'name')->orderBy('name')->get();
         $customers = Customer::latest()->get();
-        $agencies = Employee::where('position_id', 5)->latest()->get();
+        $agencies = Employee::where('position_id', 2)->latest()->get();
         $types = LandBankUnit::select('type')->distinct()->pluck('type');
 
         $unitPaths = [
@@ -125,7 +243,7 @@ class SellUnitController extends Controller
         ];
 
         // ambil unit dari DB
-        $unitsForSvg = (clone $statsQuery)->get(['id', 'unit_code', 'status', 'type','pos_x','pos_y']); // pastikan ada kolom tipe
+        $unitsForSvg = (clone $statsQuery)->get(); // ambil semua kolom dan relasi agar detail unit lengkap terisi di siteplan
 
         // set warna sesuai tipe
         // Tentukan warna berdasarkan status & type
@@ -156,8 +274,9 @@ class SellUnitController extends Controller
             'projects',
             'types',
             'unitsForSvg',
-            'unitPaths'
-
+            'unitPaths',
+            'sortField',
+            'sortDirection'
         ));
     }
 
@@ -172,70 +291,85 @@ class SellUnitController extends Controller
     //   return back()->with('success', 'Customer berhasil dipasang ke unit');
     // }
 
-public function setCustomer(Request $request, $unitId)
-{
-    $request->validate([
-        'customer_id'   => 'required|exists:customers,id',
-        'purchase_type' => 'required|in:cash,kpr,cash_tempo',
-        'booking_fee'   => 'required',
-        'bukti_transfer'=> 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-    ]);
+    public function setCustomer(Request $request, $unitId)
+    {
+        $request->validate([
+            'customer_id'   => 'required|exists:customers,id',
+            'purchase_type' => 'required|in:cash,kpr,cash_tempo',
+            'booking_fee'   => 'required',
+            'bukti_transfer' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
 
-    $unit = LandBankUnit::findOrFail($unitId);
+        $unit = LandBankUnit::findOrFail($unitId);
 
-    // CEK STATUS UNIT
-    if ($unit->status === 'sold' || $unit->status === 'booked') {
+        // CEK STATUS UNIT
+        if ($unit->status === 'sold' || $unit->status === 'booked') {
+            return response()->json([
+                'message' => 'Unit ini sudah tidak tersedia untuk booking.'
+            ], 422); // status 422 agar ajax masuk error
+        }
+
+        // Bersihkan format rupiah
+        $bookingFee = str_replace('.', '', $request->booking_fee);
+
+        // Upload file
+        if ($request->hasFile('bukti_transfer')) {
+
+            $file = $request->file('bukti_transfer');
+
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/payments/booking_fee';
+
+            // buat folder kalau belum ada
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+
+            $filePath = 'payments/booking_fee/' . $filename;
+        }
+
+        DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
+
+            $booking = Booking::create([
+                'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
+                'unit_id'       => $unit->id,
+                'customer_id'   => $request->customer_id,
+                'booking_date'  => now(),
+                'purchase_type' => $request->purchase_type,
+                'booking_fee'   => $bookingFee,
+                'status'        => 'active',
+            ]);
+
+            Payment::create([
+                'booking_id'      => $booking->id,
+                'type'            => 'dp',
+                'amount'          => $bookingFee,
+                'payment_date'    => now(),
+                'method'          => 'transfer',
+                'reference_number' => $filePath,
+                'notes'           => 'Bukti transfer booking fee',
+            ]);
+
+            $unit->update(['status' => 'booked']);
+
+            // NOTIFIKASI
+            $users = collect();
+            $sales = Employee::find($booking->sales_id);
+            if ($sales) $users->push($sales);
+
+            $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
+            $users = $users->merge($admins);
+
+            Notification::send($users, new BookingNotification($booking));
+        });
+
         return response()->json([
-            'message' => 'Unit ini sudah tidak tersedia untuk booking.'
-        ], 422); // status 422 agar ajax masuk error
+            'message' => 'Booking berhasil disimpan'
+        ], 200);
     }
-
-    // Bersihkan format rupiah
-    $bookingFee = str_replace('.', '', $request->booking_fee);
-
-    // Upload file
-    $filePath = $request->file('bukti_transfer')
-        ->store('payments/booking_fee', 'public');
-
-    DB::transaction(function () use ($request, $unit, $bookingFee, $filePath) {
-
-        $booking = Booking::create([
-            'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
-            'unit_id'       => $unit->id,
-            'customer_id'   => $request->customer_id,
-            'booking_date'  => now(),
-            'purchase_type' => $request->purchase_type,
-            'booking_fee'   => $bookingFee,
-            'status'        => 'active',
-        ]);
-
-        Payment::create([
-            'booking_id'      => $booking->id,
-            'type'            => 'dp',
-            'amount'          => $bookingFee,
-            'payment_date'    => now(),
-            'method'          => 'transfer',
-            'reference_number'=> $filePath,
-            'notes'           => 'Bukti transfer booking fee',
-        ]);
-
-        $unit->update(['status' => 'booked']);
-
-        // NOTIFIKASI
-        $users = collect();
-        $sales = Employee::find($booking->sales_id);
-        if ($sales) $users->push($sales);
-
-        $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
-        $users = $users->merge($admins);
-
-        Notification::send($users, new BookingNotification($booking));
-    });
-
-    return response()->json([
-        'message' => 'Booking berhasil disimpan'
-    ], 200);
-}
     // public function setAgency(Request $request, $unitId)
     // {
     //   $unit = LandBankUnit::findOrFail($unitId);
@@ -245,73 +379,79 @@ public function setCustomer(Request $request, $unitId)
 
     //   return back()->with('success', 'Agency berhasil dipasang ke unit');
     // }
-public function setAgency(Request $request, $unitId)
-{
-    Log::info('=== UPDATE SALES BOOKING START ===');
-    Log::info('Unit ID: ' . $unitId);
-    Log::info('Request Data:', $request->all());
+    public function setAgency(Request $request, $unitId)
+    {
+        Log::info('=== UPDATE SALES BOOKING START ===');
+        Log::info('Unit ID: ' . $unitId);
+        Log::info('Request Data:', $request->all());
 
-    try {
+        try {
 
-        $validated = $request->validate([
-            'sales_id'  => 'required|exists:employees,id',
-            'agent_fee' => 'required'
-        ]);
+            $validated = $request->validate([
+                'sales_id'  => 'required|exists:employees,id',
+                'agent_fee' => 'required'
+            ]);
 
-        $unit = LandBankUnit::findOrFail($unitId);
+            $unit = LandBankUnit::findOrFail($unitId);
 
-        $booking = Booking::where('unit_id', $unit->id)
-            ->where('status', 'active')
-            ->first();
+            $booking = Booking::where('unit_id', $unit->id)
+                ->where('status', 'active')
+                ->first();
 
-        if (!$booking) {
-            Log::warning('Booking tidak ditemukan');
-            return back()->with('error', 'Booking untuk unit ini belum dibuat.');
+            if (!$booking) {
+                Log::warning('Booking tidak ditemukan untuk unit ID: ' . $unitId);
+                return response()->json([
+                    'message' => 'Booking untuk unit ini belum dibuat. Pilih customer terlebih dahulu.'
+                ], 422);
+            }
+
+            // Bersihkan format rupiah (hapus titik dan koma)
+            $agentFee = str_replace(['.', ',', ' '], '', $request->agent_fee);
+
+            $booking->update([
+                'sales_id'  => $request->sales_id,
+                'agent_fee' => $agentFee
+            ]);
+
+            Log::info('Sales & Agent Fee berhasil diupdate. Sales ID: ' . $request->sales_id . ', Agent Fee: ' . $agentFee);
+
+            // =============================
+            // KIRIM NOTIFIKASI
+            // =============================
+
+            $users = collect();
+
+            // SALES YANG DIPILIH
+            $sales = Employee::find($booking->sales_id);
+            if ($sales) {
+                $users->push($sales);
+            }
+
+            // ADMIN
+            $admins = Employee::whereRelation('position', 'name', 'Staff Marketing')->get();
+            $users = $users->merge($admins);
+
+            Notification::send($users, new BookingNotification($booking));
+
+            Log::info('Notifikasi berhasil dikirim');
+
+            return response()->json([
+                'message' => 'Agency & Agent Fee berhasil disimpan'
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            Log::error('VALIDATION ERROR', $e->errors());
+            return response()->json([
+                'message' => 'Validasi gagal: ' . implode(', ', array_merge(...array_values($e->errors())))
+            ], 422);
+        } catch (\Exception $e) {
+
+            Log::error('GENERAL ERROR: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Bersihkan format rupiah
-        $agentFee = str_replace(['.', ','], '', $request->agent_fee);
-
-        $booking->update([
-            'sales_id'  => $request->sales_id,
-            'agent_fee' => $agentFee
-        ]);
-
-        Log::info('Sales & Agent Fee berhasil diupdate');
-
-        // =============================
-        // KIRIM NOTIFIKASI
-        // =============================
-
-        $users = collect();
-
-        // SALES YANG DIPILIH
-        $sales = Employee::find($booking->sales_id);
-        if ($sales) {
-            $users->push($sales);
-        }
-
-        // ADMIN
-        $admins = Employee::whereRelation('position', 'name', 'Admin')->get();
-        $users = $users->merge($admins);
-
-        Notification::send($users, new BookingNotification($booking));
-
-        Log::info('Notifikasi berhasil dikirim');
-
-        return back()->with('success', 'Sales & Agent Fee berhasil diupdate');
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-
-        Log::error('VALIDATION ERROR', $e->errors());
-        return back()->withErrors($e->errors())->withInput();
-
-    } catch (\Exception $e) {
-
-        Log::error('GENERAL ERROR: ' . $e->getMessage());
-        return back()->with('error', 'Terjadi kesalahan saat update sales.');
     }
-}
     public function exportExcel()
     {
         return Excel::download(new UnitsExport, 'data-unit.xlsx');
@@ -330,22 +470,20 @@ public function setAgency(Request $request, $unitId)
     //     return view('exports.units_pdf', compact('units'));
     // }
     public function savePosition(Request $request)
-{
+    {
 
-    foreach ($request->units as $unit) {
+        foreach ($request->units as $unit) {
 
-       LandBankUnit::where('id',$unit['id'])->update([
-    'pos_x' => $unit['pos_x'],
-    'pos_y' => $unit['pos_y'],
-    'width' => $unit['width'],   // pastikan kolom ini ada di DB
-    'height' => $unit['height']  // pastikan kolom ini ada di DB
-]);
+            LandBankUnit::where('id', $unit['id'])->update([
+                'pos_x' => $unit['pos_x'],
+                'pos_y' => $unit['pos_y'],
+                'width' => $unit['width'],   // pastikan kolom ini ada di DB
+                'height' => $unit['height']  // pastikan kolom ini ada di DB
+            ]);
+        }
 
+        return response()->json([
+            'success' => true
+        ]);
     }
-
-    return response()->json([
-        'success' => true
-    ]);
-
-}
 }

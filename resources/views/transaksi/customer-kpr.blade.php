@@ -1,1153 +1,1380 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Daftar Customer KPR - Property Management App')
+@section('title', 'Daftar User KPR - Property Management App')
 
 @section('content')
-    <style>
-        /* ===== CSS SAMA PERSIS DENGAN HALAMAN YANG ANDA BERIKAN ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: 40px;
-            border: 1px solid #e0e4e9;
-            width: 100%;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: 40px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            height: 32px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        /* Badge Styling */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-        }
-
-        .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-        }
-
-        .badge-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-        }
-
-        /* Badge Abu-abu untuk Lanjut KPR (tanpa icon) */
-        .badge-gradient-gray {
-            background: linear-gradient(135deg, #6c757d, #868e96);
-            color: #ffffff;
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table thead th:first-child {
-            padding-left: 0.75rem;
-            width: 60px;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.75rem;
-            font-weight: 500;
-            width: 60px;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .table tbody td i {
-            font-size: 1rem;
-        }
-
-        /* ===== ACTION BUTTONS ===== */
-        .aksi-wrapper {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-doc-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: none;
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: #fff !important;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.20);
-            text-decoration: none !important;
-        }
-
-        .btn-doc-icon i {
-            font-size: 1.1rem !important;
-        }
-
-        .btn-doc-icon:hover {
-            transform: translateY(-2px);
-            color: #fff !important;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.28);
-            text-decoration: none !important;
-        }
-
-        .btn-doc-icon:active {
-            transform: translateY(0);
-            text-decoration: none !important;
-        }
-
-        /* Button Approve - Bold dan tanpa garis bawah */
-        .btn-approve-sm {
-            height: 36px;
-            padding: 0 1rem;
-            font-size: 0.8rem;
-            font-weight: 700 !important; /* Bold */
-            border-radius: 8px;
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: white !important;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            border: none;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
-            text-decoration: none !important; /* Hapus garis bawah */
-            letter-spacing: 0.3px;
-        }
-
-        .btn-approve-sm i {
-            font-size: 1rem;
-        }
-
-        .btn-approve-sm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(40, 167, 69, 0.3);
-            color: white !important;
-            text-decoration: none !important;
-        }
-
-        .btn-approve-sm:active {
-            transform: translateY(0);
-            text-decoration: none !important;
-        }
-
-        .btn-approve-sm.disabled,
-        .btn-approve-sm:disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        /* Teks Belum Upload */
-        .text-belum-upload {
-            font-size: 0.8rem;
-            color: #a5b3cb;
-            font-weight: 500;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: #ccc;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            color: #6c757d;
-            margin-bottom: 0.25rem;
-        }
-
-        /* ===== MODAL STYLING ===== */
-        .document-modal .modal-content {
-            border: none;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .document-modal .modal-header {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-bottom: 1px solid #ece6ff;
-            padding: 1rem 1.25rem;
-        }
-
-        .document-modal .modal-title {
-            color: #9a55ff;
-            font-weight: 700;
-        }
-
-        .document-modal .modal-body {
-            padding: 1.25rem;
-            background: #fff;
-        }
-
-        .document-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .document-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            border: 1px solid #ebe7f7;
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
-            background: #faf8ff;
-            transition: all 0.2s ease;
-        }
-
-        .document-item:hover {
-            background: #f4efff;
-            border-color: #d9c8ff;
-        }
-
-        .document-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .document-icon-box {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 1.2rem;
-        }
-
-        .document-name {
-            font-weight: 700;
-            color: #2c2e3f;
-            margin-bottom: 0;
-            word-break: break-word;
-        }
-
-        .btn-eye-purple {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            border: none;
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: #fff !important;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.20);
-        }
-
-        .btn-eye-purple i {
-            font-size: 1rem !important;
-        }
-
-        .btn-eye-purple:hover {
-            transform: translateY(-2px);
-            color: #fff !important;
-            box-shadow: 0 8px 18px rgba(154, 85, 255, 0.28);
-        }
-
-        .empty-document-box {
-            text-align: center;
-            padding: 1.5rem 1rem;
-            border: 1px dashed #d7c7ff;
-            border-radius: 14px;
-            background: #faf8ff;
-        }
-
-        .empty-document-box i {
-            font-size: 2.2rem;
-            color: #b399f7;
-            opacity: 0.8;
-        }
-
-        .modal-customer-meta {
-            background: #faf8ff;
-            border: 1px solid #ece6ff;
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-customer-meta .meta-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem 1rem;
-            font-size: 0.9rem;
-            color: #4f566b;
-        }
-
-        .modal-customer-meta .meta-row span strong {
-            color: #2c2e3f;
-        }
-
-        /* Pagination */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 36px;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        /* Responsive */
-        @media (max-width: 576px) {
-            .aksi-wrapper {
-                flex-direction: column;
-                gap: 0.3rem;
-            }
-
-            .btn-doc-icon {
-                width: 100%;
-            }
-
-            .btn-approve-sm {
-                width: 100%;
-            }
-        }
-    </style>
-
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4 class="mb-1 fw-bold text-dark">
-                                <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>
-                                Daftar Customer KPR
-                            </h4>
-                            <p class="mb-0 text-muted small">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Kelola data customer yang mengajukan KPR
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-account-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+<style>
+.card {
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
+
+.card-header {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+@media (min-width: 576px) { .card-header { padding: 1rem; } }
+@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
+
+.card-body { padding: 0.75rem; }
+@media (min-width: 576px) { .card-body { padding: 1rem; } }
+@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
+
+.card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9a55ff;
+    margin-bottom: 0;
+}
+@media (min-width: 576px) { .card-title { font-size: 1rem; } }
+@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
+
+.filter-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0;
+    margin-bottom: 1.25rem;
+    border: none;
+}
+
+/* Search Input Group in Filter (Input on Left, Purple Button on Right) */
+.search-input-group {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: 38px !important;
+}
+
+.search-input-group .form-control {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-right: none !important;
+    font-size: 0.88rem !important;
+    padding: 0.45rem 0.85rem !important;
+    margin: 0 !important;
+    flex: 1 1 auto;
+}
+
+.search-input-group .btn-search-submit {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    padding: 0 0.95rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-size: 1.15rem !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+.search-input-group:focus-within .form-control {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+}
+
+/* SELECT2 ENHANCEMENTS */
+.select2-container--bootstrap-5 .select2-selection {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0.35rem 0.75rem !important;
+    font-family: inherit !important;
+    background-color: #ffffff !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+    color: #2c2e3f !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+    padding-left: 0 !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+    right: 8px !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection:hover,
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    border-color: #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option {
+    padding: 0.55rem 0.8rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--selected {
+    background-color: #f3e8ff !important;
+    color: #7e22ce !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--highlighted {
+    background: #9a55ff !important;
+    color: #ffffff !important;
+}
+
+.form-control, .form-select {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #2c2e3f;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #9a55ff;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+    outline: none;
+}
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9a55ff !important;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.3px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+    border: none;
+}
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-gradient-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+}
+.btn-gradient-secondary {
+    background: #6c757d !important;
+    color: #ffffff !important;
+}
+.btn-gradient-success {
+    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(40, 199, 111, 0.18);
+}
+.btn-gradient-success:hover {
+    box-shadow: 0 7px 16px rgba(40, 199, 111, 0.28);
+}
+
+.btn-icon-only {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #9a55ff #f0f0f0;
+}
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #9a55ff;
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #7a3fcc;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+.table thead th {
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.8rem 0.5rem;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.table thead th:hover {
+    color: #7a3fcc;
+}
+.table thead th i {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    opacity: 0.5;
+}
+.table thead th:first-child,
+.table tbody td:first-child {
+    width: 50px;
+    text-align: center;
+}
+.table tbody td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+    padding: 0.9rem 0.6rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #2c2e3f;
+    white-space: nowrap;
+}
+.table tbody tr:hover { background-color: #f8f9fa; }
+
+.customer-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.customer-initial {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.18);
+}
+.customer-name {
+    font-weight: 700;
+    color: #2c2e3f;
+    font-size: 0.9rem;
+}
+
+.badge-status {
+    padding: 0.45rem 0.9rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.76rem;
+    display: inline-block;
+    letter-spacing: 0.3px;
+}
+.badge-status.booking {
+    background: linear-gradient(135deg, #ffc107, #ffdb6d);
+    color: #2c2e3f;
+}
+.badge-status.proses {
+    background: linear-gradient(135deg, #17a2b8, #56c6d8);
+    color: #ffffff;
+}
+.badge-status.approved {
+    background: linear-gradient(135deg, #28c76f, #48da89);
+    color: #ffffff;
+}
+.badge-status.lanjut_kpr {
+    background: linear-gradient(135deg, #6c757d, #868e96);
+    color: #ffffff;
+}
+.badge-status.default {
+    background: linear-gradient(135deg, #adb5bd, #c7ced4);
+    color: #ffffff;
+}
+
+.badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+}
+@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
+.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
+.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
+.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
+
+.badge-doc {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #9a55ff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1.5px solid #9a55ff;
+    min-width: 78px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(154, 85, 255, 0.14);
+}
+.badge-doc:hover {
+    background: #9a55ff;
+    color: #ffffff;
+    border-color: #9a55ff;
+    box-shadow: 0 8px 20px rgba(154, 85, 255, 0.30);
+    transform: translateY(-2px);
+}
+
+.text-price {
+    color: #28a745 !important;
+    font-weight: 700;
+}
+
+.text-belum-upload {
+    display: inline-block;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: #f1f3f5;
+    color: #868e96;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.pagination { margin: 0; gap: 3px; }
+.page-item .page-link {
+    border: 1px solid #e9ecef;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    color: #6c7383;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    min-width: 32px;
+    text-align: center;
+    text-decoration: none;
+}
+.page-item.active .page-link {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+}
+.pagination-info {
+    font-size: 0.8rem;
+    color: #6c7383;
+}
+
+.text-primary  { color: #9a55ff !important; }
+.text-muted    { color: #a5b3cb !important; }
+.fw-bold       { font-weight: 600 !important; }
+
+h3.text-dark, h4.text-dark {
+    font-weight: 700;
+    color: #2c2e3f !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.mdi { vertical-align: middle; }
+
+.filter-row-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.filter-row-desktop .filter-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9a55ff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.filter-row-mobile { display: none; }
+
+@media (max-width: 767px) {
+    .filter-row-desktop { display: none; }
+    .filter-row-mobile { display: block; margin-top: 1rem; }
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+}
+.modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+}
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+.modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-body {
+    padding: 1.5rem;
+}
+
+.btn-eye-purple {
+    height: 36px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    gap: 0.35rem;
+    background: transparent;
+    color: #9a55ff;
+    border: 1.5px solid #9a55ff;
+    text-decoration: none !important;
+}
+.btn-eye-purple i {
+    font-size: 1rem;
+    margin: 0 !important;
+}
+.btn-eye-purple:hover,
+.btn-eye-purple:focus,
+.btn-eye-purple:active {
+    background: #9a55ff;
+    color: #ffffff;
+    border-color: #9a55ff;
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.25);
+    transform: translateY(-2px);
+    text-decoration: none !important;
+}
+
+.document-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.document-action-cell {
+    text-align: right;
+}
+
+.customer-detail-card {
+    background: linear-gradient(135deg, #faf7ff, #f4efff);
+    border: 1px solid #eadcff;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.customer-detail-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #9a55ff;
+    margin-bottom: 0.85rem;
+}
+.customer-detail-item {
+    background: #ffffff;
+    border: 1px solid #efe6ff;
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    height: 100%;
+}
+.customer-detail-label {
+    font-size: 0.75rem;
+    color: #8b8fa3;
+    margin-bottom: 0.2rem;
+    font-weight: 600;
+}
+.customer-detail-value {
+    font-size: 0.92rem;
+    color: #2c2e3f;
+    font-weight: 700;
+}
+.customer-detail-value.price {
+    color: #28a745;
+}
+
+/* MODAL TABLE ACTION */
+.btn-action-purple {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    border: 1.5px solid #9a55ff;
+    background: #fff;
+    color: #9a55ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-action-purple i, .btn-action-green i {
+    font-size: 1rem;
+}
+
+.btn-action-purple:hover {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #fff;
+    border-color: #9a55ff;
+    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.22);
+    transform: translateY(-2px);
+}
+
+.btn-action-green {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    border: 1.5px solid #28c76f;
+    background: #fff;
+    color: #28c76f;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-action-green:hover {
+    background: linear-gradient(135deg, #48da89, #28c76f);
+    color: #fff;
+    border-color: #28c76f;
+    box-shadow: 0 6px 18px rgba(40, 199, 111, 0.22);
+    transform: translateY(-2px);
+}
+
+.doc-name-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.doc-file-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3e8ff, #efe2ff);
+    color: #9a55ff;
+    font-size: 1.1rem;
+    border: 1px solid #eadbff;
+    flex-shrink: 0;
+}
+
+.col-no-small {
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
+    text-align: center;
+}
+
+/* ===== MODERN FILE UPLOAD STYLING ===== */
+.properti-file-upload-modern {
+    position: relative;
+    width: 100%;
+}
+
+.properti-file-upload-modern input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.properti-file-upload-modern .properti-file-label-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    padding: 1rem 0.6rem;
+    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    border: 2px dashed #d0d4db;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+}
+
+@media (min-width: 576px) {
+    .properti-file-upload-modern .properti-file-label-modern {
+        flex-direction: row;
+        text-align: left;
+        gap: 8px;
+        padding: 0.75rem 1rem;
+        min-height: auto;
+    }
+}
+
+.properti-file-upload-modern:hover .properti-file-label-modern {
+    border-color: #9a55ff;
+    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+}
+
+.properti-file-upload-modern .properti-file-label-modern i {
+    font-size: 1.6rem;
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
+    flex: 1;
+    width: 100%;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
+    display: block;
+    font-weight: 600;
+    color: #2c2e3f;
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
+    color: #6c7383;
+    font-size: 0.65rem;
+    display: block;
+    margin-top: 2px;
+}
+
+.properti-file-upload-modern .properti-file-label-modern .properti-file-size {
+    font-size: 0.7rem;
+    color: #9a55ff;
+    font-weight: 600;
+    background: rgba(154, 85, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 5px;
+}
+
+@media (min-width: 576px) {
+    .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
+        margin-top: 0;
+    }
+}
+</style>
+
+<div class="container-fluid p-2 p-sm-3 p-md-4">
+
+    <div class="row mb-3 mb-sm-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="text-dark mb-1">
+                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Daftar User KPR
+                        </h4>
+                        <p class="text-muted mb-0">
+                            Kelola data user yang mengajukan KPR
+                        </p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabel -->
-        <div class="row mt-2 mt-sm-2 mt-md-3">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Customer KPR
-                        </h5>
-                    </div>
-
-                    <div class="card-body">
-                        <!-- FILTER SECTION -->
-                        <div class="filter-card mb-4">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                    <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                    Filter Data
-                                </h6>
-
-                                <!-- MOBILE VERSION -->
-                                <div class="d-block d-md-none">
-                                    <form method="GET" action="{{ route('customer.kpr') }}">
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Customer
-                                            </label>
-                                            <input type="text" class="form-control" name="search"
-                                                value="{{ request('search') }}" placeholder="Cari nama customer...">
-                                        </div>
-
-                                        <div class="row g-2 mb-3">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
-                                                </label>
-                                                <select class="form-control" name="status">
-                                                    <option value="">Semua</option>
-                                                    <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                                    <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                                    <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                                </label>
-                                                <select class="form-control" name="per_page">
-                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-2">
-                                            <div class="col-6">
-                                                <button type="submit" class="btn btn-gradient-primary w-100 py-2">
-                                                    <i class="mdi mdi-filter me-1"></i> Filter
-                                                </button>
-                                            </div>
-                                            <div class="col-6">
-                                                <a href="{{ route('customer.kpr') }}" class="btn btn-gradient-secondary w-100 py-2">
-                                                    <i class="mdi mdi-refresh me-1"></i> Reset
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <!-- DESKTOP VERSION -->
-                                <div class="d-none d-md-block">
-                                    <form method="GET" action="{{ route('customer.kpr') }}">
-                                        <div class="row g-2 align-items-end">
-                                            <div class="col-md-4">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                    Cari Customer
-                                                </label>
-                                                <input type="text" class="form-control" name="search"
-                                                    value="{{ request('search') }}" placeholder="Cari nama customer...">
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
-                                                </label>
-                                                <select class="form-control" name="status">
-                                                    <option value="">Semua</option>
-                                                    <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                                    <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                                    <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                                </label>
-                                                <select class="form-control" name="per_page">
-                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-1">
-                                                <label class="form-label invisible">Filter</label>
-                                                <button type="submit" class="btn btn-gradient-primary w-100" style="height: 40px;">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                            </div>
-
-                                            <div class="col-md-1">
-                                                <label class="form-label invisible">Reset</label>
-                                                <a href="{{ route('customer.kpr') }}" class="btn btn-gradient-secondary w-100" style="height: 40px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TABEL DATA -->
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle" id="tableCustomerKPR">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" width="5%">NO</th>
-                                        <th width="18%">NAMA CUSTOMER</th>
-                                        <th width="10%">UNIT</th>
-                                        <th width="15%">HARGA</th>
-                                        <th width="12%">SALES</th>
-                                        <th width="12%">STATUS</th>
-                                        <th width="15%">TANGGAL BOOKING</th>
-                                        <th class="text-center" width="13%">AKSI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($bookings ?? [] as $key => $booking)
-                                        <tr>
-                                            <td class="text-center fw-bold">
-                                                <span class="badge bg-light text-dark">{{ $loop->iteration }}</span>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-account-circle text-primary me-2" style="font-size: 1.2rem;"></i>
-                                                    <span class="fw-bold">{{ $booking->customer->full_name ?? '-' }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home-variant text-info me-2"></i>
-                                                    {{ $booking->unit->unit_code ?? '-' }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold text-success">
-                                                    Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                @if ($booking->sales)
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-account-tie text-warning me-1"></i>
-                                                        {{ $booking->sales->name }}
-                                                    </div>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($booking->status == 'booking')
-                                                    <span class="badge badge-gradient-warning">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>BOOKING
-                                                    </span>
-                                                @elseif($booking->status == 'proses')
-                                                    <span class="badge badge-gradient-info">
-                                                        <i class="mdi mdi-progress-check me-1"></i>PROSES
-                                                    </span>
-                                                @elseif($booking->status == 'approved')
-                                                    <span class="badge badge-gradient-success">
-                                                        <i class="mdi mdi-check-circle me-1"></i>APPROVED
-                                                    </span>
-                                                @elseif($booking->status == 'lanjut_kpr')
-                                                    {{-- Abu-abu tanpa icon --}}
-                                                    <span class="badge badge-gradient-gray">
-                                                        LANJUT KPR
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-secondary">
-                                                        {{ strtoupper(str_replace('_', ' ', $booking->status)) }}
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-calendar text-primary me-1"></i>
-                                                    {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                @php
-                                                    $documents = json_decode($booking->kprApplication?->documents, true);
-                                                    $documentCount = is_array($documents) ? count($documents) : 0;
-                                                @endphp
-
-                                                <div class="aksi-wrapper">
-                                                    @if ($documentCount > 0)
-                                                        <button type="button" class="btn-doc-icon btnOpenDocumentModal"
-                                                            data-bs-toggle="modal" data-bs-target="#documentModal"
-                                                            data-customer="{{ $booking->customer->full_name ?? '-' }}"
-                                                            data-unit="{{ $booking->unit->unit_code ?? '-' }}"
-                                                            data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
-                                                            data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
-                                                            data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
-                                                            data-approve-url="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                            data-documents='@json($documents)'
-                                                            title="Lihat Dokumen">
-                                                            <i class="mdi mdi-file-document-outline"></i>
-                                                        </button>
-
-                                                        <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                            class="btn-approve-sm">
-                                                            <i class="mdi mdi-check"></i> APPROVE
-                                                        </a>
-                                                    @else
-                                                        <span class="text-belum-upload">Belum upload</span>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="8" class="empty-state">
-                                                <i class="mdi mdi-account-off"></i>
-                                                <p class="fw-bold">Tidak ada data customer KPR</p>
-                                                <p class="text-muted small">Belum ada customer yang mengajukan KPR.</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- PAGINATION -->
-                        @if (($bookings->count() ?? 0) > 0)
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                                <div class="pagination-info mb-2 mb-sm-0">
-                                    <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                                    Menampilkan
-                                    <span class="fw-bold">{{ $bookings->firstItem() }}</span>
-                                    -
-                                    <span class="fw-bold">{{ $bookings->lastItem() }}</span>
-                                    dari
-                                    <span class="fw-bold">{{ $bookings->total() }}</span>
-                                    data
-                                </div>
-
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                        @if ($bookings->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $bookings->previousPageUrl() }}">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        @foreach ($bookings->getUrlRange(1, $bookings->lastPage()) as $page => $url)
-                                            <li class="page-item {{ $bookings->currentPage() == $page ? 'active' : '' }}">
-                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                            </li>
-                                        @endforeach
-
-                                        @if ($bookings->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $bookings->nextPageUrl() }}">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tombol Kembali -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary" style="text-decoration: none;">
-                            <i class="mdi mdi-arrow-left me-1"></i>
-                            Kembali ke Dashboard
-                        </a>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-home-account" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DOKUMEN -->
-    <div class="modal fade document-modal" id="documentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-file-document-multiple-outline me-2"></i>
-                        Dokumen KPR
+    <div class="row mt-2 mt-sm-2 mt-md-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Data User KPR
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body">
-                    <div class="modal-customer-meta">
-                        <div class="meta-row">
-                            <span><strong>Customer:</strong> <span id="modalCustomerName">-</span></span>
-                            <span><strong>Unit:</strong> <span id="modalUnit">-</span></span>
-                            <span><strong>Status:</strong> <span id="modalStatus">-</span></span>
-                            <span><strong>Harga:</strong> <span id="modalHarga">-</span></span>
-                            <span><strong>Tgl Booking:</strong> <span id="modalBookingDate">-</span></span>
+                <div class="card-body">
+                    <!-- Filter Section -->
+                    <div class="filter-card mb-3">
+                        <form method="GET" action="{{ route('customer.kpr') }}" id="filterForm">
+                            <!-- FILTER DESKTOP -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <!-- Search Input -->
+                                        <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                            <div class="input-group search-input-group">
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari nama user...">
+                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                    type="submit" title="Cari">
+                                                    <i class="mdi mdi-magnify"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Filter Status Dropdown -->
+                                        <div style="width: 170px;">
+                                            <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
+                                                <option value="">Semua Status</option>
+                                                <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                                <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
+                                                <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                                                <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 90px;">
+                                            <select name="per_page" class="form-control select2" id="perPageSelect" style="width: 100%;">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit"
+                                            class="btn btn-gradient-primary btn-icon-only"
+                                            id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('customer.kpr') }}"
+                                            class="btn btn-gradient-secondary btn-icon-only"
+                                            title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FILTER MOBILE -->
+                            <div class="d-block d-md-none">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group search-input-group">
+                                            <input type="text" name="search_mobile"
+                                                value="{{ request('search') }}" class="form-control"
+                                                placeholder="Cari nama user..." id="searchMobile">
+                                            <button class="btn btn-gradient-primary btn-search-submit" 
+                                                type="submit" title="Cari">
+                                                <i class="mdi mdi-magnify"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select name="status_mobile" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
+                                            <option value="">Semua Status</option>
+                                            <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                            <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
+                                            <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select name="per_page_mobile" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                            <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit"
+                                            class="btn btn-gradient-primary w-100 d-inline-flex align-items-center justify-content-center"
+                                            id="filterBtnMobile" title="Filter"
+                                            onclick="showFilterLoading()" style="height: 38px;">
+                                            <i class="mdi mdi-filter me-1"></i>Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('customer.kpr') }}"
+                                            class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center"
+                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; text-decoration: none;">
+                                            <i class="mdi mdi-refresh me-1"></i>Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sort', 'latest') == 'name_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
+                                        Nama User
+                                        <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'name_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
+                                    </th>
+                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
+                                        Nama - Unit
+                                        <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'unit_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
+                                    </th>
+                                    <th>Jenis & Tipe</th>
+                                    <th>Harga</th>
+                                    <th>Sales/Agent</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Tanggal Booking</th>
+                                    <th class="text-center" style="width: 110px;">Dokumen</th>
+                                    <th class="text-center" style="width: 140px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($bookings ?? [] as $booking)
+                                    @php
+                                        $documents = json_decode($booking->kprApplication?->documents, true) ?: [];
+
+                                        $requiredTypes = [
+                                            'ktp', 'kk', 'slip_gaji', 'rekening_koran',
+                                            'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'
+                                        ];
+
+                                        $uploadedCount = 0;
+                                        $hasMissingValues = false;
+
+                                        foreach ($requiredTypes as $reqType) {
+                                            $foundPath = '';
+                                            foreach ($documents as $doc) {
+                                                if (isset($doc['type']) && $doc['type'] === $reqType && !empty($doc['path'])) {
+                                                    $foundPath = $doc['path'];
+                                                    break;
+                                                }
+                                            }
+
+                                            if (empty($foundPath)) {
+                                                $hasMissingValues = true;
+                                            } else {
+                                                $uploadedCount++;
+                                            }
+                                        }
+
+                                        $isComplete = !$hasMissingValues;
+
+                                        $customerName = $booking->customer->full_name ?? '-';
+                                        $words = collect(explode(' ', trim($customerName)))->filter();
+                                        $initial = $words->count() >= 2
+                                            ? strtoupper(substr($words->first(), 0, 1) . substr($words->last(), 0, 1))
+                                            : strtoupper(substr($customerName, 0, 2));
+
+                                        $statusClass = in_array($booking->status, ['booking', 'proses', 'approved', 'lanjut_kpr'])
+                                            ? $booking->status
+                                            : 'default';
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center fw-bold">
+                                            {{ $loop->iteration + (($bookings->currentPage() - 1) * $bookings->perPage()) }}
+                                        </td>
+                                        <td>
+                                            <div class="customer-cell">
+                                                <span class="customer-initial">{{ $initial }}</span>
+                                                <span class="customer-name">{{ $customerName }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="mdi mdi-home-city-outline text-primary me-2"></i>
+                                            <span class="fw-bold">{{ $booking->unit->unit_name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $jenis = $booking->unit->jenis ?? '';
+                                                $tipe = $booking->unit->type ?? '-';
+                                            @endphp
+                                            @if (strtolower($jenis) == 'subsidi')
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-home-assistant me-1"></i>{{ $jenis }} - {{ $tipe }}
+                                                </span>
+                                            @elseif(strtolower($jenis) == 'komersil')
+                                                <span class="badge badge-gradient-primary">
+                                                    <i class="mdi mdi-office-building me-1"></i>{{ $jenis }} - {{ $tipe }}
+                                                </span>
+                                            @else
+                                                <span class="badge badge-gradient-secondary">
+                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenis ?: '-') . ' - ' . $tipe }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <span class="text-price">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                                        </td>
+                                        <td>
+                                            @if ($booking->sales)
+                                                @php
+                                                    $salesName = $booking->sales->name;
+                                                    $sInitials = '';
+                                                    foreach (explode(' ', trim($salesName)) as $word) {
+                                                        if ($word !== '') {
+                                                            $sInitials .= strtoupper(substr($word, 0, 1));
+                                                        }
+                                                    }
+                                                    $sInitials = substr($sInitials ?: 'S', 0, 2);
+                                                @endphp
+                                                <div class="customer-info">
+                                                    <div class="customer-initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                        {{ $sInitials }}
+                                                    </div>
+                                                    <span>{{ $salesName }}</span>
+                                                </div>
+                                            @else
+                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                -
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge-status {{ $statusClass }}">
+                                                {{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <i class="mdi mdi-calendar-month-outline text-primary me-1"></i>
+                                            {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <button
+                                                    type="button"
+                                                    class="badge-doc btnOpenDocumentModal"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#documentModal"
+                                                    data-customer="{{ $customerName }}"
+                                                    data-unit="{{ $booking->unit->unit_code ?? '-' }}"
+                                                    data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
+                                                    data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
+                                                    data-sales="{{ $booking->sales->name ?? '-' }}"
+                                                    data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
+                                                    data-documents='@json($documents)'>
+                                                    <i class="mdi mdi-file-document-multiple-outline"></i>
+                                                    {{ $uploadedCount }}/8
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                @if($isComplete)
+                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
+                                                       class="btn btn-gradient-success btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
+                                                       style="border-radius: 8px; min-height: 34px; font-weight: 700;">
+                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Dokumen belum lengkap"
+                                                            style="border-radius: 8px; min-height: 34px; font-weight: 700;">
+                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="10" class="text-center text-muted py-4">
+                                            Tidak ada data user KPR
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if(($bookings->count() ?? 0) > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0">
+                                Menampilkan {{ $bookings->firstItem() }} - {{ $bookings->lastItem() }} dari {{ $bookings->total() }} data
+                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                    @if ($bookings->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="mdi mdi-chevron-left"></i></span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $bookings->previousPageUrl() }}" onclick="showPaginationLoading(event)"><i class="mdi mdi-chevron-left"></i></a>
+                                        </li>
+                                    @endif
+
+                                    @foreach ($bookings->getUrlRange(1, $bookings->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $bookings->currentPage() == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+
+                                    @if ($bookings->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $bookings->nextPageUrl() }}" onclick="showPaginationLoading(event)"><i class="mdi mdi-chevron-right"></i></a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="mdi mdi-chevron-right"></i></span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
                         </div>
-                    </div>
+                    @endif
 
-                    <div id="documentListWrapper">
-                        <div class="document-list" id="documentList"></div>
-                    </div>
-
-                    <div class="mt-4 text-end">
-                        <a href="javascript:void(0)" id="modalApproveBtn" class="btn btn-gradient-success" style="font-weight: 700; text-decoration: none;">
-                            <i class="mdi mdi-check me-1"></i>
-                            APPROVE KPR
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+
+<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="documentModalLabel">
+                    <i class="mdi mdi-file-document-multiple-outline me-2"></i>Detail Dokumen User KPR
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="customer-detail-card">
+                    <div class="customer-detail-title">
+                        <i class="mdi mdi-account-box-outline me-1"></i>Detail User
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="customer-detail-item">
+                                <div class="customer-detail-label">Nama User</div>
+                                <div class="customer-detail-value" id="detailCustomerName">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="customer-detail-item">
+                                <div class="customer-detail-label">Status</div>
+                                <div class="customer-detail-value" id="detailCustomerStatus">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="customer-detail-item">
+                                <div class="customer-detail-label">Unit</div>
+                                <div class="customer-detail-value" id="detailCustomerUnit">-</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="customer-detail-item">
+                                <div class="customer-detail-label">Harga</div>
+                                <div class="customer-detail-value price" id="detailCustomerPrice">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="customer-detail-item">
+                                <div class="customer-detail-label">Sales / Agent</div>
+                                <div class="customer-detail-value" id="detailCustomerSales">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="customer-detail-item">
+                                <div class="customer-detail-label">Tanggal Booking</div>
+                                <div class="customer-detail-value" id="detailCustomerBooking">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive" style="max-height: 400px;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="col-no-small">No</th>
+                                <th>Nama Dokumen</th>
+                                <th class="text-end">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="documentTableBody"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            // SweetAlert untuk notifikasi
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: "{{ session('success') }}",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            @endif
+<script>
+$(document).ready(function() {
+    // Inisialisasi Select2
+    $('#statusSelect').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Semua Status',
+        allowClear: true,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
 
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: "{{ session('error') }}",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            @endif
+    $('#perPageSelect').select2({
+        theme: 'bootstrap-5',
+        placeholder: '10',
+        allowClear: false,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
 
-            // Fungsi untuk format nama dokumen
-            function formatDocName(type) {
-                if (!type) return 'Dokumen';
-                return type.replace(/_/g, ' ').replace(/\b\w/g, function(l) {
-                    return l.toUpperCase();
-                });
+    $('#statusSelectMobile').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Semua Status',
+        allowClear: true,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
+
+    $('#perPageSelectMobile').select2({
+        theme: 'bootstrap-5',
+        placeholder: '10',
+        allowClear: false,
+        width: '100%',
+        minimumResultsForSearch: Infinity
+    });
+
+    // Search input sync between desktop and mobile
+    $('input[name="search"]').on('input', function() {
+        $('#searchMobile').val($(this).val());
+    });
+    $('#searchMobile').on('input', function() {
+        $('input[name="search"]').val($(this).val());
+    });
+
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
+
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang mengurutkan data',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        let url = new URL(window.location.href);
+        url.searchParams.set('sort', field + '_' + direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
+    });
+
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ session('error') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    function formatDocName(type) {
+        if (!type) return 'Dokumen';
+        return type.replace(/_/g, ' ').replace(/\b\w/g, function(l) {
+            return l.toUpperCase();
+        });
+    }
+
+    function formatStorageUrl(path) {
+        if (!path) return '#';
+        return "{{ asset('uploads') }}/" + path;
+    }
+
+    $(document).on('click', '.btnOpenDocumentModal', function() {
+        let customer = $(this).data('customer') || '-';
+        let unit = $(this).data('unit') || '-';
+        let status = $(this).data('status') || '-';
+        let harga = $(this).data('harga') || '-';
+        let sales = $(this).data('sales') || '-';
+        let bookingDate = $(this).data('booking') || '-';
+        let documents = $(this).data('documents') || [];
+
+        $('#detailCustomerName').text(customer);
+        $('#detailCustomerUnit').text(unit);
+        $('#detailCustomerPrice').text(harga);
+        $('#detailCustomerSales').text(sales);
+        $('#detailCustomerStatus').text(status);
+        $('#detailCustomerBooking').text(bookingDate);
+
+        let tbody = $('#documentTableBody');
+        tbody.html('');
+
+        const requiredDocsList = [
+            { type: 'ktp', label: 'KTP' },
+            { type: 'kk', label: 'KK' },
+            { type: 'slip_gaji', label: 'Slip Gaji' },
+            { type: 'rekening_koran', label: 'Rekening Koran' },
+            { type: 'npwp', label: 'NPWP' },
+            { type: 'sku', label: 'SKU' },
+            { type: 'surat_nikah', label: 'Surat Nikah' },
+            { type: 'ktp_pasangan', label: 'KTP Pasangan' }
+        ];
+
+        requiredDocsList.forEach(function(reqDoc, index) {
+            let docName = reqDoc.label;
+
+            // Find in given documents
+            let docInfo = false;
+            if (Array.isArray(documents)) {
+                docInfo = documents.find(d => d.type === reqDoc.type);
             }
 
-            // Event untuk membuka modal dokumen
-            $(document).on('click', '.btnOpenDocumentModal', function() {
-                let customer = $(this).data('customer') || '-';
-                let unit = $(this).data('unit') || '-';
-                let status = $(this).data('status') || '-';
-                let harga = $(this).data('harga') || '-';
-                let bookingDate = $(this).data('booking') || '-';
-                let approveUrl = $(this).data('approve-url') || '#';
-                let documents = $(this).data('documents') || [];
+            let docUrl = (docInfo && docInfo.path) ? formatStorageUrl(docInfo.path) : null;
 
-                $('#modalCustomerName').text(customer);
-                $('#modalUnit').text(unit);
-                $('#modalStatus').text(status);
-                $('#modalHarga').text(harga);
-                $('#modalBookingDate').text(bookingDate);
-                $('#modalApproveBtn').attr('href', approveUrl);
-                $('#modalApproveBtn').attr('data-customer-name', customer);
+            let actionHtml = '';
 
-                let html = '';
+            if (docUrl) {
+                actionHtml = `
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="${docUrl}" target="_blank" class="btn-action-purple">
+                            <i class="mdi mdi-eye-outline me-1"></i>Lihat
+                        </a>
+                        <a href="${docUrl}" download class="btn-action-green">
+                            <i class="mdi mdi-download me-1"></i>Download
+                        </a>
+                    </div>`;
+            } else {
+                actionHtml = `
+                    <span class="text-danger small fw-bold" style="font-size: 0.82rem;">
+                        <i class="mdi mdi-alert-circle-outline"></i> Belum Di-upload
+                    </span>
+                `;
+            }
 
-                if (Array.isArray(documents) && documents.length > 0) {
-                    documents.forEach(function(doc) {
-                        let docName = formatDocName(doc.type);
-                        let docPath = doc.path ? doc.path : '';
-                        let docUrl = "{{ asset('storage') }}/" + docPath;
-
-                        html += `
-                            <div class="document-item">
-                                <div class="document-info">
-                                    <div class="document-icon-box">
-                                        <i class="mdi mdi-file-document-outline"></i>
-                                    </div>
-                                    <div>
-                                        <div class="document-name">${docName}</div>
-                                    </div>
-                                </div>
-                                <div class="document-actions">
-                                    <a href="${docUrl}" target="_blank" class="btn-eye-purple" title="Lihat Dokumen">
-                                        <i class="mdi mdi-eye-outline"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    html = `
-                        <div class="empty-document-box">
-                            <i class="mdi mdi-file-cancel-outline"></i>
-                            <p class="mt-2 mb-1 fw-bold">Belum ada dokumen</p>
-                            <p class="text-muted mb-0 small">Customer ini belum upload dokumen KPR.</p>
+            tbody.append(`
+                <tr>
+                    <td class="col-no-small fw-bold">${index + 1}</td>
+                    <td>
+                        <div class="doc-name-inline">
+                            <span class="doc-file-icon">
+                                <i class="mdi mdi-file-document-outline"></i>
+                            </span>
+                            <span>${docName}</span>
                         </div>
-                    `;
-                }
-
-                $('#documentList').html(html);
-            });
-
-            // Approve dari modal
-            $(document).on('click', '#modalApproveBtn', function(e) {
-                e.preventDefault();
-
-                let href = $(this).attr('href');
-                let customerName = $(this).attr('data-customer-name') || $('#modalCustomerName').text();
-
-                if (href === '#') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Perhatian',
-                        text: 'URL approve tidak valid',
-                    });
-                    return;
-                }
-
-                Swal.fire({
-                    title: 'Approve KPR?',
-                    text: "Customer " + customerName + " akan di-approve",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Approve',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = href;
-                    }
-                });
-            });
-
-            // Approve dari tombol di tabel
-            $(document).on('click', '.btn-approve-sm', function(e) {
-                let href = $(this).attr('href');
-                let customerName = $(this).closest('tr').find('td:eq(1) span.fw-bold').text();
-
-                e.preventDefault();
-
-                Swal.fire({
-                    title: 'Approve KPR?',
-                    text: "Customer " + customerName + " akan di-approve",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Approve',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = href;
-                    }
-                });
-            });
+                    </td>
+                    <td class="text-end">
+                        ${actionHtml}
+                    </td>
+                </tr>
+            `);
         });
-    </script>
+
+    });
+
+
+
+    $(document).on('click', '.btnApproveKpr', function(e) {
+        e.preventDefault();
+
+        let href = $(this).attr('href');
+        let customerName = $(this).closest('tr').find('.customer-name').text();
+
+        Swal.fire({
+            title: 'Approve KPR?',
+            text: "User " + customerName + " akan di-approve",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Approve',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = href;
+            }
+        });
+    });
+});
+
+function showPaginationLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showFilterLoading() {
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+}
+
+function showResetLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+</script>
 @endpush

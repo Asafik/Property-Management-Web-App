@@ -31,13 +31,16 @@ class DatabaseSeeder extends Seeder
             DivisionSeeder::class,
             PositionSeeder::class,
             EmployeeSeeder::class,
+            MenuSeeder::class,
             //Dokumen
              DocumentTypeSeeder::class,
+             DocumentSeeder::class,
             //Master Data
             PromoSeeder::class,
             CompanyProfileSeeder::class,
             BankSeeder::class,
             CompanySettingSeeder::class,
+             PraLandbankDocumentSeeder::class,
         ]);
     }
 }

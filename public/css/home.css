@@ -1,0 +1,593 @@
+/* ==========================================================================
+   SWEET HOME - LANDING PAGE & PUBLIC PAGES DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  --navy: #0B1F4B;
+  --navy-dark: #07122E;
+  --navy-mid: #142B63;
+  --gold: #C9973A;
+  --gold-light: #E2B55E;
+  --gold-dark: #A07525;
+  --cream: #F8F6F0;
+  --cream-light: #FDFAF5;
+  --border: #E8E3D8;
+  --text-dark: #1A1A1A;
+  --text-mid: #555555;
+  --text-light: #888888;
+  --white: #FFFFFF;
+  --green: #25D366;
+  --green-dark: #1EBE5D;
+  --subsidi: #0F766E;
+  --komersil: #7C3AED;
+  --cashkpr: #C9973A;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-dark);
+  background: var(--cream-light);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   1. NAVBAR STYLING (FIXED/STICKY TOP)
+   ========================================================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(11, 31, 75, 0.06);
+  padding: 0.85rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.nav-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+}
+
+.nav-logo-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--navy);
+  color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.nav-logo-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+}
+
+.nav-logo-text span {
+  color: var(--gold);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: color 0.2s ease;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: var(--gold);
+}
+
+.btn-nav-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25D366;
+  color: #ffffff !important;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+}
+
+.btn-nav-wa:hover {
+  background: #20ba59;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.35);
+}
+
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2.5px;
+  background: var(--navy);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   2. MOBILE DROPDOWN MENU WITH DARK BACKDROP (FLOATING ON TOP - NO SHIFT)
+   ========================================================================== */
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 18, 46, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-menu-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  z-index: 1050;
+  padding: 1.25rem 1.5rem 2rem;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  box-shadow: 0 20px 40px rgba(11, 31, 75, 0.25);
+  transform: translateY(-110%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f3f5;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-menu-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+  color: var(--navy);
+}
+
+.mobile-menu-title span {
+  color: var(--gold);
+}
+
+.mobile-menu-close {
+  width: 36px;
+  height: 36px;
+  background: #f1f3f5;
+  border: none;
+  border-radius: 50%;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-close:hover {
+  background: #e2e8f0;
+  color: #e53e3e;
+}
+
+.mobile-menu .mlabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  margin-top: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.mobile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu a:hover {
+  background: #f8f9fa;
+  color: var(--gold);
+  padding-left: 0.75rem;
+}
+
+.mobile-menu a i {
+  color: var(--navy);
+  font-size: 0.95rem;
+  width: 20px;
+}
+
+.mobile-menu .btn-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #25D366;
+  color: #ffffff !important;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 0.85rem;
+  margin-top: 1.25rem;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+}
+
+.mobile-menu .btn-wa i {
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .nav-links,
+  .btn-nav-wa {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   3. CTA BANNER SECTION
+   ========================================================================== */
+.cta-banner {
+  background: linear-gradient(135deg, #07122E 0%, #0B1F4B 50%, #142B63 100%);
+  padding: 4.5rem 2rem;
+  color: #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cta-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.cta-inner h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 3.5vw, 2.85rem);
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.cta-inner h2 em {
+  color: var(--gold-light);
+  font-style: italic;
+}
+
+.cta-inner p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.cta-btns {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-wa-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25D366;
+  color: #ffffff !important;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+}
+
+.btn-wa-cta:hover {
+  background: #20ba59;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+}
+
+.btn-ghost-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(201, 151, 58, 0.15);
+  color: var(--gold-light) !important;
+  border: 1.5px solid var(--gold);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+.btn-ghost-gold:hover {
+  background: var(--gold);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   4. FOOTER STYLING (EXACT REFERENCE DESIGN)
+   ========================================================================== */
+footer {
+  background: #060e22;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 4.5rem 2rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footer-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.6fr;
+  gap: 3.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.footer-brand h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.65rem;
+  color: #ffffff;
+  margin-bottom: 0.85rem;
+}
+
+.footer-brand h3 span {
+  color: var(--gold-light);
+}
+
+.footer-brand p {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 380px;
+}
+
+.footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.social-btn:hover {
+  background: var(--gold);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+.footer-col h5 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-col ul li a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.footer-col ul li a i {
+  font-size: 0.65rem;
+  color: var(--gold-light);
+  transition: transform 0.2s ease;
+}
+
+.footer-col ul li a:hover {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.footer-col ul li a:hover i {
+  color: var(--gold);
+}
+
+.fcontact .frow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.68);
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.fcontact .frow i {
+  color: var(--gold-light);
+  margin-top: 3px;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.45);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 992px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .cta-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .navbar {
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+/* ==========================================================================
+   5. FLOATING WHATSAPP BUTTON (POJOK KANAN BAWAH)
+   ========================================================================== */
+.floating-wa {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+}
+
+.fwa-btn {
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  color: #ffffff !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+  text-decoration: none;
+  box-shadow: 0 6px 22px rgba(37, 211, 102, 0.5);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fwa-btn:hover {
+  transform: scale(1.12);
+  background: #20ba59;
+  box-shadow: 0 8px 26px rgba(37, 211, 102, 0.65);
+}

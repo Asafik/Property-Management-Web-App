@@ -2,7 +2,7 @@
 @extends('home.layouts.partials.app')
 
 @section('title', 'Cluster Tegal Besar — Sweet Home')
-@include('home.layouts.floating-wa')
+
 {{-- ================ STYLES ================ --}}
 @push('styles')
 <style>
@@ -1153,6 +1153,9 @@
         <i class="fa-solid fa-calendar-check"></i> Jadwal Survei
     </a>
 </div>
+
+{{-- Floating WhatsApp --}}
+@include('home.layouts.floating-wa')
 
 @endsection
 

@@ -107,21 +107,22 @@
 
   /* RIGHT */
   .login-right {
-    background: white;
+    background: #ffffff;
     padding: 3rem 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
 
-  .login-right-head { margin-bottom: 2rem; }
+  .login-right-head { margin-bottom: 1.5rem; }
   .login-right-head h2 {
     font-family: 'DM Serif Display', serif;
     font-size: 1.85rem;
-    color: var(--navy);
+    color: #1e1e2d;
+    font-weight: 700;
     margin-bottom: 0.35rem;
   }
-  .login-right-head p { font-size: 0.875rem; color: var(--text-light); }
+  .login-right-head p { font-size: 0.875rem; color: #7e8299; margin-bottom: 0; }
 
   /* ACCENT BAR */
   .accent-bar {
@@ -130,36 +131,36 @@
     margin-bottom: 2rem;
   }
   .accent-bar span { height: 4px; border-radius: 100px; }
-  .accent-bar .bar-navy   { width: 32px; background: var(--navy); }
-  .accent-bar .bar-purple { width: 20px; background: #7C3AED; }
-  .accent-bar .bar-gold   { width: 12px; background: var(--gold); }
+  .accent-bar .bar-navy   { width: 32px; background: #9a55ff; }
+  .accent-bar .bar-purple { width: 20px; background: #da8cff; }
+  .accent-bar .bar-gold   { width: 12px; background: #ffc107; }
 
   /* FORM */
-  .form-group { margin-bottom: 1.25rem; }
+  .form-group { margin-bottom: 1.35rem; }
 
   .form-label-custom {
     display: block;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--gold);
-    margin-bottom: 0.4rem;
+    letter-spacing: 0.06em;
+    color: #4b5563;
+    margin-bottom: 0.45rem;
   }
 
   .input-wrap {
     display: flex;
     align-items: center;
-    background: var(--cream);
-    border: 1.5px solid var(--border);
+    background: #f8f9fa;
+    border: 1.5px solid #e2e8f0;
     border-radius: 12px;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
     overflow: hidden;
   }
   .input-wrap:focus-within {
-    border-color: #7C3AED;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(124,58,237,0.08);
+    border-color: #9a55ff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(154, 85, 255, 0.12);
   }
 
   .input-icon {
@@ -167,34 +168,35 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .input-icon i { color: #7C3AED; font-size: 0.9rem; }
+  .input-icon i { color: #9a55ff; font-size: 0.95rem; }
 
   .input-wrap input {
     flex: 1;
     border: none;
     background: transparent;
-    padding: 0.8rem 0.75rem 0.8rem 0;
+    padding: 0.85rem 0.75rem 0.85rem 0;
     font-size: 0.9rem;
-    color: var(--text-dark);
+    color: #1e1e2d;
     font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
     outline: none;
     min-width: 0;
   }
-  .input-wrap input::placeholder { color: var(--text-light); }
+  .input-wrap input::placeholder { color: #a1a5b7; }
 
   .toggle-pass {
     width: 44px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; flex-shrink: 0;
   }
-  .toggle-pass i { color: var(--text-light); font-size: 0.9rem; transition: color 0.2s; }
-  .toggle-pass:hover i { color: #7C3AED; }
+  .toggle-pass i { color: #a1a5b7; font-size: 0.95rem; transition: color 0.2s; }
+  .toggle-pass:hover i { color: #9a55ff; }
 
   /* REMEMBER */
   .remember-row {
     display: flex; align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
@@ -203,26 +205,26 @@
     gap: 0.5rem; cursor: pointer;
   }
   .remember-check input[type="checkbox"] {
-    width: 16px; height: 16px;
+    width: 17px; height: 17px;
     border-radius: 4px;
-    accent-color: #7C3AED;
+    accent-color: #9a55ff;
     cursor: pointer;
   }
-  .remember-check span { font-size: 0.875rem; color: var(--text-mid); font-weight: 500; }
+  .remember-check span { font-size: 0.875rem; color: #4b5563; font-weight: 500; }
 
   .forgot-link {
-    font-size: 0.875rem; color: var(--text-light);
-    text-decoration: none; font-weight: 500;
+    font-size: 0.875rem; color: #9a55ff;
+    text-decoration: none; font-weight: 600;
     transition: color 0.2s;
   }
-  .forgot-link:hover { color: #7C3AED; }
+  .forgot-link:hover { color: #7922ff; text-decoration: underline; }
 
   /* BTN */
   .btn-login {
     width: 100%;
     padding: 0.9rem;
-    background: var(--navy);
-    color: white;
+    background: linear-gradient(135deg, #da8cff 0%, #9a55ff 100%);
+    color: #ffffff;
     border: none;
     border-radius: 12px;
     font-size: 0.95rem;
@@ -231,12 +233,16 @@
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     gap: 0.5rem;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(154, 85, 255, 0.35);
   }
   .btn-login:hover {
-    background: var(--navy-mid);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(11,31,75,0.25);
+    background: linear-gradient(135deg, #d37cff 0%, #8b44f7 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(154, 85, 255, 0.45);
+  }
+  .btn-login:active {
+    transform: translateY(0);
   }
 
   /* FOOTER */
@@ -244,12 +250,12 @@
     text-align: center;
     margin-top: 1.75rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid #f1f1f4;
     font-size: 0.78rem;
-    color: var(--text-light);
+    color: #a1a5b7;
   }
-  .login-footer a { color: var(--text-light); text-decoration: none; }
-  .login-footer a:hover { color: var(--navy); }
+  .login-footer a { color: #a1a5b7; text-decoration: none; }
+  .login-footer a:hover { color: #9a55ff; }
 
   /* RESPONSIVE */
   @media (max-width: 900px) {
@@ -292,7 +298,7 @@
 
     <a href="#" class="left-logo">
       <div class="left-logo-icon"><i class="fa-solid fa-house-chimney"></i></div>
-      <span class="left-logo-text">Sweet <span>Home</span></span>
+      <span class="left-logo-text">Property<span>Management</span></span>
     </a>
 
     <div class="login-left-content">
@@ -359,11 +365,7 @@
     </form>
 
     <div class="login-footer">
-      <div>&copy; {{ date('Y') }} Sweet Home — Properti Management</div>
-      <div style="margin-top:0.4rem;">
-        <i class="fa-solid fa-shield-halved" style="color:#7C3AED; font-size:0.7rem;"></i>
-        Enterprise Grade Security
-      </div>
+      <div>&copy; {{ date('Y') }} Property Management. All rights reserved.</div>
     </div>
 
   </div>

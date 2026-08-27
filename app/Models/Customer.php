@@ -32,6 +32,9 @@ protected $fillable = [
     'father_name',
     'mother_name',
 
+    'instagram',
+    'facebook',
+
     'province','city','subdistrict','village','rt','rw','postal_code','address',
 
     'phone','home_phone','email','office_email',

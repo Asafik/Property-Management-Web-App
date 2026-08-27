@@ -22,11 +22,24 @@ class BankController extends Controller
             $query->where('is_active', $request->status);
         }
 
+        // Sorting
+        $sortField = $request->get('sortField', 'created_at');
+        $sortDirection = $request->get('sortDirection', 'desc');
+
+        // Kolom yang valid untuk sorting
+        $validSortFields = ['bank_name', 'account_holder', 'number', 'is_active', 'created_at'];
+
+        if (in_array($sortField, $validSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        } else {
+            $query->latest(); // Default sorting by created_at desc
+        }
+
         // Jumlah tampil per halaman (default 10)
         $perPage = $request->input('per_page', 10);
 
         // Ambil data dengan pagination
-        $banks = $query->latest()->paginate($perPage)->withQueryString();
+        $banks = $query->paginate($perPage)->withQueryString();
 
         return view('bank.data_bank', compact('banks'));
     }

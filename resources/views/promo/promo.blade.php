@@ -3,920 +3,746 @@
 @section('title', 'Manajemen Promo - Property Management App')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/promo/promo.css') }}">
 
-<style>
-/* Fix untuk tombol aksi di mobile */
-.action-buttons {
-    position: relative;
-    z-index: 10;
-}
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-.btn-outline-warning, .btn-outline-danger {
-    position: relative;
-    z-index: 15;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* DataTables wrapper styling */
-.dataTables_wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-/* Pastikan tabel tetap terlihat */
-.table {
-    width: 100% !important;
-    margin-bottom: 0;
-}
-
-/* Fix untuk DataTables di mobile */
-@media (max-width: 768px) {
-    .dataTables_wrapper .table {
-        width: 100% !important;
-    }
-}
-</style>
-
-<div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-tag-multiple me-2" style="color: #9a55ff;"></i>
-                            Manajemen Promo & Biaya Tambahan
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Manajemen Promo
                         </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola promo, diskon, dan biaya tambahan seperti PPN, kanopi, pagar, dll
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Kelola master data promo diskon, biaya tambahan, dan fasilitas unit
                         </p>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-percent" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    <div class="d-none d-sm-block pe-2">
+                        <i class="mdi mdi-tag-multiple-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabel Data Promo -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Promo & Biaya Tambahan
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Master Promo
                     </h5>
-                    <div class="ms-auto">
-                        <button class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahPromo').modal('show')">
-                            <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah Promo</span>
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" onclick="openModal('tambah')">
+                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                        <span>Tambah Promo</span>
+                    </button>
                 </div>
 
                 <div class="card-body">
-                    <!-- FILTER SECTION -->
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data Promo
-                            </h6>
-
-                            <!-- MOBILE VERSION -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('promo.index') }}" id="filterFormMobile">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                            Cari Promo
-                                        </label>
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari nama promo..." style="height: 45px;">
-                                    </div>
-
-                                    <div class="row g-2 mb-3">
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-shape-outline me-1" style="color: #9a55ff;"></i>Kategori
-                                            </label>
-                                            <select class="form-control" name="category" style="height: 45px;">
-                                                <option value="">Semua</option>
-                                                <option value="promo" {{ request('category') == 'promo' ? 'selected' : '' }}>Promo Diskon</option>
-                                                <option value="biaya" {{ request('category') == 'biaya' ? 'selected' : '' }}>Biaya Tambahan</option>
-                                                <option value="fasilitas" {{ request('category') == 'fasilitas' ? 'selected' : '' }}>Fasilitas</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-calculator me-1" style="color: #9a55ff;"></i>Tipe
-                                            </label>
-                                            <select class="form-control" name="type" style="height: 45px;">
-                                                <option value="">Semua</option>
-                                                <option value="persen" {{ request('type') == 'persen' ? 'selected' : '' }}>Persentase (%)</option>
-                                                <option value="nominal" {{ request('type') == 'nominal' ? 'selected' : '' }}>Nominal (Rp)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2 mb-3">
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
-                                            </label>
-                                            <select class="form-control" name="status" style="height: 45px;">
-                                                <option value="">Semua</option>
-                                                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                                <option value="tidak_aktif" {{ request('status') == 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label fw-semibold">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select class="form-control" name="per_page" style="height: 45px;">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('promo.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- DESKTOP VERSION -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('promo.index') }}" id="filterFormDesktop">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Promo
-                                            </label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari nama promo...">
+                    <!-- Filter Section -->
+                    <div class="filter-card mb-3">
+                        <!-- Desktop Version -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <form id="filterForm" method="GET" action="{{ route('promo.index') }}" onsubmit="return showFilterLoading()">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <!-- Search -->
+                                        <div style="min-width: 200px; max-width: 260px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Cari nama promo..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-shape-outline me-1" style="color: #9a55ff;"></i>Kategori
-                                            </label>
-                                            <select class="form-control" name="category">
-                                                <option value="">Semua</option>
-                                                <option value="promo" {{ request('category') == 'promo' ? 'selected' : '' }}>Promo Diskon</option>
+                                        <!-- Kategori -->
+                                        <div style="width: 155px;">
+                                            <select class="form-control" name="category" id="categorySelect">
+                                                <option value="">Semua Kategori</option>
+                                                <option value="promo" {{ request('category') == 'promo' ? 'selected' : '' }}>Promo</option>
                                                 <option value="biaya" {{ request('category') == 'biaya' ? 'selected' : '' }}>Biaya Tambahan</option>
                                                 <option value="fasilitas" {{ request('category') == 'fasilitas' ? 'selected' : '' }}>Fasilitas</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-calculator me-1" style="color: #9a55ff;"></i>Tipe
-                                            </label>
-                                            <select class="form-control" name="type">
-                                                <option value="">Semua</option>
-                                                <option value="persen" {{ request('type') == 'persen' ? 'selected' : '' }}>Persentase (%)</option>
-                                                <option value="nominal" {{ request('type') == 'nominal' ? 'selected' : '' }}>Nominal (Rp)</option>
+                                        <!-- Tipe -->
+                                        <div style="width: 140px;">
+                                            <select class="form-control" name="type" id="typeSelect">
+                                                <option value="">Semua Tipe</option>
+                                                <option value="persen" {{ request('type') == 'persen' ? 'selected' : '' }}>Persentase</option>
+                                                <option value="nominal" {{ request('type') == 'nominal' ? 'selected' : '' }}>Nominal</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-flag me-1" style="color: #9a55ff;"></i>Status
-                                            </label>
-                                            <select class="form-control" name="status">
-                                                <option value="">Semua</option>
+                                        <!-- Status -->
+                                        <div style="width: 135px;">
+                                            <select class="form-control" name="status" id="statusSelect">
+                                                <option value="">Semua Status</option>
                                                 <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                                <option value="tidak_aktif" {{ request('status') == 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                                <option value="tidak_aktif" {{ request('status') == 'tidak_aktif' ? 'selected' : '' }}>Nonaktif</option>
                                             </select>
-                                        </div>
-
-                                        <div class="col-md-1">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center" title="Filter">
-                                                <i class="mdi mdi-filter"></i>
-                                            </button>
-                                        </div>
-
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('promo.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </a>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+
+                                    <!-- Right Limit & Buttons -->
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 110px;">
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('promo.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Mobile Version -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <form method="GET" action="{{ route('promo.index') }}" onsubmit="return showFilterLoading()">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                placeholder="Cari nama promo..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="category" id="kategoriSelectMobile">
+                                            <option value="">Semua Kategori</option>
+                                            <option value="promo" {{ request('category') == 'promo' ? 'selected' : '' }}>Promo</option>
+                                            <option value="biaya" {{ request('category') == 'biaya' ? 'selected' : '' }}>Biaya Tambahan</option>
+                                            <option value="fasilitas" {{ request('category') == 'fasilitas' ? 'selected' : '' }}>Fasilitas</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="type" id="typeSelectMobile">
+                                            <option value="">Semua Tipe</option>
+                                            <option value="persen" {{ request('type') == 'persen' ? 'selected' : '' }}>Persentase</option>
+                                            <option value="nominal" {{ request('type') == 'nominal' ? 'selected' : '' }}>Nominal</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="status" id="statusSelectMobile">
+                                            <option value="">Semua Status</option>
+                                            <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                            <option value="tidak_aktif" {{ request('status') == 'tidak_aktif' ? 'selected' : '' }}>Nonaktif</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                            <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
+                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                            <i class="mdi mdi-filter"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('promo.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i> Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- TABEL PROMO -->
+                    <!-- Tabel Data Promo -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tablePromo" {{ $promo->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="20%">Nama Promo</th>
-                                    <th width="12%">Kategori</th>
-                                    <th width="10%">Tipe</th>
-                                    <th width="12%">Nilai</th>
-                                    <th width="12%">Berlaku</th>
-                                    <th width="10%">Status</th>
-                                    <th class="text-center" width="10%">Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Promo
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="category" data-direction="{{ request('sortField') == 'category' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Kategori
+                                        @if(request('sortField') == 'category')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="type" data-direction="{{ request('sortField') == 'type' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Tipe
+                                        @if(request('sortField') == 'type')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="value" data-direction="{{ request('sortField') == 'value' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nilai
+                                        @if(request('sortField') == 'value')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="validity_period" data-direction="{{ request('sortField') == 'validity_period' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Berlaku
+                                        @if(request('sortField') == 'validity_period')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th>Periode</th>
+                                    <th class="sortable" data-field="status" data-direction="{{ request('sortField') == 'status' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Status
+                                        @if(request('sortField') == 'status')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($promo as $item)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-tag text-primary me-2" style="font-size: 1.2rem;"></i>
-                                            <span class="fw-bold">{{ $item->name }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            @if($item->category == 'promo')
-                                                <i class="mdi mdi-sale text-primary" style="font-size: 1.2rem;"></i>
-                                                <span>Promo Diskon</span>
-                                            @elseif($item->category == 'biaya')
-                                                <i class="mdi mdi-cash text-success" style="font-size: 1.2rem;"></i>
-                                                <span>Biaya Tambahan</span>
-                                            @else
-                                                <i class="mdi mdi-home-city text-info" style="font-size: 1.2rem;"></i>
-                                                <span>Fasilitas</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            @if($item->type == 'persen')
-                                                <i class="mdi mdi-percent text-warning" style="font-size: 1.2rem;"></i>
-                                                <span>Persentase</span>
-                                            @else
-                                                <i class="mdi mdi-currency-usd text-success" style="font-size: 1.2rem;"></i>
-                                                <span>Nominal</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if($item->type == 'persen')
-                                            <span class="fw-bold">{{ $item->value }} %</span>
-                                        @else
-                                            <span class="fw-bold">Rp {{ number_format($item->value, 0, ',', '.') }}</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($item->validity_period == 'selalu')
-                                            <span class="badge bg-info">Selalu</span>
-                                        @else
-                                            <div class="d-flex flex-column">
-                                                <small><i class="mdi mdi-calendar-start text-primary me-1"></i>{{ \Carbon\Carbon::parse($item->start_date)->format('d/m/Y') }}</small>
-                                                <small class="text-muted my-1">↓</small>
-                                                <small><i class="mdi mdi-calendar-end text-danger me-1"></i>{{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}</small>
+                                @forelse ($promo as $index => $item)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $promo->firstItem() + $index }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-tag-outline text-primary me-2" style="font-size: 1.2rem;"></i>
+                                                <span class="fw-bold">{{ $item->name }}</span>
                                             </div>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($item->status == 'aktif')
-                                            <span class="badge badge-gradient-success">
-                                                <i class="mdi mdi-check-circle me-1"></i>Aktif
-                                            </span>
-                                        @else
-                                            <span class="badge badge-gradient-secondary">
-                                                <i class="mdi mdi-close-circle me-1"></i>Tidak Aktif
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1 action-buttons">
-                                            <button class="btn btn-outline-warning btn-sm btn-edit" title="Edit" data-id="{{ $item->id }}">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('promo.destroy', $item->id) }}" method="POST" class="d-inline form-delete">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btn-delete" title="Hapus" data-name="{{ $item->name }}">
-                                                    <i class="mdi mdi-delete"></i>
+                                        </td>
+                                        <td>
+                                            @if($item->category == 'promo')
+                                                <span class="badge-category" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff; border-color: rgba(154, 85, 255, 0.2);">
+                                                    <i class="mdi mdi-sale me-1"></i>Promo
+                                                </span>
+                                            @elseif($item->category == 'biaya')
+                                                <span class="badge-category" style="background: rgba(255, 193, 7, 0.15); color: #b78103; border-color: rgba(255, 193, 7, 0.3);">
+                                                    <i class="mdi mdi-cash-plus me-1"></i>Biaya Tambahan
+                                                </span>
+                                            @else
+                                                <span class="badge-category" style="background: rgba(23, 162, 184, 0.1); color: #17a2b8; border-color: rgba(23, 162, 184, 0.2);">
+                                                    <i class="mdi mdi-home-outline me-1"></i>Fasilitas
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($item->type == 'persen')
+                                                <span class="badge bg-light text-dark fw-semibold px-2 py-1 border" style="font-size: 0.78rem;">
+                                                    <i class="mdi mdi-percent me-1 text-primary"></i>Persentase
+                                                </span>
+                                            @else
+                                                <span class="badge bg-light text-dark fw-semibold px-2 py-1 border" style="font-size: 0.78rem;">
+                                                    <i class="mdi mdi-currency-usd me-1 text-success"></i>Nominal
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($item->type == 'persen')
+                                                <span class="fw-bold text-success" style="font-size: 0.92rem;">{{ $item->value }}%</span>
+                                            @else
+                                                <span class="fw-bold text-dark" style="font-size: 0.92rem;">Rp {{ number_format($item->value, 0, ',', '.') }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($item->validity_period == 'selalu')
+                                                <span class="badge bg-light text-dark fw-semibold px-2 py-1 border" style="font-size: 0.78rem;">
+                                                    <i class="mdi mdi-check-all text-success me-1"></i>Selalu
+                                                </span>
+                                            @else
+                                                <span class="badge bg-light text-dark fw-semibold px-2 py-1 border" style="font-size: 0.78rem;">
+                                                    <i class="mdi mdi-calendar-range text-primary me-1"></i>Periode
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($item->validity_period == 'periode')
+                                                <span class="d-inline-flex align-items-center gap-1 text-muted" style="font-size: 0.78rem;">
+                                                    <i class="mdi mdi-calendar-clock text-primary"></i>
+                                                    <span>{{ Carbon\Carbon::parse($item->start_date)->format('d/m/Y') }} - {{ Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}</span>
+                                                </span>
+                                            @else
+                                                <span class="text-muted" style="font-size: 0.8rem;">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($item->status == 'aktif')
+                                                <span class="status-badge aktif">
+                                                    <i class="mdi mdi-check-circle"></i> Aktif
+                                                </span>
+                                            @else
+                                                <span class="status-badge nonaktif">
+                                                    <i class="mdi mdi-close-circle"></i> Nonaktif
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <button class="btn-action edit" title="Edit Promo" onclick="openModal('edit', {{ $item->id }})">
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                <button class="btn-action delete" title="Hapus Promo" onclick="confirmDelete({{ $item->id }})">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-tag-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data promo yang tersedia.</p>
-                                        <p class="text-muted small">Silahkan tambahkan promo baru.</p>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-tag-off-outline me-2" style="font-size: 1.5rem;"></i>
+                                            Belum ada data promo yang tersedia.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- PAGINATION SECTION -->
-                    @if($promo->count() > 0)
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan
-                            <span class="fw-bold">{{ $promo->firstItem() }}</span>
-                            -
-                            <span class="fw-bold">{{ $promo->lastItem() }}</span>
-                            dari
-                            <span class="fw-bold">{{ $promo->total() }}</span>
-                            data promo
+                    <!-- Pagination -->
+                    @if ($promo instanceof \Illuminate\Pagination\LengthAwarePaginator && $promo->total() > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
+                                Menampilkan {{ $promo->firstItem() }} - {{ $promo->lastItem() }} dari {{ $promo->total() }} data
+                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                    <li class="page-item {{ $promo->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $promo->previousPageUrl() }}" {{ !$promo->onFirstPage() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+
+                                    @for($page = 1; $page <= $promo->lastPage(); $page++)
+                                        <li class="page-item {{ $page == $promo->currentPage() ? 'active' : '' }}">
+                                            @if($page == $promo->currentPage())
+                                                <span class="page-link">{{ $page }}</span>
+                                            @else
+                                                <a class="page-link" href="{{ $promo->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                            @endif
+                                        </li>
+                                    @endfor
+
+                                    <li class="page-item {{ $promo->hasMorePages() ? '' : 'disabled' }}">
+                                        <a class="page-link" href="{{ $promo->nextPageUrl() }}" {{ $promo->hasMorePages() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                {{-- Previous Page Link --}}
-                                @if($promo->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $promo->previousPageUrl() }}" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                @endif
-
-                                {{-- Page Links --}}
-                                @foreach ($promo->getUrlRange(1, $promo->lastPage()) as $page => $url)
-                                    <li class="page-item {{ $promo->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                    </li>
-                                @endforeach
-
-                                {{-- Next Page Link --}}
-                                @if($promo->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $promo->nextPageUrl() }}" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
-                    </div>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>
-                            Kembali ke Dashboard
-                        </a>
+</div>
+
+<!-- Modal Tambah/Edit Promo -->
+<div class="modal fade" id="modalPromo" tabindex="-1" aria-labelledby="modalPromoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-white border-bottom">
+                <h5 class="modal-title fw-bold" id="modalPromoLabel" style="color: #2c2e3f;">
+                    <i class="mdi mdi-plus-circle me-2" id="modalIcon" style="color: #9a55ff;"></i>
+                    <span id="modalTitle">Tambah Promo</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formPromo" method="POST" action="{{ route('promo.store') }}">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                <input type="hidden" id="promoId" name="id">
+
+                <div class="modal-body p-4">
+                    <!-- Nama Promo -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Nama Promo <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="name" id="namaPromo" placeholder="Contoh: Diskon Early Bird" value="{{ old('name') }}" required>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-control" name="category" id="kategori" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="promo">Promo</option>
+                            <option value="biaya">Biaya Tambahan</option>
+                            <option value="fasilitas">Fasilitas</option>
+                        </select>
+                    </div>
+
+                    <!-- Tipe dan Nilai -->
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold" style="color: #2c2e3f;">Tipe <span class="text-danger">*</span></label>
+                            <select class="form-control" name="type" id="tipe" onchange="ubahTipe()" required>
+                                <option value="">-- Pilih Tipe --</option>
+                                <option value="persen">Persentase (%)</option>
+                                <option value="nominal">Nominal (Rp)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold" style="color: #2c2e3f;" id="labelNilai">Nilai <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border fw-bold text-primary" id="iconNilai" style="border-radius: 8px 0 0 8px;">#</span>
+                                <input type="text" class="form-control" name="value" id="nilai" placeholder="0" value="{{ old('value') }}" required style="border-radius: 0 8px 8px 0;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Berlaku -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Masa Berlaku <span class="text-danger">*</span></label>
+                        <select class="form-control" name="validity_period" id="berlaku" onchange="ubahBerlaku()" required>
+                            <option value="">-- Pilih Masa Berlaku --</option>
+                            <option value="selalu">Selalu Aktif</option>
+                            <option value="periode">Periode Tertentu</option>
+                        </select>
+                    </div>
+
+                    <!-- Periode Container -->
+                    <div class="row g-2 p-3 bg-light rounded-3 mb-3 border" id="periodeContainer" style="display: none;">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark" style="font-size: 0.82rem;">Tanggal Mulai <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="start_date" id="tanggalMulai" value="{{ old('start_date') }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark" style="font-size: 0.82rem;">Tanggal Berakhir <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="end_date" id="tanggalBerakhir" value="{{ old('end_date') }}">
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Status</label>
+                        <select class="form-control" name="status" id="status">
+                            <option value="aktif">Aktif</option>
+                            <option value="tidak_aktif">Nonaktif</option>
+                        </select>
+                    </div>
+
+                    <!-- Keterangan -->
+                    <div class="mb-0">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Keterangan / Deskripsi</label>
+                        <textarea class="form-control" name="description" id="keterangan" rows="2" placeholder="Tuliskan keterangan promo...">{{ old('description') }}</textarea>
                     </div>
                 </div>
-            </div>
+
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary btn-sm px-4" id="submitBtn" onclick="showSubmitLoading()">
+                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                        <span id="btnText">Simpan</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- MODAL TAMBAH PROMO -->
-<div class="modal fade" id="modalTambahPromo" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-tag-plus me-2" style="color: #9a55ff;"></i>
-                    Tambah Promo / Biaya Baru
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalTambahPromo').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('promo.store') }}" method="POST" id="formTambahPromo">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-tag me-1"></i>Nama Promo <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="name" class="modal-form-control" required
-                                    placeholder="Contoh: Diskon Early Bird">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="category" required>
-                                    <option value="promo">Promo Diskon</option>
-                                    <option value="biaya">Biaya Tambahan</option>
-                                    <option value="fasilitas">Fasilitas</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calculator me-1"></i>Tipe <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="type" id="tipePromo" required>
-                                    <option value="persen">Persentase (%)</option>
-                                    <option value="nominal">Nominal (Rp)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-currency-usd me-1"></i>Nilai <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="value" class="modal-form-control" id="nilaiPromo" required
-                                    placeholder="Contoh: 10 atau 500000">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar me-1"></i>Berlaku <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="validity_period" id="berlaku" required>
-                                    <option value="selalu">Selalu</option>
-                                    <option value="periode">Periode Tertentu</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" id="periodeContainer" style="display: none;">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-start me-1"></i>Tanggal Mulai
-                                </label>
-                                <input type="date" name="start_date" class="modal-form-control" id="startDate">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-end me-1"></i>Tanggal Berakhir
-                                </label>
-                                <input type="date" name="end_date" class="modal-form-control" id="endDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="status" required>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak_aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-note-text me-1"></i>Keterangan <span class="text-danger">*</span>
-                                </label>
-                                <textarea name="description" class="modal-form-control" rows="3" required placeholder="Deskripsi promo..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahPromo').modal('hide')">Batal</button>
-                <button type="submit" form="formTambahPromo" class="btn btn-gradient-primary">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EDIT PROMO -->
-<div class="modal fade" id="modalEditPromo" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit Promo
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalEditPromo').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="formEditPromo">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-tag me-1"></i>Nama Promo <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="name" class="modal-form-control" id="editNama" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-shape-outline me-1"></i>Kategori <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="category" id="editKategori" required>
-                                    <option value="promo">Promo Diskon</option>
-                                    <option value="biaya">Biaya Tambahan</option>
-                                    <option value="fasilitas">Fasilitas</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calculator me-1"></i>Tipe <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="type" id="editTipe" required>
-                                    <option value="persen">Persentase (%)</option>
-                                    <option value="nominal">Nominal (Rp)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-currency-usd me-1"></i>Nilai <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="value" class="modal-form-control" id="editNilai" required>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar me-1"></i>Berlaku <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="validity_period" id="editBerlaku" required>
-                                    <option value="selalu">Selalu</option>
-                                    <option value="periode">Periode Tertentu</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" id="editPeriodeContainer" style="display: none;">
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-start me-1"></i>Tanggal Mulai
-                                </label>
-                                <input type="date" name="start_date" class="modal-form-control" id="editStart">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-calendar-end me-1"></i>Tanggal Berakhir
-                                </label>
-                                <input type="date" name="end_date" class="modal-form-control" id="editEnd">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-flag me-1"></i>Status <span class="text-danger">*</span>
-                                </label>
-                                <select class="modal-form-control" name="status" id="editStatus" required>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak_aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-note-text me-1"></i>Keterangan <span class="text-danger">*</span>
-                                </label>
-                                <textarea name="description" class="modal-form-control" rows="3" id="editDeskripsi" required></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditPromo').modal('hide')">Batal</button>
-                <button type="submit" form="formEditPromo" class="btn btn-gradient-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables
-    const tableElement = document.getElementById('tablePromo');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tablePromo')) {
-            $('#tablePromo').DataTable().destroy();
-        }
-
-        $('#tablePromo').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data promo belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [7] }
-            ],
-            autoWidth: false,
-            deferRender: true
-        });
-    }
-
-    // ===== HANDLE FORM TAMBAH PROMO =====
-    $('#formTambahPromo').on('submit', function(e) {
-        e.preventDefault();
-
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        this.submit();
-    });
-
-    // ===== HANDLE FORM EDIT PROMO =====
-    $('#formEditPromo').on('submit', function(e) {
-        e.preventDefault();
-
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        this.submit();
-    });
-
-    // Toggle periode container
-    $('#berlaku').change(function() {
-        if ($(this).val() === 'periode') {
-            $('#periodeContainer').slideDown();
-            $('#startDate, #endDate').prop('required', true);
-        } else {
-            $('#periodeContainer').slideUp();
-            $('#startDate, #endDate').prop('required', false);
-        }
-    });
-
-    $('#editBerlaku').change(function() {
-        if ($(this).val() === 'periode') {
-            $('#editPeriodeContainer').slideDown();
-            $('#editStart, #editEnd').prop('required', true);
-        } else {
-            $('#editPeriodeContainer').slideUp();
-            $('#editStart, #editEnd').prop('required', false);
-        }
-    });
-
-    // Format Rupiah untuk input nilai jika tipe nominal
-    $('#tipePromo, #editTipe').change(function() {
-        let isEdit = $(this).attr('id') === 'editTipe';
-        let nilaiInput = isEdit ? $('#editNilai') : $('#nilaiPromo');
-
-        if ($(this).val() === 'nominal') {
-            nilaiInput.attr('placeholder', 'Contoh: 500.000');
-        } else {
-            nilaiInput.attr('placeholder', 'Contoh: 10');
-        }
-    });
-
-    // Format Rupiah on input
-    $('#nilaiPromo, #editNilai').on('input', function() {
-        let isEdit = $(this).attr('id') === 'editNilai';
-        let tipeSelect = isEdit ? $('#editTipe') : $('#tipePromo');
-
-        if (tipeSelect.val() === 'nominal') {
-            let nilai = this.value.replace(/\D/g, '');
-            if (nilai) {
-                let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
-                this.value = rupiah;
-            }
-        }
-    });
-
-    // ===== HANDLE EDIT BUTTON CLICK =====
-    $(document).on('click', '.btn-edit', function() {
-        let id = $(this).data('id');
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
 
         Swal.fire({
             title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
+            html: 'Sedang mengurutkan data',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
             }
         });
 
-        $.ajax({
-            url: '/promo/get/' + id,
-            type: 'GET',
-            success: function(response) {
-                Swal.close();
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
 
-                if (response.success) {
-                    let promo = response.data;
-
-                    $('#editNama').val(promo.name);
-                    $('#editKategori').val(promo.category);
-                    $('#editTipe').val(promo.type);
-                    $('#editNilai').val(promo.value_formatted || promo.value);
-                    $('#editBerlaku').val(promo.validity_period);
-                    $('#editStatus').val(promo.status);
-                    $('#editDeskripsi').val(promo.description);
-
-                    if (promo.validity_period === 'periode') {
-                        $('#editStart').val(promo.start_date);
-                        $('#editEnd').val(promo.end_date);
-                        $('#editPeriodeContainer').show();
-                        $('#editStart, #editEnd').prop('required', true);
-                    } else {
-                        $('#editPeriodeContainer').hide();
-                        $('#editStart, #editEnd').prop('required', false);
-                    }
-
-                    $('#formEditPromo').attr('action', '/promo/' + id);
-                    $('#modalEditPromo').modal('show');
-                }
-            },
-            error: function(xhr, status, error) {
-                Swal.close();
-                console.error('Error:', error);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Gagal mengambil data promo',
-                    confirmButtonColor: '#9a55ff',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
+        window.location.href = url.toString();
     });
 
-    // ===== HANDLE DELETE BUTTON CLICK =====
-    $(document).on('click', '.btn-delete', function() {
-        let form = $(this).closest('.form-delete');
-        let name = $(this).data('name');
-
+    @if (session('success'))
         Swal.fire({
-            title: 'Hapus Promo?',
-            text: "Promo " + name + " akan dihapus",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                form.submit();
-            }
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 2500,
+            showConfirmButton: true,
+            confirmButtonColor: '#9a55ff',
+            timerProgressBar: true
         });
-    });
+    @endif
 
-    // Filter form submit with loading
-    $('#filterFormMobile, #filterFormDesktop').on('submit', function() {
+    @if (session('error'))
         Swal.fire({
-            title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
         });
-    });
-
-    // Reset button with loading
-    $('a[href="{{ route('promo.index') }}"]').on('click', function(e) {
-        e.preventDefault();
-        let href = $(this).attr('href');
-
-        Swal.fire({
-            title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        window.location.href = href;
-    });
+    @endif
 });
 
-// Sweet Alert untuk session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
-@if(session('success'))
+function showFilterLoading() {
     Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    return true;
+}
 
-// Sweet Alert untuk session error - TANPA TIMER (pakai tombol OK)
-@if(session('error'))
+function showResetLoading(event) {
+    event.preventDefault();
     Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    window.location.href = event.currentTarget.href;
+}
+
+function showPaginationLoading(event) {
+    if (event.currentTarget.parentElement.classList.contains('disabled')) return;
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showSubmitLoading() {
+    Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang menyimpan data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    return true;
+}
+
+function ubahTipe() {
+    let tipe = document.getElementById('tipe').value;
+    let iconNilai = document.getElementById('iconNilai');
+    let labelNilai = document.getElementById('labelNilai');
+
+    if (tipe === 'persen') {
+        iconNilai.innerHTML = '%';
+        labelNilai.innerHTML = 'Nilai (%) <span class="text-danger">*</span>';
+    } else if (tipe === 'nominal') {
+        iconNilai.innerHTML = 'Rp';
+        labelNilai.innerHTML = 'Nilai (Rp) <span class="text-danger">*</span>';
+    } else {
+        iconNilai.innerHTML = '#';
+    }
+}
+
+function ubahBerlaku() {
+    let berlaku = document.getElementById('berlaku').value;
+    let periodeContainer = document.getElementById('periodeContainer');
+
+    if (berlaku === 'periode') {
+        periodeContainer.style.display = 'flex';
+        document.getElementById('tanggalMulai').required = true;
+        document.getElementById('tanggalBerakhir').required = true;
+    } else {
+        periodeContainer.style.display = 'none';
+        document.getElementById('tanggalMulai').required = false;
+        document.getElementById('tanggalBerakhir').required = false;
+    }
+}
+
+function openModal(type, id = null) {
+    if (type === 'tambah') {
+        $('#formPromo')[0].reset();
+        $('#promoId').val('');
+        $('#methodField').val('POST');
+        $('#formPromo').attr('action', '{{ route("promo.store") }}');
+
+        document.getElementById('periodeContainer').style.display = 'none';
+        document.getElementById('iconNilai').innerHTML = '#';
+
+        $('#modalTitle').text('Tambah Promo');
+        $('#modalIcon').removeClass('mdi-pencil').addClass('mdi-plus-circle');
+        $('#btnText').text('Simpan');
+        $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
+
+        $('#modalPromo').modal('show');
+    } else {
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            html: 'Sedang mengambil data promo',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.get('{{ url("master-data-promo/get") }}/' + id, function(response) {
+            Swal.close();
+
+            if (response.success) {
+                let data = response.data;
+
+                $('#promoId').val(data.id);
+                $('#namaPromo').val(data.name);
+                $('#kategori').val(data.category);
+                $('#tipe').val(data.type);
+
+                if (data.type === 'nominal') {
+                    $('#nilai').val(new Intl.NumberFormat('id-ID').format(data.value));
+                } else {
+                    $('#nilai').val(data.value);
+                }
+
+                $('#berlaku').val(data.validity_period);
+
+                if (data.validity_period === 'periode') {
+                    $('#tanggalMulai').val(data.start_date);
+                    $('#tanggalBerakhir').val(data.end_date);
+                }
+
+                $('#status').val(data.status);
+                $('#keterangan').val(data.description);
+
+                ubahTipe();
+                ubahBerlaku();
+
+                $('#modalTitle').text('Edit Promo');
+                $('#modalIcon').removeClass('mdi-plus-circle').addClass('mdi-pencil');
+                $('#btnText').text('Update');
+                $('#btnIcon').removeClass('mdi-content-save').addClass('mdi-pencil');
+
+                $('#methodField').val('PUT');
+                $('#formPromo').attr('action', '{{ url("master-data-promo") }}/' + id);
+
+                $('#modalPromo').modal('show');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: response.message || 'Gagal mengambil data promo',
+                    confirmButtonColor: '#dc3545'
+                });
+            }
+        }).fail(function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengambil data promo',
+                confirmButtonColor: '#dc3545'
+            });
+        });
+    }
+}
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data promo ini akan dihapus permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Sedang menghapus data promo',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            setTimeout(() => {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("master-data-promo") }}/' + id;
+
+                let csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}';
+
+                let methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+
+                form.appendChild(csrfInput);
+                form.appendChild(methodInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }, 100);
+        }
+    });
+}
 </script>
 @endpush

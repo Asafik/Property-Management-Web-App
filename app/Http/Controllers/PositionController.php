@@ -13,20 +13,21 @@ class PositionController extends Controller
     {
         $query = Position::with('division');
 
-        // Search filter
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Division filter
         if ($request->filled('division_id')) {
             $query->where('division_id', $request->division_id);
         }
 
-        // Per page filter (default 10)
         $perPage = $request->input('per_page', 10);
 
-        $positions = $query->paginate($perPage)->withQueryString();
+        $positions = $query
+            ->latest() // data terbaru paling atas
+            ->paginate($perPage)
+            ->withQueryString();
+
         $divisions = Division::all();
 
         return view('master_data.posisi', compact('positions', 'divisions'));
@@ -96,12 +97,6 @@ class PositionController extends Controller
 
     public function destroy(Position $position)
     {
-        // Cek apakah posisi masih digunakan oleh user
-        // if ($position->users()->count() > 0) {
-        //     return redirect()->route('master.data.posisi')
-        //         ->with('error', 'Posisi tidak dapat dihapus karena masih digunakan oleh ' . $position->users()->count() . ' user.');
-        // }
-
         $position->delete();
 
         return redirect()->route('master.data.posisi')

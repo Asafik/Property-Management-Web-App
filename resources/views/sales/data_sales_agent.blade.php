@@ -1,493 +1,390 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data Pengguna - Property Management App')
+@section('title', 'Data Pengguna - Property Management App')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/bank/bank.css') }}">
 
-<style>
-/* CSS untuk loading overlay (jika diperlukan) */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-.loading-spinner {
-    width: 60px;
-    height: 60px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #9a55ff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
-
-<div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-account-tie me-2" style="color: #9a55ff;"></i>
-                            Master Data Pengguna
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Data Pengguna
                         </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data pengguna untuk mendukung proses penjualan dan transaksi properti
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Kelola data seluruh pengguna sistem, staf, dan sales agent
                         </p>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-account-tie" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{{ route('agency.create') }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm px-3 py-2">
+                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                            <span>Tambah Pengguna</span>
+                        </a>
+                        <div class="d-none d-md-block pe-2">
+                            <i class="mdi mdi-account-group" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabel Data Pengguna -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Pengguna
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Pengguna Sistem
                     </h5>
-                    <div class="ms-auto">
-                        <a href="{{ route('agency.create') }}" class="btn btn-gradient-primary btn-tambah" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;">
-                            <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah Pengguna</span>
-                        </a>
-                    </div>
                 </div>
 
                 <div class="card-body">
-                    <!-- FILTER SECTION - Selalu tampil -->
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data Pengguna
-                            </h6>
-
-                            <!-- MOBILE VERSION -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('agency.index') }}" class="filter-form">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                            Cari Sales
-                                        </label>
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama / username sales..." style="height: 45px;">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                            Tampil per Halaman
-                                        </label>
-                                        <select class="form-control" name="per_page" style="height: 45px;">
-                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                            <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                            <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center btn-filter">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btn-reset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
+                    <!-- Filter Section -->
+                    <div class="filter-card mb-3">
+                        <!-- Desktop Version -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <form id="filterForm" action="{{ route('agency.index') }}" method="GET" onsubmit="return showFilterLoading()">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <div style="min-width: 260px; max-width: 380px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Cari nama atau username..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
 
-                            <!-- DESKTOP VERSION -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('agency.index') }}" class="filter-form">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Sales
-                                            </label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                                placeholder="Cari nama / username sales...">
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                                Tampil per Halaman
-                                            </label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 115px;">
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center btn-filter">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Mobile Version -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <form action="{{ route('agency.index') }}" method="GET" onsubmit="return showFilterLoading()">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                placeholder="Cari nama atau username..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
-
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btn-reset" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </a>
-                                        </div>
                                     </div>
-                                </form>
-                            </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                            <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
+                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                            <i class="mdi mdi-filter"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('agency.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i> Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- TABEL DATA -->
+                    <!-- Tabel Data Pengguna -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tableAgent" {{ $employees->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="20%">Nama</th>
-                                    <th width="15%">Username</th>
-                                    <th width="15%">No HP</th>
-                                    <th width="25%">Alamat</th>
-                                    <th class="text-center" width="10%">Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Pengguna
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="username" data-direction="{{ request('sortField') == 'username' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Username
+                                        @if(request('sortField') == 'username')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        No. Telepon
+                                        @if(request('sortField') == 'phone')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="address" data-direction="{{ request('sortField') == 'address' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Alamat
+                                        @if(request('sortField') == 'address')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($employees as $employee)
-                                <tr>
-                                    <td class="text-center fw-bold">
-                                        {{ $loop->iteration }}
-                                    </td>
-
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-account-tie text-primary me-2" style="font-size: 1.2rem;"></i>
-                                            <span class="fw-bold">{{ $employee->name }}</span>
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            <i class="mdi mdi-account me-1"></i>
-                                            {{ $employee->username }}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <i class="mdi mdi-whatsapp text-success me-1"></i>
-                                        {{ $employee->phone }}
-                                    </td>
-
-                                    <td>
-                                        <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                        {{ $employee->address }}
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <!-- Edit -->
-                                            <a href="{{ route('agency.edit', $employee->id) }}"
-                                               class="btn btn-outline-warning btn-sm btn-edit"
-                                               title="Edit Data">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </a>
-
-                                            <!-- Hapus -->
-                                            <form class="form-delete" action="{{ route('agency.destroy', $employee->id) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btn-delete" title="Hapus Data">
-                                                    <i class="mdi mdi-delete"></i>
+                                @forelse ($employees as $index => $user)
+                                    @php
+                                        $agentName = $user->name ?? '-';
+                                        $nameParts = explode(' ', trim($agentName));
+                                        $initials = strtoupper(substr($nameParts[0] ?? '', 0, 1) . substr($nameParts[1] ?? '', 0, 1));
+                                        if (trim($initials) == '') {
+                                            $initials = 'US';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $employees->firstItem() + $index }}</td>
+                                        <td>
+                                            <div class="info-inline">
+                                                <span class="initial-avatar">{{ $initials }}</span>
+                                                <span class="fw-bold">{{ $agentName }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark fw-semibold px-2 py-1 border" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-account-circle-outline me-1 text-primary"></i>{{ $user->username }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="d-inline-flex align-items-center gap-1 text-success fw-medium">
+                                                <i class="mdi mdi-phone"></i>
+                                                <span>{{ $user->phone ?: '-' }}</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="d-inline-flex align-items-center gap-1 text-muted" title="{{ $user->address }}">
+                                                <i class="mdi mdi-map-marker text-danger"></i>
+                                                <span>{{ Str::limit($user->address ?: '-', 40) }}</span>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <a href="{{ route('agency.edit', $user->id) }}" class="btn-action edit" title="Edit Data Pengguna">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <form id="delete-form-{{ $user->id }}" action="{{ route('agency.destroy', $user->id) }}" method="POST" class="d-none">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                                <button type="button" class="btn-action delete" title="Hapus Pengguna" onclick="confirmDelete({{ $user->id }})">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-account-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data Pengguna.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data Pengguna baru.</p>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-account-off-outline me-2" style="font-size: 1.5rem;"></i>
+                                            Tidak ada data pengguna ditemukan.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- PAGINATION SECTION - Tampil jika ada data -->
-                    @if($employees->count() > 0)
+                    <!-- Pagination -->
+                    @if ($employees instanceof \Illuminate\Pagination\LengthAwarePaginator && $employees->total() > 0)
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <!-- Info Menampilkan Data -->
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan
-                            <span class="fw-bold">{{ $employees->firstItem() }}</span>
-                            -
-                            <span class="fw-bold">{{ $employees->lastItem() }}</span>
-                            dari
-                            <span class="fw-bold">{{ $employees->total() }}</span>
-                            data Pengguna
+                        <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
+                            Menampilkan {{ $employees->firstItem() ?? 0 }} - {{ $employees->lastItem() ?? 0 }} dari {{ $employees->total() }} data
                         </div>
-
-                        <!-- Pagination Links -->
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                {{-- Previous Page Link --}}
-                                @if($employees->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link pagination-link" href="{{ $employees->previousPageUrl() }}" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                @endif
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                <li class="page-item {{ $employees->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $employees->previousPageUrl() }}" {{ !$employees->onFirstPage() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </a>
+                                </li>
 
-                                {{-- Page Links --}}
-                                @foreach ($employees->getUrlRange(1, $employees->lastPage()) as $page => $url)
-                                    <li class="page-item {{ $employees->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link pagination-link" href="{{ $url }}">{{ $page }}</a>
+                                @for($page = 1; $page <= $employees->lastPage(); $page++)
+                                    <li class="page-item {{ $page == $employees->currentPage() ? 'active' : '' }}">
+                                        @if($page == $employees->currentPage())
+                                            <span class="page-link">{{ $page }}</span>
+                                        @else
+                                            <a class="page-link" href="{{ $employees->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                        @endif
                                     </li>
-                                @endforeach
+                                @endfor
 
-                                {{-- Next Page Link --}}
-                                @if($employees->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link pagination-link" href="{{ $employees->nextPageUrl() }}" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
-                                @endif
+                                <li class="page-item {{ $employees->hasMorePages() ? '' : 'disabled' }}">
+                                    <a class="page-link" href="{{ $employees->nextPageUrl() }}" {{ $employees->hasMorePages() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary btn-back">
-                            <i class="mdi mdi-arrow-left me-1"></i>
-                            Kembali ke Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Fungsi untuk menampilkan loading
-    function showLoading(message = 'Mohon tunggu sebentar') {
+$(document).ready(function() {
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
+
         Swal.fire({
             title: 'Memuat...',
-            text: message,
+            html: 'Sedang mengurutkan data',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
             }
         });
-    }
 
-    // ===== LOADING UNTUK FILTER FORM =====
-    const filterForms = document.querySelectorAll('.filter-form');
-    filterForms.forEach(form => {
-        form.addEventListener('submit', function() {
-            showLoading('Menyaring data...');
-        });
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
     });
-
-    // ===== LOADING UNTUK TOMBOL RESET =====
-    const resetButtons = document.querySelectorAll('.btn-reset');
-    resetButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLoading('Mereset filter...');
-            window.location.href = this.href;
-        });
-    });
-
-    // ===== LOADING UNTUK PAGINATION =====
-    const paginationLinks = document.querySelectorAll('.pagination-link');
-    paginationLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLoading('Memuat halaman...');
-            window.location.href = this.href;
-        });
-    });
-
-    // ===== LOADING UNTUK TOMBOL TAMBAH =====
-    const tambahBtn = document.querySelector('.btn-tambah');
-    if (tambahBtn) {
-        tambahBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLoading('Memuat form tambah...');
-            window.location.href = this.href;
-        });
-    }
-
-    // ===== LOADING UNTUK TOMBOL EDIT =====
-    const editButtons = document.querySelectorAll('.btn-edit');
-    editButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLoading('Memuat form edit...');
-            window.location.href = this.href;
-        });
-    });
-
-    // ===== LOADING UNTUK TOMBOL KEMBALI =====
-    const backButton = document.querySelector('.btn-back');
-    if (backButton) {
-        backButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            showLoading('Kembali ke dashboard...');
-            window.location.href = this.href;
-        });
-    }
-
-    // ===== DELETE CONFIRMATION DENGAN LOADING =====
-    const deleteButtons = document.querySelectorAll('.btn-delete');
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const form = this.closest('.form-delete');
-
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data yang dihapus tidak bisa dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading('Menghapus data...');
-                    form.submit();
-                }
-            });
-        });
-    });
-
-    // Inisialisasi DataTables hanya jika ada data
-    const tableElement = document.getElementById('tableAgent');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tableAgent')) {
-            $('#tableAgent').DataTable().destroy();
-        }
-
-        $('#tableAgent').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data agent belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [5] }
-            ]
-        });
-    }
 });
 
-// ===== SWEET ALERT UNTUK SESSION SUCCESS =====
-// Timer 3 detik, progress bar, dan tombol OK
 @if(session('success'))
     Swal.fire({
         icon: 'success',
         title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
+        text: '{{ session('success') }}',
+        timer: 2500,
         showConfirmButton: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        confirmButtonColor: '#9a55ff',
+        timerProgressBar: true
     });
 @endif
 
-// ===== SWEET ALERT UNTUK SESSION ERROR =====
-// Tanpa timer, pakai tombol OK
 @if(session('error'))
     Swal.fire({
         icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        showConfirmButton: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        title: 'Gagal!',
+        text: '{{ session('error') }}',
+        confirmButtonColor: '#dc3545'
     });
 @endif
 
-// ===== SWEET ALERT UNTUK VALIDASI ERROR =====
-@if ($errors->any())
+function showFilterLoading() {
     Swal.fire({
-        icon: 'error',
-        title: 'Validasi Gagal',
-        html: `{!! implode('<br>', $errors->all()) !!}`,
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    return true;
+}
+
+function showResetLoading(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showPaginationLoading(event) {
+    if (event.currentTarget.parentElement.classList.contains('disabled')) return;
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: 'Data pengguna ini akan dihapus permanen!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Memuat...',
+                html: 'Sedang menghapus data',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            document.getElementById('delete-form-' + id).submit();
+        }
+    });
+}
 </script>
 @endpush

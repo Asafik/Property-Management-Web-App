@@ -1,678 +1,514 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data PT - Property Management App')
+@section('title', 'Master Data Perusahaan - Property Management App')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/pt/pt.css') }}">
 
-<style>
-/* Style untuk alamat dengan ellipsis */
-.address-cell {
-    max-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: help;
-}
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-.address-cell i {
-    flex-shrink: 0;
-    margin-right: 5px;
-}
-
-.address-cell span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Tooltip custom */
-.address-tooltip {
-    position: relative;
-}
-
-.address-tooltip:hover::after {
-    content: attr(data-full-address);
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    background: #2c2e3f;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    white-space: normal;
-    max-width: 400px;
-    min-width: 250px;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    pointer-events: none;
-    word-wrap: break-word;
-    margin-bottom: 5px;
-}
-
-.address-tooltip:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 20px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #2c2e3f transparent transparent transparent;
-    transform: rotate(180deg);
-    margin-bottom: -5px;
-    z-index: 1000;
-}
-
-/* Fix untuk tombol aksi di mobile */
-.action-buttons {
-    position: relative;
-    z-index: 10;
-}
-
-.btn-outline-warning, .btn-outline-danger {
-    position: relative;
-    z-index: 15;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* DataTables wrapper styling */
-.dataTables_wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-/* Pastikan tabel tetap terlihat */
-.table {
-    width: 100% !important;
-    margin-bottom: 0;
-}
-
-/* Fix untuk DataTables di mobile */
-@media (max-width: 768px) {
-    .dataTables_wrapper .table {
-        width: 100% !important;
-    }
-}
-</style>
-
-<div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-domain me-2" style="color: #9a55ff;"></i>
-                            Master Data PT
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Master Data Perusahaan (PT)
                         </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data perusahaan (PT) untuk keperluan administrasi
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Kelola data legalitas entitas perusahaan dan developer properti
                         </p>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-domain" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    <div class="d-none d-sm-block pe-2">
+                        <i class="mdi mdi-domain" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabel Data PT -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Perusahaan (PT)
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Perusahaan (PT)
                     </h5>
-                    <div class="ms-auto">
-                        <button type="button" class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="openTambahModal()">
-                            <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah PT</span>
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" onclick="openModal('tambah')">
+                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                        <span>Tambah Perusahaan</span>
+                    </button>
                 </div>
 
                 <div class="card-body">
                     <!-- Filter Section -->
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data PT
-                            </h6>
-
-                            <!-- FILTER UNTUK MOBILE -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('company-profile.index') }}" id="filterFormMobile">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                            Cari PT
-                                        </label>
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama PT..." style="height: 45px;">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                            Tampil per Halaman
-                                        </label>
-                                        <select class="form-control" name="per_page" style="height: 45px;">
-                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                            <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                            <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center btnReset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
+                    <div class="filter-card mb-3">
+                        <!-- Desktop Version -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <form id="filterForm" method="GET" action="{{ route('company-profile.index') }}" onsubmit="return showFilterLoading()">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <div style="min-width: 260px; max-width: 380px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Cari nama perusahaan..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
 
-                            <!-- FILTER UNTUK TABLET & DESKTOP -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('company-profile.index') }}" id="filterFormDesktop">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari PT
-                                            </label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                                placeholder="Cari nama PT...">
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>
-                                                Tampil per Halaman
-                                            </label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page', 10) == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 115px;">
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15 data</option>
+                                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Mobile Version -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <form method="GET" action="{{ route('company-profile.index') }}" onsubmit="return showFilterLoading()">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                placeholder="Cari nama perusahaan..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
-
-                                        <div class="col-md-1">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center btnReset" title="Reset">
-                                                <i class="mdi mdi-refresh"></i>
-                                            </a>
-                                        </div>
                                     </div>
-                                </form>
-                            </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                            <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15 data</option>
+                                            <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                            <i class="mdi mdi-filter"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('company-profile.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i> Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- Tabel PT -->
+                    <!-- Tabel Data Perusahaan -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tablePT" {{ $companies->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="25%">Nama PT</th>
-                                    <th width="35%">Alamat</th>
-                                    <th width="20%">No. Telepon</th>
-                                    <th class="text-center" width="15%">Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Perusahaan (PT)
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="address" data-direction="{{ request('sortField') == 'address' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Alamat Kantor
+                                        @if(request('sortField') == 'address')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable" data-field="phone" data-direction="{{ request('sortField') == 'phone' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        No. Telepon
+                                        @if(request('sortField') == 'phone')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable text-center" data-field="land_banks_count" data-direction="{{ request('sortField') == 'land_banks_count' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Jumlah Proyek
+                                        @if(request('sortField') == 'land_banks_count')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($companies as $item)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-domain text-primary me-2" style="font-size: 1.2rem;"></i>
-                                            <span class="fw-bold">{{ $item->name }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if($item->address)
-                                        <div class="d-flex align-items-center address-cell address-tooltip" data-full-address="{{ $item->address }}">
-                                            <i class="mdi mdi-map-marker text-danger me-1 flex-shrink-0"></i>
-                                            <span>{{ $item->address }}</span>
-                                        </div>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($item->phone)
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-whatsapp text-success me-1"></i>
-                                            {{ $item->phone }}
-                                        </div>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1 action-buttons">
-                                            <button type="button" class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $item->id }}">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('company-profile.destroy', $item->id) }}" method="POST" class="d-inline formDelete">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" title="Hapus" data-name="{{ $item->name }}">
-                                                    <i class="mdi mdi-delete"></i>
+                                @forelse ($companies as $index => $company)
+                                    @php
+                                        $cName = $company->name ?? '-';
+                                        $nameParts = explode(' ', trim(str_replace(['PT.', 'PT', 'pt.', 'pt'], '', $cName)));
+                                        $initials = strtoupper(substr($nameParts[0] ?? '', 0, 1) . substr($nameParts[1] ?? '', 0, 1));
+                                        if (trim($initials) == '') {
+                                            $initials = 'PT';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $companies->firstItem() + $index }}</td>
+                                        <td>
+                                            <div class="info-inline">
+                                                <span class="initial-avatar">{{ $initials }}</span>
+                                                <div>
+                                                    <span class="fw-bold d-block text-dark">{{ $cName }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="d-inline-flex align-items-center gap-1 text-muted" title="{{ $company->address }}">
+                                                <i class="mdi mdi-map-marker text-danger"></i>
+                                                <span>{{ Str::limit($company->address ?: '-', 45) }}</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="d-inline-flex align-items-center gap-1 text-success fw-medium">
+                                                <i class="mdi mdi-phone"></i>
+                                                <span>{{ $company->phone ?: '-' }}</span>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-2 py-1 border border-primary border-opacity-25" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-office-building me-1"></i>{{ $company->land_banks_count }} Proyek
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <button class="btn-action edit" title="Edit Perusahaan" onclick="openModal('edit', {{ $company->id }})">
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                <button class="btn-action delete" title="Hapus Perusahaan" onclick="confirmDelete({{ $company->id }})">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-domain-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data PT yang tersedia.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data PT baru.</p>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-domain-off me-2" style="font-size: 1.5rem;"></i>
+                                            Belum ada data perusahaan (PT) yang tersimpan.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
                     <!-- Pagination -->
-                    @if($companies->count() > 0)
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan
-                            <span class="fw-bold">{{ $companies->firstItem() }}</span>
-                            -
-                            <span class="fw-bold">{{ $companies->lastItem() }}</span>
-                            dari
-                            <span class="fw-bold">{{ $companies->total() }}</span>
-                            data PT
+                    @if ($companies instanceof \Illuminate\Pagination\LengthAwarePaginator && $companies->total() > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
+                                Menampilkan {{ $companies->firstItem() }} - {{ $companies->lastItem() }} dari {{ $companies->total() }} data
+                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                    <li class="page-item {{ $companies->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $companies->previousPageUrl() }}" {{ !$companies->onFirstPage() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+
+                                    @for($page = 1; $page <= $companies->lastPage(); $page++)
+                                        <li class="page-item {{ $page == $companies->currentPage() ? 'active' : '' }}">
+                                            @if($page == $companies->currentPage())
+                                                <span class="page-link">{{ $page }}</span>
+                                            @else
+                                                <a class="page-link" href="{{ $companies->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                            @endif
+                                        </li>
+                                    @endfor
+
+                                    <li class="page-item {{ $companies->hasMorePages() ? '' : 'disabled' }}">
+                                        <a class="page-link" href="{{ $companies->nextPageUrl() }}" {{ $companies->hasMorePages() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                {{-- Previous Page Link --}}
-                                @if($companies->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $companies->previousPageUrl() }}" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                @endif
-
-                                {{-- Page Links --}}
-                                @foreach ($companies->getUrlRange(1, $companies->lastPage()) as $page => $url)
-                                    <li class="page-item {{ $companies->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                    </li>
-                                @endforeach
-
-                                {{-- Next Page Link --}}
-                                @if($companies->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $companies->nextPageUrl() }}" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
-                    </div>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                        </a>
+</div>
+
+<!-- Modal Tambah/Edit Perusahaan -->
+<div class="modal fade" id="modalPerusahaan" tabindex="-1" aria-labelledby="modalPerusahaanLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-white border-bottom">
+                <h5 class="modal-title fw-bold" id="modalPerusahaanLabel" style="color: #2c2e3f;">
+                    <i class="mdi mdi-plus-circle me-2" id="modalIcon" style="color: #9a55ff;"></i>
+                    <span id="modalTitle">Tambah Perusahaan</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formPerusahaan" method="POST" action="{{ route('company-profile.store') }}">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                <input type="hidden" id="perusahaanId" name="id">
+
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Nama Perusahaan (PT) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="name" id="namaPerusahaan" placeholder="Contoh: PT. Griya Ainaya Sejahtera" value="{{ old('name') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Alamat Kantor</label>
+                        <textarea class="form-control" name="address" id="alamat" rows="3" placeholder="Jl. Ahmad Yani No. 123, Jakarta Pusat">{{ old('address') }}</textarea>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Nomor Telepon</label>
+                        <input type="text" class="form-control" name="phone" id="nomorTelepon" placeholder="Contoh: (021) 1234-5678 / 08123456789" value="{{ old('phone') }}">
                     </div>
                 </div>
-            </div>
+
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary btn-sm px-4" id="submitBtn" onclick="showSubmitLoading()">
+                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                        <span id="btnText">Simpan</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- MODAL TAMBAH PT -->
-<div class="modal fade" id="modalTambahPT" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-domain-plus me-2" style="color: #9a55ff;"></i>
-                    Tambah PT Baru
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalTambahPT').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('company-profile.store') }}" method="POST" id="formTambahPT">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-domain me-1"></i>Nama PT <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" name="name" class="modal-form-control" placeholder="Contoh: PT Properti Management" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-map-marker me-1"></i>Alamat
-                                </label>
-                                <textarea name="address" class="modal-form-control" rows="3" placeholder="Alamat lengkap PT..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>
-                                    <i class="mdi mdi-phone me-1"></i>No. Telepon
-                                </label>
-                                <input type="text" name="phone" class="modal-form-control" placeholder="Contoh: 081234567890">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahPT').modal('hide')">Batal</button>
-                <button type="submit" form="formTambahPT" class="btn btn-gradient-primary">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EDIT PT -->
-<div class="modal fade" id="modalEditPT" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit PT
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalEditPT').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="formEditPT">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>Nama PT <span class="text-danger">*</span></label>
-                                <input type="text" name="name" id="editName" class="modal-form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>Alamat</label>
-                                <textarea name="address" id="editAddress" class="modal-form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="modal-form-group">
-                                <label>No. Telepon</label>
-                                <input type="text" name="phone" id="editPhone" class="modal-form-control">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditPT').modal('hide')">Batal</button>
-                <button type="submit" form="formEditPT" class="btn btn-gradient-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Fungsi untuk menampilkan loading SweetAlert
-    function showLoading(message = 'Mohon tunggu sebentar') {
-        Swal.fire({
-            title: 'Memuat...',
-            text: message,
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    }
-
-    // ===== HANDLE FILTER & RESET =====
-    $('#filterFormMobile, #filterFormDesktop').on('submit', function(e) {
-        showLoading('Menyaring data...');
-        // Form akan submit secara normal
-    });
-
-    $('.btnReset').on('click', function(e) {
-        e.preventDefault();
-        showLoading('Mereset filter...');
-        window.location.href = $(this).attr('href');
-    });
-
-    // ===== HANDLE PAGINATION =====
-    $(document).on('click', '.pagination a', function(e) {
-        e.preventDefault();
-        showLoading('Memuat halaman...');
-        window.location.href = $(this).attr('href');
-    });
-
-    // ===== HANDLE TAMBAH MODAL =====
-    window.openTambahModal = function() {
-        $('#modalTambahPT').modal('show');
-    };
-
-    // ===== HANDLE FORM TAMBAH PT =====
-    $('#formTambahPT').on('submit', function(e) {
-        e.preventDefault();
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-        this.submit();
-    });
-
-    // ===== HANDLE EDIT BUTTON CLICK =====
-    $(document).on('click', '.btnEdit', function() {
-        let id = $(this).data('id');
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
 
         Swal.fire({
             title: 'Memuat...',
-            text: 'Mengambil data PT',
+            html: 'Sedang mengurutkan data',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
             }
         });
 
-        $.ajax({
-            url: '/pt/' + id + '/edit',
-            type: 'GET',
-            success: function(response) {
-                Swal.close();
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
 
-                let pt = response;
-                $('#editName').val(pt.name);
-                $('#editAddress').val(pt.address);
-                $('#editPhone').val(pt.phone);
-                $('#formEditPT').attr('action', '/pt/' + id);
-                $('#modalEditPT').modal('show');
-            },
-            error: function(xhr, status, error) {
-                Swal.close();
-                console.error('Error:', error);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Gagal mengambil data PT',
-                    confirmButtonColor: '#9a55ff',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
+        window.location.href = url.toString();
     });
 
-    // ===== HANDLE FORM EDIT PT =====
-    $('#formEditPT').on('submit', function(e) {
-        e.preventDefault();
+    @if (session('success'))
         Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 2500,
+            showConfirmButton: true,
+            confirmButtonColor: '#9a55ff',
+            timerProgressBar: true
         });
-        this.submit();
-    });
+    @endif
 
-    // ===== HANDLE DELETE BUTTON CLICK =====
-    $(document).on('click', '.btnDelete', function() {
-        let form = $(this).closest('.formDelete');
-        let companyName = $(this).data('name');
-
+    @if (session('error'))
         Swal.fire({
-            title: 'Hapus PT?',
-            text: "PT " + companyName + " akan dihapus",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                form.submit();
-            }
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
         });
-    });
-
-    // Inisialisasi DataTables
-    const tableElement = document.getElementById('tablePT');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tablePT')) {
-            $('#tablePT').DataTable().destroy();
-        }
-
-        $('#tablePT').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data PT belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [4] }
-            ],
-            autoWidth: false,
-            deferRender: true
-        });
-    }
+    @endif
 });
 
-// Sweet Alert session success
-@if(session('success'))
+function showFilterLoading() {
     Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    return true;
+}
 
-// Sweet Alert session error
-@if(session('error'))
+function showResetLoading(event) {
+    event.preventDefault();
     Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    window.location.href = event.currentTarget.href;
+}
+
+function showPaginationLoading(event) {
+    if (event.currentTarget.parentElement.classList.contains('disabled')) return;
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showSubmitLoading() {
+    Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang menyimpan data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    return true;
+}
+
+function openModal(type, id = null) {
+    if (type === 'tambah') {
+        $('#formPerusahaan')[0].reset();
+        $('#perusahaanId').val('');
+        $('#methodField').val('POST');
+        $('#formPerusahaan').attr('action', '{{ route("company-profile.store") }}');
+
+        $('#modalTitle').text('Tambah Perusahaan');
+        $('#modalIcon').removeClass('mdi-pencil').addClass('mdi-plus-circle');
+        $('#btnText').text('Simpan');
+        $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
+
+        $('#modalPerusahaan').modal('show');
+    } else {
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            html: 'Sedang mengambil data perusahaan',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.get('{{ url("master-data-pt") }}/' + id + '/edit', function(data) {
+            Swal.close();
+
+            $('#perusahaanId').val(data.id);
+            $('#namaPerusahaan').val(data.name);
+            $('#alamat').val(data.address);
+            $('#nomorTelepon').val(data.phone);
+
+            $('#methodField').val('PUT');
+            $('#formPerusahaan').attr('action', '{{ url("master-data-pt") }}/' + id);
+
+            $('#modalTitle').text('Edit Perusahaan');
+            $('#modalIcon').removeClass('mdi-plus-circle').addClass('mdi-pencil');
+            $('#btnText').text('Update');
+            $('#btnIcon').removeClass('mdi-content-save').addClass('mdi-pencil');
+
+            $('#modalPerusahaan').modal('show');
+        }).fail(function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal mengambil data perusahaan',
+                confirmButtonColor: '#dc3545'
+            });
+        });
+    }
+}
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data perusahaan ini akan dihapus permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Sedang menghapus data perusahaan',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            setTimeout(() => {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("master-data-pt") }}/' + id;
+
+                let csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}';
+
+                let methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+
+                form.appendChild(csrfInput);
+                form.appendChild(methodInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }, 100);
+        }
+    });
+}
 </script>
 @endpush

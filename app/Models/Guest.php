@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Guest extends Model
 {
-    //
     protected $table = 'guests';
+    
     protected $fillable = [
         'name',
         'phone',
@@ -15,6 +15,7 @@ class Guest extends Model
         'source',
         'land_bank_id',
         'unit_id',
+        'marketing_task_id',
         'notes',
         'status',
         'assigned_to',
@@ -23,15 +24,23 @@ class Guest extends Model
     ];
 
     public function project()
-{
-    return $this->belongsTo(LandBank::class, 'land_bank_id');
-}
-public function unit()
-{
-    return $this->belongsTo(LandBankUnit::class);
-}
-public function employee()
-{
-    return $this->belongsTo(Employee::class, 'assigned_to');
-}
+    {
+        return $this->belongsTo(LandBank::class, 'land_bank_id');
+    }
+    
+    public function unit()
+    {
+        return $this->belongsTo(LandBankUnit::class);
+    }
+    
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'assigned_to');
+    }
+
+   
+    public function marketingTask()
+    {
+        return $this->belongsTo(MarketingTask::class, 'marketing_task_id');
+    }
 }

@@ -59,6 +59,22 @@ class DevelopmentProgressController extends Controller
     {
         Log::info($request->all());
 
+        // Sanitize items input for rupiah dots and decimal commas
+        if ($request->has('items')) {
+            $items = $request->input('items');
+            foreach ($items as $k => $v) {
+                if (isset($v['harga_satuan'])) {
+                    $items[$k]['harga_satuan'] = is_numeric($v['harga_satuan'])
+                        ? $v['harga_satuan']
+                        : preg_replace('/[^0-9]/', '', $v['harga_satuan']);
+                }
+                if (isset($v['volume'])) {
+                    $items[$k]['volume'] = str_replace(',', '.', $v['volume']);
+                }
+            }
+            $request->merge(['items' => $items]);
+        }
+
         $request->validate([
             'land_bank_unit_id' => 'required|exists:land_bank_units,id',
 

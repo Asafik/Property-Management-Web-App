@@ -4,231 +4,7 @@
 
 @section('content')
     <style>
-        /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN DASHBOARD ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== STATISTICS CARDS ===== */
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(135deg, #6a82fb, #4e6aff) !important;
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-        }
-
-        .bg-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-        }
-
-        .bg-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-        }
-
-        .card-img-holder {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-img-absolute {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            opacity: 0.3;
-            width: 80px;
-            height: auto;
-        }
-
-        /* ===== FILTER SECTION - UKURAN NORMAL ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: 40px;
-            border: 1px solid #e0e4e9;
-            width: 100%;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: 40px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            height: 32px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        /* Outline Buttons */
+        /* ===== JUAL UNIT SPECIFIC STYLES ===== */
         .btn-outline-primary {
             background: transparent;
             border: 1px solid #9a55ff;
@@ -238,30 +14,6 @@
 
         .btn-outline-primary:hover {
             background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #dc3545;
-            color: #dc3545;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-info {
-            background: transparent;
-            border: 1px solid #17a2b8;
-            color: #17a2b8;
-        }
-
-        .btn-outline-info:hover {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
             color: #ffffff;
             border-color: transparent;
         }
@@ -288,6 +40,16 @@
             color: #ffffff;
         }
 
+        .badge-gradient-primary {
+            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+        }
+
+        .badge-gradient-secondary {
+            background: #6c757d !important;
+            color: #ffffff !important;
+        }
+
         .badge-gradient-warning {
             background: linear-gradient(135deg, #ffc107, #ffdb6d);
             color: #2c2e3f;
@@ -298,26 +60,205 @@
             color: #ffffff;
         }
 
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+        /* ===== CSS DARI UI PERTAMA (UNTUK TABEL) ===== */
+        .badge-soft {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .badge-available-subsidi {
+            background: #28a745;
             color: #ffffff;
         }
 
-        /* ===== TABLE STYLING - UKURAN NORMAL ===== */
-        .table-responsive {
+        .badge-available-komersil {
+            background: #0d6efd;
+            color: #ffffff;
+        }
+
+        .badge-booking {
+            background: #ffc107;
+            color: #2c2e3f;
+        }
+
+        .badge-sold {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        .badge-draft {
+            background: #6c757d;
+            color: #ffffff;
+        }
+
+        .price-text {
+            color: #28a745 !important;
+            font-weight: 700;
+        }
+
+        .fee-text {
+            color: #28a745 !important;
+            font-weight: 700;
+        }
+
+        .progress-wrapper {
+            min-width: 200px;
+        }
+
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .progress {
+            flex: 1;
+            height: 10px;
+            border-radius: 20px;
+            background: #edf0f5;
+            overflow: hidden;
+        }
+
+        .progress-percent {
+            min-width: 42px;
+            text-align: right;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #6c7383;
+        }
+
+        .progress-bar-custom {
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .customer-initial {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.2);
+        }
+
+        .progress-green {
+            background: linear-gradient(to right, #28a745, #5dd17a);
+        }
+
+        .progress-dark-green {
+            background: linear-gradient(to right, #198754, #31b87a);
+        }
+
+        .icon-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .icon-text i {
+            font-size: 1rem;
+            color: #9a55ff;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-action i {
+            font-size: 1rem;
+        }
+
+        .btn-action.view {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #fff;
+        }
+
+        .btn-action.customer {
+            background: linear-gradient(135deg, #28a745, #5dd17a);
+            color: #fff;
+        }
+
+        .btn-action.agent {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        /* ===== TABEL UTAMA: UI selaras list_pengajuan.blade.php (#tableView saja) ===== */
+        #tableView .table-responsive {
             overflow-x: auto;
+            overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
             border-radius: 8px;
             margin-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #9a55ff #f0f0f0;
         }
 
-        .table {
+        #tableView .table-responsive::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        #tableView .table-responsive::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        #tableView .table-responsive::-webkit-scrollbar-thumb {
+            background: #9a55ff;
+            border-radius: 10px;
+        }
+
+        #tableView .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #7a3fcc;
+        }
+
+        #tableView .table-responsive::-webkit-scrollbar-corner {
+            background: #f0f0f0;
+        }
+
+        #tableView .table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 0;
+            min-width: 1200px;
         }
 
-        .table thead th {
+        #tableView .table thead th {
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
             color: #9a55ff;
             font-weight: 600;
@@ -327,32 +268,91 @@
             border-bottom: 2px solid #e9ecef;
             padding: 0.8rem 0.5rem;
             white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .table thead th i {
-            margin-right: 5px;
-            font-size: 0.9rem;
-            color: #9a55ff;
+        #tableView .table thead th:hover {
+            color: #7a3fcc;
         }
 
-        .table tbody td {
+        #tableView .table thead th i {
+            font-size: 0.8rem;
+            margin-left: 4px;
+            opacity: 0.5;
+        }
+
+        #tableView .table thead th.active-sort {
+            color: #7a3fcc;
+        }
+
+        #tableView .table thead th.active-sort i {
+            opacity: 1;
+            color: #7a3fcc;
+        }
+
+        @media (min-width: 576px) {
+            #tableView .table thead th {
+                font-size: 0.85rem;
+                padding: 0.9rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #tableView .table thead th {
+                font-size: 0.9rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        #tableView .table thead th:first-child {
+            width: 40px;
+            text-align: center;
+        }
+
+        #tableView .table tbody td:first-child {
+            font-weight: 500;
+            width: 40px;
+            text-align: center;
+        }
+
+        #tableView .table tbody td {
             vertical-align: middle;
             font-size: 0.85rem;
             padding: 0.8rem 0.5rem;
             border-bottom: 1px solid #e9ecef;
             color: #2c2e3f;
+            white-space: nowrap;
         }
 
-        .table tbody td i {
-            margin-right: 5px;
-            font-size: 1rem;
+        @media (min-width: 576px) {
+            #tableView .table tbody td {
+                font-size: 0.9rem;
+                padding: 0.9rem 0.6rem;
+            }
         }
 
-        .table tbody tr:hover {
+        @media (min-width: 768px) {
+            #tableView .table tbody td {
+                font-size: 0.95rem;
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        #tableView .table tbody tr:hover {
             background-color: #f8f9fa;
         }
 
-        /* Text colors */
+        #tableView .customer-initial {
+            width: 38px;
+            height: 38px;
+            font-size: 0.9rem;
+        }
+
+        /* ===== CSS LAINNYA DARI UI KEDUA ===== */
         .text-primary {
             color: #9a55ff !important;
         }
@@ -369,10 +369,6 @@
             color: #28a745 !important;
         }
 
-        .text-warning {
-            color: #ffc107 !important;
-        }
-
         .fw-bold {
             font-weight: 600 !important;
         }
@@ -381,7 +377,6 @@
             color: #a5b3cb !important;
         }
 
-        /* Typography */
         h3.text-dark {
             font-size: 1.3rem !important;
             font-weight: 700;
@@ -389,59 +384,54 @@
             margin-bottom: 0.5rem !important;
         }
 
-        /* Responsive untuk mobile */
         @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                height: 38px;
-            }
-
             h3.text-dark {
                 font-size: 1.2rem !important;
             }
         }
 
-        /* DataTables Custom Styling */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
+        .filter-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #9a55ff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
         }
 
-        /* Sorting indicator */
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            cursor: pointer;
+        .btn-icon-only {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
         }
 
-        /* Icon styling */
-        .mdi {
-            vertical-align: middle;
+        .btn-icon-only i {
+            font-size: 1.1rem;
+            margin: 0;
         }
 
-        /* Styling untuk tombol filter dan reset */
+        .invisible {
+            visibility: hidden;
+        }
+
+        .filter-col {
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+
+        .filter-row {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
         .btn-filter-reset {
             display: flex;
             align-items: center;
@@ -451,20 +441,7 @@
             height: 40px;
         }
 
-        .btn-filter-reset i {
-            font-size: 1rem;
-        }
-
-        /* Row filter spacing */
-        .filter-row {
-            margin-bottom: 0.5rem;
-        }
-
-        .filter-row:last-child {
-            margin-bottom: 0;
-        }
-
-        /* ===== GRID VIEW CARD STYLING ===== */
+        /* Grid View */
         .grid-card {
             border: 1px solid #e0e4e9 !important;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
@@ -475,99 +452,13 @@
             box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15) !important;
         }
 
-        /* ===== PAGINATION STYLING ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        /* Info text pagination */
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        /* Button group styling */
-        .btn-group .btn-outline-primary {
-            border: 1px solid #9a55ff;
-        }
-
-        .btn-group .btn-outline-primary.active {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-        }
-
-        /* Kolom filter dengan padding minimal */
-        .filter-col {
-            padding-left: 3px;
-            padding-right: 3px;
-        }
-
-        /* Membuat select lebih pendek secara visual */
-        select.form-control {
-            background-position: right 0.5rem center;
-            padding-right: 1.5rem;
-        }
-
-        /* Progress Bar Styling */
-        .progress {
-            height: 22px;
-            border-radius: 11px;
-            background-color: #e9ecef;
-        }
-
-        .progress-bar {
-            border-radius: 11px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            line-height: 22px;
-        }
-
-        .bg-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-        }
-
-        .bg-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .bg-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-        }
-
         /* Denah Styling */
         .denah-container {
             background: linear-gradient(135deg, #f9f7ff, #f2ecff);
             border-radius: 16px;
             padding: 2rem;
             min-height: 400px;
+            position: relative !important;
         }
 
         .unit-box {
@@ -575,7 +466,7 @@
             min-width: 70px;
             display: inline-block;
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 50px;
             font-size: 12px;
             font-weight: 600;
             color: white;
@@ -606,7 +497,7 @@
             color: white;
         }
 
-        /* ===== FILE UPLOAD MODERN STYLING ===== */
+        /* File Upload */
         .file-upload-modern {
             position: relative;
             width: 100%;
@@ -651,7 +542,6 @@
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
         }
 
         .file-upload-modern .file-label-modern i {
@@ -662,63 +552,135 @@
             border-radius: 50%;
         }
 
-        .file-upload-modern .file-label-modern .file-info-modern {
-            flex: 1;
-            width: 100%;
-        }
-
-        .file-upload-modern .file-label-modern .file-info-modern span {
-            display: block;
-            font-weight: 600;
-            color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
-
-        .file-upload-modern .file-label-modern .file-info-modern small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .file-upload-modern .file-label-modern .file-size {
-            font-size: 0.7rem;
-            color: #9a55ff;
-            font-weight: 600;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-            margin-top: 5px;
-        }
-
-        @media (min-width: 576px) {
-            .file-upload-modern .file-label-modern .file-size {
-                margin-top: 0;
-            }
-        }
-
         .file-upload-modern .file-label-modern.file-selected {
             border-color: #28a745;
             background: linear-gradient(135deg, #f0fff4, #e6f7e6);
         }
 
-        /* ===== SITEPLAN STYLING - RESPONSIVE ===== */
+        /* Seamless Rupiah Input Group (Prefix Rp on Left) */
+        .rupiah-input-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+        }
+
+        .rupiah-input-group .input-group-text {
+            background-color: #f8fafc !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-right: none !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            color: #9a55ff !important;
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            padding: 0 0.85rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+        }
+
+        .rupiah-input-group .form-control {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-left: 1.5px solid #e2e8f0 !important;
+            min-height: 42px !important;
+            margin: 0 !important;
+            flex: 1 1 auto;
+        }
+
+        .rupiah-input-group:focus-within .input-group-text {
+            border-color: #9a55ff !important;
+            background-color: #fdfaff !important;
+        }
+
+        .rupiah-input-group:focus-within .form-control {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+
+        /* Search Input Group in Filter (Input on Left, Purple Button on Right) */
+        .search-input-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            height: 38px !important;
+        }
+
+        .search-input-group .form-control {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-right: none !important;
+            font-size: 0.88rem !important;
+            padding: 0.45rem 0.85rem !important;
+            margin: 0 !important;
+            flex: 1 1 auto;
+        }
+
+        .search-input-group .btn-search-submit {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            padding: 0 0.95rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: none !important;
+            border: none !important;
+            font-size: 1.15rem !important;
+            color: #ffffff !important;
+            margin: 0 !important;
+            flex-shrink: 0;
+        }
+
+        .search-input-group:focus-within .form-control {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+
+        /* Siteplan */
         .siteplan-scroll-container {
             width: 100%;
-            overflow-x: auto;
-            overflow-y: auto;
+            overflow: hidden !important;
             border: 2px solid #9a55ff;
             border-radius: 12px;
-            background: #f8f9fa;
-            max-height: 700px;
+            background: #ffffff;
+            height: 620px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            user-select: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .siteplan-scroll-container .canvas-container {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
         }
 
         #siteplanCanvas {
             display: block;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 10px;
+            cursor: grab;
         }
 
         .btn-save-position {
@@ -737,11 +699,83 @@
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
 
-        /* ===== MODAL DETAIL SEDERHANA ===== */
-        .modal-detail-simple {
-            font-family: 'Nunito', sans-serif;
+        /* Fullscreen Mode Styling */
+        .denah-container.fullscreen-mode {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 9999 !important;
+            background: linear-gradient(135deg, #1e1e2f, #0f0f1a) !important;
+            padding: 1.5rem !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
         }
 
+        .denah-container.fullscreen-mode .siteplan-scroll-container {
+            flex-grow: 1;
+            max-height: calc(100vh - 120px) !important;
+            border-color: #9a55ff;
+            background: #12121e;
+        }
+
+        .denah-container.fullscreen-mode .fw-bold.text-primary {
+            color: #da8cff !important;
+        }
+        .denah-container.fullscreen-mode .modal-detail-unit {
+            background: rgba(15, 15, 26, 0.75) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+
+        /* Floating Siteplan Controls (Mockup Style) */
+        .siteplan-floating-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .siteplan-control-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e4eaf2;
+            box-shadow: 0 4px 10px rgba(160, 175, 195, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            padding: 0;
+        }
+
+        .siteplan-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(154, 85, 255, 0.15);
+            border-color: #9a55ff;
+            color: #9a55ff;
+        }
+
+        .siteplan-control-btn:active {
+            transform: translateY(0);
+        }
+
+        .siteplan-control-btn i {
+            font-size: 1.3rem;
+        }
+
+        /* Modal Detail Sederhana */
         .modal-detail-simple .modal-header {
             background: #9a55ff;
             color: white;
@@ -752,7 +786,6 @@
             margin-bottom: 12px;
             padding: 8px 12px;
             background: #f8f9fa;
-            border-radius: 6px;
             border-left: 3px solid #9a55ff;
         }
 
@@ -761,26 +794,442 @@
             width: 80px;
             display: inline-block;
         }
+
+        .mdi {
+            vertical-align: middle;
+        }
+
+        .btn-group .btn-outline-primary.active {
+            background: linear-gradient(to right, #da8cff, #9a55ff);
+            color: #ffffff;
+        }
+
+        /* Area badges */
+        .info-badge-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.38rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .info-badge-icon i {
+            font-size: 0.95rem;
+        }
+
+        .land-badge {
+            background: linear-gradient(135deg, #fff8e1, #ffefb3);
+            color: #9a6700;
+        }
+
+        .building-badge {
+            background: linear-gradient(135deg, #eef2ff, #dbe4ff);
+            color: #4c63d2;
+        }
+
+        /* ===== MODAL DETAIL UNIT LENGKAP STYLES (MIRRORING TIMELINE PEMBAYARAN) ===== */
+        .modal-detail-unit .modal-header {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1rem 1.5rem;
+            border: none;
+        }
+
+        .modal-detail-unit .modal-title {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .modal-detail-unit .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+        }
+
+        .modal-detail-unit .modal-header .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-detail-unit .modal-content {
+            border: none;
+            border-radius: 16px;
+        }
+
+        .modal-detail-unit .modal-body {
+            padding: 1.5rem;
+            background: #ffffff;
+        }
+
+        .timeline-detail-card {
+            background: linear-gradient(135deg, #faf7ff, #f4efff);
+            border: 1px solid #eadcff;
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-detail-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #9a55ff;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timeline-detail-item {
+            background: #ffffff;
+            border: 1px solid #efe6ff;
+            border-radius: 10px;
+            padding: 0.75rem 0.85rem;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-detail-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.1);
+            border-color: #9a55ff;
+        }
+
+        #modalCustomer .timeline-detail-item:hover,
+        #modalAgency .timeline-detail-item:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            border-color: #efe6ff !important;
+        }
+
+        .timeline-detail-label {
+            font-size: 0.75rem;
+            color: #8b8fa3;
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .timeline-detail-value {
+            font-size: 0.92rem;
+            color: #2c2e3f;
+            font-weight: 700;
+        }
+
+        .timeline-detail-value.price {
+            color: #28a745;
+            font-weight: 800;
+        }
+
+        .timeline-detail-value.fee-text {
+            color: #28a745;
+            font-weight: 800;
+        }
+
+        /* Badge di dalam modal detail - pastikan icon & warna tidak ter-override */
+        .timeline-detail-value .badge-soft {
+            color: inherit;
+        }
+
+        .timeline-detail-value .badge-soft.badge-available-subsidi {
+            color: #ffffff !important;
+        }
+
+        .timeline-detail-value .badge-soft.badge-available-komersil {
+            color: #ffffff !important;
+        }
+
+        .timeline-detail-value .badge-soft.badge-booking {
+            color: #2c2e3f !important;
+        }
+
+        .timeline-detail-value .badge-soft.badge-sold {
+            color: #ffffff !important;
+        }
+
+        .timeline-detail-value .badge-soft.badge-draft {
+            color: #ffffff !important;
+        }
+
+        .timeline-detail-value .badge-soft i.mdi {
+            font-size: 1rem !important;
+            color: inherit !important;
+        }
+
+        /* Name components styling */
+        .name-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .name-initial {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+        }
+
+        .name-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .name-title {
+            font-weight: 700;
+            color: #2c2e3f;
+            font-size: 0.95rem;
+        }
+
+        .info-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .badge-status {
+            padding: 0.45rem 0.85rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-status.active {
+            background: linear-gradient(135deg, #28c76f, #48da89);
+            color: #fff;
+        }
+
+        .badge-status.process {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+            color: #2c2e3f;
+        }
+
+        .badge-status.inactive {
+            background: linear-gradient(135deg, #6c757d, #9aa0a6);
+            color: #fff;
+        }
+
+        /* Progress Bar Enhancement */
+        .progress-wrapper {
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            background: #f0f0f0;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .progress-bar-custom {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        .progress.active {
+            background: linear-gradient(135deg, #28c76f, #48da89);
+        }
+
+        .progress.process {
+            background: linear-gradient(135deg, #ffc107, #ffdb6d);
+        }
+
+        .progress-percent {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6c7383;
+            min-width: 35px;
+            text-align: right;
+        }
+
+        /* Empty State */
+        .text-center.text-muted.py-5 {
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .text-center.text-muted.py-5 i {
+            color: #9a55ff;
+            opacity: 0.3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .timeline-detail-card {
+                padding: 0.75rem;
+            }
+
+            .timeline-detail-item {
+                padding: 0.6rem 0.7rem;
+            }
+
+            .name-initial {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .name-title {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ===== OPTIMASI LEBAR & PADDING (DESKTOP, TABLET & MOBILE) ===== */
+        .content-wrapper {
+            padding: 1.25rem 1rem !important;
+        }
+
+        .card-body {
+            padding: 0.85rem 1rem !important;
+        }
+
+        .filter-card {
+            background: transparent !important;
+            padding: 0 !important;
+            margin-bottom: 1.25rem !important;
+            border: none !important;
+        }
+
+        .table-responsive {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        .table {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Mode Tablet (iPad / 768px - 1024px) */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 1.15rem 0.85rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+        }
+
+        /* Mode HP / Mobile */
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 0.85rem 0.65rem !important;
+            }
+            .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
+            }
+            .card-body {
+                padding: 0.75rem 0.75rem !important;
+            }
+        }
+
+        /* Select2 Theme Alignment */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border-color: #ebedf2 !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #3b3f5c !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #bfa5fa !important;
+            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+        }
+
+        /* Select2 Dropdown Options Soft Hover & Active */
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden !important;
+            z-index: 1050 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.45rem 0.85rem !important;
+            font-size: 0.85rem !important;
+            color: #3b3f5c !important;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        /* Hover / Highlighted (Soft Pastel Tint) */
+        .select2-container--bootstrap-5 .select2-results__option--highlighted,
+        .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #f6f1ff !important;
+            color: #792fe0 !important;
+        }
+        /* Active / Selected (Soft Purple Tint) */
+        .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #eee4ff !important;
+            color: #6b21a8 !important;
+            font-weight: 600 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
+            background-color: #e4d3fe !important;
+            color: #581c87 !important;
+        }
     </style>
 
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header Dashboard -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+        <!-- Header Card Banner -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="card shadow-sm border-0 header-card">
+                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                         <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-home-group me-2" style="color: #9a55ff;"></i>
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
                                 Marketing Jual Unit
                             </h3>
-                            <p class="text-muted mb-0 small">
-                                <i class="mdi mdi-information-outline me-1"></i>
+                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
                                 Kelola unit-unit yang siap dipasarkan ke customer
                             </p>
                         </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-home-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        <div class="d-none d-sm-block pe-2">
+                            <i class="mdi mdi-home-group" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
@@ -788,63 +1237,56 @@
         </div>
 
         <!-- Statistics Cards -->
-        <div class="row g-2 g-sm-2 g-md-3 mb-4">
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-primary card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Total Unit
-                            <i class="mdi mdi-home-group float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalUnits }}</h2>
-                        <h6 class="card-text small">Semua unit</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalUnits }}</h3>
+                            <p class="text-muted mb-0">Total Unit</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-home-city" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-success card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Tersedia
-                            <i class="mdi mdi-check-circle float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalTersedia }}</h2>
-                        <h6 class="card-text small">Siap dijual</h6>
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalTersedia }}</h3>
+                            <p class="text-muted mb-0">Tersedia</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-check-circle-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-warning card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Booking
-                            <i class="mdi mdi-clock float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalBooking }}</h2>
-                        <h6 class="card-text small">Dalam proses</h6>
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalBooking }}</h3>
+                            <p class="text-muted mb-0">Booking</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-bookmark-check-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-2 mb-sm-2 mb-md-3">
-                <div class="card bg-gradient-danger card-img-holder text-white h-100">
-                    <div class="card-body p-2 p-sm-2 p-md-3">
-                        <img src="{{ asset('admin/assets/images/dashboard/circle.svg') }}" class="card-img-absolute"
-                            alt="circle-image" />
-                        <h4 class="font-weight-normal mb-2 mb-sm-2 mb-md-3 small fs-6 fs-sm-6 fs-md-5">
-                            Terjual
-                            <i class="mdi mdi-cash-check float-end" style="font-size: 1.2rem;"></i>
-                        </h4>
-                        <h2 class="mb-2 mb-sm-2 mb-md-4 fs-5 fs-sm-5 fs-md-2">{{ $totalSold }}</h2>
-                        <h6 class="card-text small">Sudah laku</h6>
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold">{{ $totalSold }}</h3>
+                            <p class="text-muted mb-0">Terjual</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-cash-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -853,14 +1295,34 @@
         <!-- Tabel Data -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card">
+                <div class="card shadow-sm border-0">
                     <div
-                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                        <h5 class="card-title mb-2 mb-md-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Unit Kavling
+                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3 gap-2">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>
+                            Daftar Unit
                         </h5>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <!-- Toggle View -->
+                            <div class="d-flex align-items-center gap-1" id="viewToggleGroup" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-primary active" id="btnTableView"
+                                    onclick="switchView('table')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-view-list me-1"></i><span class="d-none d-sm-inline">Table</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnGridView"
+                                    onclick="switchView('grid')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-view-grid me-1"></i><span class="d-none d-sm-inline">Grid</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnDenahView"
+                                    onclick="switchView('denah')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-floor-plan me-1"></i><span class="d-none d-sm-inline">Denah Unit</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnSitePlandView"
+                                    onclick="switchView('sitepland')" style="border-radius: 6px !important;">
+                                    <i class="mdi mdi-map me-1"></i><span class="d-none d-sm-inline">Siteplan</span>
+                                </button>
+                            </div>
+                            <!-- Export Buttons -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
                                 class="btn btn-sm btn-gradient-success">
                                 <i class="mdi mdi-export me-1"></i>
@@ -873,441 +1335,437 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Filter Section - SEJAJAR DENGAN SELECT DIPERKECIL -->
-                        <div class="filter-card">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                    <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                </h6>
-
-                                <form method="GET" action="{{ route('marketing.jual-unit') }}">
-                                    <!-- FILTER DESKTOP - SEJAJAR DENGAN KOLOM KECIL -->
-                                    <div class="d-none d-md-block">
-                                        <div class="row g-1 align-items-end">
-                                            <!-- Cari Unit (lebih besar) -->
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari Unit
-                                                </label>
-                                                <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari...">
+                        <!-- Filter Section -->
+                        <div class="filter-card mb-3">
+                            <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
+                                <!-- FILTER DESKTOP -->
+                                <div class="filter-row-desktop d-none d-md-block">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search Input -->
+                                            <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                                <div class="input-group search-input-group">
+                                                    <input type="text" name="search" value="{{ request('search') }}"
+                                                        class="form-control" placeholder="Cari blok, unit, customer...">
+                                                    <button class="btn btn-gradient-primary btn-search-submit" 
+                                                        type="submit" title="Cari">
+                                                        <i class="mdi mdi-magnify"></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <!-- Proyek -->
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Proyek
-                                                </label>
-                                                <select name="project" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($projects as $project)
-                                                        <option value="{{ $project->name }}"
-                                                            {{ request('project') == $project->name ? 'selected' : '' }}>
-                                                            {{ $project->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <!-- Tipe Unit (diperkecil) -->
-                                            <div class="col-md-1 filter-col">
-
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe
-                                                </label>
-                                                <select name="type" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($types as $type)
-                                                        <option value="{{ $type }}"
-                                                            {{ request('type') == $type ? 'selected' : '' }}>
-                                                            {{ $type }}
-                                                        </option>
-                                                    @endforeach
+                                            <!-- Jenis Dropdown -->
+                                            <div style="width: 160px;">
+                                                <select name="jenis" class="form-control select2" id="jenisSelect" style="width: 100%;">
+                                                    <option value="">Semua Jenis</option>
+                                                    <option value="subsidi"
+                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                    </option>
+                                                    <option value="komersil"
+                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                    </option>
                                                 </select>
                                             </div>
 
-                                            <!-- Status (diperkecil) -->
-                                            <div class="col-md-1 filter-col">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
-                                                </label>
-                                                <select name="status" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="draft"
-                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                            <!-- Status Dropdown -->
+                                            <div style="width: 160px;">
+                                                <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
+                                                    <option value="">Semua Status</option>
                                                     <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
+                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                    </option>
                                                     <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
+                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
                                                     </option>
                                                     <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
+                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                        Terjual</option>
                                                 </select>
                                             </div>
+                                        </div>
 
-                                            <!-- Harga -->
-                                            <div class="col-md-2 filter-col">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-currency-usd me-1"></i>Harga
-                                                </label>
-                                                <select name="price" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="<500"
-                                                        {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt
-                                                    </option>
-                                                    <option value="500-1000"
-                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M
-                                                    </option>
-                                                    <option value=">1000"
-                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <!-- Tampil (diperkecil) -->
-                                            <div class="col-md-1 filter-col">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="perPage" class="form-control">
+                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 90px;">
+                                                <select name="perPage" class="form-control select2" id="perPageSelect" style="width: 100%;">
                                                     <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    </option>
                                                     <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    </option>
                                                     <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    </option>
                                                     <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    </option>
                                                 </select>
                                             </div>
-
-                                            <!-- Button Filter -->
-                                            <div class="col-md-1 filter-col">
-                                                <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary w-100 btn-filter-reset"
-                                                    title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                            </div>
-
-                                            <!-- Button Reset -->
-                                            <div class="col-md-1 filter-col">
-                                                <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary w-100 btn-filter-reset"
-                                                    title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
-                                            </div>
+                                            <button type="submit"
+                                                class="btn btn-gradient-primary btn-icon-only"
+                                                id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <a href="{{ route('marketing.jual-unit') }}"
+                                                class="btn btn-gradient-secondary btn-icon-only"
+                                                title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
-
-                                    <!-- FILTER MOBILE -->
-                                    <div class="d-block d-md-none">
-                                        <!-- Baris 1: Cari Unit -->
-                                        <div class="row filter-row g-1">
-                                            <div class="col-12">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari Unit
-                                                </label>
-                                                <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari...">
-                                            </div>
-                                        </div>
-
-                                        <!-- Baris 2: Proyek & Tipe -->
-                                        <div class="row filter-row g-1">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Proyek
-                                                </label>
-                                                <select name="project" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($projects as $project)
-                                                        <option value="{{ $project->name }}"
-                                                            {{ request('project') == $project->name ? 'selected' : '' }}>
-                                                            {{ $project->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home-modern me-1"></i>Tipe
-                                                </label>
-                                                <select name="type" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    @foreach ($types as $type)
-                                                        <option value="{{ $type }}"
-                                                            {{ request('type') == $type ? 'selected' : '' }}>
-                                                            {{ $type }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <!-- Baris 3: Status & Harga -->
-                                        <div class="row filter-row g-1">
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-chart-arc me-1"></i>Status
-                                                </label>
-                                                <select name="status" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="draft"
-                                                        {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booked
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>Sold</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-currency-usd me-1"></i>Harga
-                                                </label>
-                                                <select name="price" class="form-control">
-                                                    <option value="">Semua</option>
-                                                    <option value="<500"
-                                                        {{ request('price') == '<500' ? 'selected' : '' }}>&lt; 500 Jt
-                                                    </option>
-                                                    <option value="500-1000"
-                                                        {{ request('price') == '500-1000' ? 'selected' : '' }}>500 Jt - 1 M
-                                                    </option>
-                                                    <option value=">1000"
-                                                        {{ request('price') == '>1000' ? 'selected' : '' }}>&gt; 1 M
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <!-- Baris 4: Tampil & Button -->
-                                        <div class="row filter-row g-1">
-                                            <div class="col-4">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="perPage" class="form-control">
-                                                    <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-4">
-                                                <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                <button type="submit"
-                                                    class="btn btn-gradient-primary w-100 btn-filter-reset">
-                                                    <i class="mdi mdi-filter"></i>
+                                </div>
+                                <!-- FILTER MOBILE -->
+                                <div class="d-block d-md-none">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group search-input-group">
+                                                <input type="text" name="search_mobile"
+                                                    value="{{ request('search') }}" class="form-control"
+                                                    placeholder="Cari blok, unit..." id="searchMobile">
+                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                    type="submit" title="Cari">
+                                                    <i class="mdi mdi-magnify"></i>
                                                 </button>
                                             </div>
-                                            <div class="col-4">
-                                                <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                <a href="{{ route('marketing.jual-unit') }}"
-                                                    class="btn btn-gradient-secondary w-100 btn-filter-reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
-                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select name="jenis_mobile" class="form-control select2-mobile" id="jenisSelectMobile" style="width: 100%;">
+                                                <option value="">Semua Jenis</option>
+                                                <option value="subsidi"
+                                                    {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                </option>
+                                                <option value="komersil"
+                                                    {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="status_mobile" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
+                                                <option value="">Semua Status</option>
+                                                <option value="ready"
+                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                </option>
+                                                <option value="booked"
+                                                    {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                </option>
+                                                <option value="sold"
+                                                    {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    Terjual</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <select name="perPage_mobile" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
+                                                <option value="10"
+                                                    {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    </option>
+                                                <option value="25"
+                                                    {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    </option>
+                                                <option value="50"
+                                                    {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    </option>
+                                                <option value="100"
+                                                    {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit"
+                                                class="btn btn-gradient-primary btn-icon-only-mobile w-100"
+                                                id="filterBtnMobile" title="Filter"
+                                                onclick="showFilterLoading()">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('marketing.jual-unit') }}"
+                                                class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
+                                                title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
 
-                        <!-- Toggle View - TABLE SEBAGAI DEFAULT -->
-                        <div class="d-flex justify-content-end mb-3">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary active" id="btnTableView"
-                                    onclick="switchView('table')">
-                                    <i class="mdi mdi-view-list me-1"></i>
-                                    <span class="d-none d-sm-inline">Table</span>
-                                </button>
-
-                                <button type="button" class="btn btn-outline-primary" id="btnGridView"
-                                    onclick="switchView('grid')">
-                                    <i class="mdi mdi-view-grid me-1"></i>
-                                    <span class="d-none d-sm-inline">Grid</span>
-                                </button>
-
-                                <button type="button" class="btn btn-outline-primary" id="btnDenahView"
-                                    onclick="switchView('denah')">
-                                    <i class="mdi mdi-floor-plan me-1"></i>
-                                    <span class="d-none d-sm-inline">Denah Unit</span>
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" id="btnSitePlandView"
-                                    onclick="switchView('sitepland')">
-                                    <i class="mdi mdi-floor-plan me-1"></i>
-                                    <span class="d-none d-sm-inline">Siteplan</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- TABLE VIEW - TAMPIL (DEFAULT) -->
+                        <!-- ========== TABLE VIEW DENGAN STYLE UI PERTAMA ========== -->
                         <div id="tableView" style="display: block;">
                             <div class="table-responsive">
-                                <table class="table table-hover" id="unitTable" style="width:100%">
+                                <table class="table table-hover align-middle">
                                     <thead>
                                         <tr>
-                                            <th class="text-center"><i class="mdi mdi-counter"></i> No</th>
-                                            <th><i class="mdi mdi-home-variant"></i> Blok</th>
-                                            <th><i class="mdi mdi-office-building"></i> Proyek</th>
-                                            <th><i class="mdi mdi-shape-outline"></i> Tipe</th>
-                                            <th class="d-none d-md-table-cell"><i class="mdi mdi-map-marker"></i> Lokasi
+                                            <th class="text-center">No</th>
+                                            <th>Proyek</th>
+                                            <th class="sortable" data-field="block"
+                                                data-direction="{{ request('sort') == 'block' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                                Nama - Unit
+                                                @if (request('sort') == 'block')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @else
+                                                    <i class="mdi mdi-swap-vertical"></i>
+                                                @endif
                                             </th>
-                                            <th><i class="mdi mdi-ruler-square"></i> Luas Tanah</th>
-                                            <th><i class="mdi mdi-domain"></i> Luas Bangunan</th>
-                                            <th><i class="mdi mdi-currency-usd"></i> Harga</th>
-                                            <th><i class="mdi mdi-compass"></i> Hadap</th>
-                                            <th><i class="mdi mdi-chart-arc"></i> Status</th>
-                                            <th><i class="mdi mdi-hammer"></i> Status Pembangunan</th>
-                                            <th><i class="mdi mdi-account-tie"></i> Agent</th>
-                                            <th><i class="mdi mdi-cash"></i> Fee Agent</th>
-                                            <th><i class="mdi mdi-account"></i> Customer</th>
-                                            <th class="text-center"><i class="mdi mdi-cog"></i> Aksi</th>
+                                            <th class="sortable" data-field="jenis"
+                                                data-direction="{{ request('sort') == 'jenis' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                                Jenis & Tipe
+                                                @if (request('sort') == 'jenis')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @else
+                                                    <i class="mdi mdi-swap-vertical"></i>
+                                                @endif
+                                            </th>
+                                            <th class="d-none d-md-table-cell">Lokasi</th>
+                                            <th>Luas Tanah</th>
+                                            <th>Luas Bangunan</th>
+                                            <th>Harga</th>
+                                            <th>Hadap</th>
+                                            <th>Status</th>
+                                            <th>Status Pembangunan / Progres</th>
+                                            <th class="sortable" data-field="agent_name"
+                                                data-direction="{{ request('sort') == 'agent_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                                Agent
+                                                @if (request('sort') == 'agent_name')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @else
+                                                    <i class="mdi mdi-swap-vertical"></i>
+                                                @endif
+                                            </th>
+                                            <th>Fee Agent</th>
+                                            <th class="sortable" data-field="customer_name"
+                                                data-direction="{{ request('sort') == 'customer_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                                Customer
+                                                @if (request('sort') == 'customer_name')
+                                                    <i
+                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                                @else
+                                                    <i class="mdi mdi-swap-vertical"></i>
+                                                @endif
+                                            </th>
+                                            <th>Booking Fee</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($units as $index => $unit)
+                                            @php
+                                                // Mapping status untuk badge soft
+                                                $statusBadge = '';
+                                                $statusIcon = '';
+                                                $statusText = ucfirst($unit->status);
+
+                                                if ($unit->status == 'ready' || $unit->status == 'tersedia') {
+                                                    // Tersedia = biru
+                                                    $statusBadge = 'badge-available-komersil';
+                                                    $statusIcon = 'mdi-check-circle-outline';
+                                                    $statusText = 'Tersedia';
+                                                } elseif ($unit->status == 'sold') {
+                                                    $statusBadge = 'badge-sold';
+                                                    $statusIcon = 'mdi-cash-check';
+                                                    $statusText = 'Terjual';
+                                                } elseif ($unit->status == 'booked') {
+                                                    $statusBadge = 'badge-booking';
+                                                    $statusIcon = 'mdi-bookmark-check-outline';
+                                                    $statusText = 'Booking';
+                                                } elseif (
+                                                    strtolower($unit->status) == 'draft' ||
+                                                    strtolower($unit->status) == 'draff'
+                                                ) {
+                                                    // Draft dianggap Tersedia dan warna biru
+                                                    $statusBadge = 'badge-available-komersil';
+                                                    $statusIcon = 'mdi-check-circle-outline';
+                                                    $statusText = 'Tersedia';
+                                                } else {
+                                                    $statusBadge = 'badge-soft';
+                                                    $statusIcon = 'mdi-information-outline';
+                                                }
+
+                                                // Progress mapping
+                                                $progressMap = [
+                                                    'belum_mulai' => 0,
+                                                    'pondasi' => 20,
+                                                    'dinding' => 40,
+                                                    'atap' => 60,
+                                                    'finishing' => 80,
+                                                    'selesai' => 100,
+                                                ];
+
+                                                $progress = $progressMap[$unit->construction_progress] ?? 0;
+                                                $progressClass =
+                                                    $progress < 100 ? 'progress-green' : 'progress-dark-green';
+                                            @endphp
                                             <tr>
-                                                <td class="text-center fw-bold">{{ $units->firstItem() + $index }}</td>
+                                                <td class="fw-bold text-center">{{ $units->firstItem() + $index }}</td>
+                                                <td>
+                                                    <span class="icon-text">
+                                                        <i class="mdi mdi-office-building"></i>
+                                                        <span class="fw-bold">{{ $unit->landBank->name ?? '-' }}</span>
+                                                    </span>
+                                                </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-home-variant text-primary me-2"></i>
-                                                        <span>{{ $unit->unit_code }}</span>
+                                                        <i class="mdi mdi-home-outline text-primary me-2"
+                                                            style="font-size: 1.1rem;"></i>
+                                                        <span class="fw-bold">
+                                                            {{ $unit->unit_name ?? '-' }} -
+                                                            {{ $unit->unit_code ?? ($unit->block ?? '') . ' ' . ($unit->unit_number ?? '') }}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <i class="mdi mdi-office-building text-info me-1"></i>
-                                                    {{ $unit->landBank->name ?? '-' }}
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-shape-outline text-secondary me-1"></i>
-                                                    {{ $unit->type ?? '-' }}
-                                                </td>
-                                                <td class="d-none d-md-table-cell">
-                                                    <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                                    {{ Str::limit($unit->landBank->address ?? '-', 15) }}
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-ruler-square text-warning me-1"></i>
-                                                    {{ $unit->area ?? '-' }} m²
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-domain text-secondary me-1"></i>
-                                                    {{ $unit->building_area ?? '-' }} m²
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-currency-usd text-success me-1"></i>
-                                                    Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
-                                                </td>
-                                                <td>
-                                                    <i class="mdi mdi-compass text-info me-1"></i>
-                                                    {{ $unit->facing ?? '-' }}
-                                                </td>
-                                                <td>
-                                                    @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                        <span class="badge badge-gradient-success"><i
-                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                    @elseif($unit->status == 'sold')
-                                                        <span class="badge badge-gradient-danger"><i
-                                                                class="mdi mdi-cash-check me-1"></i>Terjual</span>
+                                                    @if (strtolower($unit->jenis ?? '') == 'subsidi')
+                                                        <span class="badge badge-gradient-success">
+                                                            <i class="mdi mdi-home-assistant me-1"></i>{{ $unit->jenis }}
+                                                            -
+                                                            {{ $unit->type ?? '-' }}
+                                                        </span>
+                                                    @elseif(strtolower($unit->jenis ?? '') == 'komersil')
+                                                        <span class="badge badge-gradient-primary">
+                                                            <i
+                                                                class="mdi mdi-office-building me-1"></i>{{ $unit->jenis }}
+                                                            -
+                                                            {{ $unit->type ?? '-' }}
+                                                        </span>
                                                     @else
-                                                        <span class="badge badge-gradient-warning"><i
-                                                                class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
+                                                        <span class="badge badge-gradient-secondary">
+                                                            <i
+                                                                class="mdi mdi-help-circle-outline me-1"></i>{{ ($unit->jenis ?? '-') . ' - ' . ($unit->type ?? '-') }}
+                                                        </span>
                                                     @endif
                                                 </td>
-                                                <td style="min-width:180px;">
-                                                    @php
-                                                        $status = $unit->construction_progress;
-                                                        $progressMap = [
-                                                            'belum_mulai' => 0,
-                                                            'pondasi' => 20,
-                                                            'dinding' => 40,
-                                                            'atap' => 60,
-                                                            'finishing' => 80,
-                                                            'selesai' => 100,
-                                                        ];
-                                                        $progress = $progressMap[$status] ?? 0;
-
-                                                        $barWidth = $status === 'belum_mulai' ? 100 : $progress;
-                                                    @endphp
-
-                                                    <div class="progress rounded-pill"
-                                                        style="height:22px; background:#f1f1f1;">
-                                                        <div class="progress-bar
-                                                            d-flex align-items-center justify-content-center
-                                                            fw-semibold text-white
-                                                            @if ($status === 'belum_mulai') bg-danger
-                                                            @elseif($progress < 100) bg-warning
-                                                            @else bg-success @endif"
-                                                            role="progressbar"
-                                                            style="width: {{ $barWidth }}%; transition: .5s;"
-                                                            aria-valuenow="{{ $progress }}" aria-valuemin="0"
-                                                            aria-valuemax="100">
-
-                                                            @if ($status === 'belum_mulai')
-                                                                Belum mulai pembangunan
-                                                            @else
-                                                                {{ $progress }}%
-                                                            @endif
-
+                                                <td class="d-none d-md-table-cell">
+                                                    <span class="icon-text">
+                                                        <i class="mdi mdi-map-marker-outline"></i>
+                                                        <span>{{ Str::limit($unit->landBank->address ?? '-', 20) }}</span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="info-badge-icon land-badge">
+                                                        <i class="mdi mdi-arrow-expand-all"></i>{{ $unit->area ?? '-' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="info-badge-icon building-badge">
+                                                        <i
+                                                            class="mdi mdi-home-floor-1"></i>{{ $unit->building_area ?? '-' }}
+                                                    </span>
+                                                </td>
+                                                <td class="price-text">Rp
+                                                    {{ number_format($unit->price ?? 0, 0, ',', '.') }}
+                                                </td>
+                                                <td class="fw-bold"><i
+                                                        class="mdi mdi-compass-outline text-primary me-1"></i>{{ $unit->facing ?? '-' }}
+                                                </td>
+                                                <td>
+                                                    <span class="badge-soft {{ $statusBadge }}">
+                                                        <i class="mdi {{ $statusIcon }}"></i>{{ $statusText }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="progress-wrapper">
+                                                        <div class="progress-row">
+                                                            <div class="progress">
+                                                                <div class="progress-bar-custom {{ $progressClass }}"
+                                                                    style="width: {{ $progress }}%;"></div>
+                                                            </div>
+                                                            <div class="progress-percent">{{ $progress }}%</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                    {{ $unit->activeBooking->sales->name ?? '-' }}
+                                                    @if ($unit->activeBooking && $unit->activeBooking->sales)
+                                                        @php
+                                                            $salesName = $unit->activeBooking->sales->name;
+                                                            $sInitials = '';
+                                                            foreach (explode(' ', trim($salesName)) as $word) {
+                                                                if ($word !== '') {
+                                                                    $sInitials .= strtoupper(substr($word, 0, 1));
+                                                                }
+                                                            }
+                                                            $sInitials = substr($sInitials ?: 'S', 0, 2);
+                                                        @endphp
+                                                        <div class="customer-info">
+                                                            <div class="customer-initial"
+                                                                style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                                {{ $sInitials }}
+                                                            </div>
+                                                            <span>{{ $salesName }}</span>
+                                                        </div>
+                                                    @else
+                                                        <i class="mdi mdi-account-tie text-primary me-1"></i>
+                                                        -
+                                                    @endif
                                                 </td>
-                                                <td>
-                                                    <i class="mdi mdi-cash text-success me-1"></i>
+                                                <td class="fee-text">
                                                     Rp
                                                     {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td>
-                                                    <i class="mdi mdi-account text-info me-1"></i>
-                                                    {{ $unit->activeBooking->customer->full_name ?? '-' }}
+                                                    @if ($unit->activeBooking && $unit->activeBooking->customer)
+                                                        @php
+                                                            $customerName = $unit->activeBooking->customer->full_name;
+                                                            $initials = '';
+                                                            foreach (explode(' ', trim($customerName)) as $word) {
+                                                                if ($word !== '') {
+                                                                    $initials .= strtoupper(substr($word, 0, 1));
+                                                                }
+                                                            }
+                                                            $initials = substr($initials ?: 'C', 0, 2);
+                                                        @endphp
+                                                        <div class="customer-info">
+                                                            <div class="customer-initial">
+                                                                {{ $initials }}
+                                                            </div>
+                                                            <span>{{ $customerName }}</span>
+                                                        </div>
+                                                    @else
+                                                        <i class="mdi mdi-account-outline text-primary me-1"></i>
+                                                        -
+                                                    @endif
+                                                </td>
+                                                <td class="fee-text">
+                                                    Rp
+                                                    {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <div class="d-flex justify-content-center gap-1">
-                                                        <button class="btn btn-outline-primary btn-sm btnDetailUnit"
+                                                    <div class="action-group">
+                                                        <button class="btn-action view" title="Detail"
                                                             data-bs-toggle="modal" data-bs-target="#detailUnitModal"
+                                                            data-unit_name="{{ $unit->unit_name ?? '-' }}"
                                                             data-unit="{{ $unit->unit_code }}"
-                                                            data-block="{{ $unit->block }}"
-                                                            data-type="{{ $unit->type }}"
-                                                            data-address="{{ $unit->landBank->address }}"
-                                                            data-area="{{ $unit->area }}"
-                                                            data-building="{{ $unit->building_area }}"
-                                                            data-price="{{ $unit->price }}"
-                                                            data-direction="{{ $unit->facing }}"
-                                                            data-status="{{ $unit->status }}"
-                                                            data-construction="{{ $unit->construction_progress }}"
+                                                            data-unit_number="{{ $unit->unit_number ?? '-' }}"
+                                                            data-block="{{ $unit->block ?? '-' }}"
+                                                            data-jenis="{{ $unit->jenis ?? '-' }}"
+                                                            data-type="{{ $unit->type ?? '-' }}"
+                                                            data-address="{{ $unit->landBank->address ?? '-' }}"
+                                                            data-area="{{ $unit->area ?? 0 }}"
+                                                            data-building="{{ $unit->building_area ?? 0 }}"
+                                                            data-price="{{ $unit->price ?? 0 }}"
+                                                            data-direction="{{ $unit->facing ?? '-' }}"
+                                                            data-status_raw="{{ $unit->status }}"
+                                                            data-status_text="{{ $statusText }}"
+                                                            data-construction="{{ $unit->construction_progress ?? 'belum_mulai' }}"
+                                                            data-has_booking="{{ $unit->activeBooking ? '1' : '0' }}"
                                                             data-customer="{{ $unit->activeBooking->customer->full_name ?? '-' }}"
                                                             data-sales="{{ $unit->activeBooking->sales->name ?? '-' }}"
-                                                            data-booking_date="{{ $unit->activeBooking->booking_date ?? '-' }}"
-                                                            data-booking_fee="{{ $unit->activeBooking->booking_fee ?? '-' }}"
-                                                            data-booking_status="{{ $unit->activeBooking->status ?? '-' }}"
-                                                            title="Detail">
-
+                                                            data-booking_date="{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}"
+                                                            data-booking_fee="{{ $unit->activeBooking->booking_fee ?? 0 }}"
+                                                            data-agent_fee="{{ $unit->activeBooking->agent_fee ?? 0 }}"
+                                                            data-booking_status="{{ $unit->activeBooking->status ?? '-' }}">
                                                             <i class="mdi mdi-eye"></i>
                                                         </button>
                                                         @if (auth()->user()->position_id != 4)
-                                                            <button onclick="openCustomerModal({{ $unit->id }})"
-                                                                class="btn btn-outline-danger btn-sm"
-                                                                title="Tambah Customer">
+                                                            <button class="btn-action customer" title="Pilih Customer"
+                                                                onclick="openCustomerModal({{ $unit->id }})">
                                                                 <i class="mdi mdi-account-plus"></i>
                                                             </button>
-
-                                                            <button class="btn btn-outline-info btn-sm bukaModal"
-                                                                data-unit="{{ $unit->id }}" title="Pilih Agency">
-                                                                <i class="mdi mdi-office-building"></i>
+                                                            <button class="btn-action agent" title="Pilih Agent"
+                                                                onclick="openAgentModal({{ $unit->id }})">
+                                                                <i class="mdi mdi-account-search"></i>
                                                             </button>
                                                         @endif
                                                     </div>
@@ -1315,7 +1773,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="15" class="text-center text-muted py-4">
+                                                <td colspan="16" class="text-center text-muted py-4">
                                                     <i class="mdi mdi-home-outline"
                                                         style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>
@@ -1325,9 +1783,69 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!-- PAGINATION - COMPACT -->
+                            @if ($units instanceof \Illuminate\Pagination\LengthAwarePaginator && $units->total() > 0)
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 pt-2">
+                                    <div class="pagination-info mb-2 mb-sm-0">
+                                        Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} unit
+                                    </div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                            {{-- Previous Page Link --}}
+                                            @if ($units->onFirstPage())
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->previousPageUrl() }}"
+                                                        rel="prev" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+
+                                            {{-- Pagination Elements --}}
+                                            @foreach ($units->getUrlRange(max(1, $units->currentPage() - 2), min($units->lastPage(), $units->currentPage() + 2)) as $page => $url)
+                                                @if ($page == $units->currentPage())
+                                                    <li class="page-item active" aria-current="page">
+                                                        <span class="page-link">{{ $page }}</span>
+                                                    </li>
+                                                @else
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                            href="{{ $units->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+
+                                            {{-- Next Page Link --}}
+                                            @if ($units->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->nextPageUrl() }}"
+                                                        rel="next" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                </div>
+                            @endif
                         </div>
 
-                        <!-- GRID VIEW (Katalog) - SEMBUNYI -->
+                        <!-- GRID VIEW -->
                         <div id="gridView" style="display: none;">
                             <div class="row g-3">
                                 @forelse ($units as $unit)
@@ -1354,53 +1872,154 @@
                                                     </div>
                                                 </div>
                                                 <h6 class="mt-2 fw-bold"><i
-                                                        class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_code }}
+                                                        class="mdi mdi-home-variant text-primary me-1"></i>{{ $unit->unit_name ?? '-' }}
+                                                    -
+                                                    {{ $unit->unit_code ?? ($unit->block ?? '') . ' ' . ($unit->unit_number ?? '') }}
                                                 </h6>
                                                 <p class="text-muted small mb-1"><i
                                                         class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
                                                 </p>
                                                 <p class="small mb-1"><i
                                                         class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
-                                                    m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
+                                                    mÂ² | <i class="mdi mdi-currency-usd me-1"></i>Rp
                                                     {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
-                                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                                    <small class="text-muted">
-                                                        <i
-                                                            class="mdi mdi-account-tie me-1"></i>{{ optional(optional($unit->activeBooking)->sales)->name ?? '-' }}
-                                                    </small>
+
+                                                <div class="mt-2 border-top pt-2">
+                                                    @if ($unit->activeBooking && $unit->activeBooking->customer)
+                                                        @php
+                                                            $customerName = $unit->activeBooking->customer->full_name;
+                                                            $initials = '';
+                                                            foreach (explode(' ', trim($customerName)) as $word) {
+                                                                if ($word !== '') {
+                                                                    $initials .= strtoupper(substr($word, 0, 1));
+                                                                }
+                                                            }
+                                                            $initials = substr($initials ?: 'C', 0, 2);
+                                                        @endphp
+                                                        <div class="customer-info mb-1">
+                                                            <div class="customer-initial"
+                                                                style="width: 24px; height: 24px; font-size: 0.7rem;">
+                                                                {{ $initials }}
+                                                            </div>
+                                                            <small
+                                                                class="text-muted fw-bold">{{ Str::limit($customerName, 15) }}</small>
+                                                        </div>
+                                                    @else
+                                                        <small class="text-muted d-block mb-1"><i
+                                                                class="mdi mdi-account-outline me-1"></i>-</small>
+                                                    @endif
+                                                </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                                    @if ($unit->activeBooking && $unit->activeBooking->sales)
+                                                        @php
+                                                            $salesName = $unit->activeBooking->sales->name;
+                                                            $sInitials = '';
+                                                            foreach (explode(' ', trim($salesName)) as $word) {
+                                                                if ($word !== '') {
+                                                                    $sInitials .= strtoupper(substr($word, 0, 1));
+                                                                }
+                                                            }
+                                                            $sInitials = substr($sInitials ?: 'S', 0, 2);
+                                                        @endphp
+                                                        <div class="customer-info">
+                                                            <div class="customer-initial"
+                                                                style="width: 24px; height: 24px; font-size: 0.7rem; background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                                {{ $sInitials }}
+                                                            </div>
+                                                            <small
+                                                                class="text-muted fw-bold">{{ Str::limit($salesName, 15) }}</small>
+                                                        </div>
+                                                    @else
+                                                        <small class="text-muted"><i
+                                                                class="mdi mdi-account-tie me-1"></i>-</small>
+                                                    @endif
                                                     <button class="btn btn-outline-danger btn-sm"
-                                                        onclick="openCustomerModal({{ $unit->id }})">
-                                                        <i class="mdi mdi-account-plus"></i>
-                                                    </button>
+                                                        onclick="openCustomerModal({{ $unit->id }})"><i
+                                                            class="mdi mdi-account-plus"></i></button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @empty
                                     <div class="col-12">
-                                        <div class="text-center text-muted py-5">
-                                            <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                        <div class="text-center text-muted py-5"><i class="mdi mdi-home-outline"
+                                                style="font-size: 3rem; opacity: 0.3;"></i>
                                             <p class="mt-3">Belum ada unit tersedia</p>
                                         </div>
                                     </div>
                                 @endforelse
                             </div>
+
+                            <!-- PAGINATION - GRID VIEW -->
+                            @if ($units instanceof \Illuminate\Pagination\LengthAwarePaginator && $units->total() > 0)
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 pt-2">
+                                    <div class="pagination-info mb-2 mb-sm-0">
+                                        Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} unit
+                                    </div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                            @if ($units->onFirstPage())
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->previousPageUrl() }}"
+                                                        rel="prev" aria-label="Previous">
+                                                        <i class="mdi mdi-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                            @endif
+
+                                            @foreach ($units->getUrlRange(max(1, $units->currentPage() - 2), min($units->lastPage(), $units->currentPage() + 2)) as $page => $url)
+                                                @if ($page == $units->currentPage())
+                                                    <li class="page-item active" aria-current="page">
+                                                        <span class="page-link">{{ $page }}</span>
+                                                    </li>
+                                                @else
+                                                    <li class="page-item">
+                                                        <a class="page-link"
+                                                            href="{{ $units->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+
+                                            @if ($units->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $units->appends(request()->query())->nextPageUrl() }}"
+                                                        rel="next" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled" aria-disabled="true">
+                                                    <span class="page-link" aria-label="Next">
+                                                        <i class="mdi mdi-chevron-right"></i>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                </div>
+                            @endif
                         </div>
 
-                        <!-- DENAH VIEW - SEMBUNYI -->
+                        <!-- DENAH VIEW -->
                         <div id="denahView" style="display: none;">
                             <div class="denah-container">
                                 <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
                                     @php
-                                        // Kelompokkan unit berdasarkan proyek (landBank)
                                         $unitsByProject = $units->groupBy(function ($item) {
                                             return $item->landBank->name ?? 'Tanpa Proyek';
                                         });
                                     @endphp
-
                                     @foreach ($unitsByProject as $projectName => $projectUnits)
                                         @php
-                                            // Kelompokkan unit per proyek berdasarkan blok
                                             $blokKavlings = [];
                                             foreach ($projectUnits as $unit) {
                                                 $blok = explode('.', $unit->unit_code)[0];
@@ -1408,14 +2027,11 @@
                                             }
                                             $allBloks = array_keys($blokKavlings);
                                         @endphp
-
                                         <div
                                             style="margin-bottom: 25px; width:100%; border-bottom: 1px dashed #9a55ff; padding-bottom: 15px;">
-                                            <h6 class="text-primary mb-3">
-                                                <i class="mdi mdi-office-building me-2"></i>
-                                                Proyek: {{ $projectName }}
-                                            </h6>
-
+                                            <h6 class="text-primary mb-3"><i
+                                                    class="mdi mdi-office-building me-2"></i>Proyek:
+                                                {{ $projectName }}</h6>
                                             @foreach ($allBloks as $blok)
                                                 <div style="margin-bottom:15px; width:100%;">
                                                     @php
@@ -1424,9 +2040,7 @@
                                                             ->unique()
                                                             ->values()
                                                             ->toArray();
-
                                                         $typeLetters = [];
-
                                                         foreach ($typesInBlok as $type) {
                                                             if ($type == 'subsidi') {
                                                                 $typeLetters[] = 'S';
@@ -1434,122 +2048,86 @@
                                                                 $typeLetters[] = 'K';
                                                             }
                                                         }
-
                                                         $labelType = implode(' & ', $typeLetters);
                                                     @endphp
-
-                                                    <strong style="font-size: 14px;">
-                                                        Blok {{ $blok }} - {{ $labelType }}
-                                                        <small class="text-muted ms-2">({{ count($blokKavlings[$blok]) }}
-                                                            unit)</small>
-                                                    </strong>
-
+                                                    <strong style="font-size: 14px;">Blok {{ $blok }} -
+                                                        {{ $labelType }} <small
+                                                            class="text-muted ms-2">({{ count($blokKavlings[$blok]) }}
+                                                            unit)</small></strong>
                                                     <div
                                                         style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; margin-top:8px;">
-
                                                         @php
                                                             $numbers = [];
                                                             foreach ($blokKavlings[$blok] as $unit) {
-                                                                $num = (int) explode('.', $unit->unit_code)[1];
-                                                                $numbers[] = $num;
+                                                                $numbers[] = (int) explode('.', $unit->unit_code)[1];
                                                             }
                                                             $maxNum = max($numbers);
                                                         @endphp
-
                                                         @for ($i = 1; $i <= $maxNum; $i++)
                                                             @php
                                                                 $unitFound = collect($blokKavlings[$blok])->firstWhere(
                                                                     'unit_code',
                                                                     $blok . '.' . $i,
                                                                 );
-
-                                                                $bgColor = '#6c757d'; // abu-abu untuk belum ada
+                                                                $bgColor = '#6c757d';
                                                                 $icon = 'close';
                                                                 $borderStyle = 'none';
                                                                 $extraStyle = '';
                                                                 $typeBadge = '';
-                                                                $statusText = 'Belum Tersedia';
-
                                                                 if ($unitFound) {
-                                                                    $statusText = ucfirst($unitFound->status);
-
-                                                                    // WARNA BERDASARKAN STATUS
                                                                     switch ($unitFound->status) {
                                                                         case 'sold':
-                                                                            $bgColor = '#dc3545'; // merah
+                                                                            $bgColor = '#dc3545';
                                                                             $icon = 'check';
                                                                             break;
-
                                                                         case 'booked':
-                                                                            $bgColor = '#ffc107'; // kuning
+                                                                            $bgColor = '#ffc107';
                                                                             $icon = 'clock';
                                                                             break;
-
-                                                                        case 'draft':
-                                                                            $bgColor = '#343a40'; // hitam
-                                                                            $icon = 'pencil';
-                                                                            break;
-
                                                                         case 'ready':
                                                                             if ($unitFound->type == 'subsidi') {
-                                                                                $bgColor = '#28a745'; // hijau
+                                                                                $bgColor = '#28a745';
                                                                                 $typeBadge = 'S';
                                                                             } else {
-                                                                                $bgColor = '#0d6efd'; // biru
+                                                                                $bgColor = '#0d6efd';
                                                                                 $typeBadge = 'K';
                                                                             }
                                                                             $icon = 'home';
                                                                             break;
                                                                     }
-
-                                                                    // BORDER BERDASARKAN PROGRESS
                                                                     switch ($unitFound->construction_progress) {
                                                                         case 'belum_mulai':
                                                                             $borderStyle = '2px dashed #000';
                                                                             $extraStyle =
                                                                                 'background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 5px, transparent 5px, transparent 10px);';
                                                                             break;
-
                                                                         case 'pondasi':
                                                                             $borderStyle = '2px solid #000';
                                                                             break;
-
                                                                         case 'dinding':
                                                                             $borderStyle = '3px solid #000';
                                                                             break;
-
                                                                         case 'atap':
                                                                             $borderStyle = '3px double #000';
                                                                             break;
-
                                                                         case 'finishing':
                                                                             $borderStyle = '3px groove #000';
                                                                             break;
-
                                                                         case 'selesai':
                                                                             $borderStyle = '3px solid #155724';
                                                                             break;
                                                                     }
                                                                 }
                                                             @endphp
-
                                                             <span class="unit-box"
-                                                                style="
-                                                                        background-color: var(--unit-bg, {{ $bgColor }});
-                                                                        border: {{ $borderStyle }};
-                                                                        {{ $extraStyle }}
-                                                                    "
-                                                                data-status="{{ $unitFound->status ?? 'unavailable' }}"
-                                                                data-type="{{ $unitFound->type ?? '' }}"
-                                                                title="{{ $unitFound ? 'Blok: ' . $unitFound->unit_code . ' - Status: ' . $statusText . ' - Progress: ' . ($unitFound->construction_progress ?? 'belum_mulai') : 'Unit ' . $blok . '.' . $i . ' belum tersedia' }}">
-
+                                                                style="background-color: {{ $bgColor }}; border: {{ $borderStyle }}; {{ $extraStyle }}"
+                                                                title="{{ $unitFound ? $unitFound->unit_code . ' - ' . ucfirst($unitFound->status) : 'Unit ' . $blok . '.' . $i . ' belum tersedia' }}">
                                                                 @if ($typeBadge)
                                                                     <span
                                                                         class="type-badge-small">{{ $typeBadge }}</span>
                                                                 @endif
-
-                                                                <i class="mdi mdi-{{ $icon }} me-1"></i>
-                                                                {{ $blok . '.' . $i }}
+                                                                <i
+                                                                    class="mdi mdi-{{ $icon }} me-1"></i>{{ $blok . '.' . $i }}
                                                             </span>
                                                         @endfor
                                                     </div>
@@ -1558,608 +2136,449 @@
                                         </div>
                                     @endforeach
                                 </div>
-
-                                <!-- LEGEND -->
                                 <div class="mt-5 pt-3 border-top">
                                     <h6 class="mb-3">Keterangan:</h6>
                                     <div class="row">
                                         <div class="col-md-4">
                                             <h6 class="small fw-bold">Status Penjualan:</h6>
-                                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                                <span class="legend-box bg-danger">Sold</span>
-                                                <span class="legend-box bg-warning text-dark">Booked</span>
-                                                <span class="legend-box bg-dark">Draft</span>
-                                                <span class="legend-box bg-success">Ready - Subsidi</span>
-                                                <span class="legend-box bg-primary">Ready - Komersil</span>
-                                                <span class="legend-box" style="background-color:#6c757d;">Belum
-                                                    Tersedia</span>
-                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 mb-3"><span
+                                                    class="legend-box bg-danger">Sold</span><span
+                                                    class="legend-box bg-warning text-dark">Booked</span><span
+                                                    class="legend-box bg-success">Ready - Subsidi</span><span
+                                                    class="legend-box bg-primary">Ready - Komersil</span><span
+                                                    class="legend-box" style="background-color:#6c757d;">Belum
+                                                    Tersedia</span></div>
                                         </div>
                                         <div class="col-md-4">
                                             <h6 class="small fw-bold">Progress Pembangunan (Border):</h6>
-                                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                                <span
+                                            <div class="d-flex flex-wrap gap-2 mb-3"><span
                                                     style="border:2px dashed #000; padding:4px 8px; background:#f8f9fa;">Belum
-                                                    Mulai</span>
-                                                <span
-                                                    style="border:2px solid #000; padding:4px 8px; background:#f8f9fa;">Pondasi</span>
-                                                <span
-                                                    style="border:3px solid #000; padding:4px 8px; background:#f8f9fa;">Dinding</span>
-                                                <span
-                                                    style="border:3px double #000; padding:4px 8px; background:#f8f9fa;">Atap</span>
-                                                <span
-                                                    style="border:3px groove #000; padding:4px 8px; background:#f8f9fa;">Finishing</span>
-                                                <span
+                                                    Mulai</span><span
+                                                    style="border:2px solid #000; padding:4px 8px; background:#f8f9fa;">Pondasi</span><span
+                                                    style="border:3px solid #000; padding:4px 8px; background:#f8f9fa;">Dinding</span><span
+                                                    style="border:3px double #000; padding:4px 8px; background:#f8f9fa;">Atap</span><span
+                                                    style="border:3px groove #000; padding:4px 8px; background:#f8f9fa;">Finishing</span><span
                                                     style="border:3px solid #155724; padding:4px 8px; background:#f8f9fa;">Selesai</span>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <h6 class="small fw-bold">Tipe Unit:</h6>
-                                            <div class="d-flex gap-2">
-                                                <span class="badge bg-success">S = Subsidi</span>
-                                                <span class="badge bg-primary">K = Komersil</span>
-                                            </div>
+                                            <div class="d-flex gap-2"><span class="badge bg-success">S =
+                                                    Subsidi</span><span class="badge bg-primary">K = Komersil</span></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- SITEPLAN VIEW - SEMBUNYI -->
+                        <!-- SITEPLAN VIEW -->
                         <div id="sitePlandView" style="display: none;">
                             <div class="denah-container" style="padding: 1rem;">
+                                <!-- Floating Controls (Vertical Stack matching user's image) -->
+                                <div class="siteplan-floating-controls">
+                                    <button type="button" class="siteplan-control-btn" onclick="zoom(1.2)"
+                                        title="Zoom In">
+                                        <i class="mdi mdi-plus"></i>
+                                    </button>
+                                    <button type="button" class="siteplan-control-btn" onclick="zoom(0.8)"
+                                        title="Zoom Out">
+                                        <i class="mdi mdi-minus"></i>
+                                    </button>
+                                    <button type="button" class="siteplan-control-btn" onclick="resetZoom()"
+                                        title="Reset Zoom" style="position: relative;">
+                                        <i class="mdi mdi-refresh"></i>
+                                        <span id="zoomPercent" class="badge bg-primary text-white"
+                                            style="position: absolute; bottom: -5px; right: -5px; font-size: 0.65rem; padding: 2px 4px; border-radius: 4px;">63%</span>
+                                    </button>
+                                    <button type="button" class="siteplan-control-btn" id="btnFullscreen"
+                                        onclick="toggleFullscreen()" title="Fullscreen">
+                                        <i class="mdi mdi-fullscreen"></i>
+                                    </button>
+                                </div>
                                 <div class="siteplan-scroll-container">
                                     <canvas id="siteplanCanvas"></canvas>
                                 </div>
-
-                                <!-- Tombol Simpan Posisi Unit - HANYA DI TAB SITEPLAN -->
                                 <div class="mt-4 text-center">
-                                    <button type="button" class="btn btn-save-position" onclick="savePosition()">
-                                        <i class="mdi mdi-content-save me-2"></i>
-                                        Simpan Posisi Unit
-                                    </button>
+                                    <button type="button" class="btn btn-save-position" onclick="savePosition()"><i
+                                            class="mdi mdi-content-save me-2"></i>Simpan Posisi Unit</button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- MODAL DETAIL SEDERHANA -->
-                        <div class="modal fade" id="myModal" tabindex="-1">
-                            <div class="modal-dialog modal-sm modal-dialog-centered">
-                                <div class="modal-content modal-detail-simple">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            <i class="mdi mdi-home-circle me-2"></i>
-                                            Detail Unit
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>
-                                            <strong>Unit Code:</strong>
-                                            <span class="unit-code">-</span>
-                                        </p>
-                                        <p>
-                                            <strong>Status:</strong>
-                                            <span class="unit-status">-</span>
-                                        </p>
-                                        <p>
-                                            <strong>Posisi:</strong>
-                                            <span class="unit-pos">-</span>
-                                        </p>
-                                        <p>
-                                            <strong>Ukuran:</strong>
-                                            <span class="unit-size">-</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal Detail Unit Lengkap (untuk tombol detail) -->
-                        <div class="modal fade" id="detailUnitModal" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
+                        <!-- Modal Detail Unit Lengkap -->
+                        <div class="modal fade modal-detail-unit" id="detailUnitModal" tabindex="-1">
+                            <div class="modal-dialog modal-xl modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">
-                                            <i class="mdi mdi-home-circle me-2" style="color: #9a55ff;"></i>
+                                            <i class="mdi mdi-home-circle me-2"></i>
                                             Detail Unit Lengkap
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th>Kode Unit</th>
-                                                <td id="m_unit"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Blok</th>
-                                                <td id="m_block"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tipe</th>
-                                                <td id="m_type"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Alamat</th>
-                                                <td id="m_address"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Luas Tanah</th>
-                                                <td id="m_area"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Luas Bangunan</th>
-                                                <td id="m_building"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Harga</th>
-                                                <td id="m_price"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Arah Hadap</th>
-                                                <td id="m_direction"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Status</th>
-                                                <td id="m_status"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Status Pembangunan</th>
-                                                <td id="m_construction"></td>
-                                            </tr>
-                                        </table>
-                                        <h5 class="mt-3">Detail Booking</h5>
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th width="30%">Customer</th>
-                                                <td id="m_customer"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Sales / Agency</th>
-                                                <td id="m_sales"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tanggal Booking</th>
-                                                <td id="m_booking_date"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Booking Fee</th>
-                                                <td id="m_booking_fee"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Status Booking</th>
-                                                <td id="m_booking_status"></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pagination dengan styling yang sama -->
-                        @if ($units->count() > 0)
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                                <div class="pagination-info mb-2 mb-sm-0">
-                                    <i class="mdi mdi-information-outline me-1"></i>
-                                    Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }}
-                                    dari {{ $units->total() }} data
-                                </div>
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
-                                        style="gap: 2px;">
-                                        {{-- Previous Page Link --}}
-                                        @if ($units->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link" aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $units->previousPageUrl() }}"
-                                                    aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        {{-- Page Links --}}
-                                        @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
-                                            <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}">
-                                                <a class="page-link"
-                                                    href="{{ $url }}">{{ $page }}</a>
-                                            </li>
-                                        @endforeach
-
-                                        {{-- Next Page Link --}}
-                                        @if ($units->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $units->nextPageUrl() }}"
-                                                    aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link" aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tombol Aksi Bawah -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="d-flex flex-column flex-sm-row justify-content-start">
-                            <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary">
-                                <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Kavling
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL CUSTOMER -->
-    <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-account-multiple me-2" style="color: #9a55ff;"></i>
-                        Data Customer
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Booking Fee Section dengan MODERN FILE UPLOAD -->
-                    <div class="card mb-3 border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Booking Fee -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-cash-multiple text-primary me-1"></i>
-                                        Booking Fee <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white">Rp</span>
-                                        <input type="text" class="form-control" id="booking_fee" name="booking_fee"
-                                            placeholder="Masukkan booking fee" autocomplete="off">
-                                    </div>
-                                    <small class="text-muted">Nominal booking fee yang dibayar customer</small>
-                                </div>
-
-                                <!-- Upload Bukti Transfer MODERN -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-cloud-upload text-primary me-1"></i>
-                                        Upload Bukti Transfer <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="file-upload-modern">
-                                        <input type="file" id="bukti_transfer" name="bukti_transfer"
-                                            accept=".jpg,.jpeg,.png,.pdf">
-                                        <div class="file-label-modern" id="buktiLabel">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="file-info-modern">
-                                                <span id="buktiFileName">Upload Bukti Transfer</span>
-                                                <small>Format: JPG, PNG, PDF (Max 2MB)</small>
+                                        <!-- Informasi Unit -->
+                                        <div class="timeline-detail-card">
+                                            <div class="timeline-detail-title">
+                                                <i class="mdi mdi-home-outline me-1"></i>Informasi Unit
                                             </div>
-                                            <span class="file-size" id="buktiFileSize"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12">
-                                    <small class="text-muted">
-                                        <i class="mdi mdi-information-outline me-1"></i>
-                                        Pilih customer lalu klik metode pembayaran (Cash/KPR)
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Search & Filter Card -->
-                    <div class="card mb-3 border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Search -->
-                                <div class="col-md-8">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-magnify text-primary me-1"></i>
-                                        Cari Customer
-                                    </label>
-                                    <input type="text" id="searchCustomer" class="form-control"
-                                        placeholder="Cari nama, ID, atau no. HP customer...">
-                                </div>
-
-                                <!-- Filter Pekerjaan -->
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">
-                                        <i class="mdi mdi-briefcase text-primary me-1"></i>
-                                        Filter Pekerjaan
-                                    </label>
-                                    <select class="form-control" id="filterPekerjaan">
-                                        <option value="">Semua Pekerjaan</option>
-                                        @php
-                                            $uniqueJobs = collect($customers)->pluck('job_status')->unique()->filter();
-                                        @endphp
-                                        @foreach ($uniqueJobs as $job)
-                                            <option value="{{ $job }}">{{ $job }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Info Total Customer -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small">
-                            <i class="mdi mdi-account-multiple me-1"></i>
-                            Total: {{ count($customers) }} customer
-                        </span>
-                        <span class="badge badge-gradient-info">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Klik tombol Cash/KPR untuk memilih
-                        </span>
-                    </div>
-
-                    <!-- Table Customer dengan Scroll (TANPA HOVER) -->
-                    <div class="table-responsive"
-                        style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                        <table class="table table-bordered align-middle mb-0" id="customerTable">
-                            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                                <tr>
-                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i>No
-                                    </th>
-                                    <th><i class="mdi mdi-card-account-details me-1"></i> ID Customer</th>
-                                    <th><i class="mdi mdi-account me-1"></i> Nama</th>
-                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
-                                    <th><i class="mdi mdi-briefcase me-1"></i> Pekerjaan</th>
-                                    <th class="text-center" style="width: 160px;"><i class="mdi mdi-cog me-1"></i> Aksi
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($customers as $c)
-                                    <tr>
-                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                        <td>
-                                            <span class="badge bg-light text-dark">{{ $c->customer_id ?? '-' }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                    style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
-                                                    {{ strtoupper(substr($c->full_name ?? 'C', 0, 1)) }}
+                                            <div class="row g-3">
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-home-outline"></i>Nama Unit</div>
+                                                        <div class="timeline-detail-value" id="m_unit_name">-</div>
+                                                    </div>
                                                 </div>
-                                                <span class="fw-medium">{{ $c->full_name ?? '-' }}</span>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-alpha-b-box-outline"></i>Blok</div>
+                                                        <div class="timeline-detail-value" id="m_block">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-numeric"></i>Nomor Unit</div>
+                                                        <div class="timeline-detail-value" id="m_unit_number">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-format-list-bulleted-type"></i>Jenis Unit
+                                                        </div>
+                                                        <div class="timeline-detail-value" id="m_jenis">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-home-group"></i>Tipe Unit</div>
+                                                        <div class="timeline-detail-value" id="m_type">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-ruler-square"></i>Luas Tanah</div>
+                                                        <div class="timeline-detail-value" id="m_area">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-home-city-outline"></i>Luas Bangunan</div>
+                                                        <div class="timeline-detail-value" id="m_building">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-cash-outline"></i>Harga</div>
+                                                        <div class="timeline-detail-value price" id="m_price">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-compass-outline"></i>Arah Hadap</div>
+                                                        <div class="timeline-detail-value" id="m_direction">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-toggle-switch-outline"></i>Status Unit</div>
+                                                        <div class="timeline-detail-value" id="m_status">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-progress-check"></i>Status Pembangunan</div>
+                                                        <div class="timeline-detail-value">
+                                                            <div class="progress-wrapper" id="m_construction_wrapper">
+                                                                <div class="progress-row">
+                                                                    <div class="progress">
+                                                                        <div class="progress-bar-custom progress-green"
+                                                                            id="m_progress_bar" style="width: 0%"></div>
+                                                                    </div>
+                                                                    <span class="progress-percent"
+                                                                        id="m_progress_pct">0%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-map-marker-outline"></i>Alamat</div>
+                                                        <div class="timeline-detail-value" id="m_address">-</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <i class="mdi mdi-whatsapp text-success me-1"></i>
-                                            {{ $c->phone ?? '-' }}
-                                        </td>
-                                        <td>
-                                            @if ($c->job_status)
-                                                <span class="badge bg-light text-dark">
-                                                    <i class="mdi mdi-briefcase-outline me-1"></i>
-                                                    {{ $c->job_status === 'Lainnya' ? ($c->job_status_lainnya ?: '-') : $c->job_status }}
-                                                </span>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="d-flex gap-1 justify-content-center">
-                                                <button type="button" class="btn btn-sm btn-success pilihCustomer"
-                                                    data-id="{{ $c->id }}" data-type="cash"
-                                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                                    <i class="mdi mdi-cash me-1"></i>Cash Keras
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-info pilihCustomer"
-                                                    data-id="{{ $c->id }}" data-type="cash_tempo"
-                                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                                    <i class="mdi mdi-cash-multiple me-1"></i>Cash Tempo
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-primary pilihCustomer"
-                                                    data-id="{{ $c->id }}" data-type="kpr"
-                                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
-                                                    <i class="mdi mdi-bank me-1"></i>KPR
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4">
-                                            <i class="mdi mdi-account-off" style="font-size: 2rem; opacity: 0.3;"></i>
-                                            <p class="mt-2 text-muted">Tidak ada data customer</p>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Footer Info -->
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="mdi mdi-information-outline me-1"></i>
-                                    Tabel dapat di-scroll untuk melihat lebih banyak data
-                                </small>
-                                <small class="text-muted">
-                                    <i class="mdi mdi-arrow-down me-1"></i>
-                                    {{ count($customers) }} data
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL AGENCY -->
-    <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-office-building me-2" style="color: #9a55ff;"></i>
-                        Pilih Agency
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Card untuk Agent Fee & Search (JADI SATU) -->
-                    <div class="card mb-3 border-0 shadow-sm">
-                        <div class="card-body">
-                            <form id="formAgency" method="POST">
-                                @csrf
-                                <input type="hidden" name="sales_id" id="sales_id">
-
-                                <div class="row">
-                                    <!-- Agent Fee Input -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">
-                                            <i class="mdi mdi-cash text-primary me-1"></i>
-                                            Agent Fee
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-white">Rp</span>
-                                            <input type="text" class="form-control" name="agent_fee"
-                                                id="agent_fee_modal" placeholder="Masukkan agent fee" autocomplete="off">
                                         </div>
-                                        <small class="text-muted">
-                                            <i class="mdi mdi-information-outline me-1"></i>
-                                            Masukkan nominal fee untuk agency yang dipilih
-                                        </small>
-                                    </div>
 
-                                    <!-- Search Agency -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">
-                                            <i class="mdi mdi-magnify text-primary me-1"></i>
-                                            Cari Agency
-                                        </label>
-                                        <div class="position-relative">
-                                            <i class="mdi mdi-magnify position-absolute"
-                                                style="left: 12px; top: 10px; color: #9a55ff; z-index: 10;"></i>
-                                            <input type="text" id="searchAgency" class="form-control"
-                                                placeholder="Cari nama agency..." style="padding-left: 40px;">
+                                        <!-- Informasi Booking -->
+                                        <div class="timeline-detail-card" id="m_booking_card">
+                                            <div class="timeline-detail-title">
+                                                <i class="mdi mdi-calendar-check-outline me-1"></i>Informasi Booking
+                                            </div>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-account-outline"></i>Customer</div>
+                                                        <div class="timeline-detail-value">
+                                                            <div class="name-wrap">
+                                                                <div class="name-initial" id="m_customer_initial"
+                                                                    style="background: linear-gradient(135deg, #da8cff, #9a55ff);">
+                                                                    -</div>
+                                                                <div class="name-info">
+                                                                    <div class="name-title" id="m_customer">-</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-account-tie-outline"></i>Sales / Agency
+                                                        </div>
+                                                        <div class="timeline-detail-value">
+                                                            <div class="name-wrap">
+                                                                <div class="name-initial" id="m_sales_initial"
+                                                                    style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                                                    -</div>
+                                                                <div class="name-info">
+                                                                    <div class="name-title" id="m_sales">-</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-calendar-today"></i>Tanggal Booking</div>
+                                                        <div class="timeline-detail-value" id="m_booking_date">-</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-cash-multiple"></i>Booking Fee</div>
+                                                        <div class="timeline-detail-value fee-text" id="m_booking_fee">-
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-hand-coin-outline"></i>Agent Fee</div>
+                                                        <div class="timeline-detail-value fee-text" id="m_agent_fee">-
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-toggle-switch"></i>Status Booking</div>
+                                                        <div class="timeline-detail-value" id="m_booking_status">-</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Placeholder jika tidak ada booking -->
+                                        <div class="timeline-detail-card" id="m_no_booking_card" style="display:none;">
+                                            <div class="text-center text-muted py-5">
+                                                <i class="mdi mdi-information-outline" style="font-size: 3rem;"></i>
+                                                <p class="mb-0">Belum ada booking untuk unit ini.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Info Total Agency -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small">
-                            <i class="mdi mdi-office-building me-1"></i>
-                            Total: {{ count($agencies) }} agency
-                        </span>
-                        <span class="badge badge-gradient-info">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Klik tombol Pilih untuk memilih agency
-                        </span>
-                    </div>
-
-                    <!-- Table Agency dengan Scroll -->
-                    <div class="table-responsive"
-                        style="max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px;">
-                        <table class="table table-bordered align-middle mb-0">
-                            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 5;">
-                                <tr>
-                                    <th class="text-center" style="width: 50px;"><i class="mdi mdi-counter me-1"></i> No
-                                    </th>
-                                    <th><i class="mdi mdi-office-building me-1"></i> Nama Agency</th>
-                                    <th><i class="mdi mdi-phone me-1"></i> No HP</th>
-                                    <th><i class="mdi mdi-map-marker me-1"></i> Alamat</th>
-                                    <th class="text-center" style="width: 120px;"><i class="mdi mdi-cog me-1"></i> Aksi
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($agencies as $a)
-                                    <tr>
-                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                    style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
-                                                    {{ strtoupper(substr($a->name ?? 'A', 0, 1)) }}
-                                                </div>
-                                                <span class="fw-medium">{{ $a->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <i class="mdi mdi-phone text-success me-1"></i>
-                                            {{ $a->phone }}
-                                        </td>
-                                        <td>
-                                            <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                            {{ $a->address }}
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-gradient-success pilihAgency"
-                                                data-id="{{ $a->id }}"
-                                                style="border-radius: 20px; padding: 0.25rem 1rem;">
-                                                <i class="mdi mdi-check me-1"></i>Pilih
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4">
-                                            <i class="mdi mdi-office-building-off"
-                                                style="font-size: 2rem; opacity: 0.3;"></i>
-                                            <p class="mt-2 text-muted">Tidak ada data agency</p>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Footer Info -->
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="mdi mdi-information-outline me-1"></i>
-                                    Tabel dapat di-scroll untuk melihat lebih banyak data
-                                </small>
-                                <small class="text-muted">
-                                    <i class="mdi mdi-arrow-down me-1"></i>
-                                    {{ count($agencies) }} data
-                                </small>
+                        <!-- Modal Detail Sederhana untuk Siteplan -->
+                        <div class="modal fade" id="myModal" tabindex="-1">
+                            <div class="modal-dialog modal-sm modal-dialog-centered">
+                                <div class="modal-content modal-detail-simple">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title"><i class="mdi mdi-home-circle me-2"></i>Detail Unit</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Unit Code:</strong><span class="unit-code">-</span></p>
+                                        <p><strong>Status:</strong><span class="unit-status">-</span></p>
+                                        <p><strong>Posisi:</strong><span class="unit-pos">-</span></p>
+                                        <p><strong>Ukuran:</strong><span class="unit-size">-</span></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- MODAL CUSTOMER -->
+        <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                    <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
+                        <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
+                            <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
+                            Pilih Customer & Booking Unit
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="formCustomerBooking" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" id="customer_unit_id" name="unit_id">
+
+                            <!-- Field Pilih Customer (Select2 Search) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
+                                    <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
+                                    @foreach ($customers as $c)
+                                        <option value="{{ $c->id }}" data-id="{{ $c->customer_id ?? '' }}">
+                                            @if(!empty($c->customer_id)) [{{ $c->customer_id }}] @endif {{ $c->full_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Cari berdasarkan ID Customer atau nama lengkap
+                                </small>
+                            </div>
+
+                            <!-- Field Metode Pembayaran -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-credit-card-outline text-primary me-1"></i>Metode Pembayaran <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control" id="select_purchase_type" name="purchase_type" required style="border: 1.5px solid #e2e8f0; border-radius: 8px; min-height: 42px; font-weight: 600;">
+                                    <option value="cash">Cash Keras</option>
+                                    <option value="cash_tempo">Cash Tempo</option>
+                                    <option value="kpr" selected>KPR</option>
+                                </select>
+                            </div>
+
+                            <!-- Field Nominal Booking Fee -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Booking Fee <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group rupiah-input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
+                                </div>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Nominal booking fee yang dibayar oleh customer
+                                </small>
+                            </div>
+
+                            <!-- Field Upload Bukti Transfer -->
+                            <div class="mb-2">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer <span class="text-danger">*</span>
+                                </label>
+                                <div class="file-upload-modern">
+                                    <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf" required>
+                                    <div class="file-label-modern" id="buktiLabel">
+                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.75rem; color: #9a55ff;"></i>
+                                        <div class="file-info-modern">
+                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer</span>
+                                            <small class="text-muted d-block">Format: JPG, PNG, PDF (Max 2MB)</small>
+                                        </div>
+                                        <span class="file-size text-muted small" id="buktiFileSize"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
+                            Batal
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary px-4" id="btnSimpanCustomer" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-content-save me-1"></i>Simpan Customer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL AGENCY -->
+        <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                    <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
+                        <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
+                            <i class="mdi mdi-office-building text-primary me-2" style="font-size: 1.35rem;"></i>
+                            Pilih Agency / Agent
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="formAgency" method="POST">
+                            @csrf
+                            <input type="hidden" name="unit_id" id="agency_unit_id">
+
+                            <!-- Field Pilih Agency (Select2 Search) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-account-tie text-primary me-1"></i>Nama Agency / Agent <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control select2-agency-modal" id="select_sales_id" name="sales_id" style="width: 100%;" required>
+                                    <option value="">-- Cari & Pilih Agency / Agent --</option>
+                                    @foreach ($agencies as $a)
+                                        <option value="{{ $a->id }}" data-phone="{{ $a->phone ?? '' }}" data-address="{{ $a->address ?? '' }}">
+                                            {{ $a->name }} @if(!empty($a->phone)) ({{ $a->phone }}) @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Ketik untuk mencari nama atau nomor HP agency
+                                </small>
+                            </div>
+
+                            <!-- Field Nominal Agent Fee -->
+                            <div class="mb-2">
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Agent Fee <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group rupiah-input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-format" name="agent_fee" id="agent_fee_modal" placeholder="Contoh: 5.000.000" autocomplete="off" required>
+                                </div>
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Masukkan nominal komisi/fee untuk agency yang dipilih
+                                </small>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
+                            Batal
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary px-4" id="btnSimpanAgency" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-content-save me-1"></i>Simpan Agency
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -2169,79 +2588,515 @@
         <input type="hidden" name="booking_fee" id="booking_fee_hidden">
         <input type="file" name="bukti_transfer" id="bukti_transfer_hidden">
     </form>
+</div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
     <script>
-        // ========== DETAIL MODAL HANDLER (untuk tombol detail) ==========
-        const detailModal = document.getElementById('detailUnitModal')
+        // ========== POPULATE DETAIL MODAL DIRECTLY ==========
+        window.populateModalDirectly = function(data) {
+            // ---- Informasi Unit ----
+            document.getElementById('m_unit_name').innerText = data.unitName || '-';
+            document.getElementById('m_block').innerText = data.block || '-';
+            document.getElementById('m_unit_number').innerText = data.unitNumber || '-';
+            document.getElementById('m_jenis').innerText = data.jenis || '-';
+            document.getElementById('m_type').innerText = data.type || '-';
+            document.getElementById('m_area').innerText = new Intl.NumberFormat('id-ID').format(data.area || 0) +
+                ' m\u00b2';
+            document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(data.building ||
+                0) + ' m\u00b2';
+            document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price ||
+                0);
+            document.getElementById('m_direction').innerText = data.direction || '-';
+            document.getElementById('m_address').innerText = data.address || '-';
+
+            // ---- Badge Status Unit ----
+            const statusRaw = data.statusRaw || '';
+            const statusText = data.statusText || statusRaw;
+            const jenisRaw = (data.jenis || '').toLowerCase();
+            const typeRaw = (data.type || '').toLowerCase();
+            let statusBadgeHtml = '';
+            if (statusRaw === 'ready' || statusRaw === 'tersedia') {
+                const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' :
+                    'badge-available-komersil';
+                statusBadgeHtml =
+                    `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
+            } else if (statusRaw === 'booked') {
+                statusBadgeHtml =
+                    `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
+            } else if (statusRaw === 'sold') {
+                statusBadgeHtml =
+                `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
+            } else {
+                statusBadgeHtml =
+                    `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
+            }
+            document.getElementById('m_status').innerHTML = statusBadgeHtml;
+
+            // ---- Progress Pembangunan ----
+            const progressMap = {
+                belum_mulai: 0,
+                pondasi: 20,
+                dinding: 40,
+                atap: 60,
+                finishing: 80,
+                selesai: 100
+            };
+            const pct = progressMap[data.construction] !== undefined ? progressMap[data.construction] : 0;
+            document.getElementById('m_progress_bar').style.width = pct + '%';
+            document.getElementById('m_progress_bar').className = 'progress-bar-custom ' + (pct < 100 ?
+                'progress-green' : 'progress-dark-green');
+            document.getElementById('m_progress_pct').innerText = pct + '%';
+
+            // ---- Booking Card Show/Hide ----
+            const hasBooking = data.hasBooking === 1 || data.hasBooking === '1' || data.hasBooking === true;
+            document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
+            document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
+
+            if (hasBooking) {
+                const customerName = data.customer || '-';
+                const salesName = data.sales || '-';
+
+                document.getElementById('m_customer').innerText = customerName;
+                document.getElementById('m_customer_initial').innerText = (customerName !== '-' && customerName) ?
+                    customerName.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_sales').innerText = salesName;
+                document.getElementById('m_sales_initial').innerText = (salesName !== '-' && salesName) ? salesName
+                    .trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_booking_date').innerText = data.bookingDate || '-';
+                document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data
+                    .bookingFee || 0);
+                document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data
+                    .agentFee || 0);
+
+                // Badge Status Booking
+                const bookingStatus = data.bookingStatus || '-';
+                let bookingBadgeHtml = '';
+                if (bookingStatus === 'active') {
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                } else if (bookingStatus === 'completed' || bookingStatus === 'lunas') {
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                } else if (bookingStatus === 'cancelled') {
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                } else {
+                    const bLabel = bookingStatus.charAt(0).toUpperCase() + bookingStatus.slice(1);
+                    bookingBadgeHtml =
+                        `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
+                }
+                document.getElementById('m_booking_status').innerHTML = bookingBadgeHtml;
+            }
+        };
+
+        // ========== DETAIL MODAL HANDLER ==========
+        const detailModal = document.getElementById('detailUnitModal');
         if (detailModal) {
             detailModal.addEventListener('show.bs.modal', function(event) {
-                let button = event.relatedTarget
+                let button = event.relatedTarget;
+                if (!button) return; // Triggered programmatically, already populated!
 
-                document.getElementById('m_unit').innerText = button.getAttribute('data-unit')
-                document.getElementById('m_block').innerText = button.getAttribute('data-block')
-                document.getElementById('m_type').innerText = button.getAttribute('data-type')
-                document.getElementById('m_address').innerText = button.getAttribute('data-address')
-                document.getElementById('m_area').innerText = button.getAttribute('data-area') + ' m²'
-                document.getElementById('m_building').innerText = button.getAttribute('data-building') + ' m²'
-                document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(button.getAttribute('data-price'))
-                document.getElementById('m_direction').innerText = button.getAttribute('data-direction')
-                document.getElementById('m_status').innerText = button.getAttribute('data-status')
-                document.getElementById('m_construction').innerText = button.getAttribute('data-construction')
-                document.getElementById('m_customer').innerText = button.getAttribute('data-customer')
-                document.getElementById('m_sales').innerText = button.getAttribute('data-sales')
-                document.getElementById('m_booking_date').innerText = button.getAttribute('data-booking_date')
-                document.getElementById('m_booking_fee').innerText = button.getAttribute('data-booking_fee')
-                document.getElementById('m_booking_status').innerText = button.getAttribute('data-booking_status')
-            })
+                // ---- Informasi Unit ----
+                document.getElementById('m_unit_name').innerText = button.getAttribute('data-unit_name') || '-';
+                document.getElementById('m_block').innerText = button.getAttribute('data-block') || '-';
+                document.getElementById('m_unit_number').innerText = button.getAttribute('data-unit_number') || '-';
+                document.getElementById('m_jenis').innerText = button.getAttribute('data-jenis') || '-';
+                document.getElementById('m_type').innerText = button.getAttribute('data-type') || '-';
+                document.getElementById('m_area').innerText = new Intl.NumberFormat('id-ID').format(button
+                    .getAttribute('data-area') || 0) + ' m\u00b2';
+                document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(button
+                    .getAttribute('data-building') || 0) + ' m\u00b2';
+                document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(button
+                    .getAttribute('data-price') || 0);
+                document.getElementById('m_direction').innerText = button.getAttribute('data-direction') || '-';
+                document.getElementById('m_address').innerText = button.getAttribute('data-address') || '-';
+
+                // ---- Badge Status Unit ----
+                const statusRaw = button.getAttribute('data-status_raw') || '';
+                const statusText = button.getAttribute('data-status_text') || statusRaw;
+                const jenisRaw = (button.getAttribute('data-jenis') || '').toLowerCase();
+                const typeRaw = (button.getAttribute('data-type') || '').toLowerCase();
+                let statusBadgeHtml = '';
+                if (statusRaw === 'ready' || statusRaw === 'tersedia') {
+                    const cls = (jenisRaw === 'subsidi' || typeRaw === 'subsidi') ? 'badge-available-subsidi' :
+                        'badge-available-komersil';
+                    statusBadgeHtml =
+                        `<span class="badge-soft ${cls}"><i class="mdi mdi-check-circle-outline"></i>Tersedia</span>`;
+                } else if (statusRaw === 'booked') {
+                    statusBadgeHtml =
+                        `<span class="badge-soft badge-booking"><i class="mdi mdi-bookmark-check-outline"></i>Booking</span>`;
+                } else if (statusRaw === 'sold') {
+                    statusBadgeHtml =
+                        `<span class="badge-soft badge-sold"><i class="mdi mdi-cash-check"></i>Terjual</span>`;
+                } else {
+                    statusBadgeHtml =
+                        `<span class="badge-soft badge-draft"><i class="mdi mdi-information-outline"></i>${statusText || 'Draft'}</span>`;
+                }
+                document.getElementById('m_status').innerHTML = statusBadgeHtml;
+
+                // ---- Progress Pembangunan ----
+                const progressMap = {
+                    belum_mulai: 0,
+                    pondasi: 20,
+                    dinding: 40,
+                    atap: 60,
+                    finishing: 80,
+                    selesai: 100
+                };
+                const construction = button.getAttribute('data-construction') || 'belum_mulai';
+                const pct = progressMap[construction] !== undefined ? progressMap[construction] : 0;
+                document.getElementById('m_progress_bar').style.width = pct + '%';
+                document.getElementById('m_progress_bar').className = 'progress-bar-custom ' + (pct < 100 ?
+                    'progress-green' : 'progress-dark-green');
+                document.getElementById('m_progress_pct').innerText = pct + '%';
+
+                // ---- Booking Card Show/Hide ----
+                const hasBooking = button.getAttribute('data-has_booking') === '1';
+                document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
+                document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
+
+                if (hasBooking) {
+                    const customerName = button.getAttribute('data-customer') || '-';
+                    const salesName = button.getAttribute('data-sales') || '-';
+
+                    document.getElementById('m_customer').innerText = customerName;
+                    document.getElementById('m_customer_initial').innerText = (customerName !== '-' &&
+                        customerName) ? customerName.trim().charAt(0).toUpperCase() : '?';
+                    document.getElementById('m_sales').innerText = salesName;
+                    document.getElementById('m_sales_initial').innerText = (salesName !== '-' && salesName) ?
+                        salesName.trim().charAt(0).toUpperCase() : '?';
+                    document.getElementById('m_booking_date').innerText = button.getAttribute(
+                        'data-booking_date') || '-';
+                    document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(button.getAttribute('data-booking_fee') || 0);
+                    document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID')
+                        .format(button.getAttribute('data-agent_fee') || 0);
+
+                    // Badge Status Booking
+                    const bookingStatus = button.getAttribute('data-booking_status') || '-';
+                    let bookingBadgeHtml = '';
+                    if (bookingStatus === 'active') {
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                    } else if (bookingStatus === 'completed' || bookingStatus === 'lunas') {
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                    } else if (bookingStatus === 'cancelled') {
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                    } else {
+                        const bLabel = bookingStatus.charAt(0).toUpperCase() + bookingStatus.slice(1);
+                        bookingBadgeHtml =
+                            `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
+                    }
+                    document.getElementById('m_booking_status').innerHTML = bookingBadgeHtml;
+                }
+            });
         }
 
-        // ========== SITEPLAN CANVAS - SATU SCRIPT ==========
+        
+        // ========== SITEPLAN CANVAS ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
-        const siteplanImage = "{{ asset('storage/siteplan.jpg') }}";
+        const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
+        let originalWidth = 0;
+        let originalHeight = 0;
+        let zoomLevel = 1.0;
 
-        // Load background image
+        // Canvas Focus to avoid Page Scroll Hijacking
+        let isCanvasFocused = false;
+
         fabric.Image.fromURL(siteplanImage, function(img) {
-            // Set canvas size sesuai ukuran asli gambar
-            canvas.setWidth(img.width);
-            canvas.setHeight(img.height);
+            originalWidth = img.width;
+            originalHeight = img.height;
+
+            // Premium grab cursors
+            canvas.defaultCursor = 'grab';
 
             canvas.setBackgroundImage(img, function() {
-                // Load unit dari database dengan posisi absolut
                 @foreach ($unitsForSvg as $unit)
-                    const rect{{ $unit->id }} = new fabric.Rect({
+                    const circle{{ $unit->id }} = new fabric.Circle({
                         left: {{ $unit->pos_x ?? 100 }},
                         top: {{ $unit->pos_y ?? 100 }},
-                        width: {{ $unit->width ?? 80 }},
-                        height: {{ $unit->height ?? 60 }},
+                        radius: {{ ($unit->width ?? 80) / 2 }},
+                        angle: {{ $unit->angle ?? 0 }},
                         fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
                         opacity: 0.6,
                         stroke: 'black',
                         strokeWidth: 1,
                         hasControls: true,
                         hasBorders: true,
-                        lockRotation: true
+                        lockRotation: false
                     });
-
-                    rect{{ $unit->id }}.unitId = "{{ $unit->id }}";
-                    rect{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    rect{{ $unit->id }}.status = "{{ $unit->status }}";
-
-                    canvas.add(rect{{ $unit->id }});
+                    circle{{ $unit->id }}.unitId = "{{ $unit->id }}";
+                    circle{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
+                    circle{{ $unit->id }}.unitName =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}";
+                    circle{{ $unit->id }}.unitNumber =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}";
+                    circle{{ $unit->id }}.block =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}";
+                    circle{{ $unit->id }}.jenis =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}";
+                    circle{{ $unit->id }}.type =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}";
+                    circle{{ $unit->id }}.address =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}";
+                    circle{{ $unit->id }}.area = {{ $unit->area ?? 0 }};
+                    circle{{ $unit->id }}.building = {{ $unit->building_area ?? 0 }};
+                    circle{{ $unit->id }}.price = {{ $unit->price ?? 0 }};
+                    circle{{ $unit->id }}.direction =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}";
+                    circle{{ $unit->id }}.statusRaw = "{{ $unit->status }}";
+                    circle{{ $unit->id }}.statusText =
+                        "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}";
+                    circle{{ $unit->id }}.construction =
+                        "{{ $unit->construction_progress ?? 'belum_mulai' }}";
+                    circle{{ $unit->id }}.hasBooking = {{ $unit->activeBooking ? 1 : 0 }};
+                    circle{{ $unit->id }}.customer =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}";
+                    circle{{ $unit->id }}.sales =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}";
+                    circle{{ $unit->id }}.bookingDate =
+                        "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}";
+                    circle{{ $unit->id }}.bookingFee = {{ $unit->activeBooking->booking_fee ?? 0 }};
+                    circle{{ $unit->id }}.agentFee = {{ $unit->activeBooking->agent_fee ?? 0 }};
+                    circle{{ $unit->id }}.bookingStatus =
+                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
+                    canvas.add(circle{{ $unit->id }});
                 @endforeach
-
-                canvas.renderAll();
+                resetZoom();
             }, {
                 originX: 'left',
                 originY: 'top'
             });
         });
 
-        // Fungsi untuk menentukan warna berdasarkan status dan tipe
+        // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)
+        canvas.on('mouse:wheel', function(opt) {
+            if (!isCanvasFocused) return; // Allow page scroll if not clicked/activated first!
+
+            if (typeof originalWidth === 'undefined' || originalWidth === 0) return;
+            const delta = opt.e.deltaY;
+            let zoomVal = canvas.getZoom();
+
+            zoomVal *= (delta < 0 ? 1.1 : 0.9);
+
+            if (zoomVal > 3.0) zoomVal = 3.0;
+            if (zoomVal < 0.2) zoomVal = 0.2;
+
+            zoomLevel = zoomVal;
+
+            const pointer = canvas.getPointer(opt.e);
+            canvas.zoomToPoint(new fabric.Point(pointer.x, pointer.y), zoomLevel);
+
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+            canvas.renderAll();
+            updateZoomText();
+        });
+
+        // Background Drag to Pan (Figma/Canva style!)
+        let isDragging = false;
+        let lastPosX, lastPosY;
+
+        canvas.on('mouse:down', function(opt) {
+            const evt = opt.e;
+            if (!canvas.getActiveObject()) {
+                isDragging = true;
+                canvas.selection = false;
+                canvas.defaultCursor = 'grabbing';
+                canvas.setCursor('grabbing');
+                lastPosX = evt.clientX;
+                lastPosY = evt.clientY;
+            }
+        });
+
+        canvas.on('mouse:move', function(opt) {
+            if (isDragging) {
+                const e = opt.e;
+                const vpt = canvas.viewportTransform;
+                vpt[4] += e.clientX - lastPosX;
+                vpt[5] += e.clientY - lastPosY;
+                canvas.requestRenderAll();
+                lastPosX = e.clientX;
+                lastPosY = e.clientY;
+            }
+        });
+
+        canvas.on('mouse:up', function(opt) {
+            canvas.setViewportTransform(canvas.viewportTransform);
+            isDragging = false;
+            canvas.selection = true;
+            canvas.defaultCursor = 'grab';
+            canvas.setCursor('grab');
+        });
+
+        // CANVAS FOCUS LOGIC TO AVOID SCROLL HIJACKING
+        const siteplanScrollContainer = document.querySelector('.siteplan-scroll-container');
+
+        if (siteplanScrollContainer) {
+            siteplanScrollContainer.addEventListener('click', function(e) {
+                isCanvasFocused = true;
+                siteplanScrollContainer.style.borderColor = '#28a745'; // Glowing green active border
+                siteplanScrollContainer.style.boxShadow = '0 0 15px rgba(40, 167, 69, 0.3)';
+                e.stopPropagation();
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            if (siteplanScrollContainer && !siteplanScrollContainer.contains(e.target)) {
+                isCanvasFocused = false;
+                siteplanScrollContainer.style.borderColor = '#9a55ff'; // Restore default purple
+                siteplanScrollContainer.style.boxShadow = 'none';
+            }
+        });
+
+        // Zoom Functions
+        function zoom(factor) {
+            if (zoomLevel * factor > 3.0 || zoomLevel * factor < 0.2) return;
+            zoomLevel = zoomLevel * factor;
+            canvas.zoomToPoint(new fabric.Point(canvas.getWidth() / 2, canvas.getHeight() / 2), zoomLevel);
+            updateZoomText();
+        }
+
+        function resetZoom() {
+            if (!canvas || !originalWidth || !originalHeight) return;
+
+            const scrollContainer = document.querySelector('.siteplan-scroll-container');
+            const containerWidth = (scrollContainer && scrollContainer.clientWidth > 0) ? scrollContainer.clientWidth : (canvas.getWidth() || 1100);
+            const containerHeight = (scrollContainer && scrollContainer.clientHeight > 0) ? scrollContainer.clientHeight : 620;
+
+            canvas.setWidth(containerWidth);
+            canvas.setHeight(containerHeight);
+
+            // Calculate fit scale so 100% of the siteplan is visible without clipping
+            const scaleX = (containerWidth - 20) / originalWidth;
+            const scaleY = (containerHeight - 20) / originalHeight;
+            const fitScale = Math.min(scaleX, scaleY);
+
+            zoomLevel = fitScale;
+
+            const panX = (containerWidth - originalWidth * fitScale) / 2;
+            const panY = (containerHeight - originalHeight * fitScale) / 2;
+
+            canvas.setViewportTransform([fitScale, 0, 0, fitScale, panX, panY]);
+            canvas.calcOffset();
+            canvas.renderAll();
+            updateZoomText();
+        }
+
+        function updateZoomText() {
+            const txt = document.getElementById('zoomPercent');
+            if (txt) {
+                txt.textContent = Math.round(zoomLevel * 100) + '%';
+            }
+        }
+
+        // Fullscreen Functions
+        function toggleFullscreen() {
+            const container = document.querySelector('#sitePlandView .denah-container');
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Listen for fullscreen events
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            const container = document.querySelector('#sitePlandView .denah-container');
+            const btn = document.getElementById('btnFullscreen');
+            const scrollContainer = document.querySelector('.siteplan-scroll-container');
+            const cardBody = document.querySelector('.card-body');
+            
+            if (document.fullscreenElement) {
+                container.classList.add('fullscreen-mode');
+                if (btn) btn.innerHTML = '<i class="mdi mdi-fullscreen-exit"></i>';
+                
+                // Fullscreen canvas size adjustment
+                if (typeof canvas !== 'undefined' && canvas && scrollContainer) {
+                    // Let canvas take the full width/height of the fullscreen container minus paddings
+                    const newWidth = scrollContainer.clientWidth - 40;
+                    const newHeight = scrollContainer.clientHeight - 40;
+                    
+                    canvas.setWidth(newWidth > 0 ? newWidth : window.innerWidth - 80);
+                    canvas.setHeight(newHeight > 0 ? newHeight : window.innerHeight - 160);
+                }
+            } else {
+                container.classList.remove('fullscreen-mode');
+                if (btn) btn.innerHTML = '<i class="mdi mdi-fullscreen"></i>';
+                
+                // Restore normal canvas size
+                if (typeof canvas !== 'undefined' && canvas) {
+                    let normalWidth = 1100;
+                    if (cardBody && cardBody.clientWidth > 0) {
+                        normalWidth = cardBody.clientWidth - 40;
+                    }
+                    canvas.setWidth(normalWidth);
+                    if (typeof originalHeight !== 'undefined' && originalHeight > 0) {
+                        canvas.setHeight(originalHeight * 0.63);
+                    }
+                }
+            }
+            
+            if (typeof canvas !== 'undefined' && canvas) {
+                // Re-center and reset zoom to perfectly fit the new dimensions
+                resetZoom();
+                canvas.calcOffset();
+                canvas.renderAll();
+            }
+        }
+
+        // Keyboard navigation for micro-adjustments (Arrow Keys)
+        document.addEventListener('keydown', function(e) {
+            if (typeof canvas === 'undefined' || !canvas) return;
+            const activeObject = canvas.getActiveObject();
+            if (!activeObject) return;
+
+            const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (keys.includes(e.key)) {
+                e.preventDefault();
+            }
+
+            const step = e.shiftKey ? 10 : 1; // 10px if Shift is held, otherwise 1px
+
+            if (e.key === 'ArrowUp') {
+                activeObject.set('top', activeObject.top - step);
+            } else if (e.key === 'ArrowDown') {
+                activeObject.set('top', activeObject.top + step);
+            } else if (e.key === 'ArrowLeft') {
+                activeObject.set('left', activeObject.left - step);
+            } else if (e.key === 'ArrowRight') {
+                activeObject.set('left', activeObject.left + step);
+            }
+
+            activeObject.setCoords();
+            canvas.renderAll();
+        });
+
+        // Window resize listener
+        window.addEventListener('resize', function() {
+            if (typeof canvas !== 'undefined' && canvas && document.getElementById('sitePlandView').style.display !== 'none') {
+                resetZoom();
+            }
+        });
+
         function getColor(status, type) {
             if (type === "komersil" && status === "ready") return "#2675BB";
             if (status === "ready") return "#CE2A2E";
@@ -2250,25 +3105,41 @@
             return "gray";
         }
 
-        // ========== DOUBLE CLICK HANDLER UNTUK DETAIL SEDERHANA ==========
         canvas.on('mouse:dblclick', function(e) {
             if (e.target && e.target.unitId) {
-                // Isi modal dengan data unit
-                document.querySelector('#myModal .unit-code').textContent = e.target.unitCode || '-';
-                document.querySelector('#myModal .unit-status').textContent = e.target.status || '-';
-                document.querySelector('#myModal .unit-pos').textContent = `X: ${Math.round(e.target.left)}, Y: ${Math.round(e.target.top)}`;
-                document.querySelector('#myModal .unit-size').textContent = `W: ${Math.round(e.target.getScaledWidth())}, H: ${Math.round(e.target.getScaledHeight())}`;
+                const target = e.target;
+                const data = {
+                    unitName: target.unitName,
+                    unitCode: target.unitCode,
+                    unitNumber: target.unitNumber,
+                    block: target.block,
+                    jenis: target.jenis,
+                    type: target.type,
+                    address: target.address,
+                    area: target.area,
+                    building: target.building,
+                    price: target.price,
+                    direction: target.direction,
+                    statusRaw: target.statusRaw,
+                    statusText: target.statusText,
+                    construction: target.construction,
+                    hasBooking: target.hasBooking,
+                    customer: target.customer,
+                    sales: target.sales,
+                    bookingDate: target.bookingDate,
+                    bookingFee: target.bookingFee,
+                    agentFee: target.agentFee,
+                    bookingStatus: target.bookingStatus
+                };
 
-                // Tampilkan modal
-                const modal = new bootstrap.Modal(document.getElementById('myModal'));
+                window.populateModalDirectly(data);
+                const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
                 modal.show();
             }
         });
 
-        // ========== SAVE POSITION FUNCTION ==========
         function savePosition() {
             let units = [];
-
             canvas.getObjects().forEach(function(obj) {
                 if (obj.unitId) {
                     units.push({
@@ -2276,54 +3147,49 @@
                         pos_x: Math.round(obj.left),
                         pos_y: Math.round(obj.top),
                         width: Math.round(obj.getScaledWidth()),
-                        height: Math.round(obj.getScaledHeight())
+                        height: Math.round(obj.getScaledHeight()),
+                        angle: Math.round(obj.angle)
                     });
                 }
             });
-
             fetch("{{ route('unit.save.position') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ units: units })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        units: units
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Posisi unit berhasil disimpan',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                })
+                .catch(error => {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'Posisi unit berhasil disimpan',
-                        showConfirmButton: false,
-                        timer: 1500
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Terjadi kesalahan saat menyimpan posisi'
                     });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Terjadi kesalahan saat menyimpan posisi'
                 });
-            });
         }
 
         // ========== SWITCH VIEW FUNCTION ==========
         function switchView(view) {
-            // sembunyikan semua
             document.getElementById('tableView').style.display = 'none';
             document.getElementById('gridView').style.display = 'none';
             document.getElementById('denahView').style.display = 'none';
             document.getElementById('sitePlandView').style.display = 'none';
-
-            // reset active button
-            document.querySelectorAll('.btn-group .btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // tampilkan sesuai pilihan
+            document.querySelectorAll('#viewToggleGroup .btn, .btn-group .btn').forEach(btn => btn.classList.remove('active'));
             if (view === 'table') {
                 document.getElementById('tableView').style.display = 'block';
                 document.getElementById('btnTableView').classList.add('active');
@@ -2336,80 +3202,90 @@
             } else if (view === 'sitepland') {
                 document.getElementById('sitePlandView').style.display = 'block';
                 document.getElementById('btnSitePlandView').classList.add('active');
+                if (typeof canvas !== 'undefined' && canvas) {
+                    setTimeout(function() {
+                        resetZoom();
+                    }, 50);
+                }
             }
         }
 
-        // ========== HAPUS DEFAULT VIEW KE SITEPLAN ==========
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     switchView('sitepland');
-        // });
+        // ========== OPEN CUSTOMER MODAL ==========
+        window.openCustomerModal = function(unitId) {
+            if (!unitId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unit tidak valid!'
+                });
+                return;
+            }
+            $('#modalCustomer').attr('data-unit-id', unitId);
+            $('#customer_unit_id').val(unitId);
+            $('#select_customer_id').val('').trigger('change');
+            $('#select_purchase_type').val('kpr');
+            $('#booking_fee').val('');
+            $('#bukti_transfer').val('');
+            $('#buktiFileName').text('Upload Bukti Transfer');
+            $('#buktiFileSize').text('');
+            $('#buktiLabel').removeClass('file-selected');
+            $('#modalCustomer').modal('show');
+        };
 
-        // ========== SISANYA TETAP SAMA PERSIS ==========
-        $(document).ready(function() {
-            // CEK APAKAH TABEL MEMILIKI DATA (bukan baris kosong)
-            let hasData = false;
-            $('#unitTable tbody tr').each(function() {
-                if ($(this).find('td').length > 1 || $(this).find('td[colspan]').length === 0) {
-                    hasData = true;
-                }
+        // ========== OPEN AGENCY MODAL ==========
+        window.openAgentModal = function(unitId) {
+            if (!unitId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unit tidak valid!'
+                });
+                return;
+            }
+            $('#modalAgency').data('unit', unitId);
+            $('#agency_unit_id').val(unitId);
+            $('#select_sales_id').val('').trigger('change');
+            $('#agent_fee_modal').val('');
+            $('#modalAgency').modal('show');
+        };
+
+        $(document).ready(function () {
+            // Inisialisasi Select2 untuk Pilih Customer di dalam Modal
+            $('#select_customer_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalCustomer'),
+                placeholder: '-- Cari & Pilih Customer (ID / Nama) --',
+                allowClear: true,
+                width: '100%'
             });
 
-            // Hancurkan instance DataTables jika sudah ada
-            if ($.fn.DataTable.isDataTable('#unitTable')) {
-                $('#unitTable').DataTable().destroy();
-            }
+            // Inisialisasi Select2 untuk Pilih Agency di dalam Modal
+            $('#select_sales_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalAgency'),
+                placeholder: '-- Cari & Pilih Agency / Agent --',
+                allowClear: true,
+                width: '100%'
+            });
 
-            // HANYA inisialisasi DataTables JIKA ADA DATA
-            if (hasData) {
-                let table = $('#unitTable').DataTable({
-                    responsive: true,
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    ordering: true,
-                    language: {
-                        emptyTable: "Data unit belum tersedia",
-                        zeroRecords: "Data tidak ditemukan",
-                    },
-                    columnDefs: [{
-                            targets: 0,
-                            orderable: false
-                        },
-                        {
-                            targets: 14,
-                            orderable: false
-                        }
-                    ]
-                });
-            }
 
-            // Format Rupiah untuk booking fee dan agent fee
+            // Format Rupiah
             $('#booking_fee, #agent_fee_modal').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
-                if (value) {
-                    $(this).val(new Intl.NumberFormat('id-ID').format(value));
-                } else {
-                    $(this).val('');
-                }
+                if (value) $(this).val(new Intl.NumberFormat('id-ID').format(value));
+                else $(this).val('');
             });
 
-            // FILE UPLOAD HANDLER - Modern styling
+            // File upload handler
             $('#bukti_transfer').on('change', function() {
                 const file = this.files[0];
                 const $label = $('#buktiLabel');
                 const $fileName = $('#buktiFileName');
                 const $fileSize = $('#buktiFileSize');
-
                 if (file) {
                     $fileName.text(file.name.length > 30 ? file.name.substring(0, 30) + '...' : file.name);
-
-                    if (file.size < 1024 * 1024) {
-                        $fileSize.text((file.size / 1024).toFixed(1) + ' KB');
-                    } else {
-                        $fileSize.text((file.size / (1024 * 1024)).toFixed(1) + ' MB');
-                    }
-
+                    if (file.size < 1024 * 1024) $fileSize.text((file.size / 1024).toFixed(1) + ' KB');
+                    else $fileSize.text((file.size / (1024 * 1024)).toFixed(1) + ' MB');
                     $label.addClass('file-selected');
                 } else {
                     $fileName.text('Upload Bukti Transfer');
@@ -2418,31 +3294,13 @@
                 }
             });
 
-            // OPEN CUSTOMER MODAL
-            window.openCustomerModal = function(unitId) {
-                if (!unitId) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Unit tidak valid!'
-                    });
-                    return;
-                }
-                $('#modalCustomer').attr('data-unit-id', unitId);
-                $('#booking_fee').val('');
-                $('#bukti_transfer').val('');
-                $('#buktiFileName').text('Upload Bukti Transfer');
-                $('#buktiFileSize').text('');
-                $('#buktiLabel').removeClass('file-selected');
-                $('#modalCustomer').modal('show');
-            };
-
-            // PILIH CUSTOMER - DENGAN VALIDASI FILE
-            $(document).on('click', '.pilihCustomer', function() {
-                let customerId = $(this).data('id');
-                let purchaseType = $(this).data('type');
-                let unitId = $('#modalCustomer').attr('data-unit-id');
-                let bookingFee = $('#booking_fee').val().replace(/\./g, '');
+            // Simpan Customer & Booking Unit
+            $('#btnSimpanCustomer').on('click', function(e) {
+                e.preventDefault();
+                let customerId = $('#select_customer_id').val();
+                let purchaseType = $('#select_purchase_type').val();
+                let unitId = $('#modalCustomer').attr('data-unit-id') || $('#customer_unit_id').val();
+                let bookingFee = $('#booking_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
                 let buktiTransfer = $('#bukti_transfer')[0].files[0];
 
                 if (!unitId) {
@@ -2453,16 +3311,30 @@
                     });
                     return;
                 }
-
+                if (!customerId) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Customer Belum Dipilih',
+                        text: 'Silakan cari dan pilih Customer terlebih dahulu!'
+                    });
+                    return;
+                }
+                if (!purchaseType) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Metode Pembayaran Kosong',
+                        text: 'Silakan pilih metode pembayaran (Cash / KPR)!'
+                    });
+                    return;
+                }
                 if (!bookingFee || parseInt(bookingFee) <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Booking Fee Kosong',
-                        text: 'Booking fee harus diisi dan lebih dari 0!'
+                        text: 'Nominal booking fee harus diisi dan lebih dari 0!'
                     });
                     return;
                 }
-
                 if (!buktiTransfer) {
                     Swal.fire({
                         icon: 'warning',
@@ -2471,7 +3343,6 @@
                     });
                     return;
                 }
-
                 if (buktiTransfer.size > 2 * 1024 * 1024) {
                     Swal.fire({
                         icon: 'error',
@@ -2480,7 +3351,6 @@
                     });
                     return;
                 }
-
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
                 if (!allowedTypes.includes(buktiTransfer.type)) {
                     Swal.fire({
@@ -2491,162 +3361,161 @@
                     return;
                 }
 
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('customer_id', customerId);
+                formData.append('purchase_type', purchaseType);
+                formData.append('booking_fee', bookingFee);
+                formData.append('bukti_transfer', buktiTransfer);
+                let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
+
                 Swal.fire({
-                    title: 'Yakin pilih customer ini?',
-                    html: `
-                        <p class="mb-1">Jenis: <b>${purchaseType.toUpperCase()}</b></p>
-                        <p>Booking Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(bookingFee)}</b></p>
-                        <p class="small text-muted mt-2">File: ${buktiTransfer.name}</p>
-                    `,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Simpan!',
-                    cancelButtonText: 'Batal',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        formData.append('customer_id', customerId);
-                        formData.append('purchase_type', purchaseType);
-                        formData.append('booking_fee', bookingFee);
-                        formData.append('bukti_transfer', buktiTransfer);
+                    title: 'Memproses...',
+                    text: 'Harap tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-                        let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
-
+                $.ajax({
+                    url: actionUrl,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#modalCustomer').modal('hide');
                         Swal.fire({
-                            title: 'Memproses...',
-                            text: 'Harap tunggu',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        $.ajax({
-                            url: actionUrl,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                $('#modalCustomer').modal('hide');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: response.message || 'Customer berhasil dipilih',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                }).then(() => location.reload());
-                            },
-                            error: function(xhr) {
-                                let errorMsg = 'Terjadi kesalahan';
-                                if (xhr.responseJSON && xhr.responseJSON.message)
-                                    errorMsg = xhr.responseJSON.message;
-                                else if (xhr.responseJSON && xhr.responseJSON.errors)
-                                    errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
-
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: errorMsg
-                                });
-                            }
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'Customer berhasil dipilih & unit terbooking',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'Terjadi kesalahan';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            errorMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: errorMsg
                         });
                     }
                 });
             });
 
-            // AGENCY MODAL
-            $(document).on('click', '.bukaModal', function() {
-                let unitId = $(this).data('unit');
-                $('#formAgency').attr('action', "{{ url('marketing/set-agency') }}/" + unitId);
-                $('#modalAgency').data('unit', unitId);
-                $('#sales_id').val('');
-                $('#agent_fee_modal').val('');
-                $('#modalAgency').modal('show');
-            });
+            // Simpan Agency / Agent
+            $('#btnSimpanAgency').on('click', function(e) {
+                e.preventDefault();
+                let salesId = $('#select_sales_id').val();
+                let agentFeeRaw = $('#agent_fee_modal').val().replace(/\./g, '').replace(/,/g, '').trim();
+                let unitId = $('#modalAgency').data('unit') || $('#agency_unit_id').val();
 
-            $(document).on('click', '.pilihAgency', function() {
-                let salesId = $(this).data('id');
-                let agentFee = $('#agent_fee_modal').val().replace(/\./g, '');
-
-                if (!agentFee || parseInt(agentFee) <= 0) {
+                if (!unitId) {
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: 'Agent fee wajib diisi dan lebih dari 0!'
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Unit tidak valid! Silakan coba lagi.'
                     });
                     return;
                 }
 
-                let unitId = $('#modalAgency').data('unit');
+                if (!salesId) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Agency Belum Dipilih',
+                        text: 'Silakan cari dan pilih Agency / Agent terlebih dahulu!'
+                    });
+                    return;
+                }
 
+                if (!agentFeeRaw || parseInt(agentFeeRaw) <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Agent Fee Kosong',
+                        text: 'Nominal Agent Fee wajib diisi dan lebih dari 0!'
+                    });
+                    return;
+                }
+
+                // Langsung simpan tanpa konfirmasi popup
                 Swal.fire({
-                    title: 'Yakin pilih agency ini?',
-                    html: `Agent Fee: <b>Rp ${new Intl.NumberFormat('id-ID').format(agentFee)}</b>`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Pilih!',
-                    cancelButtonText: 'Batal',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        formData.append('sales_id', salesId);
-                        formData.append('agent_fee', agentFee);
+                    title: 'Memproses...',
+                    text: 'Harap tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-                        let actionUrl = "{{ url('marketing/set-agency') }}/" + unitId;
-
-                        $.ajax({
-                            url: actionUrl,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                $('#modalAgency').modal('hide');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil',
-                                    text: 'Agency berhasil dipilih',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: xhr.responseJSON?.message || 'Terjadi kesalahan'
-                                });
-                            }
+                $.ajax({
+                    url: "{{ url('marketing/set-agency') }}/" + unitId,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        sales_id: salesId,
+                        agent_fee: agentFeeRaw
+                    },
+                    success: function(response) {
+                        $('#modalAgency').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'Agency berhasil dipasang ke unit',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        let errMsg = 'Terjadi kesalahan saat menyimpan';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            errMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: errMsg
                         });
                     }
                 });
+            });
+
+            // Search dan Filter Customer Table
+            $('#searchCustomer').on('keyup', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                $('#customerTable tbody tr').each(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+                });
+            });
+
+            $('#filterPekerjaan').on('change', function() {
+                const job = $(this).val();
+                if (!job) $('#customerTable tbody tr').show();
+                else {
+                    $('#customerTable tbody tr').each(function() {
+                        const jobText = $(this).find('td:eq(4)').text().trim();
+                        $(this).toggle(jobText === job);
+                    });
+                }
             });
 
             // Reset form saat modal ditutup
             $('#modalCustomer, #modalAgency').on('hidden.bs.modal', function() {
                 $('#booking_fee, #agent_fee_modal').val('');
+                $('#select_customer_id').val('').trigger('change');
+                $('#select_sales_id').val('').trigger('change');
                 $('#bukti_transfer').val('');
                 $('#buktiFileName').text('Upload Bukti Transfer');
                 $('#buktiFileSize').text('');
                 $('#buktiLabel').removeClass('file-selected');
-            });
-
-            $('#searchCustomer').on('keyup', function() {
-                const searchTerm = $(this).val().toLowerCase();
-
-                $('#customerTable tbody tr').each(function() {
-                    const rowText = $(this).text().toLowerCase();
-                    $(this).toggle(rowText.indexOf(searchTerm) > -1);
-                });
             });
         });
 
@@ -2660,7 +3529,6 @@
                 timer: 2000
             });
         @endif
-
         @if (session('error'))
             Swal.fire({
                 icon: 'error',
@@ -2669,7 +3537,6 @@
                 confirmButtonColor: '#d33'
             });
         @endif
-
         @if ($errors->any())
             Swal.fire({
                 icon: 'warning',
@@ -2677,5 +3544,109 @@
                 html: `{!! implode('<br>', $errors->all()) !!}`
             });
         @endif
+
+        // ========== SEARCH SYNC ==========
+        // Sinkronisasi search field antara desktop dan mobile
+        $(document).ready(function() {
+            // Ketika desktop search berubah, sync ke mobile
+            $('input[name="search"]').on('input', function() {
+                $('#searchMobile').val($(this).val());
+            });
+
+            // Ketika mobile search berubah, sync ke desktop
+            $('#searchMobile').on('input', function() {
+                $('input[name="search"]').val($(this).val());
+            });
+
+            // ========== SORTING FUNCTIONALITY ==========
+            // Sorting functionality
+            $('.sortable').click(function() {
+                let field = $(this).data('field');
+                let direction = $(this).data('direction');
+
+                // Toggle direction
+                if (direction === 'asc') {
+                    direction = 'desc';
+                } else {
+                    direction = 'asc';
+                }
+
+                // Show loading
+                Swal.fire({
+                    title: 'Mengurutkan...',
+                    html: 'Sedang mengurutkan data',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Build URL dengan sorting parameters
+                let url = new URL(window.location.href);
+                url.searchParams.set('sort', field);
+                url.searchParams.set('direction', direction);
+                url.searchParams.set('page', 1);
+
+                // Redirect dengan delay untuk efek loading
+                setTimeout(() => {
+                    window.location.href = url.toString();
+                }, 500);
+            });
+
+            // ========== SELECT2 FILTERS (NO SEARCH INPUT) ==========
+            $('#jenisSelect, #statusSelect, #perPageSelect, #jenisSelectMobile, #statusSelectMobile, #perPageSelectMobile').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity,
+                width: '100%'
+            });
+
+            // Saat submit form, pastikan nilai yang dipilih sinkron antara desktop dan mobile
+            $('#filterForm').on('submit', function() {
+                if ($(window).width() < 768) {
+                    var mobileSearch = $('#searchMobile').val();
+                    $('input[name="search"]').val(mobileSearch);
+
+                    if ($('#jenisSelectMobile').length) $('#jenisSelect').val($('#jenisSelectMobile').val());
+                    if ($('#statusSelectMobile').length) $('#statusSelect').val($('#statusSelectMobile').val());
+                    if ($('#perPageSelectMobile').length) $('#perPageSelect').val($('#perPageSelectMobile').val());
+                }
+
+                // Hapus field duplikat mobile agar tidak mengirim parameter ganda
+                $('input[name="search_mobile"]').remove();
+                $('select[name="jenis_mobile"]').remove();
+                $('select[name="status_mobile"]').remove();
+                $('select[name="perPage_mobile"]').remove();
+
+                return true;
+            });
+        });
+
+        // Fungsi loading untuk filter
+        function showFilterLoading() {
+            Swal.fire({
+                title: 'Memuat...',
+                html: 'Sedang memfilter data',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            return true;
+        }
+
+        // Fungsi loading untuk reset
+        function showResetLoading(event) {
+            event.preventDefault();
+            let url = event.currentTarget.href;
+            Swal.fire({
+                title: 'Memuat...',
+                html: 'Sedang mereset data',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location.href = url;
+        }
     </script>
 @endpush

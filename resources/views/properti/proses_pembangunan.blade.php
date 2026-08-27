@@ -3,43 +3,273 @@
 @section('title', 'RAB Pembangunan - Property Management App')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('assets/css/cetak/rab.css') }}">
+
+    <style>
+        .rab-info-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f2f5;
+            padding: 1.25rem;
+        }
+
+        .rab-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #718096;
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .rab-form-control {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #2d3748;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .rab-form-control:focus {
+            outline: none;
+            border-color: #9a55ff;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12);
+        }
+
+        select.rab-form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 12px;
+            padding-right: 2rem;
+            cursor: pointer;
+        }
+
+        .rab-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1.5rem;
+            background: #ffffff;
+        }
+
+        .rab-card-header {
+            background: #ffffff !important;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f0f2f5 !important;
+        }
+
+        .rab-card-header h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2c2e3f;
+            margin: 0;
+        }
+
+        .rab-btn-add {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 0.95rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+        }
+
+        .rab-btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.35);
+            color: #ffffff !important;
+        }
+
+        .rab-table thead th {
+            background-color: #f8f9fc !important;
+            color: #4a5568 !important;
+            font-size: 0.76rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.75rem 0.65rem;
+            border-bottom: 2px solid #e2e8f0;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .rab-table tbody td {
+            vertical-align: middle;
+            padding: 0.5rem 0.65rem;
+            font-size: 0.84rem;
+            color: #2d3748;
+        }
+
+        .rab-table tfoot th {
+            background-color: #f8f9fc !important;
+            padding: 0.65rem 0.75rem;
+            font-size: 0.84rem;
+            vertical-align: middle;
+        }
+
+        .file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.35rem 0.6rem;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-upload-label:hover, .file-upload-label.file-selected {
+            border-color: #9a55ff;
+            background: #f3e8ff;
+        }
+
+        .file-preview-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(154, 85, 255, 0.1);
+            color: #9a55ff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .file-preview-btn:hover {
+            background: #9a55ff;
+            color: #ffffff;
+        }
+
+        .ringkasan-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .ringkasan-label {
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+
+        .ringkasan-input {
+            width: 55%;
+        }
+
+        .ringkasan-divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 0.75rem 0;
+        }
+
+        .aksi-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .aksi-btn {
+            flex: 1 1 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            color: #ffffff !important;
+        }
+
+        .aksi-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .rab-btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .rab-btn-primary {
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+        }
+
+        .rab-btn-warning {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+        }
+    </style>
 
     <div class="container-fluid p-4">
-        <!-- Header -->
-        <div class="row mb-4">
+        <!-- Header Halaman -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="text-dark fw-bold mb-1">
-                            <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>
-                            Rencana Anggaran Biaya (RAB) Pembangunan
+                <div class="d-flex justify-content-between align-items-center px-1">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold">
+                            <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>Rencana Anggaran Biaya (RAB) Pembangunan
                         </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Rincian biaya pembangunan unit dari awal hingga selesai
-                        </p>
+                        <p class="text-muted mb-0">Rincian biaya pembangunan unit dari awal hingga selesai</p>
                     </div>
                 </div>
             </div>
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
+            <div class="alert alert-success alert-dismissible fade show" style="border-radius: 10px;">
                 {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show">
+            <div class="alert alert-danger alert-dismissible fade show" style="border-radius: 10px;">
                 {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" style="border-radius: 10px;">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -47,57 +277,55 @@
         <!-- Info Unit -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <div class="row">
-                            {{-- UNIT --}}
-                            <div class="col-12 col-sm-6 col-md-2">
-                                <small class="text-muted d-block">
-                                    <i class="mdi mdi-home me-1"></i>Unit
-                                </small>
-                                <select class="rab-form-control" id="unitSelect">
-                                    @foreach ($land->units as $unit)
-                                        <option value="{{ $unit->id }}"
-                                            {{ $unit->id == $selectedUnit->id ? 'selected' : '' }}
-                                            data-type="{{ $unit->type }}" data-area="{{ $unit->area }}"
-                                            data-building="{{ $unit->building_area }}" data-price="{{ $unit->price }}">
-                                            {{ $unit->unit_code }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                <div class="card shadow-sm border-0 rab-info-card">
+                    <div class="row g-3 align-items-center">
+                        {{-- UNIT --}}
+                        <div class="col-12 col-sm-6 col-md-2">
+                            <span class="rab-label">
+                                <i class="mdi mdi-home text-primary me-1"></i>Unit
+                            </span>
+                            <select class="rab-form-control" id="unitSelect">
+                                @foreach ($land->units as $unit)
+                                    <option value="{{ $unit->id }}"
+                                        {{ $unit->id == $selectedUnit->id ? 'selected' : '' }}
+                                        data-type="{{ $unit->type }}" data-area="{{ $unit->area }}"
+                                        data-building="{{ $unit->building_area }}" data-price="{{ $unit->price }}">
+                                        {{ $unit->unit_code }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            {{-- TIPE / NAMA --}}
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <small class="text-muted d-block">
-                                    <i class="mdi mdi-shape-outline me-1"></i>Tipe / Nama
-                                </small>
-                                <input type="text" id="unitType" class="rab-form-control" readonly>
-                            </div>
+                        {{-- TIPE / NAMA --}}
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <span class="rab-label">
+                                <i class="mdi mdi-shape-outline text-info me-1"></i>Tipe / Nama
+                            </span>
+                            <input type="text" id="unitType" class="rab-form-control" readonly>
+                        </div>
 
-                            {{-- LUAS TANAH --}}
-                            <div class="col-6 col-sm-4 col-md-2">
-                                <small class="text-muted d-block">
-                                    <i class="mdi mdi-ruler-square me-1"></i>Luas Tanah
-                                </small>
-                                <input type="text" id="unitArea" class="rab-form-control" readonly>
-                            </div>
+                        {{-- LUAS TANAH --}}
+                        <div class="col-6 col-sm-4 col-md-2">
+                            <span class="rab-label">
+                                <i class="mdi mdi-ruler-square text-warning me-1"></i>Luas Tanah
+                            </span>
+                            <input type="text" id="unitArea" class="rab-form-control" readonly>
+                        </div>
 
-                            {{-- LUAS BANGUNAN --}}
-                            <div class="col-6 col-sm-4 col-md-2">
-                                <small class="text-muted d-block">
-                                    <i class="mdi mdi-ruler-square me-1"></i>Luas Bangunan
-                                </small>
-                                <input type="text" id="unitBuilding" class="rab-form-control" readonly>
-                            </div>
+                        {{-- LUAS BANGUNAN --}}
+                        <div class="col-6 col-sm-4 col-md-2">
+                            <span class="rab-label">
+                                <i class="mdi mdi-office-building-marker text-success me-1"></i>Luas Bangunan
+                            </span>
+                            <input type="text" id="unitBuilding" class="rab-form-control" readonly>
+                        </div>
 
-                            {{-- HARGA --}}
-                            <div class="col-12 col-sm-4 col-md-3">
-                                <small class="text-muted d-block">
-                                    <i class="mdi mdi-currency-usd me-1"></i>Harga Jual Unit
-                                </small>
-                                <input type="text" id="unitPrice" class="rab-form-control" readonly>
-                            </div>
+                        {{-- HARGA --}}
+                        <div class="col-12 col-sm-4 col-md-3">
+                            <span class="rab-label">
+                                <i class="mdi mdi-currency-usd text-danger me-1"></i>Harga Jual Unit
+                            </span>
+                            <input type="text" id="unitPrice" class="rab-form-control fw-bold text-success" readonly>
                         </div>
                     </div>
                 </div>
@@ -134,14 +362,13 @@
             @foreach ($kategoriList as $key => $title)
                 <div class="row mb-4">
                     <div class="col-12">
-                        <div class="card">
-                            <div
-                                class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">
-                                    <i class="mdi mdi-{{ $iconMap[$key] ?? 'dots-horizontal' }} me-2"></i>
+                        <div class="card shadow-sm border-0 rab-card">
+                            <div class="card-header rab-card-header d-flex justify-content-between align-items-center py-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="mdi mdi-{{ $iconMap[$key] ?? 'dots-horizontal' }} me-2" style="color: #9a55ff;"></i>
                                     {{ $title }}
                                 </h5>
-                                <button type="button" class="rab-btn rab-btn-light rab-btn-sm"
+                                <button type="button" class="rab-btn-add"
                                     onclick="tambahItem('{{ $key }}')">
                                     <i class="mdi mdi-plus me-1"></i>Tambah Item
                                 </button>
@@ -149,19 +376,19 @@
 
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered mb-0">
-                                        <thead class="bg-light">
+                                    <table class="table table-hover table-bordered align-middle mb-0 rab-table">
+                                        <thead>
                                             <tr>
-                                                <th>NO</th>
+                                                <th style="width: 50px;">NO</th>
                                                 <th>URAIAN</th>
-                                                <th>VOLUME</th>
-                                                <th>SATUAN</th>
-                                                <th>HARGA</th>
-                                                <th>TOTAL</th>
+                                                <th style="width: 90px;">VOLUME</th>
+                                                <th style="width: 80px;">SATUAN</th>
+                                                <th style="width: 140px;">HARGA</th>
+                                                <th style="width: 150px;">TOTAL</th>
                                                 <th>KETERANGAN</th>
-                                                <th>DEADLINE</th>
-                                                <th>DOKUMENTASI</th>
-                                                <th>AKSI</th>
+                                                <th style="width: 130px;">DEADLINE</th>
+                                                <th style="width: 140px;">DOKUMENTASI</th>
+                                                <th style="width: 60px;">AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody id="body-{{ $key }}">
@@ -169,29 +396,28 @@
                                             @if ($selectedUnit->progress)
                                                 @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $item)
                                                     <tr>
-
                                                         <td style="display:none;">
                                                             <input type="hidden" name="items[{{ $item->id }}][id]"
                                                                 value="{{ $item->id }}">
                                                         </td>
 
-                                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                                        <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
 
-                                                        <td>{{ $item->uraian }}</td>
+                                                        <td class="fw-semibold">{{ $item->uraian }}</td>
 
-                                                        <td>{{ $item->volume }}</td>
+                                                        <td class="text-center">{{ $item->volume }}</td>
 
-                                                        <td>{{ $item->satuan }}</td>
+                                                        <td class="text-center">{{ $item->satuan }}</td>
 
-                                                        <td>Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                                                        <td class="text-end">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
 
-                                                        <td>Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                                                        <td class="text-end fw-bold text-success">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
 
-                                                        <td>{{ $item->keterangan }}</td>
+                                                        <td>{{ $item->keterangan ?? '-' }}</td>
 
                                                         <td>
                                                             <input type="date" name="deadline[{{ $item->id }}]"
-                                                                class="form-control form-control-sm"
+                                                                class="form-control form-control-sm" style="border-radius: 6px;"
                                                                 value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
                                                         </td>
 
@@ -212,9 +438,9 @@
                                                         </td>
 
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})">
-                                                                <i class="mdi mdi-delete"></i>
+                                                            <button type="button" class="btn btn-outline-danger btn-sm" style="border-radius: 6px; padding: 4px 8px;"
+                                                                onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})" title="Hapus Item">
+                                                                <i class="mdi mdi-trash-can-outline"></i>
                                                             </button>
                                                         </td>
 
@@ -222,18 +448,19 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="10" class="text-center text-muted">Belum ada progress
-                                                        untuk kategori ini</td>
+                                                    <td colspan="10" class="text-center text-muted py-3">
+                                                        <i class="mdi mdi-information-outline me-1"></i>Belum ada progress untuk kategori ini
+                                                    </td>
                                                 </tr>
                                             @endif
                                         </tbody>
-                                        <tfoot class="bg-light">
+                                        <tfoot>
                                             <tr>
-                                                <th colspan="6" class="text-end">SUB TOTAL {{ strtoupper($key) }}</th>
+                                                <th colspan="6" class="text-end fw-bold text-dark">SUB TOTAL {{ strtoupper($key) }}</th>
                                                 <th colspan="4">
                                                     <input type="text" id="subtotal-{{ $key }}"
-                                                        class="rab-form-control rab-form-control-sm text-end fw-bold"
-                                                        readonly>
+                                                        class="rab-form-control text-end fw-bold text-primary"
+                                                        style="font-size: 0.95rem;" readonly>
                                                 </th>
                                             </tr>
                                         </tfoot>
@@ -258,16 +485,16 @@
             <div class="row">
                 <!-- Ringkasan RAB -->
                 <div class="col-12 col-md-6">
-                    <div class="card border-primary shadow-sm mb-3">
+                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
-                            <h6 class="card-title text-primary mb-3">
-                                <i class="mdi mdi-chart-pie me-2"></i>Ringkasan RAB
+                            <h6 class="card-title fw-bold text-dark mb-3">
+                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAB
                             </h6>
 
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Subtotal</span>
                                 <div class="ringkasan-input">
-                                    <input type="text" class="rab-form-control text-end fw-bold"
+                                    <input type="text" id="summary-subtotal" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($subtotal, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
@@ -275,7 +502,7 @@
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">PPN (10%)</span>
                                 <div class="ringkasan-input">
-                                    <input type="text" class="rab-form-control text-end fw-bold"
+                                    <input type="text" id="summary-ppn" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($ppn, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
@@ -285,7 +512,7 @@
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label fw-bold">Total RAB</span>
                                 <div class="ringkasan-input">
-                                    <input type="text" class="rab-form-control text-end fw-bold"
+                                    <input type="text" id="summary-total-rab" class="rab-form-control text-end fw-bold text-primary"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
@@ -295,10 +522,10 @@
 
                 <!-- Harga Jual Final -->
                 <div class="col-12 col-md-6">
-                    <div class="card border-success shadow-sm mb-3">
+                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
-                            <h6 class="card-title text-success mb-3">
-                                <i class="mdi mdi-cash-check me-2"></i>Harga Jual Final
+                            <h6 class="card-title fw-bold text-dark mb-3">
+                                <i class="mdi mdi-cash-check me-2" style="color: #28a745;"></i>Harga Jual Final
                             </h6>
 
                             <input type="hidden" name="price" value="{{ $finalPrice }}">
@@ -306,7 +533,7 @@
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Total RAB</span>
                                 <div class="ringkasan-input">
-                                    <input type="text" class="rab-form-control text-end fw-bold"
+                                    <input type="text" id="summary-total-rab-final" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
@@ -314,7 +541,7 @@
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Harga Jual Unit</span>
                                 <div class="ringkasan-input">
-                                    <input type="text" class="rab-form-control text-end fw-bold"
+                                    <input type="text" id="summary-unit-price" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
@@ -324,7 +551,7 @@
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label fw-bold">TOTAL FINAL</span>
                                 <div class="ringkasan-input">
-                                    <input type="text" class="rab-form-control text-end fw-bold text-primary"
+                                    <input type="text" id="summary-final-price" class="rab-form-control text-end fw-bold text-success"
                                         value="Rp {{ number_format($finalPrice, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
@@ -432,38 +659,38 @@
 
             let row = `
                 <tr>
-                    <td class="text-center">${kode}</td>
+                    <td class="text-center fw-bold text-muted">${kode}</td>
                     <td>
                         <input type="hidden" name="items[${indexItem}][kategori]" value="${kategori}">
                         <input type="hidden" name="items[${indexItem}][kode]" value="${kode}">
                         <input type="text" name="items[${indexItem}][uraian]"
-                               class="form-control form-control-sm" required>
+                               class="form-control form-control-sm" placeholder="Uraian pekerjaan..." required>
                     </td>
                     <td>
-                        <input type="number" step="0.01"
+                        <input type="text"
                                name="items[${indexItem}][volume]"
-                               class="form-control form-control-sm volume" required>
+                               class="form-control form-control-sm volume text-center" placeholder="0" oninput="hitungSemua()" required>
                     </td>
                     <td>
                         <input type="text"
                                name="items[${indexItem}][satuan]"
-                               class="form-control form-control-sm" required>
+                               class="form-control form-control-sm text-center" placeholder="m² / ls / dll" required>
                     </td>
                     <td>
-                        <input type="number" step="0.01"
+                        <input type="text"
                                name="items[${indexItem}][harga_satuan]"
-                               class="form-control form-control-sm harga-satuan" required>
+                               class="form-control form-control-sm harga-satuan text-end" placeholder="0" oninput="formatRupiahInput(this)" required>
                     </td>
                     <td class="text-end">
                         <input type="text"
                                name="items[${indexItem}][total]"
-                               class="form-control form-control-sm text-end total-item"
-                               readonly>
+                               class="form-control form-control-sm text-end total-item fw-bold text-success"
+                               placeholder="0" readonly>
                     </td>
                     <td>
                         <input type="text"
                                name="items[${indexItem}][keterangan]"
-                               class="form-control form-control-sm">
+                               class="form-control form-control-sm" placeholder="Keterangan...">
                     </td>
                     <td>
                         <input type="date"
@@ -479,10 +706,10 @@
                                    accept="image/*,.pdf"
                                    onchange="handleFileSelect(this, ${indexItem})">
                             <div class="file-upload-label" id="label-${indexItem}">
-                                <i class="mdi mdi-cloud-upload"></i>
+                                <i class="mdi mdi-cloud-upload text-primary"></i>
                                 <div class="file-upload-info">
                                     <span id="fileName-${indexItem}">Pilih file</span>
-                                    <small>Max 2MB</small>
+                                    <small class="text-muted">Max 2MB</small>
                                 </div>
                                 <span class="file-upload-size" id="fileSize-${indexItem}"></span>
                             </div>
@@ -490,9 +717,9 @@
                     </td>
                     <td class="text-center">
                         <button type="button"
-                                class="btn btn-outline-danger btn-sm"
-                                onclick="hapusItem(this, '${kategori}')">
-                            <i class="mdi mdi-delete"></i>
+                                class="btn btn-outline-danger btn-sm" style="border-radius: 6px; padding: 4px 8px;"
+                                onclick="hapusItem(this, '${kategori}')" title="Hapus Item">
+                            <i class="mdi mdi-trash-can-outline"></i>
                         </button>
                     </td>
                 </tr>
@@ -501,6 +728,28 @@
             tbody.insertAdjacentHTML('beforeend', row);
             indexItem++;
             hitungSemua();
+        }
+
+        function formatRupiahInput(input) {
+            let val = input.value.replace(/[^0-9]/g, '');
+            if (val) {
+                input.value = Number(val).toLocaleString('id-ID');
+            } else {
+                input.value = '';
+            }
+            hitungSemua();
+        }
+
+        function parseVolumeVal(val) {
+            if (!val) return 0;
+            let str = val.toString().replace(/,/g, '.');
+            return parseFloat(str) || 0;
+        }
+
+        function parseRupiahVal(val) {
+            if (!val) return 0;
+            let clean = val.toString().replace(/[^0-9]/g, '');
+            return parseInt(clean, 10) || 0;
         }
 
         function handleFileSelect(input, index) {
@@ -597,14 +846,14 @@
                     let totalInput = row.querySelector(".total-item");
 
                     if (volumeInput && hargaInput && totalInput) {
-                        let volume = parseFloat(volumeInput.value) || 0;
-                        let harga = parseFloat(hargaInput.value) || 0;
-                        let total = volume * harga;
+                        let volume = parseVolumeVal(volumeInput.value);
+                        let harga = parseRupiahVal(hargaInput.value);
+                        let total = Math.round(volume * harga);
 
                         totalInput.value = total.toLocaleString('id-ID');
                         subtotal += total;
                     } else {
-                        let totalText = row.cells[5]?.innerText || "0";
+                        let totalText = row.cells[6]?.innerText || row.cells[5]?.innerText || "0";
                         let total = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
                         subtotal += total;
                     }
@@ -618,10 +867,31 @@
                 grandTotal += subtotal;
             });
 
-            let grandInput = document.getElementById("grand-total");
-            if (grandInput) {
-                grandInput.value = 'Rp ' + grandTotal.toLocaleString('id-ID');
-            }
+            // Live Update Ringkasan RAB & Harga Jual Final
+            let ppn = Math.round(grandTotal * 0.1);
+            let totalRAB = grandTotal + ppn;
+
+            let subtotalEl = document.getElementById('summary-subtotal');
+            if (subtotalEl) subtotalEl.value = 'Rp ' + grandTotal.toLocaleString('id-ID');
+
+            let ppnEl = document.getElementById('summary-ppn');
+            if (ppnEl) ppnEl.value = 'Rp ' + ppn.toLocaleString('id-ID');
+
+            let totalRABEl = document.getElementById('summary-total-rab');
+            if (totalRABEl) totalRABEl.value = 'Rp ' + totalRAB.toLocaleString('id-ID');
+
+            let totalRABFinalEl = document.getElementById('summary-total-rab-final');
+            if (totalRABFinalEl) totalRABFinalEl.value = 'Rp ' + totalRAB.toLocaleString('id-ID');
+
+            let unitPriceEl = document.getElementById('summary-unit-price');
+            let unitPrice = unitPriceEl ? parseRupiahVal(unitPriceEl.value) : 0;
+            let finalPrice = totalRAB + unitPrice;
+
+            let finalPriceEl = document.getElementById('summary-final-price');
+            if (finalPriceEl) finalPriceEl.value = 'Rp ' + finalPrice.toLocaleString('id-ID');
+
+            let hiddenPrice = document.querySelector('input[name="price"]');
+            if (hiddenPrice) hiddenPrice.value = finalPrice;
         }
 
         document.addEventListener("input", function(e) {

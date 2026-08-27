@@ -10,21 +10,28 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
 use App\Models\KprDocument;
+use App\Models\Promo;
 class KprApplicationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+  
     public function show(Booking $booking)
 {
     // load relasi customer + unit
-    $booking->load(['customer', 'unit']);
+    $booking->load(['customer.documents', 'unit']);
+
+    // Map customer documents for easy lookup in the view
+    $existingCustomerDocs = [];
+    if ($booking->customer && $booking->customer->documents) {
+        foreach ($booking->customer->documents as $doc) {
+            $existingCustomerDocs[$doc->document_name] = $doc->file;
+        }
+    }
 
     // ambil daftar bank aktif
     $banks = Banks::where('is_active', 1)->get();
-
+    $promos = Promo::all();
     // tampilkan form KPR untuk booking ini
-    return view('marketing.pengajuan', compact('booking', 'banks'));
+    return view('marketing.pengajuan', compact('booking', 'banks', 'promos', 'existingCustomerDocs'));
 }
 
 
@@ -47,6 +54,7 @@ class KprApplicationController extends Controller
  
 public function store(Request $request)
 {
+   
     DB::beginTransaction();
 
     try {
@@ -62,6 +70,7 @@ public function store(Request $request)
             'dp'          => 'required|numeric|min:0',
             'tenor'       => 'required|numeric|min:1',
             'bunga'       => 'required|numeric|min:0',
+            'promo_id'    => 'nullable|exists:promos,id',
         ]);
 
         // =============================
@@ -83,9 +92,28 @@ public function store(Request $request)
         }
 
         // =============================
+        // AMBIL PROMO (SNAPSHOT UNTUK AUDIT)
+        // =============================
+        $promoId    = $request->promo_id;
+        $promoValue = 0;
+        $promoName  = null;
+
+        if ($promoId) {
+            $promo = Promo::find($promoId);
+            $promoValue = $promo->value ?? 0;
+            $promoName  = $promo->name ?? null;
+        }
+
+        // =============================
         // HITUNG PINJAMAN & ANGSURAN
         // =============================
-        $jumlahPinjaman   = $hargaUnit - $dp;
+        $hargaSetelahPromo = $hargaUnit - $promoValue;
+        $jumlahPinjaman    = $hargaSetelahPromo - $dp;
+
+        if ($jumlahPinjaman < 0) {
+            $jumlahPinjaman = 0;
+        }
+
         $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
         $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
         $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
@@ -100,6 +128,12 @@ public function store(Request $request)
             'banks_id'          => $request->banks_id,
             'produk_kpr'        => $request->produk_kpr,
             'harga_unit'        => $hargaUnit,
+
+           
+            'promo_id'          => $promoId,
+            'promo_name'        => $promoName,
+            'promo_value'       => $promoValue,
+
             'jumlah_pinjaman'   => $jumlahPinjaman,
             'dp'                => $dp,
             'tenor'             => $tenor,
@@ -122,11 +156,10 @@ public function store(Request $request)
         $booking->status_akad   = 'pending';
         $booking->status_legal  = 'pending';
         $booking->status        = 'lanjut_kpr';
-
         $booking->save();
 
         // =============================
-        // UPLOAD FILE DOKUMEN
+        // UPLOAD FILE (ROOT - SESUAI PUNYAMU)
         // =============================
         $fileFields = [
             'slip_gaji',
@@ -139,21 +172,54 @@ public function store(Request $request)
             'ktp'
         ];
 
+        $docMap = [
+            'ktp' => 'KTP',
+            'kk' => 'Kartu Keluarga',
+            'npwp' => 'NPWP',
+            'ktp_pasangan' => 'KTP Pasangan'
+        ];
+
         foreach ($fileFields as $field) {
+
             if ($request->hasFile($field)) {
-                $path = $request->file($field)->store('kpr', 'public');
+
+                $file = $request->file($field);
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+
+                $path = 'kpr/' . $filename;
 
                 KprDocument::create([
                     'kpr_application_id' => $kprApplication->id,
                     'type'               => $field,
                     'path'               => $path,
                 ]);
+            } elseif (isset($docMap[$field])) {
+                // If not uploaded but exists in customer documents, copy/reference the existing customer document path!
+                $customerDoc = \App\Models\CustomerDocument::where('customer_id', $request->customer_id)
+                    ->where('document_name', $docMap[$field])
+                    ->first();
+                
+                if ($customerDoc && $customerDoc->file) {
+                    KprDocument::create([
+                        'kpr_application_id' => $kprApplication->id,
+                        'type'               => $field,
+                        'path'               => $customerDoc->file,
+                    ]);
+                }
             }
         }
 
         DB::commit();
 
-        return redirect()->back()
+        return redirect()->route('customer.kpr')
             ->with('success', 'Pengajuan KPR berhasil disimpan');
 
     } catch (\Throwable $e) {
@@ -164,7 +230,7 @@ public function store(Request $request)
             'error' => $e->getMessage()
         ]);
 
-        return redirect()->back()
+        return redirect()->route('customer.kpr')
             ->withInput()
             ->with('error', $e->getMessage());
     }
@@ -201,7 +267,10 @@ public function store(Request $request)
 {
     $application = KprApplication::with(['customer','unit','bank'])->findOrFail($id);
 
-    return view('serah.serah-terima-kpr', compact('application'));
+   return view('serah.serah-terima-kpr', [
+    'application' => $application,
+    'booking' => $application->booking
+]);
 }
 public function pecahLegal($id)
 {

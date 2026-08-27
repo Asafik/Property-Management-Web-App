@@ -4,51 +4,54 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
-use App\Models\Serah_Terima;
 use App\Models\SerahTerima;
-use App\Models\LandBankUnit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SerahTerimaController extends Controller
 {
-    //
+    /**
+     * Menampilkan halaman form serah terima
+     */
     public function index($id)
     {
-        // Ambil semua booking, bisa diubah sesuai kebutuhan (misal pagination)
-        $booking = Booking::with('customer', 'unit')->find($id); // ambil 1 booking
-        $item = $booking->unit; // Ini instance LandBankUnit
+        $booking = Booking::with(['customer', 'unit'])->findOrFail($id);
+        $item = $booking->unit;
 
         return view('serah.serah-terima', compact('booking', 'item'));
     }
 
-
+    /**
+     * Memproses penyimpanan data serah terima
+     */
     public function store(Request $request, Booking $booking)
     {
         $request->validate([
             'tanggal_serah_terima' => 'required|date',
             'lokasi_serah_terima' => 'required',
+            'persetujuan' => 'required',
         ]);
 
         DB::beginTransaction();
 
         try {
-
             Log::info('Proses serah terima dimulai', [
                 'booking_id' => $booking->id,
                 'user_id' => auth()->id()
             ]);
 
-            // Upload Foto
-            $foto1 = $request->file('foto_serah_kunci')?->store('serah_terima', 'public');
-            $foto2 = $request->file('foto_kondisi_unit')?->store('serah_terima', 'public');
+            // =========================
+            // UPLOAD FOTO
+            // =========================
+            $foto1 = $request->file('foto_serah_kunci')
+                ?->store('serah_terima', 'public');
 
-            Log::info('Upload foto selesai', [
-                'foto_serah_kunci' => $foto1,
-                'foto_kondisi_unit' => $foto2,
-            ]);
+            $foto2 = $request->file('foto_kondisi_unit')
+                ?->store('serah_terima', 'public');
 
-            // Generate Nomor BAST
+            // =========================
+            // GENERATE NO BAST
+            // =========================
             $noBast = 'BAST/' . date('m/Y') . '/' . str_pad(
                 SerahTerima::count() + 1,
                 3,
@@ -56,11 +59,9 @@ class SerahTerimaController extends Controller
                 STR_PAD_LEFT
             );
 
-            Log::info('Nomor BAST digenerate', [
-                'no_bast' => $noBast
-            ]);
-
-            // Simpan Serah Terima
+            // =========================
+            // SIMPAN SERAH TERIMA
+            // =========================
             $serah = SerahTerima::create([
                 'booking_id' => $booking->id,
                 'no_bast' => $noBast,
@@ -69,15 +70,13 @@ class SerahTerimaController extends Controller
                 'catatan' => $request->catatan,
                 'foto_serah_kunci' => $foto1,
                 'foto_kondisi_unit' => $foto2,
+                'saksi' => $request->saksi,
             ]);
 
-            Log::info('Data serah terima tersimpan', [
-                'serah_terima_id' => $serah->id
-            ]);
-
-            // Simpan Checklist Items
+            // =========================
+            // CHECKLIST ITEMS
+            // =========================
             if ($request->items) {
-
                 foreach ($request->items as $item) {
                     $serah->items()->create([
                         'item_name' => $item['name'],
@@ -85,15 +84,12 @@ class SerahTerimaController extends Controller
                         'status' => isset($item['checked']) ? 'OK' : 'Perlu Perbaikan',
                     ]);
                 }
-
-                Log::info('Checklist items tersimpan', [
-                    'total_items' => count($request->items)
-                ]);
             }
 
-            // Simpan Dokumen
+            // =========================
+            // DOKUMEN
+            // =========================
             if ($request->documents) {
-
                 foreach ($request->documents as $doc) {
                     $serah->documents()->create([
                         'document_name' => $doc['name'],
@@ -101,27 +97,21 @@ class SerahTerimaController extends Controller
                         'status' => isset($doc['submitted']) ? 'Sudah' : 'Proses',
                     ]);
                 }
-
-                Log::info('Dokumen tersimpan', [
-                    'total_documents' => count($request->documents)
-                ]);
             }
 
-            // Update Status Booking
+            // =========================
+            // UPDATE STATUS
+            // =========================
             $booking->update([
                 'status' => 'completed',
-                'serah_terima_date' => now()
+                'serah_terima_date' => $request->tanggal_serah_terima
             ]);
-            // Update Status Unit menjadi SOLD
+
             if ($booking->unit) {
                 $booking->unit->update([
                     'status' => 'sold'
                 ]);
             }
-
-            Log::info('Status booking diupdate ke completed', [
-                'booking_id' => $booking->id
-            ]);
 
             DB::commit();
 
@@ -129,35 +119,36 @@ class SerahTerimaController extends Controller
                 'booking_id' => $booking->id,
                 'no_bast' => $noBast
             ]);
-            return redirect()->route('unit.selesai')
+
+            return redirect()->route('unit.selesai', ['bookingId' => $booking->id])
                 ->with('success', 'Serah terima berhasil diproses.');
         } catch (\Exception $e) {
-
-            DB::rollback();
+            DB::rollBack();
 
             Log::error('Gagal proses serah terima', [
-                'booking_id' => $booking->id ?? null,
                 'error_message' => $e->getMessage(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'line' => $e->getLine()
             ]);
 
-            return back()->with('error', 'Terjadi kesalahan saat proses serah terima.');
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
-
+    /**
+     * Halaman sukses
+     */
     public function SellDone($bookingId)
     {
-        // Ambil booking beserta unit dan customer
-        $booking = Booking::with('unit', 'customer')->find($bookingId);
+        $booking = Booking::with([
+            'unit',
+            'unit.landBank',
+            'customer',
+            'sales',
+            'serahTerima'
+        ])->findOrFail($bookingId);
 
-        if (!$booking) {
-            abort(404, 'Booking tidak ditemukan');
-        }
-
-        $unit = $booking->unit; // ambil unit terkait
+        $unit = $booking->unit;
 
         return view('marketing.done_sell', compact('booking', 'unit'));
     }

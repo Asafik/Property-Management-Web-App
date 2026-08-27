@@ -10,15 +10,64 @@ use Illuminate\Support\Facades\Storage;
 
 class SurveyController extends Controller
 {
-    public function index()
-    {
-        // Ambil data KPR yang statusnya 'survey'
-        $kprApplications = KprApplication::with(['customer', 'unit', 'bank'])
-            ->where('status', 'survey')
-            ->get();
+    public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 10);
+    $sort = $request->input('sort', 'latest');
 
-        return view('transaksi.customer-kpr-acc', compact('kprApplications'));
+    if (!in_array($perPage, [10, 15, 25])) {
+        $perPage = 10;
     }
+
+    $query = KprApplication::with(['customer', 'unit', 'bank'])
+        ->select('kpr_applications.*')
+
+       
+        ->whereHas('unit', function ($q) {
+            $q->where('jenis', 'subsidi');
+        })
+
+        ->when($request->filled('search'), function ($q) use ($request) {
+            $q->whereHas('customer', function ($qc) use ($request) {
+                $qc->where('full_name', 'like', '%' . $request->search . '%');
+            });
+        })
+
+        ->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('kpr_applications.status', $request->status);
+        });
+
+    switch ($sort) {
+        case 'name_asc':
+            $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', 'asc');
+            break;
+
+        case 'name_desc':
+            $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', 'desc');
+            break;
+
+        case 'unit_asc':
+            $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+                  ->orderBy('land_bank_units.unit_name', 'asc');
+            break;
+
+        case 'unit_desc':
+            $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+                  ->orderBy('land_bank_units.unit_name', 'desc');
+            break;
+
+        case 'latest':
+        default:
+            $query->latest('kpr_applications.created_at');
+            break;
+    }
+
+    $kprApplications = $query->paginate($perPage)->withQueryString();
+
+    return view('transaksi.customer-kpr-acc', compact('kprApplications'));
+}
 
     public function store(Request $request, $kprId)
     {
@@ -26,12 +75,18 @@ class SurveyController extends Controller
 
         try {
 
+            // Normalisasi input numeric agar empty string tidak mengakibatkan error DB
+            $normalizeNumeric = function ($value, $pattern = '/[^0-9]/') {
+                $clean = preg_replace($pattern, '', $value);
+                return $clean === '' ? null : $clean;
+            };
+
             $request->merge([
                 // Bersihkan angka
-                'appraisal_value'      => preg_replace('/[^0-9]/', '', $request->appraisal_value),
-                'luas_tanah'           => preg_replace('/[^0-9]/', '', $request->luas_tanah),
-                'luas_bangunan'        => preg_replace('/[^0-9]/', '', $request->luas_bangunan),
-                'persentase_kelayakan' => preg_replace('/[^0-9.]/', '', $request->persentase_kelayakan),
+                'appraisal_value'      => $normalizeNumeric($request->appraisal_value, '/[^0-9]/'),
+                'luas_tanah'           => $normalizeNumeric($request->luas_tanah, '/[^0-9]/'),
+                'luas_bangunan'        => $normalizeNumeric($request->luas_bangunan, '/[^0-9]/'),
+                'persentase_kelayakan' => $normalizeNumeric($request->persentase_kelayakan, '/[^0-9.]/'),
 
                 // Normalisasi checkbox
                 'listrik'    => $request->has('listrik') ? 1 : 0,
@@ -80,7 +135,7 @@ class SurveyController extends Controller
             $kpr->rekomendasi = $request->rekomendasi;
             $kpr->persentase_kelayakan = $request->persentase_kelayakan;
             $kpr->surveyor_id = $request->surveyor_id;
-
+            $kpr->status = 'survey';
             // Upload foto jika ada
             foreach (['foto_depan', 'foto_interior', 'foto_lingkungan'] as $fileField) {
                 if ($request->hasFile($fileField)) {
@@ -89,8 +144,9 @@ class SurveyController extends Controller
                 }
             }
 
-            // Update status survey selesai
-            $kpr->status = 'survey';
+            // Update status survey selesai - gunakan rekomendasi sebagai penanda utama
+            // Jika rekomendasi diisi, berarti survey sudah selesai
+           
             $kpr->save();
 
             DB::commit();

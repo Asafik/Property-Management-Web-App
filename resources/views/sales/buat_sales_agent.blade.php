@@ -1,521 +1,189 @@
 @extends('layouts.partial.app')
 
-@section('title', isset($employee) ? 'Edit Pengguna / Agent - Property Management App' : 'Tambah Pengguna / Agent - Property Management App')
+@section('title', isset($employee) ? 'Edit Pengguna - Property Management App' : 'Tambah Pengguna - Property Management App')
 
 @section('content')
-<style>
-/* ===== MODERN FORM STYLING UNTUK SALES ===== */
-.sales-form-group {
-    margin-bottom: 1rem;
-    position: relative;
-}
 
-.sales-form-group label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-.sales-form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
-    padding: 0.7rem 0.8rem;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-    font-family: 'Nunito', sans-serif;
-}
-
-.sales-form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-/* Password Input Container */
-.password-input-container {
-    position: relative;
-    width: 100%;
-}
-
-.password-input-container .sales-form-control {
-    padding-right: 40px;
-}
-
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: #6c757d;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s ease;
-}
-
-.toggle-password:hover {
-    color: #9a55ff;
-}
-
-.toggle-password i {
-    font-size: 1.2rem;
-}
-
-select.sales-form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 12px;
-    padding-right: 2rem;
-}
-
-textarea.sales-form-control {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* ===== MODERN BUTTON STYLING UNTUK SALES ===== */
-.sales-btn {
-    font-size: 0.8rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
-    display: inline-block;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    width: 100%;
-    text-align: center;
-}
-
-@media (min-width: 576px) {
-    .sales-btn {
-        width: auto;
-        padding: 0.5rem 1.2rem;
-    }
-}
-
-.sales-btn-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-}
-
-.sales-btn-primary:hover {
-    background: linear-gradient(to right, #c77cff, #8a45e6);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
-}
-
-.sales-btn-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.sales-btn-success:hover {
-    background: linear-gradient(135deg, #218838, #4cae4c);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-}
-
-.sales-btn-secondary {
-    background: linear-gradient(135deg, #f0f2f5, #e4e6ea);
-    border: 1px solid #e9ecef;
-    color: #2c2e3f;
-}
-
-.sales-btn-secondary:hover {
-    background: linear-gradient(135deg, #e4e6ea, #d8dce2);
-    transform: translateY(-2px);
-    color: #2c2e3f;
-}
-
-.sales-btn-outline-secondary {
-    background: transparent;
-    border: 1px solid #e9ecef;
-    color: #6c7383;
-}
-
-.sales-btn-outline-secondary:hover {
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    color: #2c2e3f;
-    border-color: #9a55ff;
-    transform: translateY(-2px);
-}
-
-/* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
-.card {
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-}
-
-.card:hover {
-    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-}
-
-.card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem 1.2rem;
-}
-
-.card-header h4 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #2c2e3f;
-    margin: 0;
-}
-
-@media (min-width: 768px) {
-    .card-header h4 {
-        font-size: 1.125rem;
-    }
-}
-
-.card-body {
-    padding: 1.2rem;
-}
-
-@media (min-width: 768px) {
-    .card-body {
-        padding: 1.5rem;
-    }
-}
-
-/* Alert Styling */
-.sales-alert {
-    border: none;
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
-    font-size: 0.8rem;
-    border-left: 4px solid;
-    margin-bottom: 1rem;
-}
-
-.sales-alert-info {
-    background: linear-gradient(135deg, #f6f9ff, #f0f4ff);
-    color: #2c2e3f;
-    border-left-color: #9a55ff;
-}
-
-.sales-alert-info i {
-    color: #9a55ff;
-}
-
-/* Badge Styling */
-.sales-badge {
-    padding: 0.35rem 0.7rem;
-    border-radius: 30px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-.sales-badge-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.3);
-}
-
-.sales-badge-secondary {
-    background: linear-gradient(135deg, #6c757d, #939ba3);
-    color: #ffffff;
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
-}
-
-/* Section Title */
-.sales-section-title {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #9a55ff !important;
-    margin-bottom: 0.8rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 2px solid #e9ecef;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.sales-section-title i {
-    color: #9a55ff;
-    font-size: 1rem;
-    background: rgba(154, 85, 255, 0.1);
-    padding: 6px;
-    border-radius: 8px;
-}
-
-/* Divider */
-.sales-hr {
-    border-top: 1px solid #e9ecef;
-    margin: 0.8rem 0;
-}
-
-/* Text colors */
-.sales-text-muted {
-    color: #a5b3cb !important;
-    font-size: 0.7rem;
-    display: block;
-    margin-top: 0.2rem;
-}
-
-.sales-text-primary {
-    color: #9a55ff !important;
-}
-
-/* Grid System */
-.sales-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: -0.5rem;
-    margin-left: -0.5rem;
-}
-
-.sales-col-6,
-.sales-col-12,
-.sales-col-md-4,
-.sales-col-md-6 {
-    position: relative;
-    width: 100%;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.sales-col-12 {
-    flex: 0 0 100%;
-    max-width: 100%;
-}
-
-@media (min-width: 768px) {
-    .sales-col-md-4 {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
-    }
-
-    .sales-col-md-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-}
-
-/* Button Group */
-.sales-btn-group {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 576px) {
-    .sales-btn-group {
-        flex-direction: column;
-    }
-
-    .sales-btn-group .sales-btn {
-        width: 100%;
-    }
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .card-body {
-        padding: 1rem !important;
-    }
-
-    .sales-btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-}
-
-/* Better touch targets for mobile */
-input, select, textarea, button {
-    font-size: 16px !important;
-}
-</style>
-
-<div class="container-fluid p-4">
-   <!-- Header Card Terpisah -->
-    <div class="row mb-4">
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
                     <div>
-                        <h3 class="text-dark fw-bold mb-1">
-                            <i class="mdi mdi-account-tie me-2" style="color: #9a55ff;"></i>
-                            {{ isset($employee) ? 'Edit Pengguna' : 'Tambah Pengguna' }}
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            {{ isset($employee) ? 'Edit Data Pengguna' : 'Tambah Data Pengguna' }}
                         </h3>
-                        <p class="text-muted mb-0">{{ isset($employee) ? 'Ubah data pengguna marketing properti' : 'Input data pengguna marketing properti' }}</p>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            {{ isset($employee) ? 'Perbarui data akun dan informasi hak akses pengguna' : 'Buat akun staf/pengguna baru untuk operasional sistem properti' }}
+                        </p>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-account-tie" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{{ route('agency.index') }}" class="btn btn-sm btn-gradient-secondary d-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
+                            <i class="mdi mdi-arrow-left" style="font-size: 1rem;"></i>
+                            <span>Kembali</span>
+                        </a>
+                        <div class="d-none d-md-block pe-2">
+                            <i class="mdi {{ isset($employee) ? 'mdi-account-edit' : 'mdi-account-plus' }}" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Form Tambah/Edit Sales -->
-    <div class="row">
+    <!-- Form Tambah/Edit Pengguna -->
+    <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 d-flex align-items-center">
-                        <i class="mdi mdi-account-tie me-2 sales-text-primary"></i>
-                        {{ isset($employee) ? 'Form Edit Data Pengguna' : 'Form Input Data Pengguna' }}
-                    </h4>
-                    <span class="sales-badge sales-badge-secondary">* Wajib</span>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">
+                        <i class="mdi mdi-form-select me-2"></i>
+                        {{ isset($employee) ? 'Formulir Edit Data Pengguna' : 'Formulir Registrasi Pengguna Baru' }}
+                    </h5>
+                    <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.75rem;">
+                        <span class="text-danger">*</span> Wajib Diisi
+                    </span>
                 </div>
-                <div class="card-body">
+
+                <div class="card-body p-3 p-md-4">
                     <form action="{{ isset($employee) ? route('agency.update', $employee->id) : route('agency.store') }}" method="POST" class="main-form">
                         @csrf
                         @if(isset($employee))
                             @method('PUT')
                         @endif
 
-                        <!-- Alert -->
-                        <div class="sales-alert sales-alert-info d-flex align-items-start gap-2 mb-4">
-                            <i class="mdi mdi-information-outline mt-1 flex-shrink-0"></i>
-                            <span>Data pengguna akan digunakan untuk penugasan unit dan komisi penjualan.</span>
+                        <!-- Alert info -->
+                        <div class="alert alert-info border-0 shadow-sm d-flex align-items-center gap-2 mb-4 py-2 px-3" style="background: rgba(154, 85, 255, 0.08); border-left: 4px solid #9a55ff !important; border-radius: 8px;">
+                            <i class="mdi mdi-information-outline text-primary" style="font-size: 1.25rem;"></i>
+                            <span class="text-dark" style="font-size: 0.85rem;">
+                                Akun pengguna ini digunakan untuk autentikasi login, otorisasi menu, dan penugasan pada sistem manajemen properti.
+                            </span>
                         </div>
 
-                        <div class="sales-row">
-                            <!-- Nama -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Nama Lengkap *</label>
-                                    <input type="text" name="name" class="sales-form-control"
-                                        value="{{ old('name', $employee->name ?? '') }}" required>
-                                </div>
+                        <div class="row g-3 mb-3">
+                            <!-- Nama Lengkap -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Nama Lengkap <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="name" class="form-control"
+                                    placeholder="Contoh: Budi Santoso"
+                                    value="{{ old('name', $employee->name ?? '') }}" required>
                             </div>
 
                             <!-- Username -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Username *</label>
-                                    <input type="text" name="username" class="sales-form-control"
-                                        value="{{ old('username', $employee->username ?? '') }}" required>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Username <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="username" class="form-control"
+                                    placeholder="Contoh: budi.santoso"
+                                    value="{{ old('username', $employee->username ?? '') }}" required>
                             </div>
                         </div>
 
-                        <div class="sales-row">
-                            <!-- Password dengan Toggle -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>{{ isset($employee) ? 'Password Baru (kosongkan jika tidak diubah)' : 'Password *' }}</label>
-                                    <div class="password-input-container">
-                                        <input type="password" name="password" id="password" class="sales-form-control"
-                                            {{ isset($employee) ? '' : 'required' }}>
-                                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
-                                            <i class="mdi mdi-eye"></i>
-                                        </button>
-                                    </div>
+                        <div class="row g-3 mb-3">
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    {{ isset($employee) ? 'Password Baru (kosongkan jika tidak diubah)' : 'Password Akun *' }}
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control"
+                                        placeholder="{{ isset($employee) ? 'Masukkan password baru jika ingin mengubah' : 'Minimal 5 karakter' }}"
+                                        {{ isset($employee) ? '' : 'required' }}
+                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                    <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center px-3" 
+                                        type="button" onclick="togglePassword('password', this)"
+                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; border-color: #e9ecef; background: #f8f9fa;">
+                                        <i class="mdi mdi-eye" style="font-size: 1.1rem; color: #6c7383;"></i>
+                                    </button>
                                 </div>
                             </div>
 
                             <!-- Nomor HP -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Nomor HP *</label>
-                                    <input type="text" name="phone" class="sales-form-control"
-                                        value="{{ old('phone', $employee->phone ?? '') }}" required>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Nomor Handphone / WhatsApp <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="phone" class="form-control"
+                                    placeholder="Contoh: 081234567890"
+                                    value="{{ old('phone', $employee->phone ?? '') }}" required>
                             </div>
                         </div>
 
-                        <div class="sales-row">
-                            <!-- Division -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Division *</label>
-                                    <select name="division_id" class="sales-form-control" required>
-                                        <option value="">-- Pilih Division --</option>
-                                        @foreach($divisions as $division)
-                                            <option value="{{ $division->id }}"
-                                                {{ old('division_id', $employee->division_id ?? '') == $division->id ? 'selected' : '' }}>
-                                                {{ $division->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                        <div class="row g-3 mb-3">
+                            <!-- Divisi -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Divisi <span class="text-danger">*</span>
+                                </label>
+                                <select name="division_id" id="divisionSelect" class="form-control" required>
+                                    <option value="">-- Pilih Divisi --</option>
+                                    @foreach($divisions as $division)
+                                        <option value="{{ $division->id }}"
+                                            {{ old('division_id', $employee->division_id ?? '') == $division->id ? 'selected' : '' }}>
+                                            {{ $division->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
-                            <!-- Position -->
-                            <div class="sales-col-md-6">
-                                <div class="sales-form-group">
-                                    <label>Position *</label>
-                                    <select name="position_id" class="sales-form-control" required>
-                                        <option value="">-- Pilih Position --</option>
-                                        @foreach($positions as $position)
-                                            <option value="{{ $position->id }}"
-                                                {{ old('position_id', $employee->position_id ?? '') == $position->id ? 'selected' : '' }}>
-                                                {{ $position->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                            <!-- Posisi / Jabatan -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Posisi / Jabatan <span class="text-danger">*</span>
+                                </label>
+                                <select name="position_id" id="positionSelect" class="form-control" required>
+                                    <option value="">-- Pilih Posisi / Jabatan --</option>
+                                    @foreach($positions as $position)
+                                        <option value="{{ $position->id }}"
+                                            {{ old('position_id', $employee->position_id ?? '') == $position->id ? 'selected' : '' }}>
+                                            {{ $position->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
                         <!-- Alamat -->
-                        <div class="sales-row">
-                            <div class="sales-col-12">
-                                <div class="sales-form-group">
-                                    <label>Alamat *</label>
-                                    <textarea name="address" class="sales-form-control" required>{{ old('address', $employee->address ?? '') }}</textarea>
-                                </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
+                                    Alamat Lengkap <span class="text-danger">*</span>
+                                </label>
+                                <textarea name="address" class="form-control" rows="3" placeholder="Masukkan alamat lengkap tempat tinggal..." required>{{ old('address', $employee->address ?? '') }}</textarea>
                             </div>
                         </div>
 
-                        <hr class="sales-hr">
+                        <hr class="my-4" style="border-top: 1px solid #e9ecef;">
 
-                        <!-- Tombol -->
-                        <div class="sales-btn-group mt-4">
-                            <a href="{{ route('agency.index') }}" class="sales-btn sales-btn-secondary btn-back">
-                                <i class="mdi mdi-arrow-left me-2"></i>Kembali
-                            </a>
+                        <!-- Tombol Aksi Form Mentok Kanan -->
+                        <div class="d-flex justify-content-end align-items-center gap-2 pt-1">
+                            <button type="reset" class="btn btn-sm btn-outline-secondary px-3 btn-reset" style="width: auto;">
+                                <i class="mdi mdi-refresh me-1"></i>Reset Form
+                            </button>
 
-                            <div style="margin-left:auto;">
-                                <button type="reset" class="sales-btn sales-btn-outline-secondary btn-reset me-2">
-                                    Reset
-                                </button>
-
-                                <button type="submit" class="sales-btn sales-btn-primary btn-submit">
-                                    {{ isset($employee) ? 'Update Pengguna' : 'Simpan Pengguna' }}
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-sm btn-gradient-primary px-4 d-flex align-items-center gap-1 shadow-sm" style="width: auto;">
+                                <i class="mdi mdi-content-save me-1"></i>
+                                <span>{{ isset($employee) ? 'Update Pengguna' : 'Simpan Pengguna' }}</span>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
+
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// Fungsi untuk toggle password
 function togglePassword(inputId, button) {
     const passwordInput = document.getElementById(inputId);
     const icon = button.querySelector('i');
@@ -532,8 +200,7 @@ function togglePassword(inputId, button) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Fungsi untuk menampilkan loading
-    function showLoading(message = 'Mohon tunggu sebentar') {
+    function showLoading(message = 'Mohon tunggu sebentar...') {
         Swal.fire({
             title: 'Memuat...',
             text: message,
@@ -544,15 +211,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // ===== LOADING UNTUK SUBMIT FORM =====
     const form = document.querySelector('.main-form');
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
             Swal.fire({
-                title: '{{ isset($employee) ? 'Update Data?' : 'Simpan Data?' }}',
-                text: 'Pastikan data sudah benar sebelum {{ isset($employee) ? 'diupdate' : 'disimpan' }}.',
+                title: '{{ isset($employee) ? 'Update Data Pengguna?' : 'Simpan Data Pengguna?' }}',
+                text: 'Pastikan seluruh isian data pengguna sudah benar.',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#9a55ff',
@@ -568,74 +234,57 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // ===== LOADING UNTUK TOMBOL KEMBALI =====
     const backBtn = document.querySelector('.btn-back');
     if (backBtn) {
         backBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            showLoading('Kembali ke daftar...');
+            showLoading('Kembali ke daftar pengguna...');
             window.location.href = this.href;
         });
     }
 
-    // ===== LOADING UNTUK TOMBOL RESET =====
     const resetBtn = document.querySelector('.btn-reset');
     if (resetBtn) {
         resetBtn.addEventListener('click', function() {
-            showLoading('Mereset form...');
-            setTimeout(() => {
-                Swal.close();
-                const form = document.querySelector('.main-form');
-                if (form) form.reset();
-            }, 500);
+            Swal.fire({
+                icon: 'info',
+                title: 'Form Direset',
+                timer: 1000,
+                showConfirmButton: false
+            });
         });
     }
-
-    // ===== PREVIEW PASSWORD SAAT EDIT (HAPUS REQUIRED) =====
-    @if(isset($employee))
-        const passwordInput = document.getElementById('password');
-        if (passwordInput) {
-            passwordInput.removeAttribute('required');
-        }
-    @endif
 });
 
-// ===== SWEET ALERT UNTUK SESSION SUCCESS =====
-// Timer 3 detik, progress bar, dan tombol OK
 @if(session('success'))
     Swal.fire({
         icon: 'success',
         title: 'Berhasil!',
         text: "{{ session('success') }}",
-        timer: 3000,
+        timer: 2500,
         timerProgressBar: true,
         showConfirmButton: true,
-        confirmButtonText: 'OK',
         confirmButtonColor: '#9a55ff'
     });
 @endif
 
-// ===== SWEET ALERT UNTUK SESSION ERROR =====
-// Tanpa timer, pakai tombol OK
 @if(session('error'))
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: "{{ session('error') }}",
         showConfirmButton: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        confirmButtonColor: '#dc3545'
     });
 @endif
 
-// ===== SWEET ALERT UNTUK VALIDASI ERROR =====
 @if ($errors->any())
     Swal.fire({
         icon: 'error',
         title: 'Validasi Gagal',
         html: `{!! implode('<br>', $errors->all()) !!}`,
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Tutup'
     });
 @endif
 </script>

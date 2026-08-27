@@ -49,10 +49,25 @@ class LandBank extends Model
         'volume_cut',
         'volume_fill',
         'status_cut_fill',
+        'fee_document_verification',
     ];
     public function documents()
     {
         return $this->hasMany(LandBankDocument::class);
+    }
+    public function getMergedDocumentsAttribute()
+    {
+        $docs = $this->documents;
+        if ($docs->count() > 0) {
+            return $docs;
+        }
+
+        $pra = \App\Models\PraLandbank::where('land_name', $this->name)->first();
+        if ($pra) {
+            return $pra->documents;
+        }
+
+        return collect();
     }
     public function revisis()
     {
@@ -78,5 +93,9 @@ public function companyProfile()
 public function guests()
 {
     return $this->hasMany(Guest::class);
+}
+public function isFromPraLandbank()
+{
+    return \App\Models\PraLandbank::where('land_name', $this->name)->exists();
 }
 }

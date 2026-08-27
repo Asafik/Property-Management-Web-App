@@ -1,796 +1,364 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Semua Pra Tanah - Property Management App')
+@section('title', 'Pra Tanah - Property Management App')
 
 @section('content')
+
     <style>
-        /* ===== MODERN STYLING UNTUK HALAMAN SEMUA PRA TANAH ===== */
-
-        /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: 40px;
-            border: 1px solid #e0e4e9;
-            width: 100%;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: 40px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            height: 32px;
-        }
-
-        /* Gradient Buttons */
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        /* Outline Buttons */
-        .btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
-            color: #9a55ff;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-primary:hover {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-success {
-            background: transparent;
-            border: 1px solid #28a745;
-            color: #28a745;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-success:hover {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-warning {
-            background: transparent;
-            border: 1px solid #ffc107;
-            color: #ffc107;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-        }
-
-        .btn-outline-danger {
-            background: transparent;
-            border: 1px solid #dc3545;
-            color: #dc3545;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .btn-outline-info {
-            background: transparent;
-            border: 1px solid #17a2b8;
-            color: #17a2b8;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-info:hover {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        /* Badge Styling */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-        }
-
-        .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-        }
-
-        .badge-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
-        }
-
-        .badge-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-        }
-
-        .badge-gradient-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        .table thead th i {
-            margin-right: 5px;
-            font-size: 0.9rem;
-            color: #9a55ff;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        .table tbody td i {
-            margin-right: 5px;
-            font-size: 1rem;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* ===== PAGINATION STYLING ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        /* Pagination info */
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        /* ===== ACTION BUTTONS ===== */
-        .action-buttons {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .btn-outline-warning, .btn-outline-info {
-            position: relative;
-            z-index: 15;
-            pointer-events: auto !important;
-            cursor: pointer !important;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            border: 1px solid;
-            background: transparent;
-            transition: all 0.3s ease;
+        .btn-fase-action {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-        }
-
-        .btn-outline-warning {
-            border-color: #ffc107;
-            color: #ffc107;
-        }
-
-        .btn-outline-warning:hover {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-        }
-
-        .btn-outline-info {
-            border-color: #17a2b8;
-            color: #17a2b8;
-        }
-
-        .btn-outline-info:hover {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: #ffffff;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
-        }
-
-        .btn-outline-warning i, .btn-outline-info i {
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        /* Count badge */
-        .count-badge {
-            background-color: rgba(154, 85, 255, 0.1);
-            color: #9a55ff;
-            padding: 0.2rem 0.6rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
+            gap: 4px;
+            padding: 0.32rem 0.65rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            margin-left: 8px;
+            border-radius: 6px;
+            border: none;
+            color: #ffffff !important;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            line-height: 1.2;
+            cursor: pointer;
         }
 
-        /* Responsive untuk mobile */
-        @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                height: 38px;
-            }
-
-            h4.text-dark {
-                font-size: 1.2rem !important;
-            }
+        .btn-fase-action i {
+            font-size: 0.95rem;
         }
 
-        /* Icon styling */
-        .mdi {
-            vertical-align: middle;
+        .btn-fase-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            color: #ffffff !important;
         }
 
-        /* Styling untuk button filter dan reset */
-        .btn-filter-reset {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            width: 100%;
-            height: 40px;
+        .btn-fase-1 {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
         }
 
-        .btn-filter-reset i {
-            font-size: 1rem;
+        .btn-fase-2 {
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
         }
 
-        /* Row filter spacing */
-        .filter-row {
-            margin-bottom: 0.5rem;
+        .btn-fase-3 {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
         }
 
-        .filter-row:last-child {
-            margin-bottom: 0;
-        }
-
-        /* DataTables wrapper styling */
-        .dataTables_wrapper {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        /* Pastikan tabel tetap terlihat */
-        .table {
-            width: 100% !important;
-            margin-bottom: 0;
-        }
-
-        /* Fix untuk DataTables di mobile */
-        @media (max-width: 768px) {
-            .dataTables_wrapper .table {
-                width: 100% !important;
-            }
-        }
-
-        /* Info text */
-        .info-text {
-            color: #6c7383;
-            font-size: 0.8rem;
-            margin-left: 5px;
+        .btn-fase-delete {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            padding: 0.32rem 0.55rem;
         }
     </style>
 
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header Card -->
-        <div class="row mb-4">
+        <!-- Header Card Banner -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="card shadow-sm border-0 header-card">
+                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                         <div>
-                            <h4 class="mb-1 fw-bold text-dark">
-                                <i class="mdi mdi-hand-holding me-2" style="color: #9a55ff;"></i>
-                                Semua Pra Tanah / Pra Landbank
-                                <span class="count-badge">{{ $praLandBank->total() ?? 0 }} Data</span>
-                            </h4>
-                            <p class="mb-0 text-muted small">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Daftar seluruh tanah dalam tahap pra-pelepasan (penawaran/negosiasi)
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                                Pra Tanah / Pra Pelepasan
+                            </h3>
+                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                                Kelola data tanah yang masih dalam tahap penawaran dan negosiasi
                             </p>
                         </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-hand-holding" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        <div class="d-none d-sm-block pe-2">
+                            <i class="mdi mdi-hand-holding-usd" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabel -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h4 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2"></i>
-                            Daftar Semua Pra Tanah
-                        </h4>
+                <div class="card shadow-sm border-0">
+                    <div
+                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Pra Tanah
+                        </h5>
+                        <a class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;"
+                            href="{{ route('pra-landbank.proses') }}">
+                            <i class="mdi mdi-plus me-1"></i>Tambah Pra Tanah
+                        </a>
                     </div>
+
                     <div class="card-body">
                         <!-- Filter Section -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="filter-card">
-                                    <div class="card-body">
-                                        <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                            <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                        </h6>
-
-                                        <!-- FILTER UNTUK MOBILE -->
-                                        <div class="d-block d-md-none">
-                                            <!-- Baris 1: Pencarian -->
-                                            <div class="row filter-row">
-                                                <div class="col-12">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                    </label>
-                                                    <input type="text" id="searchInputMobile" class="form-control"
-                                                        placeholder="Cari nama tanah atau lokasi...">
-                                                </div>
-                                            </div>
-
-                                            <!-- BARIS FILTER STATUS NEGOSIASI (MOBILE) -->
-                                            <div class="row filter-row">
-                                                <div class="col-12">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-handshake me-1"></i>Status Negosiasi
-                                                    </label>
-                                                    <select id="filterNegosiasiMobile" class="form-control">
-                                                        <option value="">Semua Status</option>
-                                                        <option value="negotiation">Masih Negosiasi</option>
-                                                        <option value="almost_deal">Hampir Deal</option>
-                                                        <option value="deal">Sudah Deal</option>
-                                                        <option value="cancel">Batal</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <!-- Baris 3: Tampil -->
-                                            <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-counter me-1"></i>Tampil
-                                                    </label>
-                                                    <select id="showDataMobile" class="form-control">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <!-- Baris 4: Button Filter & Reset -->
-                                            <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <button type="button" id="filterDataMobile"
-                                                        class="btn btn-gradient-primary btn-filter-reset">
-                                                        <i class="mdi mdi-filter-outline"></i> Filter
-                                                    </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button" id="resetFilterMobile"
-                                                        class="btn btn-gradient-secondary btn-filter-reset">
-                                                        <i class="mdi mdi-refresh"></i> Reset
-                                                    </button>
-                                                </div>
+                        <div class="filter-card mb-3">
+                            <!-- Desktop Filter -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <form id="filterForm" method="GET" onsubmit="return showFilterLoading()">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 w-100">
+                                        <div style="width: 280px;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Cari nama tanah / makelar..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
                                             </div>
                                         </div>
 
-                                        <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                        <div class="d-none d-md-block">
-                                            <form method="GET" action="#" id="filterForm">
-                                                <div class="row g-2 align-items-end filter-row">
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <select class="form-control" name="limit" id="limitSelect" style="width: 115px;">
+                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 data
+                                                </option>
+                                                <option value="10"
+                                                    {{ request('limit', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15 data
+                                                </option>
+                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 data
+                                                </option>
+                                            </select>
 
-                                                    <!-- Search -->
-                                                    <div class="col-md-4">
-                                                        <label class="form-label">
-                                                            <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                        </label>
-                                                        <input type="text" name="search" class="form-control"
-                                                            placeholder="Cari nama tanah atau lokasi...">
-                                                    </div>
-
-                                                    <!-- FILTER STATUS NEGOSIASI -->
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">
-                                                            <i class="mdi mdi-handshake me-1"></i>Status Negosiasi
-                                                        </label>
-                                                        <select name="negotiation_status" class="form-control">
-                                                            <option value="">Semua Status</option>
-                                                            <option value="negotiation">Masih Negosiasi</option>
-                                                            <option value="almost_deal">Hampir Deal</option>
-                                                            <option value="deal">Sudah Deal</option>
-                                                            <option value="cancel">Batal</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Show -->
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">
-                                                            <i class="mdi mdi-counter me-1"></i>Tampil
-                                                        </label>
-                                                        <select name="show" class="form-control">
-                                                            <option value="10">10</option>
-                                                            <option value="25">25</option>
-                                                            <option value="50">50</option>
-                                                            <option value="100">100</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Filter Button (Icon Only) -->
-                                                    <div class="col-md-2">
-                                                        <button type="button" onclick="alert('Filter demo UI')"
-                                                            class="btn btn-gradient-primary w-100">
-                                                            <i class="mdi mdi-filter-outline"></i>
-                                                        </button>
-                                                    </div>
-
-                                                    <!-- Reset Button (Icon Only) -->
-                                                    <div class="col-md-1">
-                                                        <a href="#" onclick="window.location.reload()"
-                                                            class="btn btn-gradient-secondary w-100">
-                                                            <i class="mdi mdi-refresh"></i>
-                                                        </a>
-                                                    </div>
-
-                                                </div>
-                                            </form>
+                                            <button type="submit"
+                                                class="btn btn-gradient-primary btn-icon-only"
+                                                title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-gradient-secondary btn-icon-only"
+                                                title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
+                                </form>
+                            </div>
+
+                            <!-- Mobile Filter -->
+                            <div class="filter-row-mobile d-block d-md-none">
+                                <form method="GET" onsubmit="return showFilterLoading()">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search"
+                                                    id="searchInputMobile" placeholder="Cari nama tanah atau makelar..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <select class="form-control" name="limit" id="limitSelectMobile">
+                                                <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 data
+                                                </option>
+                                                <option value="10"
+                                                    {{ request('limit', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('limit') == 15 ? 'selected' : '' }}>15 data
+                                                </option>
+                                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25 data
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit"
+                                                    class="btn btn-gradient-primary btn-icon-only flex-fill"
+                                                    title="Filter">
+                                                    <i class="mdi mdi-filter"></i>
+                                                </button>
+                                                <button type="button"
+                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill"
+                                                    onclick="showResetLoading(event)" title="Reset">
+                                                    <i class="mdi mdi-refresh"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
-                        <!-- Tabel Data -->
-                        <div class="table-responsive">
-                            <table id="tablePraTanah" class="table table-hover align-middle" style="width:100%" {{ $praLandBank->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <div class="table-wrapper">
+                            <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" width="5%"><i class="mdi mdi-counter"></i> NO</th>
-                                        <th width="20%"><i class="mdi mdi-home-variant"></i> NAMA TANAH</th>
-                                        <th width="15%"><i class="mdi mdi-account-tie"></i> MAKELAR</th>
-                                        <th width="25%"><i class="mdi mdi-map-marker"></i> LOKASI</th>
-                                        <th width="15%"><i class="mdi mdi-currency-usd"></i> HARGA NEGOSIASI</th>
-                                        <th width="10%"><i class="mdi mdi-handshake"></i> STATUS</th>
-                                        <th class="text-center" width="10%"><i class="mdi mdi-cog"></i> AKSI</th>
+                                        <th class="text-center">No</th>
+                                        <th>Nama Tanah</th>
+                                        <th>Makelar</th>
+                                        <th>Harga Negosiasi</th>
+                                        <th>Progress 3 FASE</th>
+                                        <th>Status</th>
+                                        <th>Prioritas</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @forelse ($praLandBank ?? [] as $item)
-                                        <tr>
-                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                <tbody id="tableBody">
+                                    @forelse ($praLandBank as $index => $land)
+                                        @php
+                                            $priorityClass = match (strtolower($land->priority ?? 'normal')) {
+                                                'urgent' => 'badge-priority-urgent',
+                                                'high', 'tinggi' => 'badge-priority-high',
+                                                'normal', 'sedang' => 'badge-priority-normal',
+                                                'low', 'rendah' => 'badge-priority-low',
+                                                default => 'badge-priority-normal',
+                                            };
+                                            $isTerminActive = $land->payment_method == 'termin' && $land->payments->where('status', 'belum')->count() > 0;
+                                            if ($isTerminActive) {
+                                                $paidCount = $land->payments->where('status', 'lunas')->count();
+                                                $totalPayments = $land->payments->count();
+                                                $percent = $totalPayments > 0 ? round(($paidCount / $totalPayments) * 100) : 0;
+                                                $fase = 3;
+                                            }
+                                            switch ($isTerminActive ? 'termin_active_bypass' : $land->status) {
+                                                case 'termin_active_bypass':
+                                                    break;
+                                                case 'fase1':
+                                                    $fase = 1;
+                                                    $percent = 33;
+                                                    break;
+
+                                                case 'fase2':
+                                                    $fase = 2;
+                                                    $percent = 66;
+                                                    break;
+
+                                                case 'fase3':
+                                                case 'approved':
+                                                    $fase = 3;
+                                                    $percent = 100;
+                                                    break;
+
+                                                case 'rejected':
+                                                    $fase = 0;
+                                                    $percent = 0;
+                                                    break;
+
+                                                case 'pending':
+                                                    if (!empty($land->survey_date) || !empty($land->survey_by)) {
+                                                        $fase = 3;
+                                                        $percent = 100;
+                                                    } else {
+                                                        $fase = 1;
+                                                        $percent = 33;
+                                                    }
+                                                    break;
+
+                                                default:
+                                                    $fase = 1;
+                                                    $percent = 33;
+                                            }
+                                        @endphp
+
+                                        <tr id="row-{{ $land->id }}">
+                                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
+
                                             <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home-variant text-primary me-2" style="font-size: 1.2rem;"></i>
-                                                    <span class="fw-bold">{{ $item->land_name ?? '-' }}</span>
+                                                <i class="mdi mdi-map-marker text-primary me-2"></i>
+                                                <span class="fw-bold">{{ $land->land_name }}</span>
+                                            </td>
+
+                                            <td>
+                                                <i class="mdi mdi-account-tie me-1"></i>
+                                                {{ $land->land_owner ?? '-' }}
+                                            </td>
+
+                                            <td class="text-nowrap">
+                                                Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}
+                                            </td>
+
+                                            <td>
+                                                <div class="progress-fase">
+
+                                                    <!-- LABEL -->
+                                                    <div class="progress-label">
+                                                        @if ($land->status == 'rejected')
+                                                            <span class="text-danger fw-bold">REJECTED</span>
+                                                        @elseif($isTerminActive)
+                                                            <span class="text-warning fw-bold">CICILAN ({{ $paidCount }}/{{ $totalPayments }})</span>
+                                                        @elseif($land->status == 'approved')
+                                                            <span class="text-success fw-bold">APPROVED</span>
+                                                        @else
+                                                            FASE {{ $fase }}/3
+                                                        @endif
+                                                    </div>
+
+                                                    <!-- BAR -->
+                                                    <div class="progress-bar-container">
+                                                        <div class="progress-bar-fill {{ $isTerminActive ? 'bg-warning' : '' }}
+                                                            {{ $land->status == 'approved' ? 'bg-success' : '' }}
+                                                            {{ $land->status == 'rejected' ? 'bg-danger' : '' }}"
+                                                            style="width: {{ $percent }}%">
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </td>
+
                                             <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-account-tie text-info me-2" style="font-size: 1.2rem;"></i>
-                                                    <span>{{ $item->land_source ?? '-' }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-map-marker text-danger me-2" style="font-size: 1.2rem;"></i>
-                                                    <span>{{ Str::limit($item->address ?? '-', 30) }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-currency-usd text-success me-2" style="font-size: 1.2rem;"></i>
-                                                    <span class="fw-bold">
-                                                        Rp {{ number_format($item->estimated_price ?? 0, 0, ',', '.') }}
+                                                @if($isTerminActive)
+                                                    <span class="badge-status warning" style="background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">
+                                                        Cicilan Aktif
                                                     </span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @if(($item->negotiation_status ?? '') == 'deal')
-                                                    <span class="badge badge-gradient-success"><i class="mdi mdi-check-circle me-1"></i>Sudah Deal</span>
-                                                @elseif(($item->negotiation_status ?? '') == 'almost_deal')
-                                                    <span class="badge badge-gradient-info"><i class="mdi mdi-check me-1"></i>Hampir Deal</span>
-                                                @elseif(($item->negotiation_status ?? '') == 'cancel')
-                                                    <span class="badge badge-gradient-danger"><i class="mdi mdi-close-circle me-1"></i>Batal</span>
                                                 @else
-                                                    <span class="badge badge-gradient-warning"><i class="mdi mdi-clock-outline me-1"></i>Masih Negosiasi</span>
+                                                    <span class="badge-status 
+                                                       {{ $land->status == 'approved' ? 'success' : 'nego' }}">
+                                                        {{ ucfirst($land->status) }}
+                                                    </span>
                                                 @endif
                                             </td>
-                                            <td class="text-center">
-                                                <div class="action-buttons">
-                                                    <!-- BUTTON EYE (INFO) -->
-                                                    <button class="btn btn-outline-info btn-sm" title="Lihat Detail">
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </button>
-                                                    <!-- BUTTON EDIT (WARNING) -->
-                                                    <button class="btn btn-outline-warning btn-sm" title="Edit">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </button>
+
+                                            <td>
+                                                <span class="badge-priority {{ $priorityClass }}">
+                                                    {{ ucfirst($land->priority ?? 'Normal') }}
+                                                </span>
+                                            </td>
+
+                                            <td class="text-center text-nowrap">
+                                                <div class="d-inline-flex align-items-center gap-1">
+                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
+                                                       class="btn-fase-action btn-fase-1" 
+                                                       title="FASE 1: Negosiasi">
+                                                        <i class="mdi mdi-account-tie"></i>
+                                                        <span>Fase 1</span>
+                                                    </a>
+
+                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
+                                                       class="btn-fase-action btn-fase-2" 
+                                                       title="FASE 2: Survey">
+                                                        <i class="mdi mdi-map-search"></i>
+                                                        <span>Fase 2</span>
+                                                    </a>
+
+                                                    @if($land->status !== 'fase1' && ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
+                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
+                                                           class="btn-fase-action btn-fase-3" 
+                                                           title="FASE 3: Persetujuan">
+                                                            <i class="mdi mdi-check-decagram"></i>
+                                                            <span>Fase 3</span>
+                                                        </a>
+                                                    @endif
+
+                                                    <form action="{{ route('pra-landbanks.destroy', $land->id) }}"
+                                                        method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="btn-fase-action btn-fase-delete delete-btn" title="Hapus Data">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center text-muted py-5">
-                                                <i class="mdi mdi-hand-holding" style="font-size: 3rem; opacity: 0.3;"></i>
-                                                <p class="mt-2 mb-0">Tidak ada data pra tanah yang tersedia.</p>
-                                                <p class="text-muted small">Silahkan tambahkan data pra tanah baru.</p>
+                                            <td colspan="8" class="text-center text-muted">
+                                                Tidak ada data
                                             </td>
                                         </tr>
                                     @endforelse
@@ -798,79 +366,114 @@
                             </table>
                         </div>
 
-                        <!-- Pagination -->
-                        @if($praLandBank->count() > 0)
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                                Menampilkan <span class="fw-bold">{{ $praLandBank->firstItem() }}</span> -
-                                <span class="fw-bold">{{ $praLandBank->lastItem() }}</span> dari
-                                <span class="fw-bold">{{ $praLandBank->total() }}</span> data
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0" id="paginationInfo">
+                                Menampilkan 1 - 1 dari 1 data
                             </div>
                             <nav aria-label="Page navigation">
-                                {{ $praLandBank->onEachSide(1)->links('pagination::bootstrap-5') }}
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0"
+                                    id="pagination">
+                                    <li class="page-item disabled"><span class="page-link"><i
+                                                class="mdi mdi-chevron-left"></i></span></li>
+                                    <li class="page-item active"><span class="page-link">1</span></li>
+                                    <li class="page-item disabled"><span class="page-link"><i
+                                                class="mdi mdi-chevron-right"></i></span></li>
+                                </ul>
                             </nav>
                         </div>
-                        @endif
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Info Tambahan untuk Mobile -->
-        <div class="text-muted small mt-2 d-block d-sm-none">
-            <i class="mdi mdi-information-outline me-1"></i>
-            Geser untuk melihat konten lainnya
-        </div>
     </div>
+
 @endsection
 
 @push('scripts')
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function() {
-            // ===========================================
-            // 1. FILTER MOBILE (demo)
-            // ===========================================
-            $('#filterDataMobile').on('click', function() {
-                alert('Filter akan diterapkan (demo UI)');
-            });
-
-            $('#resetFilterMobile').on('click', function() {
-                window.location.reload();
-            });
-
-            // ===========================================
-            // 2. DATATABLES RESPONSIVE - HANYA JIKA ADA DATA
-            // ===========================================
-            @if($praLandBank->count() > 0)
-                // Hancurkan instance DataTables jika sudah ada
-                if ($.fn.DataTable.isDataTable('#tablePraTanah')) {
-                    $('#tablePraTanah').DataTable().destroy();
-                }
-
-                // Inisialisasi DataTables Responsive
-                $('#tablePraTanah').DataTable({
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    ordering: true,
-                    responsive: true,
-                    language: {
-                        emptyTable: "Tidak ada data tersedia",
-                        zeroRecords: "Data tidak ditemukan",
-                    },
-                    columnDefs: [
-                        {
-                            targets: [0, 6], // Kolom No dan Aksi
-                            orderable: false
-                        }
-                    ],
-                    autoWidth: false,
-                    deferRender: true
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cek pesan sukses dari sessionStorage (setelah reload)
+            const pendingMsg = sessionStorage.getItem('success_message');
+            if (pendingMsg) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: pendingMsg,
+                    timer: 2000,
+                    showConfirmButton: false
                 });
-            @endif
+                sessionStorage.removeItem('success_message');
+            }
+
+            // Konfirmasi hapus dengan SweetAlert2
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('form');
+                    const url = form.getAttribute('action');
+                    const token = form.querySelector('input[name="_token"]').value;
+                    
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data Pra Land Bank yang dihapus tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading
+                            Swal.fire({
+                                title: 'Menghapus...',
+                                text: 'Mohon tunggu sebentar',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            // Kirim request AJAX
+                            fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': token
+                                },
+                                body: JSON.stringify({
+                                    _method: 'DELETE'
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    sessionStorage.setItem('success_message', 'Data Pra Land Bank berhasil dihapus.');
+                                    window.location.reload();
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal',
+                                        text: data.message || 'Gagal menghapus data.',
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Terjadi kesalahan sistem saat menghapus data.',
+                                });
+                            });
+                        }
+                    });
+                });
+            });
         });
     </script>
 @endpush

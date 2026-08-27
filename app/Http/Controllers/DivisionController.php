@@ -12,15 +12,33 @@ class DivisionController extends Controller
     {
         $query = Division::query();
 
+        // Search filter
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('name', 'like', "%{$search}%");
         }
 
+        // Sorting
+        $sortField = $request->get('sortField', 'created_at');
+        $sortDirection = $request->get('sortDirection', 'desc');
+
+        // Kolom yang valid untuk sorting
+        $validSortFields = ['name', 'employees_count', 'created_at'];
+
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField == 'employees_count') {
+                // Jika sorting berdasarkan jumlah karyawan
+                $query->withCount('employees')->orderBy('employees_count', $sortDirection);
+            } else {
+                $query->orderBy($sortField, $sortDirection);
+            }
+        } else {
+            $query->latest(); // Default sorting by created_at desc
+        }
+
         $perPage = $request->input('per_page', 10);
 
         $division = $query->withCount('employees')
-                          ->latest()
                           ->paginate($perPage)
                           ->withQueryString();
 
@@ -50,6 +68,12 @@ class DivisionController extends Controller
 
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
+    }
+
+    public function edit($id)
+    {
+        $division = Division::findOrFail($id);
+        return response()->json($division);
     }
 
     public function update(Request $request, $id)

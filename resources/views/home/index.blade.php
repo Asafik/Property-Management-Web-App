@@ -3,44 +3,9 @@
 
 @section('title', 'Sweet Home — Jual Rumah')
 
-@include('home.layouts.floating-wa')
 {{-- ================ STYLES ================ --}}
 @push('styles')
 <style>
-    /* ------------------------------------------------
-        VARIABLES & RESET
-    ------------------------------------------------ */
-    :root {
-        --gold: #c9973a;
-        --gold-light: #e5b155;
-        --navy: #0b1f4b;
-        --navy-mid: #1a3470;
-        --cream: #f9f6f0;
-        --border: #eae6df;
-        --text-dark: #1e1e2a;
-        --text-mid: #5e5e6b;
-        --text-light: #8a8a98;
-        --subsidi: #0f766e;
-        --subsidi-soft: #ccf0e9;
-        --komersil: #7c3aed;
-        --komersil-soft: #eee9ff;
-        --cashkpr: #b8882f;
-        --cashkpr-soft: #fcedd7;
-        --shadow-md: 0 10px 30px -10px rgba(0,0,0,0.12);
-        --shadow-lg: 0 25px 50px -15px rgba(0,0,0,0.25);
-    }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: 'DM Sans', sans-serif;
-        color: var(--text-dark);
-        background-color: #ffffff;
-    }
 
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(25px); }
@@ -1337,10 +1302,6 @@
         <div class="hero-cols">
             {{-- Hero Left Content --}}
             <div>
-                <div class="hero-badge">
-                    <i class="fa-solid fa-certificate fa-xs"></i> Developer Resmi
-                </div>
-
                 <h1 class="hero-title">
                     Rumah impian<br><span class="gold">Sweet Home</span>
                 </h1>
@@ -1453,9 +1414,9 @@
                     </div>
                 </div>
 
-                <button class="btn-search">
+                <a href="{{ route('home.detail') }}" class="btn-search" style="text-decoration: none;">
                     <i class="fa-solid fa-magnifying-glass"></i> Cari Sekarang
-                </button>
+                </a>
 
                 <p style="text-align:center; font-size:0.75rem; color:var(--text-light); margin-top:0.75rem;">
                     <i class="fa-solid fa-circle-check" style="color:var(--gold)"></i>
@@ -1539,7 +1500,7 @@
                 <div class="area-overlay">
                     <div class="area-name">Tegal Besar</div>
                     <div class="area-count">12 unit tersedia</div>
-                    <a href="#" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
                 </div>
             </div>
             <div class="area-card">
@@ -1547,7 +1508,7 @@
                 <div class="area-overlay">
                     <div class="area-name">Sumbersari</div>
                     <div class="area-count">8 unit tersedia</div>
-                    <a href="#" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
                 </div>
             </div>
             <div class="area-card">
@@ -1555,7 +1516,7 @@
                 <div class="area-overlay">
                     <div class="area-name">Kaliwates</div>
                     <div class="area-count">6 unit tersedia</div>
-                    <a href="#" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
                 </div>
             </div>
             <div class="area-card">
@@ -1563,7 +1524,7 @@
                 <div class="area-overlay">
                     <div class="area-name">Patrang</div>
                     <div class="area-count">5 unit tersedia</div>
-                    <a href="#" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
                 </div>
             </div>
         </div>
@@ -1578,7 +1539,7 @@
             <h2 class="stitle">Semua pilihan rumah kami</h2>
             <p class="ssub">Filter berdasarkan tipe untuk menemukan yang sesuai</p>
         </div>
-        <a href="#" class="link-all">Lihat semua <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+        <a href="{{ route('home.detail') }}" class="link-all">Lihat semua <i class="fa-solid fa-arrow-right fa-xs"></i></a>
     </div>
 
     <div class="tabs-row">
@@ -1600,7 +1561,9 @@
         {{-- Property Card 1: Subsidi Ambulu --}}
         <div class="prop-card">
             <div class="prop-img">
-                <img src="https://images.pexels.com/photos/164522/pexels-photo-164522.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Subsidi Ambulu" loading="lazy">
+                <a href="{{ route('home.detail') }}">
+                    <img src="https://images.pexels.com/photos/164522/pexels-photo-164522.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Subsidi Ambulu" loading="lazy">
+                </a>
                 <div class="pbadges">
                     <span class="pb pb-subsidi"><i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi</span>
                     <span class="pb pb-kpr"><i class="fa-solid fa-university fa-xs"></i> BTN</span>
@@ -1609,7 +1572,7 @@
             </div>
             <div class="prop-body">
                 <div class="ploc"><i class="fa-solid fa-location-dot"></i> Ambulu</div>
-                <h3 class="ptitle">Rumah Subsidi Ambulu</h3>
+                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Subsidi Ambulu</a></h3>
                 <div class="pspecs">
                     <div class="pspec"><i class="fa-solid fa-door-open"></i> 2 KT</div>
                     <span class="psep">·</span>
@@ -1619,14 +1582,16 @@
                 </div>
                 <div class="pprice">Rp 168 Juta</div>
                 <div class="pcicilan">Cicilan mulai Rp 1 juta/bulan · DP 1%</div>
-                <a href="#" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
             </div>
         </div>
 
         {{-- Property Card 2: Subsidi Patrang --}}
         <div class="prop-card">
             <div class="prop-img">
-                <img src="https://images.pexels.com/photos/280221/pexels-photo-280221.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Subsidi Patrang" loading="lazy">
+                <a href="{{ route('home.detail') }}">
+                    <img src="https://images.pexels.com/photos/280221/pexels-photo-280221.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Subsidi Patrang" loading="lazy">
+                </a>
                 <div class="pbadges">
                     <span class="pb pb-subsidi"><i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi</span>
                     <span class="pb pb-hot"><i class="fa-solid fa-fire fa-xs"></i> Terlaris</span>
@@ -1635,7 +1600,7 @@
             </div>
             <div class="prop-body">
                 <div class="ploc"><i class="fa-solid fa-location-dot"></i> Patrang</div>
-                <h3 class="ptitle">Rumah Subsidi Patrang</h3>
+                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Subsidi Patrang</a></h3>
                 <div class="pspecs">
                     <div class="pspec"><i class="fa-solid fa-door-open"></i> 2 KT</div>
                     <span class="psep">·</span>
@@ -1645,14 +1610,16 @@
                 </div>
                 <div class="pprice">Rp 185 Juta</div>
                 <div class="pcicilan">Cicilan mulai Rp 1,1 juta/bulan · DP 1%</div>
-                <a href="#" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
             </div>
         </div>
 
         {{-- Property Card 3: Komersil Tegal Besar --}}
         <div class="prop-card">
             <div class="prop-img">
-                <img src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Komersil Tegal Besar" loading="lazy">
+                <a href="{{ route('home.detail') }}">
+                    <img src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Komersil Tegal Besar" loading="lazy">
+                </a>
                 <div class="pbadges">
                     <span class="pb pb-komersil"><i class="fa-solid fa-building fa-xs"></i> Komersil</span>
                     <span class="pb pb-kpr"><i class="fa-solid fa-check fa-xs"></i> KPR</span>
@@ -1661,7 +1628,7 @@
             </div>
             <div class="prop-body">
                 <div class="ploc"><i class="fa-solid fa-location-dot"></i> Tegal Besar</div>
-                <h3 class="ptitle">Cluster Tegal Besar</h3>
+                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Cluster Tegal Besar</a></h3>
                 <div class="pspecs">
                     <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
                     <span class="psep">·</span>
@@ -1671,14 +1638,16 @@
                 </div>
                 <div class="pprice">Rp 485 Juta</div>
                 <div class="pcicilan">Cicilan mulai Rp 2,1 juta/bulan</div>
-                <a href="#" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
             </div>
         </div>
 
         {{-- Property Card 4: Komersil Kaliwates --}}
         <div class="prop-card">
             <div class="prop-img">
-                <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Komersil Kaliwates" loading="lazy">
+                <a href="{{ route('home.detail') }}">
+                    <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Komersil Kaliwates" loading="lazy">
+                </a>
                 <div class="pbadges">
                     <span class="pb pb-komersil"><i class="fa-solid fa-building fa-xs"></i> Komersil</span>
                     <span class="pb pb-new"><i class="fa-solid fa-bolt fa-xs"></i> Baru</span>
@@ -1687,7 +1656,7 @@
             </div>
             <div class="prop-body">
                 <div class="ploc"><i class="fa-solid fa-location-dot"></i> Kaliwates</div>
-                <h3 class="ptitle">Cluster Kaliwates Residence</h3>
+                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Cluster Kaliwates Residence</a></h3>
                 <div class="pspecs">
                     <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
                     <span class="psep">·</span>
@@ -1697,14 +1666,16 @@
                 </div>
                 <div class="pprice">Rp 420 Juta</div>
                 <div class="pcicilan">Cicilan mulai Rp 1,8 juta/bulan</div>
-                <a href="#" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
             </div>
         </div>
 
         {{-- Property Card 5: Cash KPR Sumbersari --}}
         <div class="prop-card">
             <div class="prop-img">
-                <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cash KPR Sumbersari" loading="lazy">
+                <a href="{{ route('home.detail') }}">
+                    <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cash KPR Sumbersari" loading="lazy">
+                </a>
                 <div class="pbadges">
                     <span class="pb pb-cashkpr"><i class="fa-solid fa-money-bill-wave fa-xs"></i> Cash/KPR</span>
                     <span class="pb pb-kpr"><i class="fa-solid fa-file-shield fa-xs"></i> SHM</span>
@@ -1713,7 +1684,7 @@
             </div>
             <div class="prop-body">
                 <div class="ploc"><i class="fa-solid fa-location-dot"></i> Sumbersari</div>
-                <h3 class="ptitle">Rumah Sumbersari Indah</h3>
+                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Sumbersari Indah</a></h3>
                 <div class="pspecs">
                     <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
                     <span class="psep">·</span>
@@ -1723,14 +1694,16 @@
                 </div>
                 <div class="pprice">Rp 350 Juta</div>
                 <div class="pcicilan">Cash keras / bertahap / KPR tersedia</div>
-                <a href="#" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
             </div>
         </div>
 
         {{-- Property Card 6: Cash KPR Kalisat --}}
         <div class="prop-card">
             <div class="prop-img">
-                <img src="https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cash KPR Kalisat" loading="lazy">
+                <a href="{{ route('home.detail') }}">
+                    <img src="https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cash KPR Kalisat" loading="lazy">
+                </a>
                 <div class="pbadges">
                     <span class="pb pb-cashkpr"><i class="fa-solid fa-money-bill-wave fa-xs"></i> Cash/KPR</span>
                     <span class="pb pb-hot"><i class="fa-solid fa-star fa-xs"></i> Diskon 10%</span>
@@ -1739,7 +1712,7 @@
             </div>
             <div class="prop-body">
                 <div class="ploc"><i class="fa-solid fa-location-dot"></i> Kalisat</div>
-                <h3 class="ptitle">Rumah Kalisat Asri</h3>
+                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Kalisat Asri</a></h3>
                 <div class="pspecs">
                     <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
                     <span class="psep">·</span>
@@ -1749,7 +1722,7 @@
                 </div>
                 <div class="pprice">Rp 395 Juta</div>
                 <div class="pcicilan">Cash keras diskon 10% — Rp 355 Jt</div>
-                <a href="#" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
             </div>
         </div>
     </div>
@@ -1889,6 +1862,9 @@
 
 {{-- Footer --}}
 @include('home.layouts.footer')
+
+{{-- Floating WhatsApp --}}
+@include('home.layouts.floating-wa')
 
 @endsection
 

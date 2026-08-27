@@ -4,730 +4,23 @@
 
 @section('content')
 
-<style>
-    /* ===== SEMUA CSS SAMA PERSIS DENGAN HALAMAN BANK ===== */
-    .card {
-        transition: all 0.3s ease;
-        margin-bottom: 1rem;
-    }
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    .card:hover {
-        box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, #ffffff, #f8f9fa);
-        border-bottom: 1px solid #e9ecef;
-        padding: 0.75rem;
-    }
-
-    @media (min-width: 576px) {
-        .card-header {
-            padding: 1rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .card-header {
-            padding: 1.2rem;
-        }
-    }
-
-    .card-body {
-        padding: 0.75rem;
-    }
-
-    @media (min-width: 576px) {
-        .card-body {
-            padding: 1rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .card-body {
-            padding: 1.2rem;
-        }
-    }
-
-    /* Card Title */
-    .card-title {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #9a55ff;
-        margin-bottom: 0;
-    }
-
-    @media (min-width: 576px) {
-        .card-title {
-            font-size: 1rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .card-title {
-            font-size: 1.1rem;
-        }
-    }
-
-    /* ===== FILTER SECTION - DIPERBESAR ===== */
-    .filter-card {
-        background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1.25rem;
-    }
-
-    .filter-card .card-body {
-        padding: 1rem !important;
-    }
-
-    .filter-card .form-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #9a55ff !important;
-        margin-bottom: 0.4rem;
-        letter-spacing: 0.3px;
-    }
-
-    .filter-card .form-control,
-    .filter-card .form-select {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-        border-radius: 8px;
-        height: auto;
-        min-height: 40px;
-        border: 1px solid #e0e4e9;
-    }
-
-    .filter-card .btn {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-        min-height: 40px;
-        border-radius: 8px;
-        font-weight: 600;
-    }
-
-    /* Form Controls */
-    .form-control,
-    .form-select {
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 0.6rem 0.8rem;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        background-color: #ffffff;
-        color: #2c2e3f;
-        height: auto;
-    }
-
-    @media (min-width: 576px) {
-
-        .form-control,
-        .form-select {
-            padding: 0.7rem 1rem;
-            font-size: 0.95rem;
-            border-radius: 10px;
-        }
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #9a55ff;
-        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-        outline: none;
-    }
-
-    /* Form Label */
-    .form-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #9a55ff !important;
-        margin-bottom: 0.3rem;
-        letter-spacing: 0.3px;
-        font-family: 'Nunito', sans-serif;
-    }
-
-    /* Button Styling */
-    .btn {
-        font-size: 0.85rem;
-        padding: 0.6rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        font-family: 'Nunito', sans-serif;
-        border: none;
-    }
-
-    @media (min-width: 576px) {
-        .btn {
-            font-size: 0.9rem;
-            padding: 0.7rem 1.2rem;
-            border-radius: 10px;
-        }
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-sm {
-        padding: 0.35rem 0.7rem;
-        font-size: 0.8rem;
-        border-radius: 6px;
-    }
-
-    .btn-gradient-primary {
-        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-        color: #ffffff !important;
-    }
-
-    .btn-gradient-secondary {
-        background: #6c757d !important;
-        color: #ffffff !important;
-    }
-
-    .btn-gradient-secondary:hover {
-        background: #5a6268 !important;
-    }
-
-    .btn-gradient-success {
-        background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-        color: #ffffff !important;
-    }
-
-    .btn-gradient-danger {
-        background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-        color: #ffffff !important;
-    }
-
-    .btn-gradient-warning {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-        color: #2c2e3f !important;
-    }
-
-    .btn-gradient-info {
-        background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-        color: #ffffff !important;
-    }
-
-    /* Outline Buttons */
-    .btn-outline-primary {
-        background: transparent;
-        border: 1px solid #9a55ff;
-        color: #9a55ff;
-        padding: 0.4rem 0.75rem;
-    }
-
-    .btn-outline-primary:hover {
-        background: linear-gradient(to right, #da8cff, #9a55ff);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    .btn-outline-success {
-        background: transparent;
-        border: 1px solid #28a745;
-        color: #28a745;
-    }
-
-    .btn-outline-success:hover {
-        background: linear-gradient(135deg, #28a745, #5cb85c);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    .btn-outline-warning {
-        background: transparent;
-        border: 1px solid #ffc107;
-        color: #ffc107;
-    }
-
-    .btn-outline-warning:hover {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d);
-        color: #2c2e3f;
-        border-color: transparent;
-    }
-
-    .btn-outline-danger {
-        background: transparent;
-        border: 1px solid #dc3545;
-        color: #dc3545;
-    }
-
-    .btn-outline-danger:hover {
-        background: linear-gradient(135deg, #dc3545, #e4606d);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    .btn-outline-info {
-        background: transparent;
-        border: 1px solid #17a2b8;
-        color: #17a2b8;
-    }
-
-    .btn-outline-info:hover {
-        background: linear-gradient(135deg, #17a2b8, #5bc0de);
-        color: #ffffff;
-        border-color: transparent;
-    }
-
-    /* Badge Styling */
-    .badge {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 30px;
-        display: inline-block;
-        white-space: nowrap;
-    }
-
-    @media (min-width: 576px) {
-        .badge {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.8rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .badge {
-            padding: 0.45rem 0.8rem;
-            font-size: 0.85rem;
-        }
-    }
-
-    .badge-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.7rem;
-    }
-
-    .badge-gradient-success {
-        background: linear-gradient(135deg, #28a745, #5cb85c);
-        color: #ffffff;
-    }
-
-    .badge-gradient-warning {
-        background: linear-gradient(135deg, #ffc107, #ffdb6d);
-        color: #2c2e3f;
-    }
-
-    .badge-gradient-danger {
-        background: linear-gradient(135deg, #dc3545, #e4606d);
-        color: #ffffff;
-    }
-
-    .badge-gradient-info {
-        background: linear-gradient(135deg, #17a2b8, #5bc0de);
-        color: #ffffff;
-    }
-
-    .badge-gradient-primary {
-        background: linear-gradient(135deg, #9a55ff, #da8cff);
-        color: #ffffff;
-    }
-
-    /* ===== TABLE STYLING ===== */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 0;
-    }
-
-    .table thead th {
-        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-        color: #9a55ff;
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 2px solid #e9ecef;
-        padding: 0.8rem 0.5rem;
-        white-space: nowrap;
-    }
-
-    @media (min-width: 576px) {
-        .table thead th {
-            font-size: 0.85rem;
-            padding: 0.9rem 0.6rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .table thead th {
-            font-size: 0.9rem;
-            padding: 1rem 0.75rem;
-        }
-    }
-
-    /* Kolom No lebih rapat */
-    .table thead th:first-child {
-        padding-left: 0.75rem;
-        width: 60px;
-    }
-
-    .table tbody td:first-child {
-        padding-left: 0.75rem;
-        font-weight: 500;
-        width: 60px;
-    }
-
-    .table tbody td {
-        vertical-align: middle;
-        font-size: 0.85rem;
-        padding: 0.8rem 0.5rem;
-        border-bottom: 1px solid #e9ecef;
-        color: #2c2e3f;
-    }
-
-    @media (min-width: 576px) {
-        .table tbody td {
-            font-size: 0.9rem;
-            padding: 0.9rem 0.6rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .table tbody td {
-            font-size: 0.95rem;
-            padding: 1rem 0.75rem;
-        }
-    }
-
-    .table tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-
-    /* Nama properti - lebih rapat dengan nomor */
-    .table tbody td:nth-child(2) {
-        padding-left: 0.3rem;
-    }
-
-    .table tbody td .d-flex.align-items-center {
-        gap: 0.5rem;
-    }
-
-    /* Icon dalam tabel */
-    .table tbody td i {
-        font-size: 1rem;
-    }
-
-    /* Text colors */
-    .text-primary {
-        color: #9a55ff !important;
-    }
-
-    .text-info {
-        color: #17a2b8 !important;
-    }
-
-    .text-danger {
-        color: #dc3545 !important;
-    }
-
-    .text-success {
-        color: #28a745 !important;
-    }
-
-    .text-warning {
-        color: #ffc107 !important;
-    }
-
-    .fw-bold {
-        font-weight: 600 !important;
-    }
-
-    .text-muted {
-        color: #a5b3cb !important;
-    }
-
-    /* Typography */
-    h3.text-dark {
-        font-size: 1.3rem !important;
-        font-weight: 700;
-        color: #2c2e3f !important;
-        margin-bottom: 0.5rem !important;
-    }
-
-    @media (min-width: 576px) {
-        h3.text-dark {
-            font-size: 1.5rem !important;
-        }
-    }
-
-    @media (min-width: 768px) {
-        h3.text-dark {
-            font-size: 1.7rem !important;
-        }
-    }
-
-    /* Modal Styling */
-    .modal-content {
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #ffffff, #f8f9fa);
-        border-bottom: 1px solid #e9ecef;
-        padding: 1rem;
-        border-radius: 16px 16px 0 0;
-    }
-
-    .modal-title {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #9a55ff;
-    }
-
-    .modal-body {
-        padding: 1.2rem;
-    }
-
-    .modal-footer {
-        border-top: 1px solid #e9ecef;
-        padding: 1rem;
-        border-radius: 0 0 16px 16px;
-    }
-
-    /* Badge dengan icon */
-    .badge i {
-        font-size: 0.8rem;
-        margin-right: 4px;
-    }
-
-    /* Hover effect untuk icon aksi */
-    .btn-outline-primary:hover,
-    .btn-outline-success:hover,
-    .btn-outline-warning:hover,
-    .btn-outline-danger:hover,
-    .btn-outline-info:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Fix untuk tombol aksi di mobile */
-    .action-buttons {
-        position: relative;
-        z-index: 10;
-    }
-
-    .btn-outline-warning, .btn-outline-danger {
-        position: relative;
-        z-index: 15;
-        pointer-events: auto !important;
-        cursor: pointer !important;
-    }
-
-    /* DataTables wrapper styling */
-    .dataTables_wrapper {
-        width: 100%;
-        overflow-x: auto;
-    }
-
-    /* Pastikan tabel tetap terlihat */
-    .table {
-        width: 100% !important;
-        margin-bottom: 0;
-    }
-
-    /* Fix untuk DataTables di mobile */
-    @media (max-width: 768px) {
-        .dataTables_wrapper .table {
-            width: 100% !important;
-        }
-    }
-
-    /* Responsive untuk mobile */
-    @media (max-width: 576px) {
-        .table thead th {
-            font-size: 0.75rem;
-            padding: 0.6rem 0.3rem;
-        }
-
-        .table tbody td {
-            font-size: 0.8rem;
-            padding: 0.6rem 0.3rem;
-        }
-
-        .filter-card {
-            padding: 0.75rem;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.8rem;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select,
-        .filter-card .btn {
-            font-size: 0.8rem;
-            min-height: 38px;
-        }
-
-        h3.text-dark {
-            font-size: 1.2rem !important;
-        }
-    }
-
-    /* DataTables Custom Styling */
-    .dataTables_filter,
-    .dataTables_length,
-    .dataTables_paginate,
-    .dataTables_info {
-        display: none !important;
-    }
-
-    /* Sorting indicator */
-    .sorting,
-    .sorting_asc,
-    .sorting_desc {
-        cursor: pointer;
-    }
-
-    /* Icon styling */
-    .mdi {
-        vertical-align: middle;
-    }
-
-    /* Styling untuk tombol reset icon-only */
-    .btn-icon-only {
-        width: 40px;
-        padding: 0.5rem 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-icon-only i {
-        font-size: 1.2rem;
-        margin: 0;
-    }
-
-    /* Form group untuk modal */
-    .modal-form-group {
-        margin-bottom: 1rem;
-    }
-
-    .modal-form-group label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #9a55ff !important;
-        margin-bottom: 0.3rem;
-        letter-spacing: 0.3px;
-        font-family: 'Nunito', sans-serif;
-        display: block;
-    }
-
-    .modal-form-control {
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 0.6rem 0.8rem;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        background-color: #ffffff;
-        color: #2c2e3f;
-        width: 100%;
-    }
-
-    .modal-form-control:focus {
-        border-color: #9a55ff;
-        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-        outline: none;
-    }
-
-    .pagination {
-        margin: 0;
-        gap: 3px;
-    }
-
-    .page-item .page-link {
-        border: 1px solid #e9ecef;
-        padding: 0.35rem 0.7rem;
-        font-size: 0.75rem;
-        color: #6c7383;
-        background-color: #ffffff;
-        border-radius: 6px !important;
-        transition: all 0.2s ease;
-        min-width: 32px;
-        text-align: center;
-    }
-
-    @media (min-width: 576px) {
-        .page-item .page-link {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-            min-width: 36px;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .page-item .page-link {
-            padding: 0.45rem 0.9rem;
-            font-size: 0.85rem;
-            min-width: 40px;
-        }
-    }
-
-    .page-item.active .page-link {
-        background: linear-gradient(to right, #da8cff, #9a55ff);
-        border-color: transparent;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-    }
-
-    .page-item .page-link:hover {
-        background-color: #f8f9fa;
-        border-color: #9a55ff;
-        color: #9a55ff;
-        transform: translateY(-1px);
-    }
-
-    /* Info text pagination */
-    .pagination-info {
-        font-size: 0.8rem;
-        color: #6c7383;
-    }
-
-    @media (min-width: 576px) {
-        .pagination-info {
-            font-size: 0.85rem;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .pagination-info {
-            font-size: 0.9rem;
-        }
-    }
-</style>
-
-<div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                     <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-sitemap me-2" style="color: #9a55ff;"></i>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
                             Master Data Divisi
                         </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola data divisi untuk struktur organisasi perusahaan
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Kelola data divisi untuk struktur organisasi dan departemen perusahaan
                         </p>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-sitemap" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                    <div class="d-none d-sm-block pe-2">
+                        <i class="mdi mdi-account-group" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
@@ -737,452 +30,421 @@
     <!-- Tabel Data Divisi -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                        Daftar Divisi
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Divisi
                     </h5>
-                    <div class="ms-auto">
-                        <button class="btn btn-gradient-primary" style="padding: 8px 20px; font-size: 0.95rem; white-space: nowrap;" onclick="$('#modalTambahDivisi').modal('show')">
-                            <i class="mdi mdi-plus me-1"></i>
-                            <span>Tambah Divisi</span>
-                        </button>
-                    </div>
+                    <button class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" onclick="openModal('tambah')">
+                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                        <span>Tambah Divisi</span>
+                    </button>
                 </div>
 
                 <div class="card-body">
-                    <!-- FILTER SECTION -->
-                    <div class="filter-card mb-4">
-                        <div class="card-body">
-                            <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                <i class="mdi mdi-filter-outline me-1" style="color: #9a55ff;"></i>
-                                Filter Data Divisi
-                            </h6>
-
-                            <!-- MOBILE VERSION -->
-                            <div class="d-block d-md-none">
-                                <form method="GET" action="{{ route('master.data.division.index') }}" id="filterFormMobile">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                            Cari Divisi
-                                        </label>
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari nama divisi..." style="height: 45px;">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">
-                                            <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil per Halaman
-                                        </label>
-                                        <select class="form-control" name="per_page" style="height: 45px;">
-                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                            <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <button type="submit" class="btn btn-gradient-primary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="{{ route('master.data.division.index') }}" class="btn btn-gradient-secondary w-100 py-2 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
+                    <!-- Filter Section -->
+                    <div class="filter-card mb-3">
+                        <!-- Desktop Version -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <form id="filterForm" method="GET" action="{{ route('master.data.division.index') }}" onsubmit="return showFilterLoading()">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <div style="min-width: 260px; max-width: 380px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Cari nama divisi..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
 
-                            <!-- DESKTOP VERSION -->
-                            <div class="d-none d-md-block">
-                                <form method="GET" action="{{ route('master.data.division.index') }}" id="filterFormDesktop">
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-6">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1" style="color: #9a55ff;"></i>
-                                                Cari Divisi
-                                            </label>
-                                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                                placeholder="Cari nama divisi...">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-counter me-1" style="color: #9a55ff;"></i>Tampil
-                                            </label>
-                                            <select class="form-control" name="per_page">
-                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15</option>
-                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 115px;">
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15 data</option>
+                                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible">Filter</label>
-                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center">
-                                                <i class="mdi mdi-filter me-1"></i> Filter
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('master.data.division.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Mobile Version -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <form method="GET" action="{{ route('master.data.division.index') }}" onsubmit="return showFilterLoading()">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                placeholder="Cari nama divisi..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
-
-                                        <div class="col-md-2">
-                                            <label class="form-label invisible">Reset</label>
-                                            <a href="{{ route('master.data.division.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center" title="Reset">
-                                                <i class="mdi mdi-refresh me-1"></i> Reset
-                                            </a>
-                                        </div>
                                     </div>
-                                </form>
-                            </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="per_page" id="perPageSelectMobile">
+                                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                            <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15 data</option>
+                                            <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                            <i class="mdi mdi-filter"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ route('master.data.division.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i> Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- TABEL DATA -->
+                    <!-- Tabel Data Divisi -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" id="tableDivisi" {{ $division->count() > 0 ? 'data-use-datatables=true' : '' }}>
+                        <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="75%">Nama Divisi</th>
-                                    <th class="text-center" width="20%">Aksi</th>
+                                    <th class="text-center">No</th>
+                                    <th class="sortable" data-field="name" data-direction="{{ request('sortField') == 'name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Nama Divisi
+                                        @if(request('sortField') == 'name')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="sortable text-center" data-field="employees_count" data-direction="{{ request('sortField') == 'employees_count' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        Jumlah Karyawan
+                                        @if(request('sortField') == 'employees_count')
+                                            <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
+                                        @else
+                                            <i class="mdi mdi-swap-vertical"></i>
+                                        @endif
+                                    </th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($division as $item)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="mdi mdi-sitemap text-primary me-2" style="font-size: 1.2rem;"></i>
-                                            <span class="fw-bold">{{ $item->name }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-1 action-buttons">
-                                            <button class="btn btn-outline-warning btn-sm btnEdit" title="Edit" data-id="{{ $item->id }}" data-name="{{ $item->name }}">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('master.data.division.delete', $item->id) }}" method="POST" class="d-inline formDelete">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-outline-danger btn-sm btnDelete" title="Hapus" data-name="{{ $item->name }}">
-                                                    <i class="mdi mdi-delete"></i>
+                                @forelse ($division as $index => $item)
+                                    @php
+                                        $dName = $item->name ?? 'Divisi';
+                                        $initials = strtoupper(substr($dName, 0, 2));
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $division->firstItem() + $index }}</td>
+                                        <td>
+                                            <div class="info-inline">
+                                                <span class="initial-avatar">{{ $initials }}</span>
+                                                <span class="fw-bold text-dark">{{ $item->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-3 py-1 border border-primary border-opacity-25" style="font-size: 0.8rem;">
+                                                <i class="mdi mdi-account-multiple me-1"></i>{{ $item->employees_count }} Karyawan
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <button class="btn-action edit" title="Edit Divisi" onclick="openModal('edit', {{ $item->id }}, '{{ addslashes($item->name) }}')">
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                <button class="btn-action delete" title="Hapus Divisi" onclick="confirmDelete({{ $item->id }})">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-5">
-                                        <i class="mdi mdi-sitemap-off" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">Tidak ada data divisi yang tersedia.</p>
-                                        <p class="text-muted small">Silahkan tambahkan data divisi baru.</p>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-account-multiple-remove me-2" style="font-size: 1.5rem;"></i>
+                                            Belum ada data divisi yang tersimpan.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- PAGINATION SECTION -->
-                    @if($division->count() > 0)
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>
-                            Menampilkan
-                            <span class="fw-bold">{{ $division->firstItem() }}</span>
-                            -
-                            <span class="fw-bold">{{ $division->lastItem() }}</span>
-                            dari
-                            <span class="fw-bold">{{ $division->total() }}</span>
-                            data divisi
+                    <!-- Pagination -->
+                    @if ($division instanceof \Illuminate\Pagination\LengthAwarePaginator && $division->total() > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
+                                Menampilkan {{ $division->firstItem() }} - {{ $division->lastItem() }} dari {{ $division->total() }} data
+                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                    <li class="page-item {{ $division->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class="page-link" href="{{ $division->previousPageUrl() }}" {{ !$division->onFirstPage() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                            <i class="mdi mdi-chevron-left"></i>
+                                        </a>
+                                    </li>
+
+                                    @for($page = 1; $page <= $division->lastPage(); $page++)
+                                        <li class="page-item {{ $page == $division->currentPage() ? 'active' : '' }}">
+                                            @if($page == $division->currentPage())
+                                                <span class="page-link">{{ $page }}</span>
+                                            @else
+                                                <a class="page-link" href="{{ $division->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                            @endif
+                                        </li>
+                                    @endfor
+
+                                    <li class="page-item {{ $division->hasMorePages() ? '' : 'disabled' }}">
+                                        <a class="page-link" href="{{ $division->nextPageUrl() }}" {{ $division->hasMorePages() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                            <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                {{-- Previous Page Link --}}
-                                @if($division->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $division->previousPageUrl() }}" aria-label="Previous">
-                                            <i class="mdi mdi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                @endif
-
-                                {{-- Page Links --}}
-                                @foreach ($division->getUrlRange(1, $division->lastPage()) as $page => $url)
-                                    <li class="page-item {{ $division->currentPage() == $page ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                    </li>
-                                @endforeach
-
-                                {{-- Next Page Link --}}
-                                @if($division->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $division->nextPageUrl() }}" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link" aria-label="Next">
-                                            <i class="mdi mdi-chevron-right"></i>
-                                        </span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
-                    </div>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                            <i class="mdi mdi-arrow-left me-1"></i>
-                            Kembali ke Dashboard
-                        </a>
+</div>
+
+<!-- Modal Tambah/Edit Divisi -->
+<div class="modal fade" id="modalDivisi" tabindex="-1" aria-labelledby="modalDivisiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-white border-bottom">
+                <h5 class="modal-title fw-bold" id="modalDivisiLabel" style="color: #2c2e3f;">
+                    <i class="mdi mdi-plus-circle me-2" id="modalIcon" style="color: #9a55ff;"></i>
+                    <span id="modalTitle">Tambah Divisi</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formDivisi" method="POST" action="{{ route('master.data.division.store') }}">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                <input type="hidden" id="divisiId" name="id">
+
+                <div class="modal-body p-4">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold" style="color: #2c2e3f;">Nama Divisi <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="name" id="namaDivisi" placeholder="Contoh: Divisi Operasional / Marketing / Legal" value="{{ old('name') }}" required>
                     </div>
                 </div>
-            </div>
+
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-gradient-primary btn-sm px-4" id="submitBtn" onclick="showSubmitLoading()">
+                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                        <span id="btnText">Simpan Data</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- MODAL TAMBAH DIVISI -->
-<div class="modal fade" id="modalTambahDivisi" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-sitemap-plus me-2" style="color: #9a55ff;"></i>
-                    Tambah Divisi Baru
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalTambahDivisi').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('master.data.division.store') }}" method="POST" id="formTambahDivisi">
-                    @csrf
-                    <div class="modal-form-group">
-                        <label>
-                            <i class="mdi mdi-sitemap me-1"></i>Nama Divisi <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" name="name" class="modal-form-control" placeholder="Contoh: Divisi Keuangan" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalTambahDivisi').modal('hide')">Batal</button>
-                <button type="submit" form="formTambahDivisi" class="btn btn-gradient-primary">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EDIT DIVISI -->
-<div class="modal fade" id="modalEditDivisi" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="mdi mdi-pencil me-2" style="color: #9a55ff;"></i>
-                    Edit Divisi
-                </h5>
-                <button type="button" class="btn-close" onclick="$('#modalEditDivisi').modal('hide')" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="formEditDivisi">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-form-group">
-                        <label>
-                            <i class="mdi mdi-sitemap me-1"></i>Nama Divisi <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" name="name" id="editNama" class="modal-form-control" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-gradient-secondary" onclick="$('#modalEditDivisi').modal('hide')">Batal</button>
-                <button type="submit" form="formEditDivisi" class="btn btn-gradient-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Inisialisasi DataTables
-    const tableElement = document.getElementById('tableDivisi');
-    if (tableElement && tableElement.getAttribute('data-use-datatables') === 'true') {
-        if ($.fn.DataTable.isDataTable('#tableDivisi')) {
-            $('#tableDivisi').DataTable().destroy();
-        }
-
-        $('#tableDivisi').DataTable({
-            responsive: true,
-            ordering: true,
-            paging: false,
-            info: false,
-            searching: false,
-            lengthChange: false,
-            destroy: true,
-            language: {
-                emptyTable: "Data divisi belum tersedia",
-                zeroRecords: "Data tidak ditemukan",
-            },
-            columnDefs: [
-                { orderable: false, targets: [2] }
-            ],
-            autoWidth: false,
-            deferRender: true
-        });
-    }
-
-    // ===== HANDLE FORM TAMBAH DIVISI =====
-    $('#formTambahDivisi').on('submit', function(e) {
-        e.preventDefault();
-
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        this.submit();
-    });
-
-    // ===== HANDLE EDIT BUTTON CLICK =====
-    $(document).on('click', '.btnEdit', function() {
-        let id = $(this).data('id');
-        let name = $(this).data('name');
-
-        $('#editNama').val(name);
-        $('#formEditDivisi').attr('action', '/master-data/division/update/' + id);
-        $('#modalEditDivisi').modal('show');
-    });
-
-    // ===== HANDLE FORM EDIT DIVISI =====
-    $('#formEditDivisi').on('submit', function(e) {
-        e.preventDefault();
-
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        this.submit();
-    });
-
-    // ===== HANDLE DELETE BUTTON CLICK =====
-    $(document).on('click', '.btnDelete', function() {
-        let form = $(this).closest('.formDelete');
-        let name = $(this).data('name');
-
-        Swal.fire({
-            title: 'Hapus Divisi?',
-            text: "Divisi " + name + " akan dihapus",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                form.submit();
-            }
-        });
-    });
-
-    // Filter form submit with loading
-    $('#filterFormMobile, #filterFormDesktop').on('submit', function() {
-        Swal.fire({
-            title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    });
-
-    // Reset button with loading
-    $('a[href="{{ route('master.data.division.index') }}"]').on('click', function(e) {
-        e.preventDefault();
-        let href = $(this).attr('href');
+    $('.sortable').click(function() {
+        let field = $(this).data('field');
+        let direction = $(this).data('direction');
 
         Swal.fire({
             title: 'Memuat...',
-            text: 'Mohon tunggu sebentar',
+            html: 'Sedang mengurutkan data',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
             }
         });
 
-        window.location.href = href;
+        let url = new URL(window.location.href);
+        url.searchParams.set('sortField', field);
+        url.searchParams.set('sortDirection', direction);
+        url.searchParams.set('page', 1);
+
+        window.location.href = url.toString();
     });
+
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 2500,
+            showConfirmButton: true,
+            confirmButtonColor: '#9a55ff',
+            timerProgressBar: true
+        });
+    @endif
+
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
+        });
+    @endif
 });
 
-// Sweet Alert untuk session success - DENGAN TIMER 3000, PROGRESS BAR, DAN TOMBOL OK
-@if(session('success'))
+function showFilterLoading() {
     Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: "{{ session('success') }}",
-        timer: 3000,
-        timerProgressBar: true,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#9a55ff'
+        title: 'Memuat...',
+        html: 'Sedang memfilter data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    return true;
+}
 
-// Sweet Alert untuk session error - TANPA TIMER (pakai tombol OK)
-@if(session('error'))
+function showResetLoading(event) {
+    event.preventDefault();
     Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#9a55ff',
-        confirmButtonText: 'OK'
+        title: 'Memuat...',
+        html: 'Sedang mereset filter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-@endif
+    window.location.href = event.currentTarget.href;
+}
+
+function showPaginationLoading(event) {
+    if (event.currentTarget.parentElement.classList.contains('disabled')) return;
+    event.preventDefault();
+    Swal.fire({
+        title: 'Memuat...',
+        html: 'Sedang memuat halaman',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    window.location.href = event.currentTarget.href;
+}
+
+function showSubmitLoading() {
+    Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang menyimpan data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    return true;
+}
+
+function openModal(type, id = null, name = '') {
+    if (type === 'tambah') {
+        $('#formDivisi')[0].reset();
+        $('#divisiId').val('');
+        $('#methodField').val('POST');
+        $('#formDivisi').attr('action', '{{ route("master.data.division.store") }}');
+
+        $('#modalTitle').text('Tambah Divisi');
+        $('#modalIcon').removeClass('mdi-pencil').addClass('mdi-plus-circle');
+        $('#btnText').text('Simpan Data');
+        $('#btnIcon').removeClass('mdi-pencil').addClass('mdi-content-save');
+
+        $('#modalDivisi').modal('show');
+    } else {
+        $('#divisiId').val(id);
+        $('#namaDivisi').val(name);
+
+        $('#methodField').val('PUT');
+        $('#formDivisi').attr('action', '{{ url("master-data/division/update") }}/' + id);
+
+        $('#modalTitle').text('Edit Divisi');
+        $('#modalIcon').removeClass('mdi-plus-circle').addClass('mdi-pencil');
+        $('#btnText').text('Update Data');
+        $('#btnIcon').removeClass('mdi-content-save').addClass('mdi-pencil');
+
+        $('#modalDivisi').modal('show');
+    }
+}
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data divisi ini akan dihapus permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Sedang menghapus data divisi',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            setTimeout(() => {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("master-data/division") }}/' + id;
+
+                let csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}';
+
+                let methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+
+                form.appendChild(csrfInput);
+                form.appendChild(methodInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }, 100);
+        }
+    });
+}
 </script>
 @endpush

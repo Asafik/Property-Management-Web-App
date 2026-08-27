@@ -28,7 +28,10 @@ class LandBankUnit extends Model
         'status',
         'coordinates',
         'map_scale',
-        'construction_progress', // jika ada kolom progress
+        'construction_progress',
+        'no_spk',
+        'dokumen_spk',
+        'kontraktor',
     ];
     protected $casts = [
     'coordinates' => 'array',
@@ -76,7 +79,9 @@ class LandBankUnit extends Model
 }
 public function activeBooking()
 {
-    return $this->hasOne(Booking::class, 'unit_id')->latestOfMany();
+    return $this->hasOne(Booking::class, 'unit_id')
+        ->whereNotIn('status', ['cancelled'])
+        ->latestOfMany();
 }
 
 }
