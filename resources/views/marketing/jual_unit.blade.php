@@ -1359,8 +1359,21 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Project Dropdown -->
+                                            <div style="width: 170px;">
+                                                <select name="project" class="form-control select2" id="projectSelect" style="width: 100%;">
+                                                    <option value="">Semua Proyek</option>
+                                                    @foreach ($projects as $p)
+                                                        <option value="{{ $p->id }}"
+                                                            {{ request('project') == $p->id ? 'selected' : '' }}>
+                                                            {{ $p->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                             <!-- Jenis Dropdown -->
-                                            <div style="width: 160px;">
+                                            <div style="width: 150px;">
                                                 <select name="jenis" class="form-control select2" id="jenisSelect" style="width: 100%;">
                                                     <option value="">Semua Jenis</option>
                                                     <option value="subsidi"
@@ -1373,7 +1386,7 @@
                                             </div>
 
                                             <!-- Status Dropdown -->
-                                            <div style="width: 160px;">
+                                            <div style="width: 150px;">
                                                 <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
                                                     <option value="">Semua Status</option>
                                                     <option value="ready"
@@ -1441,6 +1454,17 @@
                                                     <i class="mdi mdi-magnify"></i>
                                                 </button>
                                             </div>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select name="project" class="form-control select2-mobile" id="projectSelectMobile" style="width: 100%;">
+                                                <option value="">Semua Proyek</option>
+                                                @foreach ($projects as $p)
+                                                    <option value="{{ $p->id }}"
+                                                        {{ request('project') == $p->id ? 'selected' : '' }}>
+                                                        {{ $p->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                         <div class="col-12 mb-2">
                                             <select name="jenis" class="form-control select2-mobile" id="jenisSelectMobile" style="width: 100%;">
@@ -2186,6 +2210,28 @@
                         <!-- SITEPLAN VIEW -->
                         <div id="sitePlandView" style="display: none;">
                             <div class="denah-container" style="padding: 1rem;">
+                                <!-- Project Selector Toolbar for Siteplan -->
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 p-3 bg-light rounded-3 border">
+                                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 450px;">
+                                        <label for="siteplanProjectSelect" class="fw-bold text-dark mb-0 d-flex align-items-center" style="font-size: 0.88rem; white-space: nowrap;">
+                                            <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.25rem;"></i>Pilih Proyek:
+                                        </label>
+                                        <select id="siteplanProjectSelect" class="form-control select2" style="width: 100%;">
+                                            @foreach ($projects as $p)
+                                                <option value="{{ $p->id }}"
+                                                    data-denah="{{ $p->denah ? asset('storage/' . $p->denah) : '' }}"
+                                                    data-name="{{ $p->name }}"
+                                                    {{ (request('project') == $p->id || (empty(request('project')) && $loop->first)) ? 'selected' : '' }}>
+                                                    {{ $p->name }} {{ $p->denah ? ' (✓ Denah Terunggah)' : ' (Denah Default)' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span id="siteplanDenahStatusBadge"></span>
+                                    </div>
+                                </div>
+
                                 <!-- Floating Controls (Vertical Stack matching user's image) -->
                                 <div class="siteplan-floating-controls">
                                     <button type="button" class="siteplan-control-btn" onclick="zoom(1.2)"
@@ -2810,80 +2856,146 @@
         }
 
         
-        // ========== SITEPLAN CANVAS ==========
+        // ========== SITEPLAN CANVAS (DINAMIS DENAH LANDBANK) ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
-        const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
         let originalWidth = 0;
         let originalHeight = 0;
         let zoomLevel = 1.0;
-
-        // Canvas Focus to avoid Page Scroll Hijacking
         let isCanvasFocused = false;
 
-        fabric.Image.fromURL(siteplanImage, function(img) {
-            originalWidth = img.width;
-            originalHeight = img.height;
+        // Dataset Semua Unit untuk Siteplan
+        const allUnitsData = [
+            @foreach ($unitsForSvg as $unit)
+            {
+                id: "{{ $unit->id }}",
+                land_bank_id: "{{ $unit->land_bank_id }}",
+                unitCode: "{{ $unit->unit_code }}",
+                unitName: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}",
+                unitNumber: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}",
+                block: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}",
+                jenis: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}",
+                type: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}",
+                address: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}",
+                area: {{ $unit->area ?? 0 }},
+                building: {{ $unit->building_area ?? 0 }},
+                price: {{ $unit->price ?? 0 }},
+                direction: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}",
+                statusRaw: "{{ $unit->status }}",
+                statusText: "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}",
+                construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
+                hasBooking: {{ $unit->activeBooking ? 1 : 0 }},
+                customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}",
+                sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}",
+                bookingDate: "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}",
+                bookingFee: {{ $unit->activeBooking->booking_fee ?? 0 }},
+                agentFee: {{ $unit->activeBooking->agent_fee ?? 0 }},
+                bookingStatus: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}",
+                pos_x: {{ $unit->pos_x ?? 100 }},
+                pos_y: {{ $unit->pos_y ?? 100 }},
+                width: {{ $unit->width ?? 80 }},
+                angle: {{ $unit->angle ?? 0 }},
+            },
+            @endforeach
+        ];
 
-            // Premium grab cursors
-            canvas.defaultCursor = 'grab';
+        // Function Load Siteplan Berdasarkan Proyek & Denah yang Diupload
+        function loadProjectSiteplan(landBankId) {
+            const projectSelect = document.getElementById('siteplanProjectSelect');
+            let selectedOption = null;
+            if (projectSelect) {
+                if (landBankId) {
+                    projectSelect.value = landBankId;
+                }
+                selectedOption = projectSelect.options[projectSelect.selectedIndex];
+            }
 
-            canvas.setBackgroundImage(img, function() {
-                @foreach ($unitsForSvg as $unit)
-                    const circle{{ $unit->id }} = new fabric.Circle({
-                        left: {{ $unit->pos_x ?? 100 }},
-                        top: {{ $unit->pos_y ?? 100 }},
-                        radius: {{ ($unit->width ?? 80) / 2 }},
-                        angle: {{ $unit->angle ?? 0 }},
-                        fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
-                        opacity: 0.6,
-                        stroke: 'black',
-                        strokeWidth: 1,
-                        hasControls: true,
-                        hasBorders: true,
-                        lockRotation: false
+            const denahUrl = (selectedOption && selectedOption.dataset.denah) ? selectedOption.dataset.denah : "{{ asset('images/siteplan.jpeg') }}";
+            const hasCustomDenah = !!(selectedOption && selectedOption.dataset.denah);
+            const projectName = selectedOption ? selectedOption.dataset.name : 'Proyek';
+
+            const statusBadge = document.getElementById('siteplanDenahStatusBadge');
+            if (statusBadge) {
+                if (hasCustomDenah) {
+                    statusBadge.innerHTML = `<span class="badge bg-success" style="font-size: 0.78rem; border-radius: 6px;"><i class="mdi mdi-check-circle me-1"></i>Denah Proyek (${projectName}) Terpasang</span>`;
+                } else {
+                    statusBadge.innerHTML = `<span class="badge bg-warning text-dark" style="font-size: 0.78rem; border-radius: 6px;"><i class="mdi mdi-information me-1"></i>Denah Default (Belum upload denah di Landbank)</span>`;
+                }
+            }
+
+            // Bersihkan objek lama di canvas
+            canvas.clear();
+
+            fabric.Image.fromURL(denahUrl, function(img) {
+                originalWidth = img.width;
+                originalHeight = img.height;
+
+                canvas.defaultCursor = 'grab';
+
+                canvas.setBackgroundImage(img, function() {
+                    const curProjectId = projectSelect ? projectSelect.value : landBankId;
+                    const unitsToShow = curProjectId 
+                        ? allUnitsData.filter(u => u.land_bank_id == curProjectId)
+                        : allUnitsData;
+
+                    unitsToShow.forEach(u => {
+                        const circle = new fabric.Circle({
+                            left: u.pos_x,
+                            top: u.pos_y,
+                            radius: u.width / 2,
+                            angle: u.angle,
+                            fill: getColor(u.statusRaw, u.type),
+                            opacity: 0.6,
+                            stroke: 'black',
+                            strokeWidth: 1,
+                            hasControls: true,
+                            hasBorders: true,
+                            lockRotation: false
+                        });
+
+                        circle.unitId = u.id;
+                        circle.unitCode = u.unitCode;
+                        circle.unitName = u.unitName;
+                        circle.unitNumber = u.unitNumber;
+                        circle.block = u.block;
+                        circle.jenis = u.jenis;
+                        circle.type = u.type;
+                        circle.address = u.address;
+                        circle.area = u.area;
+                        circle.building = u.building;
+                        circle.price = u.price;
+                        circle.direction = u.direction;
+                        circle.statusRaw = u.statusRaw;
+                        circle.statusText = u.statusText;
+                        circle.construction = u.construction;
+                        circle.hasBooking = u.hasBooking;
+                        circle.customer = u.customer;
+                        circle.sales = u.sales;
+                        circle.bookingDate = u.bookingDate;
+                        circle.bookingFee = u.bookingFee;
+                        circle.agentFee = u.agentFee;
+                        circle.bookingStatus = u.bookingStatus;
+
+                        canvas.add(circle);
                     });
-                    circle{{ $unit->id }}.unitId = "{{ $unit->id }}";
-                    circle{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    circle{{ $unit->id }}.unitName =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}";
-                    circle{{ $unit->id }}.unitNumber =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}";
-                    circle{{ $unit->id }}.block =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}";
-                    circle{{ $unit->id }}.jenis =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}";
-                    circle{{ $unit->id }}.type =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}";
-                    circle{{ $unit->id }}.address =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}";
-                    circle{{ $unit->id }}.area = {{ $unit->area ?? 0 }};
-                    circle{{ $unit->id }}.building = {{ $unit->building_area ?? 0 }};
-                    circle{{ $unit->id }}.price = {{ $unit->price ?? 0 }};
-                    circle{{ $unit->id }}.direction =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}";
-                    circle{{ $unit->id }}.statusRaw = "{{ $unit->status }}";
-                    circle{{ $unit->id }}.statusText =
-                        "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}";
-                    circle{{ $unit->id }}.construction =
-                        "{{ $unit->construction_progress ?? 'belum_mulai' }}";
-                    circle{{ $unit->id }}.hasBooking = {{ $unit->activeBooking ? 1 : 0 }};
-                    circle{{ $unit->id }}.customer =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}";
-                    circle{{ $unit->id }}.sales =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}";
-                    circle{{ $unit->id }}.bookingDate =
-                        "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}";
-                    circle{{ $unit->id }}.bookingFee = {{ $unit->activeBooking->booking_fee ?? 0 }};
-                    circle{{ $unit->id }}.agentFee = {{ $unit->activeBooking->agent_fee ?? 0 }};
-                    circle{{ $unit->id }}.bookingStatus =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
-                    canvas.add(circle{{ $unit->id }});
-                @endforeach
-                resetZoom();
-            }, {
-                originX: 'left',
-                originY: 'top'
+
+                    resetZoom();
+                    canvas.renderAll();
+                }, {
+                    originX: 'left',
+                    originY: 'top'
+                });
             });
+        }
+
+        // Listener jika dropdown proyek di tab siteplan diganti
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectSelect = document.getElementById('siteplanProjectSelect');
+            if (projectSelect) {
+                projectSelect.addEventListener('change', function() {
+                    loadProjectSiteplan(this.value);
+                });
+            }
+            loadProjectSiteplan(projectSelect ? projectSelect.value : null);
         });
 
         // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)
@@ -3216,6 +3328,8 @@
                 document.getElementById('btnSitePlandView').classList.add('active');
                 if (typeof canvas !== 'undefined' && canvas) {
                     setTimeout(function() {
+                        const projSelect = document.getElementById('siteplanProjectSelect');
+                        loadProjectSiteplan(projSelect ? projSelect.value : null);
                         resetZoom();
                     }, 50);
                 }
