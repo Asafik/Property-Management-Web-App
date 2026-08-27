@@ -567,10 +567,20 @@
                                     <i class="mdi mdi-printer me-1"></i>Cetak RAB
                                 </a>
 
-                                <button type="button" class="aksi-btn rab-btn-warning acc-btn"
-                                    data-id="{{ $selectedUnit->id }}">
-                                    <i class="mdi mdi-check me-1"></i>ACC RAB
-                                </button>
+                                @php
+                                    $isAccCompleted = ($selectedUnit->progress && $selectedUnit->progress->status === 'completed') || $selectedUnit->construction_progress === 'selesai';
+                                @endphp
+
+                                @if ($isAccCompleted)
+                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="RAB untuk unit ini sudah di-ACC">
+                                        <i class="mdi mdi-check-all me-1"></i>Sudah di-ACC
+                                    </button>
+                                @else
+                                    <button type="button" class="aksi-btn rab-btn-warning acc-btn"
+                                        data-id="{{ $selectedUnit->id }}">
+                                        <i class="mdi mdi-check me-1"></i>ACC RAB
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -937,9 +947,15 @@
                             .then(res => res.json())
                             .then(data => {
                                 if (data.success) {
-                                    Swal.fire('Berhasil!', data.message, 'success');
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: data.message,
+                                        icon: 'success'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
                                 } else {
-                                    Swal.fire('Gagal!', data.message, 'error');
+                                    Swal.fire('Gagal!', data.message, 'warning');
                                 }
                             })
                             .catch(err => {

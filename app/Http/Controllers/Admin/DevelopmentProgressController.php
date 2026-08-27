@@ -203,6 +203,14 @@ class DevelopmentProgressController extends Controller
             // Ambil progress terkait
             $progress = $unit->progress; // hasOne(DevelopmentProgress)
 
+            // Cek apakah RAB unit ini sudah di-ACC sebelumnya
+            if (($progress && $progress->status === 'completed') || $unit->construction_progress === 'selesai') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'RAB untuk unit ini sudah di-ACC sebelumnya dan tidak dapat di-ACC ulang.',
+                ], 400);
+            }
+
             $totalAnggaran = 0;
 
             if ($progress) {
@@ -214,7 +222,6 @@ class DevelopmentProgressController extends Controller
                 $progress->status = 'completed';
                 $progress->save();
             }
-
 
             $unit->price = $unit->price + $totalAnggaran;
 
