@@ -163,11 +163,13 @@
     border: 1px solid #e9ecef;
     box-shadow: 0 6px 20px rgba(0,0,0,0.06);
     position: relative;
+    width: 100%;
 }
 
 #map {
-    height: 380px;
-    width: 100%;
+    height: 380px !important;
+    min-height: 380px !important;
+    width: 100% !important;
     z-index: 1;
 }
 
@@ -180,6 +182,7 @@
     padding: 6px 10px !important;
 }
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 @endpush
 
 @section('content')
@@ -820,6 +823,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== 3. GOOGLE MAPS LEAFLET INTEGRATION =====
+    // Fix default marker icon Leaflet
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    });
+
     let defaultLat = -8.1727;
     let defaultLng = 113.7000;
 
@@ -847,6 +858,20 @@ document.addEventListener('DOMContentLoaded', function() {
         center: [lat, lng],
         zoom: 15,
         layers: [googleRoadmap]
+    });
+
+    // Invalidate size agar map full render tanpa blank tile
+    setTimeout(function() {
+        map.invalidateSize();
+        map.setView([lat, lng], 15);
+    }, 250);
+
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 800);
+
+    window.addEventListener('resize', function() {
+        map.invalidateSize();
     });
 
     // Layer Switcher (Roadmap & Satelit)
