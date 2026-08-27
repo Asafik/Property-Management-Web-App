@@ -178,6 +178,7 @@ public function update(Request $request, $id)
         'statusLegal' => 'nullable|string',
         'statusKavling' => 'nullable|string',
         'fee_document_verification' => 'nullable|string',
+        'denah'                     => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp,svg|max:5120',
         'elevasi_awal'     => 'nullable|numeric',
         'elevasi_rencana'  => 'nullable|numeric',
         'volume_cut'       => 'nullable|numeric',
@@ -225,6 +226,20 @@ public function update(Request $request, $id)
             'status_cut_fill' => $request->status_cut_fill ?? 'planned',
             'fee_document_verification' => $fee_verification,
         ]);
+
+        // HANDLE DENAH / SITEPLAN UPLOAD
+        if ($request->hasFile('denah')) {
+            $denahFile = $request->file('denah');
+            $denahFilename = 'denah_' . uniqid() . '.' . $denahFile->getClientOriginalExtension();
+            $destination = public_path('uploads/landbank/' . $land->id . '/denah');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $denahFile->move($destination, $denahFilename);
+            $land->update([
+                'denah' => 'landbank/' . $land->id . '/denah/' . $denahFilename
+            ]);
+        }
 
         // HANDLE DOCUMENTS
         if ($request->has('documents')) {

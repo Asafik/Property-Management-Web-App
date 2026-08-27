@@ -1198,6 +1198,62 @@
 
                             <hr class="properti-hr">
 
+                            {{-- ================= DENAH / SITEPLAN ================= --}}
+                            <h5 class="properti-section-title">
+                                <i class="fas fa-layer-group me-2"></i>
+                                Upload Denah / Siteplan Properti
+                            </h5>
+
+                            @php
+                                $hasDenah = !empty($land->denah);
+                                $denahUrl = $hasDenah ? asset(str_starts_with($land->denah, 'uploads/') ? $land->denah : 'uploads/' . $land->denah) : null;
+                            @endphp
+
+                            <div class="properti-row">
+                                <div class="properti-col-md-12">
+                                    <div class="properti-form-group mb-3">
+                                        <label class="properti-form-label d-flex justify-content-between align-items-center mb-1">
+                                            <span>Berkas Denah / Siteplan</span>
+                                            @if($hasDenah)
+                                                <span class="badge bg-success text-white fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px; background-color: #28a745 !important;">
+                                                    <i class="fas fa-check-circle me-1"></i>Denah Terunggah
+                                                </span>
+                                            @endif
+                                        </label>
+
+                                        <div class="properti-file-upload-modern {{ $hasDenah ? 'is-uploaded' : '' }}">
+                                            <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg"
+                                                data-type-name="Denah / Siteplan"
+                                                data-has-existing="{{ $hasDenah ? '1' : '0' }}">
+
+                                            <div class="properti-file-label-modern">
+                                                <i class="{{ $hasDenah ? 'fas fa-file-circle-check text-success' : 'fas fa-map' }}"
+                                                   style="{{ $hasDenah ? 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;' : '' }}"></i>
+                                                <div class="properti-file-info-modern">
+                                                    <span class="file-title-text {{ $hasDenah ? 'text-success fw-bold' : '' }}">
+                                                        {{ $hasDenah ? 'Denah / Siteplan Sudah Terunggah' : 'Upload Denah / Siteplan Baru' }}
+                                                    </span>
+                                                    <small class="file-sub-text text-muted">
+                                                        {{ $hasDenah ? 'Klik di sini jika ingin mengganti file denah' : 'Format: JPG, PNG, WEBP, SVG, PDF (Max: 5MB)' }}
+                                                    </small>
+                                                </div>
+                                                <span class="properti-file-size"></span>
+                                            </div>
+                                        </div>
+
+                                        @if($hasDenah)
+                                            <div class="mt-2 d-flex align-items-center gap-2">
+                                                <a href="{{ $denahUrl }}" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(154, 85, 255, 0.2); color: #9a55ff; background: rgba(154, 85, 255, 0.05);">
+                                                    <i class="fas fa-eye"></i> Lihat Berkas Denah Saat Ini
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="properti-hr">
+
                             {{-- ================= STATUS ================= --}}
                             <h5 class="properti-section-title">
                                 <i class="fas fa-tags me-2"></i>

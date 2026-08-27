@@ -35,6 +35,7 @@ class LandBankController extends Controller
                 'statusLegal' => 'required|string',
                 'statusKavling' => 'required|string',
                 'fee_document_verification' => 'nullable|string',
+                'denah'                     => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp,svg|max:5120',
 
                 'elevasi_awal'     => 'nullable|numeric',
                 'elevasi_rencana'  => 'nullable|numeric',
@@ -103,6 +104,22 @@ class LandBankController extends Controller
                     'request' => $request->all()
                 ]);
                 throw new \Exception('Insert LandBank gagal');
+            }
+
+            // ===============================
+            // HANDLE DENAH / SITEPLAN UPLOAD
+            // ===============================
+            if ($request->hasFile('denah')) {
+                $denahFile = $request->file('denah');
+                $denahFilename = 'denah_' . uniqid() . '.' . $denahFile->getClientOriginalExtension();
+                $destination = public_path('uploads/landbank/' . $land->id . '/denah');
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+                $denahFile->move($destination, $denahFilename);
+                $land->update([
+                    'denah' => 'landbank/' . $land->id . '/denah/' . $denahFilename
+                ]);
             }
 
             // ===============================

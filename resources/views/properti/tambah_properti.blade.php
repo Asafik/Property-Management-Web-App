@@ -504,12 +504,57 @@
                             @endforeach
                         </div>
 
-                        {{-- ================= 4. STATUS & PRIORITAS ================= --}}
+                        {{-- ================= 4. UPLOAD DENAH / SITEPLAN PROPERTI ================= --}}
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
+                                <i class="mdi mdi-floor-plan" style="font-size: 1.1rem;"></i>
+                            </span>
+                            <h6 class="fw-bold text-dark mb-0">4. Upload Denah / Siteplan Properti</h6>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <div class="upload-card-box upload-denah-card p-3" style="border: 2px dashed #9a55ff; background: #faf8ff; min-height: 130px;">
+                                    <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg" class="file-upload-input" data-label="Denah / Siteplan">
+                                    
+                                    <div class="upload-icon-circle" style="width: 48px; height: 48px; background: rgba(154, 85, 255, 0.15); color: #9a55ff; font-size: 1.5rem;">
+                                        <i class="mdi mdi-floor-plan"></i>
+                                    </div>
+                                    <span class="upload-title-text fw-bold" style="font-size: 0.9rem; color: #6a11cb;">
+                                        Klik atau Seret Berkas Denah / Siteplan di Sini
+                                    </span>
+                                    <small class="upload-format-hint">Format: JPG, JPEG, PNG, WEBP, SVG, atau PDF (Maksimal: 5MB)</small>
+                                    <span class="upload-size-badge"></span>
+                                </div>
+
+                                {{-- Container Preview Denah --}}
+                                <div id="denahPreviewContainer" class="mt-3 p-3 border rounded-3 bg-white shadow-sm text-center" style="display: none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">
+                                            <i class="mdi mdi-image-check text-success me-1"></i>Pratinjau Berkas Denah
+                                        </span>
+                                        <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2 d-inline-flex align-items-center gap-1" id="btnRemoveDenah" style="font-size: 0.75rem; border-radius: 6px;">
+                                            <i class="mdi mdi-delete-outline"></i> Hapus / Ganti
+                                        </button>
+                                    </div>
+                                    <div id="denahImageWrapper" class="text-center py-2" style="display: none;">
+                                        <img id="denahImagePreview" src="" alt="Pratinjau Denah" class="img-fluid rounded shadow-sm border" style="max-height: 320px; max-width: 100%; object-fit: contain;">
+                                    </div>
+                                    <div id="denahPdfWrapper" class="p-3 text-center" style="display: none; background: #fdfaf6; border-radius: 8px;">
+                                        <i class="mdi mdi-file-pdf-box text-danger" style="font-size: 2.5rem;"></i>
+                                        <p class="mb-0 fw-bold text-dark mt-1" id="denahPdfFileName" style="font-size: 0.88rem;"></p>
+                                        <small class="text-muted">Dokumen Denah format PDF siap diunggah</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ================= 5. STATUS & PRIORITAS ================= --}}
                         <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
                             <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
                                 <i class="mdi mdi-tag-check" style="font-size: 1.1rem;"></i>
                             </span>
-                            <h6 class="fw-bold text-dark mb-0">4. Status Operasional & Verifikasi</h6>
+                            <h6 class="fw-bold text-dark mb-0">5. Status Operasional & Verifikasi</h6>
                         </div>
 
                         <div class="row g-3 mb-3">
@@ -561,12 +606,12 @@
                             </div>
                         </div>
 
-                        {{-- ================= 5. DATA CUT AND FILL ================= --}}
+                        {{-- ================= 6. DATA CUT AND FILL ================= --}}
                         <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
                             <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
                                 <i class="mdi mdi-excavator" style="font-size: 1.1rem;"></i>
                             </span>
-                            <h6 class="fw-bold text-dark mb-0">5. Rencana Pekerjaan Cut and Fill</h6>
+                            <h6 class="fw-bold text-dark mb-0">6. Rencana Pekerjaan Cut and Fill</h6>
                         </div>
 
                         <div class="row g-3 mb-4">
@@ -596,12 +641,12 @@
                             </div>
                         </div>
 
-                        {{-- ================= 6. TITIK KOORDINAT & GOOGLE MAP ================= --}}
+                        {{-- ================= 7. TITIK KOORDINAT & GOOGLE MAP ================= --}}
                         <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
                             <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
                                 <i class="mdi mdi-google-maps" style="font-size: 1.1rem;"></i>
                             </span>
-                            <h6 class="fw-bold text-dark mb-0">6. Titik Koordinat & Google Maps</h6>
+                            <h6 class="fw-bold text-dark mb-0">7. Titik Koordinat & Google Maps</h6>
                         </div>
 
                         <div class="row g-3 mb-3">
@@ -713,6 +758,66 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Handler Khusus Pratinjau Denah / Siteplan
+    const denahInput = document.getElementById('upload_denah');
+    const denahPreviewContainer = document.getElementById('denahPreviewContainer');
+    const denahImageWrapper = document.getElementById('denahImageWrapper');
+    const denahImagePreview = document.getElementById('denahImagePreview');
+    const denahPdfWrapper = document.getElementById('denahPdfWrapper');
+    const denahPdfFileName = document.getElementById('denahPdfFileName');
+    const btnRemoveDenah = document.getElementById('btnRemoveDenah');
+
+    if (denahInput) {
+        denahInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const fileType = file.type;
+
+                if (fileType.startsWith('image/') || /\.(jpg|jpeg|png|webp|svg)$/i.test(file.name)) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        denahImagePreview.src = e.target.result;
+                        denahImageWrapper.style.display = 'block';
+                        denahPdfWrapper.style.display = 'none';
+                        denahPreviewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (fileType === 'application/pdf' || /\.pdf$/i.test(file.name)) {
+                    denahPdfFileName.textContent = file.name;
+                    denahPdfWrapper.style.display = 'block';
+                    denahImageWrapper.style.display = 'none';
+                    denahPreviewContainer.style.display = 'block';
+                }
+            } else {
+                denahPreviewContainer.style.display = 'none';
+            }
+        });
+    }
+
+    if (btnRemoveDenah) {
+        btnRemoveDenah.addEventListener('click', function() {
+            if (denahInput) {
+                denahInput.value = '';
+                const card = denahInput.closest('.upload-card-box');
+                if (card) {
+                    const titleSpan = card.querySelector('.upload-title-text');
+                    const sizeBadge = card.querySelector('.upload-size-badge');
+                    const iconCircle = card.querySelector('.upload-icon-circle i');
+                    if (titleSpan) {
+                        titleSpan.textContent = 'Klik atau Seret Berkas Denah / Siteplan di Sini';
+                        titleSpan.style.color = '#6a11cb';
+                    }
+                    if (sizeBadge) sizeBadge.style.display = 'none';
+                    if (iconCircle) iconCircle.className = 'mdi mdi-floor-plan';
+                    card.style.borderColor = '#9a55ff';
+                    card.style.background = '#faf8ff';
+                }
+            }
+            denahPreviewContainer.style.display = 'none';
+            denahImagePreview.src = '';
+        });
+    }
 
     // ===== 3. GOOGLE MAPS LEAFLET INTEGRATION =====
     let defaultLat = -8.1727;
