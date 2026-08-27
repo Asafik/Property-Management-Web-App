@@ -182,7 +182,7 @@ class DevelopmentProgressController extends Controller
 
             DB::commit();
 
-            return back()->with('success', 'RAB & Dokumentasi berhasil disimpan.');
+            return back()->with('success', 'RAP & Dokumentasi berhasil disimpan.');
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -203,19 +203,21 @@ class DevelopmentProgressController extends Controller
             // Ambil progress terkait
             $progress = $unit->progress; // hasOne(DevelopmentProgress)
 
-            // Cek apakah RAB unit ini sudah di-ACC sebelumnya
+            // Cek apakah RAP unit ini sudah di-ACC sebelumnya
             if (($progress && $progress->status === 'completed') || $unit->construction_progress === 'selesai') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'RAB untuk unit ini sudah di-ACC sebelumnya dan tidak dapat di-ACC ulang.',
+                    'message' => 'RAP untuk unit ini sudah di-ACC sebelumnya dan tidak dapat di-ACC ulang.',
                 ], 400);
             }
 
             $totalAnggaran = 0;
 
             if ($progress) {
-                // Hitung total dari semua item
-                $totalAnggaran = $progress->items()->sum('total');
+                // Hitung subtotal + PPN 10% (sesuai kalkulasi RAP di tampilan)
+                $subtotal = $progress->items()->sum('total');
+                $ppn = $subtotal * 0.1;
+                $totalAnggaran = round($subtotal + $ppn);
 
                 // Update kolom total_anggaran di tabel utama progress
                 $progress->total_anggaran = $totalAnggaran;
@@ -232,7 +234,7 @@ class DevelopmentProgressController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'RAB berhasil di-ACC dan harga unit diperbarui',
+                'message' => 'RAP berhasil di-ACC dan harga unit diperbarui',
                 'construction_progress' => $unit->construction_progress,
                 'total_anggaran' => $totalAnggaran,
                 'price_baru' => $unit->price,

@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'RAB Pembangunan - Property Management App')
+@section('title', 'RAP Pembangunan - Property Management App')
 
 @section('content')
 
@@ -246,9 +246,9 @@
                 <div class="d-flex justify-content-between align-items-center px-1">
                     <div>
                         <h3 class="text-dark mb-1 fw-bold">
-                            <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>Rencana Anggaran Biaya (RAB) Pembangunan
+                            <i class="mdi mdi-calculator me-2" style="color: #9a55ff;"></i>Rencana Anggaran Pelaksanaan (RAP) Pembangunan
                         </h3>
-                        <p class="text-muted mb-0">Rincian biaya pembangunan unit dari awal hingga selesai</p>
+                        <p class="text-muted mb-0">Rincian anggaran pelaksanaan pembangunan unit dari awal hingga selesai</p>
                     </div>
                 </div>
             </div>
@@ -472,23 +472,30 @@
                 </div>
             @endforeach
 
-            {{-- Rincian RAB --}}
+            {{-- Rincian RAP --}}
             @php
+                $isAccCompleted = ($selectedUnit->progress && $selectedUnit->progress->status === 'completed') || $selectedUnit->construction_progress === 'selesai';
                 $subtotal = $items->sum(fn($item) => $item->total);
-                $ppn = $subtotal * 0.1;
+                $ppn = round($subtotal * 0.1);
                 $totalRAB = $subtotal + $ppn;
-                $unitPrice = $selectedUnit->price ?? 0;
-                $finalPrice = $totalRAB + $unitPrice;
+
+                if ($isAccCompleted) {
+                    $finalPrice = $selectedUnit->price ?? 0;
+                    $unitPrice = max(0, $finalPrice - $totalRAB);
+                } else {
+                    $unitPrice = $selectedUnit->price ?? 0;
+                    $finalPrice = $totalRAB + $unitPrice;
+                }
             @endphp
 
-            <!-- Bagian Rincian RAB - Yang Diperbaiki -->
+            <!-- Bagian Rincian RAP - Yang Diperbaiki -->
             <div class="row">
-                <!-- Ringkasan RAB -->
+                <!-- Ringkasan RAP -->
                 <div class="col-12 col-md-6">
                     <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
                             <h6 class="card-title fw-bold text-dark mb-3">
-                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAB
+                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP
                             </h6>
 
                             <div class="ringkasan-row">
@@ -510,7 +517,7 @@
                             <div class="ringkasan-divider"></div>
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label fw-bold">Total RAB</span>
+                                <span class="ringkasan-label fw-bold">Total RAP</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-total-rab" class="rab-form-control text-end fw-bold text-primary"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
@@ -524,14 +531,21 @@
                 <div class="col-12 col-md-6">
                     <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
-                            <h6 class="card-title fw-bold text-dark mb-3">
-                                <i class="mdi mdi-cash-check me-2" style="color: #28a745;"></i>Harga Jual Final
-                            </h6>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="card-title fw-bold text-dark mb-0">
+                                    <i class="mdi mdi-cash-check me-2" style="color: #28a745;"></i>Harga Jual Final
+                                </h6>
+                                @if($isAccCompleted)
+                                    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style="font-size: 0.75rem; border-radius: 6px;">
+                                        <i class="mdi mdi-check-circle me-1"></i>Telah Di-ACC
+                                    </span>
+                                @endif
+                            </div>
 
                             <input type="hidden" name="price" value="{{ $finalPrice }}">
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label">Total RAB</span>
+                                <span class="ringkasan-label">Total RAP</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-total-rab-final" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
@@ -539,7 +553,7 @@
                             </div>
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label">Harga Jual Unit</span>
+                                <span class="ringkasan-label">{{ $isAccCompleted ? 'Harga Awal Unit' : 'Harga Jual Unit' }}</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-unit-price" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
@@ -564,21 +578,17 @@
 
                                 <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
                                     class="aksi-btn rab-btn-primary">
-                                    <i class="mdi mdi-printer me-1"></i>Cetak RAB
+                                    <i class="mdi mdi-printer me-1"></i>Cetak RAP
                                 </a>
 
-                                @php
-                                    $isAccCompleted = ($selectedUnit->progress && $selectedUnit->progress->status === 'completed') || $selectedUnit->construction_progress === 'selesai';
-                                @endphp
-
                                 @if ($isAccCompleted)
-                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="RAB untuk unit ini sudah di-ACC">
+                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="RAP untuk unit ini sudah di-ACC">
                                         <i class="mdi mdi-check-all me-1"></i>Sudah di-ACC
                                     </button>
                                 @else
                                     <button type="button" class="aksi-btn rab-btn-warning acc-btn"
                                         data-id="{{ $selectedUnit->id }}">
-                                        <i class="mdi mdi-check me-1"></i>ACC RAB
+                                        <i class="mdi mdi-check me-1"></i>ACC RAP
                                     </button>
                                 @endif
                             </div>
@@ -926,8 +936,8 @@
                 let unitId = this.dataset.id;
 
                 Swal.fire({
-                    title: 'ACC RAB',
-                    text: 'Apakah yakin ACC RAB untuk unit ini?',
+                    title: 'ACC RAP',
+                    text: 'Apakah yakin ACC RAP untuk unit ini?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#9a55ff',
