@@ -287,3 +287,10 @@
         display: block !important;
     }
 }
+
+/* SWEETALERT FIX: HIDE UNUSED INPUTS & SELECT2 IN SWEETALERT */
+.swal2-container .select2-container,
+.swal2-container .swal2-select:not([style*="display: block"]):not([style*="display: flex"]) {
+    display: none !important;
+}
+

@@ -152,8 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // =========================================================================
   function initGlobalSelect2() {
     if (typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined') {
-      jQuery('select').not('.no-select2, .select2-hidden-accessible, [multiple]').each(function () {
+      jQuery('select').not('.no-select2, .select2-hidden-accessible, [multiple], .swal2-select, .swal2-container select, [class*="swal2"]').each(function () {
         const $this = jQuery(this);
+        if ($this.closest('.swal2-container').length) return;
         const modalParent = $this.closest('.modal');
         const enableSearch = $this.hasClass('select2-search') || $this.data('search') === true || $this.data('search') === 'true';
 
