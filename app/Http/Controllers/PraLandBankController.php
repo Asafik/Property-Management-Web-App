@@ -105,42 +105,74 @@ public function store(Request $request)
 
 
 
-if ($request->has('documents')) {
-
-    foreach ($request->documents as $typeId => $doc) {
-
-        if (empty($doc['number']) && empty($doc['file'])) {
-            continue;
-        }
-
-        $filePath = null;
-
-        if (!empty($doc['file'])) {
-
-            $file = $doc['file'];
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
-            $destination = public_path('uploads/pra_landbank/' . $record->id . '/' . $typeId);
-
-            if (!file_exists($destination)) {
-                mkdir($destination, 0755, true);
+        // Handle deleted documents
+        if ($request->filled('deleted_document_ids')) {
+            $deletedIds = array_filter(explode(',', $request->deleted_document_ids));
+            if (!empty($deletedIds)) {
+                pra_landbank_documents::where('pra_landbank_id', $record->id)
+                    ->whereIn('id', $deletedIds)
+                    ->delete();
             }
-
-            $file->move($destination, $filename);
-
-            $filePath = 'uploads/pra_landbank/' . $record->id . '/' . $typeId . '/' . $filename;
         }
 
-        pra_landbank_documents::create([
-            'pra_landbank_id' => $record->id,
-            'document_type_id' => $typeId,
-            'document_number' => $doc['number'] ?? null,
-            'file_path' => $filePath,
-            'status' => 'pending',
-            'revision_number' => 0,
-        ]);
-    }
-}
+        if ($request->has('documents')) {
+            foreach ($request->documents as $key => $doc) {
+                $docTypeId = $doc['document_type_id'] ?? $key;
+                $docNumber = $doc['number'] ?? null;
+                $docId     = $doc['id'] ?? null;
+
+                if (empty($docTypeId)) {
+                    continue;
+                }
+
+                $existingDoc = null;
+                if (!empty($docId)) {
+                    $existingDoc = pra_landbank_documents::where('pra_landbank_id', $record->id)->find($docId);
+                } else {
+                    $existingDoc = pra_landbank_documents::where('pra_landbank_id', $record->id)
+                        ->where('document_type_id', $docTypeId)
+                        ->first();
+                }
+
+                $hasFile = $request->hasFile("documents.{$key}.file");
+
+                if (empty($docNumber) && !$hasFile && !$existingDoc) {
+                    continue;
+                }
+
+                $filePath = $existingDoc ? $existingDoc->file_path : null;
+
+                if ($hasFile) {
+                    $file = $request->file("documents.{$key}.file");
+                    $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $destination = public_path('uploads/pra_landbank/' . $record->id . '/' . $docTypeId);
+
+                    if (!file_exists($destination)) {
+                        mkdir($destination, 0755, true);
+                    }
+
+                    $file->move($destination, $filename);
+                    $filePath = 'uploads/pra_landbank/' . $record->id . '/' . $docTypeId . '/' . $filename;
+                }
+
+                if ($existingDoc) {
+                    $existingDoc->update([
+                        'document_type_id' => $docTypeId,
+                        'document_number'  => $docNumber,
+                        'file_path'        => $filePath,
+                    ]);
+                } else {
+                    pra_landbank_documents::create([
+                        'pra_landbank_id'  => $record->id,
+                        'document_type_id' => $docTypeId,
+                        'document_number'  => $docNumber,
+                        'file_path'        => $filePath,
+                        'status'           => 'pending',
+                        'revision_number'  => 0,
+                    ]);
+                }
+            }
+        }
 
         // =========================
         // MAP FIELDS BY FASE
@@ -157,7 +189,8 @@ if ($request->has('documents')) {
             $data['water_condition']   = $request->water_condition_temp;
             $data['legal_status']      = $request->status_tanah;
             $data['legal_issue_note']  = $request->keterangan_masalah;
-            $data['permit_difficulty'] = $request->kesulitan_izin;
+            $data['permit_difficulty']      = $request->kesulitan_izin;
+            $data['permit_difficulty_note'] = $request->keterangan_kesulitan_izin;
 
             if ($request->has('zoning')) $data['zoning'] = $request->zoning;
             if ($request->has('road_width')) $data['road_width'] = $request->road_width ? $cleanNumber($request->road_width) : null;
@@ -290,8 +323,8 @@ if ($request->has('documents')) {
                 'zoning'            => $record->zoning,
                 'road_width'        => $record->road_width,
                 'road_type'         => $record->road_type,
-                'ownership_status'  => 'SHM',
-                'certificate_owner' => $record->land_owner,
+                'ownership_status'  => $record->ownership_status ?? 'SHM',
+                'certificate_owner' => $record->certificate_owner ?? $record->owner_name ?? $record->land_owner,
                 'facility_school'   => (bool)($record->facility_school ?? false),
                 'facility_hospital' => (bool)($record->facility_hospital ?? false),
                 'facility_mall'     => (bool)($record->facility_mall ?? false),

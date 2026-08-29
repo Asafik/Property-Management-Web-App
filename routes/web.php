@@ -51,6 +51,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TimelineCashTempoController;
 use App\Http\Controllers\DocumentPreviewController;
 use App\Http\Controllers\JobStaffMarketingController;
+use App\Http\Controllers\DocumentTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -457,6 +458,13 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::put('/master-data/posisi/update/{position}', [PositionController::class, 'update'])->name('master.data.posisi.update');
     Route::delete('/master-data/posisi/{position}', [PositionController::class, 'destroy'])->name('master.data.posisi.delete');
     Route::get('/master-data/posisi/get-by-division/{divisionId}', [PositionController::class, 'getByDivision'])->name('master.data.posisi.by-division');
+
+    // MASTER DATA JENIS DOKUMEN
+    Route::get('/master-data/jenis-dokumen', [DocumentTypeController::class, 'index'])->name('master.data.jenis-dokumen.index');
+    Route::post('/master-data/jenis-dokumen/store', [DocumentTypeController::class, 'store'])->name('master.data.jenis-dokumen.store');
+    Route::get('/master-data/jenis-dokumen/{id}/edit', [DocumentTypeController::class, 'edit'])->name('master.data.jenis-dokumen.edit');
+    Route::put('/master-data/jenis-dokumen/{id}', [DocumentTypeController::class, 'update'])->name('master.data.jenis-dokumen.update');
+    Route::delete('/master-data/jenis-dokumen/{id}', [DocumentTypeController::class, 'destroy'])->name('master.data.jenis-dokumen.destroy');
 
     // Master Data Hak Akses Menu
     Route::get('/master-data/permissions', [MenuController::class, 'index'])->name('master.data.menu');
