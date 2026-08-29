@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>RAB Pembangunan - Properti Management</title>
+    <title>RAP Pembangunan - Properti Management</title>
 
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/ti-icons/css/themify-icons.css') }}">
@@ -306,13 +306,13 @@
         <div class="btn-container d-print-none">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <a href="{{ route('properti.progress', $unit->id) }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id, 'unit_id' => $unit->id]) }}" class="btn btn-outline-secondary">
                         <i class="mdi mdi-arrow-left me-2"></i> Kembali
                     </a>
                 </div>
                 <div>
                     <button class="btn btn-primary me-2" onclick="window.print()">
-                        <i class="mdi mdi-printer me-2"></i> Cetak RAB
+                        <i class="mdi mdi-printer me-2"></i> Cetak RAP
                     </button>
                 </div>
             </div>
@@ -328,7 +328,7 @@
                 <h2>PT PROPERTI MANAGEMENT</h2>
                 <p>Jl. Sudirman No. 123, Jakarta Selatan 12190</p>
                 <p>Telp: (021) 1234567 | Email: info@propertimanagement.com</p>
-                <h4>RENCANA ANGGARAN BIAYA (RAB) PEMBANGUNAN</h4>
+                <h4>RENCANA ANGGARAN PELAKSANAAN (RAP) PEMBANGUNAN</h4>
             </div>
 
             <!-- Info Proyek -->
@@ -347,8 +347,8 @@
                         <td>: {{ $unit->area }} m² / {{ $unit->building_area }} m²</td>
                     </tr>
                     <tr>
-                        <td>No. RAB</td>
-                        <td>: {{ $unit->no_rab ?? 'RAB/' . date('Y/m/d') }}</td>
+                        <td>No. RAP</td>
+                        <td>: {{ $unit->no_rab ?? 'RAP/' . date('Y/m/d') }}</td>
                         <td>Tanggal</td>
                         <td>: {{ date('d F Y') }}</td>
                     </tr>

@@ -1212,6 +1212,33 @@
             background-color: #e4d3fe !important;
             color: #581c87 !important;
         }
+
+        /* ===== VIEW TOGGLE GROUP STYLING ===== */
+        .btn-view-toggle {
+            padding: 0.38rem 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: 6px !important;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            color: #4a5568;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .btn-view-toggle:hover {
+            border-color: #c4b5fd;
+            color: #7c3aed;
+            background: #faf5ff;
+        }
+        .btn-view-toggle.active {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+            border-color: #9a55ff !important;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -1296,48 +1323,50 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
-                    <div
-                        class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3 gap-2">
-                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                    <div class="card-header bg-white d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-3 px-3 px-md-4 gap-2 border-bottom">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 1rem;">
                             <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>
                             Daftar Unit
                         </h5>
                         <div class="d-flex flex-wrap align-items-center gap-2">
                             <!-- Toggle View -->
                             <div class="d-flex align-items-center gap-1" id="viewToggleGroup" role="group">
-                                <button type="button" class="btn btn-sm btn-outline-primary active" id="btnTableView"
-                                    onclick="switchView('table')" style="border-radius: 6px !important;">
-                                    <i class="mdi mdi-view-list me-1"></i><span class="d-none d-sm-inline">Table</span>
+                                <button type="button" class="btn btn-view-toggle active" id="btnTableView"
+                                    onclick="switchView('table')">
+                                    <i class="mdi mdi-view-list"></i><span>Table</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnGridView"
-                                    onclick="switchView('grid')" style="border-radius: 6px !important;">
-                                    <i class="mdi mdi-view-grid me-1"></i><span class="d-none d-sm-inline">Grid</span>
+                                <button type="button" class="btn btn-view-toggle" id="btnGridView"
+                                    onclick="switchView('grid')">
+                                    <i class="mdi mdi-view-grid"></i><span>Grid</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnDenahView"
-                                    onclick="switchView('denah')" style="border-radius: 6px !important;">
-                                    <i class="mdi mdi-floor-plan me-1"></i><span class="d-none d-sm-inline">Denah Unit</span>
+                                <button type="button" class="btn btn-view-toggle" id="btnDenahView"
+                                    onclick="switchView('denah')">
+                                    <i class="mdi mdi-floor-plan"></i><span>Denah Unit</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnSitePlandView"
-                                    onclick="switchView('sitepland')" style="border-radius: 6px !important;">
-                                    <i class="mdi mdi-map me-1"></i><span class="d-none d-sm-inline">Siteplan</span>
+                                <button type="button" class="btn btn-view-toggle" id="btnSitePlandView"
+                                    onclick="switchView('sitepland')">
+                                    <i class="mdi mdi-map"></i><span>Siteplan</span>
                                 </button>
                             </div>
                             <!-- Export Buttons -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
-                                class="btn btn-sm btn-gradient-success">
-                                <i class="mdi mdi-export me-1"></i>
-                                <span class="d-none d-sm-inline">Excel</span>
+                                class="btn btn-sm btn-gradient-success d-inline-flex align-items-center gap-1 px-3" style="height: 32px; border-radius: 6px;">
+                                <i class="mdi mdi-file-excel"></i>
+                                <span>Excel</span>
                             </a>
-                            <a href="{{ route('marketing.jual-unit.export.pdf') }}" class="btn btn-sm btn-gradient-danger">
-                                <i class="mdi mdi-file-pdf me-1"></i>
-                                <span class="d-none d-sm-inline">PDF</span>
+                            <a href="{{ route('marketing.jual-unit.export.pdf') }}" 
+                                class="btn btn-sm btn-gradient-danger d-inline-flex align-items-center gap-1 px-3" style="height: 32px; border-radius: 6px;">
+                                <i class="mdi mdi-file-pdf"></i>
+                                <span>PDF</span>
                             </a>
                         </div>
                     </div>
+
+                    <div class="card-body p-3 p-md-4">
                         <!-- Filter Section -->
                         <div class="filter-card mb-3">
                             <!-- FILTER DESKTOP -->
-                            <div class="filter-row-desktop d-none d-md-block">
+                            <div class="filter-row-desktop d-none d-lg-block">
                                 <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterForm">
                                     @if(request('sort'))
                                         <input type="hidden" name="sort" value="{{ request('sort') }}">
@@ -1345,65 +1374,76 @@
                                     @if(request('direction'))
                                         <input type="hidden" name="direction" value="{{ request('direction') }}">
                                     @endif
-                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
-                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                            <!-- Search Input -->
-                                            <div style="min-width: 220px; max-width: 280px; flex: 1;">
-                                                <div class="input-group search-input-group">
-                                                    <input type="text" name="search" value="{{ request('search') }}"
-                                                        class="form-control" placeholder="Cari blok, unit, customer...">
-                                                    <button class="btn btn-gradient-primary btn-search-submit" 
-                                                        type="submit" title="Cari">
-                                                        <i class="mdi mdi-magnify"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <!-- Jenis Dropdown -->
-                                            <div style="width: 160px;">
-                                                <select name="jenis" class="form-control select2" id="jenisSelect" style="width: 100%;">
-                                                    <option value="">Semua Jenis</option>
-                                                    <option value="subsidi"
-                                                        {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
-                                                    </option>
-                                                    <option value="komersil"
-                                                        {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <!-- Status Dropdown -->
-                                            <div style="width: 160px;">
-                                                <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
-                                                    <option value="">Semua Status</option>
-                                                    <option value="ready"
-                                                        {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
-                                                    </option>
-                                                    <option value="booked"
-                                                        {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
-                                                    </option>
-                                                    <option value="sold"
-                                                        {{ request('status') == 'sold' ? 'selected' : '' }}>
-                                                        Terjual</option>
-                                                </select>
+                                    <div class="row g-2 align-items-center w-100 m-0">
+                                        <!-- Search Input -->
+                                        <div class="col-lg-3 col-xl-3 p-0 pe-2">
+                                            <div class="input-group search-input-group">
+                                                <input type="text" name="search" value="{{ request('search') }}"
+                                                    class="form-control" placeholder="Cari blok, unit, customer...">
+                                                <button class="btn btn-gradient-primary btn-search-submit px-3" 
+                                                    type="submit" title="Cari">
+                                                    <i class="mdi mdi-magnify"></i>
+                                                </button>
                                             </div>
                                         </div>
 
+                                        <!-- Project Dropdown -->
+                                        <div class="col-lg-2 col-xl-2 p-0 pe-2">
+                                            <select name="project" class="form-control select2" id="projectSelect" style="width: 100%;">
+                                                <option value="">Semua Proyek</option>
+                                                @foreach ($projects as $p)
+                                                    <option value="{{ $p->id }}"
+                                                        {{ request('project') == $p->id ? 'selected' : '' }}>
+                                                        {{ $p->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Jenis Dropdown -->
+                                        <div class="col-lg-2 col-xl-2 p-0 pe-2">
+                                            <select name="jenis" class="form-control select2" id="jenisSelect" style="width: 100%;">
+                                                <option value="">Semua Jenis</option>
+                                                <option value="subsidi"
+                                                    {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi
+                                                </option>
+                                                <option value="komersil"
+                                                    {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Status Dropdown -->
+                                        <div class="col-lg-2 col-xl-2 p-0 pe-2">
+                                            <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
+                                                <option value="">Semua Status</option>
+                                                <option value="ready"
+                                                    {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                </option>
+                                                <option value="booked"
+                                                    {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
+                                                </option>
+                                                <option value="sold"
+                                                    {{ request('status') == 'sold' ? 'selected' : '' }}>
+                                                    Terjual</option>
+                                            </select>
+                                        </div>
+
                                         <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
-                                        <div class="d-flex align-items-center gap-2 ms-auto">
-                                            <div style="width: 90px;">
+                                        <div class="col-lg-3 col-xl-3 p-0 d-flex align-items-center justify-content-end gap-2 ms-auto">
+                                            <div style="width: 100px;">
                                                 <select name="perPage" class="form-control select2" id="perPageSelect" style="width: 100%;">
                                                     <option value="10"
-                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                        {{ request('perPage') == 10 ? 'selected' : '' }}>10 Data
                                                     </option>
                                                     <option value="25"
-                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                        {{ request('perPage') == 25 ? 'selected' : '' }}>25 Data
                                                     </option>
                                                     <option value="50"
-                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                        {{ request('perPage') == 50 ? 'selected' : '' }}>50 Data
                                                     </option>
                                                     <option value="100"
-                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                        {{ request('perPage') == 100 ? 'selected' : '' }}>100 Data
                                                     </option>
                                                 </select>
                                             </div>
@@ -1421,8 +1461,8 @@
                                     </div>
                                 </form>
                             </div>
-                            <!-- FILTER MOBILE -->
-                            <div class="d-block d-md-none">
+                            <!-- FILTER MOBILE / TABLET -->
+                            <div class="d-block d-lg-none">
                                 <form method="GET" action="{{ route('marketing.jual-unit') }}" id="filterFormMobile">
                                     @if(request('sort'))
                                         <input type="hidden" name="sort" value="{{ request('sort') }}">
@@ -1436,13 +1476,24 @@
                                                 <input type="text" name="search"
                                                     value="{{ request('search') }}" class="form-control"
                                                     placeholder="Cari blok, unit, customer..." id="searchMobile">
-                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                <button class="btn btn-gradient-primary btn-search-submit px-3" 
                                                     type="submit" title="Cari">
                                                     <i class="mdi mdi-magnify"></i>
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="col-12 mb-2">
+                                        <div class="col-12 col-sm-6 mb-2">
+                                            <select name="project" class="form-control select2-mobile" id="projectSelectMobile" style="width: 100%;">
+                                                <option value="">Semua Proyek</option>
+                                                @foreach ($projects as $p)
+                                                    <option value="{{ $p->id }}"
+                                                        {{ request('project') == $p->id ? 'selected' : '' }}>
+                                                        {{ $p->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-6 mb-2">
                                             <select name="jenis" class="form-control select2-mobile" id="jenisSelectMobile" style="width: 100%;">
                                                 <option value="">Semua Jenis</option>
                                                 <option value="subsidi"
@@ -1470,31 +1521,31 @@
                                         <div class="col-6 mb-2">
                                             <select name="perPage" class="form-control select2-mobile" id="perPageSelectMobile" style="width: 100%;">
                                                 <option value="10"
-                                                    {{ request('perPage') == 10 ? 'selected' : '' }}>10
+                                                    {{ request('perPage') == 10 ? 'selected' : '' }}>10 Data
                                                     </option>
                                                 <option value="25"
-                                                    {{ request('perPage') == 25 ? 'selected' : '' }}>25
+                                                    {{ request('perPage') == 25 ? 'selected' : '' }}>25 Data
                                                     </option>
                                                 <option value="50"
-                                                    {{ request('perPage') == 50 ? 'selected' : '' }}>50
+                                                    {{ request('perPage') == 50 ? 'selected' : '' }}>50 Data
                                                     </option>
                                                 <option value="100"
-                                                    {{ request('perPage') == 100 ? 'selected' : '' }}>100
+                                                    {{ request('perPage') == 100 ? 'selected' : '' }}>100 Data
                                                     </option>
                                             </select>
                                         </div>
                                         <div class="col-6">
                                             <button type="submit"
-                                                class="btn btn-gradient-primary btn-icon-only-mobile w-100"
-                                                id="filterBtnMobile" title="Filter">
-                                                <i class="mdi mdi-filter"></i>
+                                                class="btn btn-gradient-primary btn-icon-only-mobile w-100 d-flex align-items-center justify-content-center"
+                                                id="filterBtnMobile" title="Filter" style="height: 38px;">
+                                                <i class="mdi mdi-filter me-1"></i> <span>Filter</span>
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <a href="{{ route('marketing.jual-unit') }}"
-                                                class="btn btn-gradient-secondary btn-icon-only-mobile w-100"
-                                                title="Reset" onclick="showResetLoading(event)">
-                                                <i class="mdi mdi-refresh"></i>
+                                                class="btn btn-gradient-secondary btn-icon-only-mobile w-100 d-flex align-items-center justify-content-center"
+                                                title="Reset" onclick="showResetLoading(event)" style="height: 38px;">
+                                                <i class="mdi mdi-refresh me-1"></i> <span>Reset</span>
                                             </a>
                                         </div>
                                     </div>
@@ -2186,6 +2237,28 @@
                         <!-- SITEPLAN VIEW -->
                         <div id="sitePlandView" style="display: none;">
                             <div class="denah-container" style="padding: 1rem;">
+                                <!-- Project Selector Toolbar for Siteplan -->
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 p-3 bg-light rounded-3 border">
+                                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 450px;">
+                                        <label for="siteplanProjectSelect" class="fw-bold text-dark mb-0 d-flex align-items-center" style="font-size: 0.88rem; white-space: nowrap;">
+                                            <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.25rem;"></i>Pilih Proyek:
+                                        </label>
+                                        <select id="siteplanProjectSelect" class="form-control select2" style="width: 100%;">
+                                            @foreach ($projects as $p)
+                                                <option value="{{ $p->id }}"
+                                                    data-denah="{{ $p->denah ? asset('storage/' . $p->denah) : '' }}"
+                                                    data-name="{{ $p->name }}"
+                                                    {{ (request('project') == $p->id || (empty(request('project')) && $loop->first)) ? 'selected' : '' }}>
+                                                    {{ $p->name }} {{ $p->denah ? ' (✓ Denah Terunggah)' : ' (Denah Default)' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span id="siteplanDenahStatusBadge"></span>
+                                    </div>
+                                </div>
+
                                 <!-- Floating Controls (Vertical Stack matching user's image) -->
                                 <div class="siteplan-floating-controls">
                                     <button type="button" class="siteplan-control-btn" onclick="zoom(1.2)"
@@ -2810,80 +2883,146 @@
         }
 
         
-        // ========== SITEPLAN CANVAS ==========
+        // ========== SITEPLAN CANVAS (DINAMIS DENAH LANDBANK) ==========
         const canvas = new fabric.Canvas('siteplanCanvas');
-        const siteplanImage = "{{ asset('images/siteplan.jpeg') }}";
         let originalWidth = 0;
         let originalHeight = 0;
         let zoomLevel = 1.0;
-
-        // Canvas Focus to avoid Page Scroll Hijacking
         let isCanvasFocused = false;
 
-        fabric.Image.fromURL(siteplanImage, function(img) {
-            originalWidth = img.width;
-            originalHeight = img.height;
+        // Dataset Semua Unit untuk Siteplan
+        const allUnitsData = [
+            @foreach ($unitsForSvg as $unit)
+            {
+                id: "{{ $unit->id }}",
+                land_bank_id: "{{ $unit->land_bank_id }}",
+                unitCode: "{{ $unit->unit_code }}",
+                unitName: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}",
+                unitNumber: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}",
+                block: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}",
+                jenis: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}",
+                type: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}",
+                address: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}",
+                area: {{ $unit->area ?? 0 }},
+                building: {{ $unit->building_area ?? 0 }},
+                price: {{ $unit->price ?? 0 }},
+                direction: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}",
+                statusRaw: "{{ $unit->status }}",
+                statusText: "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}",
+                construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
+                hasBooking: {{ $unit->activeBooking ? 1 : 0 }},
+                customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}",
+                sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}",
+                bookingDate: "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}",
+                bookingFee: {{ $unit->activeBooking->booking_fee ?? 0 }},
+                agentFee: {{ $unit->activeBooking->agent_fee ?? 0 }},
+                bookingStatus: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}",
+                pos_x: {{ $unit->pos_x ?? 100 }},
+                pos_y: {{ $unit->pos_y ?? 100 }},
+                width: {{ $unit->width ?? 80 }},
+                angle: {{ $unit->angle ?? 0 }},
+            },
+            @endforeach
+        ];
 
-            // Premium grab cursors
-            canvas.defaultCursor = 'grab';
+        // Function Load Siteplan Berdasarkan Proyek & Denah yang Diupload
+        function loadProjectSiteplan(landBankId) {
+            const projectSelect = document.getElementById('siteplanProjectSelect');
+            let selectedOption = null;
+            if (projectSelect) {
+                if (landBankId) {
+                    projectSelect.value = landBankId;
+                }
+                selectedOption = projectSelect.options[projectSelect.selectedIndex];
+            }
 
-            canvas.setBackgroundImage(img, function() {
-                @foreach ($unitsForSvg as $unit)
-                    const circle{{ $unit->id }} = new fabric.Circle({
-                        left: {{ $unit->pos_x ?? 100 }},
-                        top: {{ $unit->pos_y ?? 100 }},
-                        radius: {{ ($unit->width ?? 80) / 2 }},
-                        angle: {{ $unit->angle ?? 0 }},
-                        fill: getColor("{{ $unit->status }}", "{{ $unit->type }}"),
-                        opacity: 0.6,
-                        stroke: 'black',
-                        strokeWidth: 1,
-                        hasControls: true,
-                        hasBorders: true,
-                        lockRotation: false
+            const denahUrl = (selectedOption && selectedOption.dataset.denah) ? selectedOption.dataset.denah : "{{ asset('images/siteplan.jpeg') }}";
+            const hasCustomDenah = !!(selectedOption && selectedOption.dataset.denah);
+            const projectName = selectedOption ? selectedOption.dataset.name : 'Proyek';
+
+            const statusBadge = document.getElementById('siteplanDenahStatusBadge');
+            if (statusBadge) {
+                if (hasCustomDenah) {
+                    statusBadge.innerHTML = `<span class="badge bg-success" style="font-size: 0.78rem; border-radius: 6px;"><i class="mdi mdi-check-circle me-1"></i>Denah Proyek (${projectName}) Terpasang</span>`;
+                } else {
+                    statusBadge.innerHTML = `<span class="badge bg-warning text-dark" style="font-size: 0.78rem; border-radius: 6px;"><i class="mdi mdi-information me-1"></i>Denah Default (Belum upload denah di Landbank)</span>`;
+                }
+            }
+
+            // Bersihkan objek lama di canvas
+            canvas.clear();
+
+            fabric.Image.fromURL(denahUrl, function(img) {
+                originalWidth = img.width;
+                originalHeight = img.height;
+
+                canvas.defaultCursor = 'grab';
+
+                canvas.setBackgroundImage(img, function() {
+                    const curProjectId = projectSelect ? projectSelect.value : landBankId;
+                    const unitsToShow = curProjectId 
+                        ? allUnitsData.filter(u => u.land_bank_id == curProjectId)
+                        : allUnitsData;
+
+                    unitsToShow.forEach(u => {
+                        const circle = new fabric.Circle({
+                            left: u.pos_x,
+                            top: u.pos_y,
+                            radius: u.width / 2,
+                            angle: u.angle,
+                            fill: getColor(u.statusRaw, u.type),
+                            opacity: 0.6,
+                            stroke: 'black',
+                            strokeWidth: 1,
+                            hasControls: true,
+                            hasBorders: true,
+                            lockRotation: false
+                        });
+
+                        circle.unitId = u.id;
+                        circle.unitCode = u.unitCode;
+                        circle.unitName = u.unitName;
+                        circle.unitNumber = u.unitNumber;
+                        circle.block = u.block;
+                        circle.jenis = u.jenis;
+                        circle.type = u.type;
+                        circle.address = u.address;
+                        circle.area = u.area;
+                        circle.building = u.building;
+                        circle.price = u.price;
+                        circle.direction = u.direction;
+                        circle.statusRaw = u.statusRaw;
+                        circle.statusText = u.statusText;
+                        circle.construction = u.construction;
+                        circle.hasBooking = u.hasBooking;
+                        circle.customer = u.customer;
+                        circle.sales = u.sales;
+                        circle.bookingDate = u.bookingDate;
+                        circle.bookingFee = u.bookingFee;
+                        circle.agentFee = u.agentFee;
+                        circle.bookingStatus = u.bookingStatus;
+
+                        canvas.add(circle);
                     });
-                    circle{{ $unit->id }}.unitId = "{{ $unit->id }}";
-                    circle{{ $unit->id }}.unitCode = "{{ $unit->unit_code }}";
-                    circle{{ $unit->id }}.unitName =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}";
-                    circle{{ $unit->id }}.unitNumber =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}";
-                    circle{{ $unit->id }}.block =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}";
-                    circle{{ $unit->id }}.jenis =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? '-')) }}";
-                    circle{{ $unit->id }}.type =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}";
-                    circle{{ $unit->id }}.address =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->landBank->address ?? '-')) }}";
-                    circle{{ $unit->id }}.area = {{ $unit->area ?? 0 }};
-                    circle{{ $unit->id }}.building = {{ $unit->building_area ?? 0 }};
-                    circle{{ $unit->id }}.price = {{ $unit->price ?? 0 }};
-                    circle{{ $unit->id }}.direction =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}";
-                    circle{{ $unit->id }}.statusRaw = "{{ $unit->status }}";
-                    circle{{ $unit->id }}.statusText =
-                        "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}";
-                    circle{{ $unit->id }}.construction =
-                        "{{ $unit->construction_progress ?? 'belum_mulai' }}";
-                    circle{{ $unit->id }}.hasBooking = {{ $unit->activeBooking ? 1 : 0 }};
-                    circle{{ $unit->id }}.customer =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}";
-                    circle{{ $unit->id }}.sales =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}";
-                    circle{{ $unit->id }}.bookingDate =
-                        "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}";
-                    circle{{ $unit->id }}.bookingFee = {{ $unit->activeBooking->booking_fee ?? 0 }};
-                    circle{{ $unit->id }}.agentFee = {{ $unit->activeBooking->agent_fee ?? 0 }};
-                    circle{{ $unit->id }}.bookingStatus =
-                        "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}";
-                    canvas.add(circle{{ $unit->id }});
-                @endforeach
-                resetZoom();
-            }, {
-                originX: 'left',
-                originY: 'top'
+
+                    resetZoom();
+                    canvas.renderAll();
+                }, {
+                    originX: 'left',
+                    originY: 'top'
+                });
             });
+        }
+
+        // Listener jika dropdown proyek di tab siteplan diganti
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectSelect = document.getElementById('siteplanProjectSelect');
+            if (projectSelect) {
+                projectSelect.addEventListener('change', function() {
+                    loadProjectSiteplan(this.value);
+                });
+            }
+            loadProjectSiteplan(projectSelect ? projectSelect.value : null);
         });
 
         // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)
@@ -3216,6 +3355,8 @@
                 document.getElementById('btnSitePlandView').classList.add('active');
                 if (typeof canvas !== 'undefined' && canvas) {
                     setTimeout(function() {
+                        const projSelect = document.getElementById('siteplanProjectSelect');
+                        loadProjectSiteplan(projSelect ? projSelect.value : null);
                         resetZoom();
                     }, 50);
                 }

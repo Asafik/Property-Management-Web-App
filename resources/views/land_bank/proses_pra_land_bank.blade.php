@@ -483,6 +483,79 @@
                 font-size: 0.725rem;
             }
         }
+
+        /* ===== B. PASCA-AKUISISI & LEGALITAS PERIZINAN STYLING ===== */
+        .pasca-legal-container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #ebedf2;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        .pasca-progress-box {
+            background: linear-gradient(135deg, #f8f6ff 0%, #f0ebff 100%);
+            border: 1px solid #e0d4fc;
+            border-radius: 12px;
+            padding: 1.15rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .pasca-progress-bar {
+            height: 12px;
+            border-radius: 10px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        .pasca-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9a55ff 0%, #28c76f 100%);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+        .pasca-summary-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .pasca-summary-pill.selesai {
+            background: #e8fadf;
+            color: #28a745;
+            border: 1px solid #c3e6cb;
+        }
+        .pasca-summary-pill.proses {
+            background: #e8f4fd;
+            color: #0d6efd;
+            border: 1px solid #b6d4fe;
+        }
+        .pasca-summary-pill.menunggu {
+            background: #fff8e6;
+            color: #d97706;
+            border: 1px solid #ffe69c;
+        }
+        .legal-item-card {
+            background: #ffffff;
+            border: 1px solid #eef0f4;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .legal-item-card:hover {
+            border-color: #bfa5fa;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08);
+        }
+        .legal-badge-shgb {
+            background: #f3e8ff;
+            color: #7e22ce;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            border: 1px solid #d8b4fe;
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -975,9 +1048,11 @@
                                     <div class="form-section-title">
                                         <i class="mdi mdi-scale-balance"></i> Aspek Legalitas & Biaya Administrasi
                                     </div>
-                                    <div class="row">
+                                    
+                                    <!-- 1. Estimasi Biaya Administrasi -->
+                                    <div class="row mb-3">
                                         <div class="col-md-3 mb-3">
-                                            <label class="form-label">Biaya IJB (Rp)</label>
+                                            <label class="form-label">Biaya IJB / PPJB (Rp)</label>
                                             <input type="text" class="form-control" name="biaya_ijb_temp" value="{{ $land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : '' }}" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-3 mb-3">
@@ -992,52 +1067,278 @@
                                             <label class="form-label">Biaya Lain-lain Admin (Rp)</label>
                                             <input type="text" class="form-control" name="biaya_lain_temp" value="{{ $land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : '' }}" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Unggah Berkas IJB</label>
-                                            <div class="pratanah-file-upload-modern">
-                                                <input type="file" name="file_ijb_temp" id="file_ijb_temp" class="d-none" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <label for="file_ijb_temp" class="pratanah-file-label-modern mb-0 w-100">
-                                                    <i class="mdi mdi-cloud-upload-outline fs-3"></i>
-                                                    <div class="pratanah-file-info-modern">
-                                                        <span>Unggah Berkas IJB</span>
-                                                        <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                    </div>
+
+                                    <!-- 2. Berkas Dokumen Kelengkapan Legalitas & Perizinan -->
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+                                        <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.9rem;">
+                                            <i class="mdi mdi-file-document-multiple text-primary me-1"></i>Dokumen Kelengkapan Legalitas & Perizinan
+                                        </h6>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="text-muted" style="font-size: 0.78rem;">Progres Unggah:</span>
+                                            <span class="badge bg-primary text-white fw-bold" id="doc_progress_badge" style="font-size: 0.78rem;">0 dari 6 Berkas (0%)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- SLIM MINI PROGRESS BAR & PILLS -->
+                                    <div class="p-2 px-3 mb-3" style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px;">
+                                        <div class="progress mb-2" style="height: 6px; border-radius: 10px; background-color: #e9ecef;">
+                                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="doc_progress_bar" role="progressbar" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-2 pt-1" style="font-size: 0.75rem;">
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" id="pill_doc_uploaded">
+                                                <i class="mdi mdi-check-circle me-1"></i><span id="count_doc_uploaded">0</span> Berkas Sudah Diunggah
+                                            </span>
+                                            <span class="badge bg-light text-muted border px-2 py-1" id="pill_doc_unuploaded">
+                                                <i class="mdi mdi-clock-outline me-1"></i><span id="count_doc_unuploaded">6</span> Berkas Belum Diunggah
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <!-- 1. Akta Pelepasan Hak / PPJB / AJB -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_ijb ? 'true' : 'false' }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                            1. Akta Pelepasan Hak / PPJB / AJB Notaris
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Peralihan hak resmi dari pemilik asal ke PT</small>
                                                     </div>
-                                                </label>
-                                                @if($land && $land->file_ijb)
-                                                    @php
-                                                        $cleanIjbPath = str_replace('uploads/', '', $land->file_ijb);
-                                                    @endphp
-                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanIjbPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas Aktif
-                                                        </a>
-                                                        <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                    </div>
-                                                @endif
+                                                    <span class="badge {{ $land && $land->file_ijb ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->file_ijb ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
+                                                        <span class="badge-text">{{ $land && $land->file_ijb ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label" style="font-size: 0.75rem;">No. Akta / SPH</label>
+                                                    <input type="text" name="no_akta_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_akta ?? '') : '' }}" placeholder="Contoh: SPH/2026/04/018" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                                <div class="pratanah-file-upload-modern mt-2">
+                                                    <input type="file" name="file_ijb_temp" id="file_ijb_temp" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <label for="file_ijb_temp" class="pratanah-file-label-modern mb-0 w-100 py-2">
+                                                        <i class="mdi mdi-cloud-upload-outline fs-4"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-name-text">{{ $land && $land->file_ijb ? basename($land->file_ijb) : 'Unggah Berkas Akta / SPH' }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                                        </div>
+                                                    </label>
+                                                    @if($land && $land->file_ijb)
+                                                        @php $cleanIjbPath = str_replace('uploads/', '', $land->file_ijb); @endphp
+                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanIjbPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </a>
+                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Unggah Berkas Bukti Pajak</label>
-                                            <div class="pratanah-file-upload-modern">
-                                                <input type="file" name="file_pajak_temp" id="file_pajak_temp" class="d-none" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <label for="file_pajak_temp" class="pratanah-file-label-modern mb-0 w-100">
-                                                    <i class="mdi mdi-cloud-upload-outline fs-3"></i>
-                                                    <div class="pratanah-file-info-modern">
-                                                        <span>Unggah Berkas Pajak</span>
-                                                        <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+
+                                        <!-- 2. Validasi Pajak PPh & BPHTB -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_tax ? 'true' : 'false' }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                            2. Validasi Pajak (PPh Final & BPHTB)
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Pelunasan & validasi pajak daerah Bapenda/KPP</small>
                                                     </div>
-                                                </label>
-                                                @if($land && $land->file_tax)
-                                                    @php
-                                                        $cleanTaxPath = str_replace('uploads/', '', $land->file_tax);
-                                                    @endphp
-                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanTaxPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas Aktif
-                                                        </a>
-                                                        <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    <span class="badge {{ $land && $land->file_tax ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->file_tax ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
+                                                        <span class="badge-text">{{ $land && $land->file_tax ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label" style="font-size: 0.75rem;">No. NTPN / Bukti Setor</label>
+                                                    <input type="text" name="no_pajak_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_pajak ?? '') : '' }}" placeholder="Contoh: NTPN-8829103991" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                                <div class="pratanah-file-upload-modern mt-2">
+                                                    <input type="file" name="file_pajak_temp" id="file_pajak_temp" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <label for="file_pajak_temp" class="pratanah-file-label-modern mb-0 w-100 py-2">
+                                                        <i class="mdi mdi-cloud-upload-outline fs-4"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-name-text">{{ $land && $land->file_tax ? basename($land->file_tax) : 'Unggah Bukti Setor Pajak' }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                                        </div>
+                                                    </label>
+                                                    @if($land && $land->file_tax)
+                                                        @php $cleanTaxPath = str_replace('uploads/', '', $land->file_tax); @endphp
+                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanTaxPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </a>
+                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 3. KKPR / Izin Lokasi OSS -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_kkpr ? 'true' : 'false' }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                            3. KKPR / Izin Lokasi OSS
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Kesesuaian Kegiatan Pemanfaatan Ruang perumahan</small>
                                                     </div>
-                                                @endif
+                                                    <span class="badge {{ $land && $land->file_kkpr ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->file_kkpr ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
+                                                        <span class="badge-text">{{ $land && $land->file_kkpr ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label" style="font-size: 0.75rem;">No. SK KKPR</label>
+                                                    <input type="text" name="no_kkpr_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_kkpr ?? '') : '' }}" placeholder="Contoh: 503/KKPR-JBR/2026" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                                <div class="pratanah-file-upload-modern mt-2">
+                                                    <input type="file" name="file_kkpr_temp" id="dummy_file_kkpr" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <label for="dummy_file_kkpr" class="pratanah-file-label-modern mb-0 w-100 py-2">
+                                                        <i class="mdi mdi-cloud-upload-outline fs-4"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-name-text">{{ $land && $land->file_kkpr ? basename($land->file_kkpr) : 'Unggah Dokumen SK KKPR' }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                                        </div>
+                                                    </label>
+                                                    @if($land && $land->file_kkpr)
+                                                        @php $cleanKkprPath = str_replace('uploads/', '', $land->file_kkpr); @endphp
+                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanKkprPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </a>
+                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 4. Pengesahan Siteplan Induk -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_siteplan ? 'true' : 'false' }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                            4. Pengesahan Rencana Tapak / Siteplan
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Persetujuan tata letak kavling & PSU Dinas Perkim</small>
+                                                    </div>
+                                                    <span class="badge {{ $land && $land->file_siteplan ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->file_siteplan ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
+                                                        <span class="badge-text">{{ $land && $land->file_siteplan ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label" style="font-size: 0.75rem;">No. SK Siteplan</label>
+                                                    <input type="text" name="no_siteplan_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_siteplan ?? '') : '' }}" placeholder="Contoh: 640/STP-PERKIM/2026" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                                <div class="pratanah-file-upload-modern mt-2">
+                                                    <input type="file" name="file_siteplan_temp" id="dummy_file_siteplan" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <label for="dummy_file_siteplan" class="pratanah-file-label-modern mb-0 w-100 py-2">
+                                                        <i class="mdi mdi-cloud-upload-outline fs-4"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-name-text">{{ $land && $land->file_siteplan ? basename($land->file_siteplan) : 'Unggah Lembar Siteplan Sah' }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                                        </div>
+                                                    </label>
+                                                    @if($land && $land->file_siteplan)
+                                                        @php $cleanSiteplanPath = str_replace('uploads/', '', $land->file_siteplan); @endphp
+                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanSiteplanPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </a>
+                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 5. Pengurusan SHGB Induk PT -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_shgb ? 'true' : 'false' }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                            5. Pengurusan SHGB Induk PT
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Sertifikat Hak Guna Bangunan atas nama PT dari BPN</small>
+                                                    </div>
+                                                    <span class="badge {{ $land && $land->file_shgb ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->file_shgb ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
+                                                        <span class="badge-text">{{ $land && $land->file_shgb ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label" style="font-size: 0.75rem;">No. SHGB Induk</label>
+                                                    <input type="text" name="no_shgb_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_shgb ?? '') : '' }}" placeholder="Contoh: HGB.01422/Kec.Kaliwates" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                                <div class="pratanah-file-upload-modern mt-2">
+                                                    <input type="file" name="file_shgb_temp" id="dummy_file_shgb" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <label for="dummy_file_shgb" class="pratanah-file-label-modern mb-0 w-100 py-2">
+                                                        <i class="mdi mdi-cloud-upload-outline fs-4"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-name-text">{{ $land && $land->file_shgb ? basename($land->file_shgb) : 'Unggah Scan SHGB Induk' }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                                        </div>
+                                                    </label>
+                                                    @if($land && $land->file_shgb)
+                                                        @php $cleanShgbPath = str_replace('uploads/', '', $land->file_shgb); @endphp
+                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanShgbPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </a>
+                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 6. Persetujuan Bangunan Gedung (PBG / IMB Induk) -->
+                                        <div class="col-12 col-lg-6">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_pbg ? 'true' : 'false' }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                            6. Persetujuan Bangunan Gedung (PBG / IMB Induk)
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Izin konstruksi bangunan induk perumahan melalui SIMBG</small>
+                                                    </div>
+                                                    <span class="badge {{ $land && $land->file_pbg ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->file_pbg ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
+                                                        <span class="badge-text">{{ $land && $land->file_pbg ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label" style="font-size: 0.75rem;">No. Registrasi / SK PBG</label>
+                                                    <input type="text" name="no_pbg_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_pbg ?? '') : '' }}" placeholder="Contoh: PBG-3509-2026..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                                <div class="pratanah-file-upload-modern mt-2">
+                                                    <input type="file" name="file_pbg_temp" id="dummy_file_pbg" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <label for="dummy_file_pbg" class="pratanah-file-label-modern mb-0 w-100 py-2">
+                                                        <i class="mdi mdi-cloud-upload-outline fs-4"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-name-text">{{ $land && $land->file_pbg ? basename($land->file_pbg) : 'Unggah Dokumen SK PBG Induk' }}</span>
+                                                            <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
+                                                        </div>
+                                                    </label>
+                                                    @if($land && $land->file_pbg)
+                                                        @php $cleanPbgPath = str_replace('uploads/', '', $land->file_pbg); @endphp
+                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPbgPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </a>
+                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1061,7 +1362,28 @@
                                         </div>
                                         <div class="col-md-3 mb-3" id="dp_container" style="display: none;">
                                             <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
-                                            <input type="text" class="form-control border-success" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" name="dp_amount_temp" class="form-control border-success mb-2" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ $land ? ($land->dp_amount ? number_format($land->dp_amount, 0, ',', '.') : (($land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '')) : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            
+                                            <!-- Upload Bukti Transfer DP -->
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="file_dp_temp" id="file_dp_temp" class="d-none" onchange="handleDummyFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <label for="file_dp_temp" class="pratanah-file-label-modern mb-0 w-100 py-1 px-2" style="border-radius: 6px; font-size: 11px;">
+                                                    <i class="mdi mdi-cloud-upload-outline fs-5 me-1"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span class="file-name-text">{{ $land && $land->file_dp ? basename($land->file_dp) : 'Unggah Bukti DP' }}</span>
+                                                        <small>Format: PDF/JPG/PNG</small>
+                                                    </div>
+                                                </label>
+                                                @if($land && $land->file_dp)
+                                                    @php $cleanDpPath = str_replace('uploads/', '', $land->file_dp); @endphp
+                                                    <div class="mt-1 d-flex align-items-center justify-content-between">
+                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanDpPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 10px;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat Bukti DP
+                                                        </a>
+                                                        <span class="badge bg-success py-0 px-2" style="font-size: 9px;"><i class="mdi mdi-check-circle me-1"></i>Terunggah</span>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-3 mb-3" id="remaining_container" style="display: none;">
                                             <label class="form-label text-muted">Sisa Pembayaran (Rp)</label>
@@ -1069,10 +1391,65 @@
                                         </div>
                                     </div>
 
+                                    <!-- RINCIAN AKUMULASI TOTAL BIAYA & POTONGAN DP WIDGET -->
+                                    <div class="card shadow-none border mb-4 p-3" style="border-radius: 12px; background: #ffffff;">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.9rem;">
+                                                <i class="mdi mdi-calculator text-primary me-1"></i>Rincian Akumulasi Total Biaya & Potongan DP
+                                            </h6>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered align-middle mb-0" style="font-size: 0.85rem;">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Komponen Transaksi</th>
+                                                        <th class="text-end" width="40%">Nominal (Rp)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span class="fw-semibold text-dark">Harga Deal Pokok Tanah</span></td>
+                                                        <td class="text-end fw-bold text-dark" id="calc_summary_deal">Rp 0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Biaya IJB / PPJB Notaris</span></td>
+                                                        <td class="text-end" id="calc_summary_ijb">Rp 0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Estimasi Pajak (PPh & BPHTB)</span></td>
+                                                        <td class="text-end" id="calc_summary_pajak">Rp 0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Fee Makelar / Perantara</span></td>
+                                                        <td class="text-end" id="calc_summary_makelar">Rp 0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Biaya Lain-lain Admin</span></td>
+                                                        <td class="text-end" id="calc_summary_lain">Rp 0</td>
+                                                    </tr>
+                                                    <tr style="background: rgba(154, 85, 255, 0.08);">
+                                                        <td><strong class="text-purple" style="color: #7e22ce;">TOTAL KESELURUHAN BIAYA (Grand Total)</strong></td>
+                                                        <td class="text-end fw-bold text-purple" id="calc_summary_grand_total" style="color: #7e22ce; font-size: 0.95rem;">Rp 0</td>
+                                                    </tr>
+                                                    <tr style="background: rgba(255, 193, 7, 0.12);">
+                                                        <td><strong class="text-danger">Dipotong Uang Muka / DP (Tahap 1)</strong></td>
+                                                        <td class="text-end fw-bold text-danger" id="calc_summary_dp">- Rp 0</td>
+                                                    </tr>
+                                                    <tr style="background: rgba(40, 167, 69, 0.12);">
+                                                        <td><strong class="text-success" style="font-size: 0.92rem;">SISA KEWAJIBAN PEMBAYARAN POKOK</strong></td>
+                                                        <td class="text-end fw-bold text-success" id="calc_summary_sisa" style="font-size: 1.05rem;">Rp 0</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- METODE PEMBAYARAN & JANGKA WAKTU -->
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Metode Pembayaran Kesepakatan</label>
-                                            <select class="form-select" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="cash" {{ $land && $land->payment_method == 'cash' ? 'selected' : '' }}>Cash Keras (Lunas Sekaligus)</option>
                                                 <option value="termin" {{ $land && $land->payment_method == 'termin' ? 'selected' : '' }}>Pembayaran Bertahap</option>
                                             </select>
@@ -1538,6 +1915,7 @@
                 widgetContainer.style.display = 'none';
                 calculateInstallments();
             }
+            updateFinancialSummary();
         }
 
         function calculateInstallments() {
@@ -1548,6 +1926,7 @@
             if (method !== 'termin') {
                 if (dpContainer) dpContainer.style.display = 'none';
                 if (remainingContainer) remainingContainer.style.display = 'none';
+                updateFinancialSummary();
                 return;
             }
             
@@ -1599,6 +1978,7 @@
                     }
                 });
             }
+            updateFinancialSummary();
         }
 
         function generateInstallmentRows() {
@@ -1716,5 +2096,118 @@
                 showError('Browser Anda tidak mendukung layanan Geolocation.');
             }
         }
+
+        function updateFinancialSummary() {
+            const cleanNum = (str) => parseInt((str || '').replace(/[^0-9]/g, '')) || 0;
+            const formatRp = (num) => 'Rp ' + (num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            
+            const dealPrice = cleanNum(document.getElementById('deal_price_input') ? document.getElementById('deal_price_input').value : 0);
+            const ijb = cleanNum(document.querySelector('input[name="biaya_ijb_temp"]') ? document.querySelector('input[name="biaya_ijb_temp"]').value : 0);
+            const pajak = cleanNum(document.querySelector('input[name="biaya_pajak_temp"]') ? document.querySelector('input[name="biaya_pajak_temp"]').value : 0);
+            const makelar = cleanNum(document.querySelector('input[name="fee_makelar_temp"]') ? document.querySelector('input[name="fee_makelar_temp"]').value : 0);
+            const lain = cleanNum(document.querySelector('input[name="biaya_lain_temp"]') ? document.querySelector('input[name="biaya_lain_temp"]').value : 0);
+            
+            const method = document.getElementById('temp_payment_method') ? document.getElementById('temp_payment_method').value : 'cash';
+            let dp = 0;
+            if (method === 'termin') {
+                dp = cleanNum(document.getElementById('dp_price_input') ? document.getElementById('dp_price_input').value : 0);
+            } else {
+                dp = dealPrice; // Cash = DP 100%
+            }
+
+            const totalBiayaTambahan = ijb + pajak + makelar + lain;
+            const grandTotal = dealPrice + totalBiayaTambahan;
+            const sisa = dealPrice > dp ? (dealPrice - dp) : 0;
+
+            if (document.getElementById('calc_summary_deal')) document.getElementById('calc_summary_deal').innerText = formatRp(dealPrice);
+            if (document.getElementById('calc_summary_ijb')) document.getElementById('calc_summary_ijb').innerText = formatRp(ijb);
+            if (document.getElementById('calc_summary_pajak')) document.getElementById('calc_summary_pajak').innerText = formatRp(pajak);
+            if (document.getElementById('calc_summary_makelar')) document.getElementById('calc_summary_makelar').innerText = formatRp(makelar);
+            if (document.getElementById('calc_summary_lain')) document.getElementById('calc_summary_lain').innerText = formatRp(lain);
+            if (document.getElementById('calc_summary_grand_total')) document.getElementById('calc_summary_grand_total').innerText = formatRp(grandTotal);
+            if (document.getElementById('calc_summary_dp')) document.getElementById('calc_summary_dp').innerText = '- ' + formatRp(dp);
+            if (document.getElementById('calc_summary_sisa')) document.getElementById('calc_summary_sisa').innerText = formatRp(sisa);
+        }
+
+        function recalculateDocProgress() {
+            const cards = document.querySelectorAll('.legal-item-card');
+            if (!cards.length) return;
+
+            let total = cards.length;
+            let uploaded = 0;
+
+            cards.forEach(card => {
+                const hasFile = card.getAttribute('data-has-file') === 'true';
+                if (hasFile) uploaded++;
+            });
+
+            let unuploaded = total - uploaded;
+            let percent = Math.round((uploaded / total) * 100);
+
+            const progressBar = document.getElementById('doc_progress_bar');
+            const badge = document.getElementById('doc_progress_badge');
+            const countUploaded = document.getElementById('count_doc_uploaded');
+            const countUnuploaded = document.getElementById('count_doc_unuploaded');
+
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (badge) badge.innerText = `${uploaded} dari ${total} Berkas (${percent}%)`;
+            if (countUploaded) countUploaded.innerText = uploaded;
+            if (countUnuploaded) countUnuploaded.innerText = unuploaded;
+        }
+
+        function handleDocFileUpload(input) {
+            const card = input.closest('.legal-item-card');
+            const labelSpan = input.closest('.pratanah-file-upload-modern').querySelector('.file-name-text');
+            
+            if (input.files && input.files[0]) {
+                labelSpan.textContent = input.files[0].name;
+                labelSpan.classList.add('text-success', 'font-weight-bold');
+                
+                if (card) {
+                    card.setAttribute('data-has-file', 'true');
+                    const badge = card.querySelector('.doc-card-badge');
+                    if (badge) {
+                        badge.className = 'badge bg-success doc-card-badge';
+                        badge.innerHTML = '<i class="mdi mdi-check-circle me-1"></i><span class="badge-text">Sudah Diunggah</span>';
+                    }
+                }
+            } else {
+                labelSpan.classList.remove('text-success', 'font-weight-bold');
+                if (card && card.getAttribute('data-has-file') !== 'true') {
+                    card.setAttribute('data-has-file', 'false');
+                    const badge = card.querySelector('.doc-card-badge');
+                    if (badge) {
+                        badge.className = 'badge bg-secondary doc-card-badge';
+                        badge.innerHTML = '<i class="mdi mdi-clock-outline me-1"></i><span class="badge-text">Belum Diunggah</span>';
+                    }
+                }
+            }
+            recalculateDocProgress();
+        }
+
+        function handleDummyFileName(input) {
+            handleDocFileUpload(input);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners for cost inputs
+            const costInputs = ['biaya_ijb_temp', 'biaya_pajak_temp', 'fee_makelar_temp', 'biaya_lain_temp'];
+            costInputs.forEach(name => {
+                const el = document.querySelector(`input[name="${name}"]`);
+                if (el) {
+                    el.addEventListener('input', updateFinancialSummary);
+                    el.addEventListener('keyup', updateFinancialSummary);
+                }
+            });
+
+            const dpInput = document.getElementById('dp_price_input');
+            if (dpInput) {
+                dpInput.addEventListener('input', updateFinancialSummary);
+                dpInput.addEventListener('keyup', updateFinancialSummary);
+            }
+
+            updateFinancialSummary();
+            recalculateDocProgress();
+        });
     </script>
 @endpush

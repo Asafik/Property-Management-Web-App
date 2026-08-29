@@ -481,11 +481,18 @@
 
             {{-- Rincian RAP --}}
             @php
+                $isAccCompleted = ($selectedUnit->progress && $selectedUnit->progress->status === 'completed') || $selectedUnit->construction_progress === 'selesai';
                 $subtotal = $items->sum(fn($item) => $item->total);
-                $ppn = $subtotal * 0.1;
+                $ppn = round($subtotal * 0.1);
                 $totalRAB = $subtotal + $ppn;
-                $unitPrice = $selectedUnit->price ?? 0;
-                $finalPrice = $totalRAB + $unitPrice;
+
+                if ($isAccCompleted) {
+                    $finalPrice = $selectedUnit->price ?? 0;
+                    $unitPrice = max(0, $finalPrice - $totalRAB);
+                } else {
+                    $unitPrice = $selectedUnit->price ?? 0;
+                    $finalPrice = $totalRAB + $unitPrice;
+                }
             @endphp
 
             <!-- Bagian Rincian RAP - Yang Diperbaiki -->
@@ -531,9 +538,16 @@
                 <div class="col-12 col-md-6">
                     <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
-                            <h6 class="card-title fw-bold text-dark mb-3">
-                                <i class="mdi mdi-cash-check me-2" style="color: #28a745;"></i>Harga Jual Final
-                            </h6>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="card-title fw-bold text-dark mb-0">
+                                    <i class="mdi mdi-cash-check me-2" style="color: #28a745;"></i>Harga Jual Final
+                                </h6>
+                                @if($isAccCompleted)
+                                    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style="font-size: 0.75rem; border-radius: 6px;">
+                                        <i class="mdi mdi-check-circle me-1"></i>Telah Di-ACC
+                                    </span>
+                                @endif
+                            </div>
 
                             <input type="hidden" name="price" value="{{ $finalPrice }}">
 
@@ -546,7 +560,7 @@
                             </div>
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label">Harga Jual Unit</span>
+                                <span class="ringkasan-label">{{ $isAccCompleted ? 'Harga Awal Unit' : 'Harga Jual Unit' }}</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-unit-price" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($unitPrice, 0, ',', '.') }}" readonly>
@@ -574,10 +588,16 @@
                                     <i class="mdi mdi-printer me-1"></i>Cetak RAP
                                 </a>
 
-                                <button type="button" class="aksi-btn rab-btn-warning acc-btn"
-                                    data-id="{{ $selectedUnit->id }}">
-                                    <i class="mdi mdi-check me-1"></i>ACC RAP
-                                </button>
+                                @if ($isAccCompleted)
+                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="RAP untuk unit ini sudah di-ACC">
+                                        <i class="mdi mdi-check-all me-1"></i>Sudah di-ACC
+                                    </button>
+                                @else
+                                    <button type="button" class="aksi-btn rab-btn-warning acc-btn"
+                                        data-id="{{ $selectedUnit->id }}">
+                                        <i class="mdi mdi-check me-1"></i>ACC RAP
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -944,9 +964,15 @@
                             .then(res => res.json())
                             .then(data => {
                                 if (data.success) {
-                                    Swal.fire('Berhasil!', data.message, 'success');
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: data.message,
+                                        icon: 'success'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
                                 } else {
-                                    Swal.fire('Gagal!', data.message, 'error');
+                                    Swal.fire('Gagal!', data.message, 'warning');
                                 }
                             })
                             .catch(err => {

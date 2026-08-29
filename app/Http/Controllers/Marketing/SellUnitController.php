@@ -85,6 +85,10 @@ class SellUnitController extends Controller
             });
         }
 
+        if ($request->filled('project')) {
+            $query->where('land_bank_id', $request->project);
+        }
+
         if ($request->filled('jenis')) {
             Log::info('Filter jenis: ' . $request->jenis);
             $query->where('jenis', $request->jenis);
@@ -234,7 +238,7 @@ class SellUnitController extends Controller
         // =========================
         // DATA SUPPORT
         // =========================
-        $projects = LandBank::select('id', 'name')->orderBy('name')->get();
+        $projects = LandBank::select('id', 'name', 'denah', 'address')->orderBy('name')->get();
         $customers = Customer::latest()->get();
         $agencies = Employee::where('position_id', 2)->latest()->get();
         $types = LandBankUnit::select('type')->distinct()->pluck('type');

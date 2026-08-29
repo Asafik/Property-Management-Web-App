@@ -640,7 +640,7 @@
                                                     <i class="mdi mdi-pencil"></i>
                                                 </button>
 
-                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}" class="btn-action btn-action-view" title="Progress Unit">
+                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id, 'unit_id' => $unit->id]) }}" class="btn-action btn-action-view" title="Progress Unit">
                                                     <i class="mdi mdi-progress-check"></i>
                                                 </a>
 
