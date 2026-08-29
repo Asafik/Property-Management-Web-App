@@ -1113,7 +1113,7 @@
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 0.75rem;">No. Akta / SPH</label>
-                                                    <input type="text" name="no_akta_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_akta ?? '') : '' }}" placeholder="Contoh: SPH/2026/04/018" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="text" class="form-control form-control-sm" value="SPH/2026/04/018" placeholder="No. Akta" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 </div>
                                                 <div class="pratanah-file-upload-modern mt-2">
                                                     <input type="file" name="file_ijb_temp" id="file_ijb_temp" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
@@ -1154,7 +1154,7 @@
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 0.75rem;">No. NTPN / Bukti Setor</label>
-                                                    <input type="text" name="no_pajak_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_pajak ?? '') : '' }}" placeholder="Contoh: NTPN-8829103991" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="text" class="form-control form-control-sm" value="NTPN-8829103991" placeholder="Kode NTPN" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 </div>
                                                 <div class="pratanah-file-upload-modern mt-2">
                                                     <input type="file" name="file_pajak_temp" id="file_pajak_temp" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
@@ -1180,7 +1180,7 @@
 
                                         <!-- 3. KKPR / Izin Lokasi OSS -->
                                         <div class="col-12 col-lg-6">
-                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_kkpr ? 'true' : 'false' }}">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="false">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <div>
                                                         <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
@@ -1188,40 +1188,31 @@
                                                         </h6>
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Kesesuaian Kegiatan Pemanfaatan Ruang perumahan</small>
                                                     </div>
-                                                    <span class="badge {{ $land && $land->file_kkpr ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->file_kkpr ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
-                                                        <span class="badge-text">{{ $land && $land->file_kkpr ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    <span class="badge bg-secondary doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>
+                                                        <span class="badge-text">Belum Diunggah</span>
                                                     </span>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 0.75rem;">No. SK KKPR</label>
-                                                    <input type="text" name="no_kkpr_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_kkpr ?? '') : '' }}" placeholder="Contoh: 503/KKPR-JBR/2026" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="text" class="form-control form-control-sm" value="503/KKPR-JBR/2026" placeholder="No. SK KKPR" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 </div>
                                                 <div class="pratanah-file-upload-modern mt-2">
-                                                    <input type="file" name="file_kkpr_temp" id="dummy_file_kkpr" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="file" id="dummy_file_kkpr" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label for="dummy_file_kkpr" class="pratanah-file-label-modern mb-0 w-100 py-2">
                                                         <i class="mdi mdi-cloud-upload-outline fs-4"></i>
                                                         <div class="pratanah-file-info-modern">
-                                                            <span class="file-name-text">{{ $land && $land->file_kkpr ? basename($land->file_kkpr) : 'Unggah Dokumen SK KKPR' }}</span>
+                                                            <span class="file-name-text">Unggah Dokumen SK KKPR</span>
                                                             <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
                                                         </div>
                                                     </label>
-                                                    @if($land && $land->file_kkpr)
-                                                        @php $cleanKkprPath = str_replace('uploads/', '', $land->file_kkpr); @endphp
-                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanKkprPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                            </a>
-                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                        </div>
-                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- 4. Pengesahan Siteplan Induk -->
                                         <div class="col-12 col-lg-6">
-                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_siteplan ? 'true' : 'false' }}">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="false">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <div>
                                                         <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
@@ -1229,40 +1220,31 @@
                                                         </h6>
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Persetujuan tata letak kavling & PSU Dinas Perkim</small>
                                                     </div>
-                                                    <span class="badge {{ $land && $land->file_siteplan ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->file_siteplan ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
-                                                        <span class="badge-text">{{ $land && $land->file_siteplan ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    <span class="badge bg-secondary doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>
+                                                        <span class="badge-text">Belum Diunggah</span>
                                                     </span>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 0.75rem;">No. SK Siteplan</label>
-                                                    <input type="text" name="no_siteplan_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_siteplan ?? '') : '' }}" placeholder="Contoh: 640/STP-PERKIM/2026" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="text" class="form-control form-control-sm" value="640/STP-PERKIM/2026" placeholder="No. Pengesahan" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 </div>
                                                 <div class="pratanah-file-upload-modern mt-2">
-                                                    <input type="file" name="file_siteplan_temp" id="dummy_file_siteplan" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="file" id="dummy_file_siteplan" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label for="dummy_file_siteplan" class="pratanah-file-label-modern mb-0 w-100 py-2">
                                                         <i class="mdi mdi-cloud-upload-outline fs-4"></i>
                                                         <div class="pratanah-file-info-modern">
-                                                            <span class="file-name-text">{{ $land && $land->file_siteplan ? basename($land->file_siteplan) : 'Unggah Lembar Siteplan Sah' }}</span>
+                                                            <span class="file-name-text">Unggah Lembar Siteplan Sah</span>
                                                             <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
                                                         </div>
                                                     </label>
-                                                    @if($land && $land->file_siteplan)
-                                                        @php $cleanSiteplanPath = str_replace('uploads/', '', $land->file_siteplan); @endphp
-                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanSiteplanPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                            </a>
-                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                        </div>
-                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- 5. Pengurusan SHGB Induk PT -->
                                         <div class="col-12 col-lg-6">
-                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_shgb ? 'true' : 'false' }}">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="false">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <div>
                                                         <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
@@ -1270,40 +1252,31 @@
                                                         </h6>
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Sertifikat Hak Guna Bangunan atas nama PT dari BPN</small>
                                                     </div>
-                                                    <span class="badge {{ $land && $land->file_shgb ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->file_shgb ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
-                                                        <span class="badge-text">{{ $land && $land->file_shgb ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    <span class="badge bg-secondary doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>
+                                                        <span class="badge-text">Belum Diunggah</span>
                                                     </span>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 0.75rem;">No. SHGB Induk</label>
-                                                    <input type="text" name="no_shgb_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_shgb ?? '') : '' }}" placeholder="Contoh: HGB.01422/Kec.Kaliwates" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="text" class="form-control form-control-sm" value="HGB.01422/Kec.Kaliwates" placeholder="No. SHGB Induk" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 </div>
                                                 <div class="pratanah-file-upload-modern mt-2">
-                                                    <input type="file" name="file_shgb_temp" id="dummy_file_shgb" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="file" id="dummy_file_shgb" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label for="dummy_file_shgb" class="pratanah-file-label-modern mb-0 w-100 py-2">
                                                         <i class="mdi mdi-cloud-upload-outline fs-4"></i>
                                                         <div class="pratanah-file-info-modern">
-                                                            <span class="file-name-text">{{ $land && $land->file_shgb ? basename($land->file_shgb) : 'Unggah Scan SHGB Induk' }}</span>
+                                                            <span class="file-name-text">Unggah Scan SHGB Induk</span>
                                                             <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
                                                         </div>
                                                     </label>
-                                                    @if($land && $land->file_shgb)
-                                                        @php $cleanShgbPath = str_replace('uploads/', '', $land->file_shgb); @endphp
-                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanShgbPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                            </a>
-                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                        </div>
-                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- 6. Persetujuan Bangunan Gedung (PBG / IMB Induk) -->
                                         <div class="col-12 col-lg-6">
-                                            <div class="legal-item-card h-100 p-3" data-has-file="{{ $land && $land->file_pbg ? 'true' : 'false' }}">
+                                            <div class="legal-item-card h-100 p-3" data-has-file="false">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <div>
                                                         <h6 class="fw-bold text-dark mb-1" style="font-size: 0.88rem;">
@@ -1311,33 +1284,24 @@
                                                         </h6>
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Izin konstruksi bangunan induk perumahan melalui SIMBG</small>
                                                     </div>
-                                                    <span class="badge {{ $land && $land->file_pbg ? 'bg-success' : 'bg-secondary' }} doc-card-badge" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->file_pbg ? 'mdi-check-circle' : 'mdi-clock-outline' }} me-1"></i>
-                                                        <span class="badge-text">{{ $land && $land->file_pbg ? 'Sudah Diunggah' : 'Belum Diunggah' }}</span>
+                                                    <span class="badge bg-secondary doc-card-badge" style="font-size: 10px;">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>
+                                                        <span class="badge-text">Belum Diunggah</span>
                                                     </span>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 0.75rem;">No. Registrasi / SK PBG</label>
-                                                    <input type="text" name="no_pbg_temp" class="form-control form-control-sm" value="{{ $land ? ($land->no_pbg ?? '') : '' }}" placeholder="Contoh: PBG-3509-2026..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="text" class="form-control form-control-sm" value="" placeholder="PBG-3509-2026..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 </div>
                                                 <div class="pratanah-file-upload-modern mt-2">
-                                                    <input type="file" name="file_pbg_temp" id="dummy_file_pbg" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="file" id="dummy_file_pbg" class="d-none doc-file-input" onchange="handleDocFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label for="dummy_file_pbg" class="pratanah-file-label-modern mb-0 w-100 py-2">
                                                         <i class="mdi mdi-cloud-upload-outline fs-4"></i>
                                                         <div class="pratanah-file-info-modern">
-                                                            <span class="file-name-text">{{ $land && $land->file_pbg ? basename($land->file_pbg) : 'Unggah Dokumen SK PBG Induk' }}</span>
+                                                            <span class="file-name-text">Unggah Dokumen SK PBG Induk</span>
                                                             <small>Format: PDF, JPG, PNG (Maks 10MB)</small>
                                                         </div>
                                                     </label>
-                                                    @if($land && $land->file_pbg)
-                                                        @php $cleanPbgPath = str_replace('uploads/', '', $land->file_pbg); @endphp
-                                                        <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPbgPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                            </a>
-                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                        </div>
-                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -1362,27 +1326,18 @@
                                         </div>
                                         <div class="col-md-3 mb-3" id="dp_container" style="display: none;">
                                             <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
-                                            <input type="text" name="dp_amount_temp" class="form-control border-success mb-2" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ $land ? ($land->dp_amount ? number_format($land->dp_amount, 0, ',', '.') : (($land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '')) : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control border-success mb-2" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                             
-                                            <!-- Upload Bukti Transfer DP -->
+                                            <!-- Upload Bukti Transfer DP (Dummy Preview UI) -->
                                             <div class="pratanah-file-upload-modern">
-                                                <input type="file" name="file_dp_temp" id="file_dp_temp" class="d-none" onchange="handleDummyFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <label for="file_dp_temp" class="pratanah-file-label-modern mb-0 w-100 py-1 px-2" style="border-radius: 6px; font-size: 11px;">
+                                                <input type="file" id="dummy_file_dp" class="d-none" onchange="handleDummyFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <label for="dummy_file_dp" class="pratanah-file-label-modern mb-0 w-100 py-1 px-2" style="border-radius: 6px; font-size: 11px;">
                                                     <i class="mdi mdi-cloud-upload-outline fs-5 me-1"></i>
                                                     <div class="pratanah-file-info-modern">
-                                                        <span class="file-name-text">{{ $land && $land->file_dp ? basename($land->file_dp) : 'Unggah Bukti DP' }}</span>
+                                                        <span class="file-name-text">Unggah Bukti DP</span>
                                                         <small>Format: PDF/JPG/PNG</small>
                                                     </div>
                                                 </label>
-                                                @if($land && $land->file_dp)
-                                                    @php $cleanDpPath = str_replace('uploads/', '', $land->file_dp); @endphp
-                                                    <div class="mt-1 d-flex align-items-center justify-content-between">
-                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanDpPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 10px;">
-                                                            <i class="mdi mdi-eye me-1"></i>Lihat Bukti DP
-                                                        </a>
-                                                        <span class="badge bg-success py-0 px-2" style="font-size: 9px;"><i class="mdi mdi-check-circle me-1"></i>Terunggah</span>
-                                                    </div>
-                                                @endif
                                             </div>
                                         </div>
                                         <div class="col-md-3 mb-3" id="remaining_container" style="display: none;">

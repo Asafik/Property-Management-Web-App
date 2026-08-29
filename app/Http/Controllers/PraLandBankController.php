@@ -193,15 +193,7 @@ if ($request->has('documents')) {
                 $data['estimated_price'] = $request->estimated_price ? $cleanNumber($request->estimated_price) : null;
             }
 
-            // Map Document Numbers (Fase 3)
-            $data['no_akta']     = $request->no_akta_temp ?? $record->no_akta;
-            $data['no_pajak']    = $request->no_pajak_temp ?? $record->no_pajak;
-            $data['no_kkpr']     = $request->no_kkpr_temp ?? $record->no_kkpr;
-            $data['no_siteplan'] = $request->no_siteplan_temp ?? $record->no_siteplan;
-            $data['no_shgb']     = $request->no_shgb_temp ?? $record->no_shgb;
-            $data['no_pbg']      = $request->no_pbg_temp ?? $record->no_pbg;
-
-            // Upload 1. file_ijb / Akta
+            // Upload file_ijb
             if ($request->hasFile('file_ijb_temp')) {
                 $file = $request->file('file_ijb_temp');
                 $filename = uniqid() . '_ijb_' . $file->getClientOriginalName();
@@ -209,55 +201,12 @@ if ($request->has('documents')) {
                 $data['file_ijb'] = 'uploads/pra_landbank/' . $record->id . '/ijb/' . $filename;
             }
 
-            // Upload 2. file_tax / Pajak
+            // Upload file_tax
             if ($request->hasFile('file_pajak_temp')) {
                 $file = $request->file('file_pajak_temp');
                 $filename = uniqid() . '_pajak_' . $file->getClientOriginalName();
                 $file->move(public_path('uploads/pra_landbank/' . $record->id . '/pajak'), $filename);
                 $data['file_tax'] = 'uploads/pra_landbank/' . $record->id . '/pajak/' . $filename;
-            }
-
-            // Upload 3. file_kkpr
-            if ($request->hasFile('file_kkpr_temp')) {
-                $file = $request->file('file_kkpr_temp');
-                $filename = uniqid() . '_kkpr_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/pra_landbank/' . $record->id . '/kkpr'), $filename);
-                $data['file_kkpr'] = 'uploads/pra_landbank/' . $record->id . '/kkpr/' . $filename;
-            }
-
-            // Upload 4. file_siteplan
-            if ($request->hasFile('file_siteplan_temp')) {
-                $file = $request->file('file_siteplan_temp');
-                $filename = uniqid() . '_siteplan_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/pra_landbank/' . $record->id . '/siteplan'), $filename);
-                $data['file_siteplan'] = 'uploads/pra_landbank/' . $record->id . '/siteplan/' . $filename;
-            }
-
-            // Upload 5. file_shgb
-            if ($request->hasFile('file_shgb_temp')) {
-                $file = $request->file('file_shgb_temp');
-                $filename = uniqid() . '_shgb_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/pra_landbank/' . $record->id . '/shgb'), $filename);
-                $data['file_shgb'] = 'uploads/pra_landbank/' . $record->id . '/shgb/' . $filename;
-            }
-
-            // Upload 6. file_pbg
-            if ($request->hasFile('file_pbg_temp')) {
-                $file = $request->file('file_pbg_temp');
-                $filename = uniqid() . '_pbg_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/pra_landbank/' . $record->id . '/pbg'), $filename);
-                $data['file_pbg'] = 'uploads/pra_landbank/' . $record->id . '/pbg/' . $filename;
-            }
-
-            // Uang Muka / DP & Upload Bukti DP
-            if ($request->has('dp_amount_temp')) {
-                $data['dp_amount'] = $request->dp_amount_temp ? $cleanNumber($request->dp_amount_temp) : null;
-            }
-            if ($request->hasFile('file_dp_temp')) {
-                $file = $request->file('file_dp_temp');
-                $filename = uniqid() . '_dp_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/pra_landbank/' . $record->id . '/dp'), $filename);
-                $data['file_dp'] = 'uploads/pra_landbank/' . $record->id . '/dp/' . $filename;
             }
 
             // Process dynamic payment installments
