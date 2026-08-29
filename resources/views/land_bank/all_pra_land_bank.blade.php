@@ -259,8 +259,11 @@
                                             <td class="text-center fw-bold">{{ $index + 1 }}</td>
 
                                             <td>
-                                                <i class="mdi mdi-map-marker text-primary me-2"></i>
+                                                <i class="mdi mdi-map-marker text-primary me-1"></i>
                                                 <span class="fw-bold">{{ $land->land_name }}</span>
+                                                @if(!empty($land->ownership_status))
+                                                    <span class="badge rounded-pill bg-light text-primary border ms-1" style="font-size: 0.7rem; font-weight: 600;">{{ $land->ownership_status }}</span>
+                                                @endif
                                             </td>
 
                                             <td>
