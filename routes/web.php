@@ -176,13 +176,17 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     // list properti
     Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
+    Route::get('/properti/all', [PropertyController::class, 'index'])->name('properti.all');
     Route::get('/all-pra-landbank', [PraLandBankController::class, 'indexpra'])->name('pralandbank.all');
     Route::get('/properti/pra-landbank/proses/{id?}', [PraLandBankController::class, 'proses'])->name('pra-landbank.proses');
+    Route::get('/properti/pra-landbank/invoice/{id}', [PraLandBankController::class, 'invoice'])->name('pra-landbank.invoice');
     // tambah properti
     Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
-    Route::get('/create-pralandbank', [PraLandBankController    ::class, 'index'])->name('pra-landbank');
+    Route::get('/create-pralandbank', [PraLandBankController::class, 'index'])->name('pra-landbank');
     Route::post('/properti/pra-landbank/store', [PraLandBankController::class, 'store'])->name('pra-landbanks.store');
     Route::delete('/properti/pra-landbank/{id}', [PraLandBankController::class, 'destroy'])->name('pra-landbanks.destroy');
+    Route::post('/pra-landbank/dokumen/{id}/approve', [PraLandBankController::class, 'approveDocument'])->name('pra-dokumen.approve');
+    Route::post('/pra-landbank/dokumen/{id}/reject', [PraLandBankController::class, 'rejectDocument'])->name('pra-dokumen.reject');
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
@@ -204,6 +208,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     Route::post('/properti/{id}/update-revisi', [LandBankController::class, 'updateRevisi'])->name('properti.updateRevisi');
     Route::post('/dokumen/{id}/update', [LandBankController::class, 'updateDocument'])->name('dokumen.update');
+    Route::post('/properti/{id}/update-legal-status', [LandBankController::class, 'updateLegalStatus'])->name('properti.updateLegalStatus');
 
     Route::get('/properti-revisi/{id}', [LandBankController::class, 'revisi'])->name('properti.revisi');
 
@@ -228,9 +233,30 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | PROGRESS PEMBANGUNAN
+    | PROGRESS PEMBANGUNAN UNIT (RAP) & PENGOLAHAN LAHAN (SITE DEVELOPMENT)
     |--------------------------------------------------------------------------
     */
+    Route::get('/properti-pengolahan-lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahanLahan');
+    Route::get('/properti/{land_bank_id}/pengolahan-lahan', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahan-lahan');
+    Route::get('/properti/{land_bank_id}/infrastruktur', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'getItems'])->name('properti.infrastruktur.get');
+    Route::post('/properti/{land_bank_id}/infrastruktur/store', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'store'])->name('properti.infrastruktur.store');
+    Route::post('/properti/infrastruktur/{id}/update', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'update'])->name('properti.infrastruktur.update');
+    Route::delete('/properti/infrastruktur/{id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'destroy'])->name('properti.infrastruktur.destroy');
+    Route::post('/properti/{land_bank_id}/infrastruktur/finalize', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'finalizeStatus'])->name('properti.infrastruktur.finalize');
+    Route::post('/properti/{land_bank_id}/infrastruktur/phase/{phase}/finalize', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'finalizePhase'])->name('properti.infrastruktur.phase.finalize');
+
+    // Pencatatan Realisasi Keuangan & Pemakaian Bahan Pengolahan Lahan
+    Route::post('/properti/{land_bank_id}/infrastruktur/expense/store', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'storeExpense'])->name('properti.infrastruktur.expense.store');
+    Route::post('/properti/infrastruktur/expense/{id}/update', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'updateExpense'])->name('properti.infrastruktur.expense.update');
+    Route::delete('/properti/infrastruktur/expense/{id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'destroyExpense'])->name('properti.infrastruktur.expense.destroy');
+
+    // Master Bahan & Jasa Infrastruktur Pembangunan / Pengolahan Lahan
+    Route::get('/master-data-bahan-infrastruktur', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'index'])->name('master.bahan.index');
+    Route::post('/master-data-bahan-infrastruktur/store', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'store'])->name('master.bahan.store');
+    Route::post('/master-data-bahan-infrastruktur/{id}/update', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'update'])->name('master.bahan.update');
+    Route::delete('/master-data-bahan-infrastruktur/{id}', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'destroy'])->name('master.bahan.destroy');
+    Route::get('/api/master-bahan-infrastruktur/search', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'searchApi'])->name('master.bahan.search');
+
     Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
 
     Route::post('/properti/progress/acc-ajax/{unit}', [DevelopmentProgressController::class, 'accAjax'])->name('properti.progress.acc.ajax');

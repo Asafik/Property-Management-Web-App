@@ -228,6 +228,7 @@
                                         <th>Makelar</th>
                                         <th>Harga Negosiasi</th>
                                         <th>Progress 3 FASE</th>
+                                        <th>Progress Legalitas</th>
                                         <th>Status</th>
                                         <th>Prioritas</th>
                                         <th class="text-center">Aksi</th>
@@ -338,6 +339,46 @@
                                                 </div>
                                             </td>
 
+                                            <!-- Progress Legalitas -->
+                                            <td>
+                                                @php
+                                                    $docs = $land->documents;
+                                                    $totalUploaded = $docs->whereNotNull('file_path')->count();
+                                                    $verifiedDocs = $docs->where('status', 'verified')->count();
+                                                    $rejectedDocs = $docs->where('status', 'rejected')->count();
+                                                    $legalPercent = $totalUploaded > 0 ? round(($verifiedDocs / $totalUploaded) * 100) : 0;
+                                                @endphp
+
+                                                @if($totalUploaded == 0)
+                                                    <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 11px;">
+                                                        <i class="mdi mdi-file-outline me-1"></i>Belum Ada Berkas
+                                                    </span>
+                                                @else
+                                                    <div class="progress-fase">
+                                                        <div class="progress-label d-flex justify-content-between align-items-center mb-1">
+                                                            @if($verifiedDocs == $totalUploaded)
+                                                                <span class="text-success fw-bold" style="font-size: 11px;">
+                                                                    <i class="mdi mdi-shield-check me-1"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                </span>
+                                                            @elseif($rejectedDocs > 0)
+                                                                <span class="text-danger fw-bold" style="font-size: 11px;">
+                                                                    <i class="mdi mdi-alert-circle me-1"></i>Revisi ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                </span>
+                                                            @else
+                                                                <span class="text-warning fw-bold" style="font-size: 11px;">
+                                                                    <i class="mdi mdi-clock-outline me-1"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalUploaded }} Sah)
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                        <div class="progress-bar-container" style="height: 6px; background: #e9ecef; border-radius: 4px;">
+                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalUploaded ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : 'bg-warning') }}"
+                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </td>
+
                                             <td>
                                                 @if($isTerminActive)
                                                     <span class="badge-status warning" style="background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">
@@ -374,16 +415,31 @@
                                                     </a>
 
                                                     @if($land->status !== 'fase1' && ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
-                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
-                                                           class="btn-fase-action btn-fase-3" 
-                                                           title="FASE 3: Persetujuan">
-                                                            <i class="mdi mdi-check-decagram"></i>
-                                                            <span>Fase 3</span>
-                                                        </a>
+                                                        @php
+                                                            $docs = $land->documents;
+                                                            $totalUploaded = $docs->whereNotNull('file_path')->count();
+                                                            $verifiedDocs = $docs->where('status', 'verified')->count();
+                                                            $isLandLegalSah = ($totalUploaded > 0) && ($verifiedDocs === $totalUploaded);
+                                                        @endphp
+                                                        @if($isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected')
+                                                            <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
+                                                               class="btn-fase-action btn-fase-3" 
+                                                               title="FASE 3: Persetujuan">
+                                                                <i class="mdi mdi-check-decagram"></i>
+                                                                <span>Fase 3</span>
+                                                            </a>
+                                                        @else
+                                                            <button type="button" class="btn-fase-action btn-fase-3" 
+                                                                    onclick="alertFase3Locked()" 
+                                                                    style="opacity: 0.75; cursor: pointer;"
+                                                                    title="Terkunci: Menunggu Validasi Legalitas Sah">
+                                                                <i class="mdi mdi-lock"></i>
+                                                                <span>Fase 3</span>
+                                                            </button>
+                                                        @endif
                                                     @endif
 
-                                                    <form action="{{ route('pra-landbanks.destroy', $land->id) }}"
-                                                        method="POST" style="display:inline;">
+                                                    <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn-fase-action btn-fase-delete delete-btn" title="Hapus Data">
@@ -395,7 +451,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center text-muted">
+                                            <td colspan="9" class="text-center text-muted">
                                                 Tidak ada data
                                             </td>
                                         </tr>
@@ -503,6 +559,7 @@
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
                                     'X-CSRF-TOKEN': token
                                 },
                                 body: JSON.stringify({
@@ -512,7 +569,7 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    sessionStorage.setItem('success_message', 'Data Pra Land Bank berhasil dihapus.');
+                                    sessionStorage.setItem('success_message', data.message || 'Data Pra Land Bank berhasil dihapus.');
                                     window.location.reload();
                                 } else {
                                     Swal.fire({
@@ -535,5 +592,21 @@
                 });
             });
         });
+
+        function alertFase3Locked() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Status Legalitas Belum Sah!',
+                html: `
+                    <p class="text-muted mb-2">Tanah ini belum dapat diproses ke <b>Fase 3 (Sidang & Keputusan Akhir)</b>.</p>
+                    <div class="alert alert-warning border text-start py-2 px-3 mb-0" style="font-size: 0.85rem; background: #fffbeb; border-color: #fde68a !important;">
+                        <i class="mdi mdi-shield-alert text-warning me-1"></i>
+                        <b>Syarat Validasi:</b> Seluruh dokumen kelayakan legalitas tanah di <b>Fase 2</b> wajib berstatus <b>Terverifikasi (Sah) oleh Kepala Legal</b> terlebih dahulu.
+                    </div>
+                `,
+                confirmButtonColor: '#9a55ff',
+                confirmButtonText: '<i class="mdi mdi-check me-1"></i> Mengerti'
+            });
+        }
     </script>
 @endpush

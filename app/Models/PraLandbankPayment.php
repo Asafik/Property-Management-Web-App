@@ -12,7 +12,11 @@ class PraLandbankPayment extends Model
         'amount',
         'due_date',
         'file_path',
-        'status'
+        'status',
+        'payment_type',
+        'bank_name',
+        'account_number',
+        'account_name'
     ];
 
     public function praLandbank()

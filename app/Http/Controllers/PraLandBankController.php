@@ -155,11 +155,15 @@ public function store(Request $request)
                     $filePath = 'uploads/pra_landbank/' . $record->id . '/' . $docTypeId . '/' . $filename;
                 }
 
+                // Jika baru upload file baru / revisi berkas, status otomatis 'pending' menunggu validasi Kepala Legal
+                $docStatus = $hasFile ? 'pending' : ($existingDoc ? ($existingDoc->status ?? 'pending') : 'pending');
+
                 if ($existingDoc) {
                     $existingDoc->update([
                         'document_type_id' => $docTypeId,
                         'document_number'  => $docNumber,
                         'file_path'        => $filePath,
+                        'status'           => $docStatus,
                     ]);
                 } else {
                     pra_landbank_documents::create([
@@ -167,7 +171,7 @@ public function store(Request $request)
                         'document_type_id' => $docTypeId,
                         'document_number'  => $docNumber,
                         'file_path'        => $filePath,
-                        'status'           => 'pending',
+                        'status'           => $docStatus,
                         'revision_number'  => 0,
                     ]);
                 }
@@ -209,21 +213,53 @@ public function store(Request $request)
         }
 
         if ($request->fase === 'fase3') {
+            // Validasi: seluruh dokumen legalitas wajib sudah divalidasi (Sah/Verified) oleh Kepala Legal
+            $praDocs = pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
+            $uploadedDocs = $praDocs->whereNotNull('file_path');
+            $hasUnverified = $uploadedDocs->count() === 0 || $uploadedDocs->contains(fn($d) => !in_array($d->status, ['verified', 'valid']));
+
+            if ($hasUnverified && ($request->status ?? 'fase3') !== 'rejected') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Status Legalitas belum Sah! Kepala Legal wajib memvalidasi dan menyetujui seluruh berkas dokumen legalitas di Fase 2 terlebih dahulu sebelum dapat melanjutkan ke Fase 3.'
+                ], 422);
+            }
+
             $data['status'] = $request->status ?? 'fase3'; // approved, rejected, or pending (fase3)
             
             // Map Fase 3 fields
             $data['priority']             = $request->prioritas;
             $data['notes']                = $request->catatan;
-            $data['cost_ijb']             = $request->biaya_ijb_temp ? $cleanNumber($request->biaya_ijb_temp) : null;
-            $data['cost_tax']             = $request->biaya_pajak_temp ? $cleanNumber($request->biaya_pajak_temp) : null;
-            $data['cost_broker']          = $request->fee_makelar_temp ? $cleanNumber($request->fee_makelar_temp) : null;
-            $data['cost_other']           = $request->biaya_lain_temp ? $cleanNumber($request->biaya_lain_temp) : null;
-            $data['payment_method']       = $request->payment_method_temp;
-            $data['installment_duration'] = $request->installment_duration_temp;
-            $data['installment_count']    = $request->installment_count_temp;
+            $data['cost_ijb']             = $request->biaya_ijb_temp ? $cleanNumber($request->biaya_ijb_temp) : 0;
+            $data['cost_tax']             = $request->biaya_pajak_temp ? $cleanNumber($request->biaya_pajak_temp) : 0;
+            $data['cost_broker']          = $request->fee_makelar_temp ? $cleanNumber($request->fee_makelar_temp) : 0;
 
-            if ($request->has('estimated_price')) {
-                $data['estimated_price'] = $request->estimated_price ? $cleanNumber($request->estimated_price) : null;
+            $otherCost = $request->biaya_lain_temp ? (float)$cleanNumber($request->biaya_lain_temp) : 0;
+            if ($request->has('custom_costs') && is_array($request->custom_costs)) {
+                foreach ($request->custom_costs as $cCost) {
+                    if (!empty($cCost['amount'])) {
+                        $otherCost += (float)$cleanNumber($cCost['amount']);
+                    }
+                }
+            }
+            $data['cost_other']           = $otherCost;
+            $data['payment_method']       = $request->payment_method_temp;
+            if ($data['payment_method'] === 'cash') {
+                $data['installment_duration'] = null;
+                $data['installment_count']    = 1;
+            } else {
+                $data['installment_duration'] = $request->installment_duration_temp;
+                $data['installment_count']    = $request->installment_count_temp;
+            }
+
+            if ($request->has('deal_price')) {
+                $finalDealPrice = $request->deal_price ? $cleanNumber($request->deal_price) : null;
+                $data['deal_price'] = $finalDealPrice;
+                $data['estimated_price'] = $finalDealPrice;
+            } elseif ($request->has('estimated_price')) {
+                $finalDealPrice = $request->estimated_price ? $cleanNumber($request->estimated_price) : null;
+                $data['deal_price'] = $finalDealPrice;
+                $data['estimated_price'] = $finalDealPrice;
             }
 
             // Upload file_ijb
@@ -242,8 +278,40 @@ public function store(Request $request)
                 $data['file_tax'] = 'uploads/pra_landbank/' . $record->id . '/pajak/' . $filename;
             }
 
-            // Process dynamic payment installments
-            if ($data['payment_method'] === 'termin' && $request->has('installments')) {
+            // Process payment according to method
+            if ($data['payment_method'] === 'cash') {
+                $record->payments()->delete();
+
+                $cashAmount = $request->cash_amount_temp ? $cleanNumber($request->cash_amount_temp) : ($data['estimated_price'] ?? 0);
+                $cashDate = $request->cash_payment_date ?? now()->format('Y-m-d');
+                $cashStatus = $request->cash_status ?? 'lunas';
+                $cashFilePath = null;
+
+                if ($request->hasFile('cash_file')) {
+                    $file = $request->file('cash_file');
+                    $filename = uniqid() . '_cash_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/pra_landbank/' . $record->id . '/cash'), $filename);
+                    $cashFilePath = 'uploads/pra_landbank/' . $record->id . '/cash/' . $filename;
+                }
+
+                $cashPaymentType = $request->cash_payment_type ?? 'transfer';
+                $cashBankName = $request->cash_bank_name ?? null;
+                $cashAccountNumber = $request->cash_account_number ?? null;
+                $cashAccountName = $request->cash_account_name ?? null;
+
+                \App\Models\PraLandbankPayment::create([
+                    'pra_landbank_id' => $record->id,
+                    'term_name'       => 'Pelunasan Cash Keras',
+                    'amount'          => $cashAmount,
+                    'due_date'        => $cashDate,
+                    'file_path'       => $cashFilePath,
+                    'status'          => $cashStatus,
+                    'payment_type'    => $cashPaymentType,
+                    'bank_name'       => $cashBankName,
+                    'account_number'  => $cashAccountNumber,
+                    'account_name'    => $cashAccountName,
+                ]);
+            } elseif ($data['payment_method'] === 'termin' && $request->has('installments')) {
                 // Delete previous installments to overwrite or rebuild nicely
                 $record->payments()->delete();
 
@@ -263,6 +331,11 @@ public function store(Request $request)
                         $filePath = 'uploads/pra_landbank/' . $record->id . '/termin/' . $filename;
                     }
 
+                    $paymentType = $inst['payment_type'] ?? 'transfer';
+                    $bankName = $inst['bank_name'] ?? null;
+                    $accountNumber = $inst['account_number'] ?? null;
+                    $accountName = $inst['account_name'] ?? null;
+
                     \App\Models\PraLandbankPayment::create([
                         'pra_landbank_id' => $record->id,
                         'term_name'       => $termName,
@@ -270,36 +343,22 @@ public function store(Request $request)
                         'due_date'        => $dueDate,
                         'file_path'       => $filePath,
                         'status'          => $status,
+                        'payment_type'    => $paymentType,
+                        'bank_name'       => $bankName,
+                        'account_number'  => $accountNumber,
+                        'account_name'    => $accountName,
                     ]);
                 }
             } else {
-                // If not termin, delete any existing installments
                 $record->payments()->delete();
-            }
-        }
-
-        // Check if there are active unpaid installments
-        $isTerminActive = false;
-        if (($data['payment_method'] ?? $record->payment_method) === 'termin') {
-            if ($request->has('installments')) {
-                foreach ($request->installments as $inst) {
-                    if (($inst['status'] ?? 'belum') === 'belum') {
-                        $isTerminActive = true;
-                        break;
-                    }
-                }
-            } else {
-                $isTerminActive = $record->payments()->where('status', 'belum')->exists();
             }
         }
 
         // pastikan status tidak kosong
         $data['status'] = $data['status'] ?? $record->status;
 
-        if ($data['status'] === 'approved' && $isTerminActive) {
-            // Downgrade/force to 'fase3' because payments are still active and incomplete
-            $data['status'] = 'fase3';
-            $customMessage = 'Data cicilan berhasil disimpan. Progres tanah tetap dalam Fase 3 (Cicilan Aktif) karena masih ada cicilan yang belum lunas.';
+        if ($data['status'] === 'approved') {
+            $customMessage = 'Keputusan sidang berhasil disetujui (DIAMBIL)! Data tanah telah otomatis masuk ke menu Semua Tanah Pasca Land Bank.';
         } else {
             $customMessage = 'Data keputusan sidang berhasil disimpan!';
         }
@@ -307,14 +366,18 @@ public function store(Request $request)
         $record->update($data);
 
         // =========================
-        // AUTO PINDAH KE LANDBANK
+        // AUTO PINDAH KE LANDBANK (PASCA LAND BANK)
         // =========================
         if ($data['status'] === 'approved') {
+            $finalAcquisitionPrice = $data['deal_price'] ?? $data['estimated_price'] ?? $record->deal_price ?? $record->estimated_price;
 
-            $newLandBank = \App\Models\LandBank::create([
+            $landBank = \App\Models\LandBank::firstOrNew(['name' => $record->land_name]);
+            $landBank->fill([
                 'name'              => $record->land_name,
                 'area'              => $record->area,
-                'acquisition_price' => $record->estimated_price,
+                'remaining_area'    => $landBank->exists ? $landBank->remaining_area : $record->area,
+                'acquisition_price' => $finalAcquisitionPrice,
+                'acquisition_date'  => $landBank->exists ? $landBank->acquisition_date : now()->toDateString(),
                 'address'           => $record->address,
                 'village'           => $record->village,
                 'district'          => $record->district,
@@ -334,29 +397,37 @@ public function store(Request $request)
                 'file_certificate'  => $record->file_certificate,
                 'photo'             => $record->photo,
                 'priority'          => $record->priority ?? 'Normal',
-                'status'            => 'draft',
-                'legal_status'      => 'verified'
+                'status'            => $landBank->exists ? $landBank->status : 'active',
+                'legal_status'      => 'verified',
+                'development_status'=> $landBank->exists ? $landBank->development_status : 'Belum'
             ]);
+            $landBank->save();
+
+            // Initialize default infrastructure site development items (PJU, Selokan, Jalan, etc.)
+            $landBank->initializeDefaultInfrastructures();
 
             // Copy all documents from pra_landbank_documents to land_bank_documents
             if ($record->documents()->exists()) {
                 foreach ($record->documents as $doc) {
-                    \App\Models\LandBankDocument::create([
-                        'land_bank_id'     => $newLandBank->id,
+                    \App\Models\LandBankDocument::firstOrCreate([
+                        'land_bank_id'     => $landBank->id,
                         'document_type_id' => $doc->document_type_id,
+                    ], [
                         'document_number'  => $doc->document_number,
                         'file_path'        => $doc->file_path,
                         'status'           => 'verified',
-                        'revision_number'  => $doc->revision_number
+                        'revision_number'  => $doc->revision_number ?? 0
                     ]);
                 }
             }
         }
 
         return response()->json([
-            'success' => true,
-            'message' => $customMessage,
-            'status'  => $data['status']
+            'success'     => true,
+            'message'     => $customMessage,
+            'status'      => $data['status'],
+            'land_id'     => $record->id,
+            'invoice_url' => route('pra-landbank.invoice', $record->id),
         ]);
 
     } catch (\Exception $e) {
@@ -369,9 +440,17 @@ public function store(Request $request)
         ], 500);
     }
 }
+
+    public function invoice($id)
+    {
+        $land = PraLandbank::with(['payments', 'documents.documentType'])->findOrFail($id);
+        $invoiceNumber = 'INV-PLB/' . date('Y') . '/' . str_pad($land->id, 5, '0', STR_PAD_LEFT);
+        return view('cetak.invoice_pra_land_bank', compact('land', 'invoiceNumber'));
+    }
+
     public function indexpra(Request $request)
     {
-        $query = PraLandbank::with('payments');
+        $query = PraLandbank::with(['payments', 'documents']);
 
         // Search: nama tanah
         if ($request->filled('search')) {
@@ -415,17 +494,82 @@ public function store(Request $request)
             $record = PraLandbank::findOrFail($id);
             $record->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil dihapus'
-            ]);
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Pra Land Bank berhasil dihapus'
+                ]);
+            }
+
+            return redirect()->route('pralandbank.all')->with('success', 'Data Pra Land Bank berhasil dihapus');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->route('pralandbank.all')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Validasi Dokumen Legalitas oleh Kepala Legal
+     */
+    public function approveDocument($id)
+    {
+        $doc = pra_landbank_documents::findOrFail($id);
+        $doc->update([
+            'status' => 'verified',
+        ]);
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen berhasil disetujui & diverifikasi oleh Kepala Legal!',
+                'status'  => 'verified'
+            ]);
+        }
+
+        return back()->with('success', 'Dokumen berhasil disetujui & diverifikasi oleh Kepala Legal.');
+    }
+
+    /**
+     * Penolakan / Revisi Dokumen oleh Kepala Legal
+     */
+    public function rejectDocument(Request $request, $id)
+    {
+        $request->validate([
+            'catatan_admin' => 'nullable|string|max:1000'
+        ]);
+
+        $doc = pra_landbank_documents::findOrFail($id);
+        $doc->update([
+            'status'          => 'rejected',
+            'admin_notes'     => $request->catatan_admin,
+            'revision_number' => ($doc->revision_number ?? 0) + 1,
+        ]);
+
+        if ($request->filled('catatan_admin')) {
+            $land = PraLandbank::find($doc->pra_landbank_id);
+            if ($land) {
+                $land->update(['legal_issue_note' => $request->catatan_admin]);
+            }
+        }
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success'         => true,
+                'message'         => 'Dokumen ditolak & menunggu perbaikan berkas.',
+                'status'          => 'rejected',
+                'notes'           => $request->catatan_admin,
+                'revision_number' => $doc->revision_number
+            ]);
+        }
+
+        return back()->with('success', 'Dokumen ditolak & menunggu perbaikan berkas.');
     }
 }

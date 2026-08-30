@@ -59,6 +59,7 @@
             'agency.index' => 'mdi-account-group-outline',
             // Master Data
             'master.data.menu' => 'mdi-shield-account-outline',
+            'master.bahan.index' => 'mdi-package-variant-closed',
             'promo.index' => 'mdi-tag-outline',
             'company-profile.index' => 'mdi-city-variant-outline',
             'servis' => 'mdi-face-agent',
@@ -74,7 +75,7 @@
         $routeActivePatterns = [
             'dashboard' => ['dashboard', 'dashboard.*'],
             'pralandbank.all' => ['pralandbank.all', 'pra-landbank*', 'properti.pra-landbank*'],
-            'properti-all' => ['properti-all', 'properti', 'properti.tambah', 'properti.store', 'properti.edit', 'properti.update', 'properti.verifikasi', 'properti.revisi', 'properti.updateCompany'],
+            'properti-all' => ['properti-all', 'properti', 'properti.tambah', 'properti.store', 'properti.edit', 'properti.update', 'properti.verifikasi', 'properti.revisi', 'properti.updateCompany', 'properti.pengolahanLahan*', 'properti.pengolahan-lahan*'],
             'kavling.index' => ['kavling.index', 'properti.buatKavling*', 'properti.storeKavling', 'kavling.*', 'properti.kavling.*'],
             'lokasi.index' => ['lokasi.index', 'lokasi.*'],
             'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
@@ -91,6 +92,7 @@
             'agency.create' => ['agency.create*'],
             'agency.index' => ['agency.index*', 'agency.edit*'],
             'master.data.menu' => ['master.data.menu*'],
+            'master.bahan.index' => ['master.bahan.index*', 'master.data.bahan*'],
             'promo.index' => ['promo.index*', 'promo.*'],
             'company-profile.index' => ['company-profile.index*', 'company-profile.*'],
             'servis' => ['servis*'],

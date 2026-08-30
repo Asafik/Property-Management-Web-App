@@ -11,6 +11,7 @@ class PraLandbank extends Model
         'area',
         'offer_price',
         'estimated_price',
+        'deal_price',
         'land_owner',
         'ownership_status',
         'owner_name',

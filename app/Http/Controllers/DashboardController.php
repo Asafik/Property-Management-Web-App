@@ -102,6 +102,12 @@ class DashboardController extends Controller
         $totalPayments = Payment::count();
         $totalUnit = \App\Models\LandBankUnit::count();
 
+        // Total Pendapatan dari seluruh transaksi pembayaran unit
+        $totalPendapatan = (float) Payment::sum('amount');
+
+        // Total Piutang dari Transaksi Pembelian Pra Land Bank (ERP Pengadaan Lahan yang Belum Lunas)
+        $totalPiutang = (float) \App\Models\PraLandbankPayment::where('status', 'belum')->sum('amount');
+
         $notifications = auth()->user()->unreadNotifications;
         $countNotif = $notifications->count();
 
@@ -121,6 +127,8 @@ class DashboardController extends Controller
             'totalCustomer',
             'totalPayments',
             'totalUnit',
+            'totalPendapatan',
+            'totalPiutang',
             'landBank',
             'notifications',
             'countNotif',

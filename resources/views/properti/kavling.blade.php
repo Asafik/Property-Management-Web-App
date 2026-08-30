@@ -271,6 +271,7 @@
                                         @endif
                                     </th>
                                     <th class="no-sort">Sisa Tanah</th>
+                                    <th class="no-sort text-center">Pengolahan Lahan</th>
                                     <th class="sortable {{ request('sort') == 'status' ? 'active-sort' : '' }}" data-field="status" data-direction="{{ request('sort') == 'status' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Status
                                         @if(request('sort') == 'status')
@@ -287,6 +288,8 @@
                                     @php
                                         $totalUnitArea = $land->units->sum('area');
                                         $remainingArea = ($land->area ?? 0) - $totalUnitArea;
+                                        $canCreateKavling = $land->canCreateKavling();
+                                        $devProgress = $land->overall_infrastructure_progress;
                                     @endphp
                                     <tr>
                                         <td class="text-center fw-bold">{{ $index + $lands->firstItem() }}</td>
@@ -329,6 +332,18 @@
                                         <td>{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</td>
                                         <td>{{ number_format($remainingArea, 0, ',', '.') }} m²</td>
 
+                                        <td class="text-center">
+                                            @if($canCreateKavling)
+                                                <span class="badge bg-success text-white py-1 px-2 rounded-pill" style="font-size: 0.75rem;">
+                                                    <i class="mdi mdi-check-circle me-1"></i>Selesai (100%)
+                                                </span>
+                                            @else
+                                                <span class="badge bg-warning text-dark py-1 px-2 rounded-pill" style="font-size: 0.75rem;">
+                                                    <i class="mdi mdi-progress-wrench me-1"></i>{{ $land->development_status }} ({{ $devProgress }}%)
+                                                </span>
+                                            @endif
+                                        </td>
+
                                         <td>
                                             @if ($land->status == 'sold')
                                                 <span class="badge-status sold">
@@ -346,12 +361,23 @@
                                         </td>
 
                                         <td class="text-center">
-                                            <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
-                                               class="btn-action fase1"
-                                               data-bs-toggle="tooltip"
-                                               title="Buat Kavling">
-                                                <i class="mdi mdi-pencil-ruler"></i>
-                                            </a>
+                                            @if($canCreateKavling)
+                                                <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
+                                                   class="btn-action fase1"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Buat Kavling">
+                                                    <i class="mdi mdi-pencil-ruler"></i>
+                                                </a>
+                                            @else
+                                                <button type="button"
+                                                        class="btn-action edit"
+                                                        style="background: #f1f5f9; color: #94a3b8; border: 1px solid #cbd5e1; cursor: pointer;"
+                                                        onclick="showLockedKavlingAlert('{{ addslashes($land->name) }}', '{{ $land->id }}', '{{ $land->development_status }}', '{{ $devProgress }}')"
+                                                        data-bs-toggle="tooltip"
+                                                        title="Pengolahan lahan belum selesai (Terkunci)">
+                                                    <i class="mdi mdi-lock text-warning"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
@@ -468,6 +494,39 @@ function showPaginationLoading(event) {
         didOpen: () => Swal.showLoading()
     });
     window.location.href = event.currentTarget.href;
+}
+
+function showLockedKavlingAlert(landName, landId, status, progress) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Pengolahan Lahan Belum Selesai',
+        html: `<div class="text-start">
+            <p>Proyek <strong>${landName}</strong> belum dapat dibuatkan unit kavling karena proses <strong>pengolahan lahan & pembangunan infrastruktur</strong> (PJU, Selokan, Jalan, dll) masih belum selesai.</p>
+            <div class="p-3 bg-light rounded border mb-3">
+                <div class="d-flex justify-content-between mb-1 small">
+                    <span class="text-muted">Status Pembangunan:</span>
+                    <span class="badge bg-warning text-dark">${status}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 small">
+                    <span class="text-muted">Progres Pekerjaan:</span>
+                    <span class="fw-bold text-primary">${progress}%</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: ${progress}%"></div>
+                </div>
+            </div>
+            <p class="small text-muted mb-0"><i class="mdi mdi-information-outline me-1"></i>Selesaikan seluruh item pekerjaan pengolahan lahan di menu <strong>Semua Tanah Pasca Land Bank</strong> hingga 100% untuk membuka fitur Buat Kavling.</p>
+        </div>`,
+        showCancelButton: true,
+        confirmButtonColor: '#9a55ff',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="mdi mdi-wrench me-1"></i> Kelola Pengolahan Lahan',
+        cancelButtonText: 'Tutup'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/properti-pengolahan-lahan/${landId}`;
+        }
+    });
 }
 </script>
 @endpush

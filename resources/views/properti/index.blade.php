@@ -303,16 +303,20 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($item->development_status == 'Selesai')
-                                                    <span class="badge-development-selesai"><i
-                                                            class="mdi mdi-check-circle me-1"></i>Selesai</span>
-                                                @elseif ($item->development_status == 'progress')
-                                                    <span class="badge-development-progress"><i
-                                                            class="mdi mdi-progress-clock me-1"></i>Progress</span>
-                                                @else
-                                                    <span class="badge-development-belum"><i
-                                                            class="mdi mdi-close-circle me-1"></i>Belum</span>
-                                                @endif
+                                                <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
+                                                   class="btn btn-sm btn-link text-decoration-none p-0"
+                                                   title="Buka Halaman Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
+                                                    @if (in_array(strtolower($item->development_status), ['selesai', 'done']))
+                                                        <span class="badge-development-selesai"><i
+                                                                class="mdi mdi-check-circle me-1"></i>Selesai (100%)</span>
+                                                    @elseif (in_array(strtolower($item->development_status), ['progress', 'proses']))
+                                                        <span class="badge-development-progress"><i
+                                                                class="mdi mdi-progress-wrench me-1"></i>Proses ({{ $item->overall_infrastructure_progress }}%)</span>
+                                                    @else
+                                                        <span class="badge-development-belum"><i
+                                                                class="mdi mdi-close-circle me-1"></i>Belum ({{ $item->overall_infrastructure_progress }}%)</span>
+                                                    @endif
+                                                </a>
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
@@ -340,6 +344,11 @@
                                                         <i class="mdi mdi-check-decagram me-1"></i>Verifikasi
                                                     </a>
                                                 @endif
+                                                <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
+                                                   class="btn-action fase1 ms-1" 
+                                                   title="Kelola Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
+                                                    <i class="mdi mdi-wrench"></i>
+                                                </a>
                                                 <a href="{{ route('properti.edit', $item->id) }}" class="btn-action edit ms-1" title="Edit Properti">
                                                     <i class="mdi mdi-pencil"></i>
                                                 </a>
@@ -596,6 +605,7 @@
 
 
     <script>
+
         function showLoading(message = 'Memproses data...') {
             Swal.fire({
                 title: message,

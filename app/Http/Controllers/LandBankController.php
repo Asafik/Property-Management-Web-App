@@ -235,6 +235,38 @@ class LandBankController extends Controller
         return redirect()->route('properti-all')->with('success', 'Dokumen ditolak & menunggu revisi.');
     }
 
+    /**
+     * Update Legal Status for Pasca Land Bank / Properti
+     */
+    public function updateLegalStatus(Request $request, $id)
+    {
+        $request->validate([
+            'legal_status' => 'required|in:verified,pending,rejected',
+            'admin_notes'  => 'nullable|string|max:1000',
+        ]);
+
+        $land = LandBank::findOrFail($id);
+        $updateData = [
+            'legal_status' => $request->legal_status,
+        ];
+        if ($request->filled('admin_notes')) {
+            $updateData['description'] = $request->admin_notes;
+        }
+
+        $land->update($updateData);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Status validasi legalitas tanah berhasil diperbarui.',
+                'legal_status' => $land->legal_status,
+                'can_create_kavling' => $land->canCreateKavling(),
+            ]);
+        }
+
+        return back()->with('success', 'Status validasi legalitas tanah berhasil diperbarui.');
+    }
+
 
     // ===============================
     // REVISI DATA

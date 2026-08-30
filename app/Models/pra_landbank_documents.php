@@ -13,7 +13,8 @@ class pra_landbank_documents extends Model
         'document_number',
         'file_path',
         'status',
-        'revision_number'
+        'revision_number',
+        'admin_notes'
     ];
 
     public function praLandbank()

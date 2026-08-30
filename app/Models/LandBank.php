@@ -95,6 +95,92 @@ public function guests()
 {
     return $this->hasMany(Guest::class);
 }
+public function infrastructures()
+{
+    return $this->hasMany(LandBankInfrastructure::class, 'land_bank_id');
+}
+
+public function expenses()
+{
+    return $this->hasMany(LandBankInfrastructureExpense::class, 'land_bank_id');
+}
+
+public function getTotalInfrastructureExpenseAttribute(): float
+{
+    return (float) $this->expenses()->sum('total_amount');
+}
+
+public function getOverallInfrastructureProgressAttribute()
+{
+    $items = $this->infrastructures;
+    if ($items->count() === 0) {
+        return in_array(strtolower($this->development_status), ['selesai', 'done']) ? 100 : 0;
+    }
+
+    $totalBobot = $items->sum('bobot_persen');
+    if ($totalBobot > 0) {
+        $weightedProgress = 0;
+        foreach ($items as $item) {
+            $weightedProgress += ($item->progress_percent * ($item->bobot_persen / $totalBobot));
+        }
+        return round($weightedProgress, 1);
+    }
+
+    return round($items->avg('progress_percent'), 1);
+}
+
+public function initializeDefaultInfrastructures()
+{
+    if ($this->infrastructures()->count() === 0) {
+        foreach (LandBankInfrastructure::getDefaultItems() as $item) {
+            $this->infrastructures()->create($item);
+        }
+    }
+    return $this->infrastructures;
+}
+
+public function getPhaseProgress(int $phase): float
+{
+    $items = $this->infrastructures()->where('phase', $phase)->get();
+    if ($items->isEmpty()) {
+        return 0.0;
+    }
+
+    $totalBobot = $items->sum('bobot_persen');
+    if ($totalBobot > 0) {
+        $weighted = 0;
+        foreach ($items as $item) {
+            $weighted += ($item->progress_percent * ($item->bobot_persen / $totalBobot));
+        }
+        return round($weighted, 1);
+    }
+
+    return round($items->avg('progress_percent') ?? 0, 1);
+}
+
+public function getPhaseStatus(int $phase): string
+{
+    $progress = $this->getPhaseProgress($phase);
+    if ($progress >= 100) {
+        return 'Selesai';
+    } elseif ($progress > 0) {
+        return 'Proses';
+    }
+    return 'Belum Mulai';
+}
+
+public function canCreateKavling(): bool
+{
+    // Validasi Ganda untuk Membuka Tambah Kavling:
+    // 1. Status Legalitas Wajib Terverifikasi (verified)
+    $isLegalVerified = ($this->legal_status === 'verified') || $this->isFromPraLandbank();
+
+    // 2. Pengolahan Lahan / Pembangunan Wajib 100% Selesai
+    $isDevSelesai = in_array(strtolower($this->development_status), ['selesai', 'done']) || $this->overall_infrastructure_progress >= 100;
+
+    return $isLegalVerified && $isDevSelesai;
+}
+
 public function isFromPraLandbank()
 {
     return \App\Models\PraLandbank::where('land_name', $this->name)->exists();

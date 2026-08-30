@@ -16,6 +16,13 @@ class LandBankUnitController extends Controller
     {
         $land = LandBank::findOrFail($land_bank_id);
 
+        if (!$land->canCreateKavling()) {
+            return redirect()->route('kavling.index')->with(
+                'error',
+                "Pembangunan & pengolahan lahan (PJU, Selokan, Jalan, dll) untuk proyek '{$land->name}' belum selesai (Status: {$land->development_status}). Selesaikan pengolahan lahan terlebih dahulu untuk dapat membuat unit kavling."
+            );
+        }
+
         // ===== FILTER =====
         $query = $land->units(); // LANGSUNG, tanpa ->query()
 
@@ -54,17 +61,16 @@ class LandBankUnitController extends Controller
         return view('properti.addkavling', compact('land', 'units', 'perPage'));
     }
 
-
-
-    // Simpan Manual
-    //  public function store(Request $request, $land_bank_id)
-    // {
-    //     dd($request->all());
-    //     // kode lain
-    // }
     public function store(Request $request, $land_bank_id)
-{
-    $land = LandBank::findOrFail($land_bank_id);
+    {
+        $land = LandBank::findOrFail($land_bank_id);
+
+        if (!$land->canCreateKavling()) {
+            return back()->with(
+                'error',
+                "Pembangunan pengolahan lahan untuk proyek '{$land->name}' belum berstatus Selesai! Tidak dapat menambahkan unit kavling."
+            );
+        }
 
     $priceClean = $request->price ? str_replace(['.', ','], '', $request->price) : null;
     $request->merge(['price' => $priceClean]);
@@ -383,6 +389,12 @@ class LandBankUnitController extends Controller
     }
     public function import(Request $request, $land_bank_id)
     {
+        $land = LandBank::findOrFail($land_bank_id);
+
+        if (!$land->canCreateKavling()) {
+            return redirect()->back()->with('error', "Pembangunan pengolahan lahan untuk proyek '{$land->name}' belum berstatus Selesai! Tidak dapat mengimpor unit kavling.");
+        }
+
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
         ]);
