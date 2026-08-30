@@ -127,15 +127,15 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-cash-multiple',
             'order' => 5
         ]);
-        $transaksi->positions()->attach($allRoles);
+        $transaksi->positions()->attach($marketingRoles);
 
         $transaksiMenus = [
             'customer.kpr'          => ['name' => 'Cicilan / KPR', 'roles' => $marketingRoles],
-            'kpr.customer-verified' => ['name' => 'User verifikasi dokumen kpr', 'roles' => $legalRoles],
-            'customer.kpr.survey'   => ['name' => 'User Acc kpr', 'roles' => $legalRoles], // 🔥 Khusus Legal & Admin
+            'kpr.customer-verified' => ['name' => 'User verifikasi dokumen kpr', 'roles' => $marketingRoles],
+            'customer.kpr.survey'   => ['name' => 'User Acc kpr', 'roles' => $marketingRoles],
             'customer.kpr.rijected' => ['name' => 'User Rijected kpr', 'roles' => $marketingRoles],
             'cash-tempo.timeline'   => ['name' => 'User Cash Tempo', 'roles' => $marketingRoles],
-            'analisa.kpr.komersil'  => ['name' => 'User KPR Komersil', 'roles' => $legalRoles],
+            'analisa.kpr.komersil'  => ['name' => 'User KPR Komersil', 'roles' => $marketingRoles],
         ];
 
         foreach ($transaksiMenus as $route => $config) {
@@ -220,19 +220,33 @@ class MenuSeeder extends Seeder
             ])->positions()->attach($adminOnly);
         }
 
-        // ================= 9. LAPORAN =================
+        // ================= 9. KEUANGAN =================
+        $keuangan = Menu::create([
+            'name'  => 'Keuangan',
+            'icon'  => 'mdi-cash-register',
+            'order' => 9
+        ]);
+        $keuangan->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Master Invoice',
+            'route'     => 'keuangan.master-invoice.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($marketingRoles);
+
+        // ================= 10. LAPORAN =================
         Menu::create([
             'name'  => 'Laporan',
             'icon'  => 'mdi-chart-bar',
-            'order' => 9
+            'order' => 10
         ])->positions()->attach($adminOnly);
 
-        // ================= 10. PENGATURAN =================
+        // ================= 11. PENGATURAN =================
         Menu::create([
             'name'  => 'Pengaturan',
             'route' => 'setting.index',
             'icon'  => 'mdi-cog',
-            'order' => 10
+            'order' => 11
         ])->positions()->attach($adminOnly);
     }
 }

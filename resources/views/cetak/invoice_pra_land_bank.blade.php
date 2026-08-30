@@ -393,6 +393,9 @@
                 <i class="mdi mdi-arrow-left"></i> Kembali ke Form Fase 3
             </a>
             <div style="display: flex; gap: 8px;">
+                <a href="{{ route('keuangan.master-invoice.index') }}" class="btn btn-secondary">
+                    <i class="mdi mdi-receipt-text-outline"></i> Master Invoice
+                </a>
                 <button type="button" class="btn btn-primary" onclick="window.print()">
                     <i class="mdi mdi-printer"></i> Cetak / Simpan PDF
                 </button>

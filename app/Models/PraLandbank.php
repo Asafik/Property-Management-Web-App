@@ -69,4 +69,9 @@ class PraLandbank extends Model
     {
         return $this->hasMany(PraLandbankPayment::class, 'pra_landbank_id');
     }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'pra_landbank_id');
+    }
 }

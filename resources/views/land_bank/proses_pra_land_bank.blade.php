@@ -606,6 +606,61 @@
             color: #0f172a !important;
             background-color: #ffffff !important;
         }
+
+        /* ===== SELECT2 SEARCH THEME ALIGNMENT ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 42px !important;
+            height: 42px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: all 0.2s ease !important;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #0f172a !important;
+            font-weight: 600 !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+            z-index: 1060 !important;
+            overflow: hidden !important;
+        }
+        .select2-container--bootstrap-5 .select2-search--dropdown {
+            padding: 8px !important;
+        }
+        .select2-container--bootstrap-5 .select2-search__field {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            font-size: 0.85rem !important;
+        }
+        .select2-container--bootstrap-5 .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            outline: none !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background-color: #f6f1ff !important;
+            color: #792fe0 !important;
+            font-weight: 600 !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #eee4ff !important;
+            color: #581c87 !important;
+            font-weight: 700 !important;
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -713,7 +768,7 @@
                                 <!-- DATA MAKELAR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-account-card-details"></i> Data Kontak Makelar
+                                        <i class="mdi mdi-card-account-phone-outline"></i> Data Kontak Makelar
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -747,7 +802,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Tanah / Kepemilikan *</label>
-                                            <select class="form-select" name="ownership_status" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Status Kepemilikan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">-- Pilih Status Kepemilikan --</option>
                                                 <option value="SHM" {{ ($land && ($land->ownership_status ?? 'SHM') == 'SHM') ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
                                                 <option value="HGB" {{ ($land && $land->ownership_status == 'HGB') ? 'selected' : '' }}>HGB (Hak Guna Bangunan)</option>
@@ -789,7 +844,7 @@
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Jenis Konstruksi Jalan</label>
-                                            <select class="form-select" name="road_type" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_road_type" name="road_type" data-placeholder="Pilih Konstruksi Jalan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih</option>
                                                 <option value="aspal" {{ $land && $land->road_type == 'aspal' ? 'selected' : '' }}>Aspal</option>
                                                 <option value="beton" {{ $land && $land->road_type == 'beton' ? 'selected' : '' }}>Beton</option>
@@ -951,7 +1006,7 @@
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Status Lahan</label>
-                                            <select class="form-select" name="land_status_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_land_status" name="land_status_temp" data-placeholder="Pilih Status Lahan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih Status Lahan</option>
                                                 <option value="bekas_sawah" {{ $land && $land->land_status == 'bekas_sawah' ? 'selected' : '' }}>Lahan Bekas Sawah</option>
                                                 <option value="perbukitan" {{ $land && $land->land_status == 'perbukitan' ? 'selected' : '' }}>Perbukitan</option>
@@ -960,7 +1015,7 @@
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Kondisi Air</label>
-                                            <select class="form-select" name="water_condition_temp" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_water_condition" name="water_condition_temp" data-placeholder="Pilih Kondisi Air" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">Pilih Kondisi Air</option>
                                                 <option value="sumur_bor" {{ $land && $land->water_condition == 'sumur_bor' ? 'selected' : '' }}>Sumur Bor</option>
                                                 <option value="pdam" {{ $land && $land->water_condition == 'pdam' ? 'selected' : '' }}>PDAM</option>
@@ -1956,11 +2011,34 @@
             // Manage Progress Bar Width
             if (step === 1) {
                 document.getElementById('wizardProgressBar').style.width = '0%';
+                setTimeout(() => initSelect2Search(), 100);
             } else if (step === 2) {
                 document.getElementById('wizardProgressBar').style.width = '50%';
-                setTimeout(() => initMapFase2(), 300);
+                setTimeout(() => {
+                    initMapFase2();
+                    initSelect2Search();
+                }, 300);
             } else if (step === 3) {
                 document.getElementById('wizardProgressBar').style.width = '100%';
+                setTimeout(() => initSelect2Search(), 100);
+            }
+        }
+
+        // ===============================
+        // SELECT2 SEARCH INITIALIZER
+        // ===============================
+        function initSelect2Search() {
+            if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
+                $('.select2-search').each(function() {
+                    if (!$(this).hasClass("select2-hidden-accessible")) {
+                        $(this).select2({
+                            theme: 'bootstrap-5',
+                            placeholder: $(this).data('placeholder') || 'Pilih...',
+                            allowClear: true,
+                            width: '100%'
+                        });
+                    }
+                });
             }
         }
 
@@ -3088,6 +3166,7 @@
             }
 
             initFileUploadEvents();
+            initSelect2Search();
         });
     </script>
 @endpush

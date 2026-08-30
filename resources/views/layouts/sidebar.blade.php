@@ -68,6 +68,8 @@
             'rab.deadline.index' => 'mdi-calendar-clock',
             'master.data.division.index' => 'mdi-domain-plus',
             'master.data.posisi' => 'mdi-badge-account-outline',
+            // Keuangan
+            'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
             // Pengaturan
             'setting.index' => 'mdi-cog-outline',
         ];
@@ -75,6 +77,7 @@
         // 5. Mapping Pola Route Aktif (agar saat buka sub-halaman/action, menu terkait tetap AKTIF / HIGHLIGHT)
         $routeActivePatterns = [
             'dashboard' => ['dashboard', 'dashboard.*'],
+            'keuangan.master-invoice.index' => ['keuangan.master-invoice.*', 'keuangan.*'],
             'pralandbank.all' => ['pralandbank.all', 'pra-landbank*', 'properti.pra-landbank*'],
             'properti-all' => ['properti-all', 'properti', 'properti.tambah', 'properti.store', 'properti.edit', 'properti.update', 'properti.verifikasi', 'properti.revisi', 'properti.updateCompany', 'properti.pengolahanLahan*', 'properti.pengolahan-lahan*'],
             'kavling.index' => ['kavling.index', 'properti.buatKavling*', 'properti.storeKavling', 'kavling.*', 'properti.kavling.*'],

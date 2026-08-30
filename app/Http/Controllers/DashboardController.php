@@ -5,12 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\LandBank;
 use App\Models\Payment;
+use App\Models\PraLandbank;
+use App\Models\pra_landbank_documents;
+use App\Models\DocumentTypes;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
+        $isLegal = $user && (
+            $user->division_id == 2 || 
+            ($user->position && str_contains(strtolower($user->position->name), 'legal')) ||
+            ($user->division && str_contains(strtolower($user->division->name), 'legal'))
+        );
+
+        if ($isLegal) {
+            return $this->legalDashboard($request);
+        }
+
         $perPage = $request->get('perPage', 10);
 
         $query = LandBank::with([
@@ -136,6 +150,124 @@ class DashboardController extends Controller
             'menus'
         ));
     }
+    public function legalDashboard(Request $request)
+    {
+        $perPage = $request->get('perPage', 10);
+        $search = $request->get('search');
+
+        $totalPraTanah = PraLandbank::count();
+        $totalPraTanahFase1 = PraLandbank::where('status', 'fase1')->count();
+        $totalPraTanahFase2 = PraLandbank::where('status', 'fase2')->count();
+        $totalPraTanahFase3 = PraLandbank::where('status', 'fase3')->count();
+        $totalApprovedTanah = PraLandbank::where('status', 'approved')->count();
+        $totalRejectedTanah = PraLandbank::where('status', 'rejected')->count();
+
+        $totalPendingDocs = pra_landbank_documents::where('status', 'pending')
+            ->whereNotNull('file_path')
+            ->count();
+        
+        $totalVerifiedDocs = pra_landbank_documents::where('status', 'verified')->count();
+        
+        $totalPascaLandBank = LandBank::count();
+        $totalLuasPasca = (float) LandBank::sum('area');
+        $totalLuasPra = (float) PraLandbank::sum('area');
+        $totalLuasLahan = (float) (PraLandbank::where('status', 'approved')->sum('area') + $totalLuasPasca);
+
+        // Metrik Kavling & Unit Legalitas
+        $totalKavling = \App\Models\LandBankUnit::count();
+        $totalKavlingAvailable = \App\Models\LandBankUnit::where('status', 'available')->count();
+        $totalKavlingSold = \App\Models\LandBankUnit::whereIn('status', ['booking', 'sold'])->count();
+
+        // Metrik Master Lokasi
+        $totalLokasi = LandBank::whereNotNull('lat')->whereNotNull('lng')->count();
+        if ($totalLokasi === 0) {
+            $totalLokasi = $totalPascaLandBank;
+        }
+
+        // Antrean Validasi Dokumen (Grouped per Lahan / Pra Land Bank)
+        $pendingLandbanks = PraLandbank::whereHas('documents', function($q) {
+                $q->where('status', 'pending');
+            })
+            ->with(['documents.documentType'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $pendingDocuments = pra_landbank_documents::with(['praLandbank', 'documentType'])
+            ->where('status', 'pending')
+            ->whereNotNull('file_path')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // Query Daftar Pra Land Bank
+        $status = $request->get('status');
+        $praLandbanksQuery = PraLandbank::with(['documents.documentType']);
+        if (!empty($search)) {
+            $praLandbanksQuery->where(function($q) use ($search) {
+                $q->where('land_name', 'like', "%{$search}%")
+                  ->orWhere('owner_name', 'like', "%{$search}%")
+                  ->orWhere('certificate_owner', 'like', "%{$search}%")
+                  ->orWhere('land_owner', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($status) && $status !== 'all') {
+            if (in_array($status, ['fase1', 'fase2', 'fase3', 'approved', 'rejected'])) {
+                $praLandbanksQuery->where('status', $status);
+            } elseif ($status === 'pending_doc') {
+                $praLandbanksQuery->whereHas('documents', function($q) {
+                    $q->where('status', 'pending')->whereNotNull('file_path');
+                });
+            } elseif (in_array($status, ['clear', 'checking', 'problem'])) {
+                $praLandbanksQuery->where('legal_status', $status);
+            }
+        }
+
+        $praLandbanks = $praLandbanksQuery->latest()->paginate($perPage)->withQueryString();
+
+        // Legal Status Distribution
+        $legalStatusCounts = [
+            'clear' => PraLandbank::where('legal_status', 'clear')->count(),
+            'checking' => PraLandbank::where('legal_status', 'checking')->count(),
+            'problem' => PraLandbank::where('legal_status', 'problem')->count(),
+        ];
+
+        // Ownership Status Distribution
+        $ownershipCounts = [
+            'SHM' => PraLandbank::where('ownership_status', 'SHM')->count(),
+            'HGB' => PraLandbank::where('ownership_status', 'HGB')->count(),
+            'Girik' => PraLandbank::where('ownership_status', 'Girik')->count(),
+            'Petok D' => PraLandbank::where('ownership_status', 'Petok D')->count(),
+            'AJB' => PraLandbank::where('ownership_status', 'AJB')->count(),
+            'Lainnya' => PraLandbank::whereNotIn('ownership_status', ['SHM', 'HGB', 'Girik', 'Petok D', 'AJB'])->count(),
+        ];
+
+        return view('dashboard_legal', compact(
+            'totalPraTanah',
+            'totalPraTanahFase1',
+            'totalPraTanahFase2',
+            'totalPraTanahFase3',
+            'totalApprovedTanah',
+            'totalRejectedTanah',
+            'totalPendingDocs',
+            'totalVerifiedDocs',
+            'totalPascaLandBank',
+            'totalLuasLahan',
+            'totalLuasPasca',
+            'totalLuasPra',
+            'totalKavling',
+            'totalKavlingAvailable',
+            'totalKavlingSold',
+            'totalLokasi',
+            'pendingLandbanks',
+            'pendingDocuments',
+            'praLandbanks',
+            'legalStatusCounts',
+            'ownershipCounts'
+        ));
+    }
+
     public function refresh()
     {
         $data = LandBank::with('companyProfile', 'units')->get();

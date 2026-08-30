@@ -98,7 +98,7 @@
                     {{ $navInitials }}
                 </div>
                 <div class="user-meta-name">
-                    {{ auth()->user()->name }}
+                    {{ auth()->user()->name ?? 'User' }}
                 </div>
                 <i class="mdi mdi-chevron-down text-muted" style="font-size: 0.85rem;"></i>
             </button>
@@ -110,8 +110,8 @@
                         {{ $navInitials }}
                     </div>
                     <div class="overflow-hidden">
-                        <div class="fw-bold text-truncate" style="font-size: 0.86rem; color: #2c2e3f;">{{ auth()->user()->name }}</div>
-                        <div class="text-muted text-truncate" style="font-size: 0.72rem;">{{ auth()->user()->email }}</div>
+                        <div class="fw-bold text-truncate" style="font-size: 0.86rem; color: #2c2e3f;">{{ auth()->user()->name ?? 'User' }}</div>
+                        <div class="text-muted text-truncate" style="font-size: 0.72rem;">{{ auth()->user()->email ?? '' }}</div>
                     </div>
                 </div>
 

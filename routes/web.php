@@ -53,6 +53,7 @@ use App\Http\Controllers\DocumentPreviewController;
 use App\Http\Controllers\JobStaffMarketingController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\SpkController;
+use App\Http\Controllers\Finance\InvoiceMasterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -544,4 +545,18 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::delete('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'destroy'])->name('marketing.tugas.destroy');
     Route::put('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'update'])->name('marketing.tugas.update');
     Route::get('/job-staff-marketing/progress/{id}', [JobStaffMarketingController::class, 'progress'])->name('marketing.tugas.progress');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= KEUANGAN / FINANCE =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('keuangan')->name('keuangan.')->group(function () {
+        Route::get('/master-invoice', [InvoiceMasterController::class, 'index'])->name('master-invoice.index');
+        Route::get('/master-invoice/{id}', [InvoiceMasterController::class, 'show'])->name('master-invoice.show');
+        Route::post('/master-invoice/store', [InvoiceMasterController::class, 'store'])->name('master-invoice.store');
+        Route::post('/master-invoice/{id}', [InvoiceMasterController::class, 'update'])->name('master-invoice.update');
+        Route::delete('/master-invoice/{id}', [InvoiceMasterController::class, 'destroy'])->name('master-invoice.destroy');
+        Route::post('/master-invoice-sync-all', [InvoiceMasterController::class, 'syncAll'])->name('master-invoice.sync-all');
+    });
 });

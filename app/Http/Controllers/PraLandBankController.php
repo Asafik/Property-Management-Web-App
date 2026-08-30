@@ -6,6 +6,7 @@ use App\Models\pra_landbank_documents;
 use App\Models\DocumentTypes;
 use Illuminate\Http\Request;
 use App\Models\PraLandbank;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Log;
 
 class PraLandBankController extends Controller
@@ -422,11 +423,22 @@ public function store(Request $request)
             }
         }
 
+        // =========================
+        // SINKRONISASI INVOICE KE DATABASE
+        // =========================
+        $invoice = null;
+        if ($request->fase === 'fase3' || $record->deal_price || $record->estimated_price) {
+            $record->load('payments');
+            $invoice = Invoice::syncFromPraLandbank($record);
+        }
+
         return response()->json([
             'success'     => true,
             'message'     => $customMessage,
             'status'      => $data['status'],
             'land_id'     => $record->id,
+            'invoice_id'  => $invoice ? $invoice->id : null,
+            'invoice_num' => $invoice ? $invoice->invoice_number : null,
             'invoice_url' => route('pra-landbank.invoice', $record->id),
         ]);
 
@@ -444,8 +456,9 @@ public function store(Request $request)
     public function invoice($id)
     {
         $land = PraLandbank::with(['payments', 'documents.documentType'])->findOrFail($id);
-        $invoiceNumber = 'INV-PLB/' . date('Y') . '/' . str_pad($land->id, 5, '0', STR_PAD_LEFT);
-        return view('cetak.invoice_pra_land_bank', compact('land', 'invoiceNumber'));
+        $invoice = Invoice::syncFromPraLandbank($land);
+        $invoiceNumber = $invoice->invoice_number;
+        return view('cetak.invoice_pra_land_bank', compact('land', 'invoice', 'invoiceNumber'));
     }
 
     public function indexpra(Request $request)
