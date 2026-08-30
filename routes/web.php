@@ -52,6 +52,7 @@ use App\Http\Controllers\TimelineCashTempoController;
 use App\Http\Controllers\DocumentPreviewController;
 use App\Http\Controllers\JobStaffMarketingController;
 use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\SpkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -443,6 +444,9 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::put('/documents/persiapan-pecah-legal/{id}', [DocumentPersiapanPecahLegalController::class, 'update'])->name('documents.updatePersiapanPecahLegal');
     Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])->name('documents.destroy');
     Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
+
+    // MASTER DATA SPK KONTRAKTOR (DUMMY UI)
+    Route::get('/spk', [SpkController::class, 'index'])->name('spk.index');
 
 
     // EMPLOYEE/AGENCY

@@ -54,6 +54,7 @@
             'dokument.index' => 'mdi-file-document-outline',
             'dokument.persiapan' => 'mdi-file-tree-outline',
             'document.user.persiapan-legal' => 'mdi-file-certificate-outline',
+            'spk.index' => 'mdi-file-sign',
             // Pengguna
             'agency.create' => 'mdi-account-plus-outline',
             'agency.index' => 'mdi-account-group-outline',
@@ -89,6 +90,7 @@
             'dokument.index' => ['dokument.index*', 'dokument.*'],
             'dokument.persiapan' => ['dokument.persiapan*'],
             'document.user.persiapan-legal' => ['document.user.persiapan-legal*'],
+            'spk.index' => ['spk.index*', 'spk.*'],
             'agency.create' => ['agency.create*'],
             'agency.index' => ['agency.index*', 'agency.edit*'],
             'master.data.menu' => ['master.data.menu*'],
