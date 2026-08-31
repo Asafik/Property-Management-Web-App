@@ -162,7 +162,7 @@
                             Pengolahan Lahan per Fase: <span class="text-primary">{{ $land->name }}</span>
                         </h4>
                         <span class="small text-muted">
-                            Progres bertahap Fase 1 &rarr; Fase 2 &rarr; Fase 3 (Semua fase harus 100% selesai untuk membuka Tambah Kavling)
+                            Progres bertahap pembangunan kawasan (Semua tahapan pekerjaan harus 100% selesai untuk membuka Tambah Kavling)
                         </span>
                     </div>
                 </div>
@@ -171,6 +171,9 @@
                 <a href="{{ route('properti-all') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill d-flex align-items-center gap-1 shadow-sm">
                     <i class="mdi mdi-arrow-left"></i> Kembali
                 </a>
+                <button type="button" class="btn btn-gradient-primary btn-sm px-3 rounded-pill d-flex align-items-center gap-1 shadow-sm" onclick="openAddStepModal(1)">
+                    <i class="mdi mdi-plus-circle"></i> + Tambah Step / Pos
+                </button>
                 <!-- Validasi Legalitas Status Trigger -->
                 @if($land->legal_status == 'verified' || $land->isFromPraLandbank())
                     <button type="button" class="btn btn-sm btn-outline-success px-3 rounded-pill d-flex align-items-center gap-1 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Terverifikasi (Klik untuk ubah / cek berkas)">
@@ -298,70 +301,41 @@
         </div>
     </div>
 
-    <!-- PHASE STEPPER NAVIGATION TABS -->
+    <!-- PHASE STEPPER NAVIGATION TABS (DINAMIS BERDASARKAN NAMA) -->
     <div class="fase-stepper mb-4" id="faseStepper" role="tablist">
-        <!-- Step 1: Fase 1 -->
-        <button class="fase-step-btn active" id="step-fase1-tab" data-bs-toggle="pill" data-bs-target="#step-fase1" type="button" role="tab">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="step-number">1</span>
-                @if($fase1Progress >= 100)
-                    <span class="badge bg-success text-white rounded-pill small"><i class="mdi mdi-check"></i> Selesai</span>
-                @elseif($fase1Progress > 0)
-                    <span class="badge bg-warning text-dark rounded-pill small">Proses</span>
-                @else
-                    <span class="badge bg-secondary text-white rounded-pill small">Belum</span>
-                @endif
-            </div>
-            <h6 class="fw-bold text-dark mb-1">FASE 1: Pematangan Lahan</h6>
-            <span class="small text-muted d-block">Cut & Fill, Perataan & Pemadatan</span>
-            <div class="progress mt-2" style="height: 6px;">
-                <div class="progress-bar bg-primary" style="width: {{ $fase1Progress }}%;"></div>
-            </div>
-            <span class="small fw-bold text-primary mt-1 d-block text-end">{{ $fase1Progress }}%</span>
+        @foreach($phaseData as $phNum => $phInfo)
+            @php
+                $pProg = $phInfo['progress'];
+            @endphp
+            <button class="fase-step-btn {{ $loop->first ? 'active' : '' }}" id="step-fase{{ $phNum }}-tab" data-bs-toggle="pill" data-bs-target="#step-fase{{ $phNum }}" data-toggle="pill" data-target="#step-fase{{ $phNum }}" type="button" role="tab" onclick="activateTab('#step-fase{{ $phNum }}-tab')">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="step-number">{{ $phNum }}</span>
+                    @if($pProg >= 100)
+                        <span class="badge bg-success text-white rounded-pill small"><i class="mdi mdi-check"></i> Selesai</span>
+                    @elseif($pProg > 0)
+                        <span class="badge bg-warning text-dark rounded-pill small">Proses</span>
+                    @else
+                        <span class="badge bg-secondary text-white rounded-pill small">Belum</span>
+                    @endif
+                </div>
+                <h6 class="fw-bold text-dark mb-1">{{ $phInfo['title'] }}</h6>
+                <span class="small text-muted d-block text-truncate">{{ $phInfo['subtitle'] }}</span>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: {{ $pProg }}%;"></div>
+                </div>
+                <span class="small fw-bold text-primary mt-1 d-block text-end">{{ $pProg }}%</span>
+            </button>
+        @endforeach
+
+        <!-- Button Quick Add Tahapan Baru in Stepper -->
+        <button type="button" class="fase-step-btn d-flex flex-column align-items-center justify-content-center border-dashed" style="border: 2px dashed #9a55ff; background: #faf5ff; min-width: 180px;" onclick="openAddStepModal({{ $nextPhaseNum }})" title="Klik untuk menambah Tahapan Pembangunan Baru">
+            <i class="mdi mdi-plus-circle text-primary fs-3 mb-1"></i>
+            <span class="fw-bold text-primary small">+ Tambah Tahapan Baru</span>
+            <small class="text-muted" style="font-size: 0.72rem;">Kustom Pembangunan</small>
         </button>
 
-        <!-- Step 2: Fase 2 -->
-        <button class="fase-step-btn" id="step-fase2-tab" data-bs-toggle="pill" data-bs-target="#step-fase2" type="button" role="tab">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="step-number">2</span>
-                @if($fase2Progress >= 100)
-                    <span class="badge bg-success text-white rounded-pill small"><i class="mdi mdi-check"></i> Selesai</span>
-                @elseif($fase2Progress > 0)
-                    <span class="badge bg-warning text-dark rounded-pill small">Proses</span>
-                @else
-                    <span class="badge bg-secondary text-white rounded-pill small">Belum</span>
-                @endif
-            </div>
-            <h6 class="fw-bold text-dark mb-1">FASE 2: Drainase & Jalan</h6>
-            <span class="small text-muted d-block">Selokan U-Ditch, Paving & Aspal</span>
-            <div class="progress mt-2" style="height: 6px;">
-                <div class="progress-bar bg-primary" style="width: {{ $fase2Progress }}%;"></div>
-            </div>
-            <span class="small fw-bold text-primary mt-1 d-block text-end">{{ $fase2Progress }}%</span>
-        </button>
-
-        <!-- Step 3: Fase 3 -->
-        <button class="fase-step-btn" id="step-fase3-tab" data-bs-toggle="pill" data-bs-target="#step-fase3" type="button" role="tab">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="step-number">3</span>
-                @if($fase3Progress >= 100)
-                    <span class="badge bg-success text-white rounded-pill small"><i class="mdi mdi-check"></i> Selesai</span>
-                @elseif($fase3Progress > 0)
-                    <span class="badge bg-warning text-dark rounded-pill small">Proses</span>
-                @else
-                    <span class="badge bg-secondary text-white rounded-pill small">Belum</span>
-                @endif
-            </div>
-            <h6 class="fw-bold text-dark mb-1">FASE 3: Utilitas & Fasilitas</h6>
-            <span class="small text-muted d-block">PJU, Air Bersih, Listrik & Gerbang</span>
-            <div class="progress mt-2" style="height: 6px;">
-                <div class="progress-bar bg-primary" style="width: {{ $fase3Progress }}%;"></div>
-            </div>
-            <span class="small fw-bold text-primary mt-1 d-block text-end">{{ $fase3Progress }}%</span>
-        </button>
-
-        <!-- Step 4: Rekapitulasi Keuangan -->
-        <button class="fase-step-btn" id="step-keuangan-tab" data-bs-toggle="pill" data-bs-target="#step-keuangan" type="button" role="tab">
+        <!-- Step: Rekapitulasi Keuangan -->
+        <button class="fase-step-btn" id="step-keuangan-tab" data-bs-toggle="pill" data-bs-target="#step-keuangan" data-toggle="pill" data-target="#step-keuangan" type="button" role="tab" onclick="activateTab('#step-keuangan-tab')">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="step-number"><i class="mdi mdi-cash-multiple"></i></span>
                 <span class="badge bg-soft-danger text-danger rounded-pill small fw-bold">{{ $expenses->count() }} Nota</span>
@@ -372,182 +346,104 @@
         </button>
     </div>
 
-    <!-- TAB CONTENT SECTIONS -->
+    <!-- TAB CONTENT SECTIONS (DINAMIS SEMUA TAHAPAN) -->
     <div class="tab-content" id="faseStepperContent">
         
-        <!-- =================== STEP 1: FASE 1 CONTENT =================== -->
-        <div class="tab-pane fade show active" id="step-fase1" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
-                <!-- Fase Header Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-pill fw-bold">FASE 1</span>
-                            <h5 class="fw-bold text-dark mb-0">Pematangan Lahan & Cut-Fill</h5>
+        @foreach($phaseData as $phNum => $phInfo)
+            @php
+                $pItems = $phInfo['items'];
+                $pExpenses = $phInfo['expenses'];
+                $isLastPhase = $loop->last;
+                $nextTabTarget = $isLastPhase ? '#step-keuangan-tab' : '#step-fase' . ($phNum + 1) . '-tab';
+                $prevTabTarget = $loop->first ? null : '#step-fase' . ($phNum - 1) . '-tab';
+                $nextTitle = $phaseData[$phNum + 1]['title'] ?? 'Rekap Keuangan';
+                $prevTitle = $phaseData[$phNum - 1]['title'] ?? '';
+            @endphp
+            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="step-fase{{ $phNum }}" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
+                    <!-- Fase Header Info -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="fw-bold text-dark mb-0">{{ $phInfo['title'] }}</h5>
+                            </div>
+                            <span class="small text-muted mt-1 d-block">
+                                {{ $phInfo['subtitle'] }}
+                            </span>
                         </div>
-                        <span class="small text-muted mt-1 d-block">
-                            Tahap awal pembersihan semak/pohon, perataan kontur lahan (Cut & Fill), dan pemadatan sub-grade.
-                        </span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-gradient-primary rounded-pill px-3 shadow-sm" onclick="openAddStepModal({{ $phNum }})">
+                                <i class="mdi mdi-plus-circle me-1"></i>+ Tambah Step ({{ $phInfo['title'] }})
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="toggleInlineAddExpense({{ $phNum }})">
+                                <i class="mdi mdi-plus-box me-1"></i>+ Catat Belanja Bahan
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="finalizePhaseAction({{ $phNum }})">
+                                <i class="mdi mdi-check-all me-1"></i>Selesaikan ({{ $phInfo['title'] }}) 100%
+                            </button>
+                        </div>
                     </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="toggleInlineAddExpense(1)">
-                            <i class="mdi mdi-plus-box me-1"></i>+ Catat Belanja Bahan Fase 1
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="finalizePhaseAction(1)">
-                            <i class="mdi mdi-check-all me-1"></i>Selesaikan Fase 1 (100%)
-                        </button>
+
+                    <!-- Inline Form Tambah Pengeluaran Bahan (Collapsible) -->
+                    @include('properti.partials.inline_expense_form', ['phase' => $phNum, 'infrastructures' => $pItems])
+
+                    <!-- Tasks Grid -->
+                    <h6 class="fw-bold text-dark mb-3"><i class="mdi mdi-format-list-checks text-primary me-1"></i> Pos Pekerjaan Fisik: {{ $phInfo['title'] }}</h6>
+                    <div class="row g-4 mb-4">
+                        @forelse($pItems as $item)
+                            @include('properti.partials.phase_item_card', ['item' => $item])
+                        @empty
+                            <div class="col-12">
+                                <div class="p-4 text-center bg-light rounded-4 border border-dashed">
+                                    <i class="mdi mdi-layers-plus text-primary fs-2 opacity-50 mb-2"></i>
+                                    <h6 class="text-dark fw-bold mb-1">Belum Ada Pos Pekerjaan di {{ $phInfo['title'] }}</h6>
+                                    <p class="small text-muted mb-3">Klik tombol di bawah untuk menambahkan rincian pekerjaan atau step untuk tahapan ini.</p>
+                                    <button type="button" class="btn btn-sm btn-gradient-primary px-3 rounded-pill" onclick="openAddStepModal({{ $phNum }})">
+                                        <i class="mdi mdi-plus-circle me-1"></i>+ Tambah Step Pertama
+                                    </button>
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
-                </div>
 
-                <!-- Inline Form Tambah Pengeluaran Bahan Fase 1 (Collapsible) -->
-                @include('properti.partials.inline_expense_form', ['phase' => 1, 'infrastructures' => $fase1Items])
+                    <!-- Expenses Table -->
+                    <div class="mt-4 pt-3 border-top">
+                        <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
+                            <span><i class="mdi mdi-receipt text-danger me-1"></i> Riwayat Belanja Bahan / Nota: {{ $phInfo['title'] }}</span>
+                            <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($pExpenses->sum('total_amount'), 0, ',', '.') }}</span>
+                        </h6>
+                        @include('properti.partials.phase_expense_table', ['phase' => $phNum, 'phaseExpenses' => $pExpenses])
+                    </div>
 
-                <!-- Tasks Grid Fase 1 -->
-                <h6 class="fw-bold text-dark mb-3"><i class="mdi mdi-format-list-checks text-primary me-1"></i> Pos Pekerjaan Fisik Fase 1</h6>
-                <div class="row g-4 mb-4">
-                    @foreach($fase1Items as $item)
-                        @include('properti.partials.phase_item_card', ['item' => $item])
-                    @endforeach
-                </div>
+                    <!-- Navigation Footer -->
+                    <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
+                        @if($prevTabTarget)
+                            <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" onclick="$('{{ $prevTabTarget }}').tab('show');">
+                                <i class="mdi mdi-arrow-left me-1"></i> Kembali ke {{ $prevTitle }}
+                            </button>
+                        @else
+                            <div></div>
+                        @endif
 
-                <!-- Expenses Table Fase 1 -->
-                @php $fase1Expenses = $expenses->where('phase', 1); @endphp
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
-                        <span><i class="mdi mdi-receipt text-danger me-1"></i> Riwayat Belanja Bahan / Nota Fase 1</span>
-                        <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($fase1Expenses->sum('total_amount'), 0, ',', '.') }}</span>
-                    </h6>
-                    @include('properti.partials.phase_expense_table', ['phase' => 1, 'phaseExpenses' => $fase1Expenses])
-                </div>
-
-                <!-- Next Phase Navigation Footer -->
-                <div class="d-flex justify-content-end gap-2 pt-4 border-top mt-4">
-                    <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" onclick="$('#step-fase2-tab').tab('show');">
-                        Lanjut ke Fase 2 (Drainase & Jalan) <i class="mdi mdi-arrow-right ms-1"></i>
-                    </button>
+                        @if($isLastPhase)
+                            @if($land->canCreateKavling())
+                                <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-pill shadow-sm">
+                                    <i class="mdi mdi-pencil-ruler me-1"></i> PENGOLAHAN SELESAI &rarr; Buat Unit Kavling
+                                </a>
+                            @else
+                                <button type="button" class="btn btn-gradient-success px-4 rounded-pill shadow-sm" onclick="finalizeAllInfrastruktur()">
+                                    <i class="mdi mdi-check-all me-1"></i> Selesaikan Seluruh Pengolahan Lahan (100%)
+                                </button>
+                            @endif
+                        @else
+                            <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" onclick="$('{{ $nextTabTarget }}').tab('show');">
+                                Lanjut ke {{ $nextTitle }} <i class="mdi mdi-arrow-right ms-1"></i>
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- =================== STEP 2: FASE 2 CONTENT =================== -->
-        <div class="tab-pane fade" id="step-fase2" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
-                <!-- Fase Header Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-pill fw-bold">FASE 2</span>
-                            <h5 class="fw-bold text-dark mb-0">Drainase & Akses Jalan Kawasan</h5>
-                        </div>
-                        <span class="small text-muted mt-1 d-block">
-                            Tahap pembangunan saluran drainase selokan (U-Ditch) dan pengerasan jalan utama/lingkungan paving/aspal.
-                        </span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="toggleInlineAddExpense(2)">
-                            <i class="mdi mdi-plus-box me-1"></i>+ Catat Belanja Bahan Fase 2
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="finalizePhaseAction(2)">
-                            <i class="mdi mdi-check-all me-1"></i>Selesaikan Fase 2 (100%)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Inline Form Tambah Pengeluaran Bahan Fase 2 -->
-                @include('properti.partials.inline_expense_form', ['phase' => 2, 'infrastructures' => $fase2Items])
-
-                <!-- Tasks Grid Fase 2 -->
-                <h6 class="fw-bold text-dark mb-3"><i class="mdi mdi-format-list-checks text-primary me-1"></i> Pos Pekerjaan Fisik Fase 2</h6>
-                <div class="row g-4 mb-4">
-                    @foreach($fase2Items as $item)
-                        @include('properti.partials.phase_item_card', ['item' => $item])
-                    @endforeach
-                </div>
-
-                <!-- Expenses Table Fase 2 -->
-                @php $fase2Expenses = $expenses->where('phase', 2); @endphp
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
-                        <span><i class="mdi mdi-receipt text-danger me-1"></i> Riwayat Belanja Bahan / Nota Fase 2</span>
-                        <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($fase2Expenses->sum('total_amount'), 0, ',', '.') }}</span>
-                    </h6>
-                    @include('properti.partials.phase_expense_table', ['phase' => 2, 'phaseExpenses' => $fase2Expenses])
-                </div>
-
-                <!-- Navigation Buttons -->
-                <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
-                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" onclick="$('#step-fase1-tab').tab('show');">
-                        <i class="mdi mdi-arrow-left me-1"></i> Kembali ke Fase 1
-                    </button>
-                    <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" onclick="$('#step-fase3-tab').tab('show');">
-                        Lanjut ke Fase 3 (Utilitas & PJU) <i class="mdi mdi-arrow-right ms-1"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- =================== STEP 3: FASE 3 CONTENT =================== -->
-        <div class="tab-pane fade" id="step-fase3" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
-                <!-- Fase Header Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-pill fw-bold">FASE 3</span>
-                            <h5 class="fw-bold text-dark mb-0">Utilitas Kawasan (PJU, Air Bersih, Listrik & Gerbang)</h5>
-                        </div>
-                        <span class="small text-muted mt-1 d-block">
-                            Tahap akhir instalasi tiang & lampu PJU, pipa distribusi air, gardu listrik PLN, dan gapura/pos kawasan.
-                        </span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="toggleInlineAddExpense(3)">
-                            <i class="mdi mdi-plus-box me-1"></i>+ Catat Belanja Bahan Fase 3
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="finalizePhaseAction(3)">
-                            <i class="mdi mdi-check-all me-1"></i>Selesaikan Fase 3 & Finalisasi Lahan (100%)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Inline Form Tambah Pengeluaran Bahan Fase 3 -->
-                @include('properti.partials.inline_expense_form', ['phase' => 3, 'infrastructures' => $fase3Items])
-
-                <!-- Tasks Grid Fase 3 -->
-                <h6 class="fw-bold text-dark mb-3"><i class="mdi mdi-format-list-checks text-primary me-1"></i> Pos Pekerjaan Fisik Fase 3</h6>
-                <div class="row g-4 mb-4">
-                    @foreach($fase3Items as $item)
-                        @include('properti.partials.phase_item_card', ['item' => $item])
-                    @endforeach
-                </div>
-
-                <!-- Expenses Table Fase 3 -->
-                @php $fase3Expenses = $expenses->where('phase', 3); @endphp
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
-                        <span><i class="mdi mdi-receipt text-danger me-1"></i> Riwayat Belanja Bahan / Nota Fase 3</span>
-                        <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($fase3Expenses->sum('total_amount'), 0, ',', '.') }}</span>
-                    </h6>
-                    @include('properti.partials.phase_expense_table', ['phase' => 3, 'phaseExpenses' => $fase3Expenses])
-                </div>
-
-                <!-- Navigation Buttons -->
-                <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
-                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" onclick="$('#step-fase2-tab').tab('show');">
-                        <i class="mdi mdi-arrow-left me-1"></i> Kembali ke Fase 2
-                    </button>
-                    @if($land->canCreateKavling())
-                        <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-pill shadow-sm">
-                            <i class="mdi mdi-pencil-ruler me-1"></i> PENGOLAHAN SELESAI &rarr; Buat Unit Kavling
-                        </a>
-                    @else
-                        <button type="button" class="btn btn-gradient-success px-4 rounded-pill shadow-sm" onclick="finalizeAllInfrastruktur()">
-                            <i class="mdi mdi-check-all me-1"></i> Selesaikan Seluruh Pengolahan Lahan (100%)
-                        </button>
-                    @endif
-                </div>
-            </div>
-        </div>
+        @endforeach
 
         <!-- =================== STEP 4: REKAP KEUANGAN ERP CONTENT =================== -->
         <div class="tab-pane fade" id="step-keuangan" role="tabpanel">
@@ -805,6 +701,92 @@
         </div>
     </div>
 
+    <!-- Modal Tambah Pos Pekerjaan / Step Baru (Dinamis oleh Kepala Legal / Admin) -->
+    <div class="modal fade" id="modalAddStep" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="mdi mdi-plus-box-multiple text-primary fs-4"></i> Tambah Pos Pekerjaan (Step) Pengolahan Lahan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAddStep" onsubmit="submitAddStep(event)" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body pt-2">
+                        <p class="small text-muted mb-3">
+                            Tambahkan pos pekerjaan (step) baru secara dinamis untuk proyek <strong>{{ $land->name }}</strong>.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Target Tahapan Pembangunan <span class="text-danger">*</span></label>
+                                <select class="form-select" id="addStepPhase" name="phase" onchange="toggleNewPhaseInput(this.value)" required>
+                                    @foreach($phaseData as $phNum => $phInfo)
+                                        <option value="{{ $phNum }}">{{ $phInfo['title'] }}</option>
+                                    @endforeach
+                                    <option value="{{ $nextPhaseNum }}" class="fw-bold text-primary">+ Buat / Tambah Tahapan Baru</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6" id="newPhaseNameContainer" style="display: none;">
+                                <label class="small text-primary fw-bold mb-1">Nama Tahapan Baru <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control border-primary" id="addStepNewPhaseName" name="new_phase_name" placeholder="Contoh: Fasum & Masjid, Taman Kawasan, dll.">
+                            </div>
+                            <div class="col-md-6" id="categoryContainer">
+                                <label class="small text-muted fw-bold mb-1">Kategori Pos Pekerjaan</label>
+                                <input type="text" class="form-control" id="addStepCategory" name="category" placeholder="Contoh: Cut & Fill, Drainase, Perkerasan, dll.">
+                            </div>
+                            <div class="col-12">
+                                <label class="small text-muted fw-bold mb-1">Nama Pos Pekerjaan / Step <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="addStepItemName" name="item_name" placeholder="Contoh: Galian Tanah Zona Barat & Pembuangan Lumpur" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small text-muted fw-bold mb-1">Target Volume <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control" id="addStepTargetVol" name="target_volume" placeholder="Contoh: 1500" required min="0.01">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small text-muted fw-bold mb-1">Satuan Volume <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="addStepUnit" name="volume_unit" placeholder="m³, m², meter, titik, paket" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small text-muted fw-bold mb-1">Bobot Persentase (%) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="any" class="form-control" id="addStepBobot" name="bobot_persen" placeholder="Contoh: 50" required min="0" max="100">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Estimasi Biaya / RAB Pos (Rp)</label>
+                                <input type="number" step="any" class="form-control" id="addStepCostEstimate" name="cost_estimate" placeholder="Contoh: 25000000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Kontraktor / Mandor Pelaksana</label>
+                                <input type="text" class="form-control" id="addStepContractor" name="contractor_name" placeholder="Nama Kontraktor / Mandor">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Rencana Mulai Pengerjaan</label>
+                                <input type="date" class="form-control" id="addStepStart" name="target_start">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Target Selesai</label>
+                                <input type="date" class="form-control" id="addStepEnd" name="target_end">
+                            </div>
+                            <div class="col-12">
+                                <label class="small text-muted fw-bold mb-1">Catatan / Spesifikasi Teknis</label>
+                                <textarea class="form-control" id="addStepNotes" name="notes" rows="2" placeholder="Keterangan spesifikasi teknis, metode pengerjaan, atau catatan penting lainnya..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0">
+                        <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-gradient-primary rounded-pill px-4" id="btnSaveNewStep">
+                            <i class="mdi mdi-plus-circle me-1"></i>Tambah Pos Pekerjaan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @endsection
@@ -823,8 +805,19 @@
         if (!selector.endsWith('-tab') && !selector.includes('keuangan')) selector = selector + '-tab';
         
         let $tab = $(selector);
-        if ($tab.length && typeof $tab.tab === 'function') {
-            $tab.tab('show');
+        if ($tab.length) {
+            $('.fase-step-btn').removeClass('active');
+            $tab.addClass('active');
+
+            if (typeof $tab.tab === 'function') {
+                $tab.tab('show');
+            }
+
+            let targetPane = $tab.attr('data-bs-target') || $tab.attr('data-target') || selector.replace('-tab', '');
+            $('.tab-pane').removeClass('show active');
+            $(targetPane).addClass('show active');
+
+            setSavedActiveTab(selector);
         }
     }
 
@@ -1141,6 +1134,145 @@
         });
     };
 
+    let phaseCategoryMap = {
+        @foreach($phaseData as $phNum => $phInfo)
+            {{ $phNum }}: "{{ addslashes($phInfo['title']) }}",
+        @endforeach
+    };
+
+    window.toggleNewPhaseInput = function(phaseVal) {
+        let maxExisting = {{ $nextPhaseNum - 1 }};
+        if (parseInt(phaseVal) > maxExisting) {
+            $('#newPhaseNameContainer').slideDown();
+            $('#addStepNewPhaseName').prop('required', true).val('').focus();
+            $('#categoryContainer').removeClass('col-md-6').addClass('col-md-12');
+            $('#addStepCategory').val('');
+        } else {
+            $('#newPhaseNameContainer').slideUp();
+            $('#addStepNewPhaseName').prop('required', false).val('');
+            $('#categoryContainer').removeClass('col-md-12').addClass('col-md-6');
+            if (phaseCategoryMap[phaseVal]) {
+                $('#addStepCategory').val(phaseCategoryMap[phaseVal]);
+            }
+        }
+    };
+
+    window.onPhaseDropdownChange = function(phaseVal) {
+        window.toggleNewPhaseInput(phaseVal);
+    };
+
+    window.openAddStepModal = function(phase = 1) {
+        let form = document.getElementById('formAddStep');
+        if (form) {
+            form.reset();
+        }
+        $('#addStepPhase').val(phase);
+        window.toggleNewPhaseInput(phase);
+
+        if (phase == 1) {
+            $('#addStepUnit').val('m³');
+        } else if (phase == 2) {
+            $('#addStepUnit').val('meter');
+        } else if (phase == 3) {
+            $('#addStepUnit').val('titik');
+        } else {
+            $('#addStepUnit').val('paket');
+        }
+        $('#modalAddStep').modal('show');
+    };
+
+    window.submitAddStep = function(e) {
+        e.preventDefault();
+        let form = document.getElementById('formAddStep');
+        let formData = new FormData(form);
+        let phase = $('#addStepPhase').val() || 1;
+        let btn = $('#btnSaveNewStep');
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
+
+        $.ajax({
+            url: `/properti/${currentLandId}/infrastruktur/store`,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(res) {
+                btn.prop('disabled', false).html('<i class="mdi mdi-plus-circle me-1"></i>Tambah Pos Pekerjaan');
+                if (res.success) {
+                    $('#modalAddStep').modal('hide');
+                    setSavedActiveTab('#step-fase' + phase + '-tab');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pos Pekerjaan Ditambahkan!',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                }
+            },
+            error: function(xhr) {
+                btn.prop('disabled', false).html('<i class="mdi mdi-plus-circle me-1"></i>Tambah Pos Pekerjaan');
+                let msg = 'Gagal menambahkan pos pekerjaan.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire('Error', msg, 'error');
+            }
+        });
+    };
+
+    window.deleteInfrastructureStep = function(itemId, itemName) {
+        let activeTab = $('.fase-step-btn.active').attr('id');
+        if (activeTab) {
+            setSavedActiveTab('#' + activeTab);
+        }
+
+        Swal.fire({
+            title: `Hapus Pos '${itemName}'?`,
+            text: 'Pos pekerjaan ini dan seluruh catatan capaian lapangannya akan dihapus.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="mdi mdi-delete me-1"></i>Ya, Hapus Pos',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/properti/infrastruktur/${itemId}`,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        _method: 'DELETE'
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Terhapus!',
+                                text: res.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Gagal menghapus pos pekerjaan.', 'error');
+                    }
+                });
+            }
+        });
+    };
+
     window.previewCardPhoto = function(input, itemId) {
         if (input.files && input.files[0]) {
             let reader = new FileReader();
@@ -1156,7 +1288,7 @@
         }
     };
 
-    let rowCounter = { 1: 1, 2: 1, 3: 1 };
+    let rowCounter = {};
 
     window.onSelectRowMaterial = function(selectEl, phase, rowIdx) {
         let opt = $(selectEl).find(':selected');
@@ -1165,7 +1297,9 @@
             $(`#inputItemName_${phase}_${rowIdx}`).val(opt.data('name') || opt.attr('data-name') || '');
             $(`#inputCat_${phase}_${rowIdx}`).val(opt.data('category') || opt.attr('data-category') || '');
             $(`#inputUnit_${phase}_${rowIdx}`).val(opt.data('unit') || opt.attr('data-unit') || '');
-            $(`#inputPrice_${phase}_${rowIdx}`).val(opt.data('price') || opt.attr('data-price') || 0);
+            
+            let price = parseFloat(opt.data('price') || opt.attr('data-price')) || 0;
+            $(`#inputPrice_${phase}_${rowIdx}`).val(price);
         } else {
             $(`#inputMatId_${phase}_${rowIdx}`).val('');
         }
@@ -1192,6 +1326,9 @@
     };
 
     window.addNewMaterialRow = function(phase) {
+        if (!rowCounter[phase]) {
+            rowCounter[phase] = 1;
+        }
         let newIdx = rowCounter[phase]++;
         let optionsHtml = $(`#masterOptionsTemplate_${phase}`).html();
 

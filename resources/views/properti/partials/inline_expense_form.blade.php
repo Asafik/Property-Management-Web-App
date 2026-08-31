@@ -8,9 +8,18 @@
         $allowedCategories = ['PJU & Penerangan', 'Jaringan Air Bersih', 'Jaringan Listrik & Gerbang', 'Upah Tenaga Kerja', 'Lain-lain'];
     }
 
-    $filteredMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
-        return in_array($item->category, $allowedCategories);
-    })->groupBy('category');
+    if (!empty($allowedCategories)) {
+        $priorityMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
+            return in_array($item->category, $allowedCategories);
+        })->groupBy('category');
+        
+        $otherMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
+            return !in_array($item->category, $allowedCategories);
+        })->groupBy('category');
+    } else {
+        $priorityMaterials = $masterMaterials->groupBy('category');
+        $otherMaterials = collect();
+    }
 @endphp
 
 <!-- Inline Multi-Item Expense Form for Phase {{ $phase }} -->
@@ -19,9 +28,9 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h6 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2">
-                    <i class="mdi mdi-receipt-text-plus fs-5"></i> Catat Transaksi Belanja Bahan / Nota - <strong>Fase {{ $phase }}</strong>
+                    <i class="mdi mdi-receipt-text-plus fs-5"></i> Catat Transaksi Belanja Bahan / Nota - <strong>{{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }}</strong>
                 </h6>
-                <small class="text-muted">Anda dapat mencatat lebih dari 1 bahan/material sekaligus dalam 1 nota belanja.</small>
+                <small class="text-muted">Pilih bahan dari <strong>Master Barang</strong> agar satuan dan harga terisi otomatis, atau ketik langsung jika ada kebutuhan baru.</small>
             </div>
             <button type="button" class="btn-close" onclick="toggleInlineAddExpense({{ $phase }})"></button>
         </div>
@@ -35,7 +44,7 @@
             <div class="p-2 px-3 rounded-3 border mb-3 d-flex justify-content-between align-items-center bg-white" id="selectedPosNotice_{{ $phase }}">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-soft-primary text-primary px-2 py-1 rounded-pill small fw-bold"><i class="mdi mdi-pin me-1"></i>Pos Pekerjaan</span>
-                    <span class="small text-dark fw-bold" id="selectedPosName_{{ $phase }}">- Seluruh Pos Fase {{ $phase }} (Umum) -</span>
+                    <span class="small text-dark fw-bold" id="selectedPosName_{{ $phase }}">- Seluruh Pos {{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }} (Umum) -</span>
                 </div>
                 <button type="button" class="btn btn-link btn-sm text-muted p-0 text-decoration-none small" onclick="resetSelectedPos({{ $phase }})" title="Ganti ke Umum">
                     <i class="mdi mdi-close-circle me-1"></i>Reset ke Umum
@@ -94,7 +103,7 @@
                     <table class="table table-sm table-bordered align-middle mb-0" id="tableMultiItems_{{ $phase }}">
                         <thead class="bg-light small text-muted text-center">
                             <tr>
-                                <th style="width: 30%;">Pilih / Ketik Nama Bahan</th>
+                                <th style="width: 30%;">Pilih dari Master / Nama Bahan</th>
                                 <th style="width: 15%;">Kategori</th>
                                 <th style="width: 12%;">Qty / Volume</th>
                                 <th style="width: 10%;">Satuan</th>
@@ -110,8 +119,8 @@
                                     <!-- Select Master or Custom Input -->
                                     <div class="d-flex flex-column gap-1">
                                         <select class="form-select form-select-sm select-master-item-row" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)">
-                                            <option value="">-- Pilih dari Master Bahan --</option>
-                                            @foreach($filteredMaterials as $catName => $items)
+                                            <option value="">-- Pilih dari Master Barang / Bahan --</option>
+                                            @foreach($priorityMaterials as $catName => $items)
                                                 <optgroup label="📂 {{ $catName }}">
                                                     @foreach($items as $mm)
                                                         <option value="{{ $mm->id }}" 
@@ -124,6 +133,21 @@
                                                     @endforeach
                                                 </optgroup>
                                             @endforeach
+                                            @if($otherMaterials->isNotEmpty())
+                                                @foreach($otherMaterials as $catName => $items)
+                                                    <optgroup label="📂 {{ $catName }} (Lainnya)">
+                                                        @foreach($items as $mm)
+                                                            <option value="{{ $mm->id }}" 
+                                                                    data-name="{{ $mm->name }}" 
+                                                                    data-category="{{ $mm->category }}" 
+                                                                    data-unit="{{ $mm->unit }}" 
+                                                                    data-price="{{ $mm->default_price }}">
+                                                                {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
+                                            @endif
                                         </select>
                                         <input type="hidden" name="items[0][material_id]" id="inputMatId_{{ $phase }}_0">
                                         <input type="text" name="items[0][item_name]" id="inputItemName_{{ $phase }}_0" class="form-control form-control-sm" placeholder="Nama Bahan / Jasa *" required>
@@ -167,8 +191,8 @@
 
             <!-- Master Material Template Hidden Options for Dynamic Rows -->
             <template id="masterOptionsTemplate_{{ $phase }}">
-                <option value="">-- Pilih dari Master Bahan --</option>
-                @foreach($filteredMaterials as $catName => $items)
+                <option value="">-- Pilih dari Master Barang / Bahan --</option>
+                @foreach($priorityMaterials as $catName => $items)
                     <optgroup label="📂 {{ $catName }}">
                         @foreach($items as $mm)
                             <option value="{{ $mm->id }}" 
@@ -181,12 +205,27 @@
                         @endforeach
                     </optgroup>
                 @endforeach
+                @if($otherMaterials->isNotEmpty())
+                    @foreach($otherMaterials as $catName => $items)
+                        <optgroup label="📂 {{ $catName }} (Lainnya)">
+                            @foreach($items as $mm)
+                                <option value="{{ $mm->id }}" 
+                                        data-name="{{ $mm->name }}" 
+                                        data-category="{{ $mm->category }}" 
+                                        data-unit="{{ $mm->unit }}" 
+                                        data-price="{{ $mm->default_price }}">
+                                    {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
+                                </option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                @endif
             </template>
 
             <div class="d-flex justify-content-end gap-2 pt-2 border-top">
                 <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3" onclick="toggleInlineAddExpense({{ $phase }})">Batal</button>
                 <button type="submit" class="btn btn-sm btn-gradient-primary rounded-pill px-4">
-                    <i class="mdi mdi-check-all me-1"></i>Simpan Semua Belanja Bahan Fase {{ $phase }}
+                    <i class="mdi mdi-check-all me-1"></i>Simpan Semua Belanja Bahan {{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }}
                 </button>
             </div>
         </form>

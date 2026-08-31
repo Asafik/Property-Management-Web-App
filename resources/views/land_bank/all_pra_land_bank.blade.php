@@ -4,6 +4,12 @@
 
 @section('content')
 
+@php
+    $praLandBank = $praLandBank ?? ($praLandbank ?? ($lands ?? collect()));
+    $documentTypes = $documentTypes ?? \App\Models\DocumentTypes::all();
+    $landsWithPendingDocsCount = $landsWithPendingDocsCount ?? 0;
+@endphp
+
     <style>
         .btn-fase-action {
             display: inline-flex;
@@ -264,6 +270,20 @@
                             </div>
                         </div>
 
+                        @if(!empty($landsWithPendingDocsCount) && $landsWithPendingDocsCount > 0)
+                            <div class="alert alert-warning border-0 shadow-sm rounded-3 d-flex align-items-center justify-content-between p-3 mb-3" style="background: #fffbeb; border-left: 4px solid #f59e0b !important;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="mdi mdi-alert-decagram text-warning fs-4"></i>
+                                    <div>
+                                        <span class="fw-bold text-dark d-block" style="font-size: 13px;">Pemberitahuan Dokumen & Capaian Legalitas:</span>
+                                        <small class="text-muted" style="font-size: 12px;">
+                                            Terdapat <strong>{{ $landsWithPendingDocsCount }} tanah</strong> dengan dokumen tambahan baru yang menunggu verifikasi Kepala Legal. Capaian progres legalitas disesuaikan secara otomatis dengan total kelengkapan berkas terbaru.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
@@ -273,7 +293,7 @@
                                         <th style="min-width: 120px;">Makelar</th>
                                         <th style="min-width: 130px;">Harga Negosiasi</th>
                                         <th style="min-width: 125px;">Progress 3 FASE</th>
-                                        <th style="min-width: 140px;">Progress Legalitas</th>
+                                        <th style="min-width: 150px;">Progress Legalitas</th>
                                         <th style="min-width: 95px;">Status</th>
                                         <th style="min-width: 85px;">Prioritas</th>
                                         <th class="text-center" style="min-width: 215px;">Aksi</th>
@@ -384,42 +404,68 @@
                                                 </div>
                                             </td>
 
-                                            <!-- Progress Legalitas -->
+                                            <!-- Progress Legalitas (Dinamis Berdasarkan Kelengkapan Dokumen) -->
                                             <td>
                                                 @php
                                                     $docs = $land->documents;
-                                                    $totalUploaded = $docs->whereNotNull('file_path')->count();
+                                                    $totalRequired = max($documentTypes->count(), $docs->count());
                                                     $verifiedDocs = $docs->where('status', 'verified')->count();
                                                     $rejectedDocs = $docs->where('status', 'rejected')->count();
-                                                    $legalPercent = $totalUploaded > 0 ? round(($verifiedDocs / $totalUploaded) * 100) : 0;
+                                                    $pendingDocs = $docs->where('status', 'pending')->count();
+                                                    $unverifiedOrMissing = max(0, $totalRequired - $verifiedDocs);
+
+                                                    // Hitung persentase capaian legalitas dinamis:
+                                                    // Jika total jenis dokumen ada 4 dan baru 3 yang terverifikasi, maka capaian = 3/4 = 75%
+                                                    $legalPercent = $totalRequired > 0 ? round(($verifiedDocs / $totalRequired) * 100) : 0;
                                                 @endphp
 
-                                                @if($totalUploaded == 0)
+                                                @if($totalRequired == 0)
                                                     <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 11px;">
                                                         <i class="mdi mdi-file-outline me-1"></i>Belum Ada Berkas
                                                     </span>
                                                 @else
                                                     <div class="progress-fase">
                                                         <div class="progress-label d-flex justify-content-between align-items-center mb-1">
-                                                            @if($verifiedDocs == $totalUploaded)
+                                                            @if($verifiedDocs == $totalRequired)
                                                                 <span class="fw-bold" style="font-size: 11px; color: #15803d;">
-                                                                    <i class="mdi mdi-shield-check me-1" style="font-size: 12px;"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                    <i class="mdi mdi-shield-check me-1" style="font-size: 12px;"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalRequired }})
                                                                 </span>
                                                             @elseif($rejectedDocs > 0)
                                                                 <span class="fw-bold" style="font-size: 11px; color: #b91c1c;">
-                                                                    <i class="mdi mdi-alert-circle me-1" style="font-size: 12px;"></i>Revisi ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                    <i class="mdi mdi-alert-circle me-1" style="font-size: 12px;"></i>Revisi ({{ $verifiedDocs }}/{{ $totalRequired }})
                                                                 </span>
                                                             @else
                                                                 <span class="fw-bold" style="font-size: 11px; color: #b45309;">
-                                                                    <i class="mdi mdi-clock-outline me-1" style="font-size: 12px; color: #d97706;"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalUploaded }} Sah)
+                                                                    <i class="mdi mdi-clock-outline me-1" style="font-size: 12px; color: #d97706;"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalRequired }} Sah)
                                                                 </span>
                                                             @endif
                                                         </div>
                                                         <div class="progress-bar-container" style="height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalUploaded ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : '') }}"
-                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease; {{ $verifiedDocs < $totalUploaded && $rejectedDocs == 0 ? 'background: linear-gradient(135deg, #f59e0b, #d97706);' : '' }}">
+                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalRequired ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : '') }}"
+                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease; {{ $verifiedDocs < $totalRequired && $rejectedDocs == 0 ? 'background: linear-gradient(135deg, #f59e0b, #d97706);' : '' }}">
                                                             </div>
                                                         </div>
+
+                                                        <!-- Alert Tambahan Saat Ada Dokumen Baru / Pending / Belum Lengkap -->
+                                                        @if($unverifiedOrMissing > 0 && $verifiedDocs > 0)
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1" style="font-size: 9.5px; font-weight: 600;" title="Terdapat {{ $unverifiedOrMissing }} dokumen baru/tambahan yang belum diverifikasi atau belum lengkap">
+                                                                    <i class="mdi mdi-alert-outline me-1"></i>+{{ $unverifiedOrMissing }} Dokumen Menunggu Verifikasi
+                                                                </span>
+                                                            </div>
+                                                        @elseif($rejectedDocs > 0)
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1" style="font-size: 9.5px; font-weight: 600;" title="Ada dokumen ditolak dan memerlukan revisi">
+                                                                    <i class="mdi mdi-alert-circle me-1"></i>{{ $rejectedDocs }} Dokumen Perlu Revisi
+                                                                </span>
+                                                            </div>
+                                                        @elseif($totalRequired > 0 && $verifiedDocs == 0)
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 9.5px;">
+                                                                    <i class="mdi mdi-clock-outline me-1 text-warning"></i>Menunggu Verifikasi Legal
+                                                                </span>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 @endif
                                             </td>

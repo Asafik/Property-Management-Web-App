@@ -1051,7 +1051,7 @@
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
                                     @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1()">
-                                            <i class="mdi mdi-content-save-all"></i> Simpan Fase 1
+                                            <i class="mdi mdi-content-save-all"></i> {{ $land ? 'Update / Simpan Fase 1' : 'Simpan Fase 1' }}
                                         </button>
                                     @endif
                                 </div>
@@ -1311,6 +1311,7 @@
                                         @foreach($documentTypes as $doc)
                                             @php
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
+                                                $hasFile = ($existingDoc && !empty($existingDoc->file_path));
                                             @endphp
                                             <div class="col-12 col-md-6 col-lg-4" id="doc-box-{{ $doc->id }}">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
@@ -1325,7 +1326,7 @@
                                                             </div>
                                                         </div>
                                                         @php
-                                                            $currentDocStatus = $existingDoc->status ?? ($existingDoc && !empty($existingDoc->file_path) ? 'pending' : 'belum_upload');
+                                                            $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
                                                         @endphp
                                                         @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
                                                             <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
@@ -1356,7 +1357,7 @@
                                                             value="{{ $existingDoc->document_number ?? '' }}"
                                                             placeholder="Nomor {{ $doc->name }}"
                                                             style="font-size: 0.85rem;"
-                                                            {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                            {{ $hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     </div>
 
                                                     <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
@@ -1448,23 +1449,21 @@
                                                                 </div>
                                                             @endif
                                                         @else
-                                                            <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                                Upload Berkas (PDF / JPG / PNG)
+                                                            <!-- State: Dokumen Baru / Belum Ada Berkas -> WAJIB BISA UPLOAD (TIDAK READONLY) -->
+                                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
+                                                                <span>Upload Berkas {{ $doc->name }} <span class="text-danger">*</span></span>
+                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Wajib Upload</span>
                                                             </label>
-                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                                <div class="pratanah-file-upload-modern">
-                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                    <div class="pratanah-file-label-modern py-2 px-3">
-                                                                        <i class="mdi mdi-cloud-upload"></i>
-                                                                        <div class="pratanah-file-info-modern">
-                                                                            <span class="file-label-text" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
-                                                                            <small style="font-size: 0.72rem; color: #8c98a4;">Maksimal ukuran 2MB</small>
-                                                                        </div>
+                                                            <div class="pratanah-file-upload-modern">
+                                                                <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
+                                                                        <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
                                                                     </div>
                                                                 </div>
-                                                            @else
-                                                                <span class="text-muted font-italic" style="font-size: 0.8rem;">Belum ada berkas</span>
-                                                            @endif
+                                                            </div>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -1505,13 +1504,21 @@
 
                                 <!-- ACTIONS -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row" id="actionsFase2Wrapper">
-                                    @if ($isLegalSah || ($land && in_array($land->status, ['fase3', 'approved', 'rejected'])))
-                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(3)">
-                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
-                                        </button>
-                                    @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                    @php
+                                        $totalRequired = max($documentTypes->count(), $land ? $land->documents->count() : 0);
+                                        $totalVerified = $land ? $land->documents->where('status', 'verified')->count() : 0;
+                                        $isAllDocsSah = ($totalRequired > 0) && ($totalVerified === $totalRequired);
+                                    @endphp
+
+                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected') || !$isAllDocsSah)
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" id="btnSaveFase2" onclick="saveFase2()">
-                                            <i class="mdi mdi-content-save-all"></i> Simpan Fase 2
+                                            <i class="mdi mdi-content-save-all"></i> {{ $land ? 'Update / Simpan Fase 2' : 'Simpan Fase 2' }}
+                                        </button>
+                                    @endif
+
+                                    @if ($isAllDocsSah)
+                                        <button type="button" class="btn btn-gradient-success btn-action-mobile" onclick="switchStep(3)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
                                         </button>
                                     @endif
                                 </div>

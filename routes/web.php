@@ -225,6 +225,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::get('/properti-buat-kavling/{land_bank_id}', [LandBankUnitController::class, 'create'])->name('properti.buatKavling');
     Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
     Route::post('/properti-buat-kavling/{land_bank_id}/import', [LandBankUnitController::class, 'import'])->name('kavling.import');
+    Route::post('/properti-buat-kavling/{land_bank_id}/assign-spk', [LandBankUnitController::class, 'assignSpk'])->name('properti.kavling.assignSpk');
 
 
     // edit kavling
@@ -240,6 +241,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     */
     Route::get('/properti-pengolahan-lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahanLahan');
     Route::get('/properti/{land_bank_id}/pengolahan-lahan', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahan-lahan');
+    Route::get('/properti/pengolahan_lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index']);
+    Route::get('/properti pengolahan lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index']);
     Route::get('/properti/{land_bank_id}/infrastruktur', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'getItems'])->name('properti.infrastruktur.get');
     Route::post('/properti/{land_bank_id}/infrastruktur/store', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'store'])->name('properti.infrastruktur.store');
     Route::post('/properti/infrastruktur/{id}/update', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'update'])->name('properti.infrastruktur.update');

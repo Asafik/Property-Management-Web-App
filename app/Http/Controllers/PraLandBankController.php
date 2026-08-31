@@ -13,10 +13,20 @@ class PraLandBankController extends Controller
 {
    public function index()
 {
-    $praLandBank = PraLandbank::with('payments')->paginate(10);
-    $documentTypes = pra_landbank_documents::all();
+    $praLandBank = PraLandbank::with(['payments', 'documents.documentType'])->paginate(10);
+    $documentTypes = DocumentTypes::all();
+    $totalRequiredTypes = $documentTypes->count();
 
-    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes'));
+    $landsWithPendingDocsCount = 0;
+    foreach ($praLandBank as $item) {
+        $totalRequired = max($totalRequiredTypes, $item->documents->count());
+        $verifiedDocs = $item->documents->where('status', 'verified')->count();
+        if ($verifiedDocs < $totalRequired) {
+            $landsWithPendingDocsCount++;
+        }
+    }
+
+    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
 }
 
 public function store(Request $request)
@@ -176,6 +186,13 @@ public function store(Request $request)
                         'revision_number'  => 0,
                     ]);
                 }
+            }
+
+            // Jika ada dokumen baru/tambahan yang belum diverifikasi, sesuaikan legal_status
+            $allCurrentDocs = pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
+            $unverifiedDocsCount = $allCurrentDocs->where('status', '!=', 'verified')->count();
+            if ($unverifiedDocsCount > 0 && $record->legal_status === 'clear') {
+                $record->update(['legal_status' => 'process']);
             }
         }
 
@@ -483,7 +500,7 @@ public function store(Request $request)
 
     public function indexpra(Request $request)
     {
-        $query = PraLandbank::with(['payments', 'documents']);
+        $query = PraLandbank::with(['payments', 'documents.documentType']);
 
         // Search: nama tanah
         if ($request->filled('search')) {
@@ -503,14 +520,26 @@ public function store(Request $request)
         $sortDirection = $request->get('sortDirection', 'desc') === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortField, $sortDirection);
 
-        // perPage: 10, 15, 25
-        $perPage = in_array((int) $request->get('perPage', 10), [10, 15, 25])
+        // perPage: 5, 10, 15, 25
+        $perPage = in_array((int) $request->get('perPage', 10), [5, 10, 15, 25])
             ? (int) $request->get('perPage', 10)
             : 10;
 
         $praLandBank = $query->paginate($perPage)->withQueryString();
-         $documentTypes = DocumentTypes::all();
-        return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes'));
+        $documentTypes = DocumentTypes::all();
+        $totalRequiredTypes = $documentTypes->count();
+
+        // Hitung tanah yang memiliki dokumen tambahan / belum lengkap menunggu verifikasi Kepala Legal
+        $landsWithPendingDocsCount = 0;
+        foreach ($praLandBank as $item) {
+            $totalRequired = max($totalRequiredTypes, $item->documents->count());
+            $verifiedDocs = $item->documents->where('status', 'verified')->count();
+            if ($verifiedDocs < $totalRequired) {
+                $landsWithPendingDocsCount++;
+            }
+        }
+
+        return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
     }
     public function proses(Request $request, $id = null)
     {

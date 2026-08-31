@@ -42,11 +42,18 @@
                         <span class="badge bg-white text-dark border"><i class="mdi mdi-account-hard-hat me-1"></i>{{ $item->contractor_name }}</span>
                     @endif
                 </div>
-                <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" style="font-size: 0.72rem;"
-                        onclick="openEditTargetModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $targetVol }}, '{{ addslashes($unit) }}', {{ $item->bobot_persen ?? 0 }}, {{ $item->cost_estimate ?? 0 }})" 
-                        title="Sesuaikan Target Volume & Bobot Pos Ini">
-                    <i class="mdi mdi-pencil-outline me-1"></i>Edit Target
-                </button>
+                <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" style="font-size: 0.72rem;"
+                            onclick="openEditTargetModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $targetVol }}, '{{ addslashes($unit) }}', {{ $item->bobot_persen ?? 0 }}, {{ $item->cost_estimate ?? 0 }})" 
+                            title="Sesuaikan Target Volume & Bobot Pos Ini">
+                        <i class="mdi mdi-pencil-outline me-1"></i>Edit
+                    </button>
+                    <button type="button" class="btn btn-xs btn-outline-danger py-0 px-2 rounded-pill small" style="font-size: 0.72rem;"
+                            onclick="deleteInfrastructureStep({{ $item->id }}, '{{ addslashes($item->item_name) }}')" 
+                            title="Hapus Pos Pekerjaan Ini">
+                        <i class="mdi mdi-trash-can-outline"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Clickable Interactive Expense Pill (Filters Table & Opens Form) -->
