@@ -824,16 +824,25 @@
             }
         }
 
+        /* ===== RESPONSIVE INSTALLMENT TABLE ===== */
+        #installment_widget_container .table-responsive {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        #installment_widget_container table {
+            min-width: 880px !important;
+            table-layout: auto !important;
+        }
+        .termin-status-select {
+            min-width: 85px !important;
+            font-size: 0.82rem !important;
+            padding: 4px 6px !important;
+            font-weight: 600 !important;
+        }
+
         @media (max-width: 991.98px) {
-            #installment_widget_container .table-responsive {
-                border-radius: 8px;
-                border: 1px solid #e2e8f0;
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch !important;
-            }
-            #installment_widget_container table {
-                min-width: 760px !important;
-            }
             .calc-summary-table {
                 font-size: 0.85rem !important;
             }
@@ -868,14 +877,11 @@
                             </p>
                         </div>
 
-                        <!-- BUTTON KEMBALI & ICON -->
+                        <!-- BUTTON KEMBALI -->
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
                                 <i class="mdi mdi-arrow-left"></i> Kembali
                             </a>
-                            <div class="d-none d-md-block pe-2">
-                                <i class="mdi mdi-hand-holding-usd" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -933,7 +939,7 @@
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white py-3">
                             <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                                <i class="mdi mdi-account-tie me-2" style="color: #9a55ff;"></i>FASE 1: Informasi Makelar & Penawaran Awal
+                                FASE 1: Informasi Makelar & Penawaran Awal
                             </h5>
                         </div>
                         <div class="card-body">
@@ -945,7 +951,7 @@
                                 <!-- DATA MAKELAR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-card-account-phone-outline"></i> Data Kontak Makelar
+                                        Data Kontak Makelar
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -970,7 +976,7 @@
                                 <!-- DATA TANAH -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-map-marker-radius"></i> Data Tanah
+                                        Data Tanah
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -1033,7 +1039,7 @@
                                 <!-- NEGOSIASI HARGA -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-currency-usd"></i> Negosiasi Harga Awal
+                                        Negosiasi Harga Awal
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -1065,7 +1071,7 @@
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white py-3">
                             <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                                <i class="mdi mdi-magnify me-2" style="color: #9a55ff;"></i>FASE 2: Verifikasi Kelayakan, Dokumen & Spasial Map
+                                FASE 2: Verifikasi Kelayakan, Dokumen & Spasial Map
                             </h5>
                         </div>
                         <div class="card-body">
@@ -1078,7 +1084,7 @@
                                 <div class="form-section">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div class="form-section-title mb-0">
-                                            <i class="mdi mdi-account-box-outline"></i> Profil Pemilik & Informasi Tanah (Fase 1)
+                                            Profil Pemilik & Informasi Tanah (Fase 1)
                                         </div>
                                         <button type="button" class="btn btn-sm btn-outline-purple py-1 px-3" onclick="switchStep(1)" style="font-size: 0.78rem;">
                                             <i class="mdi mdi-pencil me-1"></i> Edit Data Fase 1
@@ -1089,8 +1095,8 @@
                                         <!-- Card Profil Pemilik -->
                                         <div class="col-12 col-md-6">
                                             <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
-                                                <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                                    <i class="mdi mdi-account-tie"></i> Data Pemilik & Makelar
+                                                <h6 class="fw-bold text-primary mb-3" style="font-size: 0.88rem;">
+                                                    Data Pemilik & Makelar
                                                 </h6>
                                                 <div class="d-flex flex-column gap-2">
                                                     <div class="fase2-info-row">
@@ -1113,9 +1119,7 @@
                                                         <span class="fase2-info-label">No. WhatsApp / HP:</span>
                                                         <span class="fase2-info-value text-success">
                                                             @if(!empty($land->owner_contact))
-                                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $land->owner_contact) }}" target="_blank" class="text-success text-decoration-none d-inline-flex align-items-center">
-                                                                    <i class="mdi mdi-whatsapp me-1"></i>{{ $land->owner_contact }}
-                                                                </a>
+                                                                 {{ $land->owner_contact }}
                                                             @else
                                                                 -
                                                             @endif
@@ -1132,8 +1136,8 @@
                                         <!-- Card Data Tanah & Nilai -->
                                         <div class="col-12 col-md-6">
                                             <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
-                                                <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                                    <i class="mdi mdi-map-marker-radius"></i> Informasi Prospek & Nilai Tanah
+                                                <h6 class="fw-bold text-primary mb-3" style="font-size: 0.88rem;">
+                                                    Informasi Prospek & Nilai Tanah
                                                 </h6>
                                                 <div class="d-flex flex-column gap-2">
                                                     <div class="fase2-info-row">
@@ -1167,7 +1171,7 @@
                                 <!-- SURVEY LAPANGAN -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-checkbox-marked-circle-outline"></i> Survey Fisik Lapangan
+                                        Survey Fisik Lapangan
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
@@ -1197,7 +1201,7 @@
                                 <!-- KEJELASAN LEGALITAS -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-scale-balance"></i> Aspek Kejelasan Legalitas Tanah
+                                        Aspek Kejelasan Legalitas Tanah
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -1218,7 +1222,7 @@
                                 <!-- PERIZINAN & FASILITAS SEKITAR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-office-building"></i> Zonasi & Fasilitas Publik Sekitar
+                                        Zonasi & Fasilitas Publik Sekitar
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -1244,42 +1248,36 @@
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="sekolah" id="fase2_fac_sekolah" {{ $land && $land->facility_school ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_sekolah">
-                                                        <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Sekolah</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="rumah_sakit" id="fase2_fac_rs" {{ $land && $land->facility_hospital ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_rs">
-                                                        <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Rumah Sakit</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="pasar" id="fase2_fac_pasar" {{ $land && $land->facility_market ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_pasar">
-                                                        <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Pasar</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="transportasi" id="fase2_fac_trans" {{ $land && $land->facility_transport ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_trans">
-                                                        <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Transportasi</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="mall" id="fase2_fac_mall" {{ $land && $land->facility_mall ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_mall">
-                                                        <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Mall</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="bank" id="fase2_fac_bank" {{ $land && $land->facility_bank ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_bank">
-                                                        <i class="mdi mdi-check-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Bank / ATM</span>
                                                     </label>
                                                 </div>
@@ -1291,7 +1289,7 @@
                                 <!-- DOKUMEN LEGALITAS & UPLOAD BERKAS (KOTAK PER FILE) -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-file-document-multiple-outline"></i> Dokumen Legalitas & Upload Berkas
+                                        Dokumen Legalitas & Upload Berkas
                                     </div>
 
                                     @php
@@ -1313,17 +1311,12 @@
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                                 $hasFile = ($existingDoc && !empty($existingDoc->file_path));
                                             @endphp
-                                            <div class="col-12 col-md-6 col-lg-4" id="doc-box-{{ $doc->id }}">
+                                            <div class="col-12 col-md-6 col-xl-4" id="doc-box-{{ $doc->id }}">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <!-- Header Card Box -->
                                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
-                                                                <i class="mdi mdi-file-document-outline" style="font-size: 1.25rem;"></i>
-                                                            </div>
-                                                            <div>
-                                                                <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
-                                                            </div>
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
                                                         </div>
                                                         @php
                                                             $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
@@ -1360,94 +1353,94 @@
                                                             {{ $hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     </div>
 
-                                                    <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
-                                                    @php
-                                                        $hasRevision = $existingDoc && (($existingDoc->status ?? '') === 'rejected' || !empty($existingDoc->admin_notes));
-                                                    @endphp
-                                                    <div class="alert alert-danger p-2 mb-2 rounded-2 revision-box-{{ $doc->id }} {{ $hasRevision ? '' : 'd-none' }}" style="font-size: 0.78rem; background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;">
-                                                        <div class="d-flex align-items-start gap-1">
-                                                            <i class="mdi mdi-alert-circle text-danger mt-0" style="font-size: 1rem;"></i>
-                                                            <div class="flex-grow-1">
-                                                                <div class="d-flex align-items-center justify-content-between">
-                                                                    <strong class="d-block text-danger">Catatan Revisi Legal:</strong>
-                                                                    <span class="badge bg-danger text-white px-1 py-0 rev-badge-{{ $doc->id }}" style="font-size: 9px;">
-                                                                        Rev #{{ $existingDoc->revision_number ?? 1 }}
-                                                                    </span>
-                                                                </div>
-                                                                <div class="text-dark mt-1 revision-notes-text-{{ $doc->id }}" style="font-size: 0.78rem;">
-                                                                    {{ $existingDoc->admin_notes ?? 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.' }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                     <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
+                                                     @php
+                                                         $hasRevision = $existingDoc && (($existingDoc->status ?? '') === 'rejected' || !empty($existingDoc->admin_notes));
+                                                     @endphp
+                                                     <div class="alert alert-danger p-2 mb-2 rounded-2 revision-box-{{ $doc->id }} {{ $hasRevision ? '' : 'd-none' }}" style="font-size: 0.78rem; background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;">
+                                                         <div class="d-flex align-items-start gap-1">
+                                                             <i class="mdi mdi-alert-circle text-danger mt-0" style="font-size: 1rem;"></i>
+                                                             <div class="flex-grow-1">
+                                                                 <div class="d-flex align-items-center justify-content-between">
+                                                                     <strong class="d-block text-danger">Catatan Revisi Legal:</strong>
+                                                                     <span class="badge bg-danger text-white px-1 py-0 rev-badge-{{ $doc->id }}" style="font-size: 9px;">
+                                                                         Rev #{{ $existingDoc->revision_number ?? 1 }}
+                                                                     </span>
+                                                                 </div>
+                                                                 <div class="text-dark mt-1 revision-notes-text-{{ $doc->id }}" style="font-size: 0.78rem;">
+                                                                     {{ $existingDoc->admin_notes ?? 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.' }}
+                                                                 </div>
+                                                             </div>
+                                                         </div>
+                                                     </div>
 
-                                                    <!-- Upload Berkas File -->
-                                                    <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
-                                                        @if($existingDoc && !empty($existingDoc->file_path))
-                                                            @php
-                                                                $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
-                                                                $isDocRejected = ($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi');
-                                                            @endphp
-                                                            <!-- State: Berkas Sudah Terunggah -->
-                                                            <div class="p-2 px-3 rounded-2 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
-                                                                <div class="d-flex align-items-center justify-content-between gap-2">
-                                                                    <div class="d-flex align-items-center gap-2 overflow-hidden">
-                                                                        <i class="mdi mdi-file-check-outline text-success" style="font-size: 1.4rem;"></i>
-                                                                        <div class="overflow-hidden">
-                                                                            <span class="d-block fw-bold text-success" style="font-size: 0.82rem;">Berkas Terunggah</span>
-                                                                            <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
-                                                                        </div>
-                                                                    </div>
-                                                                    <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-sm btn-success text-white py-1 px-3 d-inline-flex align-items-center flex-shrink-0" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
-                                                                        <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                                    </a>
-                                                                </div>
-                                                            </div>
+                                                     <!-- Upload Berkas File -->
+                                                     <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
+                                                         @if($existingDoc && !empty($existingDoc->file_path))
+                                                             @php
+                                                                 $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
+                                                                 $isDocRejected = ($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi');
+                                                             @endphp
+                                                             <!-- State: Berkas Sudah Terunggah -->
+                                                             <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                                 <div class="d-flex align-items-center gap-2 mb-2">
+                                                                     <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                         <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                                     </div>
+                                                                     <div class="overflow-hidden flex-grow-1">
+                                                                         <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Berkas Terunggah</span>
+                                                                         <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
+                                                                     </div>
+                                                                 </div>
+                                                                 <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                     <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                                 </a>
+                                                             </div>
 
-                                                            <!-- Opsi Ganti / Upload Ulang Berkas (Hanya muncul saat status Ditolak/Revisi) -->
-                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                                <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : 'd-none' }}">
-                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                    <div class="pratanah-file-label-modern py-1 px-2" style="background: #fff5f5; border: 1px dashed #fca5a5;">
-                                                                        <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #ef4444;"></i>
-                                                                        <div class="pratanah-file-info-modern">
-                                                                            <span class="file-label-text text-danger" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
+                                                             <!-- Opsi Ganti / Upload Ulang Berkas (Hanya muncul saat status Ditolak/Revisi) -->
+                                                             @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                 <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : 'd-none' }}">
+                                                                     <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                     <div class="pratanah-file-label-modern py-1 px-2" style="background: #fff5f5; border: 1px dashed #fca5a5;">
+                                                                         <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #ef4444;"></i>
+                                                                         <div class="pratanah-file-info-modern">
+                                                                             <span class="file-label-text text-danger" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                                                         </div>
+                                                                     </div>
+                                                                 </div>
+                                                             @endif
 
-                                                            <!-- Tombol Aksi Validasi Kepala Legal / Admin -->
-                                                            @if($canValidateDoc)
-                                                                <div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center justify-content-end gap-1" id="action-btns-doc-{{ $existingDoc->id }}">
-                                                                    @if(($existingDoc->status ?? '') !== 'verified')
-                                                                        <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-check me-1"></i>Validasi
-                                                                        </button>
-                                                                    @endif
-                                                                    @if(($existingDoc->status ?? '') !== 'rejected')
-                                                                        <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-close"></i> Tolak
-                                                                        </button>
-                                                                    @endif
-                                                                </div>
-                                                            @else
-                                                                <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-end gap-1">
-                                                                    @if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid')
-                                                                        <span class="badge bg-success text-white py-1 px-2" style="font-size: 10px;">
-                                                                            <i class="mdi mdi-shield-check me-1"></i>Sah
-                                                                        </span>
-                                                                    @elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi')
-                                                                        <span class="badge bg-danger text-white py-1 px-2" style="font-size: 10px;">
-                                                                            <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
-                                                                        </span>
-                                                                    @else
-                                                                        <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
-                                                                            <i class="mdi mdi-clock-outline me-1"></i>Menunggu Review
-                                                                        </span>
-                                                                    @endif
-                                                                </div>
-                                                            @endif
+                                                             <!-- Tombol Aksi Validasi Kepala Legal / Admin -->
+                                                             @if($canValidateDoc)
+                                                                 <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between gap-1 w-100" id="action-btns-doc-{{ $existingDoc->id }}">
+                                                                     @if(($existingDoc->status ?? '') !== 'verified')
+                                                                         <button type="button" class="btn btn-xs btn-success py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px; font-weight: 600;">
+                                                                             <i class="mdi mdi-check me-1"></i>Validasi
+                                                                         </button>
+                                                                     @endif
+                                                                     @if(($existingDoc->status ?? '') !== 'rejected')
+                                                                         <button type="button" class="btn btn-xs btn-outline-danger py-1.5 px-2 flex-grow-1 d-inline-flex align-items-center justify-content-center" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px; font-weight: 600;">
+                                                                             <i class="mdi mdi-close me-1"></i>Tolak
+                                                                         </button>
+                                                                     @endif
+                                                                 </div>
+                                                             @else
+                                                                 <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-end gap-1 w-100">
+                                                                     @if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid')
+                                                                         <span class="badge bg-success text-white py-1 px-2" style="font-size: 10px;">
+                                                                             <i class="mdi mdi-shield-check me-1"></i>Sah
+                                                                         </span>
+                                                                     @elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi')
+                                                                         <span class="badge bg-danger text-white py-1 px-2" style="font-size: 10px;">
+                                                                             <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
+                                                                         </span>
+                                                                     @else
+                                                                         <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
+                                                                             <i class="mdi mdi-clock-outline me-1"></i>Menunggu Review
+                                                                         </span>
+                                                                     @endif
+                                                                 </div>
+                                                             @endif
                                                         @else
                                                             <!-- State: Dokumen Baru / Belum Ada Berkas -> WAJIB BISA UPLOAD (TIDAK READONLY) -->
                                                             <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
@@ -1475,7 +1468,7 @@
                                 <!-- SPASIAL MAPS KOORDINAT -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-map-marker"></i> Koordinat
+                                        Koordinat Lokasi (Peta Spasial)
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -1530,7 +1523,7 @@
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                                <i class="mdi mdi-check-decagram me-2" style="color: #9a55ff;"></i>FASE 3: Sidang & Keputusan Akhir
+                                FASE 3: Sidang & Keputusan Akhir
                             </h5>
                             @if ($land)
                                 @if ($land->status == 'approved')
@@ -1558,15 +1551,15 @@
                                 @if($land)
                                     <div class="form-section mb-4">
                                         <div class="form-section-title mb-3">
-                                            <i class="mdi mdi-account-box-outline"></i> Profil Pemilik & Informasi Tanah
+                                            Profil Pemilik & Informasi Tanah
                                         </div>
 
                                         <div class="row g-3">
                                             <!-- Card Profil Pemilik -->
                                             <div class="col-12 col-md-6">
                                                 <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
-                                                    <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                                        <i class="mdi mdi-account-tie"></i> Data Pemilik Tanah
+                                                    <h6 class="fw-bold text-primary mb-3" style="font-size: 0.88rem;">
+                                                        Data Pemilik Tanah
                                                     </h6>
                                                     <div class="d-flex flex-column gap-2">
                                                         <div class="fase2-info-row">
@@ -1596,8 +1589,8 @@
                                             <!-- Card Data Tanah & Nilai -->
                                             <div class="col-12 col-md-6">
                                                 <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
-                                                    <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                                        <i class="mdi mdi-map-marker-radius"></i> Informasi Prospek & Nilai Tanah
+                                                    <h6 class="fw-bold text-primary mb-3" style="font-size: 0.88rem;">
+                                                        Informasi Prospek & Nilai Tanah
                                                     </h6>
                                                     <div class="d-flex flex-column gap-2">
                                                         <div class="fase2-info-row">
@@ -1654,7 +1647,7 @@
                                 <!-- KEPUTUSAN SIDANG AKHIR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-gavel"></i> Hasil Sidang & Keputusan Direksi
+                                        Hasil Sidang & Keputusan Direksi
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -1685,7 +1678,7 @@
                                 <div class="form-section">
                                     <div class="form-section-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                                         <div>
-                                            <i class="mdi mdi-scale-balance"></i> Aspek Legalitas, Pajak & Biaya Administrasi
+                                            Aspek Legalitas, Pajak & Biaya Administrasi
                                         </div>
                                         @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                             <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
@@ -1721,12 +1714,12 @@
                                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                                         <div>
                                             <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.95rem;">
-                                                <i class="mdi mdi-shield-check text-success me-1"></i>Ringkasan Dokumen Legalitas (Hasil Validasi Fase 2)
+                                                Ringkasan Dokumen Legalitas (Hasil Validasi Fase 2)
                                             </h6>
                                             <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut telah diverifikasi dan disetujui sah oleh Kepala Legal pada Fase 2.</small>
                                         </div>
                                         <span class="badge bg-soft-success text-success border border-success-subtle py-1 px-3" style="font-size: 0.8rem; font-weight: 600;">
-                                            <i class="mdi mdi-check-all me-1"></i>Legalitas Terverifikasi Sah
+                                            Legalitas Terverifikasi Sah
                                         </span>
                                     </div>
 
@@ -1741,17 +1734,12 @@
                                             <div class="col-md-6 col-lg-4">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 d-flex flex-column" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <div class="p-2 rounded-2" style="background: rgba(34, 197, 94, 0.1); color: #16a34a;">
-                                                                <i class="mdi mdi-file-document-check-outline" style="font-size: 1.25rem;"></i>
-                                                            </div>
-                                                            <div>
-                                                                <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;">{{ $doc->name }}</h6>
-                                                            </div>
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;">{{ $doc->name }}</h6>
                                                         </div>
                                                         @if($existingDoc && in_array($existingDoc->status ?? '', ['verified', 'valid']))
                                                             <span class="badge bg-success py-1 px-2" style="font-size: 10px;">
-                                                                <i class="mdi mdi-check-circle me-1"></i>Sah
+                                                                Sah
                                                             </span>
                                                         @else
                                                             <span class="badge bg-secondary py-1 px-2" style="font-size: 10px;">
@@ -1790,28 +1778,28 @@
                                 <!-- SKEMA PEMBAYARAN & PEMBAYARAN BERTAHAP -->
                                 <div class="form-section">
                                     <div class="form-section-title">
-                                        <i class="mdi mdi-cash-multiple"></i> Skema Transaksi & Jadwal Pembayaran
+                                        Skema Transaksi & Jadwal Pembayaran
                                     </div>
 
                                     <!-- HARGA DEAL & DP CALCULATOR -->
-                                    <div class="row mb-3">
-                                        <div class="col-md-3 mb-3">
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12 col-sm-6 col-lg-4">
                                             <label class="form-label text-muted">Harga Target Negosiasi (Fase 1)</label>
                                             <input type="text" class="form-control" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #f1f3f7; color: #6c757d; font-weight: 600;">
                                         </div>
-                                        <div class="col-md-3 mb-3">
+                                        <div class="col-12 col-sm-6 col-lg-4">
                                             <label class="form-label text-dark font-weight-bold">Harga Deal Pokok Tanah (Rp) <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp {{ $land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0') }}" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-3 mb-3">
+                                        <div class="col-12 col-sm-6 col-lg-4">
                                             <label class="form-label font-weight-bold" style="color: #7e22ce;">Grand Total Final Transaksi (Rp)</label>
                                             <input type="text" class="form-control font-weight-bold" id="grand_total_final_display" value="Rp 0" disabled style="background-color: #f5f3ff; color: #7e22ce; border: 1.5px solid #d8b4fe; font-size: 0.95rem; font-weight: 700;">
                                         </div>
-                                        <div class="col-md-3 mb-3" id="dp_container" style="display: none;">
+                                        <div class="col-12 col-sm-6 col-lg-6" id="dp_container" style="display: none;">
                                             <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
                                             <input type="text" class="form-control border-success mb-2 font-weight-bold" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-3 mb-3" id="remaining_container" style="display: none;">
+                                        <div class="col-12 col-sm-6 col-lg-6" id="remaining_container" style="display: none;">
                                             <label class="form-label text-muted">Sisa Pembayaran (Rp)</label>
                                             <input type="text" class="form-control font-weight-bold text-danger" id="remaining_price_input" value="0" disabled style="background-color: #f8f9fa;">
                                         </div>
@@ -1821,7 +1809,7 @@
                                     <div class="card shadow-none border mb-4 p-3 rounded-3" style="background: #ffffff;">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.9rem;">
-                                                <i class="mdi mdi-calculator text-primary me-1"></i>Rincian Akumulasi Total Biaya & Skema Transaksi
+                                                Rincian Akumulasi Total Biaya & Skema Transaksi
                                             </h6>
                                             <span class="badge bg-light text-primary border px-2 py-1" id="calc_method_badge" style="font-size: 11px;">
                                                 Cash Keras
@@ -1883,7 +1871,7 @@
                                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                                             <div>
                                                 <h6 class="mb-0 text-dark font-weight-bold">
-                                                    <i class="mdi mdi-cash-check text-success me-1"></i> Rincian Pembayaran Cash Keras (Lunas Sekaligus)
+                                                    Rincian Pembayaran Cash Keras (Lunas Sekaligus)
                                                 </h6>
                                                 <small class="text-muted">Lengkapi data nominal pelunasan (otomatis mengikuti Grand Total), tanggal realisasi transaksi, bukti transfer, dan status pembayaran.</small>
                                             </div>
@@ -1894,7 +1882,7 @@
 
                                         <div class="row g-3">
                                             <!-- Tipe Pembayaran Realisasi -->
-                                            <div class="col-md-3">
+                                            <div class="col-12 col-sm-6 col-lg-3">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Tipe Pembayaran <span class="text-danger">*</span>
                                                 </label>
@@ -1905,7 +1893,7 @@
                                             </div>
 
                                             <!-- Nominal Pelunasan (Otomatis Ikut Grand Total) -->
-                                            <div class="col-md-3">
+                                            <div class="col-12 col-sm-6 col-lg-3">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Nominal Pelunasan (Grand Total) <span class="text-danger">*</span>
                                                 </label>
@@ -1916,7 +1904,7 @@
                                             </div>
 
                                             <!-- Tanggal Pelunasan -->
-                                            <div class="col-md-3">
+                                            <div class="col-12 col-sm-6 col-lg-3">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Tanggal Realisasi / Bayar <span class="text-danger">*</span>
                                                 </label>
@@ -1926,7 +1914,7 @@
                                             </div>
 
                                             <!-- Status Pembayaran -->
-                                            <div class="col-md-3">
+                                            <div class="col-12 col-sm-6 col-lg-3">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Status Pembayaran <span class="text-danger">*</span>
                                                 </label>
@@ -1940,7 +1928,7 @@
                                         <!-- DETAIL TRANSFER BANK CONTAINER (MUNCUL JIKA TRANSFER) -->
                                         <div id="cash_bank_details_container" class="row g-3 mt-1 pt-2 border-top" style="{{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'display: none;' : '' }}">
                                             <!-- Nama Bank -->
-                                            <div class="col-md-4">
+                                            <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Nama Bank Penerima / Tujuan
                                                 </label>
@@ -1951,23 +1939,23 @@
                                             </div>
 
                                             <!-- Nomor Rekening -->
-                                            <div class="col-md-4">
+                                            <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Nomor Rekening Penerima
                                                 </label>
-                                                <input type="text" class="form-control form-control-sm font-monospace fw-bold" name="cash_account_number" 
+                                                <input type="text" class="form-control form-control-sm" name="cash_account_number" 
                                                     value="{{ $cashPayment->account_number ?? '' }}" 
                                                     placeholder="Contoh: 1234567890" 
                                                     {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                             </div>
 
                                             <!-- Atas Nama Rekening -->
-                                            <div class="col-md-4">
+                                            <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     Atas Nama Rekening (A/N)
                                                 </label>
-                                                <input type="text" class="form-control form-control-sm" name="cash_account_name" 
-                                                    value="{{ $cashPayment->account_name ?? ($land->owner_name ?? $land->certificate_owner ?? '') }}" 
+                                                <input type="text" class="form-control form-control-sm" name="cash_account_holder" 
+                                                    value="{{ $cashPayment->account_holder ?? ($land->owner_name ?? '') }}" 
                                                     placeholder="Nama Pemilik Rekening" 
                                                     {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                             </div>
@@ -2004,7 +1992,7 @@
                                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                                             <div>
                                                 <h6 class="mb-0 text-dark font-weight-bold">
-                                                    <i class="mdi mdi-calendar-clock text-primary"></i> Rencana Jadwal Pembayaran Bertahap (Termin)
+                                                    Rencana Jadwal Pembayaran Bertahap (Termin)
                                                 </h6>
                                                 <small class="text-muted">Nominal, tanggal jatuh tempo, dan bukti pembayaran dapat dikelola per tahap.</small>
                                             </div>
@@ -2019,13 +2007,13 @@
                                             <table class="table table-bordered table-hover align-middle mb-2" style="background: white;">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th width="15%">Tahap</th>
-                                                        <th width="18%">Metode / Rekening</th>
-                                                        <th width="20%">Nominal Pembayaran (Rp)</th>
-                                                        <th width="15%">Jatuh Tempo</th>
-                                                        <th width="15%">Bukti Pembayaran</th>
-                                                        <th width="11%">Status</th>
-                                                        <th width="6%" class="text-center">Aksi</th>
+                                                        <th style="min-width: 130px; width: 15%;">Tahap</th>
+                                                        <th style="min-width: 175px; width: 18%;">Metode / Rekening</th>
+                                                        <th style="min-width: 165px; width: 20%;">Nominal Pembayaran (Rp)</th>
+                                                        <th style="min-width: 135px; width: 14%;">Jatuh Tempo</th>
+                                                        <th style="min-width: 140px; width: 15%;">Bukti Pembayaran</th>
+                                                        <th style="min-width: 100px; width: 11%;" class="text-center">Status</th>
+                                                        <th style="min-width: 55px; width: 7%;" class="text-center">Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="installment_tbody">
@@ -2072,7 +2060,7 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <select name="installments[{{ $i }}][status]" class="form-select form-select-sm" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                    <select name="installments[{{ $i }}][status]" class="form-select form-select-sm termin-status-select" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                         <option value="belum" {{ $payment->status == 'belum' ? 'selected' : '' }}>Belum</option>
                                                                         <option value="lunas" {{ $payment->status == 'lunas' ? 'selected' : '' }}>Lunas</option>
                                                                     </select>
@@ -2786,7 +2774,7 @@
                         </div>
                     </td>
                     <td>
-                        <select name="installments[${i}][status]" class="form-select form-select-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                        <select name="installments[${i}][status]" class="form-select form-select-sm termin-status-select" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                             <option value="belum">Belum</option>
                             <option value="lunas">Lunas</option>
                         </select>
@@ -2847,7 +2835,7 @@
                     </div>
                 </td>
                 <td>
-                    <select name="installments[${newIndex}][status]" class="form-select form-select-sm">
+                    <select name="installments[${newIndex}][status]" class="form-select form-select-sm termin-status-select">
                         <option value="belum">Belum</option>
                         <option value="lunas">Lunas</option>
                     </select>
