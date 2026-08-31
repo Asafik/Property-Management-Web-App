@@ -239,8 +239,10 @@ public function store(Request $request)
         if ($request->fase === 'fase3') {
             // Validasi: seluruh dokumen legalitas wajib sudah divalidasi (Sah/Verified) oleh Kepala Legal
             $praDocs = pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
-            $uploadedDocs = $praDocs->whereNotNull('file_path');
-            $hasUnverified = $uploadedDocs->count() === 0 || $uploadedDocs->contains(fn($d) => !in_array($d->status, ['verified', 'valid']));
+            $activeDocs = $praDocs->filter(function($d) {
+                return !empty($d->file_path) || $d->document_status === 'proses' || !empty($d->document_number);
+            });
+            $hasUnverified = $activeDocs->count() === 0 || $activeDocs->contains(fn($d) => !in_array($d->status, ['verified', 'valid']));
 
             if ($hasUnverified && ($request->status ?? 'fase3') !== 'rejected') {
                 return response()->json([
@@ -659,5 +661,50 @@ public function store(Request $request)
         }
 
         return back()->with('success', 'Dokumen ditolak & menunggu perbaikan berkas.');
+    }
+
+    /**
+     * Upload berkas fisik dokumen yang sudah selesai/jadi oleh Staff Legal (Tanpa membatalkan status validasi paralel)
+     */
+    public function uploadCompletedDocument(Request $request, $id)
+    {
+        $request->validate([
+            'document_number' => 'nullable|string|max:255',
+            'file'            => 'required|file|mimes:pdf,jpg,jpeg,png|max:20480',
+            'process_notes'   => 'nullable|string',
+        ]);
+
+        $doc = pra_landbank_documents::findOrFail($id);
+        $record = PraLandbank::findOrFail($doc->pra_landbank_id);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/pra_landbank/' . $record->id . '/' . $doc->document_type_id);
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+            $filePath = 'uploads/pra_landbank/' . $record->id . '/' . $doc->document_type_id . '/' . $filename;
+
+            $doc->update([
+                'document_number' => $request->filled('document_number') ? $request->document_number : $doc->document_number,
+                'file_path'       => $filePath,
+                'document_status' => 'ada',
+                'process_notes'   => $request->filled('process_notes') ? $request->process_notes : 'Dokumen fisik telah selesai dan diunggah oleh Staff Legal.',
+            ]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Berkas fisik dokumen ' . ($doc->documentType->name ?? '') . ' berhasil diunggah & status diperbarui menjadi Lengkap!',
+                'doc'     => $doc->fresh(['documentType']),
+            ]);
+        }
+
+        return back()->with('success', 'Berkas fisik dokumen berhasil diunggah!');
     }
 }

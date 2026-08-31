@@ -189,6 +189,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::delete('/properti/pra-landbank/{id}', [PraLandBankController::class, 'destroy'])->name('pra-landbanks.destroy');
     Route::post('/pra-landbank/dokumen/{id}/approve', [PraLandBankController::class, 'approveDocument'])->name('pra-dokumen.approve');
     Route::post('/pra-landbank/dokumen/{id}/reject', [PraLandBankController::class, 'rejectDocument'])->name('pra-dokumen.reject');
+    Route::post('/pra-landbank/dokumen/{id}/upload-completed', [PraLandBankController::class, 'uploadCompletedDocument'])->name('pra-dokumen.upload-completed');
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
