@@ -393,7 +393,7 @@
         <!-- Statistic Cards - Data dari controller -->
         <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-md-4 col-lg">
-                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #9a55ff !important;">
+                <div class="card shadow-sm border-0 h-100 mb-0">
                     <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
                             <h4 class="text-dark mb-1 fw-bold">{{ $totalProperty }}</h4>
@@ -406,7 +406,7 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg">
-                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #0d6efd !important;">
+                <div class="card shadow-sm border-0 h-100 mb-0">
                     <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
                             <h4 class="text-dark mb-1 fw-bold">{{ $totalUnit }}</h4>
@@ -419,7 +419,7 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg">
-                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #6f42c1 !important;">
+                <div class="card shadow-sm border-0 h-100 mb-0">
                     <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
                             <h4 class="text-dark mb-1 fw-bold">{{ $totalPayments }}</h4>
@@ -432,7 +432,7 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg">
-                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #28a745 !important; background: linear-gradient(135deg, #ffffff 0%, #f4fdf6 100%);">
+                <div class="card shadow-sm border-0 h-100 mb-0">
                     <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
                             <h4 class="text-success mb-1 fw-bold" style="font-size: 1.05rem;">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</h4>
@@ -445,7 +445,7 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg">
-                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #ea580c !important; background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);">
+                <div class="card shadow-sm border-0 h-100 mb-0">
                     <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
                             <h4 class="text-danger mb-1 fw-bold" style="color: #ea580c !important; font-size: 1.05rem;">Rp {{ number_format($totalPiutang ?? 0, 0, ',', '.') }}</h4>

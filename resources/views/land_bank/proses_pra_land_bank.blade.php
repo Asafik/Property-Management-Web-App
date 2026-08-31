@@ -317,6 +317,40 @@
             font-weight: 600;
         }
 
+        /* Same As Certificate Toggle Badge */
+        .same-cert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            background: rgba(154, 85, 255, 0.08);
+            border: 1.5px solid rgba(154, 85, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .same-cert-badge:hover {
+            background: rgba(154, 85, 255, 0.15);
+            border-color: #9a55ff;
+        }
+
+        .same-cert-badge input[type="checkbox"] {
+            cursor: pointer;
+            width: 17px;
+            height: 17px;
+            accent-color: #9a55ff;
+            margin: 0;
+            border-radius: 3px;
+        }
+
+        .same-cert-badge span {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #6b21a8;
+        }
+
         /* Modern File Upload */
         .pratanah-file-upload-modern {
             position: relative;
@@ -459,6 +493,42 @@
             }
         }
 
+        /* Responsive Fase 2 Styles */
+        .pratanah-map-container {
+            height: 320px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0e4e9;
+        }
+
+        .fase2-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding-bottom: 0.35rem;
+            border-bottom: 1px solid rgba(154, 85, 255, 0.1) !important;
+            font-size: 0.85rem;
+        }
+
+        .fase2-info-row:last-child {
+            border-bottom: none !important;
+            padding-bottom: 0;
+        }
+
+        .fase2-info-label {
+            color: #6c757d;
+            flex-shrink: 0;
+        }
+
+        .fase2-info-value {
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+            color: #2c2e3f;
+        }
+
         /* Mode HP / Mobile */
         @media (max-width: 576px) {
             .content-wrapper {
@@ -481,6 +551,27 @@
             }
             .step-title {
                 font-size: 0.725rem;
+            }
+            .pratanah-checkbox-wrapper {
+                min-width: calc(50% - 0.4rem) !important;
+                flex: 1 1 auto;
+            }
+            .pratanah-checkbox-label {
+                padding: 0.45rem 0.65rem !important;
+                font-size: 0.78rem !important;
+            }
+            .pratanah-map-container {
+                height: 220px;
+            }
+            .fase2-info-row {
+                font-size: 0.8rem;
+                gap: 8px;
+            }
+            .fase2-info-value {
+                font-size: 0.8rem;
+            }
+            .btn-action-mobile {
+                width: 100% !important;
             }
         }
 
@@ -661,6 +752,92 @@
             color: #581c87 !important;
             font-weight: 700 !important;
         }
+
+        /* ===== RESPONSIVE MOBILE & TABLET STYLING ===== */
+        @media (max-width: 575.98px) {
+            .step-wizard {
+                padding: 0;
+                margin-bottom: 1.25rem;
+            }
+            .step-item {
+                width: 75px;
+            }
+            .step-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 0.95rem;
+                border-width: 2px;
+            }
+            .step-wizard::before,
+            .step-progress-bar {
+                top: 18px;
+                height: 3px;
+            }
+            .step-title {
+                font-size: 0.72rem;
+                margin-top: 0.35rem;
+            }
+            .card-header {
+                padding: 0.75rem 1rem !important;
+            }
+            .card-body {
+                padding: 1rem 0.85rem !important;
+            }
+            .form-section {
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+            }
+            #mapFase2 {
+                height: 260px !important;
+            }
+            .footer-action-row {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.75rem !important;
+            }
+            .footer-action-row .btn,
+            .footer-action-row > div,
+            .footer-action-row > div > .btn {
+                width: 100% !important;
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            .step-wizard {
+                padding: 0 0.5rem;
+                margin-bottom: 1.75rem;
+            }
+            .step-item {
+                width: 95px;
+            }
+            .step-circle {
+                width: 42px;
+                height: 42px;
+                font-size: 1.05rem;
+            }
+            .step-wizard::before,
+            .step-progress-bar {
+                top: 21px;
+            }
+            #mapFase2 {
+                height: 300px !important;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            #installment_widget_container .table-responsive {
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            #installment_widget_container table {
+                min-width: 760px !important;
+            }
+            .calc-summary-table {
+                font-size: 0.85rem !important;
+            }
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -821,11 +998,9 @@
                                         <div class="col-md-6 mb-3">
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <label class="form-label mb-0">Nama Pemilik Tanah</label>
-                                                <label class="d-flex align-items-center gap-2 mb-0 px-2 py-1 rounded" for="sameAsCertificate" style="cursor: pointer; background: rgba(154, 85, 255, 0.08); border: 1px solid rgba(154, 85, 255, 0.25); user-select: none;">
-                                                    <input class="form-check-input m-0" type="checkbox" id="sameAsCertificate" {{ $land && $land->owner_name && $land->certificate_owner && $land->owner_name === $land->certificate_owner ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }} style="cursor: pointer; width: 16px; height: 16px; accent-color: #9a55ff; border: 1.5px solid #9a55ff;">
-                                                    <span class="fw-bold" style="font-size: 0.78rem; color: #782cd1;">
-                                                        Sama dengan sertifikat
-                                                    </span>
+                                                <label class="same-cert-badge" for="sameAsCertificate" title="Centang untuk menyamakan dengan nama di sertifikat">
+                                                    <input type="checkbox" id="sameAsCertificate" {{ $land && $land->owner_name && $land->certificate_owner && $land->owner_name === $land->certificate_owner ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <span>Sama dengan sertifikat</span>
                                                 </label>
                                             </div>
                                             <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ $land->owner_name ?? '' }}" placeholder="Nama pemilik tanah saat ini" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
@@ -873,9 +1048,9 @@
                                 </div>
 
                                 <!-- ACTIONS -->
-                                <div class="d-flex justify-content-end gap-3 mt-4">
+                                <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
                                     @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                        <button type="button" class="btn btn-gradient-primary" onclick="saveFase1()">
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1()">
                                             <i class="mdi mdi-content-save-all"></i> Simpan Fase 1
                                         </button>
                                     @endif
@@ -912,31 +1087,31 @@
 
                                     <div class="row g-3">
                                         <!-- Card Profil Pemilik -->
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-md-6">
                                             <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
                                                 <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
                                                     <i class="mdi mdi-account-tie"></i> Data Pemilik & Makelar
                                                 </h6>
-                                                <div class="d-flex flex-column gap-2" style="font-size: 0.85rem;">
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Nama Pemilik Tanah:</span>
-                                                        <span class="fw-bold text-dark">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                                <div class="d-flex flex-column gap-2">
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Nama Pemilik Tanah:</span>
+                                                        <span class="fase2-info-value">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Nama di Sertifikat:</span>
-                                                        <span class="fw-bold text-dark">{{ $land->certificate_owner ?? '-' }}</span>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Nama di Sertifikat:</span>
+                                                        <span class="fase2-info-value">{{ $land->certificate_owner ?? '-' }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Nama Makelar:</span>
-                                                        <span class="fw-semibold text-dark">{{ $land->land_owner ?? '-' }}</span>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Nama Makelar:</span>
+                                                        <span class="fase2-info-value">{{ $land->land_owner ?? '-' }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Instansi / Perusahaan:</span>
-                                                        <span class="text-dark">{{ $land->land_source ?? '-' }}</span>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Instansi / Perusahaan:</span>
+                                                        <span class="fase2-info-value text-muted">{{ $land->land_source ?? '-' }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between">
-                                                        <span class="text-muted">No. WhatsApp / HP:</span>
-                                                        <span class="fw-bold text-success">
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">No. WhatsApp / HP:</span>
+                                                        <span class="fase2-info-value text-success">
                                                             @if(!empty($land->owner_contact))
                                                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $land->owner_contact) }}" target="_blank" class="text-success text-decoration-none d-inline-flex align-items-center">
                                                                     <i class="mdi mdi-whatsapp me-1"></i>{{ $land->owner_contact }}
@@ -946,49 +1121,44 @@
                                                             @endif
                                                         </span>
                                                     </div>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Alamat Lokasi:</span>
+                                                        <span class="fase2-info-value">{{ $land->address ?? '-' }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Card Data Tanah & Nilai -->
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-md-6">
                                             <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
                                                 <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
                                                     <i class="mdi mdi-map-marker-radius"></i> Informasi Prospek & Nilai Tanah
                                                 </h6>
-                                                <div class="d-flex flex-column gap-2" style="font-size: 0.85rem;">
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Nama Prospek:</span>
-                                                        <span class="fw-bold text-dark">{{ $land->land_name ?? '-' }}</span>
+                                                <div class="d-flex flex-column gap-2">
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Nama Prospek:</span>
+                                                        <span class="fase2-info-value">{{ $land->land_name ?? '-' }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Status Kepemilikan:</span>
-                                                        <span class="badge text-white px-2 py-1" style="background: linear-gradient(135deg, #da8cff, #9a55ff); font-size: 0.75rem;">
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Status Kepemilikan:</span>
+                                                        <span class="fase2-info-value">
                                                             {{ $land->ownership_status ?? 'SHM' }}
                                                         </span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Luas Tanah:</span>
-                                                        <span class="fw-bold text-dark">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Luas Tanah:</span>
+                                                        <span class="fase2-info-value">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between pb-1 border-bottom" style="border-color: rgba(154, 85, 255, 0.1) !important;">
-                                                        <span class="text-muted">Harga Penawaran:</span>
-                                                        <span class="text-danger fw-semibold">Rp {{ number_format($land->offer_price ?? 0, 0, ',', '.') }}</span>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Harga Penawaran:</span>
+                                                        <span class="fase2-info-value text-danger">Rp {{ number_format($land->offer_price ?? 0, 0, ',', '.') }}</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between">
-                                                        <span class="text-muted">Target Negosiasi:</span>
-                                                        <span class="text-primary fw-bold">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Target Negosiasi:</span>
+                                                        <span class="fase2-info-value text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Alamat Lokasi -->
-                                        <div class="col-12">
-                                            <div class="p-2 px-3 rounded-2 d-flex align-items-center gap-2" style="background: #ffffff; border: 1px dashed rgba(154, 85, 255, 0.4); font-size: 0.85rem;">
-                                                <i class="mdi mdi-map-marker text-danger" style="font-size: 1.1rem;"></i>
-                                                <span class="text-muted">Lokasi:</span>
-                                                <span class="fw-semibold text-dark">{{ $land->address ?? 'Alamat belum diisi pada Fase 1' }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1138,32 +1308,31 @@
                                             @php
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                             @endphp
-                                            <div class="col-md-6 col-lg-4" id="doc-box-{{ $doc->id }}">
+                                            <div class="col-12 col-md-6 col-lg-4" id="doc-box-{{ $doc->id }}">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <!-- Header Card Box -->
-                                                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <div class="p-2 rounded-2" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
+                                                            <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
                                                                 <i class="mdi mdi-file-document-outline" style="font-size: 1.25rem;"></i>
                                                             </div>
                                                             <div>
                                                                 <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
-                                                                <span class="badge bg-light text-primary border" style="font-size: 10px; font-family: monospace;">{{ $doc->code }}</span>
                                                             </div>
                                                         </div>
                                                         @php
                                                             $currentDocStatus = $existingDoc->status ?? ($existingDoc && !empty($existingDoc->file_path) ? 'pending' : 'belum_upload');
                                                         @endphp
                                                         @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
-                                                            <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
                                                                 <i class="mdi mdi-check-circle me-1"></i>Terverifikasi (Sah)
                                                             </span>
                                                         @elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi')
-                                                            <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
                                                                 <i class="mdi mdi-alert-circle me-1"></i>Revisi
                                                             </span>
                                                         @elseif($existingDoc && !empty($existingDoc->file_path))
-                                                            <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
                                                                 <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi Legal
                                                             </span>
                                                         @else
@@ -1176,7 +1345,7 @@
                                                     <!-- Input Nomor Dokumen -->
                                                     <div class="mb-2">
                                                         <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Nomor Dokumen {{ $doc->name }}
+                                                             Nomor Dokumen {{ $doc->name }}
                                                         </label>
                                                         <input type="text" class="form-control form-control-sm"
                                                             name="documents[{{ $doc->id }}][number]"
@@ -1209,45 +1378,71 @@
 
                                                     <!-- Upload Berkas File -->
                                                     <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
-                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Upload Berkas (PDF / JPG / PNG)
-                                                        </label>
-
-                                                        @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                            <div class="pratanah-file-upload-modern">
-                                                                <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                <div class="pratanah-file-label-modern py-2 px-3">
-                                                                    <i class="mdi mdi-cloud-upload"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
-                                                                        <small style="font-size: 0.72rem; color: #8c98a4;">Maksimal ukuran 2MB</small>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-
                                                         @if($existingDoc && !empty($existingDoc->file_path))
                                                             @php
                                                                 $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
+                                                                $isDocRejected = ($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi');
                                                             @endphp
-                                                            <div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center justify-content-between gap-1">
-                                                                <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
-                                                                    <i class="mdi mdi-eye me-1"></i>Lihat
-                                                                </a>
-                                                                <!-- Tombol Aksi Validasi Kepala Legal -->
-                                                                <div class="d-flex align-items-center gap-1" id="action-btns-doc-{{ $existingDoc->id }}">
-                                                                    @if(($existingDoc->status ?? '') !== 'verified')
-                                                                        <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-check me-1"></i>Validasi
-                                                                        </button>
-                                                                    @endif
-                                                                    @if(($existingDoc->status ?? '') !== 'rejected')
-                                                                        <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-close"></i> Tolak
-                                                                        </button>
-                                                                    @endif
+                                                            <!-- State: Berkas Sudah Terunggah -->
+                                                            <div class="p-2 px-3 rounded-2 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                                                    <div class="d-flex align-items-center gap-2 overflow-hidden">
+                                                                        <i class="mdi mdi-file-check-outline text-success" style="font-size: 1.4rem;"></i>
+                                                                        <div class="overflow-hidden">
+                                                                            <span class="d-block fw-bold text-success" style="font-size: 0.82rem;">Berkas Terunggah</span>
+                                                                            <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-sm btn-success text-white py-1 px-3 d-inline-flex align-items-center flex-shrink-0" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                        <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                                    </a>
                                                                 </div>
                                                             </div>
+
+                                                            <!-- Opsi Ganti / Upload Ulang Berkas (Hanya muncul saat status Ditolak/Revisi) -->
+                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : 'd-none' }}">
+                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                    <div class="pratanah-file-label-modern py-1 px-2" style="background: #fff5f5; border: 1px dashed #fca5a5;">
+                                                                        <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #ef4444;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text text-danger" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+
+                                                            <!-- Tombol Aksi Validasi Kepala Legal -->
+                                                            <div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center justify-content-end gap-1" id="action-btns-doc-{{ $existingDoc->id }}">
+                                                                @if(($existingDoc->status ?? '') !== 'verified')
+                                                                    <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px;">
+                                                                        <i class="mdi mdi-check me-1"></i>Validasi
+                                                                    </button>
+                                                                @endif
+                                                                @if(($existingDoc->status ?? '') !== 'rejected')
+                                                                    <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px;">
+                                                                        <i class="mdi mdi-close"></i> Tolak
+                                                                    </button>
+                                                                @endif
+                                                            </div>
+                                                        @else
+                                                            <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
+                                                                Upload Berkas (PDF / JPG / PNG)
+                                                            </label>
+                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                <div class="pratanah-file-upload-modern">
+                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                    <div class="pratanah-file-label-modern py-2 px-3">
+                                                                        <i class="mdi mdi-cloud-upload"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
+                                                                            <small style="font-size: 0.72rem; color: #8c98a4;">Maksimal ukuran 2MB</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <span class="text-muted font-italic" style="font-size: 0.8rem;">Belum ada berkas</span>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </div>
@@ -1278,7 +1473,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 text-end">
-                                            <button type="button" class="btn btn-outline-purple"
+                                            <button type="button" class="btn btn-outline-purple btn-action-mobile"
                                                 onclick="getCurrentLocation()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <i class="mdi mdi-map-marker"></i> Gunakan Lokasi Saya
                                             </button>
@@ -1287,9 +1482,9 @@
                                 </div>
 
                                 <!-- ACTIONS -->
-                                <div class="d-flex justify-content-end gap-3 mt-4">
+                                <div class="d-flex flex-wrap justify-content-end gap-3 mt-4 footer-action-row">
                                     @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                        <button type="button" class="btn btn-gradient-primary" onclick="saveFase2()">
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase2()">
                                             <i class="mdi mdi-content-save-all"></i> Simpan Fase 2
                                         </button>
                                     @endif
@@ -1326,63 +1521,97 @@
                                 <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
                                 <input type="hidden" name="fase" value="fase3">
 
-                                <!-- RINGKASAN PROFIL PROSPEK (FASE 1 & FASE 2) -->
+                                <!-- PROFIL PEMILIK & INFORMASI TANAH (FASE 1 & 2) -->
                                 @if($land)
-                                    <div class="card border-0 mb-4 rounded-3" style="background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%); border-left: 4px solid #9a55ff !important;">
-                                        <div class="card-body p-3">
-                                            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <div class="p-2 rounded-circle" style="background: #9a55ff; color: white;">
-                                                        <i class="mdi mdi-clipboard-text-search-outline" style="font-size: 1.1rem;"></i>
+                                    <div class="form-section mb-4">
+                                        <div class="form-section-title mb-3">
+                                            <i class="mdi mdi-account-box-outline"></i> Profil Pemilik & Informasi Tanah
+                                        </div>
+
+                                        <div class="row g-3">
+                                            <!-- Card Profil Pemilik -->
+                                            <div class="col-12 col-md-6">
+                                                <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
+                                                    <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                                                        <i class="mdi mdi-account-tie"></i> Data Pemilik Tanah
+                                                    </h6>
+                                                    <div class="d-flex flex-column gap-2">
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Nama Pemilik Tanah:</span>
+                                                            <span class="fase2-info-value">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Nama di Sertifikat:</span>
+                                                            <span class="fase2-info-value">{{ $land->certificate_owner ?? '-' }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Sumber Info:</span>
+                                                            <span class="fase2-info-value text-muted">{{ $land->land_source ?? '-' }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Alamat Lokasi:</span>
+                                                            <span class="fase2-info-value">{{ $land->address ?? '-' }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Zonasi:</span>
+                                                            <span class="fase2-info-value">{{ $land->zoning ?? '-' }}</span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.95rem;">{{ $land->land_name }}</h6>
-                                                        <small class="text-muted">Sumber Info: <strong class="text-dark">{{ $land->land_source ?? '-' }}</strong> | Status Hak: <span class="badge bg-purple text-white py-0 px-2" style="background: #7e22ce; font-size: 11px;">{{ $land->ownership_status ?? 'SHM' }}</span></small>
-                                                    </div>
-                                                </div>
-                                                <div class="text-end">
-                                                    <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 11px;">
-                                                        <i class="mdi mdi-ruler-square text-primary me-1"></i>{{ number_format($land->area ?? 0, 0, ',', '.') }} m²
-                                                    </span>
                                                 </div>
                                             </div>
 
-                                            <div class="row g-2 pt-1" style="font-size: 0.82rem;">
-                                                <div class="col-md-3">
-                                                    <span class="text-muted d-block">Pemilik Tanah:</span>
-                                                    <strong class="text-dark">{{ $land->owner_name ?? $land->land_owner ?? '-' }}</strong>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <span class="text-muted d-block">Sertifikat a/n:</span>
-                                                    <strong class="text-dark">{{ $land->certificate_owner ?? $land->land_owner ?? '-' }}</strong>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <span class="text-muted d-block">Harga Penawaran Awal:</span>
-                                                    <strong class="text-muted">Rp {{ number_format($land->offer_price ?? 0, 0, ',', '.') }}</strong>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <span class="text-muted d-block">Harga Target Negosiasi:</span>
-                                                    <strong class="text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</strong>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <span class="text-muted d-block">Lokasi & Zonasi:</span>
-                                                    <span class="text-dark">{{ $land->address ? $land->address . ', ' : '' }}{{ $land->district ? 'Kec. ' . $land->district . ', ' : '' }}{{ $land->city ?? '' }} (Zonasi: {{ $land->zoning ?? '-' }})</span>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <span class="text-muted d-block">Status Legalitas / Sengketa:</span>
-                                                    @if($land->legal_status == 'problem')
-                                                        <span class="badge bg-danger py-1 px-2">Bermasalah: {{ $land->legal_issue_note ?? 'Dalam Sengketa' }}</span>
-                                                    @else
-                                                        <span class="badge bg-success py-1 px-2">Clear / Bebas Sengketa</span>
-                                                    @endif
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <span class="text-muted d-block">Tingkat Kesulitan Izin:</span>
-                                                    @if(in_array($land->permit_difficulty, ['sulit', 'very_sulit']))
-                                                        <span class="badge bg-warning text-dark py-1 px-2">{{ ucfirst($land->permit_difficulty) }} ({{ $land->permit_difficulty_note ?? '-' }})</span>
-                                                    @else
-                                                        <span class="badge bg-info text-white py-1 px-2">{{ ucfirst($land->permit_difficulty ?? 'Mudah') }}</span>
-                                                    @endif
+                                            <!-- Card Data Tanah & Nilai -->
+                                            <div class="col-12 col-md-6">
+                                                <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
+                                                    <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                                                        <i class="mdi mdi-map-marker-radius"></i> Informasi Prospek & Nilai Tanah
+                                                    </h6>
+                                                    <div class="d-flex flex-column gap-2">
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Nama Prospek:</span>
+                                                            <span class="fase2-info-value">{{ $land->land_name ?? '-' }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Status Kepemilikan:</span>
+                                                            <span class="fase2-info-value">
+                                                                {{ $land->ownership_status ?? 'SHM' }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Luas Tanah:</span>
+                                                            <span class="fase2-info-value">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Harga Penawaran:</span>
+                                                            <span class="fase2-info-value text-danger">Rp {{ number_format($land->offer_price ?? 0, 0, ',', '.') }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Target Negosiasi:</span>
+                                                            <span class="fase2-info-value text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Status Legalitas / Sengketa:</span>
+                                                            <span class="fase2-info-value">
+                                                                @if(($land->legal_status ?? '') == 'problem')
+                                                                    <span class="badge bg-danger py-1 px-2" style="font-size: 11px;">Bermasalah: {{ $land->legal_issue_note ?? 'Dalam Sengketa' }}</span>
+                                                                @elseif(($land->legal_status ?? '') == 'checking')
+                                                                    <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 11px;">Dalam Pengecekan Notaris/BPN</span>
+                                                                @else
+                                                                    <span class="badge bg-success py-1 px-2" style="font-size: 11px;">Clear / Bebas Sengketa</span>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Tingkat Kesulitan Izin:</span>
+                                                            <span class="fase2-info-value">
+                                                                @if(in_array(($land->permit_difficulty ?? ''), ['sulit', 'very_sulit']))
+                                                                    <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 11px;">{{ ucfirst($land->permit_difficulty) }} ({{ $land->permit_difficulty_note ?? '-' }})</span>
+                                                                @else
+                                                                    <span class="badge bg-info text-white py-1 px-2" style="font-size: 11px;">{{ ucfirst($land->permit_difficulty ?? 'Mudah') }}</span>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1421,13 +1650,13 @@
 
                                 <!-- ASPEK LEGALITAS & BIAYA TRANSAKSI -->
                                 <div class="form-section">
-                                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                                    <div class="form-section-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                                         <div>
                                             <i class="mdi mdi-scale-balance"></i> Aspek Legalitas, Pajak & Biaya Administrasi
                                         </div>
                                         @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                            <button type="button" class="btn btn-xs btn-outline-primary py-1 px-3" onclick="addCustomCostRow()">
-                                                <i class="mdi mdi-plus-circle me-1"></i> Tambah Biaya Admin / Lainnya
+                                            <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
+                                                <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Biaya Admin / Lainnya
                                             </button>
                                         @endif
                                     </div>
@@ -1477,7 +1706,7 @@
                                                 $cleanPath = $hasExistingFile ? str_replace('uploads/', '', $existingDoc->file_path) : null;
                                             @endphp
                                             <div class="col-md-6 col-lg-4">
-                                                <div class="card h-100 border shadow-sm rounded-3 p-3" style="background: #ffffff; border-color: #eaedf2 !important;">
+                                                <div class="card h-100 border shadow-sm rounded-3 p-3 d-flex flex-column" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
                                                         <div class="d-flex align-items-center gap-2">
                                                             <div class="p-2 rounded-2" style="background: rgba(34, 197, 94, 0.1); color: #16a34a;">
@@ -1485,7 +1714,6 @@
                                                             </div>
                                                             <div>
                                                                 <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;">{{ $doc->name }}</h6>
-                                                                <span class="badge bg-light text-primary border" style="font-size: 10px; font-family: monospace;">{{ $doc->code }}</span>
                                                             </div>
                                                         </div>
                                                         @if($existingDoc && in_array($existingDoc->status ?? '', ['verified', 'valid']))
@@ -1506,23 +1734,25 @@
                                                         </span>
                                                     </div>
 
-                                                    <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
-                                                        @if($hasExistingFile)
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
+                                                    @if($hasExistingFile)
+                                                        <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-sm btn-success text-white py-1 px-3 d-inline-flex align-items-center flex-shrink-0" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Berkas
                                                             </a>
                                                             <small class="text-muted" style="font-size: 0.72rem;">
                                                                 {{ $existingDoc->updated_at ? $existingDoc->updated_at->format('d M Y') : '' }}
                                                             </small>
-                                                        @else
+                                                        </div>
+                                                    @else
+                                                        <div class="mt-auto pt-2 border-top">
                                                             <span class="text-muted fst-italic" style="font-size: 0.75rem;">Tidak ada file</span>
-                                                        @endif
-                                                    </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
-                                </div>iv>
+                                </div>
 
                                 <!-- SKEMA PEMBAYARAN & PEMBAYARAN BERTAHAP -->
                                 <div class="form-section">
@@ -1617,14 +1847,14 @@
                                         $initialGrandTotal = ($land ? ($land->estimated_price ?? $land->offer_price ?? 0) + ($land->cost_ijb ?? 0) + ($land->cost_tax ?? 0) + ($land->cost_broker ?? 0) + ($land->cost_other ?? 0) : 0);
                                     @endphp
                                     <div id="cash_payment_container" class="card shadow-none border mt-2 mb-3 p-3 rounded-3" style="background: #fafbfe;">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                                             <div>
                                                 <h6 class="mb-0 text-dark font-weight-bold">
                                                     <i class="mdi mdi-cash-check text-success me-1"></i> Rincian Pembayaran Cash Keras (Lunas Sekaligus)
                                                 </h6>
                                                 <small class="text-muted">Lengkapi data nominal pelunasan (otomatis mengikuti Grand Total), tanggal realisasi transaksi, bukti transfer, dan status pembayaran.</small>
                                             </div>
-                                            <span class="badge bg-success-subtle text-success border border-success px-3 py-1 fw-bold">
+                                            <span class="badge bg-success-subtle text-success border border-success px-3 py-1 fw-bold text-nowrap flex-shrink-0">
                                                 1x Pelunasan
                                             </span>
                                         </div>
@@ -1738,7 +1968,7 @@
 
                                     <!-- INSTALLMENT WIDGET (MULTI-TERMIN DINAMIS) -->
                                     <div id="installment_widget_container" class="card shadow-none border mt-3 p-3 rounded-3" style="display: none; background: #fafbfe;">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                                             <div>
                                                 <h6 class="mb-0 text-dark font-weight-bold">
                                                     <i class="mdi mdi-calendar-clock text-primary"></i> Rencana Jadwal Pembayaran Bertahap (Termin)
@@ -1746,8 +1976,8 @@
                                                 <small class="text-muted">Nominal, tanggal jatuh tempo, dan bukti pembayaran dapat dikelola per tahap.</small>
                                             </div>
                                             @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-3" onclick="addCustomInstallmentRow()">
-                                                    <i class="mdi mdi-plus-circle me-1"></i> Tambah Tahap Pembayaran
+                                                <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomInstallmentRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
+                                                    <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Tahap Pembayaran
                                                 </button>
                                             @endif
                                         </div>
@@ -1756,13 +1986,13 @@
                                             <table class="table table-bordered table-hover align-middle mb-2" style="background: white;">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th width="14%">Tahap</th>
-                                                        <th width="20%">Metode / Rekening</th>
-                                                        <th width="22%">Nominal Pembayaran (Rp)</th>
+                                                        <th width="15%">Tahap</th>
+                                                        <th width="18%">Metode / Rekening</th>
+                                                        <th width="20%">Nominal Pembayaran (Rp)</th>
                                                         <th width="15%">Jatuh Tempo</th>
-                                                        <th width="16%">Bukti Pembayaran</th>
-                                                        <th width="9%">Status</th>
-                                                        <th width="4%" class="text-center">Aksi</th>
+                                                        <th width="15%">Bukti Pembayaran</th>
+                                                        <th width="11%">Status</th>
+                                                        <th width="6%" class="text-center">Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="installment_tbody">
@@ -1815,8 +2045,8 @@
                                                                 </td>
                                                                 <td class="text-center">
                                                                     @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                                        <button type="button" class="btn btn-xs btn-outline-danger p-1" onclick="removeInstallmentRow(this)" title="Hapus Tahap">
-                                                                            <i class="mdi mdi-delete"></i>
+                                                                        <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
+                                                                            <i class="mdi mdi-delete text-white"></i>
                                                                         </button>
                                                                     @endif
                                                                 </td>
@@ -1841,7 +2071,7 @@
                                 </div>
 
                                 <!-- ACTIONS -->
-                                <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mt-4 footer-action-row">
                                     <div>
                                         @if ($land)
                                             <button type="button" class="btn btn-outline-purple py-2 px-3 shadow-sm" onclick="previewInvoice()">
@@ -1911,6 +2141,7 @@
             document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
                 input.addEventListener('change', function() {
                     const container = this.closest('.pratanah-file-upload-modern');
+                    if (!container) return;
                     const label = container.querySelector('.pratanah-file-label-modern');
                     const fileName = container.querySelector('.pratanah-file-info-modern span');
                     const fileInfo = container.querySelector('.pratanah-file-info-modern small');
@@ -1920,21 +2151,16 @@
                         const file = this.files[0];
                         const size = (file.size / 1024).toFixed(1) + ' KB';
 
-                        // Change styling to selected status
-                        fileName.textContent = file.name;
-                        fileInfo.textContent = size;
-                        fileInfo.className = 'pratanah-file-size';
-                        icon.className = 'mdi mdi-check-circle';
-                        label.style.borderColor = '#9a55ff';
-                        label.style.background = 'linear-gradient(135deg, #f1f0ff, #f8f9fa)';
-                    } else {
-                        // Reset if no files selected
-                        fileName.textContent = 'Upload File';
-                        fileInfo.textContent = 'PDF / JPG / PNG';
-                        fileInfo.className = '';
-                        icon.className = 'mdi mdi-file';
-                        label.style.borderColor = '#d0d4db';
-                        label.style.background = 'linear-gradient(135deg, #f8f9fa, #f1f3f5)';
+                        if (fileName) fileName.textContent = file.name;
+                        if (fileInfo) {
+                            fileInfo.textContent = size;
+                            fileInfo.className = 'pratanah-file-size';
+                        }
+                        if (icon) icon.className = 'mdi mdi-check-circle text-success';
+                        if (label) {
+                            label.style.borderColor = '#28c76f';
+                            label.style.background = '#f0fdf4';
+                        }
                     }
                 });
             });
@@ -2211,6 +2437,7 @@
                 showLoading('Menyiapkan dan menyinkronkan data invoice...');
                 let form = document.getElementById('formFase3');
                 let formData = new FormData(form);
+                formData.append('is_preview', '1');
 
                 let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
                 Swal.close();
@@ -2471,7 +2698,6 @@
                 const row = document.createElement('tr');
                 row.id = `installment_row_${i}`;
                 row.innerHTML = `
-                    <td class="text-center fw-bold text-muted">${i}</td>
                     <td>
                         <input type="text" name="installments[${i}][term_name]" value="${terminName}" class="form-control form-control-sm text-center fw-bold text-primary" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                     </td>
@@ -2507,8 +2733,8 @@
                     </td>
                     <td class="text-center">
                         @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                            <button type="button" class="btn btn-xs btn-outline-danger p-1" onclick="removeInstallmentRow(this)" title="Hapus Tahap">
-                                <i class="mdi mdi-delete"></i>
+                            <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
+                                <i class="mdi mdi-delete text-white"></i>
                             </button>
                         @endif
                     </td>
@@ -2533,7 +2759,6 @@
             row.id = `installment_row_${newIndex}`;
             row.style.animation = 'fadeIn 0.3s ease';
             row.innerHTML = `
-                <td class="text-center fw-bold text-muted">${newIndex}</td>
                 <td>
                     <input type="text" name="installments[${newIndex}][term_name]" value="Tahap ${newIndex}" class="form-control form-control-sm text-center fw-bold text-primary">
                 </td>
@@ -2568,8 +2793,8 @@
                     </select>
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn btn-xs btn-outline-danger p-1" onclick="removeInstallmentRow(this)" title="Hapus Tahap">
-                        <i class="mdi mdi-delete"></i>
+                    <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
+                        <i class="mdi mdi-delete text-white"></i>
                     </button>
                 </td>
             `;
@@ -2768,15 +2993,13 @@
 
             const rowId = 'custom_cost_' + Date.now();
             const rowHtml = `
-                <div class="col-md-6 custom-cost-row" id="${rowId}" style="animation: fadeIn 0.3s ease;">
-                    <div class="card border p-2 rounded-2" style="background: #ffffff;">
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="text" name="custom_costs[${rowId}][name]" class="form-control form-control-sm custom-cost-name" placeholder="Nama Biaya (Contoh: Retribusi / Pengeringan)" onkeyup="updateFinancialSummary()">
-                            <input type="text" name="custom_costs[${rowId}][amount]" class="form-control form-control-sm custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();">
-                            <button type="button" class="btn btn-sm btn-outline-danger px-2 py-1" onclick="document.getElementById('${rowId}').remove(); updateFinancialSummary();" title="Hapus Biaya">
-                                <i class="mdi mdi-delete"></i>
-                            </button>
-                        </div>
+                <div class="col-md-6 custom-cost-row mb-2" id="${rowId}" style="animation: fadeIn 0.3s ease;">
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="text" name="custom_costs[${rowId}][name]" class="form-control custom-cost-name" placeholder="Nama Biaya (Contoh: Retribusi / Pengeringan)" onkeyup="updateFinancialSummary()">
+                        <input type="text" name="custom_costs[${rowId}][amount]" class="form-control custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();">
+                        <button type="button" class="btn btn-danger text-white px-2 py-1 flex-shrink-0 shadow-sm" onclick="document.getElementById('${rowId}').remove(); updateFinancialSummary();" title="Hapus Biaya" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;">
+                            <i class="mdi mdi-delete text-white" style="font-size: 1.15rem;"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -3026,8 +3249,9 @@
                                     <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2 ms-1" onclick="rejectPraDoc(${docId}, ${typeId})" title="Tolak / Revisi" style="font-size: 11px;"><i class="mdi mdi-close"></i> Tolak</button>
                                 `);
                                 
-                                // Hide revision note box on approval
+                                // Hide revision note box and ganti file box on approval
                                 $(`.revision-box-${typeId}`).addClass('d-none');
+                                $(`.ganti-file-box-${typeId}`).addClass('d-none');
 
                                 // Auto check if all documents are now verified
                                 const totalUploads = document.querySelectorAll('[id^="action-btns-doc-"]').length;
@@ -3088,13 +3312,14 @@
                                     <span class="badge bg-soft-danger text-danger small ms-1"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>
                                 `);
                                 
-                                // Show and update revision note box immediately
+                                // Show and update revision note box & ganti file box immediately
                                 const noteContent = res.notes || result.value || 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.';
                                 $(`.revision-notes-text-${typeId}`).text(noteContent);
                                 if (res.revision_number) {
                                     $(`.rev-badge-${typeId}`).text('Rev #' + res.revision_number);
                                 }
                                 $(`.revision-box-${typeId}`).removeClass('d-none');
+                                $(`.ganti-file-box-${typeId}`).removeClass('d-none');
                             }
                         },
                         error: function(xhr) {
@@ -3106,6 +3331,18 @@
                         }
                     });
                 }
+            });
+        }
+
+        function initFileUploadEvents() {
+            document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
+                input.addEventListener('change', function () {
+                    const labelText = this.closest('.pratanah-file-upload-modern').querySelector('.file-label-text');
+                    if (labelText && this.files && this.files.length > 0) {
+                        const fileName = this.files[0].name;
+                        labelText.innerHTML = `<span class="text-success fw-bold"><i class="mdi mdi-file-check me-1"></i>${fileName}</span>`;
+                    }
+                });
             });
         }
 

@@ -297,6 +297,56 @@
             text-align: center;
         }
 
+        /* ===== SCREEN RESPONSIVE (MOBILE & TABLET) ===== */
+        @media screen and (max-width: 640px) {
+            body {
+                padding: 12px 8px;
+            }
+            .card {
+                padding: 20px 14px;
+            }
+            .company-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .invoice-badge-title {
+                text-align: left;
+            }
+            .meta-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .btn-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .btn-container > div {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 8px;
+            }
+            .btn-container .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .signature-section {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .signature-role {
+                margin-bottom: 40px;
+            }
+            .table-custom {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+            }
+        }
+
         /* ===== PRINT MEDIA ===== */
         @media print {
             body {
@@ -476,20 +526,31 @@
                             <td>
                                 @if($method === 'cash')
                                     <span style="color: #16a34a; font-weight: bold;">Cash Keras (Lunas Sekaligus)</span>
-                                    @if($cashPayment && $cashPayment->payment_type === 'transfer')
-                                        <div style="font-size: 11px; color: #475569; font-weight: normal; margin-top: 2px;">
-                                            Transfer: <strong>{{ $cashPayment->bank_name ?? 'Bank' }}</strong> No. Rek: <strong>{{ $cashPayment->account_number ?? '-' }}</strong> (a/n {{ $cashPayment->account_name ?? '-' }})
-                                        </div>
-                                    @elseif($cashPayment && $cashPayment->payment_type === 'cash')
-                                        <div style="font-size: 11px; color: #475569; font-weight: normal; margin-top: 2px;">
-                                            Saluran: <strong>Tunai / Cash Langsung</strong>
-                                        </div>
-                                    @endif
                                 @else
                                     <span style="color: #2563eb; font-weight: bold;">Pembayaran Bertahap (Termin {{ $land->installment_count ?? count($payments) }}x)</span>
                                 @endif
                             </td>
                         </tr>
+                        @if($method === 'cash' && $cashPayment)
+                            @if($cashPayment->payment_type === 'transfer')
+                                <tr>
+                                    <td>Bank Penerima</td>
+                                    <td>:</td>
+                                    <td><strong>{{ $cashPayment->bank_name ?? 'Bank Transfer' }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>No. Rekening</td>
+                                    <td>:</td>
+                                    <td><strong>{{ $cashPayment->account_number ?? '-' }}</strong> <span style="font-size: 11px; color: #475569; font-weight: normal;">(a/n {{ $cashPayment->account_name ?? '-' }})</span></td>
+                                </tr>
+                            @elseif($cashPayment->payment_type === 'cash')
+                                <tr>
+                                    <td>Saluran Bayar</td>
+                                    <td>:</td>
+                                    <td><strong>Tunai / Cash Langsung</strong></td>
+                                </tr>
+                            @endif
+                        @endif
                     </table>
                 </div>
             </div>
@@ -647,7 +708,7 @@
                                 <td>
                                     @if($docItem->file_path)
                                         <span style="color: #15803d; font-weight: 600;">
-                                            <i class="mdi mdi-check-circle"></i> Berkas Terlampir ({{ basename($docItem->file_path) }})
+                                            <i class="mdi mdi-check-circle"></i> Berkas Terlampir & Sah
                                         </span>
                                     @else
                                         <span style="color: #94a3b8; font-style: italic;">Belum Diunggah</span>

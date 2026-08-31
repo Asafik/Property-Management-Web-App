@@ -226,7 +226,11 @@ public function store(Request $request)
                 ], 422);
             }
 
-            $data['status'] = $request->status ?? 'fase3'; // approved, rejected, or pending (fase3)
+            if ($request->boolean('is_preview')) {
+                $data['status'] = $record->status ?? 'fase3';
+            } else {
+                $data['status'] = $request->status ?? 'fase3'; // approved, rejected, or pending (fase3)
+            }
             
             // Map Fase 3 fields
             $data['priority']             = $request->prioritas;

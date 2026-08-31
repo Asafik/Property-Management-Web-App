@@ -88,6 +88,52 @@
             background-color: #eee4ff !important;
             color: #581c87 !important;
         }
+
+        /* Responsive Table & Scroll Styling */
+        .table-responsive {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            width: 100% !important;
+            margin-bottom: 1rem;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #9a55ff;
+        }
+
+        .table thead th {
+            color: #9a55ff;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #fbf9ff;
+            border-bottom: 1px solid #ebe5f5;
+            padding: 0.75rem 0.85rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 0.85rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f2eff8;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -116,8 +162,7 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
-                    <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
+                    <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
                             <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Pra Tanah
                         </h5>
@@ -219,7 +264,7 @@
                             </div>
                         </div>
 
-                        <div class="table-wrapper">
+                        <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
@@ -319,7 +364,7 @@
                                                         @if ($land->status == 'rejected')
                                                             <span class="text-danger fw-bold">REJECTED</span>
                                                         @elseif($isTerminActive)
-                                                            <span class="text-warning fw-bold">CICILAN ({{ $paidCount }}/{{ $totalPayments }})</span>
+                                                            <span class="fw-bold" style="color: #b45309;">CICILAN ({{ $paidCount }}/{{ $totalPayments }})</span>
                                                         @elseif($land->status == 'approved')
                                                             <span class="text-success fw-bold">APPROVED</span>
                                                         @else
@@ -357,22 +402,22 @@
                                                     <div class="progress-fase">
                                                         <div class="progress-label d-flex justify-content-between align-items-center mb-1">
                                                             @if($verifiedDocs == $totalUploaded)
-                                                                <span class="text-success fw-bold" style="font-size: 11px;">
-                                                                    <i class="mdi mdi-shield-check me-1"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                <span class="fw-bold" style="font-size: 11px; color: #15803d;">
+                                                                    <i class="mdi mdi-shield-check me-1" style="font-size: 12px;"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalUploaded }})
                                                                 </span>
                                                             @elseif($rejectedDocs > 0)
-                                                                <span class="text-danger fw-bold" style="font-size: 11px;">
-                                                                    <i class="mdi mdi-alert-circle me-1"></i>Revisi ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                <span class="fw-bold" style="font-size: 11px; color: #b91c1c;">
+                                                                    <i class="mdi mdi-alert-circle me-1" style="font-size: 12px;"></i>Revisi ({{ $verifiedDocs }}/{{ $totalUploaded }})
                                                                 </span>
                                                             @else
-                                                                <span class="text-warning fw-bold" style="font-size: 11px;">
-                                                                    <i class="mdi mdi-clock-outline me-1"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalUploaded }} Sah)
+                                                                <span class="fw-bold" style="font-size: 11px; color: #b45309;">
+                                                                    <i class="mdi mdi-clock-outline me-1" style="font-size: 12px; color: #d97706;"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalUploaded }} Sah)
                                                                 </span>
                                                             @endif
                                                         </div>
-                                                        <div class="progress-bar-container" style="height: 6px; background: #e9ecef; border-radius: 4px;">
-                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalUploaded ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : 'bg-warning') }}"
-                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease;">
+                                                        <div class="progress-bar-container" style="height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalUploaded ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : '') }}"
+                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease; {{ $verifiedDocs < $totalUploaded && $rejectedDocs == 0 ? 'background: linear-gradient(135deg, #f59e0b, #d97706);' : '' }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -381,12 +426,19 @@
 
                                             <td>
                                                 @if($isTerminActive)
-                                                    <span class="badge-status warning" style="background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">
+                                                    <span class="fw-bold" style="background: rgba(255, 193, 7, 0.1); color: #b45309; border: 1px solid rgba(255, 193, 7, 0.25); font-size: 11px; padding: 3px 8px; border-radius: 6px;">
                                                         Cicilan Aktif
                                                     </span>
+                                                @elseif($land->status == 'approved')
+                                                    <span class="text-success fw-bold">
+                                                        Approved
+                                                    </span>
+                                                @elseif($land->status == 'rejected')
+                                                    <span class="text-danger fw-bold">
+                                                        Rejected
+                                                    </span>
                                                 @else
-                                                    <span class="badge-status 
-                                                       {{ $land->status == 'approved' ? 'success' : 'nego' }}">
+                                                    <span class="fw-semibold text-muted">
                                                         {{ ucfirst($land->status) }}
                                                     </span>
                                                 @endif
