@@ -3333,6 +3333,8 @@
                     }
                 };
             });
+        }
+
         window.toggleDocProcessNotes = function(selectEl, docId) {
             let val = $(selectEl).val();
             let container = $(`#processNotesContainer_${docId}`);
