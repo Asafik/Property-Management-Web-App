@@ -168,11 +168,15 @@ public function store(Request $request)
 
                 // Jika baru upload file baru / revisi berkas, status otomatis 'pending' menunggu validasi Kepala Legal
                 $docStatus = $hasFile ? 'pending' : ($existingDoc ? ($existingDoc->status ?? 'pending') : 'pending');
+                $docPhysicalStatus = $doc['document_status'] ?? ($existingDoc->document_status ?? 'ada');
+                $processNotes      = $doc['process_notes'] ?? ($existingDoc->process_notes ?? null);
 
                 if ($existingDoc) {
                     $existingDoc->update([
                         'document_type_id' => $docTypeId,
                         'document_number'  => $docNumber,
+                        'document_status'  => $docPhysicalStatus,
+                        'process_notes'    => $processNotes,
                         'file_path'        => $filePath,
                         'status'           => $docStatus,
                     ]);
@@ -181,6 +185,8 @@ public function store(Request $request)
                         'pra_landbank_id'  => $record->id,
                         'document_type_id' => $docTypeId,
                         'document_number'  => $docNumber,
+                        'document_status'  => $docPhysicalStatus,
+                        'process_notes'    => $processNotes,
                         'file_path'        => $filePath,
                         'status'           => $docStatus,
                         'revision_number'  => 0,
