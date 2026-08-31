@@ -291,32 +291,119 @@
                                                 {{ number_format($item->acquisition_price, 0, ',', '.') }}
                                             </td>
                                             <td>
-                                                @if ($item->legal_status == 'verified')
-                                                    <span class="badge-legalitas-verified"><i
-                                                            class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
-                                                @elseif ($item->legal_status == 'pending')
-                                                    <span class="badge-legalitas-pending"><i
-                                                            class="mdi mdi-clock-outline me-1"></i>Pending</span>
-                                                @else
-                                                    <span class="badge-legalitas-rejected"><i
-                                                            class="mdi mdi-close-circle me-1"></i>Revisi</span>
-                                                @endif
+                                                @php
+                                                    $docs = $item->merged_documents;
+                                                    $totalDocs = $docs->count();
+                                                    $verifiedDocs = $docs->where('status', 'verified')->count();
+                                                    $rejectedDocs = $docs->where('status', 'rejected')->count();
+
+                                                    if ($item->isFromPraLandbank() || $item->legal_status === 'verified') {
+                                                        $legalPercent = 100;
+                                                        $legalBarColor = 'background: linear-gradient(90deg, #10b981, #059669);';
+                                                        $legalTextClass = 'text-success';
+                                                        $legalIcon = 'mdi-check-circle';
+                                                        $legalLabel = 'Terverifikasi';
+                                                    } elseif ($totalDocs > 0) {
+                                                        $legalPercent = round(($verifiedDocs / $totalDocs) * 100);
+                                                        if ($legalPercent == 100) {
+                                                            $legalBarColor = 'background: linear-gradient(90deg, #10b981, #059669);';
+                                                            $legalTextClass = 'text-success';
+                                                            $legalIcon = 'mdi-check-circle';
+                                                            $legalLabel = 'Terverifikasi';
+                                                        } elseif ($rejectedDocs > 0) {
+                                                            $legalBarColor = 'background: linear-gradient(90deg, #ef4444, #dc2626);';
+                                                            $legalTextClass = 'text-danger';
+                                                            $legalIcon = 'mdi-alert-circle';
+                                                            $legalLabel = 'Revisi';
+                                                        } else {
+                                                            $legalBarColor = 'background: linear-gradient(90deg, #f59e0b, #d97706);';
+                                                            $legalTextClass = 'text-warning';
+                                                            $legalIcon = 'mdi-clock-outline';
+                                                            $legalLabel = 'Proses';
+                                                        }
+                                                    } else {
+                                                        $legalPercent = 0;
+                                                        $legalBarColor = 'background: #cbd5e1;';
+                                                        $legalTextClass = 'text-muted';
+                                                        $legalIcon = 'mdi-close-circle';
+                                                        $legalLabel = 'Belum';
+                                                    }
+                                                @endphp
+                                                <div style="min-width: 110px;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <small class="fw-bold {{ $legalTextClass }}" style="font-size: 0.75rem;">
+                                                            <i class="mdi {{ $legalIcon }} me-0.5"></i> {{ $legalLabel }}
+                                                        </small>
+                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $legalPercent }}%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                                        <div class="progress-bar" role="progressbar" style="width: {{ $legalPercent }}%; {{ $legalBarColor }} border-radius: 4px;" aria-valuenow="{{ $legalPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td>
-                                                <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
-                                                   class="btn btn-sm btn-link text-decoration-none p-0"
-                                                   title="Buka Halaman Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
-                                                    @if (in_array(strtolower($item->development_status), ['selesai', 'done']))
-                                                        <span class="badge-development-selesai"><i
-                                                                class="mdi mdi-check-circle me-1"></i>Selesai (100%)</span>
-                                                    @elseif (in_array(strtolower($item->development_status), ['progress', 'proses']))
-                                                        <span class="badge-development-progress"><i
-                                                                class="mdi mdi-progress-wrench me-1"></i>Proses ({{ $item->overall_infrastructure_progress }}%)</span>
-                                                    @else
-                                                        <span class="badge-development-belum"><i
-                                                                class="mdi mdi-close-circle me-1"></i>Belum ({{ $item->overall_infrastructure_progress }}%)</span>
-                                                    @endif
-                                                </a>
+                                                @php
+                                                    $devPercent = (float) $item->overall_infrastructure_progress;
+                                                    if (in_array(strtolower($item->development_status), ['selesai', 'done'])) {
+                                                        $devPercent = 100;
+                                                    }
+                                                    if ($devPercent >= 100) {
+                                                        $devBarColor = 'background: linear-gradient(90deg, #10b981, #059669);';
+                                                        $devTextClass = 'text-success';
+                                                        $devIcon = 'mdi-check-circle';
+                                                        $devLabel = 'Selesai';
+                                                    } elseif ($devPercent > 0) {
+                                                        $devBarColor = 'background: linear-gradient(90deg, #da8cff, #9a55ff);';
+                                                        $devTextClass = 'text-primary';
+                                                        $devIcon = 'mdi-progress-wrench';
+                                                        $devLabel = 'Proses';
+                                                    } else {
+                                                        $devBarColor = 'background: #cbd5e1;';
+                                                        $devTextClass = 'text-muted';
+                                                        $devIcon = 'mdi-close-circle';
+                                                        $devLabel = 'Belum';
+                                                    }
+                                                @endphp
+                                                 @php
+                                                     $isProfileOk = $item->isProfileComplete();
+                                                     $missingFields = $item->getMissingProfileFields();
+                                                 @endphp
+                                                 @if($isProfileOk)
+                                                     <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
+                                                        class="text-decoration-none d-block" 
+                                                        style="min-width: 115px;" 
+                                                        title="Buka Halaman Pengolahan Lahan ({{ $devPercent }}%)">
+                                                         <div class="d-flex justify-content-between align-items-center mb-1">
+                                                             <small class="fw-bold {{ $devTextClass }}" style="font-size: 0.75rem;">
+                                                                 <i class="mdi {{ $devIcon }} me-0.5"></i> {{ $devLabel }}
+                                                             </small>
+                                                             <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $devPercent }}%</span>
+                                                         </div>
+                                                         <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                                             <div class="progress-bar" role="progressbar" style="width: {{ $devPercent }}%; {{ $devBarColor }} border-radius: 4px;" aria-valuenow="{{ $devPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                         </div>
+                                                     </a>
+                                                 @else
+                                                     <a href="javascript:void(0)" 
+                                                        class="text-decoration-none d-block btn-pengolahan-alert" 
+                                                        style="min-width: 115px;" 
+                                                        data-id="{{ $item->id }}"
+                                                        data-name="{{ $item->name }}"
+                                                        data-missing="{{ implode(', ', $missingFields) }}"
+                                                        data-url="{{ route('properti.pengolahanLahan', $item->id) }}"
+                                                        data-edit-url="{{ route('properti.edit', $item->id) }}"
+                                                        title="Profil Belum Lengkap - Klik untuk Melihat">
+                                                         <div class="d-flex justify-content-between align-items-center mb-1">
+                                                             <small class="fw-bold text-warning" style="font-size: 0.75rem;">
+                                                                 <i class="mdi mdi-alert-circle me-0.5"></i> Profil Belum Lengkap
+                                                             </small>
+                                                             <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $devPercent }}%</span>
+                                                         </div>
+                                                         <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                                             <div class="progress-bar" role="progressbar" style="width: {{ $devPercent }}%; {{ $devBarColor }} border-radius: 4px;" aria-valuenow="{{ $devPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                         </div>
+                                                     </a>
+                                                 @endif
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
@@ -325,30 +412,25 @@
                                                         class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
                                                 </button>
                                             </td>
-                                            <td class="text-center">
-                                                @if ($item->isFromPraLandbank())
-                                                    <span class="action-text action-text-verified"><i
-                                                            class="mdi mdi-check-circle me-1"></i>Sudah Verifikasi</span>
-                                                @elseif ($item->merged_documents->count() == 0)
-                                                    <span class="action-text action-text-verified"><i
-                                                            class="mdi mdi-check-circle me-1"></i>Sudah Verifikasi</span>
-                                                @elseif($item->merged_documents->contains('status', 'rejected'))
-                                                    <span class="action-text action-text-rejected"><i
-                                                            class="mdi mdi-close-circle me-1"></i>Ditolak</span>
-                                                @elseif($item->merged_documents->every(fn($d) => $d->status == 'verified'))
-                                                    <span class="action-text action-text-verified"><i
-                                                            class="mdi mdi-check-circle me-1"></i>Sudah Verifikasi</span>
-                                                @else
-                                                    <a href="{{ route('properti.verifikasi', $item->id) }}"
-                                                        class="action-text action-text-verify btn-verifikasi">
-                                                        <i class="mdi mdi-check-decagram me-1"></i>Verifikasi
-                                                    </a>
-                                                @endif
-                                                <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
-                                                   class="btn-action fase1 ms-1" 
-                                                   title="Kelola Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
-                                                    <i class="mdi mdi-wrench"></i>
-                                                </a>
+                                            <td class="text-center" style="white-space: nowrap;">
+                                                 @if($isProfileOk)
+                                                     <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
+                                                        class="btn-action fase1" 
+                                                        title="Kelola Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
+                                                         <i class="mdi mdi-wrench"></i>
+                                                     </a>
+                                                 @else
+                                                     <a href="javascript:void(0)" 
+                                                        class="btn-action fase1 btn-pengolahan-alert" 
+                                                        data-id="{{ $item->id }}"
+                                                        data-name="{{ $item->name }}"
+                                                        data-missing="{{ implode(', ', $missingFields) }}"
+                                                        data-url="{{ route('properti.pengolahanLahan', $item->id) }}"
+                                                        data-edit-url="{{ route('properti.edit', $item->id) }}"
+                                                        title="Profil Belum Lengkap - Perbarui Data Landbank">
+                                                         <i class="mdi mdi-wrench text-warning"></i>
+                                                     </a>
+                                                 @endif
                                                 <a href="{{ route('properti.edit', $item->id) }}" class="btn-action edit ms-1" title="Edit Properti">
                                                     <i class="mdi mdi-pencil"></i>
                                                 </a>
@@ -799,13 +881,45 @@
                 }
             });
 
-            window.formatRupiahEdit = function(input) {
-                let value = input.value.replace(/\D/g, '');
-                if (value) {
-                    value = parseInt(value).toLocaleString('id-ID');
-                    input.value = value;
-                }
-            }
+            // Handle Alert Peringatan Profil Land Bank Belum Lengkap
+            $(document).on('click', '.btn-pengolahan-alert', function(e) {
+                e.preventDefault();
+                const name = $(this).data('name') || 'Properti';
+                const url = $(this).data('url');
+                const editUrl = $(this).data('edit-url');
+                const missing = $(this).data('missing') || 'Berkas profil penting';
+
+                Swal.fire({
+                    title: 'Profil Landbank Belum Lengkap',
+                    html: `
+                        <p class="mb-2 text-dark">Data profil tanah untuk <strong>${name}</strong> belum lengkap.</p>
+                        <div class="alert alert-warning py-2 px-3 text-start small mb-3 border-0 rounded-3" style="background: rgba(255, 193, 7, 0.15); color: #856404; font-size: 0.82rem;">
+                            <i class="mdi mdi-alert-circle me-1 fw-bold"></i>
+                            <strong>Belum diisi / belum diunggah:</strong><br>
+                            <span class="fw-semibold text-danger">${missing}</span>
+                        </div>
+                        <p class="small text-muted mb-0">Silakan lengkapi data profil tanah terlebih dahulu sebelum memulai proses pengolahan lahan fisik.</p>
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    confirmButtonText: '<i class="mdi mdi-pencil me-1"></i> Lengkapi Profil Tanah Sekarang',
+                    denyButtonText: '<i class="mdi mdi-wrench me-1"></i> Tetap Lanjut Pengolahan Lahan',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        confirmButton: 'btn btn-primary px-3 py-2 rounded-pill shadow-sm mx-1',
+                        denyButton: 'btn btn-outline-secondary px-3 py-2 rounded-pill shadow-sm mx-1',
+                        cancelButton: 'btn btn-light px-3 py-2 rounded-pill mx-1'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = editUrl;
+                    } else if (result.isDenied) {
+                        window.location.href = url;
+                    }
+                });
+            });
 
             // Handle session flash messages with beautiful SweetAlert
             @if (session('success'))

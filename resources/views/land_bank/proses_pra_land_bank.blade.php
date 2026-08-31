@@ -1131,6 +1131,10 @@
                                                 $uploadedDocs[$d->document_type_id] = $d;
                                             }
                                         }
+                                        $currentUser = auth()->user();
+                                        $userPositionName = strtolower($currentUser->position->name ?? '');
+                                        $isStaffLegal = str_contains($userPositionName, 'staff') && str_contains($userPositionName, 'legal');
+                                        $canValidateDoc = !$isStaffLegal;
                                     @endphp
 
                                     <div class="row g-3" id="documentGridContainer">
@@ -1176,7 +1180,7 @@
                                                     <!-- Input Nomor Dokumen -->
                                                     <div class="mb-2">
                                                         <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Nomor Dokumen {{ $doc->name }}
+                                                             Nomor Dokumen {{ $doc->name }}
                                                         </label>
                                                         <input type="text" class="form-control form-control-sm"
                                                             name="documents[{{ $doc->id }}][number]"
@@ -1234,19 +1238,38 @@
                                                                 <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 11px;">
                                                                     <i class="mdi mdi-eye me-1"></i>Lihat
                                                                 </a>
-                                                                <!-- Tombol Aksi Validasi Kepala Legal -->
-                                                                <div class="d-flex align-items-center gap-1" id="action-btns-doc-{{ $existingDoc->id }}">
-                                                                    @if(($existingDoc->status ?? '') !== 'verified')
-                                                                        <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-check me-1"></i>Validasi
-                                                                        </button>
-                                                                    @endif
-                                                                    @if(($existingDoc->status ?? '') !== 'rejected')
-                                                                        <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-close"></i> Tolak
-                                                                        </button>
-                                                                    @endif
-                                                                </div>
+                                                                @if($canValidateDoc)
+                                                                    <!-- Tombol Aksi Validasi Kepala Legal / Admin -->
+                                                                    <div class="d-flex align-items-center gap-1" id="action-btns-doc-{{ $existingDoc->id }}">
+                                                                        @if(($existingDoc->status ?? '') !== 'verified')
+                                                                            <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px;">
+                                                                                <i class="mdi mdi-check me-1"></i>Validasi
+                                                                            </button>
+                                                                        @endif
+                                                                        @if(($existingDoc->status ?? '') !== 'rejected')
+                                                                            <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px;">
+                                                                                <i class="mdi mdi-close"></i> Tolak
+                                                                            </button>
+                                                                        @endif
+                                                                    </div>
+                                                                @else
+                                                                    <!-- Status Badge untuk Staff Legal (Hanya Melihat Status) -->
+                                                                    <div class="d-flex align-items-center gap-1">
+                                                                        @if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid')
+                                                                            <span class="badge bg-success text-white py-1 px-2" style="font-size: 10px;">
+                                                                                <i class="mdi mdi-shield-check me-1"></i>Sah
+                                                                            </span>
+                                                                        @elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi')
+                                                                            <span class="badge bg-danger text-white py-1 px-2" style="font-size: 10px;">
+                                                                                <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
+                                                                            </span>
+                                                                        @else
+                                                                            <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
+                                                                                <i class="mdi mdi-clock-outline me-1"></i>Menunggu Review
+                                                                            </span>
+                                                                        @endif
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         @endif
                                                     </div>
@@ -1287,9 +1310,13 @@
                                 </div>
 
                                 <!-- ACTIONS -->
-                                <div class="d-flex justify-content-end gap-3 mt-4">
-                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                        <button type="button" class="btn btn-gradient-primary" onclick="saveFase2()">
+                                <div class="d-flex justify-content-end gap-3 mt-4" id="actionsFase2Wrapper">
+                                    @if ($isLegalSah || ($land && in_array($land->status, ['fase3', 'approved', 'rejected'])))
+                                        <button type="button" class="btn btn-gradient-primary" onclick="switchStep(3)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
+                                        </button>
+                                    @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                        <button type="button" class="btn btn-gradient-primary" id="btnSaveFase2" onclick="saveFase2()">
                                             <i class="mdi mdi-content-save-all"></i> Simpan Fase 2
                                         </button>
                                     @endif
@@ -1522,7 +1549,7 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                </div>iv>
+                                </div>
 
                                 <!-- SKEMA PEMBAYARAN & PEMBAYARAN BERTAHAP -->
                                 <div class="form-section">
@@ -1756,13 +1783,14 @@
                                             <table class="table table-bordered table-hover align-middle mb-2" style="background: white;">
                                                 <thead class="table-light">
                                                     <tr>
+                                                        <th width="4%" class="text-center">No</th>
                                                         <th width="14%">Tahap</th>
-                                                        <th width="20%">Metode / Rekening</th>
-                                                        <th width="22%">Nominal Pembayaran (Rp)</th>
-                                                        <th width="15%">Jatuh Tempo</th>
+                                                        <th width="18%">Metode / Rekening</th>
+                                                        <th width="20%">Nominal Pembayaran (Rp)</th>
+                                                        <th width="14%">Jatuh Tempo</th>
                                                         <th width="16%">Bukti Pembayaran</th>
                                                         <th width="9%">Status</th>
-                                                        <th width="4%" class="text-center">Aksi</th>
+                                                        <th width="5%" class="text-center">Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="installment_tbody">
@@ -1770,27 +1798,29 @@
                                                         @foreach($land->payments as $index => $payment)
                                                             @php $i = $index + 1; @endphp
                                                             <tr id="termin_row_{{ $i }}">
+                                                                <td class="text-center fw-bold text-muted">{{ $i }}</td>
                                                                 <td class="font-weight-bold text-primary text-center">
+                                                                    <input type="hidden" name="installments[{{ $i }}][existing_file_path]" value="{{ $payment->file_path }}">
                                                                     <input type="text" name="installments[{{ $i }}][term_name]" class="form-control form-control-sm text-center fw-bold text-primary" value="{{ $payment->term_name }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                                 </td>
                                                                 <td>
-                                                                    <select name="installments[{{ $i }}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                    <select name="installments[{{ $i }}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                         <option value="transfer" {{ (!$payment->payment_type || $payment->payment_type == 'transfer') ? 'selected' : '' }}>Transfer Bank</option>
                                                                         <option value="cash" {{ ($payment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash</option>
                                                                     </select>
                                                                     <div class="termin-bank-box" style="{{ ($payment->payment_type == 'cash') ? 'display: none;' : '' }}">
-                                                                        <input type="text" name="installments[{{ $i }}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" value="{{ $payment->account_number ?? '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                        <input type="text" name="installments[{{ $i }}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" value="{{ $payment->account_number ?? '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" name="installments[{{ $i }}][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" value="Rp {{ number_format($payment->amount, 0, ',', '.') }}" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                    <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                 </td>
                                                                 <td>
                                                                     <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                                                                        <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                        <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                         <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
                                                                             <i class="mdi mdi-file-upload text-muted fs-5"></i>
                                                                             <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
@@ -1808,7 +1838,7 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <select name="installments[{{ $i }}][status]" class="form-select form-select-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                    <select name="installments[{{ $i }}][status]" class="form-select form-select-sm" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                         <option value="belum" {{ $payment->status == 'belum' ? 'selected' : '' }}>Belum</option>
                                                                         <option value="lunas" {{ $payment->status == 'lunas' ? 'selected' : '' }}>Lunas</option>
                                                                     </select>
@@ -1850,7 +1880,11 @@
                                         @endif
                                     </div>
                                     <div class="d-flex gap-2">
-                                        @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                        @if ($land && $land->status == 'approved')
+                                            <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                <i class="mdi mdi-cash-check me-1"></i> Update Pembayaran Cicilan
+                                            </button>
+                                        @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                             <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                 <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Fase 3
                                             </button>
@@ -2148,9 +2182,31 @@
 
         async function saveFase3() {
             try {
-                showLoading('Menyimpan keputusan sidang akhir...');
+                showLoading('Menyimpan keputusan & progres pembayaran...');
                 let form = document.getElementById('formFase3');
                 let formData = new FormData(form);
+
+                // Explicitly append disabled inputs so they are never omitted by browser FormData
+                const selectPayMethod = document.getElementById('temp_payment_method');
+                if (selectPayMethod && !formData.has('payment_method_temp')) {
+                    formData.append('payment_method_temp', selectPayMethod.value);
+                }
+                const selectDuration = document.getElementById('temp_installment_duration');
+                if (selectDuration && !formData.has('installment_duration_temp')) {
+                    formData.append('installment_duration_temp', selectDuration.value);
+                }
+                const selectCount = document.getElementById('temp_installment_count');
+                if (selectCount && !formData.has('installment_count_temp')) {
+                    formData.append('installment_count_temp', selectCount.value);
+                }
+                const selectStatusAkhir = document.getElementById('fase3_status_akhir');
+                if (selectStatusAkhir && !formData.has('status')) {
+                    formData.append('status', selectStatusAkhir.value);
+                }
+                const dealPriceInput = document.getElementById('deal_price_input');
+                if (dealPriceInput && !formData.has('deal_price')) {
+                    formData.append('deal_price', dealPriceInput.value);
+                }
 
                 let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
                 Swal.close();
@@ -2397,13 +2453,13 @@
             const dpPriceInput = document.getElementById('dp_price_input');
             let dpPrice = cleanNum(dpPriceInput?.value || 0);
 
-            // Default DP to 20% of grand total if empty
-            if (dpPriceInput && !dpPriceInput.value && grandTotal > 0) {
-                dpPrice = Math.round(grandTotal * 0.20);
+            // Default DP to 20% of deal price if empty
+            if (dpPriceInput && !dpPriceInput.value && dealPrice > 0) {
+                dpPrice = Math.round(dealPrice * 0.20);
                 dpPriceInput.value = formatRp(dpPrice);
             }
             
-            let remaining = grandTotal - dpPrice;
+            let remaining = dealPrice - dpPrice;
             if (remaining < 0) remaining = 0;
             
             const remainingInput = document.getElementById('remaining_price_input');
@@ -2425,7 +2481,7 @@
                         } else {
                             if (index === count - 1) {
                                 let totalCalculated = dpPrice + (installmentAmount * (remainingInstallments - 1));
-                                let finalInstallment = grandTotal - totalCalculated;
+                                let finalInstallment = dealPrice - totalCalculated;
                                 if (finalInstallment < 0) finalInstallment = 0;
                                 amountInput.value = formatRp(finalInstallment);
                             } else {
@@ -2609,11 +2665,11 @@
             const statusEl = document.getElementById('termin_balance_status');
 
             if (scheduledEl) scheduledEl.innerText = formatRp(totalScheduled);
-            if (targetEl) targetEl.innerText = formatRp(grandTotal);
+            if (targetEl) targetEl.innerText = formatRp(dealPrice);
 
             if (statusEl) {
-                const diff = grandTotal - totalScheduled;
-                if (diff === 0 && grandTotal > 0) {
+                const diff = dealPrice - totalScheduled;
+                if (diff === 0 && dealPrice > 0) {
                     statusEl.innerHTML = `<span class="badge bg-success py-1 px-2"><i class="mdi mdi-check-circle me-1"></i>Balance / Sesuai Target</span>`;
                 } else if (diff > 0) {
                     statusEl.innerHTML = `<span class="badge bg-warning text-dark py-1 px-2"><i class="mdi mdi-alert-circle me-1"></i>Kurang: ${formatRp(diff)}</span>`;
@@ -3013,13 +3069,6 @@
                         dataType: 'json',
                         success: function(res) {
                             if (res.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil Diverifikasi!',
-                                    text: res.message,
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
                                 $(`.doc-badge-${typeId}, .doc-badge-fase3-${typeId}`).removeClass('bg-warning bg-danger bg-light text-dark text-muted').addClass('bg-success text-white').html('<i class="mdi mdi-check-circle me-1"></i>Terverifikasi (Sah)');
                                 $(`#action-btns-doc-${docId}, #fase3-action-doc-${docId}`).html(`
                                     <span class="badge bg-soft-success text-success small"><i class="mdi mdi-shield-check me-1"></i>Sah</span>
@@ -3031,10 +3080,51 @@
 
                                 // Auto check if all documents are now verified
                                 const totalUploads = document.querySelectorAll('[id^="action-btns-doc-"]').length;
-                                const totalVerified = document.querySelectorAll('[id^="action-btns-doc-"] .bg-soft-success').length;
-                                if (totalUploads > 0 && totalUploads === totalVerified) {
+                                const totalVerified = document.querySelectorAll('[id^="action-btns-doc-"] .bg-soft-success, [id^="action-btns-doc-"] .btn-outline-danger').length;
+                                const isAllNowVerified = res.auto_advanced_to_fase3 || (totalUploads > 0 && totalVerified === totalUploads);
+
+                                if (isAllNowVerified) {
                                     isLegalSah = true;
                                     document.querySelector('#step3 .mdi-lock')?.remove();
+                                    document.getElementById('step3')?.classList.remove('disabled');
+
+                                    // Replace Fase 2 bottom button with Lanjut ke Fase 3
+                                    const actionsFase2 = document.getElementById('actionsFase2Wrapper');
+                                    if (actionsFase2) {
+                                        actionsFase2.innerHTML = `
+                                            <button type="button" class="btn btn-gradient-primary" onclick="switchStep(3)">
+                                                <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
+                                            </button>
+                                        `;
+                                    }
+
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Dokumen Terverifikasi Sah!',
+                                        html: `
+                                            <p class="text-muted mb-2">${res.message}</p>
+                                            <div class="alert alert-success border py-2 px-3 mb-0 text-start" style="font-size: 0.85rem; background: #f0fdf4; border-color: #bbf7d0 !important;">
+                                                <i class="mdi mdi-check-decagram text-success me-1"></i>
+                                                Seluruh berkas legalitas telah sah diverifikasi. Mengalihkan otomatis ke <b>Fase 3 (Sidang Keputusan Direksi)</b>...
+                                            </div>
+                                        `,
+                                        timer: 1800,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        switchStep(3);
+                                    });
+
+                                    setTimeout(() => {
+                                        switchStep(3);
+                                    }, 1800);
+                                } else {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil Diverifikasi!',
+                                        text: res.message,
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
                                 }
                             }
                         },

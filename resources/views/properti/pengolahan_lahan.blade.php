@@ -813,13 +813,217 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     const currentLandId = {{ $land->id }};
+    const storageKey = 'active_phase_tab_' + currentLandId;
 
-    function openLegalitasModal() {
-        let modal = new bootstrap.Modal(document.getElementById('modalValidasiLegalitas'));
-        modal.show();
+    // TAB PERSISTENCE ENGINE (Kompatibel Bootstrap 4 & 5)
+    function activateTab(tabIdOrSelector) {
+        if (!tabIdOrSelector) return;
+        let selector = tabIdOrSelector;
+        if (!selector.startsWith('#')) selector = '#' + selector;
+        if (!selector.endsWith('-tab') && !selector.includes('keuangan')) selector = selector + '-tab';
+        
+        let $tab = $(selector);
+        if ($tab.length && typeof $tab.tab === 'function') {
+            $tab.tab('show');
+        }
     }
 
-    function submitUpdateLegalitas(event) {
+    function setSavedActiveTab(tabSelector) {
+        if (tabSelector) {
+            sessionStorage.setItem(storageKey, tabSelector);
+            localStorage.setItem(storageKey, tabSelector);
+            if (window.history && window.history.replaceState) {
+                let cleanHash = tabSelector.replace('-tab', '');
+                window.history.replaceState(null, null, cleanHash);
+            }
+        }
+    }
+
+    // Export functions globally so inline HTML onclick/oninput never fail
+    window.selectCardForExpense = function(phase, itemId, itemName) {
+        // 1. Highlight selected card
+        $(`.task-card-item-${phase}`).removeClass('task-card-active');
+        $(`#cardBox_${itemId}`).addClass('task-card-active');
+
+        // 2. Open inline expense form and bind to this item
+        let formBox = $(`#inlineExpenseForm_Phase${phase}`);
+        if (formBox.length) {
+            formBox.removeClass('d-none');
+            $(`#selectedInfraId_${phase}`).val(itemId);
+            $(`#selectedPosName_${phase}`).text(itemName);
+
+            // 3. Filter Table below for this specific pos
+            filterTableByPos(phase, itemId, itemName);
+
+            // 4. Smooth scroll to form area
+            try {
+                let offset = formBox.offset();
+                if (offset && offset.top) {
+                    $('html, body').stop().animate({
+                        scrollTop: offset.top - 80
+                    }, 400);
+                }
+            } catch(e) {
+                console.warn('Scroll error:', e);
+            }
+        }
+    };
+
+    window.resetSelectedPos = function(phase) {
+        $(`#selectedInfraId_${phase}`).val('');
+        $(`#selectedPosName_${phase}`).text(`- Seluruh Pos Fase ${phase} (Umum) -`);
+        $(`.task-card-item-${phase}`).removeClass('task-card-active');
+        clearTableFilter(phase);
+    };
+
+    window.filterTableByPos = function(phase, itemId, itemName) {
+        $(`#tableFilterBanner_${phase}`).removeClass('d-none');
+        $(`#filterPosName_${phase}`).text(itemName);
+
+        let rows = $(`.expense-row-phase-${phase}`);
+        let matchCount = 0;
+        rows.each(function() {
+            let rowInfraId = $(this).attr('data-infra-id');
+            if (rowInfraId == itemId) {
+                $(this).removeClass('d-none');
+                matchCount++;
+            } else {
+                $(this).addClass('d-none');
+            }
+        });
+
+        if (matchCount === 0) {
+            $(`#emptyFilterRow_${phase}`).removeClass('d-none');
+        } else {
+            $(`#emptyFilterRow_${phase}`).addClass('d-none');
+        }
+    };
+
+    window.clearTableFilter = function(phase) {
+        $(`#tableFilterBanner_${phase}`).addClass('d-none');
+        $(`.expense-row-phase-${phase}`).removeClass('d-none');
+        $(`#emptyFilterRow_${phase}`).addClass('d-none');
+        $(`.task-card-item-${phase}`).removeClass('task-card-active');
+        $(`#selectedInfraId_${phase}`).val('');
+        $(`#selectedPosName_${phase}`).text(`- Seluruh Pos Fase ${phase} (Umum) -`);
+    };
+
+    window.toggleInlineAddExpense = function(phase) {
+        let formBox = $(`#inlineExpenseForm_Phase${phase}`);
+        formBox.toggleClass('d-none');
+    };
+
+    window.calculateVolumePercentage = function(itemId) {
+        if (!itemId) return;
+        let targetEl = $(`#targetVol_${itemId}`);
+        let realizedEl = $(`#realizedVolInput_${itemId}`);
+
+        let target = parseFloat(targetEl.val());
+        if (isNaN(target) || target <= 0) target = 1;
+
+        let rawRealized = realizedEl.val();
+        let realized = parseFloat(rawRealized);
+        if (isNaN(realized) || realized < 0) realized = 0;
+
+        let pct = Math.round(Math.min(100, (realized / target) * 100) * 10) / 10;
+        if (isNaN(pct)) pct = 0;
+
+        $(`#progressPercentDisplay_${itemId}`).text(pct + '%');
+        $(`#progressBarDisplay_${itemId}`).css('width', pct + '%');
+
+        let statusHidden = $(`#statusHidden_${itemId}`);
+        let statusBadgeDisplay = $(`#statusBadgeDisplay_${itemId}`);
+        let badgeHeaderEl = $(`#badgeStatus_${itemId}`);
+        let barEl = $(`#progressBarDisplay_${itemId}`);
+
+        if (pct >= 100 || realized >= target) {
+            if (statusHidden.length) statusHidden.val('selesai');
+            if (statusBadgeDisplay.length) {
+                statusBadgeDisplay.html('<span class="badge bg-success text-white px-2 py-1 rounded-pill small fw-bold"><i class="mdi mdi-check-circle me-1"></i>Selesai (100%)</span>');
+            }
+            if (badgeHeaderEl.length) {
+                badgeHeaderEl.attr('class', 'badge bg-success text-white px-2 py-1 rounded-pill small fw-bold').html('<i class="mdi mdi-check-circle me-1"></i>Selesai (100%)');
+            }
+            if (barEl.length) {
+                barEl.attr('class', 'progress-bar progress-bar-striped bg-success');
+            }
+        } else if (pct > 0 || realized > 0) {
+            if (statusHidden.length) statusHidden.val('proses');
+            if (statusBadgeDisplay.length) {
+                statusBadgeDisplay.html('<span class="badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold"><i class="mdi mdi-progress-wrench me-1"></i>Dalam Proses</span>');
+            }
+            if (badgeHeaderEl.length) {
+                badgeHeaderEl.attr('class', 'badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold').html(`<i class="mdi mdi-progress-wrench me-1"></i>Proses (${pct}%)`);
+            }
+            if (barEl.length) {
+                barEl.attr('class', 'progress-bar progress-bar-striped bg-primary');
+            }
+        } else {
+            if (statusHidden.length) statusHidden.val('belum_mulai');
+            if (statusBadgeDisplay.length) {
+                statusBadgeDisplay.html('<span class="badge bg-secondary text-white px-2 py-1 rounded-pill small"><i class="mdi mdi-clock-outline me-1"></i>Belum Mulai</span>');
+            }
+            if (badgeHeaderEl.length) {
+                badgeHeaderEl.attr('class', 'badge bg-secondary text-white px-2 py-1 rounded-pill small').html('<i class="mdi mdi-clock-outline me-1"></i>Belum Mulai');
+            }
+            if (barEl.length) {
+                barEl.attr('class', 'progress-bar progress-bar-striped bg-primary');
+            }
+        }
+    };
+
+    window.saveRealProgress = function(event, itemId, phase) {
+        event.preventDefault();
+        let form = document.getElementById(`formInfraItem_${itemId}`);
+        let formData = new FormData(form);
+        formData.append('_token', '{{ csrf_token() }}');
+
+        let targetPhase = phase || $(form).data('phase') || $(form).find('input[name="phase"]').val() || 1;
+        setSavedActiveTab('#step-fase' + targetPhase + '-tab');
+
+        let submitBtn = $(`#btnSubmit_${itemId}`);
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
+
+        $.ajax({
+            url: `/properti/infrastruktur/${itemId}/update`,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(res) {
+                submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle-outline me-1"></i>Simpan Realisasi Progres');
+                if (res.success) {
+                    if (res.item && res.item.phase) {
+                        setSavedActiveTab('#step-fase' + res.item.phase + '-tab');
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Progres Tersimpan!',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            },
+            error: function(xhr) {
+                submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle-outline me-1"></i>Simpan Realisasi Progres');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memperbarui progres pekerjaan'
+                });
+            }
+        });
+    };
+
+    window.openLegalitasModal = function() {
+        $('#modalValidasiLegalitas').modal('show');
+    };
+
+    window.submitUpdateLegalitas = function(event) {
         event.preventDefault();
         let submitBtn = $('#btnSaveLegalitas');
         submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
@@ -836,7 +1040,7 @@
             success: function(res) {
                 submitBtn.prop('disabled', false).html('<i class="mdi mdi-check me-1"></i>Simpan Status Validasi Legalitas');
                 if (res.success) {
-                    bootstrap.Modal.getInstance(document.getElementById('modalValidasiLegalitas')).hide();
+                    $('#modalValidasiLegalitas').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Validasi Tersimpan!',
@@ -857,9 +1061,9 @@
                 });
             }
         });
-    }
+    };
 
-    function showKavlingLockedInfo() {
+    window.showKavlingLockedInfo = function() {
         let isLegal = {{ ($land->legal_status === 'verified' || $land->isFromPraLandbank()) ? 'true' : 'false' }};
         let isDev = {{ (in_array(strtolower($land->development_status), ['selesai', 'done']) || $land->overall_infrastructure_progress >= 100) ? 'true' : 'false' }};
 
@@ -879,20 +1083,19 @@
             confirmButtonColor: '#9a55ff',
             confirmButtonText: 'Mengerti'
         });
-    }
+    };
 
-    function openEditTargetModal(itemId, itemName, targetVol, unit, bobot, cost) {
+    window.openEditTargetModal = function(itemId, itemName, targetVol, unit, bobot, cost) {
         $('#editTargetItemId').val(itemId);
         $('#editTargetItemName').text(itemName);
         $('#editTargetVolInput').val(targetVol);
         $('#editTargetUnitInput').val(unit);
         $('#editTargetBobotInput').val(bobot);
         $('#editTargetCostInput').val(cost);
-        let modal = new bootstrap.Modal(document.getElementById('modalEditTarget'));
-        modal.show();
-    }
+        $('#modalEditTarget').modal('show');
+    };
 
-    function submitEditTarget(event) {
+    window.submitEditTarget = function(event) {
         event.preventDefault();
         let itemId = $('#editTargetItemId').val();
         let submitBtn = $('#btnSaveTarget');
@@ -912,7 +1115,10 @@
             success: function(res) {
                 submitBtn.prop('disabled', false).html('<i class="mdi mdi-check me-1"></i>Simpan Perubahan Target');
                 if (res.success) {
-                    bootstrap.Modal.getInstance(document.getElementById('modalEditTarget')).hide();
+                    if (res.item && res.item.phase) {
+                        setSavedActiveTab('#step-fase' + res.item.phase + '-tab');
+                    }
+                    $('#modalEditTarget').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Target Diperbarui!',
@@ -933,9 +1139,9 @@
                 });
             }
         });
-    }
+    };
 
-    function previewCardPhoto(input, itemId) {
+    window.previewCardPhoto = function(input, itemId) {
         if (input.files && input.files[0]) {
             let reader = new FileReader();
             reader.onload = function(e) {
@@ -948,11 +1154,11 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
-    }
+    };
 
     let rowCounter = { 1: 1, 2: 1, 3: 1 };
 
-    function onSelectRowMaterial(selectEl, phase, rowIdx) {
+    window.onSelectRowMaterial = function(selectEl, phase, rowIdx) {
         let opt = $(selectEl).find(':selected');
         if (opt.val()) {
             $(`#inputMatId_${phase}_${rowIdx}`).val(opt.val());
@@ -964,17 +1170,17 @@
             $(`#inputMatId_${phase}_${rowIdx}`).val('');
         }
         calcMultiRowTotal(phase, rowIdx);
-    }
+    };
 
-    function calcMultiRowTotal(phase, rowIdx) {
+    window.calcMultiRowTotal = function(phase, rowIdx) {
         let qty = parseFloat($(`#inputQty_${phase}_${rowIdx}`).val()) || 0;
         let price = parseFloat($(`#inputPrice_${phase}_${rowIdx}`).val()) || 0;
         let total = qty * price;
         $(`#displayRowSubtotal_${phase}_${rowIdx}`).val('Rp ' + total.toLocaleString('id-ID'));
         recalculateGrandTotal(phase);
-    }
+    };
 
-    function recalculateGrandTotal(phase) {
+    window.recalculateGrandTotal = function(phase) {
         let grandTotal = 0;
         $(`#multiItemBody_${phase} tr`).each(function() {
             let rowIdx = $(this).attr('data-row-idx');
@@ -983,9 +1189,9 @@
             grandTotal += (qty * price);
         });
         $(`#grandTotalNotaDisplay_${phase}`).text('Rp ' + grandTotal.toLocaleString('id-ID'));
-    }
+    };
 
-    function addNewMaterialRow(phase) {
+    window.addNewMaterialRow = function(phase) {
         let newIdx = rowCounter[phase]++;
         let optionsHtml = $(`#masterOptionsTemplate_${phase}`).html();
 
@@ -1024,9 +1230,9 @@
         `;
 
         $(`#multiItemBody_${phase}`).append(newRow);
-    }
+    };
 
-    function removeMaterialRow(phase, rowIdx) {
+    window.removeMaterialRow = function(phase, rowIdx) {
         let totalRows = $(`#multiItemBody_${phase} tr`).length;
         if (totalRows > 1) {
             $(`#rowItem_${phase}_${rowIdx}`).remove();
@@ -1040,148 +1246,17 @@
             $(`#displayRowSubtotal_${phase}_${rowIdx}`).val('Rp 0');
         }
         recalculateGrandTotal(phase);
-    }
+    };
 
-    function selectCardForExpense(phase, itemId, itemName) {
-        // 1. Highlight selected card
-        $(`.task-card-item-${phase}`).removeClass('task-card-active');
-        $(`#cardBox_${itemId}`).addClass('task-card-active');
-
-        // 2. Open inline expense form and bind to this item
-        let formBox = $(`#inlineExpenseForm_Phase${phase}`);
-        formBox.removeClass('d-none');
-        $(`#selectedInfraId_${phase}`).val(itemId);
-        $(`#selectedPosName_${phase}`).text(itemName);
-
-        // 3. Filter Table below for this specific pos
-        filterTableByPos(phase, itemId, itemName);
-
-        // 4. Smooth scroll to form / table area
-        $('html, body').animate({
-            scrollTop: formBox.offset().top - 80
-        }, 400);
-    }
-
-    function resetSelectedPos(phase) {
-        $(`#selectedInfraId_${phase}`).val('');
-        $(`#selectedPosName_${phase}`).text(`- Seluruh Pos Fase ${phase} (Umum) -`);
-        $(`.task-card-item-${phase}`).removeClass('task-card-active');
-        clearTableFilter(phase);
-    }
-
-    function filterTableByPos(phase, itemId, itemName) {
-        $(`#tableFilterBanner_${phase}`).removeClass('d-none');
-        $(`#filterPosName_${phase}`).text(itemName);
-
-        let rows = $(`.expense-row-phase-${phase}`);
-        let matchCount = 0;
-        rows.each(function() {
-            let rowInfraId = $(this).attr('data-infra-id');
-            if (rowInfraId == itemId) {
-                $(this).removeClass('d-none');
-                matchCount++;
-            } else {
-                $(this).addClass('d-none');
-            }
-        });
-
-        if (matchCount === 0) {
-            $(`#emptyFilterRow_${phase}`).removeClass('d-none');
-        } else {
-            $(`#emptyFilterRow_${phase}`).addClass('d-none');
-        }
-    }
-
-    function clearTableFilter(phase) {
-        $(`#tableFilterBanner_${phase}`).addClass('d-none');
-        $(`.expense-row-phase-${phase}`).removeClass('d-none');
-        $(`#emptyFilterRow_${phase}`).addClass('d-none');
-        $(`.task-card-item-${phase}`).removeClass('task-card-active');
-        $(`#selectedInfraId_${phase}`).val('');
-        $(`#selectedPosName_${phase}`).text(`- Seluruh Pos Fase ${phase} (Umum) -`);
-    }
-
-    function toggleInlineAddExpense(phase) {
-        let formBox = $(`#inlineExpenseForm_Phase${phase}`);
-        formBox.toggleClass('d-none');
-    }
-
-    $(document).ready(function() {
-        // Initial setup if needed
-    });
-
-    function calculateTotalInline(phase) {
+    window.calculateTotalInline = function(phase) {
         let qty = parseFloat($(`#inputQuantity_${phase}`).val()) || 0;
         let price = parseFloat($(`#inputUnitPrice_${phase}`).val()) || 0;
         let total = qty * price;
         $(`#displayTotal_${phase}`).val('Rp ' + total.toLocaleString('id-ID'));
-    }
+    };
 
-    function calculateVolumePercentage(itemId) {
-        let target = parseFloat($(`#targetVol_${itemId}`).val()) || 1;
-        let realized = parseFloat($(`#realizedVolInput_${itemId}`).val()) || 0;
-        let pct = Math.round(Math.min(100, (realized / target) * 100) * 10) / 10;
-
-        $(`#progressPercentDisplay_${itemId}`).text(pct + '%');
-        $(`#progressBarDisplay_${itemId}`).css('width', pct + '%');
-
-        if (pct >= 100 || realized >= target) {
-            $(`#statusSelect_${itemId}`).val('selesai');
-            $(`#badgeStatus_${itemId}`).attr('class', 'badge bg-success text-white px-2 py-1 rounded-pill small fw-bold').html('<i class="mdi mdi-check-circle me-1"></i>Selesai (100%)');
-            $(`#progressBarDisplay_${itemId}`).attr('class', 'progress-bar progress-bar-striped bg-success');
-        } else if (pct > 0 || realized > 0) {
-            $(`#statusSelect_${itemId}`).val('proses');
-            $(`#badgeStatus_${itemId}`).attr('class', 'badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold').html(`<i class="mdi mdi-progress-wrench me-1"></i>Proses (${pct}%)`);
-            $(`#progressBarDisplay_${itemId}`).attr('class', 'progress-bar progress-bar-striped bg-primary');
-        } else {
-            $(`#statusSelect_${itemId}`).val('belum_mulai');
-            $(`#badgeStatus_${itemId}`).attr('class', 'badge bg-secondary text-white px-2 py-1 rounded-pill small').html('<i class="mdi mdi-clock-outline me-1"></i>Belum Mulai');
-            $(`#progressBarDisplay_${itemId}`).attr('class', 'progress-bar progress-bar-striped bg-primary');
-        }
-    }
-
-    function saveRealProgress(event, itemId) {
-        event.preventDefault();
-        let form = document.getElementById(`formInfraItem_${itemId}`);
-        let formData = new FormData(form);
-        formData.append('_token', '{{ csrf_token() }}');
-
-        let submitBtn = $(`#btnSubmit_${itemId}`);
-        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
-
-        $.ajax({
-            url: `/properti/infrastruktur/${itemId}/update`,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(res) {
-                submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle-outline me-1"></i>Simpan Realisasi Progres');
-                if (res.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Progres Tersimpan!',
-                        text: res.message,
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                }
-            },
-            error: function(xhr) {
-                submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle-outline me-1"></i>Simpan Realisasi Progres');
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Gagal memperbarui progres pekerjaan'
-                });
-            }
-        });
-    }
-
-    function finalizePhaseAction(phase) {
+    window.finalizePhaseAction = function(phase) {
+        setSavedActiveTab('#step-fase' + phase + '-tab');
         Swal.fire({
             title: `Selesaikan Seluruh Pekerjaan Fase ${phase}?`,
             text: `Seluruh pos pekerjaan pada Fase ${phase} akan ditandai 100% Selesai.`,
@@ -1215,9 +1290,9 @@
                 });
             }
         });
-    }
+    };
 
-    function finalizeAllInfrastruktur() {
+    window.finalizeAllInfrastruktur = function() {
         Swal.fire({
             title: 'Selesaikan Seluruh Pengolahan Lahan?',
             text: 'Seluruh fase (1, 2, 3) akan ditandai 100% Selesai dan fitur Tambah Kavling untuk proyek ini akan otomatis dibuka.',
@@ -1252,9 +1327,14 @@
                 });
             }
         });
-    }
+    };
 
-    function deleteExpense(expenseId) {
+    window.deleteExpense = function(expenseId) {
+        let activeTab = $('.fase-step-btn.active').attr('id');
+        if (activeTab) {
+            setSavedActiveTab('#' + activeTab);
+        }
+
         Swal.fire({
             title: 'Hapus Pencatatan Biaya?',
             text: 'Data transaksi pengeluaran ini akan dihapus dari laporan keuangan proyek.',
@@ -1290,7 +1370,42 @@
                 });
             }
         });
-    }
+    };
+
+    $(document).ready(function() {
+        // 1. Simpan tab saat user mengklik / mengganti tab
+        $('.fase-step-btn').on('shown.bs.tab', function(e) {
+            let targetId = $(this).attr('id');
+            setSavedActiveTab('#' + targetId);
+        });
+
+        // 2. Simpan tab saat submit form belanja bahan
+        $('form[id^="multiExpenseForm_"]').on('submit', function() {
+            let phase = $(this).find('input[name="phase"]').val() || 1;
+            setSavedActiveTab('#step-fase' + phase + '-tab');
+        });
+
+        // 3. Event Delegation Realtime untuk input volume capaian progres
+        $(document).on('input keyup change paste', 'input[id^="realizedVolInput_"]', function() {
+            let id = $(this).attr('id').replace('realizedVolInput_', '');
+            window.calculateVolumePercentage(id);
+        });
+
+        // 4. Cek Prioritas Tab saat Halaman Dimuat:
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryPhase = urlParams.get('phase') || urlParams.get('fase');
+        const hash = window.location.hash;
+        const savedTab = sessionStorage.getItem(storageKey) || localStorage.getItem(storageKey);
+
+        if (queryPhase) {
+            let targetId = (queryPhase === 'keuangan') ? '#step-keuangan-tab' : '#step-fase' + queryPhase + '-tab';
+            activateTab(targetId);
+        } else if (hash && (hash.startsWith('#step-fase') || hash.startsWith('#step-keuangan'))) {
+            activateTab(hash);
+        } else if (savedTab) {
+            activateTab(savedTab);
+        }
+    });
 
     @if(session('success'))
         Swal.fire({

@@ -219,19 +219,19 @@
                             </div>
                         </div>
 
-                        <div class="table-wrapper">
-                            <table class="table table-hover align-middle">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">No</th>
-                                        <th>Nama Tanah</th>
-                                        <th>Makelar</th>
-                                        <th>Harga Negosiasi</th>
-                                        <th>Progress 3 FASE</th>
-                                        <th>Progress Legalitas</th>
-                                        <th>Status</th>
-                                        <th>Prioritas</th>
-                                        <th class="text-center">Aksi</th>
+                                        <th class="text-center" style="width: 45px;">No</th>
+                                        <th style="min-width: 170px;">Nama Tanah</th>
+                                        <th style="min-width: 120px;">Makelar</th>
+                                        <th style="min-width: 130px;">Harga Negosiasi</th>
+                                        <th style="min-width: 125px;">Progress 3 FASE</th>
+                                        <th style="min-width: 140px;">Progress Legalitas</th>
+                                        <th style="min-width: 95px;">Status</th>
+                                        <th style="min-width: 85px;">Prioritas</th>
+                                        <th class="text-center" style="min-width: 215px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
@@ -414,19 +414,19 @@
                                                         <span>Fase 2</span>
                                                     </a>
 
-                                                    @if($land->status !== 'fase1' && ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
+                                                    @if($land->status !== 'fase1' || $land->status === 'approved' || $isTerminActive || ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
                                                         @php
                                                             $docs = $land->documents;
                                                             $totalUploaded = $docs->whereNotNull('file_path')->count();
                                                             $verifiedDocs = $docs->where('status', 'verified')->count();
                                                             $isLandLegalSah = ($totalUploaded > 0) && ($verifiedDocs === $totalUploaded);
                                                         @endphp
-                                                        @if($isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected')
+                                                        @if($isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive)
                                                             <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
                                                                class="btn-fase-action btn-fase-3" 
-                                                               title="FASE 3: Persetujuan">
-                                                                <i class="mdi mdi-check-decagram"></i>
-                                                                <span>Fase 3</span>
+                                                               title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan' }}">
+                                                                <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
+                                                                <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
                                                             </a>
                                                         @else
                                                             <button type="button" class="btn-fase-action btn-fase-3" 

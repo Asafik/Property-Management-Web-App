@@ -152,6 +152,10 @@ class DashboardController extends Controller
     }
     public function legalDashboard(Request $request)
     {
+        $user = auth()->user();
+        $positionName = strtolower($user->position->name ?? '');
+        $isStaffLegal = str_contains($positionName, 'staff') && str_contains($positionName, 'legal');
+
         $perPage = $request->get('perPage', 10);
         $search = $request->get('search');
 
@@ -184,9 +188,19 @@ class DashboardController extends Controller
             $totalLokasi = $totalPascaLandBank;
         }
 
-        // Antrean Validasi Dokumen (Grouped per Lahan / Pra Land Bank)
+        // Metrik Khusus Staff Legal
+        $totalPraTanahStaffActive = PraLandbank::whereIn('status', ['fase1', 'fase2'])->count();
+
+        // Prospek Lahan yang Butuh Kelengkapan Berkas / Upload Berkas oleh Staff Legal
+        $incompleteLands = PraLandbank::whereIn('status', ['fase1', 'fase2'])
+            ->with(['documents.documentType'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // Antrean Validasi Dokumen (Grouped per Lahan / Pra Land Bank) untuk Kepala Legal
         $pendingLandbanks = PraLandbank::whereHas('documents', function($q) {
-                $q->where('status', 'pending');
+                $q->where('status', 'pending')->whereNotNull('file_path');
             })
             ->with(['documents.documentType'])
             ->latest()
@@ -219,6 +233,8 @@ class DashboardController extends Controller
                 $praLandbanksQuery->whereHas('documents', function($q) {
                     $q->where('status', 'pending')->whereNotNull('file_path');
                 });
+            } elseif ($status === 'incomplete_doc') {
+                $praLandbanksQuery->whereIn('status', ['fase1', 'fase2']);
             } elseif (in_array($status, ['clear', 'checking', 'problem'])) {
                 $praLandbanksQuery->where('legal_status', $status);
             }
@@ -243,7 +259,11 @@ class DashboardController extends Controller
             'Lainnya' => PraLandbank::whereNotIn('ownership_status', ['SHM', 'HGB', 'Girik', 'Petok D', 'AJB'])->count(),
         ];
 
+        // Master Document Types
+        $documentTypes = DocumentTypes::all();
+
         return view('dashboard_legal', compact(
+            'isStaffLegal',
             'totalPraTanah',
             'totalPraTanahFase1',
             'totalPraTanahFase2',
@@ -260,11 +280,14 @@ class DashboardController extends Controller
             'totalKavlingAvailable',
             'totalKavlingSold',
             'totalLokasi',
+            'totalPraTanahStaffActive',
+            'incompleteLands',
             'pendingLandbanks',
             'pendingDocuments',
             'praLandbanks',
             'legalStatusCounts',
-            'ownershipCounts'
+            'ownershipCounts',
+            'documentTypes'
         ));
     }
 

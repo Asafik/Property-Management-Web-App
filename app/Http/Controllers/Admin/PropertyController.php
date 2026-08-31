@@ -178,12 +178,9 @@ public function update(Request $request, $id)
         'statusLegal' => 'nullable|string',
         'statusKavling' => 'nullable|string',
         'fee_document_verification' => 'nullable|string',
+        'latitude'                  => 'nullable|string',
+        'longitude'                 => 'nullable|string',
         'denah'                     => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp,svg|max:5120',
-        'elevasi_awal'     => 'nullable|numeric',
-        'elevasi_rencana'  => 'nullable|numeric',
-        'volume_cut'       => 'nullable|numeric',
-        'volume_fill'      => 'nullable|numeric',
-        'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
         'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:2048',
         'documents.*.number' => 'nullable|string|max:255',
     ]);
@@ -219,11 +216,8 @@ public function update(Request $request, $id)
             'legal_status' => $request->statusLegal ?? 'pending',
             'development_status' => $request->statusKavling ?? 'Belum',
             'priority' => $request->prioritas,
-            'elevasi_awal' => $request->elevasi_awal,
-            'elevasi_rencana' => $request->elevasi_rencana,
-            'volume_cut' => $request->volume_cut,
-            'volume_fill' => $request->volume_fill,
-            'status_cut_fill' => $request->status_cut_fill ?? 'planned',
+            'lat' => $request->latitude,
+            'lng' => $request->longitude,
             'fee_document_verification' => $fee_verification,
         ]);
 
@@ -241,8 +235,10 @@ public function update(Request $request, $id)
             ]);
         }
 
-        // HANDLE DOCUMENTS
+        // HANDLE DOCUMENTS (Hanya untuk dokumen yang belum terverifikasi)
         if ($request->has('documents')) {
+            $isLandVerified = $land->isFromPraLandbank() || $land->legal_status === 'verified';
+
             foreach ($request->documents as $typeId => $doc) {
                 if (empty($doc['number']) && empty($doc['file'])) {
                     continue;
@@ -252,9 +248,16 @@ public function update(Request $request, $id)
                     ->where('document_type_id', $typeId)
                     ->first();
 
+                $isDocVerified = ($existingDoc && $existingDoc->status === 'verified') || $isLandVerified;
+
+                // Jika dokumen sudah verified dan sudah punya file, kunci agar tidak bisa ditimpa
+                if ($isDocVerified && $existingDoc && !empty($existingDoc->file_path)) {
+                    continue;
+                }
+
                 $filePath = $existingDoc ? $existingDoc->file_path : null;
 
-                if (!empty($doc['file'])) {
+                if (!empty($doc['file']) && !$isDocVerified) {
                     $file = $doc['file'];
                     $filename = uniqid() . '.' . $file->getClientOriginalExtension();
                     $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/landbank/' . $land->id . '/' . $typeId;
@@ -268,10 +271,13 @@ public function update(Request $request, $id)
                 }
 
                 if ($existingDoc) {
-                    $existingDoc->update([
-                        'document_number' => $doc['number'] ?? $existingDoc->document_number,
-                        'file_path'       => $filePath,
-                    ]);
+                    $updateData = [
+                        'file_path' => $filePath,
+                    ];
+                    if (!$isDocVerified && isset($doc['number'])) {
+                        $updateData['document_number'] = $doc['number'];
+                    }
+                    $existingDoc->update($updateData);
                 } else {
                     \App\Models\LandBankDocument::create([
                         'land_bank_id'     => $land->id,

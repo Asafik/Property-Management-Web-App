@@ -185,4 +185,24 @@ public function isFromPraLandbank()
 {
     return \App\Models\PraLandbank::where('land_name', $this->name)->exists();
 }
+
+public function isProfileComplete(): bool
+{
+    // Cek apakah data profil penting sudah dilengkapi
+    return !empty($this->company_profile_id) 
+        && !empty($this->name) 
+        && !empty($this->area) 
+        && !empty($this->address)
+        && !empty($this->denah);
+}
+
+public function getMissingProfileFields(): array
+{
+    $missing = [];
+    if (empty($this->company_profile_id)) $missing[] = 'PT Mitra Pengembang';
+    if (empty($this->denah)) $missing[] = 'Berkas Denah / Siteplan';
+    if (empty($this->address)) $missing[] = 'Alamat / Lokasi Lengkap';
+    if (empty($this->lat) || empty($this->lng)) $missing[] = 'Koordinat Peta';
+    return $missing;
+}
 }
