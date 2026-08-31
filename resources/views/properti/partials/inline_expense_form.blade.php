@@ -14,14 +14,14 @@
 @endphp
 
 <!-- Inline Multi-Item Expense Form for Phase {{ $phase }} -->
-<div class="card border-0 shadow-sm rounded-4 mb-4 d-none" id="inlineExpenseForm_Phase{{ $phase }}" style="background: #f8faff; border: 1px solid #dcd6f7 !important; border-left: 5px solid #9a55ff !important;">
-    <div class="card-body p-4">
+<div class="card border-0 shadow-sm rounded-3 mb-4 d-none" id="inlineExpenseForm_Phase{{ $phase }}" style="background: #f8faff; border: 1px solid #eef2f6 !important;">
+    <div class="card-body p-3 p-md-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h6 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2">
-                    <i class="mdi mdi-receipt-text-plus fs-5"></i> Catat Transaksi Belanja Bahan / Nota - <strong>Fase {{ $phase }}</strong>
+                <h6 class="fw-bold text-primary mb-0">
+                    Catat Transaksi Belanja Bahan / Nota - Fase {{ $phase }}
                 </h6>
-                <small class="text-muted">Anda dapat mencatat lebih dari 1 bahan/material sekaligus dalam 1 nota belanja.</small>
+                <small class="text-muted">Mencatat pembelian bahan / material dalam satu nota belanja.</small>
             </div>
             <button type="button" class="btn-close" onclick="toggleInlineAddExpense({{ $phase }})"></button>
         </div>
@@ -34,17 +34,17 @@
             <!-- Pos Terpilih Banner -->
             <div class="p-2 px-3 rounded-3 border mb-3 d-flex justify-content-between align-items-center bg-white" id="selectedPosNotice_{{ $phase }}">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-soft-primary text-primary px-2 py-1 rounded-pill small fw-bold"><i class="mdi mdi-pin me-1"></i>Pos Pekerjaan</span>
+                    <span class="badge bg-soft-primary text-primary px-2 py-1 rounded-2 small fw-bold">Pos Pekerjaan:</span>
                     <span class="small text-dark fw-bold" id="selectedPosName_{{ $phase }}">- Seluruh Pos Fase {{ $phase }} (Umum) -</span>
                 </div>
-                <button type="button" class="btn btn-link btn-sm text-muted p-0 text-decoration-none small" onclick="resetSelectedPos({{ $phase }})" title="Ganti ke Umum">
-                    <i class="mdi mdi-close-circle me-1"></i>Reset ke Umum
+                <button type="button" class="btn btn-sm btn-light border text-secondary rounded-2 px-3 py-1 fw-semibold shadow-sm" onclick="resetSelectedPos({{ $phase }})" title="Ganti ke Umum" style="font-size: 0.75rem;">
+                    Reset ke Umum
                 </button>
             </div>
 
             <!-- Informational Header of the Receipt -->
             <div class="p-3 bg-white rounded-3 border mb-3">
-                <h6 class="small fw-bold text-dark mb-2"><i class="mdi mdi-card-bulleted-settings-outline text-primary me-1"></i> Data Transaksi & Nota:</h6>
+                <h6 class="small fw-bold text-dark mb-2">Data Transaksi & Nota:</h6>
                 <div class="row g-2">
                     <div class="col-md-3">
                         <label class="small text-muted fw-bold mb-1">Tanggal Belanja</label>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="small text-muted fw-bold mb-1">Toko / Vendor / Supplier</label>
-                        <input type="text" name="vendor_name" class="form-control form-control-sm" placeholder="Nama Toko Bangunan / Mandor">
+                        <input type="text" name="vendor_name" class="form-control form-control-sm" placeholder="Nama Toko / Mandor">
                     </div>
                     <div class="col-md-2">
                         <label class="small text-muted fw-bold mb-1">Metode Bayar</label>
@@ -69,12 +69,23 @@
                             <option value="Belum Lunas">Belum Lunas (Tempo)</option>
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <label class="small text-muted fw-bold mb-1">Upload Bukti Nota</label>
-                        <input type="file" name="receipt_proof" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="col-md-4">
+                        <label class="small text-muted fw-bold mb-1">Bukti Nota / Transaksi</label>
+                        <div class="properti-file-upload-modern">
+                            <input type="file" name="receipt_proof" id="receipt_proof_{{ $phase }}" accept=".pdf,.jpg,.jpeg,.png" data-type-name="Bukti Nota">
+                            <div class="properti-file-label-modern py-1 px-2">
+                                <i class="mdi mdi-cloud-upload"></i>
+                                <div class="properti-file-info-modern">
+                                    <span class="file-title-text small">Upload Nota Belanja</span>
+                                    <small class="file-sub-text text-muted" style="font-size: 0.7rem;">PDF, JPG, PNG (Max: 2MB)</small>
+                                </div>
+                                <span class="properti-file-size"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 mt-2">
-                        <input type="text" name="notes" class="form-control form-control-sm" placeholder="Catatan transaksi / nomor nota (opsional)...">
+                    <div class="col-md-8">
+                        <label class="small text-muted fw-bold mb-1">Catatan Transaksi</label>
+                        <input type="text" name="notes" class="form-control form-control-sm" placeholder="Catatan transaksi / nomor nota (opsional)..." style="height: 38px;">
                     </div>
                 </div>
             </div>
@@ -82,11 +93,11 @@
             <!-- Multi-Item Material Rows Table -->
             <div class="bg-white rounded-3 border p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="small fw-bold text-dark mb-0 d-flex align-items-center gap-1">
-                        <i class="mdi mdi-format-list-bulleted text-primary"></i> Daftar Bahan / Material yang Dibelanjakan:
+                    <h6 class="small fw-bold text-dark mb-0">
+                        Daftar Bahan / Material yang Dibelanjakan:
                     </h6>
-                    <button type="button" class="btn btn-sm btn-soft-primary px-3 rounded-pill" onclick="addNewMaterialRow({{ $phase }})">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i>+ Tambah Baris Bahan Lain
+                    <button type="button" class="btn btn-sm btn-primary text-white px-3 rounded-2 shadow-sm fw-semibold" onclick="addNewMaterialRow({{ $phase }})" style="font-size: 0.78rem;">
+                        + Tambah Baris Bahan
                     </button>
                 </div>
 
@@ -112,7 +123,7 @@
                                         <select class="form-select form-select-sm select-master-item-row" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)">
                                             <option value="">-- Pilih dari Master Bahan --</option>
                                             @foreach($filteredMaterials as $catName => $items)
-                                                <optgroup label="📂 {{ $catName }}">
+                                                <optgroup label="{{ $catName }}">
                                                     @foreach($items as $mm)
                                                         <option value="{{ $mm->id }}" 
                                                                 data-name="{{ $mm->name }}" 
@@ -169,7 +180,7 @@
             <template id="masterOptionsTemplate_{{ $phase }}">
                 <option value="">-- Pilih dari Master Bahan --</option>
                 @foreach($filteredMaterials as $catName => $items)
-                    <optgroup label="📂 {{ $catName }}">
+                    <optgroup label="{{ $catName }}">
                         @foreach($items as $mm)
                             <option value="{{ $mm->id }}" 
                                     data-name="{{ $mm->name }}" 
@@ -184,11 +195,12 @@
             </template>
 
             <div class="d-flex justify-content-end gap-2 pt-2 border-top">
-                <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3" onclick="toggleInlineAddExpense({{ $phase }})">Batal</button>
-                <button type="submit" class="btn btn-sm btn-gradient-primary rounded-pill px-4">
-                    <i class="mdi mdi-check-all me-1"></i>Simpan Semua Belanja Bahan Fase {{ $phase }}
+                <button type="button" class="btn btn-sm btn-secondary rounded-2 px-3" onclick="toggleInlineAddExpense({{ $phase }})">Batal</button>
+                <button type="submit" class="btn btn-sm btn-gradient-primary rounded-2 px-4">
+                    Simpan Belanja Bahan Fase {{ $phase }}
                 </button>
             </div>
         </form>
     </div>
 </div>
+

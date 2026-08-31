@@ -43,10 +43,9 @@
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
-                    <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
+                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Properti
+                            Daftar Properti
                         </h5>
                         <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;">
                             <i class="mdi mdi-plus me-1"></i> Tambah Pasca Landbank
@@ -63,87 +62,85 @@
 
                                 <!-- DESKTOP VERSION -->
                                 <div class="filter-row-desktop d-none d-md-block">
-                                    <div class="row g-2 align-items-center w-100">
-                                        <div class="col-12 col-md-3 col-lg-3">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="search" id="searchInput"
-                                                    placeholder="Nama Properti..." value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                    type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                                </button>
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search -->
+                                            <div style="min-width: 180px; max-width: 240px; flex: 1;">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                        placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                                    <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                        type="submit" title="Cari"
+                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                        <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Perusahaan -->
+                                            <div style="min-width: 170px;">
+                                                <select name="company_profile_id" id="filterCompany" class="form-control select2" onchange="document.getElementById('filterForm').submit()" style="width: 100%;">
+                                                    <option value="">Semua Perusahaan</option>
+                                                    @foreach ($companies as $company)
+                                                        <option value="{{ $company->id }}"
+                                                            {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                            {{ $company->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Kategori -->
+                                            <div style="min-width: 140px;">
+                                                <select name="kategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="">Semua Kategori</option>
+                                                    @foreach ($categories as $cat)
+                                                        <option value="{{ $cat }}"
+                                                            {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                            {{ $cat }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Legalitas -->
+                                            <div style="min-width: 140px;">
+                                                <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="">Semua Legalitas</option>
+                                                    <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
+                                                    <option value="pending" {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                    <option value="rejected" {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Pembangunan -->
+                                            <div style="min-width: 140px;">
+                                                <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="Selesai" {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                                    <option value="progress" {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>Progress</option>
+                                                    <option value="Belum" {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum</option>
+                                                </select>
                                             </div>
                                         </div>
 
-                                        <div class="col-12 col-md-2 col-lg-2">
-                                            <select name="company_profile_id" id="filterCompany"
-                                                class="form-control select2">
-                                                <option value="">Semua Perusahaan</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}"
-                                                        {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
-                                                        {{ $company->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-6 col-md-2 col-lg-2">
-                                            <select name="kategori" class="form-control">
-                                                <option value="">Semua Kategori</option>
-                                                @foreach ($categories as $cat)
-                                                    <option value="{{ $cat }}"
-                                                        {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                        {{ $cat }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-6 col-md-2 col-lg-2">
-                                            <select name="legalitas" class="form-control">
-                                                <option value="">Semua Legalitas</option>
-                                                <option value="verified"
-                                                    {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
-                                                    Terverifikasi</option>
-                                                <option value="pending"
-                                                    {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending
-                                                </option>
-                                                <option value="rejected"
-                                                    {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-6 col-md-2 col-lg-2">
-                                            <select name="pembangunan" class="form-control">
-                                                <option value="">Semua Status</option>
-                                                <option value="Selesai"
-                                                    {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai
-                                                </option>
-                                                <option value="progress"
-                                                    {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
-                                                    Progress</option>
-                                                <option value="Belum"
-                                                    {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum
-                                                </option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-6 col-md-1 col-lg-1">
-                                            <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                    title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <a href="{{ route('properti-all') }}"
-                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill btn-reset"
-                                                    title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
+                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 85px;">
+                                                <select name="show" id="showSelect" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="10" {{ request('show', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('show', 10) == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('show', 10) == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('show', 10) == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
                                             </div>
+                                            <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +152,7 @@
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="searchInputMobile" name="search"
                                                     placeholder="Nama Properti..." value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                     type="submit" title="Cari"
                                                     style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
@@ -164,8 +161,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 mb-2">
-                                            <select name="company_profile_id" id="filterCompanyMobile"
-                                                class="form-control select2">
+                                            <select name="company_profile_id" id="filterCompanyMobile" class="form-control select2" onchange="document.getElementById('filterForm').submit()" style="width: 100%;">
                                                 <option value="">Semua Perusahaan</option>
                                                 @foreach ($companies as $company)
                                                     <option value="{{ $company->id }}"
@@ -176,7 +172,7 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="kategori" class="form-control">
+                                            <select name="kategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Kategori</option>
                                                 @foreach ($categories as $cat)
                                                     <option value="{{ $cat }}"
@@ -187,45 +183,38 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="legalitas" class="form-control">
+                                            <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Legalitas</option>
-                                                <option value="verified"
-                                                    {{ request('legalitas') == 'verified' ? 'selected' : '' }}>
-                                                    Terverifikasi</option>
-                                                <option value="pending"
-                                                    {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending
-                                                </option>
-                                                <option value="rejected"
-                                                    {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected
-                                                </option>
+                                                <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
+                                                <option value="pending" {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                <option value="rejected" {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="pembangunan" class="form-control">
+                                            <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Status</option>
-                                                <option value="Selesai"
-                                                    {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai
-                                                </option>
-                                                <option value="progress"
-                                                    {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>
-                                                    Progress</option>
-                                                <option value="Belum"
-                                                    {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum
-                                                </option>
+                                                <option value="Selesai" {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                                <option value="progress" {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>Progress</option>
+                                                <option value="Belum" {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum</option>
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                    title="Filter">
-                                                    <i class="mdi mdi-filter"></i>
-                                                </button>
-                                                <a href="{{ route('properti-all') }}"
-                                                    class="btn btn-gradient-secondary btn-icon-only flex-fill btn-reset"
-                                                    title="Reset">
-                                                    <i class="mdi mdi-refresh"></i>
-                                                </a>
-                                            </div>
+                                            <select name="show" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                <option value="10" {{ request('show', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('show', 10) == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('show', 10) == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('show', 10) == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
+                                                <i class="mdi mdi-filter"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
+                                                <i class="mdi mdi-refresh"></i> Reset
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -235,60 +224,46 @@
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead>
-                                    <th class="text-center">No</th>
-                                    <th class="sort-th" onclick="handleSort('company_profile_id')">Nama Properti <i
-                                            class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
-                                    <th class="sort-th" onclick="handleSort('name')">Nama Perusahaan <i
-                                            class="mdi {{ sortIcon('name') }}"></i></th>
-                                    <th class="sort-th" onclick="handleSort('zoning')">Kategori <i
-                                            class="mdi {{ sortIcon('zoning') }}"></i></th>
-                                    <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">Lokasi <i
-                                            class="mdi {{ sortIcon('address') }}"></i></th>
-                                    <th class="sort-th" onclick="handleSort('acquisition_price')">Harga Beli <i
-                                            class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
-                                    <th class="sort-th" onclick="handleSort('legal_status')">Legalitas <i
-                                            class="mdi {{ sortIcon('legal_status') }}"></i></th>
-                                    <th class="sort-th" onclick="handleSort('development_status')">Pembangunan <i
-                                            class="mdi {{ sortIcon('development_status') }}"></i></th>
-                                    <th class="text-center">Dokumen</th>
-                                    <th class="text-center">Aksi</th>
+                                    <tr>
+                                        <th class="text-center" width="5%">No</th>
+                                        <th class="sort-th" onclick="handleSort('name')">Nama Properti <i class="mdi {{ sortIcon('name') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('company_profile_id')">Nama Perusahaan <i class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('zoning')">Kategori <i class="mdi {{ sortIcon('zoning') }}"></i></th>
+                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">Lokasi <i class="mdi {{ sortIcon('address') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('acquisition_price')">Harga Beli <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('legal_status')">Legalitas <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('development_status')">Pembangunan <i class="mdi {{ sortIcon('development_status') }}"></i></th>
+                                        <th class="text-center" width="8%">Dokumen</th>
+                                        <th class="text-center" width="10%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($landBanks as $index => $item)
                                         <tr>
-                                            <td class="text-center fw-bold">{{ $landBanks->firstItem() + $index }}</td>
+                                            <td class="text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
                                             <td>
-                                                <div class="property-info">
-                                                    <i class="mdi mdi-home-city text-primary"
-                                                        style="font-size: 1.2rem;"></i>
-                                                    <span class="fw-bold">{{ Str::limit($item->name, 25) }}</span>
+                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                    {{ $item->name }}
                                                 </div>
-                                                <small class="text-muted d-block d-md-none mt-1"><i
-                                                        class="mdi mdi-map-marker me-1"></i>{{ Str::limit($item->address ?? '-', 15) }}</small>
+                                                <small class="text-muted d-block d-md-none mt-1">
+                                                    {{ Str::limit($item->address ?? '-', 15) }}
+                                                </small>
                                             </td>
                                             <td>
-                                                <div class="company-info">
-                                                    <i class="mdi mdi-domain text-primary"
-                                                        style="font-size: 1.15rem;"></i>
-                                                    <span class="fw-bold">{{ $item->companyProfile->name ?? '-' }}</span>
+                                                <div class="fw-semibold text-dark">
+                                                    {{ $item->companyProfile->name ?? '-' }}
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="badge-category"><i
-                                                        class="mdi mdi-shape-outline"></i>{{ $item->zoning ?? 'Tanah' }}</span>
+                                                <span class="badge-category">{{ $item->zoning ?? 'Tanah' }}</span>
                                             </td>
                                             <td class="d-none d-md-table-cell">
-                                                <div class="location-info">
-                                                    <i class="mdi mdi-map-marker text-danger"
-                                                        style="font-size: 1.15rem;"></i>
-                                                    <span class="location-text"
-                                                        title="{{ $item->address ?? '-' }}">{{ Str::limit($item->address ?? '-', 20) }}</span>
-                                                </div>
+                                                <span class="text-muted" title="{{ $item->address ?? '-' }}">
+                                                    {{ Str::limit($item->address ?? '-', 22) }}
+                                                </span>
                                             </td>
                                             <td class="fw-bold text-success-custom">
-                                                <i class="mdi mdi-currency-usd text-success me-1"></i>Rp
-                                                {{ number_format($item->acquisition_price, 0, ',', '.') }}
+                                                Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}
                                             </td>
                                             <td>
                                                 @php
@@ -447,7 +422,8 @@
                             </table>
                         </div>
 
-                        @if ($landBanks->count() > 0)
+                        <!-- PAGINATION - PERSIS DASHBOARD -->
+                        @if ($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0)
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                                 <div class="pagination-info mb-2 mb-sm-0">
                                     Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari
@@ -455,36 +431,52 @@
                                 </div>
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                        {{-- Previous Page Link --}}
                                         @if ($landBanks->onFirstPage())
-                                            <li class="page-item disabled"><span class="page-link"><i
-                                                        class="mdi mdi-chevron-left"></i></span></li>
+                                            <li class="page-item disabled" aria-disabled="true">
+                                                <span class="page-link" aria-label="Previous">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </span>
+                                            </li>
                                         @else
                                             <li class="page-item">
-                                                <a class="page-link prev-next-btn"
-                                                    href="{{ $landBanks->previousPageUrl() }}">
+                                                <a class="page-link"
+                                                    href="{{ $landBanks->appends(request()->query())->previousPageUrl() }}"
+                                                    rel="prev" aria-label="Previous">
                                                     <i class="mdi mdi-chevron-left"></i>
                                                 </a>
                                             </li>
                                         @endif
 
-                                        @foreach ($landBanks->getUrlRange(1, $landBanks->lastPage()) as $page => $url)
-                                            <li
-                                                class="page-item {{ $landBanks->currentPage() == $page ? 'active' : '' }}">
-                                                <a class="page-link {{ $landBanks->currentPage() == $page ? '' : 'page-click' }}"
-                                                    href="{{ $url }}">{{ $page }}</a>
-                                            </li>
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($landBanks->getUrlRange(max(1, $landBanks->currentPage() - 2), min($landBanks->lastPage(), $landBanks->currentPage() + 2)) as $page => $url)
+                                            @if ($page == $landBanks->currentPage())
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $landBanks->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                </li>
+                                            @endif
                                         @endforeach
 
+                                        {{-- Next Page Link --}}
                                         @if ($landBanks->hasMorePages())
                                             <li class="page-item">
-                                                <a class="page-link prev-next-btn"
-                                                    href="{{ $landBanks->nextPageUrl() }}">
+                                                <a class="page-link"
+                                                    href="{{ $landBanks->appends(request()->query())->nextPageUrl() }}"
+                                                    rel="next" aria-label="Next">
                                                     <i class="mdi mdi-chevron-right"></i>
                                                 </a>
                                             </li>
                                         @else
-                                            <li class="page-item disabled"><span class="page-link"><i
-                                                        class="mdi mdi-chevron-right"></i></span></li>
+                                            <li class="page-item disabled" aria-disabled="true">
+                                                <span class="page-link" aria-label="Next">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </span>
+                                            </li>
                                         @endif
                                     </ul>
                                 </nav>
@@ -680,6 +672,53 @@
             </div>
         </div>
     @endforeach
+
+    <!-- Modal Peringatan Profil Landbank Belum Lengkap -->
+    <div class="modal fade" id="modalProfileIncomplete" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-body p-4 text-center">
+                    <!-- Icon Header -->
+                    <div class="d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 70px; height: 70px; border-radius: 50%; background: #fff7ed; color: #f97316; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.15);">
+                        <i class="mdi mdi-alert-circle-outline" style="font-size: 38px;"></i>
+                    </div>
+
+                    <h4 class="fw-bold text-dark mb-2" style="font-size: 1.25rem;">Profil Landbank Belum Lengkap</h4>
+                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                        Data profil tanah untuk <strong class="text-dark" id="modalPropName">Properti</strong> belum dilengkapi.
+                    </p>
+
+                    <!-- Box Daftar Yang Belum Lengkap -->
+                    <div class="text-start p-3 mb-3" style="background: #fff8eb; border-radius: 10px; border-left: 4px solid #f59e0b;">
+                        <div class="fw-bold text-dark mb-1" style="font-size: 0.82rem;">
+                            <i class="mdi mdi-information-outline me-1 text-warning"></i> Belum diisi / belum diunggah:
+                        </div>
+                        <div class="text-danger fw-semibold" style="font-size: 0.85rem;" id="modalPropMissing">
+                            -
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-4" style="font-size: 0.82rem;">
+                        Silakan lengkapi data profil tanah terlebih dahulu atau tetap lanjut ke proses pengolahan lahan fisik.
+                    </p>
+
+                    <!-- Tombol Aksi Rapi & Bersih -->
+                    <div class="d-grid gap-2">
+                        <a href="#" id="btnModalEditProfile" class="btn btn-gradient-primary py-2 fw-semibold d-flex align-items-center justify-content-center shadow-sm" style="border-radius: 8px;">
+                            <i class="mdi mdi-pencil me-1 fs-5"></i> Lengkapi Profil Tanah Sekarang
+                        </a>
+                        <a href="#" id="btnModalContinueDev" class="btn btn-outline-secondary py-2 fw-semibold d-flex align-items-center justify-content-center" style="border-radius: 8px;">
+                            <i class="mdi mdi-wrench me-1"></i> Tetap Lanjut Pengolahan Lahan
+                        </a>
+                        <button type="button" class="btn btn-light py-2 text-muted fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -881,7 +920,7 @@
                 }
             });
 
-            // Handle Alert Peringatan Profil Land Bank Belum Lengkap
+            // Handle Alert Peringatan Profil Land Bank Belum Lengkap via Bootstrap Modal
             $(document).on('click', '.btn-pengolahan-alert', function(e) {
                 e.preventDefault();
                 const name = $(this).data('name') || 'Properti';
@@ -889,36 +928,12 @@
                 const editUrl = $(this).data('edit-url');
                 const missing = $(this).data('missing') || 'Berkas profil penting';
 
-                Swal.fire({
-                    title: 'Profil Landbank Belum Lengkap',
-                    html: `
-                        <p class="mb-2 text-dark">Data profil tanah untuk <strong>${name}</strong> belum lengkap.</p>
-                        <div class="alert alert-warning py-2 px-3 text-start small mb-3 border-0 rounded-3" style="background: rgba(255, 193, 7, 0.15); color: #856404; font-size: 0.82rem;">
-                            <i class="mdi mdi-alert-circle me-1 fw-bold"></i>
-                            <strong>Belum diisi / belum diunggah:</strong><br>
-                            <span class="fw-semibold text-danger">${missing}</span>
-                        </div>
-                        <p class="small text-muted mb-0">Silakan lengkapi data profil tanah terlebih dahulu sebelum memulai proses pengolahan lahan fisik.</p>
-                    `,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    showDenyButton: true,
-                    confirmButtonText: '<i class="mdi mdi-pencil me-1"></i> Lengkapi Profil Tanah Sekarang',
-                    denyButtonText: '<i class="mdi mdi-wrench me-1"></i> Tetap Lanjut Pengolahan Lahan',
-                    cancelButtonText: 'Batal',
-                    customClass: {
-                        confirmButton: 'btn btn-primary px-3 py-2 rounded-pill shadow-sm mx-1',
-                        denyButton: 'btn btn-outline-secondary px-3 py-2 rounded-pill shadow-sm mx-1',
-                        cancelButton: 'btn btn-light px-3 py-2 rounded-pill mx-1'
-                    },
-                    buttonsStyling: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = editUrl;
-                    } else if (result.isDenied) {
-                        window.location.href = url;
-                    }
-                });
+                $('#modalPropName').text(name);
+                $('#modalPropMissing').text(missing);
+                $('#btnModalEditProfile').attr('href', editUrl);
+                $('#btnModalContinueDev').attr('href', url);
+
+                $('#modalProfileIncomplete').modal('show');
             });
 
             // Handle session flash messages with beautiful SweetAlert
