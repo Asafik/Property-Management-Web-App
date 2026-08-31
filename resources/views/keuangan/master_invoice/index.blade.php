@@ -6,54 +6,69 @@
 
     <style>
         .header-card {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
-            border-radius: 12px;
-            color: #ffffff;
-        }
-
-        .stat-card-premium {
-            border: none;
-            border-radius: 12px;
             background: #ffffff;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow: hidden;
+            border-radius: 8px !important;
+            border: none !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            margin-bottom: 0;
         }
 
-        .stat-card-premium:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.09);
+        .filter-card {
+            background: #ffffff;
+            padding: 0.85rem 1rem !important;
+            margin-bottom: 1rem !important;
         }
 
-        .stat-card-premium::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
+        /* Select2 & Input Theme Alignment */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            border-color: #ebedf2 !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+            color: #3b3f5c !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #bfa5fa !important;
+            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
         }
 
-        .stat-purple::before { background: linear-gradient(180deg, #7c3aed, #9333ea); }
-        .stat-green::before { background: linear-gradient(180deg, #10b981, #059669); }
-        .stat-amber::before { background: linear-gradient(180deg, #f59e0b, #d97706); }
-        .stat-blue::before { background: linear-gradient(180deg, #3b82f6, #2563eb); }
-
-        .stat-icon-wrap {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+        /* Responsive Table & Scroll Styling */
+        .table-responsive {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            width: 100% !important;
+            margin-bottom: 0 !important;
         }
 
-        .icon-purple { background: rgba(124, 58, 237, 0.1); color: #7c3aed; }
-        .icon-green { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .icon-amber { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .icon-blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .table thead th {
+            color: #9a55ff;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #fbf9ff;
+            border-bottom: 1px solid #ebe5f5;
+            padding: 0.75rem 0.85rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 0.85rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f2eff8;
+            font-size: 0.88rem;
+        }
 
         .badge-cat {
             font-size: 11px;
@@ -116,25 +131,6 @@
             border: 1px solid #e5e7eb;
         }
 
-        .table-invoice th {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background-color: #f8fafc;
-            color: #475569;
-            border-bottom: 2px solid #e2e8f0;
-            padding: 12px 14px;
-        }
-
-        .table-invoice td {
-            font-size: 13px;
-            padding: 14px 14px;
-            vertical-align: middle;
-            color: #1e293b;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
         .btn-action-icon {
             width: 32px;
             height: 32px;
@@ -177,6 +173,50 @@
             color: #ffffff;
         }
 
+        .pagination {
+            margin: 0;
+            gap: 4px;
+        }
+
+        .page-item .page-link {
+            border: 1px solid #e9ecef;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+            color: #6c7383;
+            background-color: #ffffff;
+            border-radius: 6px !important;
+            min-width: 34px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);
+            font-weight: 700;
+        }
+
+        .page-item .page-link:hover {
+            background-color: #f6f1ff;
+            color: #792fe0;
+            border-color: #d8b4fe;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: #f8fafc;
+            color: #cbd5e1;
+            border-color: #e2e8f0;
+        }
+
+        .pagination-info {
+            font-size: 0.85rem;
+            color: #6c7383;
+            font-weight: 500;
+        }
+
         .btn-action-delete {
             color: #ef4444;
             border-color: #fecaca;
@@ -186,384 +226,464 @@
             background: #ef4444;
             color: #ffffff;
         }
-
-        .filter-panel {
-            background: #ffffff;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            padding: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-        }
     </style>
 
-    <div class="container-fluid px-2 px-md-4 py-3">
+    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-        <!-- HEADER BANNER -->
-        <div class="card shadow-sm border-0 header-card mb-4">
-            <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                <div>
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="badge bg-white text-dark fw-bold px-2 py-1" style="font-size: 11px;">
-                            <i class="mdi mdi-finance text-primary"></i> MODUL KEUANGAN
-                        </span>
-                        <span class="badge bg-white-50 text-white px-2 py-1" style="font-size: 11px;">
-                            Database Terintegrasi
-                        </span>
+        <!-- Header Dashboard Card Banner -->
+        <div class="row mb-3 mb-md-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 header-card">
+                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3" style="min-height: 105px;">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                                Master Invoice Keuangan
+                            </h3>
+                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                                Pusat pencatatan, pemantauan status, dan arsip invoice pengadaan lahan Pra Land Bank & transaksi properti.
+                            </p>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <button type="button" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 shadow-sm py-2 px-3" onclick="syncAllInvoices()">
+                                <i class="mdi mdi-sync fs-6" id="syncIcon"></i>
+                                <span>Sinkronkan Transaksi</span>
+                            </button>
+                        </div>
                     </div>
-                    <h3 class="fw-bold mb-1 text-white">Master Invoice Keuangan</h3>
-                    <p class="mb-0 text-white-50" style="font-size: 0.9rem;">
-                        Pusat pencatatan, pemantauan status, dan arsip invoice pengadaan lahan Pra Land Bank & transaksi properti.
-                    </p>
-                </div>
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <button type="button" class="btn btn-light fw-bold text-dark d-inline-flex align-items-center gap-2 shadow-sm" onclick="syncAllInvoices()">
-                        <i class="mdi mdi-sync text-primary fs-5" id="syncIcon"></i>
-                        <span>Sinkronkan Transaksi</span>
-                    </button>
-                    <button type="button" class="btn btn-outline-light fw-bold d-inline-flex align-items-center gap-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCreateInvoice">
-                        <i class="mdi mdi-plus-circle-outline fs-5"></i>
-                        <span>Tambah Invoice</span>
-                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- 4 KPI SUMMARY STATS CARDS -->
+        <!-- Statistic Cards (Sesuai Desain Dashboard) -->
         <div class="row g-3 mb-4">
             <!-- Total Nilai Invoice -->
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card stat-card-premium stat-purple h-100 p-3">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted fw-semibold" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Total Akumulasi Tagihan
-                            </span>
-                            <h4 class="fw-bold text-dark mt-2 mb-1" style="font-size: 1.3rem;">
-                                Rp {{ number_format($stats['total_amount'], 0, ',', '.') }}
-                            </h4>
-                            <span class="badge bg-soft-primary text-primary" style="font-size: 11px;">
-                                {{ $stats['total_invoices_count'] }} Transaksi Terdata
-                            </span>
+                            <h4 class="text-dark mb-1 fw-bold" style="font-size: 1.15rem;">Rp {{ number_format($stats['total_amount'], 0, ',', '.') }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Akumulasi Tagihan</p>
+                            <small class="text-muted" style="font-size: 0.78rem;">{{ $stats['total_invoices_count'] }} Transaksi Terdata</small>
                         </div>
-                        <div class="stat-icon-wrap icon-purple">
-                            <i class="mdi mdi-receipt-text-outline"></i>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-receipt-text-outline" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Terbayar (Lunas) -->
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card stat-card-premium stat-green h-100 p-3">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted fw-semibold" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Realisasi Terbayar
-                            </span>
-                            <h4 class="fw-bold text-success mt-2 mb-1" style="font-size: 1.3rem;">
-                                Rp {{ number_format($stats['total_paid'], 0, ',', '.') }}
-                            </h4>
-                            <span class="badge bg-soft-success text-success" style="font-size: 11px;">
-                                <i class="mdi mdi-check-circle me-1"></i>{{ $stats['count_lunas'] }} Invoice Lunas
-                            </span>
+                            <h4 class="text-success mb-1 fw-bold" style="font-size: 1.15rem;">Rp {{ number_format($stats['total_paid'], 0, ',', '.') }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Realisasi Terbayar</p>
+                            <small class="text-success fw-semibold" style="font-size: 0.78rem;">{{ $stats['count_lunas'] }} Invoice Lunas</small>
                         </div>
-                        <div class="stat-icon-wrap icon-green">
-                            <i class="mdi mdi-cash-check"></i>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-cash-check" style="font-size: 2.2rem; color: #28a745; opacity: 0.3;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Sisa Tagihan (Outstanding) -->
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card stat-card-premium stat-amber h-100 p-3">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted fw-semibold" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Sisa Tagihan Berjalan
-                            </span>
-                            <h4 class="fw-bold text-warning mt-2 mb-1" style="font-size: 1.3rem;">
-                                Rp {{ number_format($stats['total_remaining'], 0, ',', '.') }}
-                            </h4>
-                            <span class="badge bg-soft-warning text-warning" style="font-size: 11px;">
-                                {{ $stats['count_partial'] + $stats['count_pending'] }} Invoice Belum Lunas
-                            </span>
+                            <h4 class="text-danger mb-1 fw-bold" style="color: #ea580c !important; font-size: 1.15rem;">Rp {{ number_format($stats['total_remaining'], 0, ',', '.') }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Sisa Tagihan Berjalan</p>
+                            <small class="text-danger" style="font-size: 0.78rem;">{{ $stats['count_partial'] + $stats['count_pending'] }} Invoice Belum Lunas</small>
                         </div>
-                        <div class="stat-icon-wrap icon-amber">
-                            <i class="mdi mdi-clock-alert-outline"></i>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-cash-clock" style="font-size: 2.2rem; color: #ea580c; opacity: 0.3;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Total Invoice Pra Land Bank -->
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card stat-card-premium stat-blue h-100 p-3">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted fw-semibold" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Invoice Pra Land Bank
-                            </span>
-                            <h4 class="fw-bold text-primary mt-2 mb-1" style="font-size: 1.3rem;">
-                                {{ $stats['count_pra_landbank'] }} Dokumen
-                            </h4>
-                            <span class="badge bg-soft-info text-info" style="font-size: 11px;">
-                                Pengadaan & Akuisisi Lahan
-                            </span>
+                            <h4 class="text-primary mb-1 fw-bold" style="font-size: 1.15rem;">{{ $stats['count_pra_landbank'] }} Dokumen</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Invoice Pra Land Bank</p>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pengadaan & Akuisisi Lahan</small>
                         </div>
-                        <div class="stat-icon-wrap icon-blue">
-                            <i class="mdi mdi-map-marker-radius"></i>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-map-marker-radius" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- FILTER & SEARCH PANEL -->
-        <div class="filter-panel mb-4">
-            <form method="GET" action="{{ route('keuangan.master-invoice.index') }}" id="filterForm">
-                <div class="row g-2 align-items-end">
-                    <!-- Search Input -->
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.78rem;">Pencarian Keyword</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
-                            <input type="text" class="form-control border-start-0" name="search" value="{{ request('search') }}" placeholder="No Invoice, Pihak Penerima, Objek...">
-                        </div>
+        <!-- Tabel Data Master Invoice -->
+        <div class="row mt-2 mt-sm-2 mt-md-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
+                        <h5 class="card-title mb-0">
+                            Daftar Master Invoice Database
+                        </h5>
+                        <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#modalCreateInvoice">
+                            <i class="mdi mdi-plus me-1 fs-6"></i>
+                            <span>Tambah Invoice</span>
+                        </button>
                     </div>
 
-                    <!-- Category Filter -->
-                    <div class="col-6 col-md-2">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.78rem;">Kategori Transaksi</label>
-                        <select class="form-select" name="category" onchange="document.getElementById('filterForm').submit()">
-                            <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
-                            <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
-                            <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
-                            <option value="operasional" {{ request('category') == 'operasional' ? 'selected' : '' }}>Operasional</option>
-                        </select>
-                    </div>
+                    <div class="card-body">
+                        <!-- FILTER SECTION (PERSIS DASHBOARD) -->
+                        <div class="filter-card mb-3">
+                            <!-- DESKTOP & TABLET VERSION -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <form method="GET" action="{{ route('keuangan.master-invoice.index') }}" id="filterForm">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search -->
+                                            <div style="min-width: 200px; max-width: 260px; flex: 1;">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                        placeholder="No Invoice, Penerima, Objek..." value="{{ request('search') }}"
+                                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                                    <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                        type="submit" id="searchSubmitBtn" title="Cari"
+                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                        <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
 
-                    <!-- Payment Status Filter -->
-                    <div class="col-6 col-md-2">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.78rem;">Status Pembayaran</label>
-                        <select class="form-select" name="status" onchange="document.getElementById('filterForm').submit()">
-                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
-                            <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
-                            <option value="partial" {{ request('status') == 'partial' ? 'selected' : '' }}>Sebagian (Partial)</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Belum Lunas (Pending)</option>
-                        </select>
-                    </div>
+                                            <!-- Kategori Filter -->
+                                            <div style="min-width: 170px;">
+                                                <select class="form-select" name="category" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                                                    <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
+                                                    <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
+                                                    <option value="operasional" {{ request('category') == 'operasional' ? 'selected' : '' }}>Operasional</option>
+                                                </select>
+                                            </div>
 
-                    <!-- Date Range: Start Date -->
-                    <div class="col-6 col-md-2">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.78rem;">Tanggal Mulai</label>
-                        <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}">
-                    </div>
+                                            <!-- Status Pembayaran Filter -->
+                                            <div style="min-width: 160px;">
+                                                <select class="form-select" name="status" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
+                                                    <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                    <option value="partial" {{ request('status') == 'partial' ? 'selected' : '' }}>Sebagian</option>
+                                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                </select>
+                                            </div>
 
-                    <!-- Date Range: End Date -->
-                    <div class="col-6 col-md-2">
-                        <div class="d-flex gap-2">
-                            <div class="flex-grow-1">
-                                <label class="form-label text-muted fw-bold" style="font-size: 0.78rem;">Tanggal Akhir</label>
-                                <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}">
-                            </div>
-                            <div>
-                                <label class="form-label invisible d-block" style="font-size: 0.78rem;">Aksi</label>
-                                <button type="submit" class="btn btn-primary px-3" title="Terapkan Filter">
-                                    <i class="mdi mdi-filter"></i>
-                                </button>
-                            </div>
-                            @if(request()->anyFilled(['search', 'category', 'status', 'start_date', 'end_date']))
-                                <div>
-                                    <label class="form-label invisible d-block" style="font-size: 0.78rem;">Reset</label>
-                                    <a href="{{ route('keuangan.master-invoice.index') }}" class="btn btn-outline-secondary px-2" title="Reset Filter">
-                                        <i class="mdi mdi-refresh"></i>
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+                                            <!-- Tanggal Mulai -->
+                                            <div style="min-width: 135px;">
+                                                <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}" title="Tanggal Mulai" style="height: 38px;">
+                                            </div>
 
-        <!-- MAIN TABLE CARD -->
-        <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
-            <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="mdi mdi-table text-primary fs-5"></i>
-                    <h5 class="fw-bold mb-0 text-dark" style="font-size: 1rem;">Daftar Master Invoice Database</h5>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted" style="font-size: 0.85rem;">Menampilkan {{ $invoices->firstItem() ?? 0 }}-{{ $invoices->lastItem() ?? 0 }} dari {{ $invoices->total() }} data</span>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-invoice table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="5%">No</th>
-                            <th width="14%">Nomor Invoice</th>
-                            <th width="12%">Kategori</th>
-                            <th width="22%">Judul / Objek Transaksi</th>
-                            <th width="15%">Pihak Penerima</th>
-                            <th width="14%" class="text-end">Total Tagihan</th>
-                            <th width="14%" class="text-end">Realisasi & Sisa</th>
-                            <th width="10%" class="text-center">Status</th>
-                            <th width="10%" class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($invoices as $idx => $inv)
-                            @php
-                                $percentPaid = $inv->total_amount > 0 ? min(100, round(($inv->paid_amount / $inv->total_amount) * 100)) : 0;
-                            @endphp
-                            <tr>
-                                <td class="text-center text-muted fw-bold">
-                                    {{ $invoices->firstItem() + $idx }}
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark font-monospace" style="font-size: 0.88rem;">
-                                        {{ $inv->invoice_number }}
-                                    </div>
-                                    <small class="text-muted d-block" style="font-size: 11px;">
-                                        <i class="mdi mdi-calendar-blank me-1"></i>{{ $inv->invoice_date ? $inv->invoice_date->format('d/m/Y') : '-' }}
-                                    </small>
-                                </td>
-                                <td>
-                                    @if($inv->category === 'pra_landbank')
-                                        <span class="badge-cat badge-cat-pra">
-                                            <i class="mdi mdi-map-clock"></i> Pra Land Bank
-                                        </span>
-                                    @elseif($inv->category === 'unit_cash')
-                                        <span class="badge-cat badge-cat-unit">
-                                            <i class="mdi mdi-home-outline"></i> Unit Cash
-                                        </span>
-                                    @else
-                                        <span class="badge-cat badge-cat-ops">
-                                            <i class="mdi mdi-receipt"></i> {{ ucfirst($inv->category) }}
-                                        </span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark" style="font-size: 0.88rem;">
-                                        {{ $inv->title }}
-                                    </div>
-                                    @if($inv->praLandbank)
-                                        <small class="text-muted d-block" style="font-size: 11px;">
-                                            <i class="mdi mdi-map-marker-outline"></i> {{ $inv->praLandbank->city ?? 'Lokasi Lahan' }} ({{ number_format($inv->praLandbank->area ?? 0, 0, ',', '.') }} m²)
-                                        </small>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="fw-semibold text-dark">
-                                        {{ $inv->recipient_name ?? '-' }}
-                                    </div>
-                                    @if($inv->recipient_contact)
-                                        <small class="text-muted d-block" style="font-size: 11px;">
-                                            <i class="mdi mdi-phone-outline"></i> {{ $inv->recipient_contact }}
-                                        </small>
-                                    @endif
-                                </td>
-                                <td class="text-end">
-                                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">
-                                        Rp {{ number_format($inv->total_amount, 0, ',', '.') }}
-                                    </div>
-                                    <small class="text-muted" style="font-size: 11px;">
-                                        Metode: <strong class="text-uppercase">{{ $inv->payment_method ?? 'Cash' }}</strong>
-                                    </small>
-                                </td>
-                                <td class="text-end">
-                                    <div class="fw-bold text-success" style="font-size: 0.85rem;">
-                                        Rp {{ number_format($inv->paid_amount, 0, ',', '.') }}
-                                    </div>
-                                    @if($inv->remaining_amount > 0)
-                                        <div class="text-warning" style="font-size: 11px; font-weight: 600;">
-                                            Sisa: Rp {{ number_format($inv->remaining_amount, 0, ',', '.') }}
+                                            <!-- Tanggal Akhir -->
+                                            <div style="min-width: 135px;">
+                                                <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}" title="Tanggal Akhir" style="height: 38px;">
+                                            </div>
                                         </div>
-                                    @endif
-                                    <div class="progress mt-1" style="height: 4px;" title="{{ $percentPaid }}% Terbayar">
-                                        <div class="progress-bar {{ $percentPaid >= 100 ? 'bg-success' : 'bg-warning' }}" role="progressbar" style="width: {{ $percentPaid }}%"></div>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    @if($inv->payment_status === 'lunas')
-                                        <span class="badge-status-pill badge-status-lunas">
-                                            <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
-                                        </span>
-                                    @elseif($inv->payment_status === 'partial')
-                                        <span class="badge-status-pill badge-status-partial">
-                                            <i class="mdi mdi-clock-outline me-1"></i>Sebagian
-                                        </span>
-                                    @elseif($inv->payment_status === 'cancelled')
-                                        <span class="badge-status-pill badge-status-cancelled">
-                                            Batal
-                                        </span>
-                                    @else
-                                        <span class="badge-status-pill badge-status-pending">
-                                            <i class="mdi mdi-alert-circle-outline me-1"></i>Pending
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-inline-flex gap-1">
-                                        <!-- Tombol Detail / Preview -->
-                                        <button type="button" class="btn-action-icon" title="Lihat Detail Invoice" onclick="showInvoiceDetail({{ $inv->id }})">
-                                            <i class="mdi mdi-eye-outline"></i>
-                                        </button>
 
-                                        <!-- Tombol Cetak / PDF Format Resmi -->
-                                        @if($inv->pra_landbank_id)
-                                            <a href="{{ route('pra-landbank.invoice', $inv->pra_landbank_id) }}" target="_blank" class="btn-action-icon btn-action-print" title="Cetak Format Resmi Pra Land Bank">
-                                                <i class="mdi mdi-printer"></i>
-                                            </a>
-                                        @else
-                                            <button type="button" class="btn-action-icon btn-action-print" title="Cetak Rincian Invoice" onclick="printInvoiceDirect({{ $inv->id }})">
-                                                <i class="mdi mdi-printer"></i>
+                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons (PERSIS DASHBOARD) -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 85px;">
+                                                <select class="form-select" name="per_page" id="perPageSelect" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
+                                                <i class="mdi mdi-filter"></i>
                                             </button>
+                                            <a href="{{ route('keuangan.master-invoice.index') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- MOBILE VERSION (PERSIS DASHBOARD) -->
+                            <div class="filter-row-mobile d-block d-md-none">
+                                <form method="GET" action="{{ route('keuangan.master-invoice.index') }}" id="filterFormMobile">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" placeholder="No Invoice, Penerima, Objek..." value="{{ request('search') }}" style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" type="submit" style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select class="form-select" name="category" onchange="document.getElementById('filterFormMobile').submit()" style="height: 38px;">
+                                                <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                                                <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
+                                                <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
+                                                <option value="operasional" {{ request('category') == 'operasional' ? 'selected' : '' }}>Operasional</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select class="form-select" name="status" onchange="document.getElementById('filterFormMobile').submit()" style="height: 38px;">
+                                                <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
+                                                <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                <option value="partial" {{ request('status') == 'partial' ? 'selected' : '' }}>Sebagian</option>
+                                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}" title="Tanggal Mulai" style="height: 38px;">
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}" title="Tanggal Akhir" style="height: 38px;">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select class="form-select" name="per_page" onchange="document.getElementById('filterFormMobile').submit()" style="height: 38px;">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
+                                                <i class="mdi mdi-filter"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('keuangan.master-invoice.index') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
+                                                <i class="mdi mdi-refresh"></i> Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">No</th>
+                                        <th width="14%">Nomor Invoice</th>
+                                        <th width="12%">Kategori</th>
+                                        <th width="22%">Judul / Objek Transaksi</th>
+                                        <th width="15%">Pihak Penerima</th>
+                                        <th width="14%" class="text-end">Total Tagihan</th>
+                                        <th width="14%" class="text-end">Realisasi & Sisa</th>
+                                        <th width="10%" class="text-center">Status</th>
+                                        <th width="10%" class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($invoices as $idx => $inv)
+                                        @php
+                                            $percentPaid = $inv->total_amount > 0 ? min(100, round(($inv->paid_amount / $inv->total_amount) * 100)) : 0;
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center text-muted fw-bold">
+                                                {{ $invoices->firstItem() + $idx }}
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark font-monospace" style="font-size: 0.88rem;">
+                                                    {{ $inv->invoice_number }}
+                                                </div>
+                                                <small class="text-muted d-block" style="font-size: 11px;">
+                                                    <i class="mdi mdi-calendar-blank me-1"></i>{{ $inv->invoice_date ? $inv->invoice_date->format('d/m/Y') : '-' }}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                @if($inv->category === 'pra_landbank')
+                                                    <span class="badge-cat badge-cat-pra">
+                                                        <i class="mdi mdi-map-clock"></i> Pra Land Bank
+                                                    </span>
+                                                @elseif($inv->category === 'unit_cash')
+                                                    <span class="badge-cat badge-cat-unit">
+                                                        <i class="mdi mdi-home-outline"></i> Unit Cash
+                                                    </span>
+                                                @else
+                                                    <span class="badge-cat badge-cat-ops">
+                                                        <i class="mdi mdi-receipt"></i> {{ ucfirst($inv->category) }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                    {{ $inv->title }}
+                                                </div>
+                                                @if($inv->praLandbank)
+                                                    <small class="text-muted d-block" style="font-size: 11px;">
+                                                        <i class="mdi mdi-map-marker-outline"></i> {{ $inv->praLandbank->city ?? 'Lokasi Lahan' }} ({{ number_format($inv->praLandbank->area ?? 0, 0, ',', '.') }} m²)
+                                                    </small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="fw-semibold text-dark">
+                                                    {{ $inv->recipient_name ?? '-' }}
+                                                </div>
+                                                @if($inv->recipient_contact)
+                                                    <small class="text-muted d-block" style="font-size: 11px;">
+                                                        <i class="mdi mdi-phone-outline"></i> {{ $inv->recipient_contact }}
+                                                    </small>
+                                                @endif
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                                    Rp {{ number_format($inv->total_amount, 0, ',', '.') }}
+                                                </div>
+                                                <small class="text-muted" style="font-size: 11px;">
+                                                    Metode: <strong class="text-uppercase">{{ $inv->payment_method ?? 'Cash' }}</strong>
+                                                </small>
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="fw-bold text-success" style="font-size: 0.85rem;">
+                                                    Rp {{ number_format($inv->paid_amount, 0, ',', '.') }}
+                                                </div>
+                                                @if($inv->remaining_amount > 0)
+                                                    <div class="text-warning" style="font-size: 11px; font-weight: 600;">
+                                                        Sisa: Rp {{ number_format($inv->remaining_amount, 0, ',', '.') }}
+                                                    </div>
+                                                @endif
+                                                <div class="progress mt-1" style="height: 4px;" title="{{ $percentPaid }}% Terbayar">
+                                                    <div class="progress-bar {{ $percentPaid >= 100 ? 'bg-success' : 'bg-warning' }}" role="progressbar" style="width: {{ $percentPaid }}%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                @if($inv->payment_status === 'lunas')
+                                                    <span class="badge-status-pill badge-status-lunas">
+                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
+                                                    </span>
+                                                @elseif($inv->payment_status === 'partial')
+                                                    <span class="badge-status-pill badge-status-partial">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>Sebagian
+                                                    </span>
+                                                @elseif($inv->payment_status === 'cancelled')
+                                                    <span class="badge-status-pill badge-status-cancelled">
+                                                        Batal
+                                                    </span>
+                                                @else
+                                                    <span class="badge-status-pill badge-status-pending">
+                                                        <i class="mdi mdi-alert-circle-outline me-1"></i>Pending
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-inline-flex gap-1">
+                                                    <!-- Tombol Detail / Preview -->
+                                                    <button type="button" class="btn-action-icon" title="Lihat Detail Invoice" onclick="showInvoiceDetail({{ $inv->id }})">
+                                                        <i class="mdi mdi-eye-outline"></i>
+                                                    </button>
+
+                                                    <!-- Tombol Cetak / PDF Format Resmi -->
+                                                    @if($inv->pra_landbank_id)
+                                                        <a href="{{ route('pra-landbank.invoice', $inv->pra_landbank_id) }}" target="_blank" class="btn-action-icon btn-action-print" title="Cetak Format Resmi Pra Land Bank">
+                                                            <i class="mdi mdi-printer"></i>
+                                                        </a>
+                                                    @else
+                                                        <button type="button" class="btn-action-icon btn-action-print" title="Cetak Rincian Invoice" onclick="printInvoiceDirect({{ $inv->id }})">
+                                                            <i class="mdi mdi-printer"></i>
+                                                        </button>
+                                                    @endif
+
+                                                    <!-- Tombol Edit / Update Pembayaran -->
+                                                    <button type="button" class="btn-action-icon btn-action-edit" title="Update Pembayaran / Status" onclick="openEditModal({{ json_encode($inv) }})">
+                                                        <i class="mdi mdi-pencil-outline"></i>
+                                                    </button>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button type="button" class="btn-action-icon btn-action-delete" title="Hapus Invoice" onclick="confirmDeleteInvoice({{ $inv->id }}, '{{ $inv->invoice_number }}')">
+                                                        <i class="mdi mdi-trash-can-outline"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="9" class="text-center py-5">
+                                                <div class="text-muted">
+                                                    <i class="mdi mdi-file-document-outline fs-1 d-block mb-2 text-secondary"></i>
+                                                    <h6 class="fw-bold mb-1">Belum Ada Data Invoice Tersimpan</h6>
+                                                    <p class="mb-3 text-muted" style="font-size: 0.85rem;">Data transaksi Pra Land Bank atau invoice baru akan otomatis tercatat di sini.</p>
+                                                    <button type="button" class="btn btn-sm btn-primary px-3" onclick="syncAllInvoices()">
+                                                        <i class="mdi mdi-sync me-1"></i> Sinkronkan Data Pra Land Bank Sekarang
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- PAGINATION - PERSIS DASHBOARD -->
+                        @if ($invoices instanceof \Illuminate\Pagination\LengthAwarePaginator && $invoices->total() > 0)
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                                <div class="pagination-info mb-2 mb-sm-0">
+                                    Menampilkan {{ $invoices->firstItem() }} - {{ $invoices->lastItem() }} dari
+                                    {{ $invoices->total() }} data
+                                </div>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                        {{-- Previous Page Link --}}
+                                        @if ($invoices->onFirstPage())
+                                            <li class="page-item disabled" aria-disabled="true">
+                                                <span class="page-link" aria-label="Previous">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="{{ $invoices->appends(request()->query())->previousPageUrl() }}"
+                                                    rel="prev" aria-label="Previous">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
                                         @endif
 
-                                        <!-- Tombol Edit / Update Pembayaran -->
-                                        <button type="button" class="btn-action-icon btn-action-edit" title="Update Pembayaran / Status" onclick="openEditModal({{ json_encode($inv) }})">
-                                            <i class="mdi mdi-pencil-outline"></i>
-                                        </button>
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($invoices->getUrlRange(max(1, $invoices->currentPage() - 2), min($invoices->lastPage(), $invoices->currentPage() + 2)) as $page => $url)
+                                            @if ($page == $invoices->currentPage())
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="{{ $invoices->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                </li>
+                                            @endif
+                                        @endforeach
 
-                                        <!-- Tombol Hapus -->
-                                        <button type="button" class="btn-action-icon btn-action-delete" title="Hapus Invoice" onclick="confirmDeleteInvoice({{ $inv->id }}, '{{ $inv->invoice_number }}')">
-                                            <i class="mdi mdi-trash-can-outline"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="9" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="mdi mdi-file-document-outline fs-1 d-block mb-2 text-secondary"></i>
-                                        <h6 class="fw-bold mb-1">Belum Ada Data Invoice Tersimpan</h6>
-                                        <p class="mb-3 text-muted" style="font-size: 0.85rem;">Data transaksi Pra Land Bank atau invoice baru akan otomatis tercatat di sini.</p>
-                                        <button type="button" class="btn btn-sm btn-primary px-3" onclick="syncAllInvoices()">
-                                            <i class="mdi mdi-sync me-1"></i> Sinkronkan Data Pra Land Bank Sekarang
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            @if($invoices->hasPages())
-                <div class="card-footer bg-white py-3 px-4 border-top d-flex justify-content-between align-items-center">
-                    <div class="text-muted" style="font-size: 0.85rem;">
-                        Menampilkan halaman {{ $invoices->currentPage() }} dari {{ $invoices->lastPage() }}
-                    </div>
-                    <div>
-                        {{ $invoices->links('pagination::bootstrap-5') }}
+                                        {{-- Next Page Link --}}
+                                        @if ($invoices->hasMorePages())
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="{{ $invoices->appends(request()->query())->nextPageUrl() }}"
+                                                    rel="next" aria-label="Next">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        @else
+                                            <li class="page-item disabled" aria-disabled="true">
+                                                <span class="page-link" aria-label="Next">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </span>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </nav>
+                            </div>
+                        @endif
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
 
     </div>
@@ -574,7 +694,7 @@
     <div class="modal fade" id="modalDetailInvoice" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
-                <div class="modal-header text-white" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 12px 12px 0 0;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #da8cff, #9a55ff); border-radius: 12px 12px 0 0;">
                     <div class="d-flex align-items-center gap-2">
                         <i class="mdi mdi-receipt-text-outline fs-4"></i>
                         <div>
