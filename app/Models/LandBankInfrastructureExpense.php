@@ -14,6 +14,7 @@ class LandBankInfrastructureExpense extends Model
     protected $fillable = [
         'land_bank_id',
         'land_bank_infrastructure_id',
+        'phase',
         'material_id',
         'expense_code',
         'item_name',

@@ -1119,16 +1119,24 @@
                                 @foreach ($documentTypes as $type)
                                     @php
                                         $existingDoc = $land->documents->where('document_type_id', $type->id)->first();
+                                        $isDocVerified = ($existingDoc && $existingDoc->status === 'verified') || $land->isFromPraLandbank() || $land->legal_status === 'verified';
                                     @endphp
                                     <div class="properti-col-md-4">
                                         <div class="properti-form-group">
-                                            <label class="properti-form-label">
-                                                No {{ $type->name }}
+                                            <label class="properti-form-label d-flex justify-content-between align-items-center">
+                                                <span>No {{ $type->name }}</span>
+                                                @if($isDocVerified && $existingDoc && $existingDoc->document_number)
+                                                    <span class="badge bg-success-subtle text-success border border-success px-1.5 py-0.5" style="font-size: 0.65rem;">
+                                                        <i class="fas fa-lock me-1"></i>Terkunci
+                                                    </span>
+                                                @endif
                                             </label>
 
                                             <input type="text" name="documents[{{ $type->id }}][number]"
-                                                class="properti-form-control" placeholder="Nomor {{ $type->name }}"
-                                                value="{{ old('documents.'.$type->id.'.number', $existingDoc ? $existingDoc->document_number : '') }}">
+                                                class="properti-form-control {{ $isDocVerified ? 'bg-light text-muted' : '' }}" 
+                                                placeholder="Nomor {{ $type->name }}"
+                                                value="{{ old('documents.'.$type->id.'.number', $existingDoc ? $existingDoc->document_number : '') }}"
+                                                {{ $isDocVerified ? 'readonly' : '' }}>
                                         </div>
                                     </div>
                                 @endforeach
@@ -1136,11 +1144,9 @@
 
                             <hr class="properti-hr">
 
-                            <hr class="properti-hr">
-
                             <h5 class="properti-section-title">
                                 <i class="fas fa-upload me-2"></i>
-                                Upload Dokumen
+                                Berkas & Dokumen Terverifikasi
                             </h5>
 
                             <div class="properti-row">
@@ -1148,48 +1154,79 @@
                                     @php
                                         $existingDoc = $land->documents->where('document_type_id', $type->id)->first();
                                         $hasDoc = $existingDoc && $existingDoc->file_path;
+                                        $isDocVerified = ($existingDoc && $existingDoc->status === 'verified') || $land->isFromPraLandbank() || $land->legal_status === 'verified';
                                     @endphp
                                     <div class="properti-col-md-4">
                                         <div class="properti-form-group mb-3">
                                             <label class="properti-form-label d-flex justify-content-between align-items-center mb-1">
-                                                <span>Upload {{ $type->name }}</span>
-                                                @if($hasDoc)
+                                                <span>Berkas {{ $type->name }}</span>
+                                                @if($hasDoc && $isDocVerified)
                                                     <span class="badge bg-success text-white fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px; background-color: #28a745 !important;">
-                                                        <i class="fas fa-check-circle me-1"></i>Terunggah
+                                                        <i class="fas fa-check-circle me-1"></i>Terverifikasi (Terkunci)
+                                                    </span>
+                                                @elseif($hasDoc)
+                                                    <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px;">
+                                                        <i class="fas fa-clock me-1"></i>Menunggu Verifikasi
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary text-white px-2 py-1" style="font-size: 0.68rem; border-radius: 4px;">
+                                                        Belum Upload
                                                     </span>
                                                 @endif
                                             </label>
 
-                                            <div class="properti-file-upload-modern {{ $hasDoc ? 'is-uploaded' : '' }}">
-                                                <input type="file" name="documents[{{ $type->id }}][file]"
-                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png"
-                                                    data-type-name="{{ $type->name }}"
-                                                    data-has-existing="{{ $hasDoc ? '1' : '0' }}">
-
-                                                <div class="properti-file-label-modern">
-                                                    <i class="{{ $hasDoc ? 'fas fa-file-circle-check text-success' : 'fas fa-cloud-upload-alt' }}"
-                                                       style="{{ $hasDoc ? 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;' : '' }}"></i>
-                                                    <div class="properti-file-info-modern">
-                                                        <span class="file-title-text {{ $hasDoc ? 'text-success fw-bold' : '' }}">
-                                                            {{ $hasDoc ? 'Dokumen Sudah Terunggah' : 'Upload ' . $type->name . ' Baru' }}
-                                                        </span>
-                                                        <small class="file-sub-text text-muted">
-                                                            {{ $hasDoc ? 'Klik di sini jika ingin ganti / upload file baru' : 'Format: PDF, JPG, PNG (Max: 2MB)' }}
-                                                        </small>
+                                            @if($isDocVerified && $hasDoc)
+                                                <!-- KOTAK DOKUMEN TERKUNCI (READ ONLY KARENA SUDAH VERIFIKASI) -->
+                                                <div class="card p-3 rounded-3 border bg-light d-flex flex-column justify-content-between" style="min-height: 110px; border-color: #28a745 !important; background: rgba(40, 167, 69, 0.04) !important;">
+                                                    <div class="d-flex align-items-start gap-2">
+                                                        <i class="fas fa-file-shield text-success fs-3 mt-1"></i>
+                                                        <div>
+                                                            <strong class="text-success d-block" style="font-size: 0.85rem;">Dokumen Sah Terverifikasi</strong>
+                                                            <small class="text-muted d-block" style="font-size: 0.73rem;">Dokumen ini telah disetujui secara legal dan tidak dapat diubah lagi.</small>
+                                                        </div>
                                                     </div>
-                                                    <span class="properti-file-size"></span>
+                                                    <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
+                                                        <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-outline-success d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px;">
+                                                            <i class="fas fa-eye"></i> Pratinjau Dokumen
+                                                        </a>
+                                                        @if($existingDoc->document_number)
+                                                            <small class="text-muted font-monospace" style="font-size: 0.72rem;">No: {{ $existingDoc->document_number }}</small>
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            
-                                            @if($hasDoc)
-                                                <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                    <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(154, 85, 255, 0.2); color: #9a55ff; background: rgba(154, 85, 255, 0.05);">
-                                                        <i class="fas fa-eye"></i> Lihat Dokumen Saat Ini
-                                                    </a>
-                                                    @if($existingDoc->document_number)
-                                                        <small class="text-muted" style="font-size: 0.72rem;">No: {{ $existingDoc->document_number }}</small>
-                                                    @endif
+                                            @else
+                                                <!-- FORM UPLOAD (HANYA BISA JIKA BELUM TERVERIFIKASI) -->
+                                                <div class="properti-file-upload-modern {{ $hasDoc ? 'is-uploaded' : '' }}">
+                                                    <input type="file" name="documents[{{ $type->id }}][file]"
+                                                        id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png"
+                                                        data-type-name="{{ $type->name }}"
+                                                        data-has-existing="{{ $hasDoc ? '1' : '0' }}">
+
+                                                    <div class="properti-file-label-modern">
+                                                        <i class="{{ $hasDoc ? 'fas fa-file-circle-check text-success' : 'fas fa-cloud-upload-alt' }}"
+                                                           style="{{ $hasDoc ? 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;' : '' }}"></i>
+                                                        <div class="properti-file-info-modern">
+                                                            <span class="file-title-text {{ $hasDoc ? 'text-success fw-bold' : '' }}">
+                                                                {{ $hasDoc ? 'Dokumen Tersedia (Klik Ganti)' : 'Upload ' . $type->name . ' Baru' }}
+                                                            </span>
+                                                            <small class="file-sub-text text-muted">
+                                                                Format: PDF, JPG, PNG (Max: 2MB)
+                                                            </small>
+                                                        </div>
+                                                        <span class="properti-file-size"></span>
+                                                    </div>
                                                 </div>
+                                                
+                                                @if($hasDoc)
+                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                        <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(154, 85, 255, 0.2); color: #9a55ff; background: rgba(154, 85, 255, 0.05);">
+                                                            <i class="fas fa-eye"></i> Lihat Dokumen Saat Ini
+                                                        </a>
+                                                        @if($existingDoc->document_number)
+                                                            <small class="text-muted" style="font-size: 0.72rem;">No: {{ $existingDoc->document_number }}</small>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
@@ -1330,89 +1367,6 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
-
-                            <hr class="properti-hr">
-                            {{-- ================= STATUS ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-truck-monster me-2"></i>
-                                Data Cut and Fill
-                            </h5>
-                            <div class="properti-row">
-
-                                <div class="properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Elevasi Awal (m)</label>
-                                        <input type="number" step="0.01" name="elevasi_awal"
-                                            value="{{ old('elevasi_awal', $land->elevasi_awal) }}"
-                                            class="properti-form-control @error('elevasi_awal') is-invalid @enderror">
-
-                                        @error('elevasi_awal')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Elevasi Rencana (m)</label>
-                                        <input type="number" step="0.01" name="elevasi_rencana"
-                                            value="{{ old('elevasi_rencana', $land->elevasi_rencana) }}"
-                                            class="properti-form-control @error('elevasi_rencana') is-invalid @enderror">
-
-                                        @error('elevasi_rencana')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Volume Cut (m³)</label>
-                                        <input type="number" step="0.01" name="volume_cut"
-                                            value="{{ old('volume_cut', $land->volume_cut) }}"
-                                            class="properti-form-control @error('volume_cut') is-invalid @enderror">
-
-                                        @error('volume_cut')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Volume Fill (m³)</label>
-                                        <input type="number" step="0.01" name="volume_fill"
-                                            value="{{ old('volume_fill', $land->volume_fill) }}"
-                                            class="properti-form-control @error('volume_fill') is-invalid @enderror">
-
-                                        @error('volume_fill')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Cut & Fill</label>
-                                        <select name="status_cut_fill"
-                                            class="properti-form-control @error('status_cut_fill') is-invalid @enderror">
-                                            <option value="planned"
-                                                {{ old('status_cut_fill') == 'planned' ? 'selected' : '' }}>Planned
-                                            </option>
-                                            <option value="proses"
-                                                {{ old('status_cut_fill') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="selesai"
-                                                {{ old('status_cut_fill') == 'selesai' ? 'selected' : '' }}>Selesai
-                                            </option>
-                                        </select>
-
-                                        @error('status_cut_fill')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                             </div>
 
                             <hr class="properti-hr">

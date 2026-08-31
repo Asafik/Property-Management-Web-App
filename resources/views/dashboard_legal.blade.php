@@ -18,6 +18,11 @@
         color: #ffffff !important;
     }
 
+    .badge-gradient-info {
+        background: linear-gradient(135deg, #17a2b8, #00c0ef) !important;
+        color: #ffffff !important;
+    }
+
     .badge-gradient-success {
         background: linear-gradient(135deg, #28a745, #5cb85c) !important;
         color: #ffffff !important;
@@ -134,30 +139,49 @@
         font-size: 1.4rem;
         flex-shrink: 0;
     }
+
+    .sop-item {
+        background: #ffffff;
+        border: 1px solid #eef0f4;
+        border-radius: 8px;
+        padding: 0.75rem 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .sop-item:hover {
+        border-color: #9a55ff;
+        background: #faf8ff;
+    }
 </style>
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <!-- Header Dashboard Card Banner (Consistent with dashboard.blade.php) -->
+    <!-- Header Dashboard Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0 header-card">
                 <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                     <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h3 class="text-dark mb-0 fw-bold" style="font-size: 1.35rem;">
-                                Dashboard
-                            </h3>
-                            <span class="badge badge-gradient-primary ms-1" style="font-size: 0.72rem;">Divisi Legal</span>
-                        </div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Dashboard
+                        </h3>
                         <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Monitoring Uji Kelayakan, Validasi Berkas Dokumen, dan Alur Pengadaan Tanah Pra & Pasca Land Bank
+                            @if($isStaffLegal)
+                                Manajemen Pemberkasan, Checklist Kelengkapan Dokumen Legalitas, Input Prospek Baru & Pemetaan Kavling
+                            @else
+                                Monitoring Uji Kelayakan, Validasi Berkas Dokumen, dan Alur Pengadaan Tanah Pra & Pasca Land Bank
+                            @endif
                         </p>
                     </div>
                     <div class="d-flex align-items-center gap-2 pe-2">
                         <a href="{{ route('pra-landbank.proses') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-2">
                             <i class="mdi mdi-plus-circle"></i> Input Pra Tanah
                         </a>
+                        @if($isStaffLegal)
+                            <a href="{{ route('kavling.index') }}" class="btn btn-sm btn-outline-primary d-none d-md-inline-flex align-items-center gap-1 shadow-sm px-3 py-2">
+                                <i class="mdi mdi-plus-box-multiple-outline"></i> Master Kavling
+                            </a>
+                        @endif
                         <div class="d-none d-md-block ms-3">
                             <i class="mdi mdi-scale-balance" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
@@ -167,109 +191,210 @@
         </div>
     </div>
 
-    <!-- Statistic Cards (Consistent with dashboard.blade.php styling) -->
-    <div class="row g-3 mb-4">
-        <!-- Card 1: Total Prospek Pra Tanah -->
-        <div class="col-12 col-sm-6 col-md-4 col-lg">
-            <a href="{{ route('dashboard', ['status' => 'all']) }}#tabelPraTanah" class="kpi-link-card">
-                <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'all' ? 'border-primary' : '' }}" style="border-left: 4px solid #9a55ff !important;">
+    <!-- ================= STATISTIC KPI CARDS ================= -->
+    @if($isStaffLegal)
+        <!-- KPI Cards Khusus Staff Legal (Fokus: Input & Pemberkasan) -->
+        <div class="row g-3 mb-4">
+            <!-- Card 1: Prospek Aktif Dikerjakan -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg">
+                <a href="{{ route('dashboard', ['status' => 'incomplete_doc']) }}#tabelPraTanah" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'incomplete_doc' ? 'border-primary' : '' }}" style="border-left: 4px solid #9a55ff !important;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-dark mb-1 fw-bold">{{ $totalPraTanahStaffActive }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Prospek Aktif (Fase 1-2)</p>
+                                <small class="text-muted" style="font-size: 0.72rem;">{{ $totalPraTanahFase1 }} Fase 1 • {{ $totalPraTanahFase2 }} Fase 2</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-file-document-edit-outline" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 2: Lahan Perlu Kelengkapan Dokumen -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg">
+                <a href="#tugasStaffLegal" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #ea580c !important; {{ $incompleteLands->count() > 0 ? 'background: linear-gradient(135deg, #ffffff 0%, #fffbf5 100%);' : '' }}">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-warning mb-1 fw-bold" style="color: #ea580c !important;">{{ $incompleteLands->count() }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Perlu Pemberkasan</p>
+                                <small class="{{ $incompleteLands->count() > 0 ? 'text-warning fw-semibold' : 'text-muted' }}" style="font-size: 0.72rem; color: #c2410c !important;">
+                                    {{ $incompleteLands->count() > 0 ? 'Upload / lengkapi berkas' : 'Pemberkasan lengkap' }}
+                                </small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-upload-outline" style="font-size: 2.2rem; color: #ea580c; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 3: Berkas Terunggah Menunggu Validasi Kepala -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg">
+                <a href="{{ route('dashboard', ['status' => 'pending_doc']) }}#tabelPraTanah" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'pending_doc' ? 'border-info' : '' }}" style="border-left: 4px solid #0dcaf0 !important;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-info mb-1 fw-bold">{{ $totalPendingDocs }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Menunggu Review Kepala</p>
+                                <small class="text-muted" style="font-size: 0.72rem;">Berkas diajukan validasi</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-clock-check-outline" style="font-size: 2.2rem; color: #0dcaf0; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 4: Dokumen Sah Terverifikasi -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg">
+                <a href="{{ route('dashboard', ['status' => 'approved']) }}#tabelPraTanah" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'approved' ? 'border-success' : '' }}" style="border-left: 4px solid #28a745 !important; background: linear-gradient(135deg, #ffffff 0%, #f4fdf6 100%);">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-success mb-1 fw-bold">{{ $totalVerifiedDocs }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Dokumen Sah Terverifikasi</p>
+                                <small class="text-success fw-semibold" style="font-size: 0.72rem;">{{ $totalApprovedTanah }} Lahan Sah Disetujui</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-certificate" style="font-size: 2.2rem; color: #28a745; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 5: Kavling & Titik Lokasi -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg">
+                <a href="{{ route('kavling.index') }}" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #0d6efd !important;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-primary mb-1 fw-bold">{{ $totalKavling }} Unit</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Data Master Kavling</p>
+                                <small class="text-muted" style="font-size: 0.72rem;">{{ $totalLokasi }} Titik Lokasi Proyek</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-home-city-outline" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    @else
+        <!-- KPI Cards Kepala Legal / Management (Fokus: Supervisi, Validasi & Aset) -->
+        <div class="row g-3 mb-4">
+            <!-- Card 1: Total Prospek Pra Tanah -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg">
+                <a href="{{ route('dashboard', ['status' => 'all']) }}#tabelPraTanah" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'all' ? 'border-primary' : '' }}" style="border-left: 4px solid #9a55ff !important;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-dark mb-1 fw-bold">{{ $totalPraTanah }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Pra Tanah</p>
+                                <small class="text-muted" style="font-size: 0.72rem;">{{ $totalPraTanahFase1 }} F1 • {{ $totalPraTanahFase2 }} F2 • {{ $totalPraTanahFase3 }} F3</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-map-marker-path" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 2: Butuh Validasi Legal -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg">
+                <a href="{{ route('dashboard', ['status' => 'pending_doc']) }}#tabelPraTanah" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'pending_doc' ? 'border-danger' : '' }}" style="border-left: 4px solid #dc3545 !important; {{ $totalPendingDocs > 0 ? 'background: linear-gradient(135deg, #ffffff 0%, #fff7f7 100%);' : '' }}">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-danger mb-1 fw-bold">{{ $totalPendingDocs }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Butuh Validasi Legal</p>
+                                <small class="{{ $totalPendingDocs > 0 ? 'text-danger fw-semibold' : 'text-muted' }}" style="font-size: 0.72rem;">
+                                    {{ $totalPendingDocs > 0 ? 'Perlu tindakan review' : 'Semua berkas sah' }}
+                                </small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-file-alert" style="font-size: 2.2rem; color: #dc3545; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 3: Dokumen Sah / Verified -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg">
+                <a href="{{ route('dashboard', ['status' => 'approved']) }}#tabelPraTanah" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'approved' ? 'border-success' : '' }}" style="border-left: 4px solid #28a745 !important; background: linear-gradient(135deg, #ffffff 0%, #f4fdf6 100%);">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-success mb-1 fw-bold">{{ $totalVerifiedDocs }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Dokumen Sah</p>
+                                <small class="text-success fw-semibold" style="font-size: 0.72rem;">{{ $totalApprovedTanah }} Lahan Disetujui</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-certificate" style="font-size: 2.2rem; color: #28a745; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 4: Pasca Land Bank -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg">
+                <a href="{{ route('properti-all') }}" class="kpi-link-card">
+                    <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #0d6efd !important;">
+                        <div class="card-body d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h4 class="text-primary mb-1 fw-bold">{{ $totalPascaLandBank }}</h4>
+                                <p class="text-muted mb-0" style="font-size: 0.85rem;">Pasca Land Bank</p>
+                                <small class="text-muted" style="font-size: 0.72rem;">Properti induk aktif</small>
+                            </div>
+                            <div class="d-none d-sm-block">
+                                <i class="mdi mdi-city" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 5: Total Luas Lahan Terkelola -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg">
+                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #ea580c !important; background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);">
                     <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <h4 class="text-dark mb-1 fw-bold">{{ $totalPraTanah }}</h4>
-                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Pra Tanah</p>
-                            <small class="text-muted" style="font-size: 0.72rem;">{{ $totalPraTanahFase1 }} F1 • {{ $totalPraTanahFase2 }} F2 • {{ $totalPraTanahFase3 }} F3</small>
+                            <h4 class="text-dark mb-1 fw-bold" style="font-size: 1.15rem; color: #c2410c !important;">{{ number_format($totalLuasLahan) }} m²</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Luas Lahan</p>
+                            <small class="text-muted" style="font-size: 0.72rem;">Pra & Pasca Land Bank</small>
                         </div>
                         <div class="d-none d-sm-block">
-                            <i class="mdi mdi-map-marker-path" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                            <i class="mdi mdi-texture-box" style="font-size: 2.2rem; color: #ea580c; opacity: 0.25;"></i>
                         </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card 2: Butuh Validasi Legal -->
-        <div class="col-12 col-sm-6 col-md-4 col-lg">
-            <a href="{{ route('dashboard', ['status' => 'pending_doc']) }}#tabelPraTanah" class="kpi-link-card">
-                <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'pending_doc' ? 'border-danger' : '' }}" style="border-left: 4px solid #dc3545 !important; {{ $totalPendingDocs > 0 ? 'background: linear-gradient(135deg, #ffffff 0%, #fff7f7 100%);' : '' }}">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h4 class="text-danger mb-1 fw-bold">{{ $totalPendingDocs }}</h4>
-                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Butuh Validasi Legal</p>
-                            <small class="{{ $totalPendingDocs > 0 ? 'text-danger fw-semibold' : 'text-muted' }}" style="font-size: 0.72rem;">
-                                {{ $totalPendingDocs > 0 ? 'Perlu tindakan review' : 'Semua berkas sah' }}
-                            </small>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-file-alert" style="font-size: 2.2rem; color: #dc3545; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card 3: Dokumen Sah / Verified -->
-        <div class="col-12 col-sm-6 col-md-4 col-lg">
-            <a href="{{ route('dashboard', ['status' => 'approved']) }}#tabelPraTanah" class="kpi-link-card">
-                <div class="card shadow-sm border-0 h-100 mb-0 {{ request('status') === 'approved' ? 'border-success' : '' }}" style="border-left: 4px solid #28a745 !important; background: linear-gradient(135deg, #ffffff 0%, #f4fdf6 100%);">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h4 class="text-success mb-1 fw-bold">{{ $totalVerifiedDocs }}</h4>
-                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Dokumen Sah</p>
-                            <small class="text-success fw-semibold" style="font-size: 0.72rem;">{{ $totalApprovedTanah }} Lahan Disetujui</small>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-certificate" style="font-size: 2.2rem; color: #28a745; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card 4: Pasca Land Bank -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg">
-            <a href="{{ route('properti-all') }}" class="kpi-link-card">
-                <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #0d6efd !important;">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h4 class="text-primary mb-1 fw-bold">{{ $totalPascaLandBank }}</h4>
-                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Pasca Land Bank</p>
-                            <small class="text-muted" style="font-size: 0.72rem;">Properti induk aktif</small>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-city" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card 5: Total Luas Lahan Terkelola -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg">
-            <div class="card shadow-sm border-0 h-100 mb-0" style="border-left: 4px solid #ea580c !important; background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h4 class="text-dark mb-1 fw-bold" style="font-size: 1.15rem; color: #c2410c !important;">{{ number_format($totalLuasLahan) }} m²</h4>
-                        <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Luas Lahan</p>
-                        <small class="text-muted" style="font-size: 0.72rem;">Pra & Pasca Land Bank</small>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-texture-box" style="font-size: 2.2rem; color: #ea580c; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
 
-    <!-- ================= RINGKASAN FITUR & MODUL OPERASIONAL ROLE LEGAL ================= -->
+    <!-- ================= RINGKASAN FITUR & MODUL OPERASIONAL ================= -->
     <div class="card shadow-sm border-0 mb-4" style="border-radius: 8px;">
         <div class="card-header bg-white py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
             <div>
                 <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 1rem;">
-                    <i class="mdi mdi-view-dashboard-outline me-2" style="color: #9a55ff;"></i>Ringkasan Fitur & Modul Divisi Legal
+                    <i class="mdi mdi-view-dashboard-outline me-2" style="color: #9a55ff;"></i>
+                    {{ $isStaffLegal ? 'Modul Operasional & Input Staff Legal' : 'Ringkasan Fitur & Modul Divisi Legal' }}
                 </h5>
-                <small class="text-muted">Ringkasan status, metrik, dan akses langsung ke seluruh modul operasional divisi Legal</small>
+                <small class="text-muted">
+                    {{ $isStaffLegal ? 'Akses langsung penginputan berkas, manajemen properti, kavling, dan lokasi' : 'Ringkasan status, metrik, dan akses langsung ke seluruh modul operasional divisi Legal' }}
+                </small>
             </div>
-            <span class="badge badge-gradient-primary px-2.5 py-1" style="font-size: 0.72rem;">5 Modul Operasional</span>
+            <span class="badge {{ $isStaffLegal ? 'badge-gradient-info' : 'badge-gradient-primary' }} px-2.5 py-1" style="font-size: 0.72rem;">5 Modul Operasional</span>
         </div>
         <div class="card-body p-3">
             <div class="row g-3">
@@ -320,7 +445,9 @@
                                     <i class="mdi mdi-file-check-outline"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Validasi Berkas & Legalitas</h6>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">
+                                        {{ $isStaffLegal ? 'Pemberkasan & Upload Dokumen' : 'Validasi Berkas & Legalitas' }}
+                                    </h6>
                                     <small class="text-muted" style="font-size: 0.75rem;">Audit Sertifikat & Perizinan</small>
                                 </div>
                             </div>
@@ -329,7 +456,7 @@
                             </p>
                             <div class="p-2 rounded bg-light border mb-3" style="font-size: 0.78rem;">
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Dokumen Pending:</span>
+                                    <span class="text-muted">{{ $isStaffLegal ? 'Berkas Menunggu Review:' : 'Dokumen Pending:' }}</span>
                                     <strong class="text-danger">{{ $totalPendingDocs }} Dokumen</strong>
                                 </div>
                                 <div class="d-flex justify-content-between">
@@ -339,9 +466,15 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('dashboard', ['status' => 'pending_doc']) }}#tabelPraTanah" class="btn btn-sm btn-outline-danger w-100 py-1" style="font-size: 0.78rem;">
-                                <i class="mdi mdi-alert-circle-outline me-1"></i> Periksa Berkas Pending
-                            </a>
+                            @if($isStaffLegal)
+                                <a href="#tugasStaffLegal" class="btn btn-sm btn-outline-warning text-dark w-100 py-1" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-upload me-1"></i> Buka Checklist Pemberkasan
+                                </a>
+                            @else
+                                <a href="{{ route('dashboard', ['status' => 'pending_doc']) }}#tabelPraTanah" class="btn btn-sm btn-outline-danger w-100 py-1" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-alert-circle-outline me-1"></i> Periksa Berkas Pending
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -480,7 +613,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="badge bg-warning text-dark px-2 py-0.5 mb-1" style="font-size: 0.68rem; font-weight: 700;">FASE 1</span>
-                                <div class="pipeline-filter-title">Penawaran & Makelar</div>
+                                <div class="pipeline-filter-title">{{ $isStaffLegal ? 'Input & Penawaran' : 'Penawaran & Makelar' }}</div>
                             </div>
                             <div class="pipeline-filter-count text-dark">{{ $totalPraTanahFase1 }}</div>
                         </div>
@@ -493,7 +626,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="badge bg-primary text-white px-2 py-0.5 mb-1" style="font-size: 0.68rem; font-weight: 700;">FASE 2</span>
-                                <div class="pipeline-filter-title">Uji Kelayakan & Legalitas</div>
+                                <div class="pipeline-filter-title">{{ $isStaffLegal ? 'Pemberkasan & Berkas' : 'Uji Kelayakan & Legalitas' }}</div>
                             </div>
                             <div class="pipeline-filter-count text-primary">{{ $totalPraTanahFase2 }}</div>
                         </div>
@@ -529,155 +662,316 @@
         </div>
     </div>
 
-    <!-- Antrean Validasi Dokumen & Rekap Legalitas -->
-    <div class="row g-3 mb-4">
-        <!-- Antrean Dokumen Pending (Grouped per Tanah) -->
-        <div class="col-lg-8">
-            <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
-                        <i class="mdi mdi-file-alert me-2 text-danger"></i>Antrean Validasi Berkas Legalitas (Kepala Legal)
-                    </h5>
-                    <span class="badge bg-danger text-white px-2 py-1" style="font-size: 0.72rem;">
-                        {{ $totalPendingDocs }} Dokumen Menunggu
-                    </span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-legal align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th style="width: 40px;">#</th>
-                                    <th>Nama Prospek Lahan</th>
-                                    <th>Daftar Berkas / Surat Tanah</th>
-                                    <th>Status Berkas</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($pendingLandbanks as $index => $land)
-                                    @php
-                                        $pendingDocs = $land->documents->where('status', 'pending');
-                                        $verifiedDocs = $land->documents->where('status', 'verified');
-                                    @endphp
+    <!-- ================= SECTION TUGAS OPERASIONAL ATAU ANTREAN APPROVAL ================= -->
+    @if($isStaffLegal)
+        <!-- Section Khusus Staff Legal: Checklist Tugas Pemberkasan & SOP -->
+        <div class="row g-3 mb-4" id="tugasStaffLegal" style="scroll-margin-top: 80px;">
+            <!-- Daftar Lahan Butuh Tindak Lanjut Pemberkasan -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
+                                <i class="mdi mdi-checkbox-marked-circle-outline me-2 text-warning"></i>Checklist & Tugas Pemberkasan Dokumen (Staff Legal)
+                            </h5>
+                            <small class="text-muted">Daftar prospek lahan yang memerlukan kelengkapan dokumen dan unggah berkas legalitas</small>
+                        </div>
+                        <span class="badge bg-warning text-dark px-2.5 py-1" style="font-size: 0.72rem;">
+                            {{ $incompleteLands->count() }} Lahan Aktif
+                        </span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-legal align-middle mb-0">
+                                <thead>
                                     <tr>
-                                        <td class="text-muted fw-bold">{{ $index + 1 }}</td>
-                                        <td>
-                                            <div class="fw-bold text-dark">{{ $land->land_name }}</div>
-                                            <small class="text-muted" style="font-size: 0.75rem;">
-                                                <i class="mdi mdi-account text-muted me-1"></i>Pemilik: {{ $land->certificate_owner ?? ($land->owner_name ?? '-') }}
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                @foreach($land->documents as $doc)
-                                                    @if($doc->status == 'pending')
-                                                        <div class="d-inline-flex align-items-center gap-1.5 p-1 px-2 rounded border" style="background-color: #fffbeb; border-color: #fef08a !important; font-size: 0.78rem;">
-                                                            <i class="mdi mdi-file-document-outline text-warning" style="font-size: 0.9rem;"></i>
-                                                            <span class="fw-semibold text-dark">{{ $doc->documentType->name ?? 'Dokumen' }}</span>:
-                                                            <span class="font-monospace text-muted">{{ $doc->document_number ?: '-' }}</span>
-                                                            <span class="badge bg-warning text-dark ms-auto" style="font-size: 0.65rem; padding: 2px 5px;">Pending</span>
-                                                        </div>
-                                                    @elseif($doc->status == 'verified')
-                                                        <div class="d-inline-flex align-items-center gap-1.5 p-1 px-2 rounded border" style="background-color: #f0fdf4; border-color: #dcfce7 !important; font-size: 0.78rem;">
-                                                            <i class="mdi mdi-check-circle text-success" style="font-size: 0.9rem;"></i>
-                                                            <span class="fw-semibold text-dark">{{ $doc->documentType->name ?? 'Dokumen' }}</span>:
-                                                            <span class="font-monospace text-muted">{{ $doc->document_number ?: '-' }}</span>
-                                                            <span class="badge bg-success text-white ms-auto" style="font-size: 0.65rem; padding: 2px 5px;">Sah</span>
+                                        <th style="width: 40px;">#</th>
+                                        <th>Prospek Lahan & Pemilik</th>
+                                        <th>Status Pemberkasan</th>
+                                        <th>Fase</th>
+                                        <th class="text-center">Aksi Tindak Lanjut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($incompleteLands as $index => $land)
+                                        @php
+                                            $docs = $land->documents;
+                                            $uploadedCount = $docs->whereNotNull('file_path')->count();
+                                            $pendingCount = $docs->where('status', 'pending')->whereNotNull('file_path')->count();
+                                            $verifiedCount = $docs->where('status', 'verified')->count();
+                                        @endphp
+                                        <tr>
+                                            <td class="text-muted fw-bold">{{ $index + 1 }}</td>
+                                            <td>
+                                                <div class="fw-bold text-dark">{{ $land->land_name }}</div>
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    <i class="mdi mdi-account text-muted me-1"></i>{{ $land->certificate_owner ?? ($land->owner_name ?? '-') }}
+                                                    @if($land->area)
+                                                        • <span class="fw-semibold">{{ number_format($land->area) }} m²</span>
+                                                    @endif
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    @if($uploadedCount === 0)
+                                                        <span class="badge bg-light text-danger border border-danger px-2 py-1" style="font-size: 0.72rem; width: fit-content;">
+                                                            <i class="mdi mdi-alert-circle me-1"></i>Belum Ada Berkas Diunggah
+                                                        </span>
+                                                    @else
+                                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                                            @if($pendingCount > 0)
+                                                                <span class="badge bg-warning text-dark px-2 py-0.5" style="font-size: 0.7rem;">
+                                                                    {{ $pendingCount }} Menunggu Review Kepala
+                                                                </span>
+                                                            @endif
+                                                            @if($verifiedCount > 0)
+                                                                <span class="badge bg-success text-white px-2 py-0.5" style="font-size: 0.7rem;">
+                                                                    {{ $verifiedCount }} Berkas Sah
+                                                                </span>
+                                                            @endif
                                                         </div>
                                                     @endif
-                                                @endforeach
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                <span class="badge bg-danger text-white px-2 py-1" style="font-size: 0.72rem;">
-                                                    {{ $pendingDocs->count() }} Surat Pending
-                                                </span>
-                                                @if($verifiedDocs->count() > 0)
-                                                    <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.72rem;">
-                                                        {{ $verifiedDocs->count() }} Sah Terverifikasi
-                                                    </span>
+                                                    <small class="text-muted" style="font-size: 0.72rem;">
+                                                        Jenis Sertifikat: <strong class="text-dark">{{ $land->ownership_status ?? 'SHM' }}</strong>
+                                                    </small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if($land->status == 'fase1')
+                                                    <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.72rem;">Fase 1 (Draft/Penawaran)</span>
+                                                @elseif($land->status == 'fase2')
+                                                    <span class="badge bg-primary text-white px-2 py-1" style="font-size: 0.72rem;">Fase 2 (Pemberkasan)</span>
+                                                @else
+                                                    <span class="badge bg-secondary text-white px-2 py-1" style="font-size: 0.72rem;">{{ ucfirst($land->status) }}</span>
                                                 @endif
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="{{ route('pra-landbank.proses', $land->id) }}?step=2" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold" style="font-size: 0.78rem; white-space: nowrap;">
-                                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Validasi ({{ $pendingDocs->count() }} Berkas)
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
-                                            <i class="mdi mdi-check-circle-outline text-success" style="font-size: 2.2rem;"></i>
-                                            <p class="mb-0 mt-1 fw-semibold" style="font-size: 0.85rem;">Tidak ada dokumen pending. Seluruh berkas telah diverifikasi sah!</p>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ route('pra-landbank.proses', $land->id) }}?step=2" class="btn btn-sm btn-gradient-primary px-3 py-1.5 fw-semibold shadow-sm" style="font-size: 0.78rem; white-space: nowrap;">
+                                                    <i class="mdi mdi-upload me-1"></i> Upload / Lengkapi Berkas
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="mdi mdi-check-circle-outline text-success" style="font-size: 2.2rem;"></i>
+                                                <p class="mb-0 mt-1 fw-semibold" style="font-size: 0.85rem;">Seluruh berkas calon lahan aktif telah lengkap dan tersubmit!</p>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Rekapitulasi Aspek Hukum & Sertifikat -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
-                <div class="card-header bg-white py-3">
-                    <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
-                        <i class="mdi mdi-shield-account me-2 text-primary"></i>Rekapitulasi Legalitas Tanah
-                    </h5>
-                </div>
-                <div class="card-body p-3">
-                    <!-- Status Sengketa -->
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; text-transform: uppercase;">
-                            Kejelasan Bebas Sengketa
-                        </label>
-                        <div class="d-flex flex-column gap-2">
-                            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border">
-                                <span class="text-success fw-semibold" style="font-size: 0.82rem;">
-                                    <i class="mdi mdi-check-circle me-1"></i> Clear & Clean
-                                </span>
-                                <strong class="text-success">{{ $legalStatusCounts['clear'] ?? 0 }}</strong>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border">
-                                <span class="text-warning fw-semibold" style="font-size: 0.82rem;">
-                                    <i class="mdi mdi-clock-outline me-1"></i> Pengecekan BPN/Notaris
-                                </span>
-                                <strong class="text-dark">{{ $legalStatusCounts['checking'] ?? 0 }}</strong>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border">
-                                <span class="text-danger fw-semibold" style="font-size: 0.82rem;">
-                                    <i class="mdi mdi-alert-circle me-1"></i> Sengketa / Masalah
-                                </span>
-                                <strong class="text-danger">{{ $legalStatusCounts['problem'] ?? 0 }}</strong>
-                            </div>
-                        </div>
+            <!-- Panduan SOP Pemberkasan Legalitas -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
+                            <i class="mdi mdi-clipboard-text-outline me-2 text-primary"></i>Checklist Dokumen Wajib Staff
+                        </h5>
                     </div>
-
-                    <!-- Jenis Sertifikat -->
-                    <div class="pt-2 border-top">
-                        <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; text-transform: uppercase;">
-                            Jenis Sertifikat Kepemilikan
-                        </label>
-                        <div class="row g-2 text-center">
-                            @foreach($ownershipCounts as $type => $count)
-                                <div class="col-4">
-                                    <div class="p-2 rounded border bg-light">
-                                        <div class="text-muted" style="font-size: 0.75rem; font-weight: 600;">{{ $type }}</div>
-                                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $count }}</div>
+                    <div class="card-body p-3">
+                        <p class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+                            Pastikan berkas-berkas berikut telah diunggah dan terverifikasi sebelum diajukan ke sidang keputusan Kepala Legal:
+                        </p>
+                        <div class="d-flex flex-column gap-2 mb-3">
+                            @forelse($documentTypes as $index => $docType)
+                                @php
+                                    $lowName = strtolower($docType->name . ' ' . $docType->code);
+                                    $docStyle = ['icon' => 'mdi-file-document-outline', 'color' => '#9a55ff', 'bg' => '#f5f3ff'];
+                                    if (str_contains($lowName, 'sertifikat') || str_contains($lowName, 'shm') || str_contains($lowName, 'hgb')) {
+                                        $docStyle = ['icon' => 'mdi-file-certificate', 'color' => '#10b981', 'bg' => '#ecfdf5'];
+                                    } elseif (str_contains($lowName, 'akta') || str_contains($lowName, 'ajb')) {
+                                        $docStyle = ['icon' => 'mdi-file-sign', 'color' => '#3b82f6', 'bg' => '#eff6ff'];
+                                    } elseif (str_contains($lowName, 'imb') || str_contains($lowName, 'pbg')) {
+                                        $docStyle = ['icon' => 'mdi-home-city-outline', 'color' => '#f59e0b', 'bg' => '#fffbeb'];
+                                    } elseif (str_contains($lowName, 'pbb') || str_contains($lowName, 'pajak')) {
+                                        $docStyle = ['icon' => 'mdi-receipt-text-outline', 'color' => '#8b5cf6', 'bg' => '#fbf7ff'];
+                                    }
+                                @endphp
+                                <div class="sop-item d-flex align-items-center gap-2">
+                                    <div class="rounded-2 d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: {{ $docStyle['bg'] }}; color: {{ $docStyle['color'] }}; flex-shrink: 0;">
+                                        <i class="mdi {{ $docStyle['icon'] }}" style="font-size: 1.15rem;"></i>
+                                    </div>
+                                    <div style="font-size: 0.8rem;" class="flex-grow-1">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <strong class="text-dark d-block">{{ $index + 1 }}. {{ $docType->name }}</strong>
+                                            <span class="badge bg-light text-primary border" style="font-size: 9px; font-family: monospace;">{{ $docType->code }}</span>
+                                        </div>
+                                        <small class="text-muted">Wajib diunggah & diverifikasi pada Fase 2</small>
                                     </div>
                                 </div>
-                            @endforeach
+                            @empty
+                                <div class="text-center py-3 text-muted">
+                                    <small>Belum ada master tipe dokumen di database</small>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        <div class="pt-2 border-top">
+                            <a href="{{ route('pra-landbank.proses') }}" class="btn btn-sm btn-outline-primary w-100 py-1.5" style="font-size: 0.8rem;">
+                                <i class="mdi mdi-plus-circle-outline me-1"></i> Mulai Input Prospek Baru
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    @else
+        <!-- Section Khusus Kepala Legal: Antrean Validasi Berkas & Rekap Legalitas -->
+        <div class="row g-3 mb-4">
+            <!-- Antrean Dokumen Pending (Grouped per Tanah) -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
+                            <i class="mdi mdi-file-alert me-2 text-danger"></i>Antrean Validasi Berkas Legalitas (Kepala Legal)
+                        </h5>
+                        <span class="badge bg-danger text-white px-2 py-1" style="font-size: 0.72rem;">
+                            {{ $totalPendingDocs }} Dokumen Menunggu
+                        </span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-legal align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;">#</th>
+                                        <th>Nama Prospek Lahan</th>
+                                        <th>Daftar Berkas / Surat Tanah</th>
+                                        <th>Status Berkas</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($pendingLandbanks as $index => $land)
+                                        @php
+                                            $pendingDocs = $land->documents->where('status', 'pending');
+                                            $verifiedDocs = $land->documents->where('status', 'verified');
+                                        @endphp
+                                        <tr>
+                                            <td class="text-muted fw-bold">{{ $index + 1 }}</td>
+                                            <td>
+                                                <div class="fw-bold text-dark">{{ $land->land_name }}</div>
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    <i class="mdi mdi-account text-muted me-1"></i>Pemilik: {{ $land->certificate_owner ?? ($land->owner_name ?? '-') }}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    @foreach($land->documents as $doc)
+                                                        @if($doc->status == 'pending')
+                                                            <div class="d-inline-flex align-items-center gap-1.5 p-1 px-2 rounded border" style="background-color: #fffbeb; border-color: #fef08a !important; font-size: 0.78rem;">
+                                                                <i class="mdi mdi-file-document-outline text-warning" style="font-size: 0.9rem;"></i>
+                                                                <span class="fw-semibold text-dark">{{ $doc->documentType->name ?? 'Dokumen' }}</span>:
+                                                                <span class="font-monospace text-muted">{{ $doc->document_number ?: '-' }}</span>
+                                                                <span class="badge bg-warning text-dark ms-auto" style="font-size: 0.65rem; padding: 2px 5px;">Pending</span>
+                                                            </div>
+                                                        @elseif($doc->status == 'verified')
+                                                            <div class="d-inline-flex align-items-center gap-1.5 p-1 px-2 rounded border" style="background-color: #f0fdf4; border-color: #dcfce7 !important; font-size: 0.78rem;">
+                                                                <i class="mdi mdi-check-circle text-success" style="font-size: 0.9rem;"></i>
+                                                                <span class="fw-semibold text-dark">{{ $doc->documentType->name ?? 'Dokumen' }}</span>:
+                                                                <span class="font-monospace text-muted">{{ $doc->document_number ?: '-' }}</span>
+                                                                <span class="badge bg-success text-white ms-auto" style="font-size: 0.65rem; padding: 2px 5px;">Sah</span>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    <span class="badge bg-danger text-white px-2 py-1" style="font-size: 0.72rem;">
+                                                        {{ $pendingDocs->count() }} Surat Pending
+                                                    </span>
+                                                    @if($verifiedDocs->count() > 0)
+                                                        <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.72rem;">
+                                                            {{ $verifiedDocs->count() }} Sah Terverifikasi
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ route('pra-landbank.proses', $land->id) }}?step=2" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold" style="font-size: 0.78rem; white-space: nowrap;">
+                                                    <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Validasi ({{ $pendingDocs->count() }} Berkas)
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="mdi mdi-check-circle-outline text-success" style="font-size: 2.2rem;"></i>
+                                                <p class="mb-0 mt-1 fw-semibold" style="font-size: 0.85rem;">Tidak ada dokumen pending. Seluruh berkas telah diverifikasi sah!</p>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rekapitulasi Aspek Hukum & Sertifikat -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
+                            <i class="mdi mdi-shield-account me-2 text-primary"></i>Rekapitulasi Legalitas Tanah
+                        </h5>
+                    </div>
+                    <div class="card-body p-3">
+                        <!-- Status Sengketa -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; text-transform: uppercase;">
+                                Kejelasan Bebas Sengketa
+                            </label>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border">
+                                    <span class="text-success fw-semibold" style="font-size: 0.82rem;">
+                                        <i class="mdi mdi-check-circle me-1"></i> Clear & Clean
+                                    </span>
+                                    <strong class="text-success">{{ $legalStatusCounts['clear'] ?? 0 }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border">
+                                    <span class="text-warning fw-semibold" style="font-size: 0.82rem;">
+                                        <i class="mdi mdi-clock-outline me-1"></i> Pengecekan BPN/Notaris
+                                    </span>
+                                    <strong class="text-dark">{{ $legalStatusCounts['checking'] ?? 0 }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light border">
+                                    <span class="text-danger fw-semibold" style="font-size: 0.82rem;">
+                                        <i class="mdi mdi-alert-circle me-1"></i> Sengketa / Masalah
+                                    </span>
+                                    <strong class="text-danger">{{ $legalStatusCounts['problem'] ?? 0 }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Jenis Sertifikat -->
+                        <div class="pt-2 border-top">
+                            <label class="form-label text-muted fw-bold mb-2" style="font-size: 0.75rem; text-transform: uppercase;">
+                                Jenis Sertifikat Kepemilikan
+                            </label>
+                            <div class="row g-2 text-center">
+                                @foreach($ownershipCounts as $type => $count)
+                                    <div class="col-4">
+                                        <div class="p-2 rounded border bg-light">
+                                            <div class="text-muted" style="font-size: 0.75rem; font-weight: 600;">{{ $type }}</div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $count }}</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Data Table Prospek Pra Land Bank -->
     <div class="card shadow-sm border-0" id="tabelPraTanah" style="border-radius: 8px; scroll-margin-top: 80px;">
@@ -720,6 +1014,7 @@
                                     @elseif(request('status') == 'approved') Final (Lahan Sah Disetujui)
                                     @elseif(request('status') == 'rejected') Ditolak
                                     @elseif(request('status') == 'pending_doc') Dokumen Menunggu Validasi Legal
+                                    @elseif(request('status') == 'incomplete_doc') Prospek Aktif / Belum Selesai (Fase 1 & 2)
                                     @else {{ ucfirst(request('status')) }}
                                     @endif
                                 </strong>
@@ -812,17 +1107,19 @@
                                 </td>
                                 <td>
                                     @if($totalUploaded == 0)
-                                        <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">Belum Ada File</span>
+                                        <span class="badge bg-light text-danger border border-danger px-2 py-1" style="font-size: 0.72rem;">
+                                            <i class="mdi mdi-alert-circle me-1"></i>Belum Ada File
+                                        </span>
                                     @elseif($isAllVerified)
                                         <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.72rem;">
                                             <i class="mdi mdi-shield-check me-1"></i>{{ $verified }}/{{ $totalUploaded }} Sah
                                         </span>
                                     @elseif($pending > 0)
-                                        <span class="badge bg-danger text-white px-2 py-1" style="font-size: 0.72rem;">
-                                            <i class="mdi mdi-clock-outline me-1"></i>{{ $pending }} Pending
+                                        <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.72rem;">
+                                            <i class="mdi mdi-clock-outline me-1"></i>{{ $pending }} Pending Review
                                         </span>
                                     @else
-                                        <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.72rem;">
+                                        <span class="badge bg-info text-white px-2 py-1" style="font-size: 0.72rem;">
                                             {{ $verified }}/{{ $totalUploaded }} Sah
                                         </span>
                                     @endif
@@ -845,9 +1142,15 @@
                                         <a href="{{ route('pra-landbank.proses', $item->id) }}" class="btn btn-sm btn-outline-primary px-2.5 py-1" title="Buka Form Wizard Pra Land Bank">
                                             <i class="mdi mdi-pencil"></i> Proses
                                         </a>
-                                        <a href="{{ route('pra-landbank.proses', $item->id) }}?step=2" class="btn btn-sm btn-outline-secondary px-2.5 py-1" title="Langsung ke Verifikasi Dokumen Fase 2">
-                                            <i class="mdi mdi-file-check-outline"></i> Validasi
-                                        </a>
+                                        @if($isStaffLegal)
+                                            <a href="{{ route('pra-landbank.proses', $item->id) }}?step=2" class="btn btn-sm btn-outline-warning text-dark px-2.5 py-1" title="Upload & Kelola Berkas Legalitas">
+                                                <i class="mdi mdi-upload"></i> Berkas
+                                            </a>
+                                        @else
+                                            <a href="{{ route('pra-landbank.proses', $item->id) }}?step=2" class="btn btn-sm btn-outline-secondary px-2.5 py-1" title="Verifikasi & Validasi Dokumen">
+                                                <i class="mdi mdi-file-check-outline"></i> Validasi
+                                            </a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

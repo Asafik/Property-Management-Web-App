@@ -52,7 +52,7 @@
             <!-- Clickable Interactive Expense Pill (Filters Table & Opens Form) -->
             <div class="p-2 px-3 rounded-3 mb-3 d-flex justify-content-between align-items-center card-expense-trigger" 
                  style="background: #faf5ff; border: 1px dashed #c084fc; cursor: pointer; transition: all 0.2s ease;"
-                 onclick="selectCardForExpense({{ $item->phase }}, {{ $item->id }}, '{{ addslashes($item->item_name) }}')"
+                 onclick="selectCardForExpense({{ $item->phase }}, {{ $item->id }}, {{ json_encode($item->item_name) }})"
                  title="Klik untuk memilih pos ini & melihat rincian riwayat belanjanya di bawah">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-gradient-primary text-white rounded-circle p-1 d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
@@ -72,7 +72,8 @@
             </div>
 
             <!-- Real Construction Progress Form (Volume-based) -->
-            <form id="formInfraItem_{{ $item->id }}" onsubmit="saveRealProgress(event, {{ $item->id }})" enctype="multipart/form-data">
+            <form id="formInfraItem_{{ $item->id }}" onsubmit="saveRealProgress(event, {{ $item->id }}, {{ $item->phase }})" data-phase="{{ $item->phase }}" enctype="multipart/form-data">
+                <input type="hidden" name="phase" value="{{ $item->phase }}">
                 <input type="hidden" name="target_volume" id="targetVol_{{ $item->id }}" value="{{ $targetVol }}">
                 <input type="hidden" name="volume_unit" value="{{ $unit }}">
 
@@ -101,9 +102,10 @@
                                        id="realizedVolInput_{{ $item->id }}" 
                                        value="{{ $realVol }}" 
                                        min="0" 
-                                       max="{{ $targetVol * 1.5 }}" 
                                        required 
-                                       oninput="calculateVolumePercentage({{ $item->id }})">
+                                       oninput="calculateVolumePercentage({{ $item->id }})"
+                                       onkeyup="calculateVolumePercentage({{ $item->id }})"
+                                       onchange="calculateVolumePercentage({{ $item->id }})">
                                 <span class="input-group-text bg-white px-2 small">{{ $unit }}</span>
                             </div>
                         </div>
@@ -121,12 +123,23 @@
                         <input type="text" class="form-control form-control-sm" name="contractor_name" placeholder="Nama Mandor Lapangan" value="{{ $item->contractor_name ?? '' }}">
                     </div>
                     <div class="col-sm-6">
-                        <label class="small text-muted mb-1 fw-bold">Status Pengerjaan</label>
-                        <select class="form-select form-select-sm" name="status" id="statusSelect_{{ $item->id }}">
-                            <option value="belum_mulai" {{ $item->status === 'belum_mulai' ? 'selected' : '' }}>Belum Mulai</option>
-                            <option value="proses" {{ $item->status === 'proses' ? 'selected' : '' }}>Dalam Proses</option>
-                            <option value="selesai" {{ $item->status === 'selesai' || $itemProgress >= 100 ? 'selected' : '' }}>Selesai (100%)</option>
-                        </select>
+                        <label class="small text-muted mb-1 fw-bold d-block">Status Pengerjaan (Otomatis)</label>
+                        <input type="hidden" name="status" id="statusHidden_{{ $item->id }}" value="{{ ($item->status == 'selesai' || $itemProgress >= 100 || $realVol >= $targetVol) ? 'selesai' : (($item->status == 'proses' || $itemProgress > 0 || $realVol > 0) ? 'proses' : 'belum_mulai') }}">
+                        <div id="statusBadgeDisplay_{{ $item->id }}" class="p-1 px-2 rounded-2 border d-flex align-items-center bg-light" style="height: 31px;">
+                            @if($item->status == 'selesai' || $itemProgress >= 100 || $realVol >= $targetVol)
+                                <span class="badge bg-success text-white px-2 py-1 rounded-pill small fw-bold">
+                                    <i class="mdi mdi-check-circle me-1"></i>Selesai (100%)
+                                </span>
+                            @elseif($item->status == 'proses' || $itemProgress > 0 || $realVol > 0)
+                                <span class="badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold">
+                                    <i class="mdi mdi-progress-wrench me-1"></i>Dalam Proses
+                                </span>
+                            @else
+                                <span class="badge bg-secondary text-white px-2 py-1 rounded-pill small">
+                                    <i class="mdi mdi-clock-outline me-1"></i>Belum Mulai
+                                </span>
+                            @endif
+                        </div>
                     </div>
                     <div class="col-sm-6">
                         <label class="small text-muted mb-1 fw-bold">Foto Dokumentasi Lapangan</label>

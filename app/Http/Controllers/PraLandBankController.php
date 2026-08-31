@@ -248,13 +248,25 @@ public function store(Request $request)
                 }
             }
             $data['cost_other']           = $otherCost;
-            $data['payment_method']       = $request->payment_method_temp;
+
+            // Ensure payment_method is correctly detected
+            if ($request->has('installments') && is_array($request->installments) && count($request->installments) > 1) {
+                $paymentMethod = 'termin';
+            } elseif ($request->filled('payment_method_temp')) {
+                $paymentMethod = $request->payment_method_temp;
+            } elseif ($request->filled('payment_method')) {
+                $paymentMethod = $request->payment_method;
+            } else {
+                $paymentMethod = $record->payment_method ?? 'cash';
+            }
+            $data['payment_method'] = $paymentMethod;
+
             if ($data['payment_method'] === 'cash') {
                 $data['installment_duration'] = null;
                 $data['installment_count']    = 1;
             } else {
-                $data['installment_duration'] = $request->installment_duration_temp;
-                $data['installment_count']    = $request->installment_count_temp;
+                $data['installment_duration'] = $request->installment_duration_temp ?? $record->installment_duration;
+                $data['installment_count']    = $request->installment_count_temp ?? (is_array($request->installments) ? count($request->installments) : $record->installment_count);
             }
 
             if ($request->has('deal_price')) {
@@ -326,7 +338,7 @@ public function store(Request $request)
                     $status = $inst['status'] ?? 'belum';
                     $termName = $inst['term_name'] ?? ('Tahap ' . $i);
 
-                    $filePath = null;
+                    $filePath = $inst['existing_file_path'] ?? null;
 
                     // Check if file upload exists for this installment row
                     if ($request->hasFile("installments.{$i}.file")) {
@@ -363,7 +375,11 @@ public function store(Request $request)
         $data['status'] = $data['status'] ?? $record->status;
 
         if ($data['status'] === 'approved') {
-            $customMessage = 'Keputusan sidang berhasil disetujui (DIAMBIL)! Data tanah telah otomatis masuk ke menu Semua Tanah Pasca Land Bank.';
+            if ($record->exists && $record->status === 'approved') {
+                $customMessage = 'Progres dan data pembayaran termin tanah berhasil diperbarui!';
+            } else {
+                $customMessage = 'Keputusan sidang berhasil disetujui (DIAMBIL)! Data tanah telah otomatis masuk ke menu Semua Tanah Pasca Land Bank.';
+            }
         } else {
             $customMessage = 'Data keputusan sidang berhasil disimpan!';
         }
@@ -543,11 +559,31 @@ public function store(Request $request)
             'status' => 'verified',
         ]);
 
+        $praLandbank = PraLandbank::with('documents')->find($doc->pra_landbank_id);
+        $autoAdvanced = false;
+
+        if ($praLandbank) {
+            $allDocs = $praLandbank->documents;
+            $totalUploaded = $allDocs->whereNotNull('file_path')->count();
+            $totalVerified = $allDocs->where('status', 'verified')->whereNotNull('file_path')->count();
+
+            if ($totalUploaded > 0 && $totalUploaded === $totalVerified) {
+                if (in_array($praLandbank->status, ['fase1', 'fase2'])) {
+                    $praLandbank->update([
+                        'status'       => 'fase3',
+                        'legal_status' => 'clear'
+                    ]);
+                    $autoAdvanced = true;
+                }
+            }
+        }
+
         if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
-                'success' => true,
-                'message' => 'Dokumen berhasil disetujui & diverifikasi oleh Kepala Legal!',
-                'status'  => 'verified'
+                'success'                => true,
+                'message'                => 'Dokumen berhasil disetujui & diverifikasi oleh Kepala Legal!',
+                'status'                 => 'verified',
+                'auto_advanced_to_fase3' => $autoAdvanced,
             ]);
         }
 

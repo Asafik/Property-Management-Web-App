@@ -624,47 +624,12 @@
                             </div>
                         </div>
 
-                        {{-- ================= 6. DATA CUT AND FILL ================= --}}
-                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
-                            <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
-                                <i class="mdi mdi-excavator" style="font-size: 1.1rem;"></i>
-                            </span>
-                            <h6 class="fw-bold text-dark mb-0">6. Rencana Pekerjaan Cut and Fill</h6>
-                        </div>
-
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Elevasi Awal (m)</label>
-                                <input type="number" step="0.01" name="elevasi_awal" value="{{ old('elevasi_awal') }}" class="form-control" placeholder="0.00">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Elevasi Rencana (m)</label>
-                                <input type="number" step="0.01" name="elevasi_rencana" value="{{ old('elevasi_rencana') }}" class="form-control" placeholder="0.00">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Volume Cut (m³)</label>
-                                <input type="number" step="0.01" name="volume_cut" value="{{ old('volume_cut') }}" class="form-control" placeholder="0.00">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Volume Fill (m³)</label>
-                                <input type="number" step="0.01" name="volume_fill" value="{{ old('volume_fill') }}" class="form-control" placeholder="0.00">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Status Cut & Fill</label>
-                                <select name="status_cut_fill" class="form-control">
-                                    <option value="planned" {{ old('status_cut_fill') == 'planned' ? 'selected' : '' }}>Planned</option>
-                                    <option value="proses" {{ old('status_cut_fill') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                    <option value="selesai" {{ old('status_cut_fill') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        {{-- ================= 7. TITIK KOORDINAT & GOOGLE MAP ================= --}}
+                        {{-- ================= 6. TITIK KOORDINAT & GOOGLE MAP ================= --}}
                         <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4">
                             <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
                                 <i class="mdi mdi-google-maps" style="font-size: 1.1rem;"></i>
                             </span>
-                            <h6 class="fw-bold text-dark mb-0">7. Titik Koordinat & Google Maps</h6>
+                            <h6 class="fw-bold text-dark mb-0">6. Titik Koordinat & Google Maps</h6>
                         </div>
 
                         <div class="row g-3 mb-3">

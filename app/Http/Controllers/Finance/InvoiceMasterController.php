@@ -95,17 +95,20 @@ class InvoiceMasterController extends Controller
      */
     public function show($id)
     {
-        $invoice = Invoice::with(['praLandbank.payments', 'praLandbank.documents.documentType', 'booking', 'creator'])->findOrFail($id);
+        try {
+            $invoice = Invoice::with(['praLandbank.payments', 'praLandbank.documents.documentType', 'booking', 'creator'])->findOrFail($id);
 
-        if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
-                'success' => true,
-                'data'    => $invoice,
+                'success'   => true,
+                'data'      => $invoice,
                 'print_url' => $invoice->pra_landbank_id ? route('pra-landbank.invoice', $invoice->pra_landbank_id) : null
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data invoice tidak ditemukan: ' . $e->getMessage()
+            ], 404);
         }
-
-        return view('keuangan.master_invoice.show', compact('invoice'));
     }
 
     /**

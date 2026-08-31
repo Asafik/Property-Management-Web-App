@@ -786,6 +786,33 @@
             return 'Rp ' + (parseFloat(num) || 0).toLocaleString('id-ID');
         }
 
+        function formatDateIndo(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const cleanDate = dateStr.split('T')[0];
+                const parts = cleanDate.split('-');
+                if (parts.length === 3) {
+                    const year = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1;
+                    const day = parseInt(parts[2], 10);
+                    const months = [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ];
+                    return `${day} ${months[month] || ''} ${year}`;
+                }
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                return d.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
         // ==========================================
         // SINKRONISASI MASSAL TRANSAKSI KE INVOICE DB
         // ==========================================
@@ -857,11 +884,16 @@
             `;
 
             try {
-                const res = await fetch(`{{ url('/keuangan/master-invoice') }}/${id}`);
+                const res = await fetch(`{{ url('/keuangan/master-invoice') }}/${id}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
                 const result = await res.json();
 
                 if (!result.success || !result.data) {
-                    body.innerHTML = `<div class="alert alert-danger">Gagal memuat detail invoice.</div>`;
+                    body.innerHTML = `<div class="alert alert-danger">${result.message || 'Gagal memuat detail invoice.'}</div>`;
                     return;
                 }
 
@@ -906,7 +938,7 @@
                                         <tr>
                                             <td class="fw-semibold">${p.term_name || '-'}</td>
                                             <td>${p.bank_name ? `${p.bank_name} (${p.account_number || '-'})` : (p.payment_type || 'Cash')}</td>
-                                            <td>${p.due_date || '-'}</td>
+                                            <td>${formatDateIndo(p.due_date)}</td>
                                             <td class="text-center"><span class="badge ${p.status === 'lunas' ? 'bg-success' : 'bg-warning text-dark'}">${(p.status || '').toUpperCase()}</span></td>
                                             <td class="text-end fw-bold">${formatRupiahNumber(p.amount)}</td>
                                         </tr>
@@ -933,8 +965,14 @@
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Tanggal Invoice:</td>
-                                        <td>${inv.invoice_date || '-'}</td>
+                                        <td class="fw-bold text-dark">${formatDateIndo(inv.invoice_date)}</td>
                                     </tr>
+                                    ${inv.due_date ? `
+                                        <tr>
+                                            <td class="text-muted">Jatuh Tempo:</td>
+                                            <td class="fw-bold text-danger">${formatDateIndo(inv.due_date)}</td>
+                                        </tr>
+                                    ` : ''}
                                     <tr>
                                         <td class="text-muted">Metode Bayar:</td>
                                         <td class="fw-bold text-uppercase">${inv.payment_method || 'Cash'}</td>

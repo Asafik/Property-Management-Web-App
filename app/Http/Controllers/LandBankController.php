@@ -37,12 +37,6 @@ class LandBankController extends Controller
                 'fee_document_verification' => 'nullable|string',
                 'denah'                     => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp,svg|max:5120',
 
-                'elevasi_awal'     => 'nullable|numeric',
-                'elevasi_rencana'  => 'nullable|numeric',
-                'volume_cut'       => 'nullable|numeric',
-                'volume_fill'      => 'nullable|numeric',
-                'status_cut_fill'  => 'nullable|in:planned,proses,selesai',
-
                 'documents.*.file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:2048',
                 'documents.*.number' => 'nullable|string|max:255',
             ]);
@@ -91,11 +85,6 @@ class LandBankController extends Controller
                 'lng' => $request->longitude,
                 'description' => $request->deskripsi,
                 'status' => 'draft',
-                'elevasi_awal' => $request->elevasi_awal,
-                'elevasi_rencana' => $request->elevasi_rencana,
-                'volume_cut' => $request->volume_cut,
-                'volume_fill' => $request->volume_fill,
-                'status_cut_fill' => $request->status_cut_fill ?? 'planned',
                 'fee_document_verification' => $fee_verification,
             ]);
 
