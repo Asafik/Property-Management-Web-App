@@ -418,7 +418,7 @@
                     <!-- Navigation Footer -->
                     <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
                         @if($prevTabTarget)
-                            <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" onclick="$('{{ $prevTabTarget }}').tab('show');">
+                            <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" onclick="activateTab('{{ $prevTabTarget }}');">
                                 <i class="mdi mdi-arrow-left me-1"></i> Kembali ke {{ $prevTitle }}
                             </button>
                         @else
@@ -436,7 +436,7 @@
                                 </button>
                             @endif
                         @else
-                            <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" onclick="$('{{ $nextTabTarget }}').tab('show');">
+                            <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" onclick="activateTab('{{ $nextTabTarget }}');">
                                 Lanjut ke {{ $nextTitle }} <i class="mdi mdi-arrow-right ms-1"></i>
                             </button>
                         @endif
@@ -798,28 +798,41 @@
     const storageKey = 'active_phase_tab_' + currentLandId;
 
     // TAB PERSISTENCE ENGINE (Kompatibel Bootstrap 4 & 5)
-    function activateTab(tabIdOrSelector) {
+    window.activateTab = function(tabIdOrSelector) {
         if (!tabIdOrSelector) return;
-        let selector = tabIdOrSelector;
-        if (!selector.startsWith('#')) selector = '#' + selector;
-        if (!selector.endsWith('-tab') && !selector.includes('keuangan')) selector = selector + '-tab';
+        let selector = String(tabIdOrSelector).trim();
+        
+        // If numeric like 1, 2, 3, 4
+        if (/^\d+$/.test(selector)) {
+            selector = '#step-fase' + selector + '-tab';
+        } else {
+            if (!selector.startsWith('#')) selector = '#' + selector;
+            if (!selector.endsWith('-tab') && !selector.includes('keuangan')) {
+                selector = selector + '-tab';
+            }
+        }
         
         let $tab = $(selector);
+        if (!$tab.length) {
+            let cleanId = selector.replace('#', '').replace('-tab', '');
+            $tab = $(`#${cleanId}-tab, [data-target="#${cleanId}"], [data-bs-target="#${cleanId}"]`).first();
+        }
+        
         if ($tab.length) {
             $('.fase-step-btn').removeClass('active');
             $tab.addClass('active');
 
             if (typeof $tab.tab === 'function') {
-                $tab.tab('show');
+                try { $tab.tab('show'); } catch(e) {}
             }
 
             let targetPane = $tab.attr('data-bs-target') || $tab.attr('data-target') || selector.replace('-tab', '');
-            $('.tab-pane').removeClass('show active');
+            $('#faseStepperContent > .tab-pane').removeClass('show active');
             $(targetPane).addClass('show active');
 
             setSavedActiveTab(selector);
         }
-    }
+    };
 
     function setSavedActiveTab(tabSelector) {
         if (tabSelector) {
