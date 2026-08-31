@@ -16,7 +16,7 @@
 </div>
 
 <div class="table-responsive bg-white rounded-3 border">
-    <table class="table table-elevated table-hover align-middle mb-0" id="tableExpensePhase_{{ $phase }}">
+    <table class="table table-elevated table-hover align-middle mb-0" id="tableExpensePhase_{{ $phase }}" style="min-width: 880px;">
         <thead>
             <tr>
                 <th class="ps-3">KODE / TANGGAL</th>

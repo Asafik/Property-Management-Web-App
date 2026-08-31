@@ -5,16 +5,16 @@
     $unit = $item->volume_unit ?? 'unit';
     $itemExpenseTotal = (float)$item->expenses->sum('total_amount');
 @endphp
-<div class="col-md-6" id="infraCard_{{ $item->id }}">
+<div class="col-12 col-xl-6" id="infraCard_{{ $item->id }}">
     <div class="task-card-phased task-card-item-{{ $item->phase }} h-100 p-3 p-md-4 d-flex flex-column justify-content-between bg-white position-relative" id="cardBox_{{ $item->id }}">
         <div>
             <!-- Card Header -->
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                <div class="overflow-hidden">
                     <span class="badge bg-soft-primary text-primary rounded-2 px-2 py-1 small fw-bold mb-1 d-inline-block">{{ $item->category ?? 'Infrastruktur' }}</span>
                     <h5 class="fw-bold text-dark mb-0 fs-6">{{ $item->item_name }}</h5>
                 </div>
-                <div>
+                <div class="flex-shrink-0">
                     @if($item->status == 'selesai' || $itemProgress >= 100 || $realVol >= $targetVol)
                         <span class="badge bg-success text-white px-2 py-1 rounded-2 small fw-bold" id="badgeStatus_{{ $item->id }}">
                             Selesai (100%)
@@ -42,7 +42,7 @@
                         <span class="badge bg-white text-dark border">{{ $item->contractor_name }}</span>
                     @endif
                 </div>
-                <div class="d-flex align-items-center gap-1">
+                <div class="d-flex align-items-center gap-1 ms-auto ms-sm-0">
                     <button type="button" class="btn-pill-primary"
                             onclick="openEditTargetModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $targetVol }}, '{{ addslashes($unit) }}', {{ $item->bobot_persen ?? 0 }}, {{ $item->cost_estimate ?? 0 }})" 
                             title="Sesuaikan Target Volume & Bobot Pos Ini">
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Clickable Interactive Expense Pill (Filters Table & Opens Form) -->
-            <div class="p-2 px-3 rounded-3 mb-3 d-flex justify-content-between align-items-center card-expense-trigger" 
+            <div class="p-2 px-3 rounded-3 mb-3 d-flex flex-wrap justify-content-between align-items-center gap-2 card-expense-trigger" 
                  style="background: #faf5ff; border: 1px dashed #c084fc; cursor: pointer; transition: all 0.2s ease;"
                  onclick="selectCardForExpense({{ $item->phase }}, {{ $item->id }}, {{ json_encode($item->item_name) }})"
                  title="Klik untuk memilih pos ini & melihat rincian riwayat belanjanya di bawah">
@@ -116,15 +116,15 @@
 
                 <!-- Detail Input Lapangan Riil -->
                 <div class="row g-2 mb-3">
-                    <div class="col-sm-6">
+                    <div class="col-12 col-sm-6">
                         <label class="small text-muted mb-1 fw-bold">Tanggal Laporan</label>
                         <input type="date" class="form-control form-control-sm" name="log_date" value="{{ date('Y-m-d') }}">
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-12 col-sm-6">
                         <label class="small text-muted mb-1 fw-bold">Mandor / Pelaksana</label>
                         <input type="text" class="form-control form-control-sm" name="contractor_name" placeholder="Nama Mandor Lapangan" value="{{ $item->contractor_name ?? '' }}">
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-12 col-sm-6">
                         <label class="small text-muted mb-1 fw-bold d-block">Status Pengerjaan</label>
                         <input type="hidden" name="status" id="statusHidden_{{ $item->id }}" value="{{ ($item->status == 'selesai' || $itemProgress >= 100 || $realVol >= $targetVol) ? 'selesai' : (($item->status == 'proses' || $itemProgress > 0 || $realVol > 0) ? 'proses' : 'belum_mulai') }}">
                         <div id="statusBadgeDisplay_{{ $item->id }}" class="p-1 px-2 rounded-2 border d-flex align-items-center bg-light" style="height: 31px;">
@@ -143,7 +143,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-12 col-sm-6">
                         <label class="small text-muted mb-1 fw-bold">Foto Dokumentasi</label>
                         @if($item->photo_proof)
                             <!-- Existing Photo Thumbnail Box -->
@@ -198,7 +198,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end align-items-center pt-2 border-top">
-                    <button type="submit" class="btn btn-sm btn-gradient-primary px-3 rounded-2 shadow-sm fw-semibold" id="btnSubmit_{{ $item->id }}">
+                    <button type="submit" class="btn btn-sm btn-gradient-primary px-4 rounded-2 shadow-sm fw-semibold w-100 w-sm-auto" id="btnSubmit_{{ $item->id }}">
                         Simpan Progres
                     </button>
                 </div>

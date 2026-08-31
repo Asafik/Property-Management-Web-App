@@ -196,6 +196,60 @@
             border-color: #ef4444;
             color: #ffffff !important;
         }
+
+        /* ===== RESPONSIVE OPTIMIZATION (MOBILE & TABLET) ===== */
+        @media (max-width: 991.98px) {
+            .page-header-box .d-flex.flex-wrap {
+                width: 100%;
+            }
+            .page-header-box .d-flex.flex-wrap .btn {
+                flex: 1 1 auto;
+                text-align: center;
+                justify-content: center;
+            }
+            .border-start-lg {
+                border-left: none !important;
+                border-top: 1px solid #eef2f6 !important;
+                padding-top: 1rem !important;
+                margin-top: 0.5rem !important;
+            }
+        }
+        @media (max-width: 767.98px) {
+            .fase-step-card .card-body {
+                padding: 0.75rem 0.65rem !important;
+            }
+            .fase-step-card h4 {
+                font-size: 1.1rem !important;
+            }
+            .fase-step-card p {
+                font-size: 0.76rem !important;
+                max-width: 100% !important;
+            }
+            .table-responsive table {
+                min-width: 750px;
+            }
+            .task-card-phased {
+                padding: 1rem !important;
+            }
+            .btn-responsive-full {
+                width: 100% !important;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .page-header-box h4 {
+                font-size: 1.15rem;
+            }
+            .fase-step-card .badge {
+                font-size: 0.65rem !important;
+                padding: 0.2rem 0.4rem !important;
+            }
+            .tab-pane .d-flex.flex-wrap {
+                width: 100%;
+            }
+            .tab-pane .d-flex.flex-wrap .btn {
+                width: 100%;
+            }
+        }
     </style>
 
     <!-- Page Header & Action Bar -->
@@ -346,12 +400,12 @@
     </div>
 
     <!-- PHASE STEPPER NAVIGATION TABS (DASHBOARD CARD STYLE) -->
-    <div class="row g-3 mb-4" id="faseStepper" role="tablist">
+    <div class="row g-2 g-md-3 mb-4" id="faseStepper" role="tablist">
         @foreach($phaseData as $phNum => $phInfo)
             @php
                 $pProg = $phInfo['progress'];
             @endphp
-            <div class="col-12 col-sm-6 col-lg-3">
+            <div class="col-6 col-md-4 col-xl-3">
                 <div class="card shadow-sm border-0 h-100 fase-step-card {{ $loop->first ? 'active' : '' }}" 
                      id="step-fase{{ $phNum }}-tab" 
                      data-bs-toggle="pill" 
@@ -359,22 +413,22 @@
                      role="tab" 
                      onclick="activateTab('#step-fase{{ $phNum }}-tab')"
                      style="cursor: pointer; transition: all 0.2s ease;">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <h4 class="text-dark mb-0 fw-bold">{{ $pProg }}%</h4>
+                    <div class="card-body d-flex justify-content-between align-items-center p-2 p-md-3">
+                        <div class="overflow-hidden">
+                            <div class="d-flex align-items-center gap-1 gap-md-2 mb-1">
+                                <h4 class="text-dark mb-0 fw-bold fs-5 fs-md-4">{{ $pProg }}%</h4>
                                 @if($pProg >= 100)
-                                    <span class="badge bg-success text-white rounded-2" style="font-size: 0.7rem;">Selesai</span>
+                                    <span class="badge bg-success text-white rounded-2" style="font-size: 0.68rem;">Selesai</span>
                                 @elseif($pProg > 0)
-                                    <span class="badge bg-warning text-dark rounded-2" style="font-size: 0.7rem;">Proses</span>
+                                    <span class="badge bg-warning text-dark rounded-2" style="font-size: 0.68rem;">Proses</span>
                                 @else
-                                    <span class="badge bg-secondary text-white rounded-2" style="font-size: 0.7rem;">Belum</span>
+                                    <span class="badge bg-secondary text-white rounded-2" style="font-size: 0.68rem;">Belum</span>
                                 @endif
                             </div>
-                            <p class="text-muted mb-0 fw-semibold text-truncate" style="font-size: 0.85rem; max-width: 170px;">{{ $phInfo['title'] }}</p>
+                            <p class="text-muted mb-0 fw-semibold text-truncate small">{{ $phInfo['title'] }}</p>
                         </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-layers-triple" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                        <div class="d-none d-md-block">
+                            <i class="mdi mdi-layers-triple" style="font-size: 2rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
@@ -382,25 +436,25 @@
         @endforeach
 
         <!-- Button Quick Add Tahapan Baru in Stepper (Dashboard Card Style) -->
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-6 col-md-4 col-xl-3">
             <div class="card shadow-sm border-0 h-100" 
                  style="border: 2px dashed #9a55ff !important; background: #faf5ff; cursor: pointer; transition: all 0.2s ease;" 
                  onclick="openAddStepModal({{ $nextPhaseNum }})" 
                  title="Klik untuk menambah Tahapan Pembangunan Baru">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                <div class="card-body d-flex justify-content-between align-items-center p-2 p-md-3">
                     <div>
-                        <span class="fw-bold text-primary d-block" style="font-size: 0.9rem;">+ Tambah Tahapan</span>
-                        <small class="text-muted" style="font-size: 0.75rem;">Kustom Pembangunan</small>
+                        <span class="fw-bold text-primary d-block small" style="font-size: 0.85rem;">+ Tambah Tahapan</span>
+                        <small class="text-muted" style="font-size: 0.72rem;">Kustom Fase</small>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-plus-circle" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.35;"></i>
+                    <div class="d-none d-md-block">
+                        <i class="mdi mdi-plus-circle" style="font-size: 2rem; color: #9a55ff; opacity: 0.35;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Step: Rekapitulasi Keuangan -->
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-6 col-md-4 col-xl-3">
             <div class="card shadow-sm border-0 h-100 fase-step-card" 
                  id="step-keuangan-tab" 
                  data-bs-toggle="pill" 
@@ -408,13 +462,13 @@
                  role="tab" 
                  onclick="activateTab('#step-keuangan-tab')"
                  style="cursor: pointer; transition: all 0.2s ease;">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h4 class="text-danger mb-1 fw-bold" style="font-size: 1.05rem;">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
-                        <p class="text-muted mb-0 fw-semibold" style="font-size: 0.85rem;">Total Belanja ({{ $expenses->count() }} Nota)</p>
+                <div class="card-body d-flex justify-content-between align-items-center p-2 p-md-3">
+                    <div class="overflow-hidden">
+                        <h4 class="text-danger mb-1 fw-bold fs-6 fs-md-5 text-truncate">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
+                        <p class="text-muted mb-0 fw-semibold text-truncate small">Total Belanja ({{ $expenses->count() }} Nota)</p>
                     </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-cash-multiple" style="font-size: 2.2rem; color: #dc3545; opacity: 0.25;"></i>
+                    <div class="d-none d-md-block">
+                        <i class="mdi mdi-cash-multiple" style="font-size: 2rem; color: #dc3545; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
@@ -446,14 +500,14 @@
                                 {{ $phInfo['subtitle'] }}
                             </span>
                         </div>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-sm btn-gradient-primary rounded-2 px-3 shadow-sm fw-semibold" onclick="openAddStepModal({{ $phNum }})">
+                        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+                            <button type="button" class="btn btn-sm btn-gradient-primary rounded-2 px-3 shadow-sm fw-semibold flex-fill flex-md-grow-0" onclick="openAddStepModal({{ $phNum }})">
                                 + Tambah Step
                             </button>
-                            <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold" onclick="toggleInlineAddExpense({{ $phNum }})">
+                            <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold flex-fill flex-md-grow-0" onclick="toggleInlineAddExpense({{ $phNum }})">
                                 + Catat Belanja Bahan
                             </button>
-                            <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold" onclick="finalizePhaseAction({{ $phNum }})">
+                            <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold flex-fill flex-md-grow-0" onclick="finalizePhaseAction({{ $phNum }})">
                                 Selesaikan ({{ $phInfo['title'] }}) 100%
                             </button>
                         </div>
@@ -482,7 +536,7 @@
 
                     <!-- Expenses Table -->
                     <div class="mt-4 pt-3 border-top">
-                        <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold text-dark mb-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
                             <span>Riwayat Belanja Bahan / Nota: {{ $phInfo['title'] }}</span>
                             <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($pExpenses->sum('total_amount'), 0, ',', '.') }}</span>
                         </h6>
@@ -490,9 +544,9 @@
                     </div>
 
                     <!-- Navigation Footer -->
-                    <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 pt-4 border-top mt-4">
                         @if($prevTabTarget)
-                            <button type="button" class="btn btn-outline-secondary px-4 rounded-2" onclick="activateTab('{{ $prevTabTarget }}');">
+                            <button type="button" class="btn btn-outline-secondary px-4 rounded-2 mb-2 mb-sm-0" onclick="activateTab('{{ $prevTabTarget }}');">
                                 &larr; Kembali ke {{ $prevTitle }}
                             </button>
                         @else
@@ -501,7 +555,7 @@
 
                         @if($isLastPhase)
                             @if($land->canCreateKavling())
-                                <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-2 shadow-sm">
+                                <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-2 shadow-sm text-center">
                                     PENGOLAHAN SELESAI &rarr; Buat Unit Kavling
                                 </a>
                             @else
@@ -562,7 +616,7 @@
                     <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-cash-multiple text-danger me-1"></i> Seluruh Rekapitulasi Pengeluaran Bahan & Jasa</h5>
                 </div>
                 <div class="table-responsive bg-white rounded-4 border">
-                    <table class="table table-elevated table-hover align-middle mb-0">
+                    <table class="table table-elevated table-hover align-middle mb-0" style="min-width: 960px;">
                         <thead>
                             <tr>
                                 <th class="ps-3">KODE / TANGGAL</th>

@@ -111,7 +111,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-sm table-bordered align-middle mb-0" id="tableMultiItems_{{ $phase }}">
+                    <table class="table table-sm table-bordered align-middle mb-0" id="tableMultiItems_{{ $phase }}" style="min-width: 750px;">
                         <thead class="bg-light small text-muted text-center">
                             <tr>
                                 <th style="width: 30%;">Pilih dari Master / Nama Bahan</th>
@@ -233,10 +233,10 @@
                 @endif
             </template>
 
-            <div class="d-flex justify-content-end gap-2 pt-2 border-top">
-                <button type="button" class="btn btn-sm btn-secondary rounded-2 px-3" onclick="toggleInlineAddExpense({{ $phase }})">Batal</button>
-                <button type="submit" class="btn btn-sm btn-gradient-primary rounded-2 px-4 shadow-sm">
-                    Simpan Semua Belanja Bahan {{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }}
+            <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-secondary rounded-2 px-3 order-2 order-sm-1" onclick="toggleInlineAddExpense({{ $phase }})">Batal</button>
+                <button type="submit" class="btn btn-sm btn-gradient-primary rounded-2 px-4 shadow-sm order-1 order-sm-2">
+                    Simpan Semua Belanja Bahan
                 </button>
             </div>
         </form>
