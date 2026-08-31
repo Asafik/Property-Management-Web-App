@@ -33,8 +33,27 @@ class InfrastructureMaterialController extends Controller
             $query->where('category', $request->category);
         }
 
+        if ($request->filled('status')) {
+            $query->where('is_active', (bool)$request->status);
+        }
+
+        $sortField = $request->get('sortField', 'name');
+        $sortDirection = $request->get('sortDirection', 'asc');
+        $allowedSortFields = ['code', 'name', 'category', 'unit', 'default_price', 'is_active', 'created_at'];
+
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortDirection === 'desc' ? 'desc' : 'asc');
+        } else {
+            $query->orderBy('category')->orderBy('name');
+        }
+
+        $perPage = (int)$request->get('per_page', 10);
+        if (!in_array($perPage, [10, 15, 25, 50])) {
+            $perPage = 10;
+        }
+
         $categories = InfrastructureMaterial::select('category')->distinct()->pluck('category');
-        $materials = $query->orderBy('category')->orderBy('name')->paginate(15)->withQueryString();
+        $materials = $query->paginate($perPage)->withQueryString();
 
         return view('master_data.bahan_infrastruktur.index', compact('materials', 'categories'));
     }
@@ -66,6 +85,15 @@ class InfrastructureMaterialController extends Controller
             'success' => true,
             'data' => $items
         ]);
+    }
+
+    /**
+     * Get material data for edit modal
+     */
+    public function edit($id)
+    {
+        $material = InfrastructureMaterial::findOrFail($id);
+        return response()->json($material);
     }
 
     /**

@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <!-- Volume Target & Bobot Specs with Quick Edit Button -->
+            <!-- Volume Target & Bobot Specs with Action Buttons -->
             <div class="small text-muted mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2 p-2 px-3 bg-light rounded-3 border">
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <span>Target: <b class="text-dark" id="targetVolLabel_{{ $item->id }}">{{ number_format($targetVol, 0, ',', '.') }} {{ $unit }}</b></span>
@@ -42,11 +42,18 @@
                         <span class="badge bg-white text-dark border">{{ $item->contractor_name }}</span>
                     @endif
                 </div>
-                <button type="button" class="btn-pill-primary"
-                        onclick="openEditTargetModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $targetVol }}, '{{ addslashes($unit) }}', {{ $item->bobot_persen ?? 0 }}, {{ $item->cost_estimate ?? 0 }})" 
-                        title="Sesuaikan Target Volume & Bobot Pos Ini">
-                    Edit Target
-                </button>
+                <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn-pill-primary"
+                            onclick="openEditTargetModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $targetVol }}, '{{ addslashes($unit) }}', {{ $item->bobot_persen ?? 0 }}, {{ $item->cost_estimate ?? 0 }})" 
+                            title="Sesuaikan Target Volume & Bobot Pos Ini">
+                        Edit Target
+                    </button>
+                    <button type="button" class="btn-table-del"
+                            onclick="deleteInfrastructureStep({{ $item->id }}, '{{ addslashes($item->item_name) }}')" 
+                            title="Hapus Pos Pekerjaan Ini">
+                        <i class="mdi mdi-trash-can-outline"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Clickable Interactive Expense Pill (Filters Table & Opens Form) -->
@@ -199,4 +206,3 @@
         </div>
     </div>
 </div>
-

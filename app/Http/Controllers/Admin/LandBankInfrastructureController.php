@@ -32,7 +32,37 @@ class LandBankInfrastructureController extends Controller
         $expenses = $land->expenses()->with(['infrastructure', 'masterMaterial', 'recorder'])->latest('expense_date')->get();
         $masterMaterials = \App\Models\InfrastructureMaterial::where('is_active', true)->orderBy('category')->orderBy('name')->get();
 
-        // Phase breakdowns
+        // Dynamic Global Phase Aggregation (Berlaku untuk SEMUA Land Bank)
+        $allGlobalPhases = \App\Models\LandBankInfrastructure::pluck('phase')->unique()->filter()->values();
+        $maxPhase = max(3, $allGlobalPhases->isEmpty() ? 3 : $allGlobalPhases->max());
+        $allPhaseNumbers = collect(range(1, $maxPhase));
+
+        $phaseTitles = [
+            1 => ['title' => 'Cut & Fill & Pemadatan', 'subtitle' => 'Perataan, Cut & Fill & Pemadatan Tanah Sub-grade'],
+            2 => ['title' => 'Drainase & Jalan Kawasan', 'subtitle' => 'Pembangunan Selokan U-Ditch, Paving & Aspal'],
+            3 => ['title' => 'Utilitas & Fasilitas', 'subtitle' => 'PJU, Jaringan Air Bersih, Listrik & Gerbang Kawasan'],
+        ];
+
+        $phaseData = [];
+        foreach ($allPhaseNumbers as $ph) {
+            $items = $infrastructures->where('phase', $ph);
+            $globalCategory = \App\Models\LandBankInfrastructure::where('phase', $ph)->whereNotNull('category')->where('category', '!=', '')->value('category');
+            $firstCat = $items->first()->category ?? $globalCategory;
+            $title = $phaseTitles[$ph]['title'] ?? ($firstCat ? "{$firstCat}" : "Tahapan {$ph}");
+            $subtitle = $phaseTitles[$ph]['subtitle'] ?? "Pekerjaan konstruksi dan pematangan lahan lanjutan {$title}.";
+
+            $phaseData[$ph] = [
+                'phase'    => $ph,
+                'title'    => $title,
+                'subtitle' => $subtitle,
+                'items'    => $items,
+                'progress' => $land->getPhaseProgress($ph),
+                'status'   => $land->getPhaseStatus($ph),
+                'expenses' => $expenses->where('phase', $ph),
+            ];
+        }
+
+        // Backward compatibility individual phase variables
         $fase1Items = $infrastructures->where('phase', 1);
         $fase2Items = $infrastructures->where('phase', 2);
         $fase3Items = $infrastructures->where('phase', 3);
@@ -45,6 +75,8 @@ class LandBankInfrastructureController extends Controller
         $fase2Status = $land->getPhaseStatus(2);
         $fase3Status = $land->getPhaseStatus(3);
 
+        $nextPhaseNum = $maxPhase + 1;
+
         // Financial Calculations
         $totalExpense = (float) $expenses->sum('total_amount');
         $totalLunas = (float) $expenses->where('payment_status', 'Lunas')->sum('total_amount');
@@ -54,6 +86,9 @@ class LandBankInfrastructureController extends Controller
         return view('properti.pengolahan_lahan', compact(
             'land', 
             'infrastructures', 
+            'phaseData',
+            'allPhaseNumbers',
+            'nextPhaseNum',
             'fase1Items',
             'fase2Items',
             'fase3Items',
@@ -108,12 +143,17 @@ class LandBankInfrastructureController extends Controller
 
         $request->validate([
             'item_name'        => 'required|string|max:255',
+            'phase'            => 'required|integer|min:1',
+            'new_phase_name'   => 'nullable|string|max:255',
             'category'         => 'nullable|string|max:100',
-            'volume'           => 'nullable|string|max:100',
+            'target_volume'    => 'nullable|numeric|min:0.01',
+            'volume_unit'      => 'nullable|string|max:50',
             'bobot_persen'     => 'nullable|numeric|min:0|max:100',
             'progress_percent' => 'nullable|numeric|min:0|max:100',
             'contractor_name'  => 'nullable|string|max:255',
             'cost_estimate'    => 'nullable|numeric|min:0',
+            'target_start'     => 'nullable|date',
+            'target_end'       => 'nullable|date',
             'notes'            => 'nullable|string',
             'photo_proof'      => 'nullable|image|max:5120',
         ]);
@@ -131,11 +171,19 @@ class LandBankInfrastructureController extends Controller
             $photoPath = $request->file('photo_proof')->store("uploads/landbank/{$land->id}/infrastructure", 'public');
         }
 
+        $targetVolume = $request->filled('target_volume') ? (float)$request->target_volume : 100;
+        $volumeUnit = $request->filled('volume_unit') ? $request->volume_unit : 'unit';
+        $category = $request->category ?: ($request->new_phase_name ?: 'Pekerjaan Fisik');
+
         $item = $land->infrastructures()->create([
+            'phase'            => (int)($request->phase ?? 1),
             'item_name'        => $request->item_name,
-            'category'         => $request->category ?? 'Infrastruktur',
-            'volume'           => $request->volume,
-            'bobot_persen'     => (float)($request->bobot_persen ?? 10),
+            'category'         => $category,
+            'volume'           => number_format($targetVolume, 0, ',', '.') . ' ' . $volumeUnit,
+            'target_volume'    => $targetVolume,
+            'realized_volume'  => round(($progress / 100) * $targetVolume, 2),
+            'volume_unit'      => $volumeUnit,
+            'bobot_persen'     => (float)($request->bobot_persen ?? 25),
             'progress_percent' => $progress,
             'status'           => $status,
             'target_start'     => $request->target_start,
@@ -151,14 +199,14 @@ class LandBankInfrastructureController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Item pengolahan lahan berhasil ditambahkan',
+                'message' => "Pos pekerjaan '{$item->item_name}' berhasil ditambahkan ke Fase {$item->phase}",
                 'item' => $item,
                 'overall_progress' => $land->fresh()->overall_infrastructure_progress,
                 'development_status' => $land->fresh()->development_status,
             ]);
         }
 
-        return back()->with('success', 'Item pengolahan lahan berhasil ditambahkan');
+        return back()->with('success', "Pos pekerjaan '{$item->item_name}' berhasil ditambahkan ke Fase {$item->phase}");
     }
 
     /**

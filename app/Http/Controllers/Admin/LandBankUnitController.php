@@ -52,8 +52,8 @@ class LandBankUnitController extends Controller
             $query->where('facing', $request->facing);
         }
 
-        // Jumlah tampil per halaman (default 10, opsi: 10, 25, 50, 100)
-        $perPage = $request->input('per_page', 10);
+        // Jumlah tampil per halaman (default 5, opsi: 5, 10, 15, 25, 50, 100)
+        $perPage = (int) $request->input('per_page', 5);
 
         // Ambil data dengan pagination
         $units = $query->paginate($perPage)->withQueryString();
@@ -409,5 +409,56 @@ class LandBankUnitController extends Controller
             Log::error('Import error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengimpor: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Terbitkan / Hubungkan SPK ke beberapa unit kavling sekaligus (1 SPK untuk banyak unit).
+     */
+    public function assignSpk(Request $request, $land_bank_id)
+    {
+        $land = LandBank::findOrFail($land_bank_id);
+
+        $request->validate([
+            'no_spk'        => 'required|string|max:255',
+            'kontraktor'    => 'required|string|max:255',
+            'unit_ids'      => 'required|array|min:1',
+            'unit_ids.*'    => 'exists:land_bank_units,id',
+            'dokumen_spk'   => 'nullable|file|mimes:pdf|max:5120',
+            'description'   => 'nullable|string|max:500',
+        ], [
+            'unit_ids.required'   => 'Pilih minimal satu unit kavling untuk SPK ini.',
+            'unit_ids.min'        => 'Pilih minimal satu unit kavling untuk SPK ini.',
+            'no_spk.required'     => 'Nomor SPK wajib diisi.',
+            'kontraktor.required' => 'Nama Kontraktor wajib diisi.'
+        ]);
+
+        $spkPath = null;
+        if ($request->hasFile('dokumen_spk')) {
+            $file = $request->file('dokumen_spk');
+            $filename = 'SPK_' . time() . '_' . preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+            $destination = public_path("uploads/landbank/{$land->id}/spk");
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $spkPath = "uploads/landbank/{$land->id}/spk/{$filename}";
+        }
+
+        $updateData = [
+            'no_spk'     => $request->no_spk,
+            'kontraktor' => $request->kontraktor,
+        ];
+
+        if ($spkPath) {
+            $updateData['dokumen_spk'] = $spkPath;
+        }
+
+        // Update semua unit kavling yang dipilih dalam proyek ini
+        $affectedCount = LandBankUnit::whereIn('id', $request->unit_ids)
+            ->where('land_bank_id', $land->id)
+            ->update($updateData);
+
+        return redirect()->route('properti.buatKavling', $land->id)
+            ->with('success', "SPK '{$request->no_spk}' berhasil diterbitkan dan dihubungkan ke {$affectedCount} unit kavling!");
     }
 }

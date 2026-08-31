@@ -8,9 +8,18 @@
         $allowedCategories = ['PJU & Penerangan', 'Jaringan Air Bersih', 'Jaringan Listrik & Gerbang', 'Upah Tenaga Kerja', 'Lain-lain'];
     }
 
-    $filteredMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
-        return in_array($item->category, $allowedCategories);
-    })->groupBy('category');
+    if (!empty($allowedCategories)) {
+        $priorityMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
+            return in_array($item->category, $allowedCategories);
+        })->groupBy('category');
+        
+        $otherMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
+            return !in_array($item->category, $allowedCategories);
+        })->groupBy('category');
+    } else {
+        $priorityMaterials = $masterMaterials->groupBy('category');
+        $otherMaterials = collect();
+    }
 @endphp
 
 <!-- Inline Multi-Item Expense Form for Phase {{ $phase }} -->
@@ -19,9 +28,9 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h6 class="fw-bold text-primary mb-0">
-                    Catat Transaksi Belanja Bahan / Nota - Fase {{ $phase }}
+                    Catat Transaksi Belanja Bahan / Nota - {{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }}
                 </h6>
-                <small class="text-muted">Mencatat pembelian bahan / material dalam satu nota belanja.</small>
+                <small class="text-muted">Pilih bahan dari <strong>Master Barang</strong> atau ketik langsung jika ada kebutuhan baru.</small>
             </div>
             <button type="button" class="btn-close" onclick="toggleInlineAddExpense({{ $phase }})"></button>
         </div>
@@ -35,7 +44,7 @@
             <div class="p-2 px-3 rounded-3 border mb-3 d-flex justify-content-between align-items-center bg-white" id="selectedPosNotice_{{ $phase }}">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-soft-primary text-primary px-2 py-1 rounded-2 small fw-bold">Pos Pekerjaan:</span>
-                    <span class="small text-dark fw-bold" id="selectedPosName_{{ $phase }}">- Seluruh Pos Fase {{ $phase }} (Umum) -</span>
+                    <span class="small text-dark fw-bold" id="selectedPosName_{{ $phase }}">- Seluruh Pos {{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }} (Umum) -</span>
                 </div>
                 <button type="button" class="btn btn-sm btn-light border text-secondary rounded-2 px-3 py-1 fw-semibold shadow-sm" onclick="resetSelectedPos({{ $phase }})" title="Ganti ke Umum" style="font-size: 0.75rem;">
                     Reset ke Umum
@@ -52,7 +61,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="small text-muted fw-bold mb-1">Toko / Vendor / Supplier</label>
-                        <input type="text" name="vendor_name" class="form-control form-control-sm" placeholder="Nama Toko / Mandor">
+                        <input type="text" name="vendor_name" class="form-control form-control-sm" placeholder="Nama Toko Bangunan / Mandor">
                     </div>
                     <div class="col-md-2">
                         <label class="small text-muted fw-bold mb-1">Metode Bayar</label>
@@ -70,7 +79,7 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="small text-muted fw-bold mb-1">Bukti Nota / Transaksi</label>
+                        <label class="small text-muted fw-bold mb-1">Upload Bukti Nota</label>
                         <div class="properti-file-upload-modern">
                             <input type="file" name="receipt_proof" id="receipt_proof_{{ $phase }}" accept=".pdf,.jpg,.jpeg,.png" data-type-name="Bukti Nota">
                             <div class="properti-file-label-modern py-1 px-2">
@@ -97,7 +106,7 @@
                         Daftar Bahan / Material yang Dibelanjakan:
                     </h6>
                     <button type="button" class="btn btn-sm btn-primary text-white px-3 rounded-2 shadow-sm fw-semibold" onclick="addNewMaterialRow({{ $phase }})" style="font-size: 0.78rem;">
-                        + Tambah Baris Bahan
+                        + Tambah Baris Bahan Lain
                     </button>
                 </div>
 
@@ -105,7 +114,7 @@
                     <table class="table table-sm table-bordered align-middle mb-0" id="tableMultiItems_{{ $phase }}">
                         <thead class="bg-light small text-muted text-center">
                             <tr>
-                                <th style="width: 30%;">Pilih / Ketik Nama Bahan</th>
+                                <th style="width: 30%;">Pilih dari Master / Nama Bahan</th>
                                 <th style="width: 15%;">Kategori</th>
                                 <th style="width: 12%;">Qty / Volume</th>
                                 <th style="width: 10%;">Satuan</th>
@@ -121,9 +130,9 @@
                                     <!-- Select Master or Custom Input -->
                                     <div class="d-flex flex-column gap-1">
                                         <select class="form-select form-select-sm select-master-item-row" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)">
-                                            <option value="">-- Pilih dari Master Bahan --</option>
-                                            @foreach($filteredMaterials as $catName => $items)
-                                                <optgroup label="{{ $catName }}">
+                                            <option value="">-- Pilih dari Master Barang / Bahan --</option>
+                                            @foreach($priorityMaterials as $catName => $items)
+                                                <optgroup label="📂 {{ $catName }}">
                                                     @foreach($items as $mm)
                                                         <option value="{{ $mm->id }}" 
                                                                 data-name="{{ $mm->name }}" 
@@ -135,6 +144,21 @@
                                                     @endforeach
                                                 </optgroup>
                                             @endforeach
+                                            @if($otherMaterials->isNotEmpty())
+                                                @foreach($otherMaterials as $catName => $items)
+                                                    <optgroup label="📂 {{ $catName }} (Lainnya)">
+                                                        @foreach($items as $mm)
+                                                            <option value="{{ $mm->id }}" 
+                                                                    data-name="{{ $mm->name }}" 
+                                                                    data-category="{{ $mm->category }}" 
+                                                                    data-unit="{{ $mm->unit }}" 
+                                                                    data-price="{{ $mm->default_price }}">
+                                                                {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
+                                            @endif
                                         </select>
                                         <input type="hidden" name="items[0][material_id]" id="inputMatId_{{ $phase }}_0">
                                         <input type="text" name="items[0][item_name]" id="inputItemName_{{ $phase }}_0" class="form-control form-control-sm" placeholder="Nama Bahan / Jasa *" required>
@@ -178,9 +202,9 @@
 
             <!-- Master Material Template Hidden Options for Dynamic Rows -->
             <template id="masterOptionsTemplate_{{ $phase }}">
-                <option value="">-- Pilih dari Master Bahan --</option>
-                @foreach($filteredMaterials as $catName => $items)
-                    <optgroup label="{{ $catName }}">
+                <option value="">-- Pilih dari Master Barang / Bahan --</option>
+                @foreach($priorityMaterials as $catName => $items)
+                    <optgroup label="📂 {{ $catName }}">
                         @foreach($items as $mm)
                             <option value="{{ $mm->id }}" 
                                     data-name="{{ $mm->name }}" 
@@ -192,15 +216,29 @@
                         @endforeach
                     </optgroup>
                 @endforeach
+                @if($otherMaterials->isNotEmpty())
+                    @foreach($otherMaterials as $catName => $items)
+                        <optgroup label="📂 {{ $catName }} (Lainnya)">
+                            @foreach($items as $mm)
+                                <option value="{{ $mm->id }}" 
+                                        data-name="{{ $mm->name }}" 
+                                        data-category="{{ $mm->category }}" 
+                                        data-unit="{{ $mm->unit }}" 
+                                        data-price="{{ $mm->default_price }}">
+                                    {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
+                                </option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                @endif
             </template>
 
             <div class="d-flex justify-content-end gap-2 pt-2 border-top">
                 <button type="button" class="btn btn-sm btn-secondary rounded-2 px-3" onclick="toggleInlineAddExpense({{ $phase }})">Batal</button>
-                <button type="submit" class="btn btn-sm btn-gradient-primary rounded-2 px-4">
-                    Simpan Belanja Bahan Fase {{ $phase }}
+                <button type="submit" class="btn btn-sm btn-gradient-primary rounded-2 px-4 shadow-sm">
+                    Simpan Semua Belanja Bahan {{ $phaseData[$phase]['title'] ?? 'Tahapan ' . $phase }}
                 </button>
             </div>
         </form>
     </div>
 </div>
-

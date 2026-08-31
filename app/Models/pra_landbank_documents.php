@@ -11,6 +11,8 @@ class pra_landbank_documents extends Model
         'pra_landbank_id',
         'document_type_id',
         'document_number',
+        'document_status',
+        'process_notes',
         'file_path',
         'status',
         'revision_number',

@@ -1057,7 +1057,7 @@
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
                                     @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1()">
-                                            <i class="mdi mdi-content-save-all"></i> Simpan Fase 1
+                                            <i class="mdi mdi-content-save-all"></i> {{ $land ? 'Update / Simpan Fase 1' : 'Simpan Fase 1' }}
                                         </button>
                                     @endif
                                 </div>
@@ -1307,50 +1307,94 @@
 
                                     <div class="row g-3" id="documentGridContainer">
                                         @foreach($documentTypes as $doc)
-                                             @php
-                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
-                                             @endphp
-                                             <div class="col-12 col-md-6 col-xl-4" id="doc-box-{{ $doc->id }}">
-                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
-                                                     <!-- Header Card Box -->
-                                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
-                                                         <div>
-                                                             <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
-                                                         </div>
-                                                         @php
-                                                             $currentDocStatus = $existingDoc->status ?? ($existingDoc && !empty($existingDoc->file_path) ? 'pending' : 'belum_upload');
-                                                         @endphp
-                                                         @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
-                                                             <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
-                                                                 <i class="mdi mdi-check-circle me-1"></i>Terverifikasi (Sah)
-                                                             </span>
-                                                         @elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi')
-                                                             <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
-                                                                 <i class="mdi mdi-alert-circle me-1"></i>Revisi
-                                                             </span>
-                                                         @elseif($existingDoc && !empty($existingDoc->file_path))
-                                                             <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
-                                                                 <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi Legal
-                                                             </span>
-                                                         @else
-                                                             <span class="badge bg-light text-muted border py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
-                                                                 Belum Upload
-                                                             </span>
-                                                         @endif
-                                                     </div>
+                                            @php
+                                                $existingDoc = $uploadedDocs[$doc->id] ?? null;
+                                                $hasFile = ($existingDoc && !empty($existingDoc->file_path));
+                                            @endphp
+                                            <div class="col-12 col-md-6 col-xl-4" id="doc-box-{{ $doc->id }}">
+                                                <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
+                                                    <!-- Header Card Box -->
+                                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                                                            @php
+                                                                $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
+                                                                $docPhysStatus = $existingDoc->document_status ?? 'ada';
+                                                            @endphp
 
-                                                     <!-- Input Nomor Dokumen -->
-                                                     <div class="mb-2">
-                                                         <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                              Nomor Dokumen {{ $doc->name }}
-                                                         </label>
-                                                         <input type="text" class="form-control form-control-sm"
-                                                             name="documents[{{ $doc->id }}][number]"
-                                                             value="{{ $existingDoc->document_number ?? '' }}"
-                                                             placeholder="Nomor {{ $doc->name }}"
-                                                             style="font-size: 0.85rem;"
-                                                             {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                     </div>
+                                                            <!-- Status Fisik Dokumen Badge -->
+                                                            @if($docPhysStatus === 'proses')
+                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-progress-clock me-1"></i>Masih Proses
+                                                                </span>
+                                                            @elseif($docPhysStatus === 'belum_ada')
+                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    Belum Ada
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-soft-primary text-primary border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap
+                                                                </span>
+                                                            @endif
+
+                                                            <!-- Status Verifikasi Legal Badge -->
+                                                            @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
+                                                                <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
+                                                                </span>
+                                                            @elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi')
+                                                                <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-alert-circle me-1"></i>Revisi
+                                                                </span>
+                                                            @elseif($existingDoc && !empty($existingDoc->file_path))
+                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    Belum Upload
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Status Dokumen Fisik / Progres Pengurusan -->
+                                                    <div class="mb-2">
+                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
+                                                            Status Fisik / Keberadaan Dokumen
+                                                        </label>
+                                                        <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                            <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>✅ Ada / Lengkap</option>
+                                                            <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>⏳ Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
+                                                            <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>❌ Belum Ada</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Dynamic Form Keterangan / Progres Pengurusan (Muncul saat Masih Proses) -->
+                                                    <div class="mb-2 p-2 rounded-2 border {{ ($existingDoc->document_status ?? '') === 'proses' ? '' : 'd-none' }}" id="processNotesContainer_{{ $doc->id }}" style="background: #fffdf5; border-color: #fde68a !important;">
+                                                        <label class="form-label mb-1 text-dark fw-bold d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                                                            <i class="mdi mdi-progress-clock text-warning"></i> Keterangan & Progres Pengurusan Dokumen:
+                                                        </label>
+                                                        <textarea name="documents[{{ $doc->id }}][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan (contoh: Sedang proses balik nama di Notaris Budi, estimasi selesai tgl 15 bulan depan, nomor resi 123)..." style="font-size: 0.8rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $existingDoc->process_notes ?? '' }}</textarea>
+                                                        <small class="text-muted d-block mt-1" style="font-size: 0.72rem; line-height: 1.2;">
+                                                            *Kepala Legal dapat memverifikasi & menyetujui dokumen ini secara paralel agar alur lahan tetap bisa berjalan.
+                                                        </small>
+                                                    </div>
+
+                                                    <!-- Input Nomor Dokumen -->
+                                                    <div class="mb-2">
+                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
+                                                             Nomor Dokumen {{ $doc->name }}
+                                                        </label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            name="documents[{{ $doc->id }}][number]"
+                                                            value="{{ $existingDoc->document_number ?? '' }}"
+                                                            placeholder="Nomor {{ $doc->name }}"
+                                                            style="font-size: 0.85rem;"
+                                                            {{ $hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    </div>
 
                                                      <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
                                                      @php
@@ -1441,23 +1485,21 @@
                                                                  </div>
                                                              @endif
                                                         @else
-                                                            <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                                Upload Berkas (PDF / JPG / PNG)
+                                                            <!-- State: Dokumen Baru / Belum Ada Berkas -> WAJIB BISA UPLOAD (TIDAK READONLY) -->
+                                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
+                                                                <span>Upload Berkas {{ $doc->name }} <span class="text-danger">*</span></span>
+                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Wajib Upload</span>
                                                             </label>
-                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                                <div class="pratanah-file-upload-modern">
-                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                    <div class="pratanah-file-label-modern py-2 px-3">
-                                                                        <i class="mdi mdi-cloud-upload"></i>
-                                                                        <div class="pratanah-file-info-modern">
-                                                                            <span class="file-label-text" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
-                                                                            <small style="font-size: 0.72rem; color: #8c98a4;">Maksimal ukuran 2MB</small>
-                                                                        </div>
+                                                            <div class="pratanah-file-upload-modern">
+                                                                <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
+                                                                        <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
                                                                     </div>
                                                                 </div>
-                                                            @else
-                                                                <span class="text-muted font-italic" style="font-size: 0.8rem;">Belum ada berkas</span>
-                                                            @endif
+                                                            </div>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -1498,13 +1540,21 @@
 
                                 <!-- ACTIONS -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row" id="actionsFase2Wrapper">
-                                    @if ($isLegalSah || ($land && in_array($land->status, ['fase3', 'approved', 'rejected'])))
-                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(3)">
-                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
-                                        </button>
-                                    @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                    @php
+                                        $totalRequired = max($documentTypes->count(), $land ? $land->documents->count() : 0);
+                                        $totalVerified = $land ? $land->documents->where('status', 'verified')->count() : 0;
+                                        $isAllDocsSah = ($totalRequired > 0) && ($totalVerified === $totalRequired);
+                                    @endphp
+
+                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected') || !$isAllDocsSah)
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" id="btnSaveFase2" onclick="saveFase2()">
-                                            <i class="mdi mdi-content-save-all"></i> Simpan Fase 2
+                                            <i class="mdi mdi-content-save-all"></i> {{ $land ? 'Update / Simpan Fase 2' : 'Simpan Fase 2' }}
+                                        </button>
+                                    @endif
+
+                                    @if ($isAllDocsSah)
+                                        <button type="button" class="btn btn-gradient-success btn-action-mobile" onclick="switchStep(3)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
                                         </button>
                                     @endif
                                 </div>
@@ -1723,6 +1773,7 @@
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                                 $hasExistingFile = ($existingDoc && !empty($existingDoc->file_path));
                                                 $cleanPath = $hasExistingFile ? str_replace('uploads/', '', $existingDoc->file_path) : null;
+                                                $docPhysStatus = $existingDoc->document_status ?? 'ada';
                                             @endphp
                                             <div class="col-md-6 col-lg-4">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 d-flex flex-column" style="background: #ffffff; border-color: #eaedf2 !important;">
@@ -1730,15 +1781,36 @@
                                                         <div>
                                                             <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;">{{ $doc->name }}</h6>
                                                         </div>
-                                                        @if($existingDoc && in_array($existingDoc->status ?? '', ['verified', 'valid']))
-                                                            <span class="badge bg-success py-1 px-2" style="font-size: 10px;">
-                                                                Sah
-                                                            </span>
-                                                        @else
-                                                            <span class="badge bg-secondary py-1 px-2" style="font-size: 10px;">
-                                                                {{ ucfirst($existingDoc->status ?? 'Tersedia') }}
-                                                            </span>
-                                                        @endif
+                                                        <div class="d-flex align-items-center gap-1">
+                                                            @if($docPhysStatus === 'proses')
+                                                                <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-progress-clock me-1"></i>Proses
+                                                                </span>
+                                                            @endif
+
+                                                            @if($existingDoc && in_array($existingDoc->status ?? '', ['verified', 'valid']))
+                                                                <span class="badge bg-success py-1 px-2" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-secondary py-1 px-2" style="font-size: 10px;">
+                                                                    {{ ucfirst($existingDoc->status ?? 'Tersedia') }}
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Status Keberadaan:</small>
+                                                        <span class="fw-semibold {{ $docPhysStatus === 'proses' ? 'text-warning-emphasis' : ($docPhysStatus === 'belum_ada' ? 'text-danger' : 'text-success') }}" style="font-size: 0.82rem;">
+                                                            @if($docPhysStatus === 'proses')
+                                                                ⏳ Masih Proses Pengurusan
+                                                            @elseif($docPhysStatus === 'belum_ada')
+                                                                ❌ Belum Ada
+                                                            @else
+                                                                ✅ Fisik Lengkap
+                                                            @endif
+                                                        </span>
                                                     </div>
 
                                                     <div class="mb-2">
@@ -1747,6 +1819,13 @@
                                                             {{ $existingDoc->document_number ?? '-' }}
                                                         </span>
                                                     </div>
+
+                                                    @if($docPhysStatus === 'proses' && !empty($existingDoc->process_notes))
+                                                        <div class="p-2 rounded-2 mb-2 border" style="background: #fffdf5; border-color: #fde68a !important; font-size: 0.78rem;">
+                                                            <strong class="d-block text-dark mb-1"><i class="mdi mdi-information-outline text-warning me-1"></i>Keterangan Proses:</strong>
+                                                            <span class="text-muted">{{ $existingDoc->process_notes }}</span>
+                                                        </div>
+                                                    @endif
 
                                                     @if($hasExistingFile)
                                                         <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
@@ -1759,7 +1838,7 @@
                                                         </div>
                                                     @else
                                                         <div class="mt-auto pt-2 border-top">
-                                                            <span class="text-muted fst-italic" style="font-size: 0.75rem;">Tidak ada file</span>
+                                                            <span class="text-muted fst-italic" style="font-size: 0.75rem;">Tidak ada file berkas fisik</span>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -3255,6 +3334,22 @@
                 };
             });
         }
+
+        window.toggleDocProcessNotes = function(selectEl, docId) {
+            let val = $(selectEl).val();
+            let container = $(`#processNotesContainer_${docId}`);
+            let badge = $(`.doc-phys-badge-${docId}`);
+            if (val === 'proses') {
+                container.removeClass('d-none');
+                badge.replaceWith(`<span class="badge bg-warning text-dark py-1 px-2 doc-phys-badge-${docId}" style="font-size: 10px;"><i class="mdi mdi-progress-clock me-1"></i>Masih Proses</span>`);
+            } else if (val === 'belum_ada') {
+                container.addClass('d-none');
+                badge.replaceWith(`<span class="badge bg-light text-muted border py-1 px-2 doc-phys-badge-${docId}" style="font-size: 10px;">Belum Ada</span>`);
+            } else {
+                container.addClass('d-none');
+                badge.replaceWith(`<span class="badge bg-soft-primary text-primary border py-1 px-2 doc-phys-badge-${docId}" style="font-size: 10px;"><i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap</span>`);
+            }
+        };
 
         function approvePraDoc(docId, typeId) {
             Swal.fire({

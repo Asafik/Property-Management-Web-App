@@ -4,6 +4,12 @@
 
 @section('content')
 
+@php
+    $praLandBank = $praLandBank ?? ($praLandbank ?? ($lands ?? collect()));
+    $documentTypes = $documentTypes ?? \App\Models\DocumentTypes::all();
+    $landsWithPendingDocsCount = $landsWithPendingDocsCount ?? 0;
+@endphp
+
     <style>
         .btn-fase-action {
             display: inline-flex;
@@ -264,6 +270,20 @@
                             </div>
                         </div>
 
+                        @if(!empty($landsWithPendingDocsCount) && $landsWithPendingDocsCount > 0)
+                            <div class="alert alert-warning border-0 shadow-sm rounded-3 d-flex align-items-center justify-content-between p-3 mb-3" style="background: #fffbeb; border-left: 4px solid #f59e0b !important;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="mdi mdi-alert-decagram text-warning fs-4"></i>
+                                    <div>
+                                        <span class="fw-bold text-dark d-block" style="font-size: 13px;">Pemberitahuan Dokumen & Capaian Legalitas:</span>
+                                        <small class="text-muted" style="font-size: 12px;">
+                                            Terdapat <strong>{{ $landsWithPendingDocsCount }} tanah</strong> dengan dokumen tambahan baru yang menunggu verifikasi Kepala Legal. Capaian progres legalitas disesuaikan secara otomatis dengan total kelengkapan berkas terbaru.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
@@ -273,7 +293,7 @@
                                         <th style="min-width: 120px;">Makelar</th>
                                         <th style="min-width: 130px;">Harga Negosiasi</th>
                                         <th style="min-width: 125px;">Progress 3 FASE</th>
-                                        <th style="min-width: 140px;">Progress Legalitas</th>
+                                        <th style="min-width: 150px;">Progress Legalitas</th>
                                         <th style="min-width: 95px;">Status</th>
                                         <th style="min-width: 85px;">Prioritas</th>
                                         <th class="text-center" style="min-width: 215px;">Aksi</th>
@@ -384,42 +404,91 @@
                                                 </div>
                                             </td>
 
-                                            <!-- Progress Legalitas -->
+                                            <!-- Progress Legalitas (Dinamis Berdasarkan Kelengkapan Dokumen) -->
+                                            <!-- Progress Legalitas (Dinamis Berdasarkan Kelengkapan Dokumen) -->
                                             <td>
                                                 @php
                                                     $docs = $land->documents;
-                                                    $totalUploaded = $docs->whereNotNull('file_path')->count();
+                                                    $totalRequired = max($documentTypes->count(), $docs->count());
                                                     $verifiedDocs = $docs->where('status', 'verified')->count();
                                                     $rejectedDocs = $docs->where('status', 'rejected')->count();
-                                                    $legalPercent = $totalUploaded > 0 ? round(($verifiedDocs / $totalUploaded) * 100) : 0;
+                                                    $pendingDocs = $docs->where('status', 'pending')->count();
+                                                    $processDocs = $docs->where('document_status', 'proses');
+                                                    $unverifiedOrMissing = max(0, $totalRequired - $verifiedDocs);
+
+                                                    // Hitung persentase capaian legalitas dinamis
+                                                    $legalPercent = $totalRequired > 0 ? round(($verifiedDocs / $totalRequired) * 100) : 0;
                                                 @endphp
 
-                                                @if($totalUploaded == 0)
+                                                @if($totalRequired == 0)
                                                     <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 11px;">
                                                         <i class="mdi mdi-file-outline me-1"></i>Belum Ada Berkas
                                                     </span>
                                                 @else
                                                     <div class="progress-fase">
                                                         <div class="progress-label d-flex justify-content-between align-items-center mb-1">
-                                                            @if($verifiedDocs == $totalUploaded)
+                                                            @if($verifiedDocs == $totalRequired)
                                                                 <span class="fw-bold" style="font-size: 11px; color: #15803d;">
-                                                                    <i class="mdi mdi-shield-check me-1" style="font-size: 12px;"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                    <i class="mdi mdi-shield-check me-1" style="font-size: 12px;"></i>100% Sah ({{ $verifiedDocs }}/{{ $totalRequired }})
                                                                 </span>
                                                             @elseif($rejectedDocs > 0)
                                                                 <span class="fw-bold" style="font-size: 11px; color: #b91c1c;">
-                                                                    <i class="mdi mdi-alert-circle me-1" style="font-size: 12px;"></i>Revisi ({{ $verifiedDocs }}/{{ $totalUploaded }})
+                                                                    <i class="mdi mdi-alert-circle me-1" style="font-size: 12px;"></i>Revisi ({{ $verifiedDocs }}/{{ $totalRequired }})
                                                                 </span>
                                                             @else
                                                                 <span class="fw-bold" style="font-size: 11px; color: #b45309;">
-                                                                    <i class="mdi mdi-clock-outline me-1" style="font-size: 12px; color: #d97706;"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalUploaded }} Sah)
+                                                                    <i class="mdi mdi-clock-outline me-1" style="font-size: 12px; color: #d97706;"></i>{{ $legalPercent }}% ({{ $verifiedDocs }}/{{ $totalRequired }} Sah)
                                                                 </span>
                                                             @endif
                                                         </div>
                                                         <div class="progress-bar-container" style="height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalUploaded ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : '') }}"
-                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease; {{ $verifiedDocs < $totalUploaded && $rejectedDocs == 0 ? 'background: linear-gradient(135deg, #f59e0b, #d97706);' : '' }}">
+                                                            <div class="progress-bar-fill {{ $verifiedDocs == $totalRequired ? 'bg-success' : ($rejectedDocs > 0 ? 'bg-danger' : '') }}"
+                                                                 style="width: {{ $legalPercent }}%; height: 100%; border-radius: 4px; transition: width 0.3s ease; {{ $verifiedDocs < $totalRequired && $rejectedDocs == 0 ? 'background: linear-gradient(135deg, #f59e0b, #d97706);' : '' }}">
                                                             </div>
                                                         </div>
+
+                                                        <!-- List Dokumen Masih Dalam Pengurusan (Staff Legal Bisa Update Berkas Jadi) -->
+                                                        @if($processDocs->isNotEmpty())
+                                                            <div class="mt-2 d-flex flex-column gap-1">
+                                                                @foreach($processDocs as $pDoc)
+                                                                    <div class="d-flex align-items-center justify-content-between p-1 px-2 rounded-2 border" style="background: #fffdf5; border-color: #fde68a !important; font-size: 10px;">
+                                                                        <div class="d-flex align-items-center gap-1 overflow-hidden" title="Catatan Pengurusan: {{ $pDoc->process_notes ?? 'Sedang diurus' }}">
+                                                                            <i class="mdi mdi-progress-clock text-warning flex-shrink-0"></i>
+                                                                            <span class="text-dark fw-bold text-truncate">{{ $pDoc->documentType->name ?? 'Dokumen' }}</span>
+                                                                            @if($pDoc->status === 'verified')
+                                                                                <span class="badge bg-success text-white py-0 px-1" style="font-size: 8.5px;" title="Telah di-ACC Legal secara paralel">ACC Paralel</span>
+                                                                            @else
+                                                                                <span class="badge bg-warning text-dark py-0 px-1" style="font-size: 8.5px;">Proses</span>
+                                                                            @endif
+                                                                        </div>
+                                                                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-1.5 ms-1 rounded d-inline-flex align-items-center gap-0.5 text-nowrap" onclick="openUploadDocModal({{ $pDoc->id }}, '{{ addslashes($pDoc->documentType->name ?? 'Dokumen') }}', '{{ addslashes($land->land_name) }}', '{{ $pDoc->document_number ?? '' }}')" title="Staff Legal: Upload Berkas Fisik Jika Sudah Selesai/Jadi" style="font-size: 9.5px; font-weight: 600;">
+                                                                            <i class="mdi mdi-upload"></i> Upload Jadi
+                                                                        </button>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+
+                                                        <!-- Alert Tambahan Saat Ada Dokumen Baru / Pending / Belum Lengkap -->
+                                                        @if($unverifiedOrMissing > 0 && $verifiedDocs > 0 && $processDocs->isEmpty())
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1" style="font-size: 9.5px; font-weight: 600;" title="Terdapat {{ $unverifiedOrMissing }} dokumen baru/tambahan yang belum diverifikasi atau belum lengkap">
+                                                                    <i class="mdi mdi-alert-outline me-1"></i>+{{ $unverifiedOrMissing }} Dokumen Menunggu Verifikasi
+                                                                </span>
+                                                            </div>
+                                                        @elseif($rejectedDocs > 0)
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1" style="font-size: 9.5px; font-weight: 600;" title="Ada dokumen ditolak dan memerlukan revisi">
+                                                                    <i class="mdi mdi-alert-circle me-1"></i>{{ $rejectedDocs }} Dokumen Perlu Revisi
+                                                                </span>
+                                                            </div>
+                                                        @elseif($totalRequired > 0 && $verifiedDocs == 0)
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 9.5px;">
+                                                                    <i class="mdi mdi-clock-outline me-1 text-warning"></i>Menunggu Verifikasi Legal
+                                                                </span>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 @endif
                                             </td>
@@ -461,7 +530,7 @@
 
                                                     <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
                                                        class="btn-fase-action btn-fase-2" 
-                                                       title="FASE 2: Survey">
+                                                       title="FASE 2: Survey & Legalitas">
                                                         <i class="mdi mdi-map-search"></i>
                                                         <span>Fase 2</span>
                                                     </a>
@@ -469,14 +538,18 @@
                                                     @if($land->status !== 'fase1' || $land->status === 'approved' || $isTerminActive || ($land->status !== 'pending' || !empty($land->survey_date) || !empty($land->survey_by)))
                                                         @php
                                                             $docs = $land->documents;
-                                                            $totalUploaded = $docs->whereNotNull('file_path')->count();
+                                                            $activeDocs = $docs->filter(function($d) {
+                                                                return !empty($d->file_path) || $d->document_status === 'proses' || !empty($d->document_number);
+                                                            });
+                                                            $totalActiveDocs = $activeDocs->count();
                                                             $verifiedDocs = $docs->where('status', 'verified')->count();
-                                                            $isLandLegalSah = ($totalUploaded > 0) && ($verifiedDocs === $totalUploaded);
+                                                            // Legalitas dianggap sah untuk paralel jika semua dokumen aktif terverifikasi/disetujui Kepala Legal
+                                                            $isLandLegalSah = ($totalActiveDocs > 0) && ($verifiedDocs === $totalActiveDocs);
                                                         @endphp
                                                         @if($isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive)
                                                             <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
                                                                class="btn-fase-action btn-fase-3" 
-                                                               title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan' }}">
+                                                               title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan Direksi' }}">
                                                                 <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
                                                                 <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
                                                             </a>
@@ -533,6 +606,60 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL QUICK UPDATE / UPLOAD BERKAS FISIK DOKUMEN SELESAI (STAFF LEGAL) -->
+    <div class="modal fade" id="modalUploadCompletedDoc" tabindex="-1" aria-labelledby="modalUploadCompletedDocLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-header border-0 pb-0" style="background: linear-gradient(135deg, #f8f9fa, #f1f5f9);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="p-2 rounded-circle bg-white shadow-sm text-primary">
+                            <i class="mdi mdi-file-document-check fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-dark mb-0" id="modalUploadCompletedDocLabel">Upload Berkas Fisik Dokumen</h5>
+                            <small class="text-muted">Staff Legal: Perbarui status dokumen yang telah selesai diurus</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formUploadCompletedDoc" onsubmit="submitUploadCompletedDoc(event)" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="uploadDocId" name="doc_id">
+                    <div class="modal-body pt-3 pb-4">
+                        <!-- Info Banner -->
+                        <div class="p-3 mb-3 rounded-3 bg-light border">
+                            <div class="small text-muted mb-1">Target Dokumen & Lokasi:</div>
+                            <div class="fw-bold text-primary fs-6" id="uploadDocTargetName">-</div>
+                            <div class="small text-dark" id="uploadDocLandName">-</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark">Nomor Dokumen / Sertifikat Final <span class="text-muted">(Opsional)</span></label>
+                            <input type="text" class="form-control" id="uploadDocNumber" name="document_number" placeholder="Contoh: 503/IMB/2026 atau No. SHM 12345">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark">File Fisik / Bukti Dokumen <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="uploadDocFile" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <small class="text-muted d-block mt-1" style="font-size: 11px;">Format: PDF, JPG, PNG (Maks 20MB). File ini akan melengkapi arsip fisik legalitas.</small>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold text-dark">Keterangan / Catatan Serah Terima</label>
+                            <textarea class="form-control" id="uploadDocNotes" name="process_notes" rows="2" placeholder="Contoh: Berkas asli fisik telah diterima dari Notaris dan disimpan di brankas legal."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0 bg-light">
+                        <button type="button" class="btn btn-secondary px-3 rounded-pill" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-gradient-primary px-4 rounded-pill shadow-sm" id="btnSubmitUploadDoc">
+                            <i class="mdi mdi-check-circle me-1"></i> Simpan & Jadikan Selesai (Lengkap)
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 @endsection
@@ -660,5 +787,84 @@
                 confirmButtonText: '<i class="mdi mdi-check me-1"></i> Mengerti'
             });
         }
+
+        window.openUploadDocModal = function(docId, docName, landName, docNumber) {
+            $('#uploadDocId').val(docId);
+            $('#uploadDocTargetName').text(docName);
+            $('#uploadDocLandName').text('Properti: ' + landName);
+            $('#uploadDocNumber').val(docNumber || '');
+            $('#uploadDocFile').val('');
+            $('#uploadDocNotes').val('Dokumen fisik telah selesai diurus dan berkas resmi telah diunggah.');
+            
+            let modal = new bootstrap.Modal(document.getElementById('modalUploadCompletedDoc'));
+            modal.show();
+        };
+
+        window.submitUploadCompletedDoc = function(e) {
+            e.preventDefault();
+            let docId = $('#uploadDocId').val();
+            if (!docId) return;
+
+            let fileInput = document.getElementById('uploadDocFile');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pilih File',
+                    text: 'Silakan pilih file fisik dokumen yang sudah jadi terlebih dahulu.'
+                });
+                return;
+            }
+
+            let formData = new FormData(document.getElementById('formUploadCompletedDoc'));
+            let submitBtn = $('#btnSubmitUploadDoc');
+            submitBtn.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin me-1"></i> Mengunggah...');
+
+            $.ajax({
+                url: `/pra-landbank/dokumen/${docId}/upload-completed`,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
+                },
+                success: function(res) {
+                    submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle me-1"></i> Simpan & Jadikan Selesai (Lengkap)');
+                    if (res.success) {
+                        let modalEl = document.getElementById('modalUploadCompletedDoc');
+                        let modalInstance = bootstrap.Modal.getInstance(modalEl);
+                        if (modalInstance) modalInstance.hide();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Dokumen Berhasil Diperbarui!',
+                            text: res.message || 'Berkas fisik berhasil diunggah & status dokumen menjadi lengkap.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: res.message || 'Terjadi kesalahan saat mengunggah berkas.'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle me-1"></i> Simpan & Jadikan Selesai (Lengkap)');
+                    let msg = 'Terjadi kesalahan saat mengunggah berkas.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Mengunggah',
+                        text: msg
+                    });
+                }
+            });
+        };
     </script>
 @endpush

@@ -10,49 +10,44 @@
 
     <!-- Custom Scoped Styles for Phased Site Development -->
     <style>
-        .header-card {
+        .page-header-box {
             background: #ffffff;
-            border-radius: 8px !important;
-            border: none !important;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
-            margin-bottom: 0;
-        }
-
-        .phase-stat-card {
-            background: #ffffff;
-            border: 1px solid #eef2f6;
             border-radius: 12px;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            position: relative;
-            user-select: none;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid rgba(154, 85, 255, 0.12);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         }
-        .phase-stat-card:hover {
-            border-color: #d1b8ff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.08);
+        .fase-step-card {
+            border: 2px solid #e9ecef !important;
+            border-radius: 10px !important;
+            background: #ffffff;
+            transition: all 0.2s ease;
         }
-        .phase-stat-card.active {
-            border: 2px solid #9a55ff !important;
-            background: #faf7ff !important;
-            box-shadow: 0 4px 14px rgba(154, 85, 255, 0.12) !important;
+        .fase-step-card:hover {
+            border-color: #d1b8ff !important;
+            background: #faf5ff;
         }
-
+        .fase-step-card.active {
+            border-color: #9a55ff !important;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(154, 85, 255, 0.15) !important;
+        }
         .task-card-phased {
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid #eef2f6;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .task-card-phased:hover {
             border-color: #c4b5fd;
-            box-shadow: 0 4px 16px rgba(154, 85, 255, 0.07);
+            box-shadow: 0 6px 20px rgba(154, 85, 255, 0.07);
         }
         .badge-soft-primary { background: #f0e7ff; color: #9a55ff; }
         .badge-soft-success { background: #e6f9f0; color: #10b981; }
         .badge-soft-warning { background: #fff8e6; color: #f59e0b; }
         .badge-soft-danger { background: #fef2f2; color: #ef4444; }
+        .badge-soft-secondary { background: #f3f4f6; color: #6b7280; }
         .table-elevated thead th {
             background: #f8faff;
             color: #4b5563;
@@ -60,47 +55,17 @@
             font-size: 0.78rem;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #eef2f6;
-            padding: 0.8rem 1rem;
+            padding: 0.9rem 1rem;
         }
         .table-elevated tbody td {
-            padding: 0.8rem 1rem;
+            padding: 0.9rem 1rem;
             border-bottom: 1px solid #f3f4f6;
             font-size: 0.88rem;
-        }
-        /* Select2 Theme Customization */
-        .select2-container--bootstrap-5 .select2-selection {
-            border-radius: 8px;
-            border-color: #e9ecef;
-            min-height: 38px;
-            display: flex;
-            align-items: center;
-        }
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            color: #4b5563;
-            font-size: 0.88rem;
-            padding-left: 0.5rem;
-        }
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-radius: 8px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
-        }
-        .select2-container--bootstrap-5 .select2-results__group {
-            font-weight: 700;
-            color: #9a55ff;
-            background: #f8faff;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            border-bottom: 1px solid #eef2f6;
-        }
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background-color: #9a55ff !important;
-            color: #ffffff !important;
         }
         /* Active Selected Card Styling */
         .task-card-active {
             border: 2px solid #9a55ff !important;
-            box-shadow: 0 6px 20px rgba(154, 85, 255, 0.15) !important;
+            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.18) !important;
             background: #faf6ff !important;
         }
         .card-expense-trigger:hover {
@@ -108,207 +73,179 @@
             border-color: #9a55ff !important;
             transform: translateY(-2px);
         }
-
-        /* ===== MODERN FILE UPLOAD STYLING (MATCHING PROPERTI) ===== */
+        /* Modern Properti File Upload */
         .properti-file-upload-modern {
             position: relative;
             width: 100%;
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         .properti-file-upload-modern input[type="file"] {
             position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 5;
         }
         .properti-file-upload-modern .properti-file-label-modern {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 0.6rem 0.85rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 10px;
-            cursor: pointer;
+            padding: 0.45rem 0.75rem;
+            gap: 8px;
+            pointer-events: none;
+            width: 100%;
+            margin-bottom: 0;
+            background: #faf5ff;
+            border: 1.5px dashed #9a55ff !important;
+            border-radius: 8px;
             transition: all 0.25s ease;
         }
         .properti-file-upload-modern:hover .properti-file-label-modern {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-1px);
+            border-color: #7a35df !important;
+            background: #f3e8ff;
         }
-        .properti-file-upload-modern .properti-file-label-modern i {
-            font-size: 1.2rem;
+        .properti-file-label-modern i {
+            font-size: 1.25rem;
             color: #9a55ff;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 6px;
-            border-radius: 50%;
+            background: rgba(154, 85, 255, 0.12);
+            padding: 5px;
+            border-radius: 6px;
+            line-height: 1;
             flex-shrink: 0;
         }
-        .properti-file-upload-modern .properti-file-info-modern {
+        .properti-file-info-modern {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             overflow: hidden;
         }
-        .properti-file-upload-modern .file-title-text {
-            font-size: 0.82rem;
+        .properti-file-info-modern .file-title-text {
             font-weight: 600;
-            color: #2c2e3f;
+            color: #4b5563;
+            font-size: 0.78rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.2;
         }
-        .properti-file-upload-modern .file-sub-text {
+        .properti-file-info-modern .file-sub-text {
+            color: #6b7280;
+            font-size: 0.68rem;
+            line-height: 1.2;
+        }
+        .properti-file-size {
             font-size: 0.7rem;
-            color: #6c757d;
-        }
-        .properti-file-upload-modern .properti-file-size {
-            font-size: 0.72rem;
-            font-weight: 600;
             color: #9a55ff;
-            flex-shrink: 0;
+            font-weight: 600;
+            white-space: nowrap;
         }
-
-        /* ===== UNIVERSAL BUTTON & BADGE VERTICAL/HORIZONTAL CENTERING ===== */
-        .btn,
-        .btn-sm,
-        .btn-xs,
-        .badge,
-        a.btn,
-        span.btn,
-        label.btn,
-        button.btn {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            text-align: center !important;
-            vertical-align: middle !important;
-            line-height: 1 !important;
-            box-sizing: border-box !important;
-        }
-
-        .btn-pill-primary {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background-color: #9a55ff !important;
-            color: #ffffff !important;
-            font-size: 0.75rem !important;
-            font-weight: 600 !important;
-            padding: 6px 12px !important;
+        /* Buttons styling & centering */
+        .btn-pill-primary, .btn-pill-xs, .btn-table-del {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 6px !important;
-            border: none !important;
-            line-height: 1 !important;
-            box-shadow: 0 2px 4px rgba(154, 85, 255, 0.2) !important;
-            cursor: pointer !important;
-            text-decoration: none !important;
-            white-space: nowrap !important;
-            transition: all 0.2s ease !important;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        .btn-pill-primary {
+            background-color: #9a55ff;
+            color: #ffffff !important;
+            border: 1px solid #9a55ff;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.75rem;
+            box-shadow: 0 2px 4px rgba(154, 85, 255, 0.2);
+            cursor: pointer;
         }
         .btn-pill-primary:hover {
-            background-color: #8333e6 !important;
+            background-color: #7e3bd0;
+            border-color: #7e3bd0;
             color: #ffffff !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.3) !important;
         }
-
         .btn-pill-xs {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background-color: #9a55ff !important;
-            color: #ffffff !important;
-            font-size: 0.7rem !important;
-            font-weight: 600 !important;
-            padding: 4px 8px !important;
-            border-radius: 4px !important;
-            border: none !important;
-            line-height: 1 !important;
-            box-shadow: 0 1px 3px rgba(154, 85, 255, 0.15) !important;
-            cursor: pointer !important;
-            text-decoration: none !important;
-            white-space: nowrap !important;
+            background-color: #f1f3f9;
+            color: #374151 !important;
+            border: 1px solid #d1d5db;
+            padding: 0.22rem 0.55rem;
+            font-size: 0.72rem;
+            cursor: pointer;
         }
         .btn-pill-xs:hover {
-            background-color: #8333e6 !important;
+            background-color: #9a55ff;
+            border-color: #9a55ff;
             color: #ffffff !important;
         }
-
         .btn-table-del {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 28px !important;
-            height: 28px !important;
-            padding: 0 !important;
-            border-radius: 6px !important;
-            background-color: #fe7c96 !important;
-            color: #ffffff !important;
-            border: none !important;
-            font-size: 0.95rem !important;
-            line-height: 1 !important;
-            cursor: pointer !important;
-            box-shadow: 0 1px 3px rgba(254, 124, 150, 0.2) !important;
-            transition: all 0.2s ease !important;
+            background-color: #fee2e2;
+            color: #ef4444 !important;
+            border: 1px solid #fca5a5;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
         }
         .btn-table-del:hover {
-            background-color: #e65675 !important;
+            background-color: #ef4444;
+            border-color: #ef4444;
             color: #ffffff !important;
         }
     </style>
 
-    <!-- Header Dashboard Card Banner -->
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Pengolahan Lahan: <span class="text-primary">{{ $land->name }}</span>
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Progres bertahap Fase 1 &rarr; Fase 2 &rarr; Fase 3 (Semua fase harus 100% selesai untuk membuka Tambah Kavling)
-                        </p>
-                    </div>
-                    <div class="d-flex flex-wrap gap-2 align-items-center">
-                        <a href="{{ route('properti-all') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
-                            <i class="mdi mdi-arrow-left"></i> Kembali
-                        </a>
-
-                        <!-- Validasi Legalitas Status Trigger -->
-                        @if($land->legal_status == 'verified' || $land->isFromPraLandbank())
-                            <button type="button" class="btn btn-sm btn-outline-success px-3 rounded-2 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Terverifikasi">
-                                Legalitas: <strong>Terverifikasi</strong>
-                            </button>
-                        @elseif($land->legal_status == 'rejected')
-                            <button type="button" class="btn btn-sm btn-outline-danger px-3 rounded-2 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Perlu Revisi">
-                                Legalitas: <strong>Revisi</strong>
-                            </button>
-                        @else
-                            <button type="button" class="btn btn-sm btn-outline-warning px-3 rounded-2 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Menunggu Verifikasi">
-                                Legalitas: <strong>Pending</strong>
-                            </button>
-                        @endif
-
-                        <a href="{{ route('master.bahan.index') }}" class="btn btn-outline-primary btn-sm px-3 rounded-2 shadow-sm">
-                            Master Bahan
-                        </a>
-
-                        @if($land->canCreateKavling())
-                            <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success btn-sm px-3 rounded-2 shadow-sm">
-                                Tambah Kavling
-                            </a>
-                        @else
-                            <button type="button" class="btn btn-secondary btn-sm px-3 rounded-2 shadow-sm opacity-75" onclick="showKavlingLockedInfo()" title="Tambah Kavling Terkunci">
-                                <i class="mdi mdi-lock me-1"></i> Tambah Kavling
-                            </button>
-                        @endif
-                    </div>
+    <!-- Page Header & Action Bar -->
+    <div class="page-header-box mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">
+                        Pengolahan Lahan: <span class="text-primary">{{ $land->name }}</span>
+                    </h4>
+                    <span class="small text-muted">
+                        Progres bertahap pembangunan kawasan (Semua tahapan pekerjaan harus 100% selesai untuk membuka Tambah Kavling)
+                    </span>
                 </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <a href="{{ route('properti-all') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
+                    <i class="mdi mdi-arrow-left"></i> Kembali
+                </a>
+                <button type="button" class="btn btn-gradient-primary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm" onclick="openAddStepModal(1)">
+                    + Tambah Step / Pos
+                </button>
+                <!-- Validasi Legalitas Status Trigger -->
+                @if($land->legal_status == 'verified' || $land->isFromPraLandbank())
+                    <button type="button" class="btn btn-sm btn-outline-success px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Terverifikasi">
+                        Legalitas: <strong>Terverifikasi</strong>
+                    </button>
+                @elseif($land->legal_status == 'rejected')
+                    <button type="button" class="btn btn-sm btn-outline-danger px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Perlu Revisi">
+                        Legalitas: <strong>Revisi</strong>
+                    </button>
+                @else
+                    <button type="button" class="btn btn-sm btn-outline-warning px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Menunggu Verifikasi">
+                        Legalitas: <strong>Pending</strong>
+                    </button>
+                @endif
+
+                <a href="{{ route('master.bahan.index') }}" class="btn btn-outline-primary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
+                    Master Bahan
+                </a>
+
+                @if($land->canCreateKavling())
+                    <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
+                        Tambah Kavling
+                    </a>
+                @else
+                    <button type="button" class="btn btn-secondary btn-sm px-3 rounded-2 shadow-sm opacity-75 d-flex align-items-center gap-1" onclick="showKavlingLockedInfo()" title="Tambah Kavling Terkunci">
+                        <i class="mdi mdi-lock me-1"></i> Tambah Kavling
+                    </button>
+                @endif
             </div>
         </div>
     </div>
@@ -349,7 +286,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between small text-muted">
-                        <span>Total Akumulasi: <b class="text-primary" id="headerProgressText">{{ $progress }}%</b></span>
+                        <span>Total Akumulasi Progres: <b class="text-primary" id="headerProgressText">{{ $progress }}%</b></span>
                         @if($isCanKavling)
                             <span class="badge bg-soft-success text-success fw-bold">Syarat Kavling Terpenuhi (Terbuka)</span>
                         @else
@@ -359,7 +296,7 @@
                 </div>
 
                 <div class="col-lg-5 border-start-lg ps-lg-4">
-                    <div class="p-3 rounded-3 border-0 small" style="background: #f8faff; border: 1px solid #eef2f6 !important;">
+                    <div class="p-3 rounded-3 border-0 small" style="background: #f8faff; border: 1px solid #dcd6f7 !important;">
                         <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
                             <strong class="text-dark">
                                 Validasi Syarat Tambah Kavling:
@@ -408,83 +345,69 @@
         </div>
     </div>
 
-    <!-- STATISTIC CARDS (PERSIS DASHBOARD STYLE & INTERACTIVE PHASE TAB TRIGGERS) -->
+    <!-- PHASE STEPPER NAVIGATION TABS (DASHBOARD CARD STYLE) -->
     <div class="row g-3 mb-4" id="faseStepper" role="tablist">
-        <!-- Card 1: Fase 1 -->
+        @foreach($phaseData as $phNum => $phInfo)
+            @php
+                $pProg = $phInfo['progress'];
+            @endphp
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100 fase-step-card {{ $loop->first ? 'active' : '' }}" 
+                     id="step-fase{{ $phNum }}-tab" 
+                     data-bs-toggle="pill" 
+                     data-bs-target="#step-fase{{ $phNum }}" 
+                     role="tab" 
+                     onclick="activateTab('#step-fase{{ $phNum }}-tab')"
+                     style="cursor: pointer; transition: all 0.2s ease;">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <h4 class="text-dark mb-0 fw-bold">{{ $pProg }}%</h4>
+                                @if($pProg >= 100)
+                                    <span class="badge bg-success text-white rounded-2" style="font-size: 0.7rem;">Selesai</span>
+                                @elseif($pProg > 0)
+                                    <span class="badge bg-warning text-dark rounded-2" style="font-size: 0.7rem;">Proses</span>
+                                @else
+                                    <span class="badge bg-secondary text-white rounded-2" style="font-size: 0.7rem;">Belum</span>
+                                @endif
+                            </div>
+                            <p class="text-muted mb-0 fw-semibold text-truncate" style="font-size: 0.85rem; max-width: 170px;">{{ $phInfo['title'] }}</p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-layers-triple" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
+        <!-- Button Quick Add Tahapan Baru in Stepper (Dashboard Card Style) -->
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 h-100 phase-stat-card active" id="step-fase1-tab" data-bs-toggle="pill" data-bs-target="#step-fase1" role="tab">
+            <div class="card shadow-sm border-0 h-100" 
+                 style="border: 2px dashed #9a55ff !important; background: #faf5ff; cursor: pointer; transition: all 0.2s ease;" 
+                 onclick="openAddStepModal({{ $nextPhaseNum }})" 
+                 title="Klik untuk menambah Tahapan Pembangunan Baru">
                 <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h4 class="text-dark mb-0 fw-bold">{{ $fase1Progress }}%</h4>
-                            @if($fase1Progress >= 100)
-                                <span class="badge bg-success text-white rounded-2" style="font-size: 0.7rem;">Selesai</span>
-                            @elseif($fase1Progress > 0)
-                                <span class="badge bg-warning text-dark rounded-2" style="font-size: 0.7rem;">Proses</span>
-                            @else
-                                <span class="badge bg-secondary text-white rounded-2" style="font-size: 0.7rem;">Belum</span>
-                            @endif
-                        </div>
-                        <p class="text-muted mb-0 fw-semibold" style="font-size: 0.85rem;">Fase 1: Pematangan Lahan</p>
+                        <span class="fw-bold text-primary d-block" style="font-size: 0.9rem;">+ Tambah Tahapan</span>
+                        <small class="text-muted" style="font-size: 0.75rem;">Kustom Pembangunan</small>
                     </div>
                     <div class="d-none d-sm-block">
-                        <i class="mdi mdi-layers-triple" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                        <i class="mdi mdi-plus-circle" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.35;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Card 2: Fase 2 -->
+        <!-- Step: Rekapitulasi Keuangan -->
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 h-100 phase-stat-card" id="step-fase2-tab" data-bs-toggle="pill" data-bs-target="#step-fase2" role="tab">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h4 class="text-dark mb-0 fw-bold">{{ $fase2Progress }}%</h4>
-                            @if($fase2Progress >= 100)
-                                <span class="badge bg-success text-white rounded-2" style="font-size: 0.7rem;">Selesai</span>
-                            @elseif($fase2Progress > 0)
-                                <span class="badge bg-warning text-dark rounded-2" style="font-size: 0.7rem;">Proses</span>
-                            @else
-                                <span class="badge bg-secondary text-white rounded-2" style="font-size: 0.7rem;">Belum</span>
-                            @endif
-                        </div>
-                        <p class="text-muted mb-0 fw-semibold" style="font-size: 0.85rem;">Fase 2: Drainase & Jalan</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-road-variant" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 3: Fase 3 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 h-100 phase-stat-card" id="step-fase3-tab" data-bs-toggle="pill" data-bs-target="#step-fase3" role="tab">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h4 class="text-dark mb-0 fw-bold">{{ $fase3Progress }}%</h4>
-                            @if($fase3Progress >= 100)
-                                <span class="badge bg-success text-white rounded-2" style="font-size: 0.7rem;">Selesai</span>
-                            @elseif($fase3Progress > 0)
-                                <span class="badge bg-warning text-dark rounded-2" style="font-size: 0.7rem;">Proses</span>
-                            @else
-                                <span class="badge bg-secondary text-white rounded-2" style="font-size: 0.7rem;">Belum</span>
-                            @endif
-                        </div>
-                        <p class="text-muted mb-0 fw-semibold" style="font-size: 0.85rem;">Fase 3: Utilitas & Fasilitas</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-lightbulb-on-outline" style="font-size: 2.2rem; color: #ffc107; opacity: 0.35;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 4: Rekapitulasi Keuangan -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 h-100 phase-stat-card" id="step-keuangan-tab" data-bs-toggle="pill" data-bs-target="#step-keuangan" role="tab">
+            <div class="card shadow-sm border-0 h-100 fase-step-card" 
+                 id="step-keuangan-tab" 
+                 data-bs-toggle="pill" 
+                 data-bs-target="#step-keuangan" 
+                 role="tab" 
+                 onclick="activateTab('#step-keuangan-tab')"
+                 style="cursor: pointer; transition: all 0.2s ease;">
                 <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
                         <h4 class="text-danger mb-1 fw-bold" style="font-size: 1.05rem;">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
@@ -498,211 +421,132 @@
         </div>
     </div>
 
-    <!-- TAB CONTENT SECTIONS -->
+    <!-- TAB CONTENT SECTIONS (DINAMIS SEMUA TAHAPAN) -->
     <div class="tab-content" id="faseStepperContent">
         
-        <!-- =================== STEP 1: FASE 1 CONTENT =================== -->
-        <div class="tab-pane fade show active" id="step-fase1" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-3 bg-white p-3 p-md-4 mb-4">
-                <!-- Fase Header Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-2 fw-bold">FASE 1</span>
-                            <h5 class="fw-bold text-dark mb-0">Pematangan Lahan & Cut-Fill</h5>
+        @foreach($phaseData as $phNum => $phInfo)
+            @php
+                $pItems = $phInfo['items'];
+                $pExpenses = $phInfo['expenses'];
+                $isLastPhase = $loop->last;
+                $nextTabTarget = $isLastPhase ? '#step-keuangan-tab' : '#step-fase' . ($phNum + 1) . '-tab';
+                $prevTabTarget = $loop->first ? null : '#step-fase' . ($phNum - 1) . '-tab';
+                $nextTitle = $phaseData[$phNum + 1]['title'] ?? 'Rekap Keuangan';
+                $prevTitle = $phaseData[$phNum - 1]['title'] ?? '';
+            @endphp
+            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="step-fase{{ $phNum }}" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-3 bg-white p-3 p-md-4 mb-4">
+                    <!-- Fase Header Info -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="fw-bold text-dark mb-0">{{ $phInfo['title'] }}</h5>
+                            </div>
+                            <span class="small text-muted mt-1 d-block">
+                                {{ $phInfo['subtitle'] }}
+                            </span>
                         </div>
-                        <span class="small text-muted mt-1 d-block">
-                            Tahap awal pembersihan lahan, perataan kontur lahan (Cut & Fill), dan pemadatan tanah.
-                        </span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-gradient-primary rounded-2 px-3 shadow-sm fw-semibold" onclick="openAddStepModal({{ $phNum }})">
+                                + Tambah Step
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold" onclick="toggleInlineAddExpense({{ $phNum }})">
+                                + Catat Belanja Bahan
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold" onclick="finalizePhaseAction({{ $phNum }})">
+                                Selesaikan ({{ $phInfo['title'] }}) 100%
+                            </button>
+                        </div>
                     </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold" onclick="toggleInlineAddExpense(1)">
-                            + Catat Belanja Bahan Fase 1
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold" onclick="finalizePhaseAction(1)">
-                            Selesaikan Fase 1 (100%)
-                        </button>
+
+                    <!-- Inline Form Tambah Pengeluaran Bahan (Collapsible) -->
+                    @include('properti.partials.inline_expense_form', ['phase' => $phNum, 'infrastructures' => $pItems])
+
+                    <!-- Tasks Grid -->
+                    <h6 class="fw-bold text-dark mb-3">Pos Pekerjaan Fisik: {{ $phInfo['title'] }}</h6>
+                    <div class="row g-3 g-md-4 mb-4">
+                        @forelse($pItems as $item)
+                            @include('properti.partials.phase_item_card', ['item' => $item])
+                        @empty
+                            <div class="col-12">
+                                <div class="p-4 text-center bg-light rounded-3 border border-dashed">
+                                    <h6 class="text-dark fw-bold mb-1">Belum Ada Pos Pekerjaan di {{ $phInfo['title'] }}</h6>
+                                    <p class="small text-muted mb-3">Klik tombol di bawah untuk menambahkan rincian pekerjaan atau step untuk tahapan ini.</p>
+                                    <button type="button" class="btn btn-sm btn-gradient-primary px-3 rounded-2 shadow-sm fw-semibold" onclick="openAddStepModal({{ $phNum }})">
+                                        + Tambah Step Pertama
+                                    </button>
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
-                </div>
 
-                <!-- Inline Form Tambah Pengeluaran Bahan Fase 1 (Collapsible) -->
-                @include('properti.partials.inline_expense_form', ['phase' => 1, 'infrastructures' => $fase1Items])
+                    <!-- Expenses Table -->
+                    <div class="mt-4 pt-3 border-top">
+                        <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
+                            <span>Riwayat Belanja Bahan / Nota: {{ $phInfo['title'] }}</span>
+                            <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($pExpenses->sum('total_amount'), 0, ',', '.') }}</span>
+                        </h6>
+                        @include('properti.partials.phase_expense_table', ['phase' => $phNum, 'phaseExpenses' => $pExpenses])
+                    </div>
 
-                <!-- Tasks Grid Fase 1 -->
-                <h6 class="fw-bold text-dark mb-3">Pos Pekerjaan Fisik Fase 1</h6>
-                <div class="row g-3 g-md-4 mb-4">
-                    @foreach($fase1Items as $item)
-                        @include('properti.partials.phase_item_card', ['item' => $item])
-                    @endforeach
-                </div>
+                    <!-- Navigation Footer -->
+                    <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
+                        @if($prevTabTarget)
+                            <button type="button" class="btn btn-outline-secondary px-4 rounded-2" onclick="activateTab('{{ $prevTabTarget }}');">
+                                &larr; Kembali ke {{ $prevTitle }}
+                            </button>
+                        @else
+                            <div></div>
+                        @endif
 
-                <!-- Expenses Table Fase 1 -->
-                @php $fase1Expenses = $expenses->where('phase', 1); @endphp
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
-                        <span>Riwayat Belanja Bahan / Nota Fase 1</span>
-                        <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($fase1Expenses->sum('total_amount'), 0, ',', '.') }}</span>
-                    </h6>
-                    @include('properti.partials.phase_expense_table', ['phase' => 1, 'phaseExpenses' => $fase1Expenses])
-                </div>
-
-                <!-- Next Phase Navigation Footer -->
-                <div class="d-flex justify-content-end gap-2 pt-4 border-top mt-4">
-                    <button type="button" class="btn btn-primary px-4 rounded-2 shadow-sm" onclick="$('#step-fase2-tab').tab('show');">
-                        Lanjut ke Fase 2 (Drainase & Jalan) &rarr;
-                    </button>
+                        @if($isLastPhase)
+                            @if($land->canCreateKavling())
+                                <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-2 shadow-sm">
+                                    PENGOLAHAN SELESAI &rarr; Buat Unit Kavling
+                                </a>
+                            @else
+                                <button type="button" class="btn btn-gradient-success px-4 rounded-2 shadow-sm" onclick="finalizeAllInfrastruktur()">
+                                    Selesaikan Seluruh Pengolahan Lahan (100%)
+                                </button>
+                            @endif
+                        @else
+                            <button type="button" class="btn btn-primary px-4 rounded-2 shadow-sm" onclick="activateTab('{{ $nextTabTarget }}');">
+                                Lanjut ke {{ $nextTitle }} &rarr;
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- =================== STEP 2: FASE 2 CONTENT =================== -->
-        <div class="tab-pane fade" id="step-fase2" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-3 bg-white p-3 p-md-4 mb-4">
-                <!-- Fase Header Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-2 fw-bold">FASE 2</span>
-                            <h5 class="fw-bold text-dark mb-0">Drainase & Akses Jalan Kawasan</h5>
-                        </div>
-                        <span class="small text-muted mt-1 d-block">
-                            Tahap pembangunan saluran drainase selokan (U-Ditch) dan pengerasan jalan utama/lingkungan paving/aspal.
-                        </span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold" onclick="toggleInlineAddExpense(2)">
-                            + Catat Belanja Bahan Fase 2
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold" onclick="finalizePhaseAction(2)">
-                            Selesaikan Fase 2 (100%)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Inline Form Tambah Pengeluaran Bahan Fase 2 -->
-                @include('properti.partials.inline_expense_form', ['phase' => 2, 'infrastructures' => $fase2Items])
-
-                <!-- Tasks Grid Fase 2 -->
-                <h6 class="fw-bold text-dark mb-3">Pos Pekerjaan Fisik Fase 2</h6>
-                <div class="row g-3 g-md-4 mb-4">
-                    @foreach($fase2Items as $item)
-                        @include('properti.partials.phase_item_card', ['item' => $item])
-                    @endforeach
-                </div>
-
-                <!-- Expenses Table Fase 2 -->
-                @php $fase2Expenses = $expenses->where('phase', 2); @endphp
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
-                        <span>Riwayat Belanja Bahan / Nota Fase 2</span>
-                        <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($fase2Expenses->sum('total_amount'), 0, ',', '.') }}</span>
-                    </h6>
-                    @include('properti.partials.phase_expense_table', ['phase' => 2, 'phaseExpenses' => $fase2Expenses])
-                </div>
-
-                <!-- Navigation Buttons -->
-                <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
-                    <button type="button" class="btn btn-outline-secondary px-4 rounded-2" onclick="$('#step-fase1-tab').tab('show');">
-                        &larr; Kembali ke Fase 1
-                    </button>
-                    <button type="button" class="btn btn-primary px-4 rounded-2 shadow-sm" onclick="$('#step-fase3-tab').tab('show');">
-                        Lanjut ke Fase 3 (Utilitas & PJU) &rarr;
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- =================== STEP 3: FASE 3 CONTENT =================== -->
-        <div class="tab-pane fade" id="step-fase3" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-3 bg-white p-3 p-md-4 mb-4">
-                <!-- Fase Header Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-                    <div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-2 fw-bold">FASE 3</span>
-                            <h5 class="fw-bold text-dark mb-0">Utilitas Kawasan (PJU, Air Bersih, Listrik & Gerbang)</h5>
-                        </div>
-                        <span class="small text-muted mt-1 d-block">
-                            Tahap akhir instalasi tiang & lampu PJU, pipa distribusi air, gardu listrik PLN, dan gapura/pos kawasan.
-                        </span>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold" onclick="toggleInlineAddExpense(3)">
-                            + Catat Belanja Bahan Fase 3
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold" onclick="finalizePhaseAction(3)">
-                            Selesaikan Fase 3 & Finalisasi Lahan (100%)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Inline Form Tambah Pengeluaran Bahan Fase 3 -->
-                @include('properti.partials.inline_expense_form', ['phase' => 3, 'infrastructures' => $fase3Items])
-
-                <!-- Tasks Grid Fase 3 -->
-                <h6 class="fw-bold text-dark mb-3">Pos Pekerjaan Fisik Fase 3</h6>
-                <div class="row g-3 g-md-4 mb-4">
-                    @foreach($fase3Items as $item)
-                        @include('properti.partials.phase_item_card', ['item' => $item])
-                    @endforeach
-                </div>
-
-                <!-- Expenses Table Fase 3 -->
-                @php $fase3Expenses = $expenses->where('phase', 3); @endphp
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="fw-bold text-dark mb-3 d-flex justify-content-between align-items-center">
-                        <span>Riwayat Belanja Bahan / Nota Fase 3</span>
-                        <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($fase3Expenses->sum('total_amount'), 0, ',', '.') }}</span>
-                    </h6>
-                    @include('properti.partials.phase_expense_table', ['phase' => 3, 'phaseExpenses' => $fase3Expenses])
-                </div>
-
-                <!-- Navigation Buttons -->
-                <div class="d-flex justify-content-between gap-2 pt-4 border-top mt-4">
-                    <button type="button" class="btn btn-outline-secondary px-4 rounded-2" onclick="$('#step-fase2-tab').tab('show');">
-                        &larr; Kembali ke Fase 2
-                    </button>
-                    @if($land->canCreateKavling())
-                        <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-2 shadow-sm">
-                            PENGOLAHAN SELESAI &rarr; Buat Unit Kavling
-                        </a>
-                    @else
-                        <button type="button" class="btn btn-gradient-success px-4 rounded-2 shadow-sm" onclick="finalizeAllInfrastruktur()">
-                            Selesaikan Seluruh Pengolahan Lahan (100%)
-                        </button>
-                    @endif
-                </div>
-            </div>
-        </div>
+        @endforeach
 
         <!-- =================== STEP 4: REKAP KEUANGAN ERP CONTENT =================== -->
         <div class="tab-pane fade" id="step-keuangan" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-3 bg-white p-3 p-md-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
                 <!-- Financial Cards Summary -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
-                        <div class="p-3 rounded-3 bg-light border">
+                        <div class="p-3 rounded-4 bg-light border">
                             <span class="text-muted small fw-bold">Total Belanja Realisasi</span>
                             <h4 class="fw-bold text-danger mb-0 mt-1">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
                             <span class="small text-muted">{{ $expenses->count() }} total transaksi</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="p-3 rounded-3 bg-light border">
+                        <div class="p-3 rounded-4 bg-light border">
                             <span class="text-muted small fw-bold">Lunas Terbayar</span>
                             <h4 class="fw-bold text-success mb-0 mt-1">Rp {{ number_format($totalLunas, 0, ',', '.') }}</h4>
                             <span class="small text-muted">{{ $expenses->where('payment_status', 'Lunas')->count() }} transaksi lunas</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="p-3 rounded-3 bg-light border">
+                        <div class="p-3 rounded-4 bg-light border">
                             <span class="text-muted small fw-bold">Hutang / Tempo Vendor</span>
                             <h4 class="fw-bold text-warning mb-0 mt-1">Rp {{ number_format($totalHutang, 0, ',', '.') }}</h4>
                             <span class="small text-muted">{{ $expenses->where('payment_status', '!=', 'Lunas')->count() }} belum lunas</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="p-3 rounded-3 bg-light border">
+                        <div class="p-3 rounded-4 bg-light border">
                             <span class="text-muted small fw-bold">Rincian per Fase</span>
                             <div class="small mt-1">
                                 <div>Fase 1: <b>Rp {{ number_format($expenses->where('phase', 1)->sum('total_amount'), 0, ',', '.') }}</b></div>
@@ -715,9 +559,9 @@
 
                 <!-- Grand Total Expenses Table -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0">Seluruh Rekapitulasi Pengeluaran Bahan & Jasa</h5>
+                    <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-cash-multiple text-danger me-1"></i> Seluruh Rekapitulasi Pengeluaran Bahan & Jasa</h5>
                 </div>
-                <div class="table-responsive bg-white rounded-3 border">
+                <div class="table-responsive bg-white rounded-4 border">
                     <table class="table table-elevated table-hover align-middle mb-0">
                         <thead>
                             <tr>
@@ -783,7 +627,7 @@
                                     <td>
                                         @if($exp->receipt_proof)
                                             <a href="{{ asset('storage/' . $exp->receipt_proof) }}" target="_blank" class="btn btn-sm btn-outline-info p-1 px-2 rounded-2">
-                                                Nota
+                                                <i class="mdi mdi-file-image"></i> Nota
                                             </a>
                                         @else
                                             <span class="text-muted small">-</span>
@@ -797,8 +641,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="11" class="text-center py-4 text-muted">
-                                        <p class="mb-0">Belum ada pengeluaran bahan tercatat.</p>
+                                    <td colspan="11" class="text-center py-5 text-muted">
+                                        <i class="mdi mdi-cash-remove fs-1 opacity-25"></i>
+                                        <p class="mt-2 mb-0">Belum ada pengeluaran bahan tercatat.</p>
                                     </td>
                                 </tr>
                             @endforelse
@@ -811,10 +656,10 @@
     <!-- Modal Edit Target Volume & Bobot Pos Pekerjaan -->
     <div class="modal fade" id="modalEditTarget" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3 border-0 shadow">
+            <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-dark">
-                        Sesuaikan Target & Bobot Pos
+                    <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="mdi mdi-pencil-box text-primary fs-4"></i> Sesuaikan Target & Bobot Pos
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -851,7 +696,7 @@
                     <div class="modal-footer border-top-0 pt-0">
                         <button type="button" class="btn btn-secondary rounded-2 px-3" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-gradient-primary rounded-2 px-4" id="btnSaveTarget">
-                            Simpan Perubahan Target
+                            <i class="mdi mdi-check me-1"></i>Simpan Perubahan Target
                         </button>
                     </div>
                 </form>
@@ -862,10 +707,10 @@
     <!-- Modal Validasi Legalitas Tanah -->
     <div class="modal fade" id="modalValidasiLegalitas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3 border-0 shadow">
+            <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-dark">
-                        Validasi Dokumen Legalitas Tanah
+                    <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="mdi mdi-shield-check text-primary fs-4"></i> Validasi Dokumen Legalitas Tanah
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -885,7 +730,7 @@
                         </div>
 
                         <!-- Ringkasan Kelengkapan Berkas Dokumen -->
-                        <label class="small text-muted fw-bold mb-1 d-block">Berkas Dokumen Terlampir:</label>
+                        <label class="small text-muted fw-bold mb-1 d-block"><i class="mdi mdi-folder-outline text-primary me-1"></i>Berkas Dokumen Terlampir:</label>
                         <div class="p-2 px-3 bg-white rounded-3 border mb-3 small">
                             <div class="d-flex justify-content-between py-1 border-bottom">
                                 <span class="text-muted">No. Sertifikat:</span>
@@ -908,9 +753,9 @@
                         <div class="mb-3">
                             <label class="small text-muted fw-bold mb-1">Status Validasi Legalitas <span class="text-danger">*</span></label>
                             <select class="form-select" name="legal_status" id="selectLegalStatus" required>
-                                <option value="verified" {{ $land->legal_status === 'verified' ? 'selected' : '' }}>Terverifikasi (Sah & Lolos Validasi)</option>
-                                <option value="pending" {{ $land->legal_status === 'pending' ? 'selected' : '' }}>Pending (Menunggu Kelengkapan Berkas)</option>
-                                <option value="rejected" {{ $land->legal_status === 'rejected' ? 'selected' : '' }}>Ditolak / Perlu Revisi Dokumen</option>
+                                <option value="verified" {{ $land->legal_status === 'verified' ? 'selected' : '' }}>✔ Terverifikasi (Sah & Lolos Validasi)</option>
+                                <option value="pending" {{ $land->legal_status === 'pending' ? 'selected' : '' }}>⏳ Pending (Menunggu Kelengkapan Berkas)</option>
+                                <option value="rejected" {{ $land->legal_status === 'rejected' ? 'selected' : '' }}>✖ Ditolak / Perlu Revisi Dokumen</option>
                             </select>
                         </div>
 
@@ -922,7 +767,93 @@
                     <div class="modal-footer border-top-0 pt-0">
                         <button type="button" class="btn btn-secondary rounded-2 px-3" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-gradient-primary rounded-2 px-4" id="btnSaveLegalitas">
-                            Simpan Status Validasi Legalitas
+                            <i class="mdi mdi-check me-1"></i>Simpan Status Validasi Legalitas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Pos Pekerjaan / Step Baru (Dinamis oleh Kepala Legal / Admin) -->
+    <div class="modal fade" id="modalAddStep" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="modalAddStepTitle">
+                        Tambah Pos Pekerjaan Pengolahan Lahan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAddStep" onsubmit="submitAddStep(event)" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body pt-2">
+                        <p class="small text-muted mb-3" id="modalAddStepSubtitle">
+                            Tambahkan pos pekerjaan baru secara dinamis untuk proyek <strong>{{ $land->name }}</strong>.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Target Tahapan Pembangunan <span class="text-danger">*</span></label>
+                                <select class="form-select" id="addStepPhase" name="phase" onchange="toggleNewPhaseInput(this.value)" required>
+                                    @foreach($phaseData as $phNum => $phInfo)
+                                        <option value="{{ $phNum }}">{{ $phInfo['title'] }}</option>
+                                    @endforeach
+                                    <option value="{{ $nextPhaseNum }}" class="fw-bold text-primary">+ Buat / Tambah Tahapan Baru</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6" id="newPhaseNameContainer" style="display: none;">
+                                <label class="small text-primary fw-bold mb-1">Nama Tahapan Baru <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control border-primary" id="addStepNewPhaseName" name="new_phase_name" placeholder="Contoh: Fasum & Masjid, Taman Kawasan, dll.">
+                            </div>
+                            <div class="col-md-6" id="categoryContainer">
+                                <label class="small text-muted fw-bold mb-1">Kategori Pos Pekerjaan</label>
+                                <input type="text" class="form-control" id="addStepCategory" name="category" placeholder="Contoh: Cut & Fill, Drainase, Perkerasan, dll.">
+                            </div>
+                            <div class="col-12">
+                                <label class="small text-muted fw-bold mb-1">Nama Pos Pekerjaan / Step <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="addStepItemName" name="item_name" placeholder="Contoh: Galian Tanah Zona Barat & Pembuangan Lumpur" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small text-muted fw-bold mb-1">Target Volume <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control" id="addStepTargetVol" name="target_volume" placeholder="Contoh: 1500" required min="0.01">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small text-muted fw-bold mb-1">Satuan Volume <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="addStepUnit" name="volume_unit" placeholder="m³, m², meter, titik, paket" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="small text-muted fw-bold mb-1">Bobot Persentase (%) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="any" class="form-control" id="addStepBobot" name="bobot_persen" placeholder="Contoh: 50" required min="0" max="100">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Estimasi Biaya / RAB Pos (Rp)</label>
+                                <input type="number" step="any" class="form-control" id="addStepCostEstimate" name="cost_estimate" placeholder="Contoh: 25000000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Kontraktor / Mandor Pelaksana</label>
+                                <input type="text" class="form-control" id="addStepContractor" name="contractor_name" placeholder="Nama Kontraktor / Mandor">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Rencana Mulai Pengerjaan</label>
+                                <input type="date" class="form-control" id="addStepStart" name="target_start">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Target Selesai</label>
+                                <input type="date" class="form-control" id="addStepEnd" name="target_end">
+                            </div>
+                            <div class="col-12">
+                                <label class="small text-muted fw-bold mb-1">Catatan / Spesifikasi Teknis</label>
+                                <textarea class="form-control" id="addStepNotes" name="notes" rows="2" placeholder="Keterangan spesifikasi teknis, metode pengerjaan, atau catatan penting lainnya..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0">
+                        <button type="button" class="btn btn-secondary rounded-2 px-3" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-gradient-primary rounded-2 px-4" id="btnSaveNewStep">
+                            <i class="mdi mdi-plus-circle me-1"></i>Tambah Pos Pekerjaan
                         </button>
                     </div>
                 </form>
@@ -941,17 +872,41 @@
     const storageKey = 'active_phase_tab_' + currentLandId;
 
     // TAB PERSISTENCE ENGINE (Kompatibel Bootstrap 4 & 5)
-    function activateTab(tabIdOrSelector) {
+    window.activateTab = function(tabIdOrSelector) {
         if (!tabIdOrSelector) return;
-        let selector = tabIdOrSelector;
-        if (!selector.startsWith('#')) selector = '#' + selector;
-        if (!selector.endsWith('-tab') && !selector.includes('keuangan')) selector = selector + '-tab';
+        let selector = String(tabIdOrSelector).trim();
+        
+        // If numeric like 1, 2, 3, 4
+        if (/^\d+$/.test(selector)) {
+            selector = '#step-fase' + selector + '-tab';
+        } else {
+            if (!selector.startsWith('#')) selector = '#' + selector;
+            if (!selector.endsWith('-tab') && !selector.includes('keuangan')) {
+                selector = selector + '-tab';
+            }
+        }
         
         let $tab = $(selector);
-        if ($tab.length && typeof $tab.tab === 'function') {
-            $tab.tab('show');
+        if (!$tab.length) {
+            let cleanId = selector.replace('#', '').replace('-tab', '');
+            $tab = $(`#${cleanId}-tab, [data-target="#${cleanId}"], [data-bs-target="#${cleanId}"]`).first();
         }
-    }
+        
+        if ($tab.length) {
+            $('.fase-step-btn, .fase-step-card').removeClass('active');
+            $tab.addClass('active');
+
+            if (typeof $tab.tab === 'function') {
+                try { $tab.tab('show'); } catch(e) {}
+            }
+
+            let targetPane = $tab.attr('data-bs-target') || $tab.attr('data-target') || selector.replace('-tab', '');
+            $('#faseStepperContent > .tab-pane').removeClass('show active');
+            $(targetPane).addClass('show active');
+
+            setSavedActiveTab(selector);
+        }
+    };
 
     function setSavedActiveTab(tabSelector) {
         if (tabSelector) {
@@ -1064,10 +1019,10 @@
         if (pct >= 100 || realized >= target) {
             if (statusHidden.length) statusHidden.val('selesai');
             if (statusBadgeDisplay.length) {
-                statusBadgeDisplay.html('<span class="badge bg-success text-white px-2 py-1 rounded-pill small fw-bold"><i class="mdi mdi-check-circle me-1"></i>Selesai (100%)</span>');
+                statusBadgeDisplay.html('<span class="badge bg-success text-white px-2 py-1 rounded-2 small fw-bold"><i class="mdi mdi-check-circle me-1"></i>Selesai (100%)</span>');
             }
             if (badgeHeaderEl.length) {
-                badgeHeaderEl.attr('class', 'badge bg-success text-white px-2 py-1 rounded-pill small fw-bold').html('<i class="mdi mdi-check-circle me-1"></i>Selesai (100%)');
+                badgeHeaderEl.attr('class', 'badge bg-success text-white px-2 py-1 rounded-2 small fw-bold').html('<i class="mdi mdi-check-circle me-1"></i>Selesai (100%)');
             }
             if (barEl.length) {
                 barEl.attr('class', 'progress-bar progress-bar-striped bg-success');
@@ -1075,10 +1030,10 @@
         } else if (pct > 0 || realized > 0) {
             if (statusHidden.length) statusHidden.val('proses');
             if (statusBadgeDisplay.length) {
-                statusBadgeDisplay.html('<span class="badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold"><i class="mdi mdi-progress-wrench me-1"></i>Dalam Proses</span>');
+                statusBadgeDisplay.html('<span class="badge bg-warning text-dark px-2 py-1 rounded-2 small fw-bold"><i class="mdi mdi-progress-wrench me-1"></i>Dalam Proses</span>');
             }
             if (badgeHeaderEl.length) {
-                badgeHeaderEl.attr('class', 'badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold').html(`<i class="mdi mdi-progress-wrench me-1"></i>Proses (${pct}%)`);
+                badgeHeaderEl.attr('class', 'badge bg-warning text-dark px-2 py-1 rounded-2 small fw-bold').html(`<i class="mdi mdi-progress-wrench me-1"></i>Proses (${pct}%)`);
             }
             if (barEl.length) {
                 barEl.attr('class', 'progress-bar progress-bar-striped bg-primary');
@@ -1086,10 +1041,10 @@
         } else {
             if (statusHidden.length) statusHidden.val('belum_mulai');
             if (statusBadgeDisplay.length) {
-                statusBadgeDisplay.html('<span class="badge bg-secondary text-white px-2 py-1 rounded-pill small"><i class="mdi mdi-clock-outline me-1"></i>Belum Mulai</span>');
+                statusBadgeDisplay.html('<span class="badge bg-secondary text-white px-2 py-1 rounded-2 small"><i class="mdi mdi-clock-outline me-1"></i>Belum Mulai</span>');
             }
             if (badgeHeaderEl.length) {
-                badgeHeaderEl.attr('class', 'badge bg-secondary text-white px-2 py-1 rounded-pill small').html('<i class="mdi mdi-clock-outline me-1"></i>Belum Mulai');
+                badgeHeaderEl.attr('class', 'badge bg-secondary text-white px-2 py-1 rounded-2 small').html('<i class="mdi mdi-clock-outline me-1"></i>Belum Mulai');
             }
             if (barEl.length) {
                 barEl.attr('class', 'progress-bar progress-bar-striped bg-primary');
@@ -1266,6 +1221,153 @@
         });
     };
 
+    let phaseCategoryMap = {
+        @foreach($phaseData as $phNum => $phInfo)
+            {{ $phNum }}: "{{ addslashes($phInfo['title']) }}",
+        @endforeach
+    };
+
+    window.toggleNewPhaseInput = function(phaseVal) {
+        let maxExisting = {{ $nextPhaseNum - 1 }};
+        let isNewPhase = parseInt(phaseVal) > maxExisting;
+        if (isNewPhase) {
+            $('#newPhaseNameContainer').slideDown();
+            $('#addStepNewPhaseName').prop('required', true).val('').focus();
+            $('#categoryContainer').removeClass('col-md-6').addClass('col-md-12');
+            $('#addStepCategory').val('');
+            $('#modalAddStepTitle').text('Tambah Tahapan (Fase) Pembangunan Baru');
+            $('#modalAddStepSubtitle').html('Buat tahapan pembangunan baru dan tentukan rincian pos pekerjaan pertama untuk proyek <strong>{{ $land->name }}</strong>.');
+            $('#btnSaveNewStep').html('Simpan & Buat Tahapan Baru');
+        } else {
+            $('#newPhaseNameContainer').slideUp();
+            $('#addStepNewPhaseName').prop('required', false).val('');
+            $('#categoryContainer').removeClass('col-md-12').addClass('col-md-6');
+            let phaseTitle = phaseCategoryMap[phaseVal] || ('Fase ' + phaseVal);
+            if (phaseCategoryMap[phaseVal]) {
+                $('#addStepCategory').val(phaseCategoryMap[phaseVal]);
+            }
+            $('#modalAddStepTitle').text('Tambah Pos Pekerjaan: ' + phaseTitle);
+            $('#modalAddStepSubtitle').html('Tambahkan pos pekerjaan baru ke dalam <strong>' + phaseTitle + '</strong> untuk proyek <strong>{{ $land->name }}</strong>.');
+            $('#btnSaveNewStep').html('Tambah Pos Pekerjaan');
+        }
+    };
+
+    window.onPhaseDropdownChange = function(phaseVal) {
+        window.toggleNewPhaseInput(phaseVal);
+    };
+
+    window.openAddStepModal = function(phase = 1) {
+        let form = document.getElementById('formAddStep');
+        if (form) {
+            form.reset();
+        }
+        $('#addStepPhase').val(phase);
+        window.toggleNewPhaseInput(phase);
+
+        if (phase == 1) {
+            $('#addStepUnit').val('m³');
+        } else if (phase == 2) {
+            $('#addStepUnit').val('meter');
+        } else if (phase == 3) {
+            $('#addStepUnit').val('titik');
+        } else {
+            $('#addStepUnit').val('paket');
+        }
+        $('#modalAddStep').modal('show');
+    };
+
+    window.submitAddStep = function(e) {
+        e.preventDefault();
+        let form = document.getElementById('formAddStep');
+        let formData = new FormData(form);
+        let phase = $('#addStepPhase').val() || 1;
+        let btn = $('#btnSaveNewStep');
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
+
+        $.ajax({
+            url: `/properti/${currentLandId}/infrastruktur/store`,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(res) {
+                btn.prop('disabled', false).html('<i class="mdi mdi-plus-circle me-1"></i>Tambah Pos Pekerjaan');
+                if (res.success) {
+                    $('#modalAddStep').modal('hide');
+                    setSavedActiveTab('#step-fase' + phase + '-tab');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pos Pekerjaan Ditambahkan!',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                }
+            },
+            error: function(xhr) {
+                btn.prop('disabled', false).html('<i class="mdi mdi-plus-circle me-1"></i>Tambah Pos Pekerjaan');
+                let msg = 'Gagal menambahkan pos pekerjaan.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire('Error', msg, 'error');
+            }
+        });
+    };
+
+    window.deleteInfrastructureStep = function(itemId, itemName) {
+        let activeTab = $('.fase-step-btn.active').attr('id');
+        if (activeTab) {
+            setSavedActiveTab('#' + activeTab);
+        }
+
+        Swal.fire({
+            title: `Hapus Pos '${itemName}'?`,
+            text: 'Pos pekerjaan ini dan seluruh catatan capaian lapangannya akan dihapus.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="mdi mdi-delete me-1"></i>Ya, Hapus Pos',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/properti/infrastruktur/${itemId}`,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        _method: 'DELETE'
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Terhapus!',
+                                text: res.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Gagal menghapus pos pekerjaan.', 'error');
+                    }
+                });
+            }
+        });
+    };
+
     window.previewCardPhoto = function(input, itemId) {
         if (input.files && input.files[0]) {
             let reader = new FileReader();
@@ -1281,7 +1383,7 @@
         }
     };
 
-    let rowCounter = { 1: 1, 2: 1, 3: 1 };
+    let rowCounter = {};
 
     window.onSelectRowMaterial = function(selectEl, phase, rowIdx) {
         let opt = $(selectEl).find(':selected');
@@ -1290,7 +1392,9 @@
             $(`#inputItemName_${phase}_${rowIdx}`).val(opt.data('name') || opt.attr('data-name') || '');
             $(`#inputCat_${phase}_${rowIdx}`).val(opt.data('category') || opt.attr('data-category') || '');
             $(`#inputUnit_${phase}_${rowIdx}`).val(opt.data('unit') || opt.attr('data-unit') || '');
-            $(`#inputPrice_${phase}_${rowIdx}`).val(opt.data('price') || opt.attr('data-price') || 0);
+            
+            let price = parseFloat(opt.data('price') || opt.attr('data-price')) || 0;
+            $(`#inputPrice_${phase}_${rowIdx}`).val(price);
         } else {
             $(`#inputMatId_${phase}_${rowIdx}`).val('');
         }
@@ -1317,6 +1421,9 @@
     };
 
     window.addNewMaterialRow = function(phase) {
+        if (!rowCounter[phase]) {
+            rowCounter[phase] = 1;
+        }
         let newIdx = rowCounter[phase]++;
         let optionsHtml = $(`#masterOptionsTemplate_${phase}`).html();
 
@@ -1497,11 +1604,57 @@
         });
     };
 
+    window.previewCardPhoto = function(input, itemId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $(`#imgPreview_${itemId}`).attr('src', e.target.result);
+                $(`#fileNamePreview_${itemId}`).text(input.files[0].name);
+                $(`#previewContainer_${itemId}`).removeClass('d-none');
+                $(`#uploadWrapper_${itemId}`).addClass('d-none');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    function initFileUploadEvents() {
+        $(document).on('change', '.properti-file-upload-modern input[type="file"]', function() {
+            const input = this;
+            const container = $(this).closest('.properti-file-upload-modern');
+            const titleEl = container.find('.file-title-text');
+            const sizeEl = container.find('.properti-file-size');
+            const subEl = container.find('.file-sub-text');
+            const typeName = $(this).data('type-name') || 'File Terpilih';
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                titleEl.text(file.name);
+                let sizeStr = '';
+                if (file.size > 1024 * 1024) {
+                    sizeStr = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                } else {
+                    sizeStr = (file.size / 1024).toFixed(0) + ' KB';
+                }
+                sizeEl.text(sizeStr);
+                subEl.text(typeName + ' siap diupload');
+                container.css({
+                    'border-color': '#10b981',
+                    'background-color': '#f0fdf4'
+                });
+                container.find('.properti-file-label-modern i').css('color', '#10b981');
+            }
+        });
+    }
+
     $(document).ready(function() {
+        initFileUploadEvents();
+
         // 1. Simpan tab saat user mengklik / mengganti tab
-        $('.fase-step-btn').on('shown.bs.tab', function(e) {
+        $('.fase-step-btn, .fase-step-card').on('shown.bs.tab click', function(e) {
             let targetId = $(this).attr('id');
-            setSavedActiveTab('#' + targetId);
+            if (targetId) {
+                setSavedActiveTab('#' + targetId);
+            }
         });
 
         // 2. Simpan tab saat submit form belanja bahan
@@ -1516,34 +1669,7 @@
             window.calculateVolumePercentage(id);
         });
 
-        // 4. Modern File Upload Preview Listener
-        $(document).on('change', '.properti-file-upload-modern input[type="file"]', function(e) {
-            const file = e.target.files[0];
-            const container = $(this).closest('.properti-file-upload-modern');
-            const label = container.find('.file-title-text');
-            const subText = container.find('.file-sub-text');
-            const sizeSpan = container.find('.properti-file-size');
-            const typeName = $(this).attr('data-type-name') || 'Berkas';
-
-            if (file) {
-                const fileName = file.name;
-                const fileSize = file.size;
-                label.text(fileName.length > 28 ? fileName.substring(0, 28) + '...' : fileName);
-                label.addClass('text-primary fw-bold');
-                subText.text('File terpilih siap disimpan');
-                if (fileSize) {
-                    const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                    sizeSpan.text(sizeInMB + ' MB');
-                }
-            } else {
-                label.text('Upload ' + typeName);
-                label.removeClass('text-primary fw-bold');
-                subText.text('PDF, JPG, PNG (Max: 2MB)');
-                sizeSpan.text('');
-            }
-        });
-
-        // 5. Cek Prioritas Tab saat Halaman Dimuat:
+        // 4. Cek Prioritas Tab saat Halaman Dimuat:
         const urlParams = new URLSearchParams(window.location.search);
         const queryPhase = urlParams.get('phase') || urlParams.get('fase');
         const hash = window.location.hash;

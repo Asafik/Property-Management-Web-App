@@ -385,63 +385,15 @@
                             </div>
                         </div>
 
-                        <!-- SPK & Legalitas Konstruksi -->
+                        <!-- Keterangan Tambahan -->
                         <div class="section-title">
-                            <i class="mdi mdi-file-document-edit-outline"></i>
-                            <span>3. SPK & Informasi Pembangunan</span>
+                            <i class="mdi mdi-information-outline"></i>
+                            <span>3. Keterangan Tambahan</span>
                         </div>
 
                         <div class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <label class="form-label">Nomor SPK</label>
-                                <input type="text" name="no_spk" class="form-control @error('no_spk') is-invalid @enderror" 
-                                    value="{{ old('no_spk', $unit->no_spk) }}" placeholder="Contoh: SPK/001/2026">
-                                @error('no_spk')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Kontraktor / Pelaksana</label>
-                                <input type="text" name="kontraktor" class="form-control @error('kontraktor') is-invalid @enderror" 
-                                    value="{{ old('kontraktor', $unit->kontraktor) }}" placeholder="Nama PT / CV Kontraktor">
-                                @error('kontraktor')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Upload Dokumen SPK Baru (PDF, Max 5MB)</label>
-                                <input type="file" name="dokumen_spk" class="form-control @error('dokumen_spk') is-invalid @enderror" accept=".pdf">
-                                @error('dokumen_spk')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            @if ($unit->dokumen_spk)
-                                <div class="col-12">
-                                    <div class="current-file-card">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="mdi mdi-file-pdf text-danger" style="font-size: 2rem;"></i>
-                                            <div>
-                                                <div class="fw-bold text-dark small">{{ basename($unit->dokumen_spk) }}</div>
-                                                <small class="text-muted">Dokumen SPK saat ini telah terunggah</small>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex gap-2">
-                                            <a href="{{ asset($unit->dokumen_spk) }}" target="_blank" class="btn btn-sm btn-outline-primary px-3">
-                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                            </a>
-                                            <a href="{{ asset($unit->dokumen_spk) }}" download class="btn btn-sm btn-outline-success px-3">
-                                                <i class="mdi mdi-download me-1"></i>Unduh
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-
                             <div class="col-12">
-                                <label class="form-label">Keterangan Tambahan / Catatan Unit</label>
+                                <label class="form-label">Keterangan / Catatan Unit</label>
                                 <textarea name="description" class="form-control @error('description') is-invalid @enderror" 
                                     rows="3" placeholder="Tambahkan catatan khusus mengenai unit kavling ini (opsional)">{{ old('description', $unit->description) }}</textarea>
                                 @error('description')

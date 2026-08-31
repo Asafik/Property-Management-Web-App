@@ -13,10 +13,20 @@ class PraLandBankController extends Controller
 {
    public function index()
 {
-    $praLandBank = PraLandbank::with('payments')->paginate(10);
-    $documentTypes = pra_landbank_documents::all();
+    $praLandBank = PraLandbank::with(['payments', 'documents.documentType'])->paginate(10);
+    $documentTypes = DocumentTypes::all();
+    $totalRequiredTypes = $documentTypes->count();
 
-    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes'));
+    $landsWithPendingDocsCount = 0;
+    foreach ($praLandBank as $item) {
+        $totalRequired = max($totalRequiredTypes, $item->documents->count());
+        $verifiedDocs = $item->documents->where('status', 'verified')->count();
+        if ($verifiedDocs < $totalRequired) {
+            $landsWithPendingDocsCount++;
+        }
+    }
+
+    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
 }
 
 public function store(Request $request)
@@ -158,11 +168,15 @@ public function store(Request $request)
 
                 // Jika baru upload file baru / revisi berkas, status otomatis 'pending' menunggu validasi Kepala Legal
                 $docStatus = $hasFile ? 'pending' : ($existingDoc ? ($existingDoc->status ?? 'pending') : 'pending');
+                $docPhysicalStatus = $doc['document_status'] ?? ($existingDoc->document_status ?? 'ada');
+                $processNotes      = $doc['process_notes'] ?? ($existingDoc->process_notes ?? null);
 
                 if ($existingDoc) {
                     $existingDoc->update([
                         'document_type_id' => $docTypeId,
                         'document_number'  => $docNumber,
+                        'document_status'  => $docPhysicalStatus,
+                        'process_notes'    => $processNotes,
                         'file_path'        => $filePath,
                         'status'           => $docStatus,
                     ]);
@@ -171,11 +185,20 @@ public function store(Request $request)
                         'pra_landbank_id'  => $record->id,
                         'document_type_id' => $docTypeId,
                         'document_number'  => $docNumber,
+                        'document_status'  => $docPhysicalStatus,
+                        'process_notes'    => $processNotes,
                         'file_path'        => $filePath,
                         'status'           => $docStatus,
                         'revision_number'  => 0,
                     ]);
                 }
+            }
+
+            // Jika ada dokumen baru/tambahan yang belum diverifikasi, sesuaikan legal_status
+            $allCurrentDocs = pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
+            $unverifiedDocsCount = $allCurrentDocs->where('status', '!=', 'verified')->count();
+            if ($unverifiedDocsCount > 0 && $record->legal_status === 'clear') {
+                $record->update(['legal_status' => 'process']);
             }
         }
 
@@ -216,8 +239,10 @@ public function store(Request $request)
         if ($request->fase === 'fase3') {
             // Validasi: seluruh dokumen legalitas wajib sudah divalidasi (Sah/Verified) oleh Kepala Legal
             $praDocs = pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
-            $uploadedDocs = $praDocs->whereNotNull('file_path');
-            $hasUnverified = $uploadedDocs->count() === 0 || $uploadedDocs->contains(fn($d) => !in_array($d->status, ['verified', 'valid']));
+            $activeDocs = $praDocs->filter(function($d) {
+                return !empty($d->file_path) || $d->document_status === 'proses' || !empty($d->document_number);
+            });
+            $hasUnverified = $activeDocs->count() === 0 || $activeDocs->contains(fn($d) => !in_array($d->status, ['verified', 'valid']));
 
             if ($hasUnverified && ($request->status ?? 'fase3') !== 'rejected') {
                 return response()->json([
@@ -483,7 +508,7 @@ public function store(Request $request)
 
     public function indexpra(Request $request)
     {
-        $query = PraLandbank::with(['payments', 'documents']);
+        $query = PraLandbank::with(['payments', 'documents.documentType']);
 
         // Search: nama tanah
         if ($request->filled('search')) {
@@ -503,14 +528,26 @@ public function store(Request $request)
         $sortDirection = $request->get('sortDirection', 'desc') === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortField, $sortDirection);
 
-        // perPage: 10, 15, 25
-        $perPage = in_array((int) $request->get('perPage', 10), [10, 15, 25])
+        // perPage: 5, 10, 15, 25
+        $perPage = in_array((int) $request->get('perPage', 10), [5, 10, 15, 25])
             ? (int) $request->get('perPage', 10)
             : 10;
 
         $praLandBank = $query->paginate($perPage)->withQueryString();
-         $documentTypes = DocumentTypes::all();
-        return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes'));
+        $documentTypes = DocumentTypes::all();
+        $totalRequiredTypes = $documentTypes->count();
+
+        // Hitung tanah yang memiliki dokumen tambahan / belum lengkap menunggu verifikasi Kepala Legal
+        $landsWithPendingDocsCount = 0;
+        foreach ($praLandBank as $item) {
+            $totalRequired = max($totalRequiredTypes, $item->documents->count());
+            $verifiedDocs = $item->documents->where('status', 'verified')->count();
+            if ($verifiedDocs < $totalRequired) {
+                $landsWithPendingDocsCount++;
+            }
+        }
+
+        return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
     }
     public function proses(Request $request, $id = null)
     {
@@ -624,5 +661,50 @@ public function store(Request $request)
         }
 
         return back()->with('success', 'Dokumen ditolak & menunggu perbaikan berkas.');
+    }
+
+    /**
+     * Upload berkas fisik dokumen yang sudah selesai/jadi oleh Staff Legal (Tanpa membatalkan status validasi paralel)
+     */
+    public function uploadCompletedDocument(Request $request, $id)
+    {
+        $request->validate([
+            'document_number' => 'nullable|string|max:255',
+            'file'            => 'required|file|mimes:pdf,jpg,jpeg,png|max:20480',
+            'process_notes'   => 'nullable|string',
+        ]);
+
+        $doc = pra_landbank_documents::findOrFail($id);
+        $record = PraLandbank::findOrFail($doc->pra_landbank_id);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/pra_landbank/' . $record->id . '/' . $doc->document_type_id);
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+            $filePath = 'uploads/pra_landbank/' . $record->id . '/' . $doc->document_type_id . '/' . $filename;
+
+            $doc->update([
+                'document_number' => $request->filled('document_number') ? $request->document_number : $doc->document_number,
+                'file_path'       => $filePath,
+                'document_status' => 'ada',
+                'process_notes'   => $request->filled('process_notes') ? $request->process_notes : 'Dokumen fisik telah selesai dan diunggah oleh Staff Legal.',
+            ]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Berkas fisik dokumen ' . ($doc->documentType->name ?? '') . ' berhasil diunggah & status diperbarui menjadi Lengkap!',
+                'doc'     => $doc->fresh(['documentType']),
+            ]);
+        }
+
+        return back()->with('success', 'Berkas fisik dokumen berhasil diunggah!');
     }
 }

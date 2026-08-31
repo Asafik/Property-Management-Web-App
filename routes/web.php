@@ -189,6 +189,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::delete('/properti/pra-landbank/{id}', [PraLandBankController::class, 'destroy'])->name('pra-landbanks.destroy');
     Route::post('/pra-landbank/dokumen/{id}/approve', [PraLandBankController::class, 'approveDocument'])->name('pra-dokumen.approve');
     Route::post('/pra-landbank/dokumen/{id}/reject', [PraLandBankController::class, 'rejectDocument'])->name('pra-dokumen.reject');
+    Route::post('/pra-landbank/dokumen/{id}/upload-completed', [PraLandBankController::class, 'uploadCompletedDocument'])->name('pra-dokumen.upload-completed');
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
@@ -225,6 +226,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::get('/properti-buat-kavling/{land_bank_id}', [LandBankUnitController::class, 'create'])->name('properti.buatKavling');
     Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
     Route::post('/properti-buat-kavling/{land_bank_id}/import', [LandBankUnitController::class, 'import'])->name('kavling.import');
+    Route::post('/properti-buat-kavling/{land_bank_id}/assign-spk', [LandBankUnitController::class, 'assignSpk'])->name('properti.kavling.assignSpk');
 
 
     // edit kavling
@@ -240,6 +242,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     */
     Route::get('/properti-pengolahan-lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahanLahan');
     Route::get('/properti/{land_bank_id}/pengolahan-lahan', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahan-lahan');
+    Route::get('/properti/pengolahan_lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index']);
+    Route::get('/properti pengolahan lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index']);
     Route::get('/properti/{land_bank_id}/infrastruktur', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'getItems'])->name('properti.infrastruktur.get');
     Route::post('/properti/{land_bank_id}/infrastruktur/store', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'store'])->name('properti.infrastruktur.store');
     Route::post('/properti/infrastruktur/{id}/update', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'update'])->name('properti.infrastruktur.update');
@@ -254,6 +258,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     // Master Bahan & Jasa Infrastruktur Pembangunan / Pengolahan Lahan
     Route::get('/master-data-bahan-infrastruktur', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'index'])->name('master.bahan.index');
+    Route::get('/master-data-bahan-infrastruktur/{id}/edit', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'edit'])->name('master.bahan.edit');
     Route::post('/master-data-bahan-infrastruktur/store', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'store'])->name('master.bahan.store');
     Route::post('/master-data-bahan-infrastruktur/{id}/update', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'update'])->name('master.bahan.update');
     Route::delete('/master-data-bahan-infrastruktur/{id}', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'destroy'])->name('master.bahan.destroy');
