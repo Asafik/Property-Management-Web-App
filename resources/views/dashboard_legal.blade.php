@@ -43,13 +43,73 @@
         color: #ffffff !important;
     }
 
-    /* Uniform Center Button Styling */
+    /* Uniform Center Button Styling & Distinct Button Appearance */
     .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-align: center;
         vertical-align: middle;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-outline-primary {
+        color: #7c3aed !important;
+        border: 1.5px solid #c4b5fd !important;
+        background-color: #f5f3ff !important;
+    }
+    .btn-outline-primary:hover {
+        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        color: #ffffff !important;
+        border-color: #9a55ff !important;
+        box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+    }
+
+    .btn-outline-secondary {
+        color: #475569 !important;
+        border: 1.5px solid #cbd5e1 !important;
+        background-color: #f8fafc !important;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #e2e8f0 !important;
+        color: #0f172a !important;
+        border-color: #94a3b8 !important;
+    }
+
+    .btn-outline-warning {
+        color: #b45309 !important;
+        border: 1.5px solid #fde68a !important;
+        background-color: #fffbeb !important;
+    }
+    .btn-outline-warning:hover {
+        background-color: #f59e0b !important;
+        color: #ffffff !important;
+        border-color: #f59e0b !important;
+    }
+
+    .btn-outline-success {
+        color: #15803d !important;
+        border: 1.5px solid #bbf7d0 !important;
+        background-color: #f0fdf4 !important;
+    }
+    .btn-outline-success:hover {
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        border-color: #16a34a !important;
+    }
+
+    .btn-outline-danger {
+        color: #dc2626 !important;
+        border: 1.5px solid #fecaca !important;
+        background-color: #fef2f2 !important;
+    }
+    .btn-outline-danger:hover {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #dc2626 !important;
     }
 
     /* Pipeline Step Filter Item */
