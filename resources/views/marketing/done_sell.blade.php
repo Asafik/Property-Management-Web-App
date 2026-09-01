@@ -695,6 +695,36 @@
     </style>
 
     @php
+        if (!function_exists('resolveFileUrl')) {
+            function resolveFileUrl($path) {
+                if (empty($path)) return '#';
+                $path = str_replace('\\', '/', $path);
+                if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                    return $path;
+                }
+                $clean = ltrim($path, '/');
+                if (file_exists(public_path($clean))) {
+                    return asset($clean);
+                }
+                if (file_exists(public_path('uploads/' . $clean))) {
+                    return asset('uploads/' . $clean);
+                }
+                if (file_exists(public_path('storage/' . $clean))) {
+                    return asset('storage/' . $clean);
+                }
+                if (file_exists(storage_path('app/public/' . $clean))) {
+                    return asset('storage/' . $clean);
+                }
+                if (str_starts_with($clean, 'uploads/') || str_starts_with($clean, 'storage/')) {
+                    return asset($clean);
+                }
+                if (str_starts_with($clean, 'serah_terima/')) {
+                    return asset('storage/' . $clean);
+                }
+                return asset('uploads/' . $clean);
+            }
+        }
+
         $kpr = $booking->kprApplication;
         $akad = $booking->akad;
         $serahTerima = $booking->serahTerima;
@@ -897,7 +927,7 @@
                                             <small class="text-muted">{{ $akad->tanggal_akad ? \Carbon\Carbon::parse($akad->tanggal_akad)->translatedFormat('d M Y') : '' }}</small>
                                         </div>
                                     </div>
-                                    <a href="{{ asset('uploads/' . $akad->dokumen) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
+                                    <a href="{{ resolveFileUrl($akad->dokumen) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
                                 </div>
@@ -913,23 +943,83 @@
                                             <small class="text-muted">SPK Unit</small>
                                         </div>
                                     </div>
-                                    <a href="{{ asset('uploads/' . $unit->dokumen_spk) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
+                                    <a href="{{ resolveFileUrl($unit->dokumen_spk) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
                                 </div>
                             @endif
 
-                            {{-- Dokumen Berita Acara / Serah Terima --}}
-                            @if(!empty($serahTerima?->foto_kondisi_unit) || !empty($serahTerima?->foto_serah_kunci))
+                            {{-- Foto Serah Kunci --}}
+                            @if(!empty($serahTerima?->foto_serah_kunci))
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <i class="mdi mdi-key text-warning"></i>
+                                        <div>
+                                            <span class="document-name d-block">Foto Serah Kunci (BAST: {{ $serahTerima->no_bast ?? '-' }})</span>
+                                            <small class="text-muted">{{ $serahTerima->tanggal_serah_terima ? \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima)->translatedFormat('d M Y') : '' }}</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ resolveFileUrl($serahTerima->foto_serah_kunci) }}" target="_blank" class="btn-eye" title="Lihat Foto Serah Kunci">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                </div>
+                            @endif
+
+                            {{-- Foto Kondisi Unit --}}
+                            @if(!empty($serahTerima?->foto_kondisi_unit))
                                 <div class="document-item">
                                     <div class="document-info">
                                         <i class="mdi mdi-camera text-info"></i>
                                         <div>
-                                            <span class="document-name d-block">Foto Serah Terima (BAST: {{ $serahTerima->no_bast ?? '-' }})</span>
+                                            <span class="document-name d-block">Foto Kondisi Unit Serah Terima</span>
                                             <small class="text-muted">{{ $serahTerima->tanggal_serah_terima ? \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima)->translatedFormat('d M Y') : '' }}</small>
                                         </div>
                                     </div>
-                                    <a href="{{ asset('uploads/' . ($serahTerima->foto_kondisi_unit ?? $serahTerima->foto_serah_kunci)) }}" target="_blank" class="btn-eye" title="Lihat Foto">
+                                    <a href="{{ resolveFileUrl($serahTerima->foto_kondisi_unit) }}" target="_blank" class="btn-eye" title="Lihat Foto Kondisi">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                </div>
+                            @endif
+
+                            {{-- Foto Survey KPR (Depan, Interior, Lingkungan) --}}
+                            @if(!empty($kpr?->foto_depan))
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <i class="mdi mdi-home-outline text-primary"></i>
+                                        <div>
+                                            <span class="document-name d-block">Foto Survey Tampak Depan</span>
+                                            <small class="text-muted">Dokumentasi Survey</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ resolveFileUrl($kpr->foto_depan) }}" target="_blank" class="btn-eye" title="Lihat Foto">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                </div>
+                            @endif
+                            @if(!empty($kpr?->foto_interior))
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <i class="mdi mdi-home-floor-1 text-primary"></i>
+                                        <div>
+                                            <span class="document-name d-block">Foto Survey Interior Unit</span>
+                                            <small class="text-muted">Dokumentasi Survey</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ resolveFileUrl($kpr->foto_interior) }}" target="_blank" class="btn-eye" title="Lihat Foto">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                </div>
+                            @endif
+                            @if(!empty($kpr?->foto_lingkungan))
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <i class="mdi mdi-tree text-success"></i>
+                                        <div>
+                                            <span class="document-name d-block">Foto Survey Lingkungan Sekitar</span>
+                                            <small class="text-muted">Dokumentasi Survey</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ resolveFileUrl($kpr->foto_lingkungan) }}" target="_blank" class="btn-eye" title="Lihat Foto">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
                                 </div>
@@ -945,7 +1035,7 @@
                                                 <span class="document-name d-block">{{ ucwords(str_replace('_', ' ', $doc->type ?? 'Dokumen KPR')) }}</span>
                                             </div>
                                         </div>
-                                        <a href="{{ asset('storage/' . $doc->path) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
+                                        <a href="{{ resolveFileUrl($doc->path) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
                                             <i class="mdi mdi-eye"></i>
                                         </a>
                                     </div>
@@ -953,7 +1043,7 @@
                             @endif
 
                             {{-- Fallback jika belum ada berkas upload fisik --}}
-                            @if(empty($akad?->dokumen) && empty($unit->dokumen_spk) && (!$kpr || $kpr->documents->isEmpty()) && empty($serahTerima?->foto_kondisi_unit))
+                            @if(empty($akad?->dokumen) && empty($unit->dokumen_spk) && (!$kpr || $kpr->documents->isEmpty()) && empty($serahTerima?->foto_kondisi_unit) && empty($serahTerima?->foto_serah_kunci) && empty($kpr?->foto_depan))
                                 <div class="document-item">
                                     <div class="document-info">
                                         <i class="mdi mdi-file-check-outline text-success"></i>
