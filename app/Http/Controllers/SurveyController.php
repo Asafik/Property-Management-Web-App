@@ -74,97 +74,96 @@ class SurveyController extends Controller
         DB::beginTransaction();
 
         try {
-
-            // Normalisasi input numeric agar empty string tidak mengakibatkan error DB
-            $normalizeNumeric = function ($value, $pattern = '/[^0-9]/') {
-                $clean = preg_replace($pattern, '', $value);
-                return $clean === '' ? null : $clean;
-            };
-
-            $request->merge([
-                // Bersihkan angka
-                'appraisal_value'      => $normalizeNumeric($request->appraisal_value, '/[^0-9]/'),
-                'luas_tanah'           => $normalizeNumeric($request->luas_tanah, '/[^0-9]/'),
-                'luas_bangunan'        => $normalizeNumeric($request->luas_bangunan, '/[^0-9]/'),
-                'persentase_kelayakan' => $normalizeNumeric($request->persentase_kelayakan, '/[^0-9.]/'),
-
-                // Normalisasi checkbox
-                'listrik'    => $request->has('listrik') ? 1 : 0,
-                'air'        => $request->has('air') ? 1 : 0,
-                'akses'      => $request->has('akses') ? 1 : 0,
-                'sertifikat' => $request->has('sertifikat') ? 1 : 0,
-                'shm'        => $request->has('shm') ? 1 : 0,
-                'imb'        => $request->has('imb') ? 1 : 0,
-            ]);
-
             $kpr = KprApplication::findOrFail($kprId);
 
-            // ✅ Validasi input survey
+            // Bersihkan input angka rupiah/format
+            $cleanNumeric = function ($val) {
+                if (is_null($val) || $val === '') return null;
+                $cleaned = preg_replace('/[^0-9]/', '', (string)$val);
+                return $cleaned === '' ? null : (float)$cleaned;
+            };
+
+            $appraisalValue = $cleanNumeric($request->appraisal_value);
+            $luasTanah = $cleanNumeric($request->luas_tanah);
+            $luasBangunan = $cleanNumeric($request->luas_bangunan);
+            $persentaseKelayakan = $request->filled('persentase_kelayakan') 
+                ? (float)preg_replace('/[^0-9.]/', '', (string)$request->persentase_kelayakan) 
+                : null;
+
+            // Validasi file upload jika ada
             $request->validate([
-                'appraisal_value' => 'nullable|numeric',
-                'luas_tanah' => 'nullable|numeric',
-                'luas_bangunan' => 'nullable|numeric',
-                'kondisi_bangunan' => 'nullable|string',
-                'listrik' => 'nullable|boolean',
-                'air' => 'nullable|boolean',
-                'akses' => 'nullable|boolean',
-                'sertifikat' => 'nullable|boolean',
-                'shm' => 'nullable|boolean',
-                'imb' => 'nullable|boolean',
-                'catatan_survey' => 'nullable|string',
-                'rekomendasi' => 'nullable|string',
-                'persentase_kelayakan' => 'nullable|numeric',
-                'foto_depan' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
-                'foto_interior' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+                'foto_depan'      => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+                'foto_interior'   => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
                 'foto_lingkungan' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
-                'surveyor_id' => 'nullable|exists:employees,id'
+                'surveyor_id'     => 'nullable|exists:employees,id'
             ]);
 
             // Update data survey
-            $kpr->appraisal_value = $request->appraisal_value;
-            $kpr->luas_tanah = $request->luas_tanah;
-            $kpr->luas_bangunan = $request->luas_bangunan;
-            $kpr->kondisi_bangunan = $request->kondisi_bangunan;
-            $kpr->listrik = $request->boolean('listrik');
-            $kpr->air = $request->boolean('air');
-            $kpr->akses = $request->boolean('akses');
-            $kpr->sertifikat = $request->boolean('sertifikat');
-            $kpr->shm = $request->boolean('shm');
-            $kpr->imb = $request->boolean('imb');
-            $kpr->catatan_survey = $request->catatan_survey;
-            $kpr->rekomendasi = $request->rekomendasi;
-            $kpr->persentase_kelayakan = $request->persentase_kelayakan;
-            $kpr->surveyor_id = $request->surveyor_id;
+            if ($appraisalValue !== null) {
+                $kpr->appraisal_value = $appraisalValue;
+            }
+            if ($luasTanah !== null) {
+                $kpr->luas_tanah = $luasTanah;
+            }
+            if ($luasBangunan !== null) {
+                $kpr->luas_bangunan = $luasBangunan;
+            }
+            if ($request->filled('kondisi_bangunan')) {
+                $kpr->kondisi_bangunan = $request->kondisi_bangunan;
+            }
+
+            $kpr->listrik = $request->has('listrik') ? 1 : 0;
+            $kpr->air = $request->has('air') ? 1 : 0;
+            $kpr->akses = $request->has('akses') ? 1 : 0;
+            $kpr->sertifikat = $request->has('sertifikat') ? 1 : 0;
+            $kpr->shm = $request->has('shm') ? 1 : 0;
+            $kpr->imb = $request->has('imb') ? 1 : 0;
+            
+            if ($request->filled('catatan_survey')) {
+                $kpr->catatan_survey = $request->catatan_survey;
+            }
+            if ($request->filled('rekomendasi')) {
+                $kpr->rekomendasi = $request->rekomendasi;
+            }
+            if ($persentaseKelayakan !== null) {
+                $kpr->persentase_kelayakan = $persentaseKelayakan;
+            }
+            if ($request->filled('surveyor_id')) {
+                $kpr->surveyor_id = $request->surveyor_id;
+            }
             $kpr->status = 'survey';
+
             // Upload foto jika ada
+            $destination = public_path('uploads/kpr/survey');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
             foreach (['foto_depan', 'foto_interior', 'foto_lingkungan'] as $fileField) {
                 if ($request->hasFile($fileField)) {
-                    $path = $request->file($fileField)->store('kpr/survey', 'public');
-                    $kpr->$fileField = $path;
+                    $file = $request->file($fileField);
+                    $filename = uniqid() . '_' . $fileField . '.' . $file->getClientOriginalExtension();
+                    $file->move($destination, $filename);
+                    $kpr->$fileField = 'kpr/survey/' . $filename;
                 }
             }
 
-            // Update status survey selesai - gunakan rekomendasi sebagai penanda utama
-            // Jika rekomendasi diisi, berarti survey sudah selesai
-           
             $kpr->save();
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Hasil survey berhasil disimpan!');
+            return redirect()->back()->with('success', 'Hasil survey dan nilai appraisal berhasil disimpan!');
         } catch (\Throwable $e) {
-
             DB::rollBack();
 
             Log::error('Gagal menyimpan survey KPR', [
                 'kpr_id' => $kprId,
-                'user_id' => auth()->id(),
                 'error_message' => $e->getMessage()
             ]);
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', $e->getMessage()); // 🔥 sementara tampilkan error asli
+                ->with('error', 'Gagal menyimpan survey: ' . $e->getMessage());
         }
     }
 }
