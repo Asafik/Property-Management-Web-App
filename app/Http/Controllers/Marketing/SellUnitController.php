@@ -417,6 +417,7 @@ class SellUnitController extends Controller
                 $booking = Booking::create([
                     'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
                     'unit_id'       => $unit->id,
+                    'customer_id'   => null,
                     'sales_id'      => $request->sales_id,
                     'agent_fee'     => $agentFee,
                     'booking_date'  => now(),
