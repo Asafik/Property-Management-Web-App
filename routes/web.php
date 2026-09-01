@@ -119,6 +119,18 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::get('/marketing/jual-unit/export/pdf', [SellUnitController::class, 'exportPdf'])
         ->name('marketing.jual-unit.export.pdf');
 
+    // Master Aturan Komisi Agent
+    Route::post('/marketing/commission-rules/store', [SellUnitController::class, 'storeCommissionRule'])
+        ->name('marketing.commission-rules.store');
+    Route::put('/marketing/commission-rules/{id}', [SellUnitController::class, 'updateCommissionRule'])
+        ->name('marketing.commission-rules.update');
+    Route::delete('/marketing/commission-rules/{id}', [SellUnitController::class, 'destroyCommissionRule'])
+        ->name('marketing.commission-rules.destroy');
+    Route::post('/marketing/commission-rules/{id}/toggle', [SellUnitController::class, 'toggleCommissionRule'])
+        ->name('marketing.commission-rules.toggle');
+    Route::get('/marketing/commission-rules/calculate', [SellUnitController::class, 'calculateCommissionApi'])
+        ->name('marketing.commission-rules.calculate');
+
     Route::get('marketing/list-pengajuan', [ListPengajuanController::class, 'index'])->name('marketing.list_pengajuan');
     Route::delete('/marketing/pengajuan/{id}', [ListPengajuanController::class, 'destroy'])
     ->name('pengajuan.destroy');

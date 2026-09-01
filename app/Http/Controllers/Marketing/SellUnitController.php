@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\AgentCommissionRule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\BookingNotification;
@@ -242,6 +243,7 @@ class SellUnitController extends Controller
         $customers = Customer::latest()->get();
         $agencies = Employee::where('position_id', 2)->latest()->get();
         $types = LandBankUnit::select('type')->distinct()->pluck('type');
+        $commissionRules = AgentCommissionRule::with('landBank')->orderBy('land_bank_id')->orderBy('target_type')->get();
 
         $unitPaths = [
             'A.1' => 'M16.77 101.2h44.35v24.11h-44.35v-24.11z', // path statik A.1
@@ -284,7 +286,8 @@ class SellUnitController extends Controller
             'unitsForSvg',
             'unitPaths',
             'sortField',
-            'sortDirection'
+            'sortDirection',
+            'commissionRules'
         ));
     }
 
@@ -494,4 +497,107 @@ class SellUnitController extends Controller
             'success' => true
         ]);
     }
+
+    // =========================================================================
+    // MASTER ATURAN KOMISI & FEE AGENT (OTOMATISASI PERHITUNGAN KOMISI)
+    // =========================================================================
+
+    public function storeCommissionRule(Request $request)
+    {
+        $validated = $request->validate([
+            'name'             => 'required|string|max:255',
+            'land_bank_id'     => 'nullable|exists:land_banks,id',
+            'target_type'      => 'required|in:all,subsidi,komersil',
+            'calculation_type' => 'required|in:percentage,fixed',
+            'value'            => 'required|numeric|min:0',
+            'min_price'        => 'nullable|numeric|min:0',
+            'max_price'        => 'nullable|numeric|min:0',
+            'description'      => 'nullable|string|max:500',
+        ]);
+
+        $validated['is_active'] = $request->has('is_active') ? (bool) $request->is_active : true;
+
+        $rule = AgentCommissionRule::create($validated);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Aturan komisi berhasil ditambahkan',
+                'rule'    => $rule->load('landBank'),
+            ]);
+        }
+
+        return back()->with('success', 'Aturan komisi agent berhasil ditambahkan.');
+    }
+
+    public function updateCommissionRule(Request $request, $id)
+    {
+        $rule = AgentCommissionRule::findOrFail($id);
+
+        $validated = $request->validate([
+            'name'             => 'required|string|max:255',
+            'land_bank_id'     => 'nullable|exists:land_banks,id',
+            'target_type'      => 'required|in:all,subsidi,komersil',
+            'calculation_type' => 'required|in:percentage,fixed',
+            'value'            => 'required|numeric|min:0',
+            'min_price'        => 'nullable|numeric|min:0',
+            'max_price'        => 'nullable|numeric|min:0',
+            'description'      => 'nullable|string|max:500',
+        ]);
+
+        $validated['is_active'] = $request->has('is_active') ? (bool) $request->is_active : $rule->is_active;
+
+        $rule->update($validated);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Aturan komisi berhasil diperbarui',
+                'rule'    => $rule->load('landBank'),
+            ]);
+        }
+
+        return back()->with('success', 'Aturan komisi agent berhasil diperbarui.');
+    }
+
+    public function destroyCommissionRule($id)
+    {
+        $rule = AgentCommissionRule::findOrFail($id);
+        $rule->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Aturan komisi berhasil dihapus',
+        ]);
+    }
+
+    public function toggleCommissionRule($id)
+    {
+        $rule = AgentCommissionRule::findOrFail($id);
+        $rule->is_active = !$rule->is_active;
+        $rule->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status aturan komisi berhasil diubah',
+            'is_active' => $rule->is_active,
+        ]);
+    }
+
+    public function calculateCommissionApi(Request $request)
+    {
+        $price = $request->get('price', 0);
+        $jenis = $request->get('jenis', 'komersil');
+        $landBankId = $request->get('land_bank_id', null);
+
+        $calculation = AgentCommissionRule::calculateCommission($price, $jenis, $landBankId);
+
+        return response()->json([
+            'success' => true,
+            'fee'     => $calculation['fee'],
+            'formula' => $calculation['formula'],
+            'rule'    => $calculation['rule'],
+        ]);
+    }
 }
+
