@@ -120,15 +120,22 @@
                                 <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">
                                     Divisi <span class="text-danger">*</span>
                                 </label>
-                                <select name="division_id" id="divisionSelect" class="form-control" required>
-                                    <option value="">-- Pilih Divisi --</option>
+                                <select name="division_id" id="divisionSelect" class="form-control" required {{ count($divisions) === 1 ? 'style=background-color:#f8f9fa;' : '' }}>
+                                    @if(count($divisions) > 1)
+                                        <option value="">-- Pilih Divisi --</option>
+                                    @endif
                                     @foreach($divisions as $division)
                                         <option value="{{ $division->id }}"
-                                            {{ old('division_id', $employee->division_id ?? '') == $division->id ? 'selected' : '' }}>
+                                            {{ old('division_id', $employee->division_id ?? ($defaultDivisionId ?? '')) == $division->id ? 'selected' : '' }}>
                                             {{ $division->name }}
                                         </option>
                                     @endforeach
                                 </select>
+                                @if(count($divisions) === 1)
+                                    <small class="text-muted mt-1 d-block" style="font-size: 0.76rem;">
+                                        <i class="mdi mdi-lock-outline text-primary me-1"></i>Otomatis disesuaikan dengan Divisi Marketing
+                                    </small>
+                                @endif
                             </div>
 
                             <!-- Posisi / Jabatan -->
@@ -139,12 +146,17 @@
                                 <select name="position_id" id="positionSelect" class="form-control" required>
                                     <option value="">-- Pilih Posisi / Jabatan --</option>
                                     @foreach($positions as $position)
-                                        <option value="{{ $position->id }}"
-                                            {{ old('position_id', $employee->position_id ?? '') == $position->id ? 'selected' : '' }}>
+                                        <option value="{{ $position->id }}" data-division="{{ $position->division_id }}"
+                                            {{ old('position_id', $employee->position_id ?? ($defaultPositionId ?? '')) == $position->id ? 'selected' : '' }}>
                                             {{ $position->name }}
                                         </option>
                                     @endforeach
                                 </select>
+                                @if(count($divisions) === 1)
+                                    <small class="text-muted mt-1 d-block" style="font-size: 0.76rem;">
+                                        <i class="mdi mdi-check-circle-outline text-success me-1"></i>Otomatis diatur ke Posisi Staff Marketing
+                                    </small>
+                                @endif
                             </div>
                         </div>
 
@@ -200,6 +212,38 @@ function togglePassword(inputId, button) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Dynamic Filter Posisi berdasarkan Divisi
+    const divisionSelect = document.getElementById('divisionSelect');
+    const positionSelect = document.getElementById('positionSelect');
+    if (divisionSelect && positionSelect) {
+        function filterPositions() {
+            const selectedDiv = divisionSelect.value;
+            let firstValid = null;
+            let currentSelectedStillValid = false;
+
+            Array.from(positionSelect.options).forEach((opt, idx) => {
+                if (idx === 0) return; // placeholder
+                const optDiv = opt.getAttribute('data-division');
+                if (!selectedDiv || optDiv === selectedDiv) {
+                    opt.style.display = '';
+                    opt.disabled = false;
+                    if (!firstValid) firstValid = opt.value;
+                    if (opt.value === positionSelect.value) currentSelectedStillValid = true;
+                } else {
+                    opt.style.display = 'none';
+                    opt.disabled = true;
+                }
+            });
+
+            if (!currentSelectedStillValid && firstValid && selectedDiv) {
+                positionSelect.value = firstValid;
+            }
+        }
+
+        divisionSelect.addEventListener('change', filterPositions);
+        filterPositions();
+    }
+
     function showLoading(message = 'Mohon tunggu sebentar...') {
         Swal.fire({
             title: 'Memuat...',

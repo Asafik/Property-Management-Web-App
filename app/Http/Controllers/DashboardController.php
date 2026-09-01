@@ -8,6 +8,10 @@ use App\Models\Payment;
 use App\Models\PraLandbank;
 use App\Models\pra_landbank_documents;
 use App\Models\DocumentTypes;
+use App\Models\LandBankUnit;
+use App\Models\Booking;
+use App\Models\MarketingTask;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -15,14 +19,28 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        $posName = strtolower($user?->position?->name ?? '');
+        $divName = strtolower($user?->division?->name ?? '');
+
         $isLegal = $user && (
             $user->division_id == 2 || 
-            ($user->position && str_contains(strtolower($user->position->name), 'legal')) ||
-            ($user->division && str_contains(strtolower($user->division->name), 'legal'))
+            str_contains($posName, 'legal') ||
+            str_contains($divName, 'legal')
         );
 
         if ($isLegal) {
             return $this->legalDashboard($request);
+        }
+
+        $isMarketing = $user && (
+            $user->division_id == 1 ||
+            str_contains($posName, 'marketing') ||
+            str_contains($divName, 'marketing')
+        );
+
+        if ($isMarketing) {
+            $isKepalaMarketing = str_contains($posName, 'kepala') || $user->position_id == 1;
+            return $this->marketingDashboard($request, $isKepalaMarketing);
         }
 
         $perPage = $request->get('perPage', 10);
@@ -295,6 +313,153 @@ class DashboardController extends Controller
             'legalStatusCounts',
             'ownershipCounts',
             'documentTypes'
+        ));
+    }
+
+    public function marketingDashboard(Request $request, bool $isKepalaMarketing)
+    {
+        $user = auth()->user();
+
+        // 1. UNIT METRICS
+        $totalUnits = LandBankUnit::count();
+        $readyUnits = LandBankUnit::whereIn('status', ['ready', 'tersedia'])->count();
+        $readySubsidi = LandBankUnit::whereIn('status', ['ready', 'tersedia'])
+            ->where(function($q) {
+                $q->where('jenis', 'subsidi')->orWhere('type', 'subsidi');
+            })->count();
+        $readyKomersil = LandBankUnit::whereIn('status', ['ready', 'tersedia'])
+            ->where(function($q) {
+                $q->where('jenis', 'komersil')->orWhere('type', 'komersil');
+            })->count();
+        $bookedUnits = LandBankUnit::where('status', 'booked')->count();
+        $soldUnits = LandBankUnit::where('status', 'sold')->count();
+
+        // 2. TRANSACTION & BOOKING METRICS
+        $totalBookings = Booking::count();
+        $activeBookings = Booking::whereIn('status', ['pending', 'proses', 'aktif', 'approved'])->count();
+        $kprBookings = Booking::where('purchase_type', 'kpr')->count();
+        $cashBookings = Booking::where('purchase_type', 'cash')->count();
+        $tempoBookings = Booking::where(function($q) {
+            $q->where('purchase_type', 'cash_tempo')->orWhere('purchase_type', 'tempo');
+        })->count();
+
+        $totalBookingFee = (float) Booking::sum('booking_fee');
+        $totalAgentFee = (float) Booking::sum('agent_fee');
+        $totalSalesVolume = (float) Booking::with('unit')->get()->sum(function($b) {
+            return $b->unit->price ?? 0;
+        });
+
+        // 3. RECENT TRANSACTIONS / BOOKINGS
+        $recentBookings = Booking::with(['customer', 'unit.landBank', 'sales'])
+            ->when(!$isKepalaMarketing, function($q) use ($user) {
+                $q->where('sales_id', $user->id);
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // 4. PROJECT / LAND BANK BREAKDOWN DENGAN PAGINASI
+        $projects = LandBank::with(['units.activeBooking'])
+            ->latest()
+            ->paginate(4, ['*'], 'project_page')
+            ->withQueryString();
+
+        $projects->getCollection()->transform(function($lb) {
+            $units = $lb->units;
+            $ready = $units->whereIn('status', ['ready', 'tersedia'])->count();
+            $booked = $units->where('status', 'booked')->count();
+            $sold = $units->where('status', 'sold')->count();
+            $salesNominal = $units->where('status', 'sold')->sum('price');
+            return (object) [
+                'id' => $lb->id,
+                'name' => $lb->name,
+                'address' => $lb->address,
+                'total_units' => $units->count(),
+                'ready_units' => $ready,
+                'booked_units' => $booked,
+                'sold_units' => $sold,
+                'sales_nominal' => $salesNominal,
+            ];
+        });
+
+        // 5. KEPALA MARKETING SPECIFIC DATA
+        $salesTeam = [];
+        $salesLeaderboard = [];
+        $allMarketingTasks = [];
+        $totalTasks = 0;
+        $completedTasks = 0;
+        $pendingTasks = 0;
+
+        if ($isKepalaMarketing) {
+            $salesLeaderboard = Employee::where('division_id', 1)
+                ->withCount(['bookings as total_bookings'])
+                ->withSum('bookings as total_fee', 'agent_fee')
+                ->orderByDesc('total_bookings')
+                ->take(5)
+                ->get();
+
+            $salesTeam = Employee::where('division_id', 1)
+                ->withCount(['bookings as total_bookings', 'marketingTasks as total_tasks'])
+                ->get();
+
+            $allMarketingTasks = MarketingTask::with('employee')->latest()->take(8)->get();
+            $totalTasks = MarketingTask::count();
+            $completedTasks = MarketingTask::where('status', 'selesai')->count();
+            $pendingTasks = MarketingTask::where('status', '!=', 'selesai')->count();
+        }
+
+        // 6. STAFF MARKETING SPECIFIC DATA
+        $myTotalBookings = 0;
+        $mySoldUnits = 0;
+        $myActiveBookings = 0;
+        $myTotalFee = 0;
+        $myTotalCustomers = 0;
+        $myTasks = [];
+        $myPendingTasks = 0;
+
+        if (!$isKepalaMarketing) {
+            $myBookingsQuery = Booking::where('sales_id', $user->id);
+            $myTotalBookings = (clone $myBookingsQuery)->count();
+            $mySoldUnits = (clone $myBookingsQuery)->whereHas('unit', fn($q) => $q->where('status', 'sold'))->count();
+            $myActiveBookings = (clone $myBookingsQuery)->whereIn('status', ['pending', 'proses', 'aktif', 'approved'])->count();
+            $myTotalFee = (float) (clone $myBookingsQuery)->sum('agent_fee');
+            $myTotalCustomers = (clone $myBookingsQuery)->distinct('customer_id')->count('customer_id');
+
+            $myTasks = MarketingTask::where('employee_id', $user->id)->latest()->take(10)->get();
+            $myPendingTasks = MarketingTask::where('employee_id', $user->id)->where('status', '!=', 'selesai')->count();
+        }
+
+        return view('dashboard_marketing', compact(
+            'isKepalaMarketing',
+            'totalUnits',
+            'readyUnits',
+            'readySubsidi',
+            'readyKomersil',
+            'bookedUnits',
+            'soldUnits',
+            'totalBookings',
+            'activeBookings',
+            'kprBookings',
+            'cashBookings',
+            'tempoBookings',
+            'totalBookingFee',
+            'totalAgentFee',
+            'totalSalesVolume',
+            'recentBookings',
+            'projects',
+            'salesTeam',
+            'salesLeaderboard',
+            'allMarketingTasks',
+            'totalTasks',
+            'completedTasks',
+            'pendingTasks',
+            'myTotalBookings',
+            'mySoldUnits',
+            'myActiveBookings',
+            'myTotalFee',
+            'myTotalCustomers',
+            'myTasks',
+            'myPendingTasks'
         ));
     }
 

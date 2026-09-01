@@ -119,6 +119,20 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/marketing/jual-unit/export/pdf', [SellUnitController::class, 'exportPdf'])
         ->name('marketing.jual-unit.export.pdf');
 
+    // Master Aturan Komisi Agent
+    Route::get('/marketing/commission-rules', [SellUnitController::class, 'commissionRulesIndex'])
+        ->name('marketing.commission-rules.index');
+    Route::post('/marketing/commission-rules/store', [SellUnitController::class, 'storeCommissionRule'])
+        ->name('marketing.commission-rules.store');
+    Route::put('/marketing/commission-rules/{id}', [SellUnitController::class, 'updateCommissionRule'])
+        ->name('marketing.commission-rules.update');
+    Route::delete('/marketing/commission-rules/{id}', [SellUnitController::class, 'destroyCommissionRule'])
+        ->name('marketing.commission-rules.destroy');
+    Route::post('/marketing/commission-rules/{id}/toggle', [SellUnitController::class, 'toggleCommissionRule'])
+        ->name('marketing.commission-rules.toggle');
+    Route::get('/marketing/commission-rules/calculate', [SellUnitController::class, 'calculateCommissionApi'])
+        ->name('marketing.commission-rules.calculate');
+
     Route::get('marketing/list-pengajuan', [ListPengajuanController::class, 'index'])->name('marketing.list_pengajuan');
     Route::delete('/marketing/pengajuan/{id}', [ListPengajuanController::class, 'destroy'])
     ->name('pengajuan.destroy');
@@ -451,8 +465,19 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])->name('documents.destroy');
     Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
 
-    // MASTER DATA SPK KONTRAKTOR (DUMMY UI)
+    // ==============================================================
+    // MASTER DATA & MANAJEMEN SPK KONTRAKTOR
+    // ==============================================================
     Route::get('/spk', [SpkController::class, 'index'])->name('spk.index');
+    Route::get('/spk/create', [SpkController::class, 'create'])->name('spk.create');
+    Route::post('/spk/store', [SpkController::class, 'store'])->name('spk.store');
+    Route::get('/spk/{id}', [SpkController::class, 'show'])->name('spk.show');
+    Route::get('/spk/{id}/edit', [SpkController::class, 'edit'])->name('spk.edit');
+    Route::put('/spk/{id}', [SpkController::class, 'update'])->name('spk.update');
+    Route::delete('/spk/{id}', [SpkController::class, 'destroy'])->name('spk.destroy');
+    Route::get('/spk/{id}/cetak', [SpkController::class, 'cetak'])->name('spk.cetak');
+    Route::get('/api/spk/project-units/{landBankId}', [SpkController::class, 'getUnitsByProject'])->name('spk.project-units');
+    Route::get('/api/spk/generate-number', [SpkController::class, 'generateNoSpk'])->name('spk.generate-number');
 
 
     // EMPLOYEE/AGENCY

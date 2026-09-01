@@ -77,6 +77,7 @@
             'master.data.posisi' => 'mdi-badge-account-outline',
             // Keuangan
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
+            'marketing.commission-rules.index' => 'mdi-cash-cog',
             // Pengaturan
             'setting.index' => 'mdi-cog-outline',
         ];
@@ -91,6 +92,7 @@
             'lokasi.index' => ['lokasi.index', 'lokasi.*'],
             'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
             'marketing.list_pengajuan' => ['marketing.list_pengajuan*', 'marketing.cash*', 'pengajuan.*', 'bookings.*', 'cetak.*', 'dashboard.cetak.*'],
+            'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
             'customer.kpr' => ['customer.kpr'],
             'kpr.customer-verified' => ['kpr.customer-verified*', 'kpr.approve*', 'kpr.survey*'],
             'customer.kpr.survey' => ['customer.kpr.survey*', 'kpr.pecahlegal*'],

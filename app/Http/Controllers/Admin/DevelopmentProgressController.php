@@ -148,30 +148,34 @@ class DevelopmentProgressController extends Controller
             }
 
             /* ==============================
-           UPDATE PROGRESS PEMBANGUNAN UNIT
-        ============================== */
-
-            $totalItems = $progress->items()->count();
+               UPDATE PROGRESS PEMBANGUNAN UNIT BERDASARKAN KATEGORI TERTINGGI
+            ============================== */
+            $categories = $progress->items()
+                ->pluck('kategori')
+                ->map(fn($c) => strtolower(trim($c)))
+                ->filter()
+                ->unique()
+                ->toArray();
 
             $status = 'belum_mulai';
 
-            if ($totalItems >= 1) {
-                $status = 'pondasi';
+            if (!empty($categories)) {
+                // Evaluasi fase tertinggi pekerjaan yang telah diinput
+                if (in_array('lainnya', $categories) || in_array('finishing', $categories)) {
+                    $status = 'finishing';
+                } elseif (in_array('atap', $categories)) {
+                    $status = 'atap';
+                } elseif (in_array('dinding', $categories) || in_array('struktur', $categories)) {
+                    $status = 'dinding';
+                } elseif (in_array('pondasi', $categories) || in_array('persiapan', $categories)) {
+                    $status = 'pondasi';
+                } else {
+                    $status = 'pondasi';
+                }
             }
 
-            if ($totalItems >= 3) {
-                $status = 'dinding';
-            }
-
-            if ($totalItems >= 5) {
-                $status = 'atap';
-            }
-
-            if ($totalItems >= 7) {
-                $status = 'finishing';
-            }
-
-            if ($totalItems >= 9) {
+            // Jika status progress RAP sudah di-ACC/completed, status tetap 'selesai'
+            if ($progress->status === 'completed') {
                 $status = 'selesai';
             }
 

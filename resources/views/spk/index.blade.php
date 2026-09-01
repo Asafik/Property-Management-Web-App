@@ -5,6 +5,29 @@
 @section('content')
 
     <style>
+        .stat-card {
+            border: none !important;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
         .btn-fase-action {
             display: inline-flex;
             align-items: center;
@@ -35,6 +58,10 @@
 
         .btn-spk-view {
             background: linear-gradient(135deg, #da8cff, #9a55ff);
+        }
+
+        .btn-spk-print {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
         }
 
         .btn-spk-edit {
@@ -96,6 +123,41 @@
             font-size: 0.88rem;
         }
 
+        /* Badge Status Custom */
+        .badge-status-spk {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.28rem 0.65rem;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-status-draft {
+            background: rgba(108, 117, 125, 0.12);
+            color: #6c757d;
+            border: 1px solid rgba(108, 117, 125, 0.25);
+        }
+
+        .badge-status-berjalan {
+            background: rgba(23, 162, 184, 0.12);
+            color: #0d8a9e;
+            border: 1px solid rgba(23, 162, 184, 0.25);
+        }
+
+        .badge-status-selesai {
+            background: rgba(40, 167, 69, 0.12);
+            color: #1e7e34;
+            border: 1px solid rgba(40, 167, 69, 0.25);
+        }
+
+        .badge-status-dibatalkan {
+            background: rgba(220, 53, 69, 0.12);
+            color: #bd2130;
+            border: 1px solid rgba(220, 53, 69, 0.25);
+        }
+
         /* Select2 Theme Alignment */
         .select2-container--bootstrap-5 .select2-selection {
             min-height: 38px !important;
@@ -117,6 +179,23 @@
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
+        <!-- Alert Notification -->
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 8px;">
+                <i class="mdi mdi-check-circle me-2 fs-5 align-middle"></i>
+                <strong>Sukses!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 8px;">
+                <i class="mdi mdi-alert-circle me-2 fs-5 align-middle"></i>
+                <strong>Error!</strong> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <!-- Header Card Banner -->
         <div class="row mb-3 mb-md-4">
             <div class="col-12">
@@ -124,14 +203,73 @@
                     <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                         <div>
                             <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                                SPK / Surat Perintah Kerja
+                                Surat Perintah Kerja (SPK) Kontraktor
                             </h3>
                             <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                                Kelola data SPK kontraktor, berkas kontrak, dan keterangan pekerjaan
+                                Buat, kelola, monitor termin pembayaran, dan cetak surat resmi SPK kontraktor & pemborong
                             </p>
                         </div>
                         <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-file-sign" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                            <i class="mdi mdi-file-document-edit-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Statistics Cards -->
+        <div class="row g-3 mb-3 mb-md-4">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted small fw-semibold">Total SPK</span>
+                            <h4 class="fw-bold text-dark mb-0 mt-1">{{ $stats['total_spk'] }}</h4>
+                        </div>
+                        <div class="stat-icon-box" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff;">
+                            <i class="mdi mdi-file-document-multiple-outline"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted small fw-semibold">SPK Berjalan</span>
+                            <h4 class="fw-bold text-info mb-0 mt-1">{{ $stats['spk_berjalan'] }}</h4>
+                        </div>
+                        <div class="stat-icon-box" style="background: rgba(23, 162, 184, 0.12); color: #17a2b8;">
+                            <i class="mdi mdi-progress-clock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted small fw-semibold">SPK Selesai</span>
+                            <h4 class="fw-bold text-success mb-0 mt-1">{{ $stats['spk_selesai'] }}</h4>
+                        </div>
+                        <div class="stat-icon-box" style="background: rgba(40, 167, 69, 0.12); color: #28a745;">
+                            <i class="mdi mdi-check-decagram-outline"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted small fw-semibold">Total Nilai Kontrak</span>
+                            <h5 class="fw-bold text-primary mb-0 mt-1" style="font-size: 1.05rem;">Rp {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h5>
+                        </div>
+                        <div class="stat-icon-box" style="background: rgba(84, 110, 237, 0.12); color: #546eed;">
+                            <i class="mdi mdi-cash-multiple"></i>
                         </div>
                     </div>
                 </div>
@@ -145,167 +283,210 @@
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
                             <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar SPK Kontraktor
                         </h5>
-                        <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;" onclick="openModalUploadSpk()">
-                            <i class="mdi mdi-plus me-1"></i>Tambah SPK Kontraktor
-                        </button>
+                        <a href="{{ route('spk.create') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px; text-decoration: none;">
+                            <i class="mdi mdi-plus me-1"></i>Buat SPK Baru
+                        </a>
                     </div>
 
                     <div class="card-body card-body-compact">
-                        <!-- Filter Section -->
-                        <div class="filter-card filter-card-compact">
-                            <!-- Desktop Filter -->
-                            <div class="filter-row-desktop d-none d-md-block">
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 w-100">
-                                    <div style="width: 280px;">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="searchInput"
-                                                placeholder="Cari nomor SPK / kontraktor..."
-                                                onkeyup="filterSpkTable()"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                type="button" title="Cari" onclick="filterSpkTable()"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-center gap-2 ms-auto">
-                                        <div style="width: 110px;">
-                                            <select class="form-control select2" id="limitSelect" style="width: 100%;">
-                                                <option value="5">5 Data</option>
-                                                <option value="10" selected>10 Data</option>
-                                                <option value="15">15 Data</option>
-                                                <option value="25">25 Data</option>
-                                            </select>
-                                        </div>
-
-                                        <button type="button"
-                                            class="btn btn-gradient-primary btn-icon-only"
-                                            title="Filter" onclick="filterSpkTable()">
-                                            <i class="mdi mdi-filter"></i>
-                                        </button>
-                                        <button type="button"
-                                            class="btn btn-gradient-secondary btn-icon-only"
-                                            title="Reset" onclick="resetSpkFilter()">
-                                            <i class="mdi mdi-refresh"></i>
+                        <!-- Filter Section Form -->
+                        <form method="GET" action="{{ route('spk.index') }}" class="filter-card filter-card-compact mb-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-12 col-md-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                            placeholder="Cari no SPK / kontraktor / pekerjaan..."
+                                            style="height: 38px;">
+                                        <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                            type="submit" title="Cari" style="box-shadow: none;">
+                                            <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                         </button>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Mobile Filter -->
-                            <div class="filter-row-mobile d-block d-md-none">
-                                <div class="row g-2">
-                                    <div class="col-12 mb-2">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="searchInputMobile"
-                                                placeholder="Cari nomor SPK atau kontraktor..."
-                                                onkeyup="filterSpkTableMobile()"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                type="button" title="Cari" onclick="filterSpkTableMobile()"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 mb-2">
-                                        <select class="form-control select2" id="limitSelectMobile" style="width: 100%;">
-                                            <option value="5">5 Data</option>
-                                            <option value="10" selected>10 Data</option>
-                                            <option value="15">15 Data</option>
-                                            <option value="25">25 Data</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-3 mb-2">
-                                        <button type="button"
-                                            class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center"
-                                            style="height: 38px;"
-                                            title="Filter" onclick="filterSpkTableMobile()">
-                                            <i class="mdi mdi-filter"></i>
-                                        </button>
-                                    </div>
-                                    <div class="col-3 mb-2">
-                                        <button type="button"
-                                            class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center"
-                                            style="height: 38px;"
-                                            title="Reset" onclick="resetSpkFilter()">
-                                            <i class="mdi mdi-refresh"></i>
-                                        </button>
-                                    </div>
+                                <div class="col-6 col-md-3">
+                                    <select class="form-control select2" name="land_bank_id" onchange="this.form.submit()" style="width: 100%;">
+                                        <option value="">Semua Proyek / Land Bank</option>
+                                        @foreach($landBanks as $lb)
+                                            <option value="{{ $lb->id }}" {{ request('land_bank_id') == $lb->id ? 'selected' : '' }}>
+                                                {{ $lb->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-6 col-md-2">
+                                    <select class="form-control select2" name="status" onchange="this.form.submit()" style="width: 100%;">
+                                        <option value="">Semua Status</option>
+                                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                        <option value="berjalan" {{ request('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
+                                        <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                        <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-6 col-md-2">
+                                    <select class="form-control select2" name="per_page" onchange="this.form.submit()" style="width: 100%;">
+                                        <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5 Data</option>
+                                        <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 Data</option>
+                                        <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 Data</option>
+                                        <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 Data</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-6 col-md-2 d-flex gap-2">
+                                    <button type="submit" class="btn btn-gradient-primary flex-fill d-flex align-items-center justify-content-center" style="height: 38px;" title="Terapkan Filter">
+                                        <i class="mdi mdi-filter me-1"></i> Filter
+                                    </button>
+                                    <a href="{{ route('spk.index') }}" class="btn btn-gradient-secondary btn-icon-only flex-shrink-0" style="height: 38px;" title="Reset Filter">
+                                        <i class="mdi mdi-refresh"></i>
+                                    </a>
                                 </div>
                             </div>
-                        </div>
+                        </form>
 
                         <!-- Table Wrapper -->
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 60px;">NO</th>
-                                        <th style="width: 220px;">NOMOR SPK</th>
-                                        <th>KONTRAKTOR</th>
-                                        <th class="text-center" style="width: 180px;">FILE SPK</th>
-                                        <th>KETERANGAN</th>
-                                        <th class="text-center" style="width: 180px;">AKSI</th>
+                                        <th class="text-center" style="width: 50px;">NO</th>
+                                        <th style="width: 200px;">NOMOR SPK & TANGGAL</th>
+                                        <th style="width: 220px;">PROYEK & PEKERJAAN</th>
+                                        <th style="width: 180px;">KONTRAKTOR / MANDOR</th>
+                                        <th class="text-end" style="width: 150px;">NILAI KONTRAK</th>
+                                        <th class="text-center" style="width: 120px;">PROGRESS</th>
+                                        <th class="text-center" style="width: 110px;">STATUS</th>
+                                        <th class="text-center" style="width: 160px;">AKSI</th>
                                     </tr>
                                 </thead>
-                                <tbody id="spkTableBody">
-                                    @forelse ($spkList as $index => $spk)
-                                        <tr class="spk-row" data-no-spk="{{ strtolower($spk['no_spk']) }}" data-kontraktor="{{ strtolower($spk['kontraktor']) }}">
-                                            <td class="text-center fw-bold text-muted">{{ $index + 1 }}</td>
-                                            <td>
-                                                <i class="mdi mdi-file-document-outline text-primary me-1"></i>
-                                                <span class="fw-bold text-dark">{{ $spk['no_spk'] }}</span>
+                                <tbody>
+                                    @forelse ($spks as $index => $spk)
+                                        <tr>
+                                            <td class="text-center fw-bold text-muted">
+                                                {{ $spks->firstItem() + $index }}
                                             </td>
                                             <td>
-                                                <i class="mdi mdi-account-tie me-1 text-muted"></i>
-                                                <span class="fw-bold text-dark">{{ $spk['kontraktor'] }}</span>
+                                                <div class="fw-bold text-dark mb-1">
+                                                    <i class="mdi mdi-file-document-outline text-primary me-1"></i>
+                                                    {{ $spk->no_spk }}
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="mdi mdi-calendar-blank-outline me-1"></i>{{ $spk->tanggal_spk ? date('d/m/Y', strtotime($spk->tanggal_spk)) : '-' }}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark mb-1">
+                                                    {{ $spk->nama_pekerjaan }}
+                                                </div>
+                                                <div class="small text-muted d-flex align-items-center gap-1">
+                                                    <i class="mdi mdi-domain text-purple"></i>
+                                                    <span>{{ $spk->landBank->name ?? '-' }}</span>
+                                                    @if($spk->unit)
+                                                        <span class="badge bg-light text-dark border ms-1">
+                                                            Kav. {{ $spk->unit->unit_code }} ({{ $spk->unit->type }})
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-semibold text-dark mb-1">
+                                                    <i class="mdi mdi-account-tie me-1 text-muted"></i>
+                                                    {{ $spk->kontraktor_nama }}
+                                                </div>
+                                                @if($spk->kontraktor_pic)
+                                                    <small class="text-muted d-block">
+                                                        PIC: {{ $spk->kontraktor_pic }}
+                                                    </small>
+                                                @endif
+                                                @if($spk->kontraktor_telepon)
+                                                    <small class="text-muted d-block">
+                                                        <i class="mdi mdi-phone-outline me-1"></i>{{ $spk->kontraktor_telepon }}
+                                                    </small>
+                                                @endif
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="fw-bold text-primary">
+                                                    {{ $spk->formatted_nilai_kontrak }}
+                                                </span>
+                                                <small class="text-muted d-block">
+                                                    {{ $spk->termins->count() }} Termin
+                                                </small>
                                             </td>
                                             <td class="text-center">
-                                                @if($spk['file_spk'])
-                                                    <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1" style="border-radius: 6px; font-size: 11px;" onclick="previewDummySpk('{{ $spk['no_spk'] }}', '{{ $spk['kontraktor'] }}')">
-                                                        <i class="mdi mdi-file-pdf-box text-danger fs-6"></i>
-                                                        <span>Lihat Berkas SPK</span>
-                                                    </button>
+                                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                                    <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                                        <div class="progress-bar bg-gradient-primary" role="progressbar" 
+                                                             style="width: {{ $spk->progress }}%;" 
+                                                             aria-valuenow="{{ $spk->progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                    <span class="small fw-bold text-dark">{{ $spk->progress }}%</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                @if($spk->status == 'berjalan')
+                                                    <span class="badge-status-spk badge-status-berjalan">
+                                                        <i class="mdi mdi-play-circle-outline"></i> Berjalan
+                                                    </span>
+                                                @elseif($spk->status == 'selesai')
+                                                    <span class="badge-status-spk badge-status-selesai">
+                                                        <i class="mdi mdi-check-circle-outline"></i> Selesai
+                                                    </span>
+                                                @elseif($spk->status == 'dibatalkan')
+                                                    <span class="badge-status-spk badge-status-dibatalkan">
+                                                        <i class="mdi mdi-close-circle-outline"></i> Batal
+                                                    </span>
                                                 @else
-                                                    <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 10px;">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>Belum Diunggah
+                                                    <span class="badge-status-spk badge-status-draft">
+                                                        <i class="mdi mdi-file-clock-outline"></i> Draft
                                                     </span>
                                                 @endif
                                             </td>
-                                            <td>
-                                                <span class="text-dark small d-inline-block" title="{{ $spk['keterangan'] }}">
-                                                    {{ $spk['keterangan'] }}
-                                                </span>
-                                            </td>
                                             <td class="text-center text-nowrap">
                                                 <div class="d-inline-flex align-items-center gap-1">
-                                                    <button type="button" 
+                                                    <!-- Detail SPK -->
+                                                    <a href="{{ route('spk.show', $spk->id) }}" 
                                                        class="btn-fase-action btn-spk-view" 
-                                                       title="Lihat Detail SPK"
-                                                       onclick="showDetailSpk('{{ $spk['no_spk'] }}', '{{ $spk['kontraktor'] }}', '{{ $spk['keterangan'] }}')">
+                                                       title="Lihat Detail SPK">
                                                         <i class="mdi mdi-eye"></i>
-                                                    </button>
+                                                    </a>
 
-                                                    <button type="button" 
+                                                    <!-- Cetak Surat SPK -->
+                                                    <a href="{{ route('spk.cetak', $spk->id) }}" 
+                                                       target="_blank"
+                                                       class="btn-fase-action btn-spk-print" 
+                                                       title="Cetak Surat SPK">
+                                                        <i class="mdi mdi-printer"></i>
+                                                    </a>
+
+                                                    <!-- Edit SPK -->
+                                                    <a href="{{ route('spk.edit', $spk->id) }}" 
                                                        class="btn-fase-action btn-spk-edit" 
-                                                       title="Edit Data SPK"
-                                                       onclick="editDummySpk('{{ $spk['no_spk'] }}', '{{ $spk['kontraktor'] }}', '{{ $spk['keterangan'] }}')">
+                                                       title="Edit SPK">
                                                         <i class="mdi mdi-pencil"></i>
-                                                    </button>
+                                                    </a>
 
-                                                    <button type="button" class="btn-fase-action btn-spk-delete delete-btn" title="Hapus SPK" onclick="deleteDummySpk(this, '{{ $spk['no_spk'] }}')">
+                                                    <!-- Hapus SPK -->
+                                                    <button type="button" 
+                                                            class="btn-fase-action btn-spk-delete" 
+                                                            title="Hapus SPK" 
+                                                            onclick="deleteSpk('{{ $spk->id }}', '{{ $spk->no_spk }}')">
                                                         <i class="mdi mdi-trash-can-outline"></i>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr id="emptyRow">
-                                            <td colspan="6" class="text-center py-5 text-muted">
-                                                Tidak ada data
+                                        <tr>
+                                            <td colspan="8" class="text-center py-5 text-muted">
+                                                <div class="py-4">
+                                                    <i class="mdi mdi-file-document-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                                    <h6 class="mt-2 fw-semibold text-dark">Belum Ada Data SPK Kontraktor</h6>
+                                                    <p class="small text-muted mb-3">Klik tombol di bawah untuk membuat Surat Perintah Kerja pertama</p>
+                                                    <a href="{{ route('spk.create') }}" class="btn btn-sm btn-gradient-primary">
+                                                        <i class="mdi mdi-plus me-1"></i>Buat SPK Baru
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforelse
@@ -315,17 +496,12 @@
 
                         <!-- Pagination Footer -->
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                            <div class="pagination-info mb-2 mb-sm-0 text-muted small" id="paginationInfo">
-                                Menampilkan 1 - {{ count($spkList) }} dari {{ count($spkList) }} data
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted small">
+                                Menampilkan {{ $spks->firstItem() ?? 0 }} - {{ $spks->lastItem() ?? 0 }} dari {{ $spks->total() }} data
                             </div>
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                    <li class="page-item disabled"><span class="page-link"><i class="mdi mdi-chevron-left"></i></span></li>
-                                    <li class="page-item active"><span class="page-link" style="background-color: #9a55ff; border-color: #9a55ff;">1</span></li>
-                                    <li class="page-item"><span class="page-link">2</span></li>
-                                    <li class="page-item"><span class="page-link"><i class="mdi mdi-chevron-right"></i></span></li>
-                                </ul>
-                            </nav>
+                            <div>
+                                {{ $spks->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
 
                     </div>
@@ -333,114 +509,6 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- MODAL: TAMBAH / UPLOAD SPK BARU -->
-    <!-- ============================================================== -->
-    <div class="modal fade" id="modalUploadSpk" tabindex="-1" aria-labelledby="modalUploadSpkLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 12px;">
-                <div class="modal-header bg-white border-bottom py-3 px-4" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="p-2 rounded-2" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
-                            <i class="mdi mdi-file-plus fs-5"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title mb-0 fw-bold text-dark" id="modalUploadSpkLabel" style="font-size: 1.05rem;">Tambah SPK Kontraktor</h5>
-                            <small class="text-muted">Isi data Surat Perintah Kerja baru</small>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <form id="formUploadSpk" onsubmit="handleSaveNewSpk(event)">
-                    <div class="modal-body p-4">
-                        <div class="row g-3">
-                            
-                            <!-- Nomor SPK -->
-                            <div class="col-12">
-                                <label class="form-label fw-semibold text-dark small">Nomor SPK <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="modal_no_spk" placeholder="Contoh: SPK/2026/PROJ/021" required style="border-radius: 6px;">
-                            </div>
-
-                            <!-- Nama Kontraktor / Vendor -->
-                            <div class="col-12">
-                                <label class="form-label fw-semibold text-dark small">Nama Kontraktor <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="modal_kontraktor" placeholder="Contoh: PT. Maju Konstruksi Nusantara" required style="border-radius: 6px;">
-                            </div>
-
-                            <!-- Upload File Dokumen SPK -->
-                            <div class="col-12">
-                                <label class="form-label fw-semibold text-dark small">Upload File SPK (PDF / DOCX / JPG)</label>
-                                <div class="p-3 border rounded-3 text-center" style="border: 2px dashed #d8b4fe !important; background: #faf5ff;">
-                                    <input type="file" id="modal_file_spk" class="d-none" onchange="handleModalSpkFile(this)">
-                                    <label for="modal_file_spk" class="cursor-pointer mb-0 w-100">
-                                        <i class="mdi mdi-cloud-upload-outline fs-2 text-purple" style="color: #9a55ff;"></i>
-                                        <div class="mt-1 fw-bold text-dark" id="modal_file_name_label">Klik untuk unggah atau seret berkas ke sini</div>
-                                        <small class="text-muted">Mendukung format PDF, DOCX, JPG (Maksimal 15MB)</small>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Keterangan Pekerjaan -->
-                            <div class="col-12">
-                                <label class="form-label fw-semibold text-dark small">Keterangan</label>
-                                <textarea class="form-control" id="modal_keterangan" rows="3" placeholder="Masukkan keterangan / catatan SPK..." style="border-radius: 6px;"></textarea>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer bg-light px-4 py-3 border-top" style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                        <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
-                        <button type="submit" class="btn btn-gradient-primary px-4 py-2 fw-semibold text-white shadow-sm" style="background: linear-gradient(to right, #da8cff, #9a55ff); border: none; border-radius: 6px;">
-                            <i class="mdi mdi-content-save-outline me-1"></i>Simpan SPK
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- MODAL: DETAIL SPK -->
-    <!-- ============================================================== -->
-    <div class="modal fade" id="modalDetailSpk" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="border-radius: 12px;">
-                <div class="modal-header bg-light border-bottom">
-                    <h5 class="modal-title fw-bold text-dark" id="detail_spk_title">Detail Surat Perintah Kerja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="text-center mb-4">
-                        <div class="p-3 d-inline-block rounded-circle" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
-                            <i class="mdi mdi-file-sign fs-1"></i>
-                        </div>
-                        <h5 class="fw-bold text-dark mt-2 mb-1" id="detail_no_spk">-</h5>
-                        <span class="badge bg-purple text-white px-3 py-1" style="background: #9a55ff;">SPK Kontraktor</span>
-                    </div>
-
-                    <div class="border rounded-3 p-3 bg-light mb-3">
-                        <div class="row g-2 small">
-                            <div class="col-5 text-muted">Nomor SPK:</div>
-                            <div class="col-7 fw-bold text-dark text-end" id="detail_no_val">-</div>
-                            <div class="col-5 text-muted">Kontraktor:</div>
-                            <div class="col-7 fw-bold text-primary text-end" id="detail_kontraktor">-</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="fw-bold text-dark small mb-1">Keterangan:</label>
-                        <p class="text-muted small mb-0 p-2 border rounded-2 bg-white" id="detail_keterangan">-</p>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
     </div>
 
 @endsection
@@ -448,268 +516,19 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        if ($('#limitSelect').length) {
-            $('#limitSelect').select2({
+        if ($('.select2').length) {
+            $('.select2').select2({
                 theme: 'bootstrap-5',
-                width: '100%',
-                minimumResultsForSearch: Infinity
-            });
-        }
-        if ($('#limitSelectMobile').length) {
-            $('#limitSelectMobile').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                minimumResultsForSearch: Infinity
+                width: '100%'
             });
         }
     });
 
-    // 1. Open Modal Upload
-    function openModalUploadSpk() {
-        document.getElementById('formUploadSpk').reset();
-        document.getElementById('modal_file_name_label').textContent = 'Klik untuk unggah atau seret berkas ke sini';
-        
-        const randomNum = Math.floor(100 + Math.random() * 900);
-        document.getElementById('modal_no_spk').value = `SPK/2026/PROJ/${randomNum}`;
-        
-        const modal = new bootstrap.Modal(document.getElementById('modalUploadSpk'));
-        modal.show();
-    }
-
-    // 2. File Input Label change
-    function handleModalSpkFile(input) {
-        if (input.files && input.files[0]) {
-            document.getElementById('modal_file_name_label').innerHTML = `<span class="text-success fw-bold"><i class="mdi mdi-check-circle me-1"></i>${input.files[0].name}</span>`;
-        }
-    }
-
-    // 3. Save New SPK (Dummy Simulation)
-    function handleSaveNewSpk(e) {
-        e.preventDefault();
-
-        const noSpk = document.getElementById('modal_no_spk').value;
-        const kontraktor = document.getElementById('modal_kontraktor').value;
-        const keterangan = document.getElementById('modal_keterangan').value || '-';
-
-        bootstrap.Modal.getInstance(document.getElementById('modalUploadSpk')).hide();
-
-        Swal.fire({
-            title: 'Menyimpan Dokumen SPK...',
-            allowOutsideClick: false,
-            didOpen: () => Swal.showLoading()
-        });
-
-        setTimeout(() => {
-            const tbody = document.getElementById('spkTableBody');
-            const emptyRow = document.getElementById('emptyRow');
-            if (emptyRow) emptyRow.remove();
-
-            const newIndex = document.querySelectorAll('.spk-row').length + 1;
-            const tr = document.createElement('tr');
-            tr.className = 'spk-row';
-            tr.setAttribute('data-no-spk', noSpk.toLowerCase());
-            tr.setAttribute('data-kontraktor', kontraktor.toLowerCase());
-            tr.style.animation = 'fadeIn 0.4s ease';
-
-            tr.innerHTML = `
-                <td class="text-center fw-bold text-muted">${newIndex}</td>
-                <td>
-                    <i class="mdi mdi-file-document-outline text-primary me-1"></i>
-                    <span class="fw-bold text-dark">${noSpk}</span>
-                </td>
-                <td>
-                    <i class="mdi mdi-account-tie me-1 text-muted"></i>
-                    <span class="fw-bold text-dark">${kontraktor}</span>
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1" style="border-radius: 6px; font-size: 11px;" onclick="previewDummySpk('${noSpk}', '${kontraktor}')">
-                        <i class="mdi mdi-file-pdf-box text-danger fs-6"></i>
-                        <span>Lihat Berkas SPK</span>
-                    </button>
-                </td>
-                <td>
-                    <span class="text-dark small d-inline-block" title="${keterangan}">
-                        ${keterangan}
-                    </span>
-                </td>
-                <td class="text-center text-nowrap">
-                    <div class="d-inline-flex align-items-center gap-1">
-                        <button type="button" 
-                           class="btn-fase-action btn-spk-view" 
-                           title="Lihat Detail SPK"
-                           onclick="showDetailSpk('${noSpk}', '${kontraktor}', '${keterangan}')">
-                            <i class="mdi mdi-eye"></i>
-                        </button>
-
-                        <button type="button" 
-                           class="btn-fase-action btn-spk-edit" 
-                           title="Edit Data SPK"
-                           onclick="editDummySpk('${noSpk}', '${kontraktor}', '${keterangan}')">
-                            <i class="mdi mdi-pencil"></i>
-                        </button>
-
-                        <button type="button" class="btn-fase-action btn-spk-delete delete-btn" title="Hapus SPK" onclick="deleteDummySpk(this, '${noSpk}')">
-                            <i class="mdi mdi-trash-can-outline"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-
-            tbody.prepend(tr);
-
-            const currentTotal = document.querySelectorAll('.spk-row').length;
-            document.getElementById('paginationInfo').innerText = `Menampilkan 1 - ${currentTotal} dari ${currentTotal} data`;
-
-            Swal.fire({
-                icon: 'success',
-                title: 'SPK Berhasil Disimpan!',
-                text: `Surat Perintah Kerja ${noSpk} untuk ${kontraktor} telah tersimpan.`,
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }, 500);
-    }
-
-    // 4. Filter & Search Table
-    function filterSpkTable() {
-        const search = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('.spk-row');
-        let visibleCount = 0;
-
-        rows.forEach(row => {
-            const noSpk = row.getAttribute('data-no-spk') || '';
-            const kontraktor = row.getAttribute('data-kontraktor') || '';
-
-            const matchSearch = noSpk.includes(search) || kontraktor.includes(search);
-
-            if (matchSearch) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        document.getElementById('paginationInfo').innerText = `Menampilkan 1 - ${visibleCount} dari ${visibleCount} data`;
-    }
-
-    function filterSpkTableMobile() {
-        const search = document.getElementById('searchInputMobile').value.toLowerCase();
-        const rows = document.querySelectorAll('.spk-row');
-        let visibleCount = 0;
-
-        rows.forEach(row => {
-            const noSpk = row.getAttribute('data-no-spk') || '';
-            const kontraktor = row.getAttribute('data-kontraktor') || '';
-
-            const matchSearch = noSpk.includes(search) || kontraktor.includes(search);
-
-            if (matchSearch) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        document.getElementById('paginationInfo').innerText = `Menampilkan 1 - ${visibleCount} dari ${visibleCount} data`;
-    }
-
-    function resetSpkFilter() {
-        if (document.getElementById('searchInput')) document.getElementById('searchInput').value = '';
-        if (document.getElementById('searchInputMobile')) document.getElementById('searchInputMobile').value = '';
-        filterSpkTable();
-    }
-
-    // 5. Preview File SPK Dummy
-    function previewDummySpk(noSpk, kontraktor) {
-        Swal.fire({
-            title: `Berkas SPK: ${noSpk}`,
-            html: `
-                <div class="text-center p-3">
-                    <i class="mdi mdi-file-pdf-box text-danger" style="font-size: 4rem;"></i>
-                    <h6 class="fw-bold text-dark mt-2">${noSpk}.pdf</h6>
-                    <p class="text-muted small mb-3">Kontraktor: ${kontraktor}</p>
-                    <div class="alert alert-info py-2 small mb-0">
-                        <i class="mdi mdi-information-outline me-1"></i>Dokumen fisik SPK telah diunggah dan terverifikasi sah.
-                    </div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: '<i class="mdi mdi-download me-1"></i> Unduh Berkas',
-            cancelButtonText: 'Tutup',
-            confirmButtonColor: '#9a55ff',
-            cancelButtonColor: '#6c757d'
-        }).then((res) => {
-            if (res.isConfirmed) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Mengunduh Dokumen...',
-                    text: `File SPK ${noSpk}.pdf sedang diunduh.`,
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            }
-        });
-    }
-
-    // 6. Show Detail Modal
-    function showDetailSpk(noSpk, kontraktor, ket) {
-        document.getElementById('detail_no_spk').innerText = noSpk;
-        document.getElementById('detail_no_val').innerText = noSpk;
-        document.getElementById('detail_kontraktor').innerText = kontraktor;
-        document.getElementById('detail_keterangan').innerText = ket;
-
-        const modal = new bootstrap.Modal(document.getElementById('modalDetailSpk'));
-        modal.show();
-    }
-
-    // 7. Edit SPK Dummy
-    function editDummySpk(noSpk, kontraktor, ket) {
-        Swal.fire({
-            title: `Edit SPK: ${noSpk}`,
-            html: `
-                <div class="text-start mb-3">
-                    <label class="form-label small fw-semibold text-dark">Nama Kontraktor</label>
-                    <input type="text" id="swal_edit_kontraktor" class="form-control" value="${kontraktor}">
-                </div>
-                <div class="text-start mb-2">
-                    <label class="form-label small fw-semibold text-dark">Keterangan</label>
-                    <textarea id="swal_edit_ket" class="form-control" rows="3">${ket}</textarea>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Simpan Perubahan',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#9a55ff',
-            cancelButtonColor: '#6c757d',
-            preConfirm: () => {
-                const k = document.getElementById('swal_edit_kontraktor').value;
-                const kt = document.getElementById('swal_edit_ket').value;
-                if (!k) {
-                    Swal.showValidationMessage('Nama kontraktor tidak boleh kosong!');
-                    return false;
-                }
-                return { k, kt };
-            }
-        }).then((res) => {
-            if (res.isConfirmed) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Perubahan Disimpan!',
-                    text: `Data SPK ${noSpk} berhasil diperbarui.`,
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            }
-        });
-    }
-
-    // 8. Delete SPK Dummy
-    function deleteDummySpk(btn, noSpk) {
+    // Delete SPK Action
+    function deleteSpk(id, noSpk) {
         Swal.fire({
             title: 'Hapus SPK ini?',
-            text: `Apakah Anda yakin ingin menghapus data SPK ${noSpk}? Tindakan ini tidak dapat dibatalkan.`,
+            text: `Apakah Anda yakin ingin menghapus data SPK ${noSpk}? Semua jadwal termin yang terkait juga akan dihapus.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -718,19 +537,36 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                const row = btn.closest('.spk-row');
-                if (row) {
-                    row.remove();
-                    const currentTotal = document.querySelectorAll('.spk-row').length;
-                    document.getElementById('paginationInfo').innerText = `Menampilkan 1 - ${currentTotal} dari ${currentTotal} data`;
-                }
-
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Terhapus!',
-                    text: `SPK ${noSpk} berhasil dihapus.`,
-                    timer: 1500,
-                    showConfirmButton: false
+                    title: 'Menghapus data...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: `/spk/${id}`,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Terhapus!',
+                                text: res.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error', res.message || 'Gagal menghapus data', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Terjadi kesalahan sistem saat menghapus data.', 'error');
+                    }
                 });
             }
         });

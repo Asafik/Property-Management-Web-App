@@ -654,6 +654,57 @@
             box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
         }
 
+        /* Select2 Styling inside Modals */
+        .select2-container {
+            width: 100% !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 42px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            background-color: #ffffff !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 40px !important;
+            color: #1e293b !important;
+            font-weight: 600 !important;
+            padding-left: 12px !important;
+            font-size: 0.88rem !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+            right: 8px !important;
+        }
+        .select2-dropdown {
+            z-index: 999999 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            font-size: 0.88rem !important;
+            background: #ffffff !important;
+        }
+        .select2-search--dropdown {
+            padding: 8px !important;
+        }
+        .select2-search--dropdown .select2-search__field {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            font-size: 0.86rem !important;
+            outline: none !important;
+            width: 100% !important;
+        }
+        .select2-results__option {
+            padding: 8px 12px !important;
+            font-size: 0.86rem !important;
+        }
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: #9a55ff !important;
+            color: #ffffff !important;
+        }
+
         /* Siteplan */
         .siteplan-scroll-container {
             width: 100%;
@@ -1348,6 +1399,14 @@
                                     <i class="mdi mdi-map"></i><span>Siteplan</span>
                                 </button>
                             </div>
+                            <!-- Aturan Komisi Agent Button (Hanya Kepala Marketing & Admin) -->
+                            @if (empty($isStaffMarketing))
+                                <button type="button" class="btn btn-sm btn-gradient-info text-white d-inline-flex align-items-center gap-1.5 px-3 shadow-sm"
+                                    style="height: 32px; border-radius: 6px; font-weight: 600;" data-bs-toggle="modal" data-bs-target="#modalMasterCommissionRules">
+                                    <i class="mdi mdi-cogs text-white"></i>
+                                    <span class="text-white">Aturan Komisi</span>
+                                </button>
+                            @endif
                             <!-- Export Buttons -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
                                 class="btn btn-sm btn-gradient-success d-inline-flex align-items-center gap-1 px-3" style="height: 32px; border-radius: 6px;">
@@ -1609,7 +1668,7 @@
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
                                             </th>
-                                            <th>Booking Fee</th>
+                                            <th>Uang Tanda Jadi (UTJ)</th>
                                             <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
@@ -1822,14 +1881,16 @@
                                                             <i class="mdi mdi-eye"></i>
                                                         </button>
                                                         @if (auth()->user()->position_id != 4)
-                                                            <button class="btn-action customer" title="Pilih Customer"
+                                                            <button class="btn-action customer" title="Booking Unit / Pilih Customer"
                                                                 onclick="openCustomerModal({{ $unit->id }})">
                                                                 <i class="mdi mdi-account-plus"></i>
                                                             </button>
-                                                            <button class="btn-action agent" title="Pilih Agent"
-                                                                onclick="openAgentModal({{ $unit->id }})">
-                                                                <i class="mdi mdi-account-search"></i>
-                                                            </button>
+                                                            @if (empty($isStaffMarketing))
+                                                                <button class="btn-action agent" title="Pasang Agency & Komisi"
+                                                                    onclick="openAgentModal({{ $unit->id }})">
+                                                                    <i class="mdi mdi-account-search"></i>
+                                                                </button>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </td>
@@ -2245,11 +2306,25 @@
                                         </label>
                                         <select id="siteplanProjectSelect" class="form-control select2" style="width: 100%;">
                                             @foreach ($projects as $p)
+                                                @php
+                                                    $denahUrl = '';
+                                                    if (!empty($p->denah)) {
+                                                        if (file_exists(public_path('uploads/' . $p->denah))) {
+                                                            $denahUrl = asset('uploads/' . $p->denah);
+                                                        } elseif (file_exists(public_path($p->denah))) {
+                                                            $denahUrl = asset($p->denah);
+                                                        } elseif (file_exists(storage_path('app/public/' . $p->denah))) {
+                                                            $denahUrl = asset('storage/' . $p->denah);
+                                                        } else {
+                                                            $denahUrl = asset('uploads/' . $p->denah);
+                                                        }
+                                                    }
+                                                @endphp
                                                 <option value="{{ $p->id }}"
-                                                    data-denah="{{ $p->denah ? asset('storage/' . $p->denah) : '' }}"
+                                                    data-denah="{{ $denahUrl }}"
                                                     data-name="{{ $p->name }}"
                                                     {{ (request('project') == $p->id || (empty(request('project')) && $loop->first)) ? 'selected' : '' }}>
-                                                    {{ $p->name }} {{ $p->denah ? ' (✓ Denah Terunggah)' : ' (Denah Default)' }}
+                                                    {{ $p->name }} {{ !empty($denahUrl) ? ' (✓ Denah Terunggah)' : ' (Denah Default)' }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -2283,7 +2358,39 @@
                                 <div class="siteplan-scroll-container">
                                     <canvas id="siteplanCanvas"></canvas>
                                 </div>
-                                <div class="mt-4 text-center">
+
+                                <!-- Legend Status Penjualan & Status Pembangunan Fisik -->
+                                <div class="mt-3 p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="row g-3">
+                                        <!-- Status Progress Pembangunan -->
+                                        <div class="col-md-7 border-end">
+                                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.82rem;">
+                                                <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Bulatan):
+                                            </h6>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <span class="badge" style="background: #adb5bd; color: #fff; font-size: 11px; padding: 4px 8px;">Belum Mulai (0%)</span>
+                                                <span class="badge" style="background: #fd7e14; color: #fff; font-size: 11px; padding: 4px 8px;">Pondasi (20%)</span>
+                                                <span class="badge" style="background: #ffc107; color: #212529; font-size: 11px; padding: 4px 8px;">Dinding (40%)</span>
+                                                <span class="badge" style="background: #17a2b8; color: #fff; font-size: 11px; padding: 4px 8px;">Atap (60%)</span>
+                                                <span class="badge" style="background: #9a55ff; color: #fff; font-size: 11px; padding: 4px 8px;">Finishing (80%)</span>
+                                                <span class="badge" style="background: #28a745; color: #fff; font-size: 11px; padding: 4px 8px;">Selesai (100%)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Status Penjualan -->
+                                        <div class="col-md-5">
+                                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.82rem;">
+                                                <i class="mdi mdi-circle-outline text-primary me-1"></i>Status Penjualan (Garis Border):
+                                            </h6>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <span class="badge" style="background: rgba(220, 53, 69, 0.15); color: #dc3545; border: 1.5px solid #dc3545; font-size: 11px; padding: 4px 8px;">Terjual / Sold (Border Merah)</span>
+                                                <span class="badge" style="background: rgba(255, 193, 7, 0.15); color: #d39e00; border: 1.5px solid #ffc107; font-size: 11px; padding: 4px 8px;">Booked (Border Emas)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 text-center">
                                     <button type="button" class="btn btn-save-position" onclick="savePosition()"><i
                                             class="mdi mdi-content-save me-2"></i>Simpan Posisi Unit</button>
                                 </div>
@@ -2456,7 +2563,7 @@
                                                 <div class="col-md-3">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
-                                                                class="mdi mdi-cash-multiple"></i>Booking Fee</div>
+                                                                class="mdi mdi-cash-multiple"></i>Uang Tanda Jadi (UTJ)</div>
                                                         <div class="timeline-detail-value fee-text" id="m_booking_fee">-
                                                         </div>
                                                     </div>
@@ -2513,15 +2620,18 @@
             </div>
         </div>
 
-        <!-- MODAL CUSTOMER -->
-        <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
+        <!-- MODAL CUSTOMER & BOOKING UNIT -->
+        <div class="modal fade" id="modalCustomer" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
-                        <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
-                            <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
-                            Pilih Customer & Booking Unit
-                        </h5>
+                        <div>
+                            <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
+                                <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
+                                Formulir Booking Unit
+                            </h5>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Agency/Sales dan Customer pembeli unit</small>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-4">
@@ -2529,11 +2639,62 @@
                             @csrf
                             <input type="hidden" id="customer_unit_id" name="unit_id">
 
-                            <!-- Field Pilih Customer (Select2 Search) -->
+                            <!-- Section 1: Agency & Komisi (Step 1) -->
+                            <!-- Box 1A: Jika agency SUDAH ADA / TERPASANG -> Tampilkan Ringkasan & Kunci (Tanpa Dropdown) -->
+                            <div class="p-3 rounded-3 mb-3" id="box_agency_existing" style="display: none; background: #f0fdf4; border: 1.5px solid #86efac;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-success fw-bold small"><i class="mdi mdi-check-decagram me-1"></i>Agency / Sales Pembawa (Sudah Terpasang)</span>
+                                    <span class="badge bg-success text-white" style="font-size: 0.7rem; border-radius: 4px; padding: 3px 6px;">Sudah Ada</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0" id="existing_sales_name">-</h6>
+                                        <small class="text-muted" id="existing_sales_phone"></small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Komisi Agency</small>
+                                        <span class="fw-bold text-success" id="existing_agent_fee" style="font-size: 0.95rem;">Rp 0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Box 1B: Jika agency KOSONG -> Tampilkan Pilihan Dropdown Agency -->
+                            <div class="p-3 rounded-3 mb-3" id="box_agency_selector" style="background: #faf5ff; border: 1.5px solid #e9d5ff;">
+                                <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 0.88rem;">
+                                        <i class="mdi mdi-account-tie text-primary me-1"></i>Pilih Agency / Sales Agent
+                                    </label>
+                                    <span class="badge text-white" style="font-size: 0.7rem; background: #9a55ff; border-radius: 4px; padding: 3px 6px;">Tahap 1</span>
+                                </div>
+                                <select class="form-control select2-customer-agency-modal" id="customer_select_sales_id" name="sales_id" style="width: 100%;">
+                                    <option value="">-- Pilih Agency / Agent Yang Membawa --</option>
+                                    @foreach ($agencies as $a)
+                                        <option value="{{ $a->id }}" data-name="{{ $a->name }}" data-phone="{{ $a->phone ?? '' }}" data-address="{{ $a->address ?? '' }}">
+                                            {{ $a->name }} @if(!empty($a->phone)) ({{ $a->phone }}) @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                
+                                <div class="mt-2 pt-2 border-top">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label class="form-label fw-bold mb-0 text-dark" style="font-size: 0.78rem;">Nominal Fee Agent (Otomatis)</label>
+                                        <small class="text-primary fw-bold" id="customer_auto_calc_label" style="font-size: 0.72rem;"></small>
+                                    </div>
+                                    <div class="input-group input-group-sm rupiah-input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="text" class="form-control rupiah-format" id="customer_modal_agent_fee" name="agent_fee" placeholder="0" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Pilih Customer (Step 2) -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
-                                </label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                        <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
+                                    </label>
+                                    <span class="badge bg-primary text-white" style="font-size: 0.7rem; border-radius: 4px; padding: 3px 6px;">Tahap 2</span>
+                                </div>
                                 <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
                                     <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
                                     @foreach ($customers as $c)
@@ -2552,38 +2713,38 @@
                                 <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
                                     <i class="mdi mdi-credit-card-outline text-primary me-1"></i>Metode Pembayaran <span class="text-danger">*</span>
                                 </label>
-                                <select class="form-control" id="select_purchase_type" name="purchase_type" required style="border: 1.5px solid #e2e8f0; border-radius: 8px; min-height: 42px; font-weight: 600;">
-                                    <option value="cash">Cash Keras</option>
-                                    <option value="cash_tempo">Cash Tempo</option>
-                                    <option value="kpr" selected>KPR</option>
+                                <select class="form-control select2-purchase-type-modal" id="select_purchase_type" name="purchase_type" required style="width: 100%;">
+                                    <option value="kpr" selected>KPR (Kredit Pemilikan Rumah)</option>
+                                    <option value="cash">Cash Keras (Tunai)</option>
+                                    <option value="cash_tempo">Cash Bertahap (Tempo)</option>
                                 </select>
                             </div>
 
-                            <!-- Field Nominal Booking Fee -->
+                            <!-- Field Nominal Uang Tanda Jadi (UTJ) -->
                             <div class="mb-3">
                                 <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Booking Fee <span class="text-danger">*</span>
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Uang Tanda Jadi (UTJ) <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group rupiah-input-group">
                                     <span class="input-group-text">Rp</span>
                                     <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
                                 </div>
                                 <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-information-outline me-1"></i>Nominal booking fee yang dibayar oleh customer
+                                    <i class="mdi mdi-information-outline me-1"></i>Nominal uang tanda jadi yang dibayar oleh customer (tidak mengurangi harga jual unit)
                                 </small>
                             </div>
 
-                            <!-- Field Upload Bukti Transfer -->
+                            <!-- Field Upload Bukti Transfer UTJ -->
                             <div class="mb-2">
                                 <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer <span class="text-danger">*</span>
+                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer UTJ <span class="text-danger">*</span>
                                 </label>
                                 <div class="file-upload-modern">
                                     <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf" required>
                                     <div class="file-label-modern" id="buktiLabel">
                                         <i class="mdi mdi-cloud-upload" style="font-size: 1.75rem; color: #9a55ff;"></i>
                                         <div class="file-info-modern">
-                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer</span>
+                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer UTJ</span>
                                             <small class="text-muted d-block">Format: JPG, PNG, PDF (Max 2MB)</small>
                                         </div>
                                         <span class="file-size text-muted small" id="buktiFileSize"></span>
@@ -2597,25 +2758,43 @@
                             Batal
                         </button>
                         <button type="button" class="btn btn-gradient-primary px-4" id="btnSimpanCustomer" style="border-radius: 8px; font-weight: 600;">
-                            <i class="mdi mdi-content-save me-1"></i>Simpan Customer
+                            <i class="mdi mdi-content-save me-1"></i>Simpan Booking
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL AGENCY -->
-        <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+        <!-- MODAL AGENCY DENGAN OTOMATISASI KOMISI -->
+        <div class="modal fade" id="modalAgency" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
-                        <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
-                            <i class="mdi mdi-office-building text-primary me-2" style="font-size: 1.35rem;"></i>
-                            Pilih Agency / Agent
-                        </h5>
+                        <div>
+                            <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
+                                <i class="mdi mdi-office-building text-primary me-2" style="font-size: 1.35rem;"></i>
+                                Pasang Agency & Komisi
+                            </h5>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Agency terlebih dahulu, lalu simpan atau lanjut pilih customer</small>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-4">
+                        <!-- Ringkasan Unit Terpilih -->
+                        <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <div>
+                                    <span class="badge bg-primary text-white mb-1" id="agency_modal_unit_code" style="font-size: 0.75rem; border-radius: 6px;">Unit -</span>
+                                    <h6 class="fw-bold text-dark mb-0" id="agency_modal_unit_name">-</h6>
+                                </div>
+                                <span class="badge" id="agency_modal_jenis_badge" style="font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 15px;">-</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                <span class="text-muted small">Harga Jual Unit:</span>
+                                <span class="fw-bold text-success" id="agency_modal_unit_price" style="font-size: 0.95rem;">Rp 0</span>
+                            </div>
+                        </div>
+
                         <form id="formAgency" method="POST">
                             @csrf
                             <input type="hidden" name="unit_id" id="agency_unit_id">
@@ -2638,32 +2817,319 @@
                                 </small>
                             </div>
 
+                            <!-- Box Notifikasi Otomatisasi Komisi -->
+                            <div class="p-2.5 px-3 rounded-3 mb-3 d-flex align-items-center justify-content-between" id="auto_calc_info_box" style="background: #eef2ff; border: 1px solid #c7d2fe;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="mdi mdi-calculator-variant text-primary fs-5"></i>
+                                    <div>
+                                        <span class="fw-bold text-primary d-block" id="auto_calc_rule_name" style="font-size: 0.82rem;">Otomatisasi Komisi</span>
+                                        <small class="text-muted" id="auto_calc_formula" style="font-size: 0.76rem;">Dihitung berdasarkan master aturan</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2.5 d-inline-flex align-items-center gap-1" id="btnRecalculateFee" title="Hitung Ulang Berdasarkan Aturan" style="font-size: 0.74rem; border-radius: 6px;">
+                                    <i class="mdi mdi-refresh"></i>
+                                    <span>Hitung Ulang</span>
+                                </button>
+                            </div>
+
                             <!-- Field Nominal Agent Fee -->
                             <div class="mb-2">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Agent Fee <span class="text-danger">*</span>
-                                </label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label fw-bold mb-0" style="color: #3b3f5c; font-size: 0.88rem;">
+                                        <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Komisi / Agent Fee <span class="text-danger">*</span>
+                                    </label>
+                                    <span class="badge bg-success bg-opacity-10 text-success" style="font-size: 0.72rem; font-weight: 700;">Otomatis Terisi</span>
+                                </div>
                                 <div class="input-group rupiah-input-group">
                                     <span class="input-group-text">Rp</span>
                                     <input type="text" class="form-control rupiah-format" name="agent_fee" id="agent_fee_modal" placeholder="Contoh: 5.000.000" autocomplete="off" required>
                                 </div>
                                 <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-information-outline me-1"></i>Masukkan nominal komisi/fee untuk agency yang dipilih
+                                    <i class="mdi mdi-check-circle-outline text-success me-1"></i>Terisi otomatis sesuai aturan komisi aktif. Anda tetap dapat mengubahnya jika ada negosiasi khusus.
                                 </small>
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-end gap-2">
+                    <div class="modal-footer bg-light border-top px-3 py-3 d-flex flex-wrap justify-content-end gap-2">
                         <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
                             Batal
                         </button>
-                        <button type="button" class="btn btn-gradient-primary px-4" id="btnSimpanAgency" style="border-radius: 8px; font-weight: 600;">
+                        <button type="button" class="btn btn-outline-primary px-3" id="btnSimpanAgencyOnly" style="border-radius: 8px; font-weight: 600;">
                             <i class="mdi mdi-content-save me-1"></i>Simpan Agency
+                        </button>
+                        <button type="button" class="btn btn-gradient-primary px-3" id="btnSimpanAgencyAndNext" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-account-arrow-right me-1"></i>Lanjut Pilih Customer
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        @if (empty($isStaffMarketing))
+        <!-- ========================================================================= -->
+        <!-- MODAL MASTER ATURAN KOMISI & FEE AGENT (PENGATURAN KOMISI OTOMATIS) -->
+        <!-- ========================================================================= -->
+        <div class="modal fade" id="modalMasterCommissionRules" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                    <div class="modal-header bg-gradient-primary text-white" style="padding: 1.2rem 1.5rem;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle bg-white bg-opacity-20 p-2 d-inline-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                <i class="mdi mdi-cogs text-white fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="modal-title fw-bold text-white mb-0">Master Aturan Komisi & Fee Agent</h5>
+                                <small class="text-white text-opacity-85" style="font-size: 0.8rem;">Otomatisasi perhitungan komisi agency setiap transaksi di Catalog Unit</small>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body p-3 p-md-4" style="background: #f8fafc;">
+                        <!-- Summary Cards -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6 col-md-3">
+                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Total Aturan</small>
+                                    <h5 class="fw-bold text-dark mb-0" id="stat_total_rules">{{ $commissionRules->count() }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Aturan Aktif</small>
+                                    <h5 class="fw-bold text-success mb-0" id="stat_active_rules">{{ $commissionRules->where('is_active', true)->count() }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Skema Komersil</small>
+                                    <h5 class="fw-bold text-primary mb-0">{{ $commissionRules->where('target_type', 'komersil')->count() }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Skema Subsidi</small>
+                                    <h5 class="fw-bold text-info mb-0">{{ $commissionRules->where('target_type', 'subsidi')->count() }}</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Action: Button Tambah Aturan Baru -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">
+                                <i class="mdi mdi-format-list-bulleted-type text-primary me-1"></i>Daftar Aturan Komisi Aktif
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm"
+                                id="btnToggleFormRule" style="border-radius: 8px; font-weight: 600; font-size: 0.82rem;">
+                                <i class="mdi mdi-plus-circle"></i>
+                                <span>+ Tambah Aturan Komisi</span>
+                            </button>
+                        </div>
+
+                        <!-- Form Tambah / Edit Aturan (Collapsible Card) -->
+                        <div class="card border-0 shadow-sm mb-3 d-none" id="formRuleContainer" style="border-radius: 12px; background: #ffffff; border: 1px solid #e0e7ff;">
+                            <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary small" id="formRuleTitle">
+                                    <i class="mdi mdi-pencil-plus me-1"></i>Form Tambah Aturan Komisi Baru
+                                </span>
+                                <button type="button" class="btn-close btn-sm" id="btnCloseFormRule" style="font-size: 0.7rem;"></button>
+                            </div>
+                            <div class="card-body p-3 p-md-3">
+                                <form id="formCommissionRule">
+                                    @csrf
+                                    <input type="hidden" id="rule_id" name="rule_id" value="">
+                                    
+                                    <div class="row g-2.5">
+                                        <!-- Nama Aturan -->
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label fw-bold small text-dark mb-1">Nama Aturan <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-sm" id="rule_name" name="name" placeholder="Contoh: Komisi Komersil 2.5%" required>
+                                        </div>
+
+                                        <!-- Target Proyek -->
+                                        <div class="col-12 col-md-6">
+                                            <label class="form-label fw-bold small text-dark mb-1">Target Proyek</label>
+                                            <select class="form-select form-select-sm" id="rule_land_bank_id" name="land_bank_id">
+                                                <option value="">-- Berlaku untuk Semua Proyek --</option>
+                                                @foreach ($projects as $prj)
+                                                    <option value="{{ $prj->id }}">{{ $prj->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Target Jenis Unit -->
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label fw-bold small text-dark mb-1">Target Jenis Unit <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm" id="rule_target_type" name="target_type" required>
+                                                <option value="all">Semua Jenis Unit</option>
+                                                <option value="komersil">Khusus Komersil</option>
+                                                <option value="subsidi">Khusus Subsidi</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Metode Perhitungan Komisi -->
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label fw-bold small text-dark mb-1">Metode Komisi <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm" id="rule_calculation_type" name="calculation_type" required>
+                                                <option value="percentage">Persentase (% dari Harga Jual)</option>
+                                                <option value="fixed">Nominal Tetap (Flat Rp)</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Nilai Komisi -->
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label fw-bold small text-dark mb-1" id="rule_value_label">Nilai Komisi (%) <span class="text-danger">*</span></label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text fw-bold text-primary" id="rule_value_prefix">%</span>
+                                                <input type="number" step="any" min="0" class="form-control form-control-sm" id="rule_value" name="value" placeholder="2.5" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Keterangan -->
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Deskripsi</label>
+                                            <input type="text" class="form-control form-control-sm" id="rule_description" name="description" placeholder="Catatan aturan komisi (opsional)">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+                                        <button type="button" class="btn btn-sm btn-light border px-3" id="btnCancelFormRule">Batal</button>
+                                        <button type="submit" class="btn btn-sm btn-gradient-primary px-3 fw-bold" id="btnSaveCommissionRule">
+                                            <i class="mdi mdi-content-save me-1"></i>Simpan Aturan
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Daftar Aturan Cards / Table -->
+                        <div class="table-responsive bg-white rounded-3 shadow-sm border">
+                            <table class="table table-hover align-middle mb-0" id="tableCommissionRules" style="font-size: 0.85rem;">
+                                <thead class="table-light">
+                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                        <th class="py-2.5 px-3" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Nama Aturan</th>
+                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Proyek</th>
+                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Target Unit</th>
+                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Skema Komisi</th>
+                                        <th class="py-2.5 text-center" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Status</th>
+                                        <th class="py-2.5 text-center" style="width: 100px; color: #334155; font-weight: 800; font-size: 0.8rem;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($commissionRules as $rule)
+                                        <tr id="rule_row_{{ $rule->id }}">
+                                            <td class="px-3">
+                                                <span class="fw-bold text-dark d-block">{{ $rule->name }}</span>
+                                                @if($rule->description)
+                                                    <small class="text-muted" style="font-size: 0.75rem;">{{ $rule->description }}</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($rule->land_bank_id)
+                                                    <span class="badge" style="background: #e0f2fe !important; color: #0369a1 !important; border: 1px solid #bae6fd; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">
+                                                        <i class="mdi mdi-office-building me-1"></i>{{ $rule->landBank->name ?? '-' }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge" style="background: #f1f5f9 !important; color: #1e293b !important; border: 1px solid #cbd5e1; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">
+                                                        <i class="mdi mdi-earth me-1 text-secondary"></i>Semua Proyek
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($rule->target_type === 'komersil')
+                                                    <span class="badge" style="background: #6366f1 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Komersil</span>
+                                                @elseif($rule->target_type === 'subsidi')
+                                                    <span class="badge" style="background: #10b981 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Subsidi</span>
+                                                @else
+                                                    <span class="badge" style="background: #475569 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Semua Unit</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($rule->calculation_type === 'percentage')
+                                                    <span class="fw-bold text-primary" style="font-size: 0.88rem;">{{ floatval($rule->value) }}%</span>
+                                                    <small class="text-muted d-block" style="font-size: 0.72rem;">dari Harga Jual</small>
+                                                @else
+                                                    <span class="fw-bold text-success" style="font-size: 0.88rem;">Rp {{ number_format($rule->value, 0, ',', '.') }}</span>
+                                                    <small class="text-muted d-block" style="font-size: 0.72rem;">Nominal Flat per Unit</small>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check form-switch d-inline-block m-0">
+                                                    <input class="form-check-input switch-rule-status" type="checkbox" role="switch"
+                                                        data-id="{{ $rule->id }}" {{ $rule->is_active ? 'checked' : '' }} style="cursor: pointer;">
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-inline-flex gap-1">
+                                                    <button type="button" class="btn btn-xs btn-outline-primary btn-edit-rule p-1"
+                                                        data-id="{{ $rule->id }}"
+                                                        data-name="{{ $rule->name }}"
+                                                        data-land_bank_id="{{ $rule->land_bank_id ?? '' }}"
+                                                        data-target_type="{{ $rule->target_type }}"
+                                                        data-calculation_type="{{ $rule->calculation_type }}"
+                                                        data-value="{{ floatval($rule->value) }}"
+                                                        data-description="{{ $rule->description ?? '' }}"
+                                                        title="Edit Aturan" style="border-radius: 5px; width: 28px; height: 28px;">
+                                                        <i class="mdi mdi-pencil" style="font-size: 0.85rem;"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-xs btn-outline-danger btn-delete-rule p-1"
+                                                        data-id="{{ $rule->id }}"
+                                                        title="Hapus Aturan" style="border-radius: 5px; width: 28px; height: 28px;">
+                                                        <i class="mdi mdi-trash-can-outline" style="font-size: 0.85rem;"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr id="empty_rule_row">
+                                            <td colspan="6" class="text-center py-4 text-muted">
+                                                <i class="mdi mdi-information-outline fs-4 d-block mb-1"></i>
+                                                Belum ada aturan komisi. Silakan tambah aturan baru di atas.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Live Interactive Simulator Box -->
+                        <div class="card border-0 shadow-sm mt-3 p-3" style="border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <span class="fw-bold text-success small mb-2 d-flex align-items-center">
+                                <i class="mdi mdi-calculator text-success fs-5 me-1"></i>Simulasi Kalkulator Komisi Live
+                            </span>
+                            <div class="row g-2 align-items-center">
+                                <div class="col-12 col-md-5">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white">Harga Unit Rp</span>
+                                        <input type="text" class="form-control rupiah-format" id="sim_price" value="200.000.000" placeholder="200.000.000">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <select class="form-select form-select-sm" id="sim_jenis">
+                                        <option value="komersil">Komersil</option>
+                                        <option value="subsidi">Subsidi</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="p-2 rounded-2 bg-white border text-end">
+                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Hasil Komisi:</small>
+                                        <span class="fw-bold text-success" id="sim_result" style="font-size: 0.95rem;">Rp 5.000.000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-white border-top px-4 py-2.5 d-flex justify-content-between align-items-center">
+                        <small class="text-muted" style="font-size: 0.78rem;">
+                            <i class="mdi mdi-shield-check text-success me-1"></i>Perhitungan komisi akan langsung terintegrasi otomatis ke setiap pemilihan Agency
+                        </small>
+                        <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px;">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -2680,6 +3146,120 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
     <script>
+        // ========== MASTER COMMISSION RULES & CATALOG UNITS MAP ==========
+        window.commissionRules = @json($commissionRules);
+        window.catalogUnitsMap = {
+            @foreach($unitsForSvg as $u)
+            {{ $u->id }}: {
+                id: {{ $u->id }},
+                unit_code: "{{ $u->unit_code }}",
+                unit_name: "{{ str_replace(["\r", "\n"], ' ', addslashes($u->unit_name ?? '')) }}",
+                block: "{{ $u->block }}",
+                unit_number: "{{ $u->unit_number }}",
+                jenis: "{{ $u->jenis ?? $u->type }}",
+                type: "{{ $u->type }}",
+                price: {{ $u->price ?? 0 }},
+                land_bank_id: {{ $u->land_bank_id ?? 'null' }}
+            },
+            @endforeach
+        };
+
+        // Fungsi Hitung Komisi Agent Otomatis Client-side
+        window.calculateAgentFee = function(price, jenis, landBankId) {
+            const unitPrice = parseFloat(String(price).replace(/[^0-9.]/g, '')) || 0;
+            const cleanJenis = String(jenis || 'komersil').toLowerCase().trim();
+            const rules = window.commissionRules || [];
+
+            // Filter aturan yang aktif
+            const activeRules = rules.filter(r => r.is_active == 1 || r.is_active === true);
+
+            let matched = null;
+
+            // 1. Coba aturan spesifik proyek & spesifik jenis
+            matched = activeRules.find(r => {
+                if (r.land_bank_id && r.land_bank_id == landBankId && r.target_type === cleanJenis) {
+                    if (r.min_price && unitPrice < parseFloat(r.min_price)) return false;
+                    if (r.max_price && unitPrice > parseFloat(r.max_price)) return false;
+                    return true;
+                }
+                return false;
+            });
+
+            // 2. Coba aturan spesifik proyek & target all
+            if (!matched) {
+                matched = activeRules.find(r => {
+                    if (r.land_bank_id && r.land_bank_id == landBankId && r.target_type === 'all') {
+                        if (r.min_price && unitPrice < parseFloat(r.min_price)) return false;
+                        if (r.max_price && unitPrice > parseFloat(r.max_price)) return false;
+                        return true;
+                    }
+                    return false;
+                });
+            }
+
+            // 3. Coba aturan global spesifik jenis (misal: semua komersil / semua subsidi)
+            if (!matched) {
+                matched = activeRules.find(r => {
+                    if (!r.land_bank_id && r.target_type === cleanJenis) {
+                        if (r.min_price && unitPrice < parseFloat(r.min_price)) return false;
+                        if (r.max_price && unitPrice > parseFloat(r.max_price)) return false;
+                        return true;
+                    }
+                    return false;
+                });
+            }
+
+            // 4. Coba aturan global target all
+            if (!matched) {
+                matched = activeRules.find(r => {
+                    if (!r.land_bank_id && r.target_type === 'all') {
+                        if (r.min_price && unitPrice < parseFloat(r.min_price)) return false;
+                        if (r.max_price && unitPrice > parseFloat(r.max_price)) return false;
+                        return true;
+                    }
+                    return false;
+                });
+            }
+
+            if (!matched) {
+                // Fallback default
+                if (cleanJenis === 'subsidi') {
+                    return {
+                        fee: 3500000,
+                        ruleName: 'Default Subsidi Flat',
+                        formula: 'Nominal Flat Rp 3.500.000',
+                        ruleId: null
+                    };
+                } else {
+                    const calculated = Math.round((unitPrice * 2.5) / 100);
+                    return {
+                        fee: calculated,
+                        ruleName: 'Default Komersil (2.5%)',
+                        formula: '2.5% dari Harga Jual (Rp ' + new Intl.NumberFormat('id-ID').format(calculated) + ')',
+                        ruleId: null
+                    };
+                }
+            }
+
+            let fee = 0;
+            let formula = '';
+            const val = parseFloat(matched.value) || 0;
+            if (matched.calculation_type === 'percentage') {
+                fee = Math.round((unitPrice * val) / 100);
+                formula = `${val}% dari Harga Jual (Rp ${new Intl.NumberFormat('id-ID').format(fee)})`;
+            } else {
+                fee = Math.round(val);
+                formula = `Nominal Flat Rp ${new Intl.NumberFormat('id-ID').format(fee)}`;
+            }
+
+            return {
+                fee: fee,
+                ruleName: matched.name,
+                formula: formula,
+                ruleId: matched.id
+            };
+        };
+
         // ========== POPULATE DETAIL MODAL DIRECTLY ==========
         window.populateModalDirectly = function(data) {
             // ---- Informasi Unit ----
@@ -2913,6 +3493,9 @@
                 hasBooking: {{ $unit->activeBooking ? 1 : 0 }},
                 customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}",
                 sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}",
+                sales_id: "{{ $unit->activeBooking->sales_id ?? '' }}",
+                sales_name: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '')) }}",
+                sales_phone: "{{ $unit->activeBooking->sales->phone ?? '' }}",
                 bookingDate: "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}",
                 bookingFee: {{ $unit->activeBooking->booking_fee ?? 0 }},
                 agentFee: {{ $unit->activeBooking->agent_fee ?? 0 }},
@@ -2927,18 +3510,22 @@
 
         // Function Load Siteplan Berdasarkan Proyek & Denah yang Diupload
         function loadProjectSiteplan(landBankId) {
+            if (typeof canvas === 'undefined' || !canvas) return;
+
             const projectSelect = document.getElementById('siteplanProjectSelect');
             let selectedOption = null;
-            if (projectSelect) {
+            if (projectSelect && projectSelect.options && projectSelect.options.length > 0) {
                 if (landBankId) {
                     projectSelect.value = landBankId;
                 }
-                selectedOption = projectSelect.options[projectSelect.selectedIndex];
+                if (projectSelect.selectedIndex >= 0) {
+                    selectedOption = projectSelect.options[projectSelect.selectedIndex];
+                }
             }
 
-            const denahUrl = (selectedOption && selectedOption.dataset.denah) ? selectedOption.dataset.denah : "{{ asset('images/siteplan.jpeg') }}";
-            const hasCustomDenah = !!(selectedOption && selectedOption.dataset.denah);
-            const projectName = selectedOption ? selectedOption.dataset.name : 'Proyek';
+            const denahUrl = (selectedOption && selectedOption.dataset && selectedOption.dataset.denah) ? selectedOption.dataset.denah : "{{ asset('images/siteplan.jpeg') }}";
+            const hasCustomDenah = !!(selectedOption && selectedOption.dataset && selectedOption.dataset.denah);
+            const projectName = (selectedOption && selectedOption.dataset) ? (selectedOption.dataset.name || 'Proyek') : 'Proyek';
 
             const statusBadge = document.getElementById('siteplanDenahStatusBadge');
             if (statusBadge) {
@@ -2953,27 +3540,81 @@
             canvas.clear();
 
             fabric.Image.fromURL(denahUrl, function(img) {
-                originalWidth = img.width;
-                originalHeight = img.height;
+                if (!img) return;
+                originalWidth = img.width || 1200;
+                originalHeight = img.height || 800;
 
                 canvas.defaultCursor = 'grab';
 
                 canvas.setBackgroundImage(img, function() {
                     const curProjectId = projectSelect ? projectSelect.value : landBankId;
-                    const unitsToShow = curProjectId 
-                        ? allUnitsData.filter(u => u.land_bank_id == curProjectId)
-                        : allUnitsData;
+                    const unitsToShow = (typeof allUnitsData !== 'undefined' && allUnitsData.length > 0)
+                        ? (curProjectId ? allUnitsData.filter(u => u.land_bank_id == curProjectId) : allUnitsData)
+                        : [];
 
                     unitsToShow.forEach(u => {
+                        let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
+                        let strokeColor = '#495057';
+                        let strokeWidth = 1.5;
+                        let strokeDash = null;
+
+                        switch (u.construction) {
+                            case 'pondasi':
+                                fillColor = '#fd7e14'; // Oranye
+                                strokeColor = '#d96509';
+                                strokeWidth = 3;
+                                strokeDash = [5, 2];
+                                break;
+                            case 'dinding':
+                                fillColor = '#ffc107'; // Kuning Emas
+                                strokeColor = '#d39e00';
+                                strokeWidth = 3;
+                                strokeDash = [5, 2];
+                                break;
+                            case 'atap':
+                                fillColor = '#17a2b8'; // Cyan
+                                strokeColor = '#117a8b';
+                                strokeWidth = 3.5;
+                                strokeDash = [6, 2];
+                                break;
+                            case 'finishing':
+                                fillColor = '#9a55ff'; // Ungu
+                                strokeColor = '#7a3bcf';
+                                strokeWidth = 3.5;
+                                strokeDash = [6, 2];
+                                break;
+                            case 'selesai':
+                                fillColor = '#28a745'; // HIJAU HANYA JIKA PEMBANGUNAN SUDAH SELESAI (100%)
+                                strokeColor = '#1e7e34';
+                                strokeWidth = 3;
+                                break;
+                            default:
+                                fillColor = '#adb5bd';
+                                strokeColor = '#6c757d';
+                                strokeWidth = 1.5;
+                                break;
+                        }
+
+                        // Border status penjualan
+                        if (u.statusRaw === 'sold') {
+                            strokeColor = '#dc3545';
+                            strokeWidth = 4;
+                            strokeDash = null;
+                        } else if (u.statusRaw === 'booked') {
+                            strokeColor = '#ffc107';
+                            strokeWidth = 3.5;
+                        }
+
                         const circle = new fabric.Circle({
                             left: u.pos_x,
                             top: u.pos_y,
                             radius: u.width / 2,
                             angle: u.angle,
-                            fill: getColor(u.statusRaw, u.type),
-                            opacity: 0.6,
-                            stroke: 'black',
-                            strokeWidth: 1,
+                            fill: fillColor,
+                            opacity: 0.75,
+                            stroke: strokeColor,
+                            strokeWidth: strokeWidth,
+                            strokeDashArray: strokeDash,
                             hasControls: true,
                             hasBorders: true,
                             lockRotation: false
@@ -3015,14 +3656,14 @@
         }
 
         // Listener jika dropdown proyek di tab siteplan diganti
-        document.addEventListener('DOMContentLoaded', function() {
-            const projectSelect = document.getElementById('siteplanProjectSelect');
-            if (projectSelect) {
-                projectSelect.addEventListener('change', function() {
-                    loadProjectSiteplan(this.value);
-                });
-            }
-            loadProjectSiteplan(projectSelect ? projectSelect.value : null);
+        $(document).ready(function() {
+            $('#siteplanProjectSelect').on('change', function() {
+                loadProjectSiteplan($(this).val());
+            });
+            setTimeout(function() {
+                const projectSelect = document.getElementById('siteplanProjectSelect');
+                loadProjectSiteplan(projectSelect ? projectSelect.value : null);
+            }, 100);
         });
 
         // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)
@@ -3250,42 +3891,156 @@
 
         function getColor(status, type) {
             if (type === "komersil" && status === "ready") return "#2675BB";
-            if (status === "ready") return "#CE2A2E";
+            if (status === "ready") return "#28a745";
             if (status === "booked") return "#FFD700";
             if (status === "sold") return "#FA2800";
-            return "gray";
+            return "#6c757d";
         }
 
+        // Info Border / Stroke Status Konstruksi Bangunan
+        function getConstructionStrokeInfo(progress) {
+            switch (progress) {
+                case 'pondasi':
+                    return { stroke: '#fd7e14', strokeWidth: 3.5, dash: [6, 3], label: 'Pondasi (20%)', color: '#fd7e14' };
+                case 'dinding':
+                    return { stroke: '#ffc107', strokeWidth: 3.5, dash: [6, 3], label: 'Dinding (40%)', color: '#ffc107' };
+                case 'atap':
+                    return { stroke: '#17a2b8', strokeWidth: 4,   dash: [8, 3], label: 'Atap (60%)',    color: '#17a2b8' };
+                case 'finishing':
+                    return { stroke: '#9a55ff', strokeWidth: 4,   dash: [8, 3], label: 'Finishing (80%)', color: '#9a55ff' };
+                case 'selesai':
+                    return { stroke: '#28a745', strokeWidth: 3,   dash: null,   label: 'Selesai (100%)', color: '#28a745' };
+                default:
+                    return { stroke: '#212529', strokeWidth: 1.2, dash: null,   label: 'Belum Mulai (0%)', color: '#6c757d' };
+            }
+        }
+
+        // Populate Modal Detail Unit secara langsung dari objek Canvas
+        window.populateModalDirectly = function(data) {
+            document.getElementById('m_unit_name').innerText = data.unitName || '-';
+            document.getElementById('m_block').innerText = data.block || '-';
+            document.getElementById('m_unit_number').innerText = data.unitNumber || '-';
+            document.getElementById('m_jenis').innerText = data.jenis ? (data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)) : '-';
+            document.getElementById('m_type').innerText = data.type || '-';
+            document.getElementById('m_area').innerText = data.area ? data.area + ' m²' : '-';
+            document.getElementById('m_building').innerText = data.building ? data.building + ' m²' : '-';
+            document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
+            document.getElementById('m_direction').innerText = data.direction || '-';
+            document.getElementById('m_address').innerText = data.address || '-';
+
+            // Status Penjualan
+            const sRaw = (data.statusRaw || '').toLowerCase();
+            const jRaw = (data.jenis || '').toLowerCase();
+            const tRaw = (data.type || '').toLowerCase();
+            let sHtml = '';
+            if (sRaw === 'ready' || sRaw === 'tersedia') {
+                if (tRaw === 'komersil' || jRaw === 'komersil') {
+                    sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
+                } else {
+                    sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
+                }
+            } else if (sRaw === 'booked') {
+                sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
+            } else if (sRaw === 'sold' || sRaw === 'terjual') {
+                sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
+            } else {
+                sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">${data.statusText || sRaw}</span>`;
+            }
+            document.getElementById('m_status').innerHTML = sHtml;
+
+            // Progress Pembangunan Fisik
+            const progressMap = { belum_mulai: 0, pondasi: 20, dinding: 40, atap: 60, finishing: 80, selesai: 100 };
+            const prog = data.construction || 'belum_mulai';
+            const pct = progressMap[prog] !== undefined ? progressMap[prog] : 0;
+            const strokeInfo = getConstructionStrokeInfo(prog);
+
+            document.getElementById('m_progress_bar').style.width = pct + '%';
+            document.getElementById('m_progress_bar').style.background = strokeInfo.color;
+            document.getElementById('m_progress_pct').innerText = pct + '% (' + strokeInfo.label + ')';
+
+            // Booking info
+            const hasBooking = data.hasBooking == 1 || data.hasBooking === true;
+            document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
+            document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
+
+            if (hasBooking) {
+                const cust = data.customer || '-';
+                const sales = data.sales || '-';
+                document.getElementById('m_customer').innerText = cust;
+                document.getElementById('m_customer_initial').innerText = (cust !== '-' && cust) ? cust.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_sales').innerText = sales;
+                document.getElementById('m_sales_initial').innerText = (sales !== '-' && sales) ? sales.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_booking_date').innerText = data.bookingDate || '-';
+                document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+                document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
+
+                const bStatus = data.bookingStatus || '-';
+                let bBadge = '';
+                if (bStatus === 'active') {
+                    bBadge = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                } else if (bStatus === 'completed' || bStatus === 'lunas') {
+                    bBadge = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                } else if (bStatus === 'cancelled') {
+                    bBadge = `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                } else {
+                    bBadge = `<span class="badge-soft badge-draft">${bStatus}</span>`;
+                }
+                document.getElementById('m_booking_status').innerHTML = bBadge;
+            }
+        };
+
+        function openUnitDetailFromObject(target) {
+            if (!target || !target.unitId) return;
+            const data = {
+                unitName: target.unitName,
+                unitCode: target.unitCode,
+                unitNumber: target.unitNumber,
+                block: target.block,
+                jenis: target.jenis,
+                type: target.type,
+                address: target.address,
+                area: target.area,
+                building: target.building,
+                price: target.price,
+                direction: target.direction,
+                statusRaw: target.statusRaw,
+                statusText: target.statusText,
+                construction: target.construction,
+                hasBooking: target.hasBooking,
+                customer: target.customer,
+                sales: target.sales,
+                bookingDate: target.bookingDate,
+                bookingFee: target.bookingFee,
+                agentFee: target.agentFee,
+                bookingStatus: target.bookingStatus
+            };
+
+            window.populateModalDirectly(data);
+            const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
+            modal.show();
+        }
+
+        // Buka modal detail saat bulatan di-KLIK (single click)
+        let clickStartPos = { x: 0, y: 0 };
+        canvas.on('mouse:down', function(e) {
+            if (e.e) {
+                clickStartPos = { x: e.e.clientX, y: e.e.clientY };
+            }
+        });
+
+        canvas.on('mouse:up', function(e) {
+            if (e.target && e.target.unitId && e.e) {
+                const dist = Math.hypot(e.e.clientX - clickStartPos.x, e.e.clientY - clickStartPos.y);
+                if (dist < 6) {
+                    openUnitDetailFromObject(e.target);
+                }
+            }
+        });
+
+        // Double click cadangan
         canvas.on('mouse:dblclick', function(e) {
             if (e.target && e.target.unitId) {
-                const target = e.target;
-                const data = {
-                    unitName: target.unitName,
-                    unitCode: target.unitCode,
-                    unitNumber: target.unitNumber,
-                    block: target.block,
-                    jenis: target.jenis,
-                    type: target.type,
-                    address: target.address,
-                    area: target.area,
-                    building: target.building,
-                    price: target.price,
-                    direction: target.direction,
-                    statusRaw: target.statusRaw,
-                    statusText: target.statusText,
-                    construction: target.construction,
-                    hasBooking: target.hasBooking,
-                    customer: target.customer,
-                    sales: target.sales,
-                    bookingDate: target.bookingDate,
-                    bookingFee: target.bookingFee,
-                    agentFee: target.agentFee,
-                    bookingStatus: target.bookingStatus
-                };
-
-                window.populateModalDirectly(data);
-                const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
-                modal.show();
+                openUnitDetailFromObject(e.target);
             }
         });
 
@@ -3363,8 +4118,8 @@
             }
         }
 
-        // ========== OPEN CUSTOMER MODAL ==========
-        window.openCustomerModal = function(unitId) {
+        // ========== OPEN CUSTOMER MODAL (BOOKING) ==========
+        window.openCustomerModal = function(unitId, prefillSalesId = null, prefillAgentFee = null, prefillSalesName = null, prefillSalesPhone = null) {
             if (!unitId) {
                 Swal.fire({
                     icon: 'error',
@@ -3382,10 +4137,48 @@
             $('#buktiFileName').text('Upload Bukti Transfer');
             $('#buktiFileSize').text('');
             $('#buktiLabel').removeClass('file-selected');
+
+            // Ambil data unit dari allUnitsData
+            const unit = (typeof allUnitsData !== 'undefined' && allUnitsData.length > 0)
+                ? (allUnitsData.find(u => u.id == unitId) || {})
+                : {};
+
+            const unitPrice = unit.price || 0;
+            const unitJenis = unit.jenis || unit.type || 'komersil';
+            const landBankId = unit.land_bank_id || null;
+
+            // Cek apakah Agency sudah ada / dipilih
+            const existingSalesId = prefillSalesId || unit.sales_id || (unit.activeBooking ? unit.activeBooking.sales_id : null);
+            const existingSalesName = prefillSalesName || unit.sales_name || (unit.sales && unit.sales !== '-' ? unit.sales : '');
+            const existingSalesPhone = prefillSalesPhone || unit.sales_phone || '';
+            const existingAgentFee = (prefillAgentFee !== null && prefillAgentFee !== undefined && prefillAgentFee !== '') ? prefillAgentFee : (unit.agentFee || (unit.activeBooking ? unit.activeBooking.agent_fee : 0));
+
+            if (existingSalesId && existingSalesName && existingSalesName !== '-') {
+                // Agency SUDAH ADA -> Sembunyikan dropdown pemilihan agar tidak double update
+                $('#box_agency_existing').show();
+                $('#existing_sales_name').text(existingSalesName);
+                $('#existing_sales_phone').text(existingSalesPhone ? '(' + existingSalesPhone + ')' : '');
+                $('#existing_agent_fee').text('Rp ' + new Intl.NumberFormat('id-ID').format(String(existingAgentFee).replace(/\./g, '').replace(/,/g, '') || 0));
+
+                $('#box_agency_selector').hide();
+                $('#customer_select_sales_id').val(existingSalesId).trigger('change');
+                $('#customer_modal_agent_fee').val(new Intl.NumberFormat('id-ID').format(String(existingAgentFee).replace(/\./g, '').replace(/,/g, '') || 0));
+            } else {
+                // Agency KOSONG -> Tampilkan dropdown pemilihan agency
+                $('#box_agency_existing').hide();
+                $('#box_agency_selector').show();
+
+                $('#customer_select_sales_id').val('').trigger('change');
+                // Hitung default estimasi komisi sesuai aturan master
+                const calc = window.calculateAgentFee(unitPrice, unitJenis, landBankId);
+                $('#customer_modal_agent_fee').val(new Intl.NumberFormat('id-ID').format(calc.fee));
+                $('#customer_auto_calc_label').text('(' + calc.ruleName + ')');
+            }
+
             $('#modalCustomer').modal('show');
         };
 
-        // ========== OPEN AGENCY MODAL ==========
+        // ========== OPEN AGENCY MODAL DENGAN PERHITUNGAN OTOMATIS ==========
         window.openAgentModal = function(unitId) {
             if (!unitId) {
                 Swal.fire({
@@ -3397,33 +4190,121 @@
             }
             $('#modalAgency').data('unit', unitId);
             $('#agency_unit_id').val(unitId);
-            $('#select_sales_id').val('').trigger('change');
-            $('#agent_fee_modal').val('');
+
+            const unit = (window.catalogUnitsMap && window.catalogUnitsMap[unitId]) ? window.catalogUnitsMap[unitId] : {};
+            const unitPrice = unit.price || 0;
+            const unitJenis = unit.jenis || unit.type || 'komersil';
+            const landBankId = unit.land_bank_id || null;
+
+            if (unit.activeBooking && unit.activeBooking.sales_id) {
+                $('#select_sales_id').val(unit.activeBooking.sales_id).trigger('change');
+            } else {
+                $('#select_sales_id').val('').trigger('change');
+            }
+
+            // Update UI Ringkasan Unit di Modal
+            $('#agency_modal_unit_code').text('Unit ' + (unit.unit_code || unit.block || '-'));
+            $('#agency_modal_unit_name').text(unit.unit_name || (unit.block + '.' + unit.unit_number) || 'Unit Kavling');
+            $('#agency_modal_unit_price').text('Rp ' + new Intl.NumberFormat('id-ID').format(unitPrice));
+            
+            const isSub = String(unitJenis).toLowerCase() === 'subsidi';
+            $('#agency_modal_jenis_badge').text(isSub ? 'Subsidi' : 'Komersil')
+                .removeClass('bg-primary bg-success')
+                .addClass(isSub ? 'bg-success text-white' : 'bg-primary text-white');
+
+            // Kalkulasi Otomatis Fee Sesuai Aturan
+            applyAutoCalculatedFee(unitPrice, unitJenis, landBankId);
+
             $('#modalAgency').modal('show');
         };
 
+        function applyAutoCalculatedFee(unitPrice, unitJenis, landBankId) {
+            const calc = window.calculateAgentFee(unitPrice, unitJenis, landBankId);
+            $('#agent_fee_modal').val(new Intl.NumberFormat('id-ID').format(calc.fee));
+            $('#auto_calc_rule_name').html('<i class="mdi mdi-check-decagram me-1 text-primary"></i>' + calc.ruleName);
+            $('#auto_calc_formula').text('Aturan: ' + calc.formula);
+        }
+
         $(document).ready(function () {
-            // Inisialisasi Select2 untuk Pilih Customer di dalam Modal
+            // Re-inisialisasi Select2 saat Modal Terbuka Sempurna (Mencegah Bug Dropdown & Search)
+            $('#modalCustomer').on('shown.bs.modal', function () {
+                $('#select_customer_id').select2({
+                    dropdownParent: $('#modalCustomer'),
+                    placeholder: '-- Cari & Pilih Customer (ID / Nama) --',
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                $('#customer_select_sales_id').select2({
+                    dropdownParent: $('#modalCustomer'),
+                    placeholder: '-- Pilih Agency / Agent Yang Membawa --',
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                $('#select_purchase_type').select2({
+                    dropdownParent: $('#modalCustomer'),
+                    minimumResultsForSearch: Infinity,
+                    width: '100%'
+                });
+            });
+
+            $('#modalAgency').on('shown.bs.modal', function () {
+                $('#select_sales_id').select2({
+                    dropdownParent: $('#modalAgency'),
+                    placeholder: '-- Cari & Pilih Agency / Agent --',
+                    allowClear: true,
+                    width: '100%'
+                });
+            });
+
+            // Inisialisasi awal
             $('#select_customer_id').select2({
-                theme: 'bootstrap-5',
                 dropdownParent: $('#modalCustomer'),
                 placeholder: '-- Cari & Pilih Customer (ID / Nama) --',
                 allowClear: true,
                 width: '100%'
             });
 
-            // Inisialisasi Select2 untuk Pilih Agency di dalam Modal
+            $('#customer_select_sales_id').select2({
+                dropdownParent: $('#modalCustomer'),
+                placeholder: '-- Pilih Agency / Agent Yang Membawa --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#select_purchase_type').select2({
+                dropdownParent: $('#modalCustomer'),
+                minimumResultsForSearch: Infinity,
+                width: '100%'
+            });
+
             $('#select_sales_id').select2({
-                theme: 'bootstrap-5',
                 dropdownParent: $('#modalAgency'),
                 placeholder: '-- Cari & Pilih Agency / Agent --',
                 allowClear: true,
                 width: '100%'
             });
 
+            // Saat Agency dipilih di modal Customer, otomatis hitung komisi jika belum diisi
+            $('#customer_select_sales_id').on('change', function() {
+                let unitId = $('#customer_unit_id').val();
+                let unit = (window.catalogUnitsMap && window.catalogUnitsMap[unitId]) ? window.catalogUnitsMap[unitId] : {};
+                let unitPrice = unit.price || 0;
+                let unitJenis = unit.jenis || unit.type || 'komersil';
+                let landBankId = unit.land_bank_id || null;
+
+                if ($(this).val()) {
+                    const calc = window.calculateAgentFee(unitPrice, unitJenis, landBankId);
+                    if (!$('#customer_modal_agent_fee').val()) {
+                        $('#customer_modal_agent_fee').val(new Intl.NumberFormat('id-ID').format(calc.fee));
+                    }
+                    $('#customer_auto_calc_label').text('(' + calc.ruleName + ')');
+                }
+            });
 
             // Format Rupiah
-            $('#booking_fee, #agent_fee_modal').on('input', function() {
+            $('#booking_fee, #agent_fee_modal, #customer_modal_agent_fee').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
                 if (value) $(this).val(new Intl.NumberFormat('id-ID').format(value));
                 else $(this).val('');
@@ -3451,6 +4332,8 @@
             $('#btnSimpanCustomer').on('click', function(e) {
                 e.preventDefault();
                 let customerId = $('#select_customer_id').val();
+                let salesId = $('#customer_select_sales_id').val();
+                let agentFee = $('#customer_modal_agent_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
                 let purchaseType = $('#select_purchase_type').val();
                 let unitId = $('#modalCustomer').attr('data-unit-id') || $('#customer_unit_id').val();
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
@@ -3520,6 +4403,9 @@
                 formData.append('purchase_type', purchaseType);
                 formData.append('booking_fee', bookingFee);
                 formData.append('bukti_transfer', buktiTransfer);
+                if (salesId) formData.append('sales_id', salesId);
+                if (agentFee) formData.append('agent_fee', agentFee);
+
                 let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 
                 Swal.fire({
@@ -3542,7 +4428,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
-                            text: response.message || 'Customer berhasil dipilih & unit terbooking',
+                            text: response.message || 'Unit berhasil dibooking',
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => location.reload());
@@ -3563,11 +4449,11 @@
                 });
             });
 
-            // Simpan Agency / Agent
-            $('#btnSimpanAgency').on('click', function(e) {
-                e.preventDefault();
+            // Eksekusi AJAX Simpan Agency
+            function submitAgencyAjax(andProceedToCustomer = false) {
                 let salesId = $('#select_sales_id').val();
                 let agentFeeRaw = $('#agent_fee_modal').val().replace(/\./g, '').replace(/,/g, '').trim();
+                let agentFeeFormatted = $('#agent_fee_modal').val();
                 let unitId = $('#modalAgency').data('unit') || $('#agency_unit_id').val();
 
                 if (!unitId) {
@@ -3597,10 +4483,9 @@
                     return;
                 }
 
-                // Langsung simpan tanpa konfirmasi popup
                 Swal.fire({
                     title: 'Memproses...',
-                    text: 'Harap tunggu sebentar',
+                    text: 'Menyimpan data agency...',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -3617,13 +4502,37 @@
                     },
                     success: function(response) {
                         $('#modalAgency').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message || 'Agency berhasil dipasang ke unit',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => location.reload());
+
+                        if (andProceedToCustomer) {
+                            Swal.close();
+                            const selectedAgencyOption = $('#select_sales_id option:selected');
+                            const salesName = selectedAgencyOption.data('name') || selectedAgencyOption.text().split('(')[0].trim();
+                            const salesPhone = selectedAgencyOption.data('phone') || '';
+
+                            // Update allUnitsData di memori juga agar sinkron seketika
+                            if (typeof allUnitsData !== 'undefined') {
+                                const u = allUnitsData.find(item => item.id == unitId);
+                                if (u) {
+                                    u.sales_id = salesId;
+                                    u.sales_name = salesName;
+                                    u.sales_phone = salesPhone;
+                                    u.sales = salesName;
+                                    u.agentFee = agentFeeRaw;
+                                }
+                            }
+
+                            setTimeout(function() {
+                                openCustomerModal(unitId, salesId, agentFeeRaw, salesName, salesPhone);
+                            }, 300);
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message || 'Agency berhasil dipasang ke unit',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => location.reload());
+                        }
                     },
                     error: function(xhr) {
                         let errMsg = 'Terjadi kesalahan saat menyimpan';
@@ -3639,6 +4548,18 @@
                         });
                     }
                 });
+            }
+
+            // Tombol Simpan Agency Saja
+            $('#btnSimpanAgencyOnly, #btnSimpanAgency').on('click', function(e) {
+                e.preventDefault();
+                submitAgencyAjax(false);
+            });
+
+            // Tombol Simpan Agency & Lanjut Pilih Customer
+            $('#btnSimpanAgencyAndNext').on('click', function(e) {
+                e.preventDefault();
+                submitAgencyAjax(true);
             });
 
             // Search dan Filter Customer Table
@@ -3658,6 +4579,221 @@
                         $(this).toggle(jobText === job);
                     });
                 }
+            });
+
+            // Tombol Hitung Ulang Fee di Modal Agency
+            $('#btnRecalculateFee').on('click', function() {
+                let unitId = $('#modalAgency').data('unit') || $('#agency_unit_id').val();
+                let unit = (window.catalogUnitsMap && window.catalogUnitsMap[unitId]) ? window.catalogUnitsMap[unitId] : {};
+                let unitPrice = unit.price || 0;
+                let unitJenis = unit.jenis || unit.type || 'komersil';
+                let landBankId = unit.land_bank_id || null;
+                applyAutoCalculatedFee(unitPrice, unitJenis, landBankId);
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Komisi berhasil dihitung ulang!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+
+            // =========================================================
+            // SCRIPT MASTER ATURAN KOMISI (CRUD & TOGGLE & SIMULATOR)
+            // =========================================================
+
+            // Toggle Tampilkan / Sembunyikan Form Tambah Rule
+            $('#btnToggleFormRule').on('click', function() {
+                resetFormRule();
+                $('#formRuleContainer').removeClass('d-none');
+                $('#formRuleTitle').html('<i class="mdi mdi-pencil-plus me-1"></i>Form Tambah Aturan Komisi Baru');
+                $('#rule_name').focus();
+            });
+
+            $('#btnCloseFormRule, #btnCancelFormRule').on('click', function() {
+                $('#formRuleContainer').addClass('d-none');
+                resetFormRule();
+            });
+
+            function resetFormRule() {
+                $('#rule_id').val('');
+                $('#rule_name').val('');
+                $('#rule_land_bank_id').val('');
+                $('#rule_target_type').val('all');
+                $('#rule_calculation_type').val('percentage').trigger('change');
+                $('#rule_value').val('');
+                $('#rule_description').val('');
+            }
+
+            // Ganti placeholder / label nilai komisi sesuai metode
+            $('#rule_calculation_type').on('change', function() {
+                const val = $(this).val();
+                if (val === 'percentage') {
+                    $('#rule_value_label').html('Nilai Komisi (%) <span class="text-danger">*</span>');
+                    $('#rule_value_prefix').text('%');
+                    $('#rule_value').attr('placeholder', 'Contoh: 2.5');
+                } else {
+                    $('#rule_value_label').html('Nilai Komisi Flat (Rp) <span class="text-danger">*</span>');
+                    $('#rule_value_prefix').text('Rp');
+                    $('#rule_value').attr('placeholder', 'Contoh: 4000000');
+                }
+            });
+
+            // Submit Form Tambah / Edit Aturan Komisi (AJAX)
+            $('#formCommissionRule').on('submit', function(e) {
+                e.preventDefault();
+                let ruleId = $('#rule_id').val();
+                let isEdit = !!ruleId;
+                let url = isEdit 
+                    ? "{{ url('marketing/commission-rules') }}/" + ruleId
+                    : "{{ route('marketing.commission-rules.store') }}";
+                let method = isEdit ? 'PUT' : 'POST';
+
+                let data = {
+                    _token: '{{ csrf_token() }}',
+                    name: $('#rule_name').val(),
+                    land_bank_id: $('#rule_land_bank_id').val() || null,
+                    target_type: $('#rule_target_type').val(),
+                    calculation_type: $('#rule_calculation_type').val(),
+                    value: $('#rule_value').val(),
+                    description: $('#rule_description').val()
+                };
+
+                let $btn = $('#btnSaveCommissionRule');
+                $btn.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin me-1"></i>Menyimpan...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: data,
+                    success: function(res) {
+                        $btn.prop('disabled', false).html('<i class="mdi mdi-content-save me-1"></i>Simpan Aturan');
+                        if (res.success) {
+                            $('#formRuleContainer').addClass('d-none');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: res.message || 'Aturan komisi berhasil disimpan',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => location.reload());
+                        }
+                    },
+                    error: function(xhr) {
+                        $btn.prop('disabled', false).html('<i class="mdi mdi-content-save me-1"></i>Simpan Aturan');
+                        let errMsg = 'Terjadi kesalahan saat menyimpan aturan';
+                        if (xhr.responseJSON && xhr.responseJSON.message) errMsg = xhr.responseJSON.message;
+                        else if (xhr.responseJSON && xhr.responseJSON.errors) errMsg = Object.values(xhr.responseJSON.errors).join('\n');
+                        Swal.fire({ icon: 'error', title: 'Gagal', text: errMsg });
+                    }
+                });
+            });
+
+            // Edit Aturan Komisi
+            $(document).on('click', '.btn-edit-rule', function() {
+                let id = $(this).data('id');
+                let name = $(this).data('name');
+                let landBankId = $(this).data('land_bank_id');
+                let targetType = $(this).data('target_type');
+                let calculationType = $(this).data('calculation_type');
+                let value = $(this).data('value');
+                let description = $(this).data('description');
+
+                $('#rule_id').val(id);
+                $('#rule_name').val(name);
+                $('#rule_land_bank_id').val(landBankId);
+                $('#rule_target_type').val(targetType);
+                $('#rule_calculation_type').val(calculationType).trigger('change');
+                $('#rule_value').val(value);
+                $('#rule_description').val(description);
+
+                $('#formRuleTitle').html('<i class="mdi mdi-pencil me-1"></i>Edit Aturan Komisi: ' + name);
+                $('#formRuleContainer').removeClass('d-none');
+                $('#formRuleContainer')[0].scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Toggle Status Aktif / Non-Aktif Aturan Komisi (AJAX)
+            $(document).on('change', '.switch-rule-status', function() {
+                let id = $(this).data('id');
+                let isChecked = $(this).is(':checked');
+
+                $.ajax({
+                    url: "{{ url('marketing/commission-rules') }}/" + id + "/toggle",
+                    type: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(res) {
+                        // Update local rule
+                        let found = window.commissionRules.find(r => r.id == id);
+                        if (found) found.is_active = res.is_active;
+
+                        // Recalculate stats
+                        let activeCount = window.commissionRules.filter(r => r.is_active == 1 || r.is_active === true).length;
+                        $('#stat_active_rules').text(activeCount);
+
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: res.message || 'Status aturan berhasil diubah',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    },
+                    error: function() {
+                        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Gagal mengubah status aturan komisi' });
+                    }
+                });
+            });
+
+            // Hapus Aturan Komisi (AJAX)
+            $(document).on('click', '.btn-delete-rule', function() {
+                let id = $(this).data('id');
+                Swal.fire({
+                    title: 'Hapus Aturan Komisi?',
+                    text: 'Aturan ini tidak akan digunakan lagi untuk perhitungan otomatis komisi!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ url('marketing/commission-rules') }}/" + id,
+                            type: 'DELETE',
+                            data: { _token: '{{ csrf_token() }}' },
+                            success: function(res) {
+                                $('#rule_row_' + id).fadeOut(300, function() { $(this).remove(); });
+                                window.commissionRules = window.commissionRules.filter(r => r.id != id);
+                                $('#stat_total_rules').text(window.commissionRules.length);
+                                let activeCount = window.commissionRules.filter(r => r.is_active == 1 || r.is_active === true).length;
+                                $('#stat_active_rules').text(activeCount);
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Terhapus!',
+                                    text: res.message || 'Aturan komisi berhasil dihapus',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function() {
+                                Swal.fire({ icon: 'error', title: 'Gagal', text: 'Gagal menghapus aturan komisi' });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Live Simulator Calculator in Modal
+            $('#sim_price, #sim_jenis').on('input change keyup', function() {
+                let rawPrice = $('#sim_price').val().replace(/\./g, '').replace(/,/g, '').trim();
+                let p = parseFloat(rawPrice) || 0;
+                let j = $('#sim_jenis').val();
+                let calc = window.calculateAgentFee(p, j, null);
+                $('#sim_result').text('Rp ' + new Intl.NumberFormat('id-ID').format(calc.fee));
             });
 
             // Reset form saat modal ditutup

@@ -169,24 +169,26 @@ class MenuSeeder extends Seeder
         }
 
         // ================= 7. PENGGUNA =================
+        $penggunaRoles = array_values(array_filter([$admin?->id, $marketing?->id]));
+
         $pengguna = Menu::create([
             'name'  => 'Pengguna',
             'icon'  => 'mdi-account-tie',
             'order' => 7
         ]);
-        $pengguna->positions()->attach($adminOnly);
+        $pengguna->positions()->attach($penggunaRoles);
 
         Menu::create([
             'name'      => 'Buat Pengguna',
             'route'     => 'agency.create',
             'parent_id' => $pengguna->id
-        ])->positions()->attach($adminOnly);
+        ])->positions()->attach($penggunaRoles);
 
         Menu::create([
             'name'      => 'Data Pengguna',
             'route'     => 'agency.index',
             'parent_id' => $pengguna->id
-        ])->positions()->attach($adminOnly);
+        ])->positions()->attach($penggunaRoles);
 
         // ================= 8. MASTER DATA =================
         $master = Menu::create([
@@ -231,6 +233,12 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name'      => 'Master Invoice',
             'route'     => 'keuangan.master-invoice.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Master Fee Agency',
+            'route'     => 'marketing.commission-rules.index',
             'parent_id' => $keuangan->id
         ])->positions()->attach($marketingRoles);
 

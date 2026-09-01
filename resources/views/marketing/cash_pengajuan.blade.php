@@ -713,12 +713,12 @@ select.cash-form-control {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="cash-form-group">
-                                    <label class="cash-form-label">Booking Fee (Uang Tanda Jadi) <span class="text-danger">*</span></label>
+                                    <label class="cash-form-label">Uang Tanda Jadi (UTJ) <span class="text-danger">*</span></label>
                                     <div class="cash-input-group">
                                         <span class="cash-input-group-text">Rp</span>
-                                        <input type="number" class="cash-form-control" id="bookingFee" name="booking_fee" value="{{ $booking->booking_fee ?? 0 }}" required>
+                                        <input type="number" class="cash-form-control" id="bookingFee" name="booking_fee" value="{{ $booking->booking_fee ?? 0 }}" readonly>
                                     </div>
-                                    <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">Termasuk dalam total uang muka yang dibayarkan customer</small>
+                                    <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">*Uang Tanda Jadi (UTJ) tidak mengurangi harga jual unit</small>
                                 </div>
                             </div>
 
@@ -762,7 +762,7 @@ select.cash-form-control {
                                         <label class="cash-form-label">Uang Muka (DP) <span class="text-danger">*</span></label>
                                         <div class="cash-input-group">
                                             <span class="cash-input-group-text">Rp</span>
-                                            <input type="number" class="cash-form-control" id="uangMuka" name="dp" value="{{ $booking->booking_fee ?? 0 }}" required>
+                                            <input type="number" class="cash-form-control" id="uangMuka" name="dp" value="0" required>
                                         </div>
                                         <small class="text-danger d-block mt-1" id="dpWarning" style="font-size: 0.75rem;"></small>
                                     </div>

@@ -522,6 +522,18 @@
                         </div>
                     </div>
 
+                    <!-- Info Uang Tanda Jadi (UTJ) Terbayar -->
+                    <div class="p-2.5 px-3 rounded-3 mb-3 d-flex align-items-center justify-content-between" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="mdi mdi-check-decagram text-success fs-5"></i>
+                            <div>
+                                <span class="fw-bold text-dark d-block" style="font-size: 0.85rem;">Uang Tanda Jadi (UTJ) Terbayar: <strong class="text-success">Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}</strong></span>
+                                <small class="text-muted" style="font-size: 0.76rem;">*Uang Tanda Jadi (UTJ) adalah tanda kesepakatan pemesanan dan tidak mengurangi harga jual unit</small>
+                            </div>
+                        </div>
+                        <span class="badge bg-success text-white" style="font-size: 0.72rem; padding: 4px 8px; border-radius: 6px;">UTJ Lunas</span>
+                    </div>
+
                     <!-- Harga Unit, DP, Promo -->
                     <div class="row g-3 mb-3">
                         <div class="col-12 col-sm-6 col-md-4">
@@ -536,10 +548,10 @@
                             <label class="form-label-kpr"><i class="mdi mdi-cash-multiple text-primary me-1"></i>Uang Muka (DP) <span class="req">*</span></label>
                             <div class="kpr-input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control-kpr" name="dp_display" id="dp" required value="{{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}" autocomplete="off">
-                                <input type="hidden" name="dp" id="dp_hidden" value="{{ $booking->booking_fee ?? 0 }}">
+                                <input type="text" class="form-control-kpr" name="dp_display" id="dp" required value="0" autocomplete="off">
+                                <input type="hidden" name="dp" id="dp_hidden" value="0">
                             </div>
-                            <small class="text-muted" style="font-size: 0.75rem;">Masukkan nominal DP yang dibayarkan</small>
+                            <small class="text-muted" style="font-size: 0.75rem;">Masukkan nominal Uang Muka (DP) yang dibayarkan</small>
                         </div>
 
                         <div class="col-12 col-sm-6 col-md-4">
@@ -578,8 +590,8 @@
 
                         @php
                             $hargaUnit = $booking->unit->price ?? 0;
-                            $dp = $booking->booking_fee ?? 0;
-                            $jumlahPinjaman = max($hargaUnit - $dp, 0);
+                            $dp = 0;
+                            $jumlahPinjaman = $hargaUnit;
                         @endphp
 
                         <div class="col-12 col-sm-6 col-md-4">

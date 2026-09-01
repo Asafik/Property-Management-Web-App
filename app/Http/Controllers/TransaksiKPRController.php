@@ -133,20 +133,13 @@ class TransaksiKPRController extends Controller
                 'no_sp3k'           => $request->no_sp3k ?? $kpr->no_sp3k,
                 'akad_at'           => $request->akad_at ?? now(),
                 'status'            => $kprStatus, // 🔥 LOGIC UTAMA
-                'harga_unit'        => $request->jumlah_pinjaman ?? $kpr->harga_unit,
+                'harga_unit'        => $booking->unit->price ?? $kpr->harga_unit,
                 'submitted_at'      => $kpr->submitted_at ?? now(),
             ]);
 
             // update booking
             $booking->status_cash = 'done';
             $booking->status = 'cash_process';
-
-            // update harga unit
-            if ($kpr->unit) {
-                $kpr->unit->update([
-                    'price' => $request->jumlah_pinjaman ?? $kpr->unit->price
-                ]);
-            }
         }
 
         // =========================
