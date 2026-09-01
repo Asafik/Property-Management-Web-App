@@ -14,10 +14,15 @@ class AgencyPropertyController extends Controller
     public function index(Request $request)
     {
         $authUser = auth()->user();
+        $posName = strtolower($authUser?->position?->name ?? '');
+        $divName = strtolower($authUser?->division?->name ?? '');
+        $isAdmin = ($posName === 'admin' || $divName === 'super admin' || $authUser?->position_id == 5 || $authUser?->division_id == 4);
+        $isMarketing = ($divName === 'marketing' || $authUser?->division_id == 1 || str_contains($posName, 'marketing'));
+
         $query = Employee::with(['division', 'position']);
 
         // Jika login sebagai Kepala Marketing / Staff Marketing (bukan Admin), filter hanya anggota divisi Marketing
-        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+        if ($isMarketing && !$isAdmin) {
             $query->where('division_id', 1);
         }
 
@@ -52,13 +57,18 @@ class AgencyPropertyController extends Controller
     public function create()
     {
         $authUser = auth()->user();
+        $posName = strtolower($authUser?->position?->name ?? '');
+        $divName = strtolower($authUser?->division?->name ?? '');
+        $isAdmin = ($posName === 'admin' || $divName === 'super admin' || $authUser?->position_id == 5 || $authUser?->division_id == 4);
+        $isMarketing = ($divName === 'marketing' || $authUser?->division_id == 1 || str_contains($posName, 'marketing'));
 
         // Jika user adalah Kepala Marketing, otomatis batasi ke Divisi Marketing dan Posisi Staff Marketing
-        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+        if ($isMarketing && !$isAdmin) {
             $divisions = Division::where('id', 1)->orWhere('name', 'Marketing')->get();
             $positions = Position::where('division_id', 1)->get();
             $defaultDivisionId = $divisions->first()->id ?? 1;
             
+            // Default Posisi: Staff Marketing (ID 2)
             $staffPosition = Position::where('division_id', $defaultDivisionId)
                 ->where(function($q) {
                     $q->where('name', 'like', '%Staff%')
@@ -66,7 +76,7 @@ class AgencyPropertyController extends Controller
                 })
                 ->where('name', 'not like', '%Kepala%')
                 ->first();
-            $defaultPositionId = $staffPosition ? $staffPosition->id : ($positions->first()->id ?? null);
+            $defaultPositionId = $staffPosition ? $staffPosition->id : 2;
         } else {
             $divisions = Division::all();
             $positions = Position::all();
@@ -80,7 +90,12 @@ class AgencyPropertyController extends Controller
     public function store(Request $request)
     {
         $authUser = auth()->user();
-        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+        $posName = strtolower($authUser?->position?->name ?? '');
+        $divName = strtolower($authUser?->division?->name ?? '');
+        $isAdmin = ($posName === 'admin' || $divName === 'super admin' || $authUser?->position_id == 5 || $authUser?->division_id == 4);
+        $isMarketing = ($divName === 'marketing' || $authUser?->division_id == 1 || str_contains($posName, 'marketing'));
+
+        if ($isMarketing && !$isAdmin) {
             $request->merge([
                 'division_id' => 1
             ]);
@@ -115,8 +130,12 @@ class AgencyPropertyController extends Controller
     {
         $employee = Employee::findOrFail($id);
         $authUser = auth()->user();
+        $posName = strtolower($authUser?->position?->name ?? '');
+        $divName = strtolower($authUser?->division?->name ?? '');
+        $isAdmin = ($posName === 'admin' || $divName === 'super admin' || $authUser?->position_id == 5 || $authUser?->division_id == 4);
+        $isMarketing = ($divName === 'marketing' || $authUser?->division_id == 1 || str_contains($posName, 'marketing'));
 
-        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+        if ($isMarketing && !$isAdmin) {
             $divisions = Division::where('id', 1)->orWhere('name', 'Marketing')->get();
             $positions = Position::where('division_id', 1)->get();
             $defaultDivisionId = $employee->division_id ?? 1;
