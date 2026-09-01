@@ -1,39 +1,26 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Service & Perbaikan - Property Management App')
+@section('title', 'Modul Complaint & Layanan Purnajual - Property Management App')
 
 @section('content')
 
 @php
-    $dummyServices = [
-        [
-            'id' => 1,
-            'ticket_no' => 'SRV/2026/001',
-            'unit_name' => 'Lavender 45 - Blok C/12',
-            'customer_name' => 'Budi Santoso',
-            'issue' => 'Kebocoran atap pada area kamar tidur utama',
-            'date' => '2026-03-22',
-            'status' => 'Diproses',
-        ],
-        [
-            'id' => 2,
-            'ticket_no' => 'SRV/2026/002',
-            'unit_name' => 'Rosemary 12 - Blok A/08',
-            'customer_name' => 'Siti Nurhaliza',
-            'issue' => 'Kran wastafel kamar mandi kendur dan rembes',
-            'date' => '2026-03-21',
-            'status' => 'Pending',
-        ],
-        [
-            'id' => 3,
-            'ticket_no' => 'SRV/2026/003',
-            'unit_name' => 'Jasmine 09 - Blok B/03',
-            'customer_name' => 'Agus Prasetyo',
-            'issue' => 'Finishing cat dinding bagian teras mengelupas',
-            'date' => '2026-03-20',
-            'status' => 'Selesai',
-        ],
-    ];
+    if (!function_exists('resolveFileUrlServis')) {
+        function resolveFileUrlServis($path) {
+            if (empty($path)) return '#';
+            $path = str_replace('\\', '/', $path);
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+            $clean = ltrim($path, '/');
+            if (file_exists(public_path($clean))) return asset($clean);
+            if (file_exists(public_path('uploads/' . $clean))) return asset('uploads/' . $clean);
+            if (file_exists(public_path('storage/' . $clean))) return asset('storage/' . $clean);
+            if (file_exists(storage_path('app/public/' . $clean))) return asset('storage/' . $clean);
+            if (str_starts_with($clean, 'uploads/') || str_starts_with($clean, 'storage/')) return asset($clean);
+            return asset('uploads/' . $clean);
+        }
+    }
 @endphp
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
@@ -41,211 +28,265 @@
     <!-- Header Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
+            <div class="card shadow-sm border-0 header-card" style="background: linear-gradient(135deg, #ffffff 0%, #fbfaff 100%);">
                 <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                     <div>
                         <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Service & Perbaikan
+                            <i class="mdi mdi-face-agent text-primary me-2"></i>Service & Keluhan Pasca Serah Terima (Complaint)
                         </h3>
                         <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Kelola pengajuan service, komplain perbaikan, dan klaim garansi unit properti
+                            Kelola pengajuan keluhan customer, tindak lanjut perbaikan garansi, dan lacak progress penyelesaiannya.
                         </p>
                     </div>
                     <div class="d-none d-sm-block pe-2">
-                        <i class="mdi mdi-wrench-clock-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                        <i class="mdi mdi-shield-home-outline" style="font-size: 3.5rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-2 mt-sm-2 mt-md-3">
+    <!-- Alert Notifikasi -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="mdi mdi-check-circle me-1"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="mdi mdi-alert-circle me-1"></i> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- Statistik Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold">Total Keluhan</span>
+                        <h3 class="fw-bold mb-0 mt-1 text-dark">{{ $stats['total'] ?? 0 }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
+                        <i class="mdi mdi-ticket-percent-outline fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold">Menunggu Respon</span>
+                        <h3 class="fw-bold mb-0 mt-1 text-warning">{{ $stats['diajukan'] ?? 0 }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                        <i class="mdi mdi-clock-outline fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold">Dalam Pengerjaan</span>
+                        <h3 class="fw-bold mb-0 mt-1 text-primary">{{ $stats['diproses'] ?? 0 }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                        <i class="mdi mdi-wrench-clock-outline fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold">Tuntas Selesai</span>
+                        <h3 class="fw-bold mb-0 mt-1 text-success">{{ $stats['selesai'] ?? 0 }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(25, 135, 84, 0.1); color: #198754;">
+                        <i class="mdi mdi-check-decagram-outline fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Card Content -->
+    <div class="row mt-2">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Pengajuan Servis
+                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+                    <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
+                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar Pengajuan Keluhan / Garansi
                     </h5>
-                    <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" onclick="openTambahServis()">
+                    <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm px-3" onclick="openTambahComplaintModal()">
                         <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
-                        <span>Tambah Pengajuan</span>
+                        <span>Tambah Keluhan Baru</span>
                     </button>
                 </div>
 
                 <div class="card-body">
                     <!-- Filter Section -->
-                    <div class="filter-card mb-3">
-                        <!-- Desktop Version -->
-                        <div class="filter-row-desktop d-none d-md-block">
-                            <form id="filterForm" onsubmit="return simulateFilter(event)">
-                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
-                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                        <!-- Search Input -->
-                                        <div style="min-width: 260px; max-width: 360px; flex: 1;">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="search" id="searchInput"
-                                                    placeholder="Cari no tiket / unit / customer..."
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                    type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <!-- Status Filter -->
-                                        <div style="width: 155px;">
-                                            <select class="form-control" name="status" id="statusFilter">
-                                                <option value="">Semua Status</option>
-                                                <option value="Pending">Pending</option>
-                                                <option value="Diproses">Diproses</option>
-                                                <option value="Selesai">Selesai</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!-- Right Limit & Buttons -->
-                                    <div class="d-flex align-items-center gap-2 ms-auto">
-                                        <div style="width: 110px;">
-                                            <select class="form-control" name="per_page" id="perPageSelect">
-                                                <option value="10">10 data</option>
-                                                <option value="15">15 data</option>
-                                                <option value="25">25 data</option>
-                                                <option value="50">50 data</option>
-                                            </select>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
-                                            <i class="mdi mdi-filter"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="resetFilter()">
-                                            <i class="mdi mdi-refresh"></i>
-                                        </button>
-                                    </div>
+                    <form method="GET" action="{{ route('servis') }}" class="mb-4">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-12 col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                        placeholder="Cari no tiket / customer / unit...">
+                                    <button class="btn btn-gradient-primary" type="submit">
+                                        <i class="mdi mdi-magnify"></i>
+                                    </button>
                                 </div>
-                            </form>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select class="form-select" name="status" onchange="this.form.submit()">
+                                    <option value="">-- Semua Status --</option>
+                                    <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                    <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                                    <option value="pengecekan" {{ request('status') == 'pengecekan' ? 'selected' : '' }}>Pengecekan</option>
+                                    <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select class="form-select" name="kategori" onchange="this.form.submit()">
+                                    <option value="">-- Semua Kategori --</option>
+                                    <option value="kebocoran" {{ request('kategori') == 'kebocoran' ? 'selected' : '' }}>Kebocoran</option>
+                                    <option value="kelistrikan" {{ request('kategori') == 'kelistrikan' ? 'selected' : '' }}>Kelistrikan</option>
+                                    <option value="sanitasi_pipa" {{ request('kategori') == 'sanitasi_pipa' ? 'selected' : '' }}>Sanitasi / Pipa</option>
+                                    <option value="pintu_jendela" {{ request('kategori') == 'pintu_jendela' ? 'selected' : '' }}>Pintu / Jendela</option>
+                                    <option value="struktur_dinding" {{ request('kategori') == 'struktur_dinding' ? 'selected' : '' }}>Struktur / Dinding</option>
+                                    <option value="finishing_cat" {{ request('kategori') == 'finishing_cat' ? 'selected' : '' }}>Finishing / Cat</option>
+                                    <option value="lainnya" {{ request('kategori') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-2 d-flex gap-2">
+                                <a href="{{ route('servis') }}" class="btn btn-outline-secondary w-100" title="Reset Filter">
+                                    <i class="mdi mdi-refresh"></i> Reset
+                                </a>
+                            </div>
                         </div>
-
-                        <!-- Mobile Version -->
-                        <div class="filter-row-mobile d-block d-md-none">
-                            <form onsubmit="return simulateFilter(event)">
-                                <div class="row g-2">
-                                    <div class="col-12 mb-2">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
-                                                placeholder="Cari no tiket / unit / customer..."
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                type="submit" title="Cari"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 mb-2">
-                                        <select class="form-control" name="status" id="statusFilterMobile">
-                                            <option value="">Semua Status</option>
-                                            <option value="Pending">Pending</option>
-                                            <option value="Diproses">Diproses</option>
-                                            <option value="Selesai">Selesai</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-12 mb-2">
-                                        <select class="form-control" name="per_page">
-                                            <option value="10">10 data</option>
-                                            <option value="15">15 data</option>
-                                            <option value="25">25 data</option>
-                                            <option value="50">50 data</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
-                                            <i class="mdi mdi-filter"></i> Filter
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="button" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="resetFilter()">
-                                            <i class="mdi mdi-refresh"></i> Reset
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    </form>
 
                     <!-- Tabel Data Servis -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th class="text-center">No</th>
                                     <th>No. Tiket</th>
                                     <th>Unit Properti</th>
-                                    <th>Pemohon / Konsumen</th>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Status Servis</th>
+                                    <th>Konsumen</th>
+                                    <th>Keluhan & Kategori</th>
+                                    <th>Prioritas</th>
+                                    <th>Tgl Pengajuan</th>
+                                    <th>Status</th>
+                                    <th>Petugas / Biaya</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($dummyServices as $index => $service)
+                                @forelse ($complaints as $c)
+                                    @php
+                                        $prioClass = [
+                                            'rendah' => 'bg-secondary text-white',
+                                            'sedang' => 'bg-info text-white',
+                                            'tinggi' => 'bg-warning text-dark',
+                                            'darurat' => 'bg-danger text-white'
+                                        ][$c->prioritas] ?? 'bg-secondary text-white';
+
+                                        $statusClass = [
+                                            'diajukan' => 'badge-gradient-warning text-dark',
+                                            'diproses' => 'badge-gradient-primary text-white',
+                                            'pengecekan' => 'badge-gradient-info text-white',
+                                            'selesai' => 'badge-gradient-success text-white',
+                                            'ditolak' => 'badge-gradient-danger text-white',
+                                        ][$c->status] ?? 'badge-gradient-secondary';
+                                    @endphp
                                     <tr>
-                                        <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                         <td>
-                                            <span class="badge bg-light text-primary fw-bold px-2 py-1 border" style="font-size: 0.78rem;">
-                                                <i class="mdi mdi-ticket-confirmation-outline me-1"></i>{{ $service['ticket_no'] }}
-                                            </span>
+                                            <span class="badge bg-light text-dark border font-monospace">{{ $c->ticket_number }}</span>
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home-outline text-primary me-2" style="font-size: 1.2rem;"></i>
-                                                <span class="fw-bold text-dark">{{ $service['unit_name'] }}</span>
+                                                <i class="mdi mdi-home-outline text-primary me-2 fs-5"></i>
+                                                <div>
+                                                    <span class="fw-bold text-dark d-block">{{ $c->unit->unit_name ?? '-' }}</span>
+                                                    <small class="text-muted">Blok {{ $c->unit->unit_code ?? '-' }}</small>
+                                                </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="text-dark fw-medium">{{ $service['customer_name'] }}</span>
+                                            <div class="fw-semibold text-dark">{{ $c->customer->full_name ?? '-' }}</div>
+                                            <small class="text-muted">{{ $c->customer->phone ?? '-' }}</small>
                                         </td>
                                         <td>
-                                            <span class="d-inline-flex align-items-center gap-1 text-muted" style="font-size: 0.82rem;">
-                                                <i class="mdi mdi-calendar-clock text-primary"></i>
-                                                <span>{{ \Carbon\Carbon::parse($service['date'])->format('d M Y') }}</span>
+                                            <span class="badge bg-soft-primary text-primary mb-1 text-uppercase" style="font-size: 0.7rem;">
+                                                {{ str_replace('_', ' ', $c->kategori) }}
+                                            </span>
+                                            <div class="fw-bold text-dark">{{ $c->judul_keluhan }}</div>
+                                            <small class="text-muted text-truncate d-block" style="max-width: 220px;">{{ $c->deskripsi }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge {{ $prioClass }} text-uppercase" style="font-size: 0.7rem;">
+                                                {{ $c->prioritas }}
                                             </span>
                                         </td>
                                         <td>
-                                            @if($service['status'] === 'Selesai')
-                                                <span class="status-badge aktif">
-                                                    <i class="mdi mdi-check-circle"></i> Selesai
-                                                </span>
-                                            @elseif($service['status'] === 'Diproses')
-                                                <span class="status-badge" style="background: rgba(255, 193, 7, 0.15); color: #b78103; border-color: rgba(255, 193, 7, 0.3);">
-                                                    <i class="mdi mdi-progress-clock"></i> Diproses
-                                                </span>
+                                            <span class="d-inline-flex align-items-center gap-1 text-muted small">
+                                                <i class="mdi mdi-calendar-clock text-primary"></i>
+                                                <span>{{ $c->tanggal_pengajuan ? $c->tanggal_pengajuan->format('d M Y') : '-' }}</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge {{ $statusClass }} text-uppercase">
+                                                {{ $c->status }}
+                                            </span>
+                                            @if($c->status == 'selesai' && $c->tanggal_selesai)
+                                                <small class="d-block text-success" style="font-size: 0.7rem;">
+                                                    <i class="mdi mdi-check"></i> {{ $c->tanggal_selesai->format('d M Y') }}
+                                                </small>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <small class="fw-semibold text-dark d-block">{{ $c->petugas_penanggung_jawab ?? 'Belum Ditugaskan' }}</small>
+                                            @if($c->biaya_perbaikan > 0)
+                                                <small class="text-danger fw-bold">Rp {{ number_format($c->biaya_perbaikan, 0, ',', '.') }}</small>
                                             @else
-                                                <span class="status-badge nonaktif">
-                                                    <i class="mdi mdi-clock-outline"></i> Pending
-                                                </span>
+                                                <small class="text-success">Garansi (Rp 0)</small>
                                             @endif
                                         </td>
                                         <td class="text-center">
                                             <div class="d-inline-flex align-items-center gap-1">
-                                                <button class="btn-action fase2" title="Lihat Detail" onclick="openDetail({{ json_encode($service) }})">
+                                                <button type="button" class="btn btn-xs btn-outline-info" title="Lihat Detail"
+                                                    data-complaint="{{ base64_encode(json_encode($c)) }}"
+                                                    onclick="handleDetailServisClick(this)">
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
-                                                <button class="btn-action edit" title="Edit Servis" onclick="openEdit({{ json_encode($service) }})">
-                                                    <i class="mdi mdi-pencil"></i>
+                                                <button type="button" class="btn btn-xs btn-outline-primary" title="Update Progress"
+                                                    data-complaint="{{ base64_encode(json_encode($c)) }}"
+                                                    onclick="handleUpdateServisClick(this)">
+                                                    <i class="mdi mdi-progress-wrench"></i>
                                                 </button>
+                                                <form action="{{ route('complaints.destroy', $c->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus keluhan ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-xs btn-outline-danger" title="Hapus">
+                                                        <i class="mdi mdi-trash-can-outline"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-tools me-2" style="font-size: 1.5rem;"></i>
-                                            Tidak ada data servis ditemukan.
+                                        <td colspan="9" class="text-center text-muted py-5">
+                                            <i class="mdi mdi-shield-check-outline text-success d-block mb-2" style="font-size: 2.5rem;"></i>
+                                            Tidak ada data keluhan / komplain ditemukan.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -254,23 +295,8 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
-                            Menampilkan 1 - 3 dari 3 data
-                        </div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                <li class="page-item disabled">
-                                    <span class="page-link"><i class="mdi mdi-chevron-left"></i></span>
-                                </li>
-                                <li class="page-item active">
-                                    <span class="page-link">1</span>
-                                </li>
-                                <li class="page-item disabled">
-                                    <span class="page-link"><i class="mdi mdi-chevron-right"></i></span>
-                                </li>
-                            </ul>
-                        </nav>
+                    <div class="mt-4">
+                        {{ $complaints->withQueryString()->links() }}
                     </div>
 
                 </div>
@@ -280,47 +306,74 @@
 
 </div>
 
-<!-- Modal Tambah / Edit Servis -->
-<div class="modal fade" id="modalServis" tabindex="-1" aria-labelledby="modalServisLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- MODAL: TAMBAH PENGALUAN KELUHAN -->
+<div class="modal fade" id="modalTambahComplaint" tabindex="-1" role="dialog" aria-labelledby="modalTambahComplaintLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-white border-bottom">
-                <h5 class="modal-title fw-bold" id="modalServisLabel" style="color: #2c2e3f;">
-                    <i class="mdi mdi-wrench-outline me-2" id="modalServisIcon" style="color: #9a55ff;"></i>
-                    <span id="modalServisTitle">Tambah Pengajuan Servis</span>
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title fw-bold" id="modalTambahComplaintLabel">
+                    <i class="mdi mdi-alert-circle-outline me-1"></i> Form Pengajuan Keluhan / Garansi Baru
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <form id="formServis" onsubmit="return handleSimpanServis(event)">
+            <form action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
                 <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c2e3f;">Unit Properti <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="servisUnit" placeholder="Contoh: Lavender 45 - Blok C/12" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c2e3f;">Nama Pemohon / Konsumen <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="servisCustomer" placeholder="Contoh: Budi Santoso" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c2e3f;">Status Servis</label>
-                        <select class="form-control" id="servisStatus">
-                            <option value="Pending">Pending</option>
-                            <option value="Diproses">Diproses</option>
-                            <option value="Selesai">Selesai</option>
-                        </select>
-                    </div>
-                    <div class="mb-0">
-                        <label class="form-label fw-bold" style="color: #2c2e3f;">Deskripsi Kerusakan / Keluhan</label>
-                        <textarea class="form-control" id="servisIssue" rows="3" placeholder="Tuliskan keluhan atau detail perbaikan..."></textarea>
+                    <div class="row g-3">
+                        <div class="col-12 mb-2">
+                            <label class="form-label fw-bold small text-muted">Pilih Unit & Konsumen <span class="text-danger">*</span></label>
+                            <select class="form-control" name="booking_id" required>
+                                <option value="">-- Pilih Booking Unit Terjual --</option>
+                                @foreach($soldBookings as $sb)
+                                    <option value="{{ $sb->id }}">
+                                        {{ $sb->unit->unit_name ?? '-' }} (Blok {{ $sb->unit->unit_code ?? '-' }}) - {{ $sb->customer->full_name ?? '-' }} [Kode: {{ $sb->booking_code }}]
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold small text-muted">Kategori Keluhan <span class="text-danger">*</span></label>
+                            <select class="form-control" name="kategori" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="kebocoran">Kebocoran Atap / Talang / Dinding</option>
+                                <option value="kelistrikan">Kelistrikan, Stopkontak & Lampu</option>
+                                <option value="sanitasi_pipa">Sanitasi, Saluran Air & Kran</option>
+                                <option value="pintu_jendela">Pintu, Jendela, Kunci & Kusen</option>
+                                <option value="struktur_dinding">Retak Dinding / Plesteran</option>
+                                <option value="finishing_cat">Cat Mengelupas / Keramik Pecah</option>
+                                <option value="lainnya">Lainnya / Masalah Umum</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold small text-muted">Tingkat Prioritas <span class="text-danger">*</span></label>
+                            <select class="form-control" name="prioritas" required>
+                                <option value="rendah">Rendah (Penyelesaian santai)</option>
+                                <option value="sedang" selected>Sedang (Standar perbaikan)</option>
+                                <option value="tinggi">Tinggi (Perlu segera ditangani)</option>
+                                <option value="darurat">Darurat / Emergency (Segera hari ini)</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label fw-bold small text-muted">Judul Ringkas Keluhan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="judul_keluhan" placeholder="Contoh: Kran kamar mandi utama bocor dan rembes" required>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label fw-bold small text-muted">Detail Deskripsi Keluhan <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="deskripsi" rows="3" placeholder="Jelaskan titik kerusakan, kronologi kendala, dan bagian yang perlu diperbaiki secara detail..." required></textarea>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label fw-bold small text-muted">Upload Foto / Bukti Kendala (Opsional)</label>
+                            <input type="file" class="form-control" name="foto_keluhan" accept="image/*,application/pdf">
+                            <small class="text-muted">Mendukung format JPG, PNG, WEBP, atau PDF (Max 5MB)</small>
+                        </div>
                     </div>
                 </div>
-
-                <div class="modal-footer bg-light border-top">
-                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-                    <button type="submit" class="btn btn-gradient-primary btn-sm px-4">
-                        <i class="mdi mdi-content-save me-1"></i>Simpan Data
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="mdi mdi-send me-1"></i> Simpan Keluhan
                     </button>
                 </div>
             </form>
@@ -328,53 +381,129 @@
     </div>
 </div>
 
-<!-- Modal Detail Servis -->
-<div class="modal fade" id="modalDetailServis" tabindex="-1" aria-labelledby="modalDetailServisLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- MODAL: UPDATE PROGRESS -->
+<div class="modal fade" id="modalUpdateServis" tabindex="-1" role="dialog" aria-labelledby="modalUpdateServisLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-white border-bottom">
-                <h5 class="modal-title fw-bold" id="modalDetailServisLabel" style="color: #2c2e3f;">
-                    <i class="mdi mdi-information-outline me-2" style="color: #17a2b8;"></i>Detail Pengajuan Servis
+            <div class="modal-header bg-primary text-white py-3">
+                <h5 class="modal-title fw-bold" id="modalUpdateServisLabel">
+                    <i class="mdi mdi-progress-wrench me-1"></i> Update Progress Penanganan Keluhan
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="formUpdateServis" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body p-4">
+                    <div class="card bg-light border-0 mb-3">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-secondary font-monospace" id="servisUpdateTicket">-</span>
+                                <span class="badge bg-warning text-dark text-uppercase" id="servisUpdatePrioritas">-</span>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1" id="servisUpdateJudul">-</h6>
+                            <p class="text-muted small mb-0" id="servisUpdateDeskripsi">-</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold small text-muted">Status Progress Penanganan <span class="text-danger">*</span></label>
+                            <select class="form-control" name="status" id="servisSelectStatus" required>
+                                <option value="diajukan">Diajukan (Menunggu Respon)</option>
+                                <option value="diproses">Diproses (Sedang Dikerjakan)</option>
+                                <option value="pengecekan">Pengecekan Lapangan / Uji Coba</option>
+                                <option value="selesai">Selesai (Perbaikan Tuntas)</option>
+                                <option value="ditolak">Ditolak (Di luar cakupan garansi)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold small text-muted">Petugas / Teknisi Penanggung Jawab</label>
+                            <input type="text" class="form-control" name="petugas_penanggung_jawab" id="servisInputPetugas" placeholder="Contoh: Pak Joko (Teknisi Bangunan)">
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label fw-bold small text-muted">Catatan Tindak Lanjut & Perbaikan</label>
+                            <textarea class="form-control" name="catatan_perbaikan" id="servisInputCatatan" rows="3" placeholder="Tuliskan tindakan yang telah dilakukan, material yang diganti, atau hasil pengecekan lapangan..."></textarea>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold small text-muted">Biaya Perbaikan (Rp)</label>
+                            <input type="number" class="form-control" name="biaya_perbaikan" id="servisInputBiaya" placeholder="0 (Gratis garansi jika 0)">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold small text-muted">Upload Foto Hasil Perbaikan (Opsional)</label>
+                            <input type="file" class="form-control" name="foto_penyelesaian" accept="image/*,application/pdf">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="mdi mdi-content-save me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: DETAIL KELUHAN -->
+<div class="modal fade" id="modalDetailServis" tabindex="-1" role="dialog" aria-labelledby="modalDetailServisLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-white border-bottom py-3">
+                <h5 class="modal-title fw-bold" id="modalDetailServisLabel" style="color: #2c2e3f;">
+                    <i class="mdi mdi-information-outline me-2 text-info"></i>Detail Informasi Keluhan
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body p-4">
-                <div class="row g-2 mb-3">
-                    <div class="col-6">
-                        <div class="modal-detail-box">
-                            <div class="detail-label">No. Tiket</div>
-                            <div class="detail-value text-primary" id="detailTicketNo">-</div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 mb-2">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <span class="text-muted small d-block">No. Tiket</span>
+                            <h5 class="fw-bold text-primary font-monospace mb-2" id="detTicket">-</h5>
+                            <span class="text-muted small d-block">Unit Properti</span>
+                            <span class="fw-semibold text-dark d-block" id="detUnit">-</span>
+                            <span class="text-muted small d-block mt-2">Konsumen</span>
+                            <span class="fw-semibold text-dark d-block" id="detCustomer">-</span>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="modal-detail-box">
-                            <div class="detail-label">Status</div>
-                            <div class="detail-value" id="detailStatus">-</div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="modal-detail-box">
-                            <div class="detail-label">Unit Properti</div>
-                            <div class="detail-value" id="detailUnitName">-</div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="modal-detail-box">
-                            <div class="detail-label">Pemohon / Konsumen</div>
-                            <div class="detail-value" id="detailCustomerName">-</div>
+                    <div class="col-md-6 mb-2">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <span class="text-muted small d-block">Kategori & Prioritas</span>
+                            <div class="d-flex gap-2 my-1">
+                                <span class="badge bg-primary text-uppercase" id="detKategori">-</span>
+                                <span class="badge bg-warning text-dark text-uppercase" id="detPrioritas">-</span>
+                            </div>
+                            <span class="text-muted small d-block mt-2">Status Penanganan</span>
+                            <span class="badge bg-success text-uppercase fs-6 my-1" id="detStatus">-</span>
+                            <span class="text-muted small d-block mt-2">Teknisi / Penanggung Jawab</span>
+                            <span class="fw-semibold text-dark d-block" id="detPetugas">-</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="p-3 bg-light rounded-3 border">
-                    <label class="fw-bold text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Deskripsi Masalah / Servis</label>
-                    <p class="mb-0 text-dark" id="detailIssue" style="font-size: 0.9rem;">-</p>
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <label class="fw-bold text-muted mb-1 small text-uppercase">Judul & Deskripsi Keluhan</label>
+                    <h6 class="fw-bold text-dark mb-1" id="detJudul">-</h6>
+                    <p class="mb-0 text-secondary" id="detDeskripsi" style="font-size: 0.9rem;">-</p>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <label class="fw-bold text-muted mb-1 small text-uppercase">Catatan Perbaikan & Tindak Lanjut</label>
+                    <p class="mb-0 text-dark" id="detCatatan">-</p>
+                </div>
+
+                <div class="row g-2" id="boxBuktiFoto">
+                    <!-- Foto links injected here -->
                 </div>
             </div>
-            <div class="modal-footer bg-light border-top">
-                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">
-                    Tutup
-                </button>
+            <div class="modal-footer bg-light border-top py-2">
+                <button type="button" class="btn btn-secondary px-4" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -383,75 +512,103 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-function simulateFilter(event) {
-    event.preventDefault();
-    const search = document.getElementById('searchInput')?.value || '';
-    const status = document.getElementById('statusFilter')?.value || 'Semua Status';
-
-    Swal.fire({
-        icon: 'success',
-        title: 'Filter Diterapkan',
-        html: `Pencarian: <b>${search || '-'}</b> | Status: <b>${status}</b>`,
-        timer: 1500,
-        showConfirmButton: false
-    });
-    return false;
+function openTambahComplaintModal() {
+    if (window.jQuery && typeof $('#modalTambahComplaint').modal === 'function') {
+        $('#modalTambahComplaint').modal('show');
+    } else if (window.bootstrap && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('modalTambahComplaint'));
+        modal.show();
+    }
 }
 
-function resetFilter() {
-    document.getElementById('filterForm')?.reset();
-    Swal.fire({
-        icon: 'success',
-        title: 'Filter Direset',
-        timer: 1200,
-        showConfirmButton: false
-    });
+function handleUpdateServisClick(btn) {
+    try {
+        var base64Data = btn.getAttribute('data-complaint');
+        var jsonStr = decodeURIComponent(escape(window.atob(base64Data)));
+        var complaint = JSON.parse(jsonStr);
+        openUpdateServisModal(complaint);
+    } catch(e) {
+        console.error('Error parsing complaint data', e);
+    }
 }
 
-function openTambahServis() {
-    $('#formServis')[0].reset();
-    $('#modalServisTitle').text('Tambah Pengajuan Servis');
-    $('#modalServisIcon').removeClass('mdi-pencil').addClass('mdi-plus-circle');
-    $('#modalServis').modal('show');
+function handleDetailServisClick(btn) {
+    try {
+        var base64Data = btn.getAttribute('data-complaint');
+        var jsonStr = decodeURIComponent(escape(window.atob(base64Data)));
+        var complaint = JSON.parse(jsonStr);
+        openDetailServisModal(complaint);
+    } catch(e) {
+        console.error('Error parsing complaint data', e);
+    }
 }
 
-function openEdit(service) {
-    $('#servisUnit').val(service.unit_name);
-    $('#servisCustomer').val(service.customer_name);
-    $('#servisStatus').val(service.status);
-    $('#servisIssue').val(service.issue);
+function openUpdateServisModal(c) {
+    var form = document.getElementById('formUpdateServis');
+    if (form) {
+        form.action = '{{ url('/complaints') }}/' + c.id + '/update';
+    }
 
-    $('#modalServisTitle').text('Edit Pengajuan Servis');
-    $('#modalServisIcon').removeClass('mdi-plus-circle').addClass('mdi-pencil');
-    $('#modalServis').modal('show');
+    if (document.getElementById('servisUpdateTicket')) document.getElementById('servisUpdateTicket').innerText = c.ticket_number || '-';
+    if (document.getElementById('servisUpdatePrioritas')) document.getElementById('servisUpdatePrioritas').innerText = (c.prioritas || 'SEDANG').toUpperCase();
+    if (document.getElementById('servisUpdateJudul')) document.getElementById('servisUpdateJudul').innerText = c.judul_keluhan || '-';
+    if (document.getElementById('servisUpdateDeskripsi')) document.getElementById('servisUpdateDeskripsi').innerText = c.deskripsi || '-';
+
+    if (document.getElementById('servisSelectStatus')) document.getElementById('servisSelectStatus').value = c.status || 'diajukan';
+    if (document.getElementById('servisInputPetugas')) document.getElementById('servisInputPetugas').value = c.petugas_penanggung_jawab || '';
+    if (document.getElementById('servisInputCatatan')) document.getElementById('servisInputCatatan').value = c.catatan_perbaikan || '';
+    if (document.getElementById('servisInputBiaya')) document.getElementById('servisInputBiaya').value = c.biaya_perbaikan || 0;
+
+    if (window.jQuery && typeof $('#modalUpdateServis').modal === 'function') {
+        $('#modalUpdateServis').modal('show');
+    } else if (window.bootstrap && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('modalUpdateServis'));
+        modal.show();
+    }
 }
 
-function openDetail(service) {
-    $('#detailTicketNo').text(service.ticket_no);
-    $('#detailStatus').text(service.status);
-    $('#detailUnitName').text(service.unit_name);
-    $('#detailCustomerName').text(service.customer_name);
-    $('#detailIssue').text(service.issue);
+function openDetailServisModal(c) {
+    if (document.getElementById('detTicket')) document.getElementById('detTicket').innerText = c.ticket_number || '-';
+    if (document.getElementById('detUnit')) document.getElementById('detUnit').innerText = (c.unit ? c.unit.unit_name + ' (Blok ' + c.unit.unit_code + ')' : '-');
+    if (document.getElementById('detCustomer')) document.getElementById('detCustomer').innerText = (c.customer ? c.customer.full_name + ' (' + (c.customer.phone || '-') + ')' : '-');
+    if (document.getElementById('detKategori')) document.getElementById('detKategori').innerText = (c.kategori || '-').replace('_', ' ');
+    if (document.getElementById('detPrioritas')) document.getElementById('detPrioritas').innerText = (c.prioritas || 'SEDANG').toUpperCase();
+    if (document.getElementById('detStatus')) document.getElementById('detStatus').innerText = (c.status || '-').toUpperCase();
+    if (document.getElementById('detPetugas')) document.getElementById('detPetugas').innerText = (c.petugas_penanggung_jawab || 'Belum Ditugaskan');
+    if (document.getElementById('detJudul')) document.getElementById('detJudul').innerText = c.judul_keluhan || '-';
+    if (document.getElementById('detDeskripsi')) document.getElementById('detDeskripsi').innerText = c.deskripsi || '-';
+    if (document.getElementById('detCatatan')) document.getElementById('detCatatan').innerText = c.catatan_perbaikan || 'Belum ada catatan perbaikan dari teknisi.';
 
-    $('#modalDetailServis').modal('show');
-}
+    var box = document.getElementById('boxBuktiFoto');
+    if (box) {
+        box.innerHTML = '';
+        if (c.foto_keluhan) {
+            box.innerHTML += `
+                <div class="col-6">
+                    <a href="/${c.foto_keluhan}" target="_blank" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                        <i class="mdi mdi-image-outline"></i> Lihat Foto Bukti Keluhan
+                    </a>
+                </div>
+            `;
+        }
+        if (c.foto_penyelesaian) {
+            box.innerHTML += `
+                <div class="col-6">
+                    <a href="/${c.foto_penyelesaian}" target="_blank" class="btn btn-outline-success btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                        <i class="mdi mdi-image-check"></i> Lihat Foto Hasil Perbaikan
+                    </a>
+                </div>
+            `;
+        }
+    }
 
-function handleSimpanServis(event) {
-    event.preventDefault();
-    $('#modalServis').modal('hide');
-
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil Disimpan!',
-        text: 'Data pengajuan servis berhasil diproses.',
-        timer: 2000,
-        showConfirmButton: true,
-        confirmButtonColor: '#9a55ff'
-    });
-    return false;
+    if (window.jQuery && typeof $('#modalDetailServis').modal === 'function') {
+        $('#modalDetailServis').modal('show');
+    } else if (window.bootstrap && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('modalDetailServis'));
+        modal.show();
+    }
 }
 </script>
 @endpush

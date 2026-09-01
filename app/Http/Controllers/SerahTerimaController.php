@@ -145,7 +145,14 @@ class SerahTerimaController extends Controller
             'unit.landBank',
             'customer',
             'sales',
-            'serahTerima'
+            'serahTerima.items',
+            'serahTerima.documents',
+            'akad',
+            'kprApplication.bank',
+            'kprApplication.documents',
+            'payments',
+            'documentUploads',
+            'complaints'
         ])->findOrFail($bookingId);
 
         $unit = $booking->unit;

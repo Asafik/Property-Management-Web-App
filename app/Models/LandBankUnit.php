@@ -84,4 +84,9 @@ public function activeBooking()
         ->latestOfMany();
 }
 
+public function complaints()
+{
+    return $this->hasMany(Complaint::class, 'unit_id');
+}
+
 }
