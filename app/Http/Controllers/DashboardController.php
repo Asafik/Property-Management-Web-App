@@ -130,8 +130,15 @@ class DashboardController extends Controller
 
         $menus = \App\Models\Menu::with('children')
             ->whereNull('parent_id')
-            ->whereHas('positions', function ($q) use ($positionId) {
-                $q->where('position_id', $positionId);
+            ->where(function ($q) use ($positionId) {
+                $q->whereHas('positions', function ($query) use ($positionId) {
+                    $query->where('position_id', $positionId);
+                })
+                ->orWhereHas('children', function ($cq) use ($positionId) {
+                    $cq->whereHas('positions', function ($query) use ($positionId) {
+                        $query->where('position_id', $positionId);
+                    });
+                });
             })
             ->orderBy('order')
             ->get();

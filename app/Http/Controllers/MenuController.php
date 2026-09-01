@@ -47,21 +47,29 @@ class MenuController extends Controller
         return redirect()->back()->with('success', 'Hak akses untuk posisi ' . $position->name . ' berhasil diperbarui!');
     }
     public function storePositions(Request $request)
-{
-    // 1. Validasi input
-    $request->validate([
-        'menu_id' => 'required|exists:menus,id',
-        'position_ids' => 'required|array', // Harus berupa array karena select multiple
-        'position_ids.*' => 'exists:positions,id'
-    ]);
+    {
+        // 1. Validasi input
+        $request->validate([
+            'menu_id' => 'required|exists:menus,id',
+            'position_ids' => 'required|array', // Harus berupa array karena select multiple
+            'position_ids.*' => 'exists:positions,id'
+        ]);
 
-    // 2. Cari Menu yang sedang diedit
-    $menu = Menu::findOrFail($request->menu_id);
+        // 2. Cari Menu yang sedang diedit
+        $menu = Menu::findOrFail($request->menu_id);
 
-    // 3. Simpan hak akses (otomatis insert ke tabel menu_position)
-    $menu->positions()->sync($request->position_ids);
+        // 3. Simpan hak akses (otomatis insert ke tabel menu_position)
+        $menu->positions()->sync($request->position_ids);
 
-    // 4. Kembali ke halaman sebelumnya dengan pesan sukses
-    return redirect()->back()->with('success', 'Hak akses posisi untuk menu ' . $menu->name . ' berhasil diperbarui!');
-}
+        // 4. Jika menu ini adalah sub-menu (memiliki parent), pastikan parent_id juga diberikan akses ke posisi-posisi ini
+        if ($menu->parent_id) {
+            $parentMenu = Menu::find($menu->parent_id);
+            if ($parentMenu) {
+                $parentMenu->positions()->syncWithoutDetaching($request->position_ids);
+            }
+        }
+
+        // 5. Kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', 'Hak akses posisi untuk menu ' . $menu->name . ' berhasil diperbarui!');
+    }
 }

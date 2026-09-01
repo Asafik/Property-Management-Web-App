@@ -953,11 +953,8 @@
                             $totalSteps = 7;
                             $currentStep = 2; // default: verifikasi
 
-                            // =======================
-                            // STATUS CHECK
-                            // =======================
-
-                            $spkDone = !empty($booking->unit->dokumen_spk);
+                            $unit = $booking->unit ?? (optional($booking->kprApplication)->unit ?? null);
+                            $spkDone = !empty($unit?->no_spk) || !empty($unit?->dokumen_spk) || !empty($unit?->kontraktor);
 
                             $developmentDone =
                                 ($booking->status_pembangunan ?? 0) == 1 ||

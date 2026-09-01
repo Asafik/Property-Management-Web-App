@@ -12,12 +12,19 @@
         // 1. Ambil ID Posisi user yang sedang login
         $positionId = auth()->user()->position_id ?? null;
 
-        // 2. Ambil Menu Utama (yang parent_id nya kosong/NULL) dan boleh diakses posisi ini
+        // 2. Ambil Menu Utama (yang parent_id nya kosong/NULL) dan boleh diakses posisi ini (baik langsung maupun via sub-menu)
         $mainMenus = collect();
         if ($positionId) {
             $mainMenus = \App\Models\Menu::whereNull('parent_id')
-                ->whereHas('positions', function($query) use ($positionId) {
-                    $query->where('position_id', $positionId);
+                ->where(function($q) use ($positionId) {
+                    $q->whereHas('positions', function($query) use ($positionId) {
+                        $query->where('position_id', $positionId);
+                    })
+                    ->orWhereHas('children', function($cq) use ($positionId) {
+                        $cq->whereHas('positions', function($query) use ($positionId) {
+                            $query->where('position_id', $positionId);
+                        });
+                    });
                 })
                 ->orderBy('order', 'asc')
                 ->get();
