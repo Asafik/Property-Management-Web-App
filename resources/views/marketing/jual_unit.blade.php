@@ -2879,13 +2879,13 @@
                         <div class="table-responsive bg-white rounded-3 shadow-sm border">
                             <table class="table table-hover align-middle mb-0" id="tableCommissionRules" style="font-size: 0.85rem;">
                                 <thead class="table-light">
-                                    <tr>
-                                        <th class="py-2.5 px-3">Nama Aturan</th>
-                                        <th class="py-2.5">Proyek</th>
-                                        <th class="py-2.5">Target Unit</th>
-                                        <th class="py-2.5">Skema Komisi</th>
-                                        <th class="py-2.5 text-center">Status</th>
-                                        <th class="py-2.5 text-center" style="width: 100px;">Aksi</th>
+                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                        <th class="py-2.5 px-3" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Nama Aturan</th>
+                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Proyek</th>
+                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Target Unit</th>
+                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Skema Komisi</th>
+                                        <th class="py-2.5 text-center" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Status</th>
+                                        <th class="py-2.5 text-center" style="width: 100px; color: #334155; font-weight: 800; font-size: 0.8rem;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2898,17 +2898,23 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <span class="badge {{ $rule->land_bank_id ? 'bg-info bg-opacity-15 text-info border border-info border-opacity-25' : 'bg-secondary bg-opacity-15 text-secondary' }} px-2 py-1" style="border-radius: 6px; font-size: 0.75rem;">
-                                                    {{ $rule->landBank->name ?? 'Semua Proyek' }}
-                                                </span>
+                                                @if($rule->land_bank_id)
+                                                    <span class="badge" style="background: #e0f2fe !important; color: #0369a1 !important; border: 1px solid #bae6fd; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">
+                                                        <i class="mdi mdi-office-building me-1"></i>{{ $rule->landBank->name ?? '-' }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge" style="background: #f1f5f9 !important; color: #1e293b !important; border: 1px solid #cbd5e1; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">
+                                                        <i class="mdi mdi-earth me-1 text-secondary"></i>Semua Proyek
+                                                    </span>
+                                                @endif
                                             </td>
                                             <td>
                                                 @if($rule->target_type === 'komersil')
-                                                    <span class="badge bg-primary text-white px-2 py-1" style="border-radius: 6px; font-size: 0.74rem;">Komersil</span>
+                                                    <span class="badge" style="background: #6366f1 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Komersil</span>
                                                 @elseif($rule->target_type === 'subsidi')
-                                                    <span class="badge bg-success text-white px-2 py-1" style="border-radius: 6px; font-size: 0.74rem;">Subsidi</span>
+                                                    <span class="badge" style="background: #10b981 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Subsidi</span>
                                                 @else
-                                                    <span class="badge bg-dark text-white px-2 py-1" style="border-radius: 6px; font-size: 0.74rem;">Semua Unit</span>
+                                                    <span class="badge" style="background: #475569 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Semua Unit</span>
                                                 @endif
                                             </td>
                                             <td>

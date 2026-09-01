@@ -211,14 +211,14 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="tableMasterRules">
                     <thead class="table-light">
-                        <tr>
-                            <th class="py-3 px-4" style="width: 50px;">No</th>
-                            <th class="py-3">Nama Aturan & Deskripsi</th>
-                            <th class="py-3">Target Proyek</th>
-                            <th class="py-3">Target Unit</th>
-                            <th class="py-3">Skema Komisi</th>
-                            <th class="py-3 text-center" style="width: 110px;">Status</th>
-                            <th class="py-3 text-center" style="width: 110px;">Aksi</th>
+                        <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                            <th class="py-3 px-4 text-center" style="width: 50px; color: #334155; font-weight: 800; font-size: 0.82rem;">NO</th>
+                            <th class="py-3" style="color: #334155; font-weight: 800; font-size: 0.82rem;">NAMA ATURAN & DESKRIPSI</th>
+                            <th class="py-3" style="color: #334155; font-weight: 800; font-size: 0.82rem;">TARGET PROYEK</th>
+                            <th class="py-3" style="color: #334155; font-weight: 800; font-size: 0.82rem;">TARGET UNIT</th>
+                            <th class="py-3" style="color: #334155; font-weight: 800; font-size: 0.82rem;">SKEMA KOMISI</th>
+                            <th class="py-3 text-center" style="width: 110px; color: #334155; font-weight: 800; font-size: 0.82rem;">STATUS</th>
+                            <th class="py-3 text-center" style="width: 110px; color: #334155; font-weight: 800; font-size: 0.82rem;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -233,22 +233,22 @@
                                 </td>
                                 <td>
                                     @if($rule->land_bank_id)
-                                        <span class="badge bg-info bg-opacity-15 text-info border border-info border-opacity-25 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem;">
+                                        <span class="badge" style="background: #e0f2fe !important; color: #0369a1 !important; border: 1px solid #bae6fd; font-weight: 700; font-size: 0.8rem; padding: 5px 10px; border-radius: 6px;">
                                             <i class="mdi mdi-office-building me-1"></i>{{ $rule->landBank->name ?? '-' }}
                                         </span>
                                     @else
-                                        <span class="badge bg-secondary bg-opacity-15 text-secondary px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem;">
-                                            Semua Proyek
+                                        <span class="badge" style="background: #f1f5f9 !important; color: #1e293b !important; border: 1px solid #cbd5e1; font-weight: 700; font-size: 0.8rem; padding: 5px 10px; border-radius: 6px;">
+                                            <i class="mdi mdi-earth me-1 text-secondary"></i>Semua Proyek
                                         </span>
                                     @endif
                                 </td>
                                 <td>
                                     @if($rule->target_type === 'komersil')
-                                        <span class="badge bg-primary text-white px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem;">Komersil</span>
+                                        <span class="badge" style="background: #6366f1 !important; color: #ffffff !important; font-weight: 700; font-size: 0.8rem; padding: 5px 10px; border-radius: 6px;">Komersil</span>
                                     @elseif($rule->target_type === 'subsidi')
-                                        <span class="badge bg-success text-white px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem;">Subsidi</span>
+                                        <span class="badge" style="background: #10b981 !important; color: #ffffff !important; font-weight: 700; font-size: 0.8rem; padding: 5px 10px; border-radius: 6px;">Subsidi</span>
                                     @else
-                                        <span class="badge bg-dark text-white px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem;">Semua Unit</span>
+                                        <span class="badge" style="background: #475569 !important; color: #ffffff !important; font-weight: 700; font-size: 0.8rem; padding: 5px 10px; border-radius: 6px;">Semua Unit</span>
                                     @endif
                                 </td>
                                 <td>
